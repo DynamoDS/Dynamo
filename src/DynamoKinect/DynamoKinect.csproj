@@ -34,7 +34,7 @@
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Kinect">
-      <HintPath>..\..\packages\kinect\Microsoft.Kinect.dll</HintPath>
+      <HintPath>..\..\extern\kinect\Microsoft.Kinect.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

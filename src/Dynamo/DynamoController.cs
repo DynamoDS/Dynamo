@@ -84,10 +84,6 @@ namespace Dynamo
         {
             dynSettings.Controller = this;
 
-            //MVVM: Moved to properties on dynBenchModelView
-            //RunEnabled = true;
-            //CanRunDynamically = true;
-
             //MVVM: don't construct the main window with a reference to the controller
             //Bench = new dynBench(this);
 
@@ -417,8 +413,7 @@ namespace Dynamo
         {
         }
 
-        
+    #endregion
 
-        #endregion
     }
 }

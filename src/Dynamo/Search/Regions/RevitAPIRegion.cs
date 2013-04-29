@@ -24,6 +24,7 @@ namespace Dynamo.Search.Regions
         public override void Execute(object parameter)
         {
             dynSettings.Controller.SearchViewModel.IncludeOptionalElements = !dynSettings.Controller.SearchViewModel.IncludeOptionalElements;
+            dynSettings.ReturnFocusToSearch();
         }
 
     }

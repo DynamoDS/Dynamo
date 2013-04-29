@@ -134,11 +134,17 @@ namespace Dynamo.Nodes
 
             if (File.Exists(storedPath))
             {
-                StreamReader reader = new StreamReader(
-                    new FileStream(storedPath, FileMode.Open, FileAccess.Read, FileShare.Read)
-                );
-                string contents = reader.ReadToEnd();
-                reader.Close();
+                string contents;
+
+                using (var fs = new FileStream(storedPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    using (var reader = new StreamReader(fs))
+                    {
+                        contents = reader.ReadToEnd();
+                    }
+                }
+
+                //reader.Close();
 
                 return Value.NewString(contents);
             }
@@ -368,7 +374,7 @@ namespace Dynamo.Nodes
     }
 
     //TODO: Add UI for specifying whether should error or continue (checkbox?)
-    [NodeName("File Watcher Wait for Change")]
+    [NodeName("Watched File Wait")]
     [NodeCategory(BuiltinNodeCategories.FILES)]
     [NodeDescription("Waits for the specified watched file to change.")]
     public class dynFileWatcherWait : dynNodeWithOneOutput
@@ -408,7 +414,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reset File Watcher")]
+    [NodeName("Reset File Watch")]
     [NodeCategory(BuiltinNodeCategories.FILES)]
     [NodeDescription("Resets state of FileWatcher so that it watches again.")]
     public class dynFileWatcherReset : dynNodeWithOneOutput

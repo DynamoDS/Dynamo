@@ -44,7 +44,7 @@ namespace Dynamo.Utilities
                 newNodeName = dialog.Text;
                 newNodeCategory = dialog.Category;
 
-                if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == newNodeName))
+                if (dynSettings.Controller.CustomNodeLoader.Contains(newNodeName))
                 {
                     error = "A function with this name already exists.";
                 }
@@ -174,7 +174,7 @@ namespace Dynamo.Utilities
             /*double avgX = selectedNodeSet.Average(node => Canvas.GetLeft(node.NodeUI));
             double avgY = selectedNodeSet.Average(node => Canvas.GetTop(node.NodeUI));
 
-            double leftMost = selectedNodeSet.Min(node => Canvas.GetLeft(node.NodeUI));
+            double leftMost = selectedNodeSet.Min(node => Canvas.GetLeft(node.NodeUI)) + 24;
             double topMost = selectedNodeSet.Min(node => Canvas.GetTop(node.NodeUI));
             double rightMost = selectedNodeSet.Max(node => Canvas.GetLeft(node.NodeUI) + node.NodeUI.Width);*/
 
@@ -496,11 +496,9 @@ namespace Dynamo.Utilities
             //dynSettings.Bench.WorkBench.Children.Remove(collapsedNode.NodeUI);
 
             // save and load the definition from file
-            dynSettings.FunctionDict.Add(newNodeDefinition.FunctionId, newNodeDefinition);
             var path = dynSettings.Controller.DynamoViewModel.SaveFunctionOnly(newNodeDefinition);
-            dynSettings.FunctionDict.Remove(newNodeDefinition.FunctionId);
-
-            dynSettings.Controller.DynamoViewModel.OpenDefinition(path);
+            dynSettings.Controller.CustomNodeLoader.SetNodeInfo(newNodeName, newNodeCategory, newNodeDefinition.FunctionId, path);
+            dynSettings.Controller.SearchViewModel.Add(newNodeName, newNodeCategory, newNodeDefinition.FunctionId);
 
             dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
                 {

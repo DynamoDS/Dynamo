@@ -581,7 +581,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("De-Cons")]
+    [NodeName("Split Pair")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Deconstructs a list pair.")]
     public class dynDeCons : dynNode
@@ -604,7 +604,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Cons")]
+    [NodeName("Make Pair")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Constructs a list pair.")]
     public class dynList : dynBuiltinFunction
@@ -620,7 +620,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Take")]
+    [NodeName("Take From List")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Takes elements from a list")]
     public class dynTakeList : dynBuiltinFunction
@@ -636,7 +636,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Drop")]
+    [NodeName("Drop From List")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Drops elements from a list")]
     public class dynDropList : dynBuiltinFunction
@@ -652,7 +652,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get")]
+    [NodeName("Get From List")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Gets an element from a list at a specified index.")]
     public class dynGetFromList : dynBuiltinFunction
@@ -668,7 +668,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Empty")]
+    [NodeName("Empty List")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("An empty list")]
     [IsInteractive(false)]
@@ -708,7 +708,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Is Empty?")]
+    [NodeName("Is Empty List?")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Checks to see if the given list is empty.")]
     public class dynIsEmpty : dynBuiltinFunction
@@ -723,7 +723,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Length")]
+    [NodeName("List Length")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Gets the length of a list")]
     [NodeSearchTags("count")]
@@ -739,7 +739,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Append")]
+    [NodeName("Append to List")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Appends two list")]
     public class dynAppend : dynBuiltinFunction
@@ -755,7 +755,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("First")]
+    [NodeName("First in List")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Gets the first element of a list")]
     public class dynFirst : dynBuiltinFunction
@@ -770,7 +770,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Rest")]
+    [NodeName("List Rest")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Gets the list with the first element removed.")]
     public class dynRest : dynBuiltinFunction
@@ -802,49 +802,45 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
-        {
-            NodeUI.nickNameBlock.FontSize = 20;
-        }
     }
 
-    [NodeName("<")]
+    [NodeName("Less Than")]
     [NodeCategory(BuiltinNodeCategories.COMPARISON)]
     [NodeDescription("Compares two numbers.")]
-    [NodeSearchTags("less", "than")]
+    [NodeSearchTags("less", "than", "<")]
     public class dynLessThan : dynComparison
     {
         public dynLessThan() : base("<") { }
     }
 
-    [NodeName("≤")]
+    [NodeName("Less Than Or Equal")]
     [NodeCategory(BuiltinNodeCategories.COMPARISON)]
     [NodeDescription("Compares two numbers.")]
-    [NodeSearchTags("<=", "less", "than", "equal")]
+    [NodeSearchTags("<=")]
     public class dynLessThanEquals : dynComparison
     {
         public dynLessThanEquals() : base("<=", "≤") { }
     }
 
-    [NodeName(">")]
+    [NodeName("Greater Than")]
     [NodeCategory(BuiltinNodeCategories.COMPARISON)]
     [NodeDescription("Compares two numbers.")]
-    [NodeSearchTags("greater", "than")]
+    [NodeSearchTags(">")]
     public class dynGreaterThan : dynComparison
     {
         public dynGreaterThan() : base(">") { }
     }
 
-    [NodeName("≥")]
+    [NodeName("Greater Than Or Equal")]
     [NodeCategory(BuiltinNodeCategories.COMPARISON)]
     [NodeDescription("Compares two numbers.")]
-    [NodeSearchTags(">=", "greater", "than", "equal")]
+    [NodeSearchTags(">=", "Greater Than Or Equal")]
     public class dynGreaterThanEquals : dynComparison
     {
         public dynGreaterThanEquals() : base(">=", "≥") { }
     }
 
-    [NodeName("=")]
+    [NodeName("Equal")]
     [NodeCategory(BuiltinNodeCategories.COMPARISON)]
     [NodeDescription("Compares two numbers.")]
     public class dynEqual : dynComparison
@@ -863,14 +859,9 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("a", "operand", typeof(double)));
             InPortData.Add(new PortData("b", "operand", typeof(double)));
             OutPortData.Add(new PortData("a∧b", "result", typeof(double)));
-
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
-        {
-            NodeUI.nickNameBlock.FontSize = 20;
-        }
 
         protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
@@ -944,7 +935,7 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(dynNodeUI NodeUI)
         {
-            NodeUI.nickNameBlock.FontSize = 20;
+
         }
 
         protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
@@ -1017,11 +1008,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("a⊻b", "result", typeof(bool)));
             RegisterAllPorts();
         }
-
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
-        {
-            NodeUI.nickNameBlock.FontSize = 20;
-        }
     }
 
     [NodeName("Not")]
@@ -1037,20 +1023,16 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
-        {
-            NodeUI.nickNameBlock.FontSize = 20;
-        }
     }
 
     #endregion
 
     #region Math
 
-    [NodeName("+")]
+    [NodeName("Add")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Adds two numbers.")]
-    [NodeSearchTags("plus", "addition", "sum")]
+    [NodeSearchTags("plus", "sum", "+")]
     public class dynAddition : dynBuiltinFunction
     {
         public dynAddition()
@@ -1062,16 +1044,12 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
-        {
-            NodeUI.nickNameBlock.FontSize = 20;
-        }
     }
 
-    [NodeName("−")]
+    [NodeName("Subtract")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Subtracts two numbers.")]
-    [NodeSearchTags("subtraction", "minus", "difference", "-")]
+    [NodeSearchTags("minus", "difference", "-")]
     public class dynSubtraction : dynBuiltinFunction
     {
         public dynSubtraction()
@@ -1082,17 +1060,12 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("x-y", "difference", typeof(double)));
             RegisterAllPorts();
         }
-
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
-        {
-            NodeUI.nickNameBlock.FontSize = 20;
-        }
     }
 
-    [NodeName("×")]
+    [NodeName("Multiply")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Multiplies two numbers.")]
-    [NodeSearchTags("times", "multiply", "multiplication", "product", "*", "x")]
+    [NodeSearchTags("times", "product", "*")]
     public class dynMultiplication : dynBuiltinFunction
     {
         public dynMultiplication()
@@ -1104,16 +1077,12 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
-        {
-            NodeUI.nickNameBlock.FontSize = 20;
-        }
     }
 
-    [NodeName("÷")]
+    [NodeName("Divide")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Divides two numbers.")]
-    [NodeSearchTags("divide", "division", "quotient", "/")]
+    [NodeSearchTags("division", "quotient", "/")]
     public class dynDivision : dynBuiltinFunction
     {
         public dynDivision()
@@ -1125,16 +1094,12 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
-        {
-            NodeUI.nickNameBlock.FontSize = 20;
-        }
     }
 
-    [NodeName("Mod")]
+    [NodeName("Modulo")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Remainder of division of two numbers.")]
-    [NodeSearchTags("%", "modulo", "remainder")]
+    [NodeSearchTags("%", "remainder")]
     public class dynModulo : dynBuiltinFunction
     {
         public dynModulo()
@@ -1148,10 +1113,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Pow")]
+    [NodeName("Power")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Raises a number to the power of another.")]
-    [NodeSearchTags("power", "exponentiation", "^")]
+    [NodeSearchTags("pow", "exponentiation", "^")]
     public class dynPow : dynBuiltinFunction
     {
         public dynPow()
@@ -1258,10 +1223,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("π")]
+    [NodeName("Pi")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Pi constant")]
-    [NodeSearchTags("pi", "trigonometry", "circle")]
+    [NodeSearchTags("trigonometry", "circle", "π")]
     [IsInteractive(false)]
     public class dynPi : dynNode
     {
@@ -1269,11 +1234,6 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("3.14159...", "pi", typeof(double)));
             RegisterAllPorts();
-        }
-
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
-        {
-            NodeUI.nickNameBlock.FontSize = 20;
         }
 
         public override bool RequiresRecalc
@@ -1563,11 +1523,6 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("false", "False block", typeof(object)));
             OutPortData.Add(new PortData("result", "Result", typeof(object)));
             RegisterAllPorts();
-        }
-
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
-        {
-            NodeUI.nickNameBlock.FontSize = 20;
         }
 
         protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
@@ -1986,6 +1941,10 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(dynNodeUI NodeUI)
         {
+
+            NodeUI.topControl.Width = 80;
+            NodeUI.topControl.Height = 40;
+
             //add a text box to the input grid of the control
             tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -1994,8 +1953,14 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = true;
+            tb.Margin = new Thickness(5);
+            tb.Padding = new Thickness(3);
+            tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             tb.Text = "0.0";
-            tb.OnChangeCommitted += delegate { Value = DeserializeValue(tb.Text); };
+            tb.OnChangeCommitted += delegate { 
+                Value = DeserializeValue(tb.Text);
+                dynSettings.ReturnFocusToSearch();
+            };
 
             //take out the left and right margins
             //and make this so it's not so wide
@@ -2039,10 +2004,9 @@ namespace Dynamo.Nodes
 
     }
 
-    //MDJ - added by Matt Jezyk 10.27.2011
     [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
-    [NodeDescription("Creates a number, but using SLIDERS!.")]
+    [NodeDescription("Change a number value with a slider.")]
     public class dynDoubleSliderInput : dynDouble
     {
         Slider tb_slider;
@@ -2057,7 +2021,9 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(dynNodeUI NodeUI)
         {
-            NodeUI.topControl.Width = 200;
+
+            NodeUI.topControl.Width = 240;
+            NodeUI.topControl.Height = 40;
 
             //add a slider control to the input grid of the control
             tb_slider = new System.Windows.Controls.Slider();
@@ -2095,7 +2061,7 @@ namespace Dynamo.Nodes
                 if (NodeUI.elementCanvas.Children.Contains(displayBox))
                     NodeUI.elementCanvas.Children.Remove(displayBox);
 
-                dynSettings.Bench.mainGrid.Focus();
+                dynSettings.ReturnFocusToSearch();
             };
 
             mintb = new dynTextBox();
@@ -2105,6 +2071,9 @@ namespace Dynamo.Nodes
             mintb.Width = double.NaN;
             mintb.IsNumeric = true;
             mintb.Text = "0";
+            mintb.Margin = new Thickness(5);
+            mintb.Padding = new Thickness(3);
+            mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             mintb.OnChangeCommitted += delegate
             {
                 try
@@ -2115,6 +2084,7 @@ namespace Dynamo.Nodes
                 {
                     tb_slider.Minimum = 0;
                 }
+                dynSettings.ReturnFocusToSearch();
             };
             //mintb.Pending = false;
 
@@ -2125,6 +2095,8 @@ namespace Dynamo.Nodes
             maxtb.Width = double.NaN;
             maxtb.IsNumeric = true;
             maxtb.Text = "100";
+            maxtb.Padding = new Thickness(3);
+            maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             maxtb.OnChangeCommitted += delegate
             {
                 try
@@ -2135,6 +2107,7 @@ namespace Dynamo.Nodes
                 {
                     tb_slider.Maximum = 0;
                 }
+                dynSettings.ReturnFocusToSearch();
             };
             //maxtb.Pending = false;
 
@@ -2260,7 +2233,11 @@ namespace Dynamo.Nodes
             }
         }
 
+
+
     }
+
+ 
 
     [NodeName("Boolean")]
     [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
@@ -2349,11 +2326,13 @@ namespace Dynamo.Nodes
         void rbFalse_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
             Value = false;
+            dynSettings.ReturnFocusToSearch();
         }
 
         void rbTrue_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
             Value = true;
+            dynSettings.ReturnFocusToSearch();
         }
     }
 
@@ -2376,6 +2355,7 @@ namespace Dynamo.Nodes
             //add a text box to the input grid of the control
             tb = new dynTextBox();
             //tb = new TextBlock();
+
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             NodeUI.inputGrid.Children.Add(tb);
@@ -2383,7 +2363,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.Text = "";
 
-            tb.OnChangeCommitted += delegate { Value = tb.Text; };
+            tb.OnChangeCommitted += delegate { Value = tb.Text; dynSettings.ReturnFocusToSearch(); };
 
             //remove the margins
             NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
@@ -2398,7 +2378,7 @@ namespace Dynamo.Nodes
 
                 base.Value = value;
 
-                tb.Text = Utilities.Ellipsis(Value, 30);
+                //tb.Text = Utilities.Ellipsis(Value, 30);
             }
         }
 
@@ -2479,7 +2459,7 @@ namespace Dynamo.Nodes
             tb.BorderThickness = new Thickness(0);
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
-            tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); };
+            tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); dynSettings.ReturnFocusToSearch(); };
 
             //NodeUI.SetRowAmount(2);
             NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
@@ -2551,7 +2531,7 @@ namespace Dynamo.Nodes
 
     #region Strings and Conversions
 
-    [NodeName("Concatenate Strings")]
+    [NodeName("Concat Strings")]
     [NodeDescription("Concatenates two or more strings")]
     [NodeCategory(BuiltinNodeCategories.STRINGS)]
     public class dynConcatStrings : dynVariableInput
@@ -2623,7 +2603,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("String -> Number")]
+    [NodeName("String to Number")]
     [NodeDescription("Converts a string to a number")]
     [NodeCategory(BuiltinNodeCategories.STRINGS)]
     public class dynString2Num : dynBuiltinFunction
@@ -2638,7 +2618,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Number -> String")]
+    [NodeName("Number to String")]
     [NodeDescription("Converts a number to a string")]
     [NodeCategory(BuiltinNodeCategories.STRINGS)]
     public class dynNum2String : dynBuiltinFunction

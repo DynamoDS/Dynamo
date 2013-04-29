@@ -32,7 +32,7 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Family Type Selector")]
+    [NodeName("Select Fam")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Select a Family Type from a drop down list.")]
     [IsInteractive(true)]
@@ -122,7 +122,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Family Instance Parameter Selector")]
+    [NodeName("Select Fam Inst Param")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a paramter as a string.")]
     [IsInteractive(true)]
@@ -696,7 +696,7 @@ namespace Dynamo.Nodes
 
     #endregion
 
-    [NodeName("Family Instance Creator")]
+    [NodeName("Create Fam Inst")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates family instances at a given XYZ location.")]
     public class dynFamilyInstanceCreatorXYZ : dynRevitTransactionNodeWithOneOutput
@@ -806,7 +806,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Family Instance By Level Creator")]
+    [NodeName("Create Fam Inst By Level")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates family instances in the given level.")]
     public class dynFamilyInstanceCreatorLevel : dynRevitTransactionNodeWithOneOutput
@@ -924,7 +924,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curves from Family")]
+    [NodeName("Curves from Fam")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Extracts curves from family instances.")]
     public class dynCurvesFromFamilyInstance : dynRevitTransactionNodeWithOneOutput
@@ -1120,7 +1120,7 @@ namespace Dynamo.Nodes
     }
 
     //TODO: In Destroy(), have code that resets Elements back to their default.
-    [NodeName("Set Instance Parameter")]
+    [NodeName("Set Fam Inst Param")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Modifies a parameter on a family instance.")]
     public class dynFamilyInstanceParameterSetter : dynRevitTransactionNodeWithOneOutput
@@ -1244,7 +1244,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get Instance Parameter")]
+    [NodeName("Get Fam Inst Param")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Fetches the value of a parameter of a Family Instance.")]
     public class dynFamilyInstanceParameterGetter : dynRevitTransactionNodeWithOneOutput
@@ -1359,7 +1359,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Set Type Parameter")]
+    [NodeName("Set Fam Type Param")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Modifies a parameter on a family type.")]
     public class dynFamilyTypeParameterSetter : dynRevitTransactionNodeWithOneOutput
@@ -1483,7 +1483,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get Type Parameter")]
+    [NodeName("Get Fam Type Param")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Fetches the value of a parameter of a Family Type.")]
     public class dynFamilyTypeParameterGetter : dynRevitTransactionNodeWithOneOutput

@@ -203,6 +203,7 @@ namespace Dynamo.Applications
 
         private void dynamoForm_Closed(object sender, EventArgs e)
         {
+            IdlePromise.ClearPromises();
             dynamoBench = null;
         }
 

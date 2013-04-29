@@ -19,10 +19,11 @@
 Source="..\Images\search_24.png" Opacity="1">
         </Image>
 
-        <TextBox Name="SearchTextBox" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,15,5,10" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Width="188" Text="{Binding Path=SearchText,Mode=TwoWay}" />
+            <TextBox Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,15,5,10" Margin ="0"
+                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Width="188" Text="{Binding Path=SearchText,Mode=TwoWay}">
+            </TextBox>
 
-        <Button Name="BackButton" Margin="1, 0, 1, 0" Width="42" FontSize="24" Foreground="White" ToolTip="Go Back" 
+            <Button Name="BackButton" Margin="1, 0, 1, 0" Width="42" FontSize="24" Foreground="White" ToolTip="Go Back" 
                       Style="{DynamicResource ResourceKey=SImageButton}" Click="Back_Click" Tag="..\Images\back_24.png"/>
 
         <Button Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include extended Revit API" 
@@ -46,32 +47,35 @@ Source="..\Images\search_24.png" Opacity="1">
 
       </StackPanel>
 
-      <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="RSearchResultsScrollView" VerticalAlignment="Stretch" 
+      <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="RSearchResultsScrollView" VerticalAlignment="Stretch" Focusable="False"
                       VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Row="1">
 
-        <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" BorderThickness="0" Padding="0" Background="Black" SelectedIndex="{Binding Path=SelectedIndex}">
+            <ScrollViewer.Resources>
 
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Style.Resources>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                     Color="#FFF"/>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                     Color="#FFF" />
-                              
-              </Style.Resources>
+                <Style x:Key="myLBStyle" TargetType="ListBoxItem">
 
-              <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFF"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FFF" />
+                    </Style.Resources>
 
-            </Style>
+                    <Style.Setters>
+                        <Setter Property="Focusable" Value="False" />
+                        <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
+                        <EventSetter Event="MouseLeftButtonUp" Handler="ListBoxItem_Click"/>
+                    </Style.Setters>
 
-          </ListBox.ItemContainerStyle>
+                </Style>
 
-          <ListBox.ItemTemplate >
+            </ScrollViewer.Resources>
+
+            <ListBox Name="SearchResultsListBox" Focusable="False" ItemContainerStyle="{StaticResource myLBStyle}" ItemsSource="{Binding Path=SearchResults}" BorderThickness="0" Padding="0" Background="Black" SelectedIndex="{Binding Path=SelectedIndex}">
+
+                <ListBox.ItemTemplate >
 
             <DataTemplate>
 
-              <Grid Width ="279" Name="SearchEle" VerticalAlignment="Stretch" HorizontalAlignment="Left" Background="#CC000000">
+                <Grid Width ="279" Name="SearchEle" VerticalAlignment="Stretch" HorizontalAlignment="Left" Background="#CC000000">
 
                 <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" MaxWidth="200" Foreground="AliceBlue" Padding="10,5,0,10"/>
                 <TextBlock FontSize="11" Name="description" Visibility="Collapsed" HorizontalAlignment="Left" MaxWidth="260" TextWrapping ="Wrap" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 30, 0, 10" />
@@ -105,7 +109,15 @@ Source="..\Images\search_24.png" Opacity="1">
                     <Setter Property="Foreground" Value="#FF7CFC00" TargetName="type" />
                   </DataTrigger.Setters>
                 </DataTrigger>
-
+                
+                <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Command">
+                    <DataTrigger.Setters>
+                        <Setter Property="Visibility" Value="Visible" TargetName="description" />
+                        <Setter Property="Background" Value="#DD29001F" TargetName="SearchEle" />
+                        <Setter Property="Foreground" Value="#FFD633AD" TargetName="type" />
+                    </DataTrigger.Setters>
+                </DataTrigger>
+                  
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Category">
                   <DataTrigger.Setters>
                     <Setter Property="Padding" Value="10, 5, 75, 0" TargetName="description" />

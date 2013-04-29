@@ -122,12 +122,12 @@ namespace Dynamo.Utilities
     {
         static HashSet<ElementId> userSelectedElements = new HashSet<ElementId>();
 
-        public static Element SpatialFieldManagerUpdated { get; internal set; }
-        public static UIApplication Revit { get; internal set; }
-        public static UIDocument Doc { get; internal set; }
-        public static Level DefaultLevel { get; internal set; }
-        public static DynamoWarningSwallower WarningSwallower { get; internal set; }
-        public static Transaction MainTransaction { get; internal set; }
+        public static Element SpatialFieldManagerUpdated { get; set; }
+        public static UIApplication Revit { get; set; }
+        public static UIDocument Doc { get; set; }
+        public static Level DefaultLevel { get; set; }
+        public static DynamoWarningSwallower WarningSwallower { get; set; }
+        public static Transaction MainTransaction { get; set; }
 
         private static Autodesk.Revit.DB.Options geometryOptions;
         public static Autodesk.Revit.DB.Options GeometryOptions

@@ -153,9 +153,8 @@ namespace Dynamo
                     root.SetAttribute("Name", workSpace.Name);
                     root.SetAttribute("Category", ((FuncWorkspace)workSpace).Category);
                     root.SetAttribute(
-                            "ID",
-                            dynSettings.FunctionDict.Values
-                                       .First(x => x.Workspace == workSpace).FunctionId.ToString());
+                            "ID", 
+                            dynSettings.Controller.CustomNodeLoader.GetGuidFromName(workSpace.Name).ToString());
                 }
 
                 xmlDoc.AppendChild(root);
@@ -268,7 +267,7 @@ namespace Dynamo
             base.Modified();
 
             dynSettings.Controller.DynamoViewModel.SaveFunction(
-                dynSettings.FunctionDict.Values.First(x => x.Workspace == this));
+                dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(this));
         }
 
         public override void OnDisplayed()
@@ -310,11 +309,12 @@ namespace Dynamo
         {
             if (!initializedFunctionDefinition)
             {
-                var homeGuid = Guid.Parse("32AAC852-90A7-4FBD-B78A-8FDB69302670");
-                var homeWorkspaceFuncDef = new FunctionDefinition();
-                homeWorkspaceFuncDef.Workspace = this;
-                dynSettings.FunctionDict.Add(homeGuid, homeWorkspaceFuncDef);
-                initializedFunctionDefinition = true;
+                // todo: this is a special case
+                //var homeGuid = Guid.Parse("32AAC852-90A7-4FBD-B78A-8FDB69302670");
+                //var homeWorkspaceFuncDef = new FunctionDefinition();
+                //homeWorkspaceFuncDef.Workspace = this;
+                //dynSettings.FunctionDict.Add(homeGuid, homeWorkspaceFuncDef);
+                //initializedFunctionDefinition = true;
             }
         }
 

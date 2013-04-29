@@ -26,19 +26,24 @@ using System.Collections.Specialized;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
+using System.Windows.Input;
 
 namespace Dynamo.Utilities
 {
     public static class dynSettings
     {
-        public static ObservableDictionary<Guid, FunctionDefinition> FunctionDict =
-            new ObservableDictionary<Guid, FunctionDefinition>();
-
         public static HashSet<FunctionDefinition> FunctionWasEvaluated =
             new HashSet<FunctionDefinition>();
 
         static dynSettings()
         {
+        }
+
+        public static ObservableDictionary<string, Guid> CustomNodes {
+            get
+            {
+                return dynSettings.Controller.CustomNodeLoader.NodeNames;
+            }
         }
 
         public static Dynamo.Controls.DragCanvas Workbench { get; internal set; }
@@ -57,6 +62,15 @@ namespace Dynamo.Utilities
                 filename,
                 new[] { "\\", "/", ":", "*", "?", "\"", "<", ">", "|" }
                 );
+        }
+
+        public static void ReturnFocusToSearch() {
+            
+            if ( Dynamo.Commands.ShowSearchCommand.search != null)
+            {
+                Keyboard.Focus(Dynamo.Commands.ShowSearchCommand.search.SearchTextBox );
+            }
+
         }
 
         public static string RemoveChars(string s, IEnumerable<string> chars)

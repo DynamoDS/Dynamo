@@ -14,24 +14,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Selection;
-using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Controls
 {
@@ -278,7 +271,7 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            Focus();
+            //Focus();
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseEventArgs e)
@@ -383,50 +376,6 @@ namespace Dynamo.Controls
             }
         }
 
-        //internal void BeginDragElement(dynNodeUI nodeUI, string name, Point eleOffset)
-        //{
-        //    if (UILocked)
-        //        return;
-
-        //    draggedElementMenuItem = nodeUI;
-
-        //    Point pos = Mouse.GetPosition(overlayCanvas);
-
-        //    double x = pos.X;
-        //    double y = pos.Y;
-
-        //    dragOffset = eleOffset;
-
-        //    dynNode newEl;
-        //    try
-        //    {
-        //        newEl = Controller.CreateNode(name);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Log(e);
-        //        return;
-        //    }
-
-        //    newEl.NodeUI.GUID = Guid.NewGuid();
-
-        //    //Add the element to the workbench
-        //    overlayCanvas.Children.Add(newEl.NodeUI);
-
-        //    newEl.NodeUI.Opacity = 0.7;
-
-        //    x -= eleOffset.X;
-        //    y -= eleOffset.Y;
-
-        //    //Set its initial position
-        //    Canvas.SetLeft(newEl.NodeUI, x);
-        //    Canvas.SetTop(newEl.NodeUI, y);
-
-        //    draggedNode = newEl.NodeUI;
-
-        //    overlayCanvas.IsHitTestVisible = true;
-        //}
-
         private void WindowClosed(object sender, EventArgs e)
         {
             //if (sw != null)
@@ -444,52 +393,11 @@ namespace Dynamo.Controls
             //dynSettings.MainTransaction.Commit();
 
             vm.ExitCommand.Execute();
+
         }
 
         private void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            //handle key presses for the bench in the bubbling event
-            //if no other element has already handled this event it will 
-            //start at the bench and move up to root, not raising the event
-            //on any other elements
-
-            IInputElement focusElement = FocusManager.GetFocusedElement(this);
-
-            if (focusElement != null &&
-                focusElement.GetType() != typeof (TextBox) &&
-                focusElement.GetType() != typeof (dynTextBox) &&
-                !Keyboard.IsKeyDown(Key.LeftCtrl) &&
-                !Keyboard.IsKeyDown(Key.RightCtrl) &&
-                !Keyboard.IsKeyDown(Key.LeftShift) &&
-                !Keyboard.IsKeyDown(Key.RightShift))
-            {
-                double x = 0;
-                double y = 0;
-
-                if (Keyboard.IsKeyDown(Key.Left))
-                {
-                    x = 20;
-                    e.Handled = true;
-                }
-                if (Keyboard.IsKeyDown(Key.Right))
-                {
-                    x = -20;
-                    e.Handled = true;
-                }
-                if (Keyboard.IsKeyDown(Key.Up))
-                {
-                    y = 20;
-                    e.Handled = true;
-                }
-                if (Keyboard.IsKeyDown(Key.Down))
-                {
-                    y = -20;
-                    e.Handled = true;
-                }
-
-                zoomBorder.IncrementTranslateOrigin(x, y);
-            }
-
             if (editingName)
             {
                 if (Keyboard.IsKeyDown(Key.Enter))
@@ -532,7 +440,7 @@ namespace Dynamo.Controls
         private void image1_MouseEnter(object sender, MouseEventArgs e)
         {
             //highlight
-            this.WorkspaceNameContainer.Background = new SolidColorBrush(Colors.LightBlue);
+            this.WorkspaceTitleContainer.Background = new SolidColorBrush(Colors.LightBlue);
             if (beginNameEditClick && e.LeftButton == MouseButtonState.Released)
             {
                 beginNameEditClick = false;
@@ -542,7 +450,7 @@ namespace Dynamo.Controls
         private void image1_MouseLeave(object sender, MouseEventArgs e)
         {
             //unhighlight
-            this.WorkspaceNameContainer.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
+            this.WorkspaceTitleContainer.Background = new SolidColorBrush(Colors.Transparent);
         }
 
         private void image1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -570,7 +478,7 @@ namespace Dynamo.Controls
             beginNameEditClick = true;
         }
 
-        private void EnableEditNameBox()
+        public void EnableEditNameBox()
         {
             workspaceLabel.Visibility = Visibility.Collapsed;
 
@@ -586,7 +494,7 @@ namespace Dynamo.Controls
             editingName = true;
         }
 
-        private void DisableEditNameBox()
+        public void DisableEditNameBox()
         {
             editNameBox.Visibility = Visibility.Collapsed;
             editNameBox.IsEnabled = false;
@@ -681,7 +589,6 @@ namespace Dynamo.Controls
         private void _this_Loaded(object sender, RoutedEventArgs e)
         {
             DrawGrid();
-            mainGrid.Focus();
         }
 
         private void LogScroller_OnSourceUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)

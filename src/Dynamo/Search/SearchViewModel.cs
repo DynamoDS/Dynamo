@@ -1,17 +1,4 @@
-﻿//Copyright © Autodesk, Inc. 2012. All rights reserved.
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//http://www.apache.org/licenses/LICENSE-2.0
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -21,12 +8,11 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Commands;
 using Dynamo.Nodes;
+using Dynamo.Search.Regions;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
-using System;
-using Dynamo.Search.Regions;
 
 namespace Dynamo.Search
 {
@@ -44,11 +30,7 @@ namespace Dynamo.Search
         ///     Specifies different regions to search over.  The command toggles whether searching
         ///     over that field or not.
         /// </value>
-        public ObservableDictionary<string, RegionBase> Regions
-        {
-            get;
-            set;
-        }
+        public ObservableDictionary<string, RegionBase> Regions { get; set; }
 
         /// <summary>
         ///     IncludeOptionalElements property
@@ -57,6 +39,7 @@ namespace Dynamo.Search
         ///     Specifies whether we are including Revit API elements in search.
         /// </value>
         public bool _IncludeOptionalElements;
+
         public bool IncludeOptionalElements
         {
             get { return _IncludeOptionalElements; }
@@ -75,6 +58,7 @@ namespace Dynamo.Search
         ///     This is the core UI for Dynamo, primarily used for logging.
         /// </value>
         public string _SearchText;
+
         public string SearchText
         {
             get { return _SearchText; }
@@ -82,7 +66,7 @@ namespace Dynamo.Search
             {
                 _SearchText = value;
                 RaisePropertyChanged("SearchText");
-                DynamoCommands.SearchCmd.Execute(null);
+                DynamoCommands.Search.Execute(null);
             }
         }
 
@@ -93,6 +77,7 @@ namespace Dynamo.Search
         ///     This is the currently selected element in the UI.
         /// </value>
         private int _selectedIndex;
+
         public int SelectedIndex
         {
             get { return _selectedIndex; }
@@ -115,10 +100,7 @@ namespace Dynamo.Search
         /// </value>
         public IEnumerable<string> Categories
         {
-            get
-            {
-                return NodeCategories.Keys;
-            }
+            get { return NodeCategories.Keys; }
         }
 
         /// <summary>
@@ -133,7 +115,7 @@ namespace Dynamo.Search
         ///     RevitApiSearchElements property
         /// </summary>
         /// <value>
-        ///     A collection of elements corresponding to the auto-generated Revit 
+        ///     A collection of elements corresponding to the auto-generated Revit
         ///     API elements
         /// </value>
         public List<SearchElementBase> RevitApiSearchElements { get; private set; }
@@ -145,6 +127,7 @@ namespace Dynamo.Search
         ///     Tells whether the View is visible or not
         /// </value>
         private Visibility _visible;
+
         public Visibility Visible
         {
             get { return _visible; }
@@ -197,9 +180,10 @@ namespace Dynamo.Search
             _SearchText = "";
             IncludeOptionalElements = false; // revit api
             Regions = new ObservableDictionary<string, RegionBase>();
-            Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
-            Regions.Add("Include Nodes from the Revit API", new RevitAPIRegion());
+            //Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
+            Regions.Add("Include Experimental Revit API Nodes", new RevitAPIRegion());
             AddHomeToSearch();
+            AddCommandElements();
         }
 
         /// <summary>
@@ -209,7 +193,7 @@ namespace Dynamo.Search
         {
             SearchDictionary.Add(new WorkspaceSearchElement("Home", "Navigate to Home Workspace"), "Home");
         }
-        
+
         /// <summary>
         ///     Asyncrhonously erforms a search and updates the observable SearchResults property.
         /// </summary>
@@ -221,22 +205,33 @@ namespace Dynamo.Search
 
             Task<IEnumerable<SearchElementBase>>.Factory.StartNew(() =>
                 {
-                    lock (SearchDictionary) 
+                    lock (SearchDictionary)
                     {
                         return Search(query);
                     }
-                }).ContinueWith((t) => {    
-                                            lock (SearchResults)
-                                            {
-                                                SearchResults.Clear();
-                                                foreach (SearchElementBase node in t.Result)
-                                                {
-                                                    SearchResults.Add(node);
-                                                }
-                                                SelectedIndex = 0;
-                                            }
-                                        }
+                }).ContinueWith((t) =>
+                    {
+                        lock (SearchResults)
+                        {
+                            SearchResults.Clear();
+                            foreach (var node in t.Result)
+                            {
+                                SearchResults.Add(node);
+                            }
+                            SelectedIndex = 0;
+                        }
+                    }
                                 , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
+        }
+
+
+        /// <summary>
+        ///     Synchronously performs a search using the current SearchText
+        /// </summary>
+        /// <param name="query"> The search query </param>
+        internal void SearchAndUpdateResultsSync()
+        {
+            SearchAndUpdateResultsSync(SearchText);
         }
 
         /// <summary>
@@ -251,11 +246,44 @@ namespace Dynamo.Search
 
             var result = Search(query);
             SearchResults.Clear();
-            foreach (SearchElementBase node in result)
+            foreach (var node in result)
             {
                 SearchResults.Add(node);
             }
             SelectedIndex = 0;
+        }
+
+        /// <summary>
+        ///     Add command elements to search
+        /// </summary>
+        internal void AddCommandElements()
+        {
+            SearchDictionary.Add(new CommandElement("Note", "Add a note to the canvas", new List<string> {"doc"},
+                                                    dynSettings.Controller.DynamoViewModel.AddNoteCommand), "Note");
+            SearchDictionary.Add(new CommandElement("ToggleConsoleVisibility", "Toggle the visibility of the console",
+                                                    new List<string> {"console", "view"},
+                                                    dynSettings.Controller.DynamoViewModel.ToggleConsoleShowingCommand),
+                                 "ToggleConsoleVisibility");
+            SearchDictionary.Add(new CommandElement("Open", "Open a document...", new List<string>(),
+                                                    dynSettings.Controller.DynamoViewModel
+                                                               .ShowOpenDialogAndOpenResultCommand), "Open");
+            SearchDictionary.Add(
+                new CommandElement("Save", "Save the current document", new List<string>(),
+                                   dynSettings.Controller.DynamoViewModel.ShowSaveDialogIfNeededAndSaveResultCommand),
+                "Save");
+            SearchDictionary.Add(
+                new CommandElement("SaveAs", "Save the current document as...", new List<string>(),
+                                   dynSettings.Controller.DynamoViewModel.ShowSaveDialogAndSaveResultCommand), "SaveAs");
+            SearchDictionary.Add(
+                new CommandElement("SaveImage", "Save the current workspace as an image...", new List<string>(),
+                                   dynSettings.Controller.DynamoViewModel.ShowSaveImageDialogueAndSaveResultCommand),
+                "SaveImage");
+            SearchDictionary.Add(
+                new CommandElement("ClearWorkspace", "Clear the current workspace", new List<string>(),
+                                   dynSettings.Controller.DynamoViewModel.ClearCommand), "ClearWorkspace");
+            SearchDictionary.Add(
+                new CommandElement("Exit", "Exit the application", new List<string>(),
+                                   dynSettings.Controller.DynamoViewModel.ExitCommand), "Exit");
         }
 
         /// <summary>
@@ -303,7 +331,11 @@ namespace Dynamo.Search
                 if (IncludeOptionalElements)
                     return NodeCategories.Select(kvp => (SearchElementBase) kvp.Value).OrderBy(val => val.Name).ToList();
                 else
-                    return NodeCategories.Select(kvp => (SearchElementBase) kvp.Value).Where((ele) => !ele.Name.StartsWith("Revit API")).OrderBy(val => val.Name).ToList();
+                    return
+                        NodeCategories.Select(kvp => (SearchElementBase) kvp.Value)
+                                      .Where((ele) => !ele.Name.StartsWith("Revit API"))
+                                      .OrderBy(val => val.Name)
+                                      .ToList();
             }
 
             return SearchDictionary.Search(search, MaxNumSearchResults);
@@ -324,17 +356,17 @@ namespace Dynamo.Search
             {
                 PopulateSearchTextWithSelectedResult();
             }
-            //else if (e.Key == Key.Back)
-            //{
-            //    RemoveLastPartOfSearchText();
-            //}
+                //else if (e.Key == Key.Back)
+                //{
+                //    RemoveLastPartOfSearchText();
+                //}
             else if (e.Key == Key.Down)
             {
-                SelectNext(); 
+                SelectNext();
             }
             else if (e.Key == Key.Up)
             {
-                SelectPrevious(); 
+                SelectPrevious();
             }
         }
 
@@ -360,15 +392,15 @@ namespace Dynamo.Search
                 {
                     SearchDictionary.Add(ele, ele.Name);
                     if (!(ele is CategorySearchElement))
-                        SearchDictionary.Add(ele, "Revit API." + ele.Name); 
+                        SearchDictionary.Add(ele, "Revit API." + ele.Name);
                 }
             }
-            this.SearchAndUpdateResults();
+            SearchAndUpdateResults();
         }
 
         /// <summary>
-        ///     If there's a period in the SearchText property, remove text 
-        ///     to the end until you hit a period.  Otherwise, remove the 
+        ///     If there's a period in the SearchText property, remove text
+        ///     to the end until you hit a period.  Otherwise, remove the
         ///     last character.  If the SearchText property is empty or null
         ///     return doing nothing.
         /// </summary>
@@ -378,8 +410,8 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     If there's a period in the argument, remove text 
-        ///     to the end until you hit a period.  Otherwise, remove the 
+        ///     If there's a period in the argument, remove text
+        ///     to the end until you hit a period.  Otherwise, remove the
         ///     last character.  If the argument is empty or null
         ///     return the empty string.
         /// </summary>
@@ -398,13 +430,13 @@ namespace Dynamo.Search
             }
 
             // if period is in last position, remove that period and recurse
-            if ( matches[matches.Count - 1].Index + 1 == text.Length )
+            if (matches[matches.Count - 1].Index + 1 == text.Length)
             {
                 return RemoveLastPartOfText(text.Substring(0, text.Length - 1));
             }
 
             // remove to the last period
-            return text.Substring(0, matches[matches.Count-1].Index + 2);
+            return text.Substring(0, matches[matches.Count - 1].Index + 2);
         }
 
         /// <summary>
@@ -471,8 +503,9 @@ namespace Dynamo.Search
                 return;
 
             // create the workspace in search
-            var searchEle = new WorkspaceSearchElement(name, "Go to " + name );
-            searchEle.Guid = dynSettings.FunctionDict.First(x => x.Value.Workspace == workspace).Key;
+            var searchEle = new WorkspaceSearchElement(name, "Go to " + name);
+            var funcDef = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(workspace);
+            searchEle.Guid = funcDef.FunctionId;
 
             if (searchEle.Guid == Guid.Empty)
                 return;
@@ -480,40 +513,40 @@ namespace Dynamo.Search
             SearchDictionary.Add(searchEle, searchEle.Name);
 
             // create the node in search
-            var nodeEle = new LocalSearchElement( dynSettings.FunctionDict[searchEle.Guid] );
-            SearchDictionary.Add(nodeEle, nodeEle.Name);
+            var nodeEle = new LocalSearchElement(funcDef);
+            SearchDictionary.Add(nodeEle, name);
 
             // update search
             SearchAndUpdateResultsSync(SearchText);
-            
         }
 
         /// <summary>
-        ///     Add a 
+        ///     Add a custom node to search.
         /// </summary>
         /// <param name="workspace">A dynWorkspace to add</param>
         /// <param name="name">The name to use</param>
-        public void Add(string name, Guid functionId)
+        public void Add(string name, string category, Guid functionId)
         {
             if (name == "Home")
                 return;
 
             // create the workspace in search
-            //var searchEle = new WorkspaceSearchElement(name, "Navigate to workspace called " + name);
-            //searchEle.Guid = dynSettings.FunctionDict.First(x => x.Value.Workspace == workspace).Key;
+            var workspaceEle = new WorkspaceSearchElement(name, "Navigate to workspace called " + name);
+            workspaceEle.Guid = functionId;
 
-            //if (searchEle.Guid == Guid.Empty)
-            //    return;
+            if (!NodeCategories.ContainsKey(category))
+            {
+                NodeCategories.Add(category, new CategorySearchElement(category));
+            }
 
-            //SearchDictionary.Add(searchEle, searchEle.Name);
+            NodeCategories[category].NumElements++;
+
+            SearchDictionary.Add(workspaceEle, workspaceEle.Name);
 
             // create the node in search
             var nodeEle = new LocalSearchElement(name, functionId);
             SearchDictionary.Add(nodeEle, nodeEle.Name);
-
-            // update search
-            SearchAndUpdateResultsSync(SearchText);
-
+            SearchDictionary.Add(nodeEle, category + "." + nodeEle.Name);
         }
 
         /// <summary>
@@ -523,28 +556,28 @@ namespace Dynamo.Search
         public void Add(Type t)
         {
             // get name, category, attributes 
-            object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+            var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
             var name = "";
             if (attribs.Length > 0)
             {
                 name = (attribs[0] as NodeNameAttribute).Name;
             }
 
-            attribs = t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+            attribs = t.GetCustomAttributes(typeof (NodeCategoryAttribute), false);
             var cat = "";
             if (attribs.Length > 0)
             {
                 cat = (attribs[0] as NodeCategoryAttribute).ElementCategory;
             }
 
-            attribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
+            attribs = t.GetCustomAttributes(typeof (NodeSearchTagsAttribute), false);
             var tags = new List<string>();
             if (attribs.Length > 0)
             {
                 tags = (attribs[0] as NodeSearchTagsAttribute).Tags;
             }
 
-            attribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), false);
+            attribs = t.GetCustomAttributes(typeof (NodeDescriptionAttribute), false);
             var description = "";
             if (attribs.Length > 0)
             {
@@ -593,7 +626,6 @@ namespace Dynamo.Search
                 }
                 SearchDictionary.Add(searchEle, description);
             }
-
         }
 
         /// <summary>
@@ -628,15 +660,14 @@ namespace Dynamo.Search
                         RevitApiSearchElements.Add(nameEle);
                     }
                 }
-
             }
 
             NodeCategories[cat].NumElements++;
 
             // add node to search
-            if ( (searchEle.Name.StartsWith("API_")) )
+            if ((searchEle.Name.StartsWith("API_")))
             {
-                RevitApiSearchElements.Add( searchEle );
+                RevitApiSearchElements.Add(searchEle);
             }
             else
             {
@@ -647,18 +678,17 @@ namespace Dynamo.Search
                 }
                 SearchDictionary.Add(searchEle, dynNode.Description);
             }
-                
         }
 
         /// <summary>
         ///     Rename a workspace that is currently part of the SearchDictionary
         /// </summary>
-        /// <param name="workspace">The workspace whose name must change</param>
+        /// <param name="def">The FunctionDefinition whose name must change</param>
         /// <param name="newName">The new name to assign to the workspace</param>
-        public void Refactor(dynWorkspace workspace, string newName)
+        public void Refactor(FunctionDefinition def, string oldName, string newName)
         {
-            SearchDictionary.Remove(workspace.Name);
-            Add(workspace, newName);
+            SearchDictionary.Remove((ele) => (ele).Name == oldName);
+            Add(def.Workspace, newName);
         }
     }
 }

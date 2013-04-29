@@ -768,9 +768,6 @@ namespace Dynamo.Nodes
                            Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                            dynSettings.Controller.DynamoViewModel.Log(ex);
 
-                           //dynSettings.Writer.WriteLine(ex.Message);
-                           //dynSettings.Writer.WriteLine(ex.StackTrace);
-
                            if (DynamoCommands.WriteToLogCmd.CanExecute(null))
                            {
                                DynamoCommands.WriteToLogCmd.Execute(ex.Message);
@@ -1376,14 +1373,14 @@ namespace Dynamo.Nodes
             if (entry is dynFunction)
             {
                 var symbol = Guid.Parse((entry as dynFunction).Symbol);
-                if (!dynSettings.FunctionDict.ContainsKey(symbol))
+                if (!dynSettings.Controller.CustomNodeLoader.Contains(symbol))
                 {
                     dynSettings.Controller.DynamoViewModel.Log("WARNING -- No implementation found for node: " + symbol);
                     entry.Error("Could not find .dyf definition file for this node.");
                     return false;
                 }
 
-                result = dynSettings.FunctionDict[symbol]
+                result = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(symbol)
                     .Workspace.GetTopMostNodes().Any(ContinueTraversalUntilAny);
             }
             resultDict[entry] = result;

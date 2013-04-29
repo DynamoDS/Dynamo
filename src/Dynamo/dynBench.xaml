@@ -18,7 +18,7 @@
         MinHeight="600" 
         MinWidth="800" 
         Title="Dynamo"
-        AllowsTransparency="False">
+        AllowsTransparency="False" >
 
     <Window.Resources>
         <ResourceDictionary>
@@ -54,6 +54,13 @@
         <KeyBinding Key="V"
                                 Modifiers="Control"
                                 Command="{Binding Path=PasteCommand}"/>
+
+        <KeyBinding Key="W"
+                                Modifiers="Control"
+                                Command="{Binding Path=AddNoteCommand}"/>
+        <KeyBinding Key="V"
+                                Modifiers="Control"
+                                Command="{Binding Path=PasteCommand}"/>
         <KeyBinding Key="S"
                                 Modifiers="Control"
                                 Command="{Binding Path=ShowSaveDialogIfNeededAndSaveResultCommand}"/>
@@ -82,7 +89,7 @@
 
     </Window.InputBindings>
 
-    <Grid Name="mainGrid">
+    <Grid Name="mainGrid" FocusManager.IsFocusScope="True">
         
         <Grid.RowDefinitions>
             <RowDefinition Height="22"/>
@@ -90,6 +97,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Name="consoleRow" Height="{Binding ConsoleShowing, Converter={StaticResource BoolToConsoleHeightConverter}}"/>
             <RowDefinition Height="35"/>
+
         </Grid.RowDefinitions>
         
         <Grid.ColumnDefinitions>
@@ -101,32 +109,38 @@
         <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" 
               VerticalAlignment="Center" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  Padding="3">
 
-            <MenuItem Header="_File" Name="fileMenu">
+            <MenuItem Header="_File" Name="fileMenu" Focusable="False">
 
                 <MenuItem Header="_New Custom Node..." Command="{Binding Path=ShowNewFunctionDialogCommand}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
                 </MenuItem>
 
                 <MenuItem Header="_Open..." Command="{Binding Path=ShowOpenDialogAndOpenResultCommand}" Name="openButton" InputGestureText="Ctrl+O">
+
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/openHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
+
                 <MenuItem Header="_Save" Command="{Binding Path=ShowSaveDialogIfNeededAndSaveResultCommand}" 
                           Name="saveThisButton" InputGestureText="Ctrl+S">
+
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Save As..." Command="{Binding Path=ShowSaveDialogAndSaveResultCommand}" Name="saveButton" InputGestureText="Ctrl+Shift+S">
+                <MenuItem Focusable="False" Header="_Save As..." Command="{Binding Path=ShowSaveDialogAndSaveResultCommand}" Name="saveButton" InputGestureText="Ctrl+Shift+S">
+
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Save Image..." Command="{Binding Path=ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage"/>
+
+                <MenuItem Focusable="False" Header="_Save Image..." Command="{Binding Path=ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage"/>
                 <Separator />
-                <MenuItem Header="_Clear" Command="{Binding Path=ClearCommand}" Name="clearButton" 
+                <MenuItem Focusable="False" Header="_Clear" Command="{Binding Path=ClearCommand}" Name="clearButton" 
                           InputGestureText="Ctrl+Shift+C">
+
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
@@ -136,10 +150,11 @@
             </MenuItem>
 
             <MenuItem Header="_Edit" Name="editMenu">
-                <MenuItem Header="_Copy" Command="{Binding Path=CopyCommand}" Name="copy" InputGestureText="Ctrl+C"/>
-                <MenuItem Header="_Paste" Command="{Binding Path=PasteCommand}"  Name="paste" InputGestureText="Ctrl+V"/>
+                <MenuItem Focusable="False" Header="_Copy" Command="{Binding Path=CopyCommand}" Name="copy" InputGestureText="Ctrl+C"/>
+                <MenuItem Focusable="False" Header="_Paste" Command="{Binding Path=PasteCommand}"  Name="paste" InputGestureText="Ctrl+V"/>
                 <Separator/>
-                <MenuItem Header="_Create Node From Selection" Command="{Binding Path=NodeFromSelectionCommand}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
+                <MenuItem Focusable="False" Header="_Create Note" Command="{Binding Path=AddNoteCommand}"  Name="noteMenuItem" InputGestureText="Ctrl+W" />
+                <MenuItem Focusable="False" Header="_Create Node From Selection" Command="{Binding Path=NodeFromSelectionCommand}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
             </MenuItem>
 
             <MenuItem Header="_View" Name="viewMenu">
@@ -153,46 +168,48 @@
                         <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Custom Nodes" Name="userFunctions" 
-                  ItemsSource="{Binding Source={x:Static utilities:dynSettings.FunctionDict}}">
+                <MenuItem Focusable="False" Header="_Custom Nodes" Name="userFunctions" 
+                  ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
-                            <MenuItem Header="{Binding Value.Workspace.Name}" CommandParameter="{Binding Value}" Command="{Binding Path=DisplayFunctionCommand}"/>
+                           <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path= DisplayFunctionCommand}"/>
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="Settings">
+            <MenuItem Header="Settings" Focusable="False">
 
-                <MenuItem Header="_Connector Type" IsEnabled="True">
-                    <MenuItem Name="settings_curves" IsCheckable="True" 
+                <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
+                    <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" 
                               IsChecked="{Binding ElementName=_this,Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
                               Command="{Binding Path=SetConnectorTypeCmd}" CommandParameter="BEZIER" Header="Curves"/>
                     <MenuItem Name="settings_plines" IsCheckable="True" 
+
                               IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
                               Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
                 </MenuItem>
 
-               <MenuItem Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >
-          <MenuItem Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
-          <MenuItem Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
-          <MenuItem Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
+               <MenuItem Focusable="False" Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >
+          <MenuItem Focusable="False" Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
+          <MenuItem Focusable="False" Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
+          <MenuItem Focusable="False" Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
 
-          <MenuItem Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
+          <MenuItem Focusable="False" Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
         </MenuItem>
               
             </MenuItem>
 
-            <MenuItem Header="Help">
+            <MenuItem Header="Help" Focusable="False">
                 <!--<MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>-->
-                <MenuItem Header="Samples" Name="SamplesMenu">
+                <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}"  Name="sourceCode"/>
-                <MenuItem Header="_Go To Project Wiki" Command="{Binding GoToWikiCommand}"  Name="wiki"/>
+                <MenuItem Header="_Go To Project Website" Command="{Binding Path=GoToSourceCodeCommand}"  Name="sourceCode"/>
+                <MenuItem Header="_Go To Project Wiki" Command="{Binding Path=GoToWikiCommand}"  Name="wiki"/>
+
             </MenuItem>
 
         </Menu>
@@ -229,26 +246,6 @@
                         </Canvas.Background>
                     </dragCanvas:DragCanvas>
                 </controls:ZoomBorder>
-                
-                <Grid Name="WorkspaceNameContainer" Canvas.Right="0" Canvas.Top="0" Background="#333">
-                    
-                    <StackPanel Orientation="Horizontal">
-
-                        <TextBox FontSize="15" Padding="5,7,5,0" Margin="0" Name="editNameBox" Width="150"
-                         Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" 
-                         IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" Text="{Binding EditName, Mode=TwoWay}" />
-                        
-                        <Label Padding="10" Content="{Binding Path=Name}" Name="workspaceLabel" 
-                               HorizontalContentAlignment="Right" FontSize="15" Background="Black" Foreground="Gray"
-                               FontFamily="Trebuchet MS" IsHitTestVisible="False" HorizontalAlignment="Right"/>
-
-                        <Image Name="editNameButton" Margin="6" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon_white_24.png" 
-                            MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" 
-                            MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="{Binding EditNameVisibility}" IsHitTestVisible="{Binding CanEditName}" HorizontalAlignment="Right"/>
-                        
-                    </StackPanel>
-                    
-                </Grid>
 
                 <Label Canvas.Top="40" Canvas.Right="0" Content="Not Under Package Control" Name="packageControlLabel" 
                        HorizontalContentAlignment="Right" Visibility ="Collapsed" FontSize="14"
@@ -286,46 +283,74 @@
                     <MenuItem Header="Clear" Command="{Binding ClearLogCommand}"/>
                 </ContextMenu>
             </ScrollViewer.ContextMenu>
-            <TextBox Text="{Binding Path=LogText}" 
-                    Foreground="#FF00FF00" BorderThickness="0" BorderBrush="#00000000" Background="Black"
-                    Margin="0" TextWrapping="Wrap" Focusable="True"
+
+            <TextBox Text="{Binding ElementName=_this, Path=LogText}" 
+                    Foreground="#FF888888" BorderThickness="0" BorderBrush="#00000000" Background="Black"
+                    Margin="0" TextWrapping="Wrap"
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
                     IsTabStop="False" FontFamily="Consolas" />
         </ScrollViewer>
 
         <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black">
+            
         </Grid>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                   Grid.ColumnSpan="3" Background="#FFF0F0F0">
-            
-            <Button Name="RunButton" Height="25" Width="100" Content="Run" 
-                    FontFamily="Arial" Margin="5"
-                    Command="{Binding RunExpressionCommand}"
+
+                   Grid.ColumnSpan="3">
+
+            <WrapPanel.Background>
+                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#222" Offset="0.0" />
+                    <GradientStop Color="#111" Offset="1.0" />
+                </LinearGradientBrush>
+            </WrapPanel.Background>
+
+            <Button Name="RunButton" Width="100" Content="Run" 
+                    Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
+                    Command="{Binding Path=RunExpressionCommand}"
                     CommandParameter="{Binding ElementName=_this, Path=Controller.RunInDebug}"
-                    IsEnabled="{Binding ElementName=_this, Path=Controller.RunEnabled, Mode=TwoWay}"/>
-            
-            <Button Name="cancelButton" Height="25" Width="100" Content="Cancel" 
-                      Command="{Binding CancelRunCommand}" FontFamily="Arial" Margin="5"/>
+                    IsEnabled="{Binding ElementName=_this, Path=Controller.RunEnabled, Mode=TwoWay}" Focusable="False"/>
+
+            <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+                      Command="{Binding Path=CancelRunCommand}" Margin="5"/>
             
             <CheckBox Margin="10"
-                      Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" 
+                      Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"
                       Content="Run Automatically" FontSize="11" IsChecked="{Binding ElementName=_this, Path=Controller.DynamicRunEnabled, Mode=TwoWay}"
                       IsEnabled="{Binding ElementName=_this, Path=Controller.CanRunDynamically, Mode=OneWay}"
                       VerticalAlignment="Center" VerticalContentAlignment="Center"/>
             
             <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
-                      FontFamily="Arial" FontSize="11" VerticalAlignment="Center"
-                      IsChecked="{Binding ElementName=_this, Path=Controller.RunInDebug, Mode=TwoWay}"
+                      FontSize="11" VerticalAlignment="Center" Foreground="Gray"
+                      IsChecked="{Binding ElementName=_this, Path=Controller.RunInDebug, Mode=TwoWay}" Focusable="False"
                       Content="Debug" VerticalContentAlignment="Center"/>
             
         </WrapPanel>
 
+
+        <DockPanel Grid.Row="4" Grid.Column="2" Name="WorkspaceTitleContainer" HorizontalAlignment="Right">
+
+            <Image Name="editNameButton" Margin="6" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon_white_24.png" Height="24" Width="24"
+                            MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" 
+                            MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="Collapsed" IsHitTestVisible="False" HorizontalAlignment="Right"/>
+
+            <TextBox FontSize="16" Padding="12" Margin="0" Name="editNameBox" Width="150"
+                         Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" Height="{Binding Path=ActualHeight,ElementName=WorkspaceTitleContainer}"
+                         IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
+
+            <Label Padding="12" Content="Home" Name="workspaceLabel" 
+                               HorizontalContentAlignment="Right" FontSize="16" FontStyle="Italic" Background="Black" Foreground="AliceBlue"
+                               FontFamily="Trebuchet MS" IsHitTestVisible="False" HorizontalAlignment="Right"/>
+        </DockPanel>
+        
         <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" Visibility ="Hidden" HorizontalAlignment="Right">
-      <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
-      <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>
-    </DockPanel>
+
+            <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
+            <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>
+            
+        </DockPanel>
 
         <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"

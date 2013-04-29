@@ -24,7 +24,7 @@ namespace Dynamo.Utilities
 
    class _IdlePromise
    {
-      static Queue<Action> promises = new Queue<Action>();
+      internal static Queue<Action> promises = new Queue<Action>();
 
       internal static void AddPromise(Action d)
       {
@@ -56,6 +56,11 @@ namespace Dynamo.Utilities
       public static bool HasPendingPromises()
       {
          return _IdlePromise.HasPendingPromises();
+      }
+
+      public static void ClearPromises()
+      {
+          _IdlePromise.promises.Clear();
       }
 
       public static void RegisterIdle(Autodesk.Revit.UI.UIControlledApplication uIApplication)

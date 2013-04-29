@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Input;
-using Dynamo.Controls;
-using Dynamo.Utilities;
-using Dynamo.Connectors;
-using Dynamo.Selection;
 
 namespace Dynamo.Commands
 {
@@ -50,6 +44,7 @@ namespace Dynamo.Commands
             }
 
             return false;
+
         }
     }
 

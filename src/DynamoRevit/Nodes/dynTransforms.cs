@@ -10,7 +10,7 @@ using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Transform Identity")]
+    [NodeName("Identity Transf")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns the identity transformation.")]
     public class dynTransformIdentity: dynNodeWithOneOutput
@@ -30,7 +30,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transform From Origin and Vectors")]
+    [NodeName("Transf From Origin and Vecs")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns a transformation with origin (o), up vector (u), and forward (f).")]
     public class dynTransformOriginAndVectors: dynNodeWithOneOutput
@@ -63,7 +63,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transform Scale Basis")]
+    [NodeName("Scale Transf")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns the identity transformation.")]
     public class dynTransformScaleBasis: dynNodeWithOneOutput
@@ -88,7 +88,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transform Rotation")]
+    [NodeName("Rotate Transf")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns a transform that rotates by the specified angle about the specified axis and point.")]
     public class dynTransformRotation: dynNodeWithOneOutput
@@ -115,7 +115,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transform Translation")]
+    [NodeName("Translate Transf")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns he transformation that translates by the specified vector.")]
     public class dynTransformTranslation: dynNodeWithOneOutput
@@ -138,7 +138,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transform Reflection")]
+    [NodeName("Reflect Transf")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns the transformation that reflects about the specified plane.")]
     public class dynTransformReflection: dynNodeWithOneOutput
@@ -161,7 +161,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transform Point")]
+    [NodeName("Transf Point")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Transform a point with a transform.")]
     public class dynTransformPoint: dynNodeWithOneOutput
@@ -208,7 +208,7 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Face Compute Derivatives")]
+    [NodeName("Compute Face Derivs")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
     public class dynFaceComputerDerivative: dynNodeWithOneOutput

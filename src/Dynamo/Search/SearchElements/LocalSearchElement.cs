@@ -76,7 +76,7 @@ namespace Dynamo.Search.SearchElements
         #endregion
 
         /// <summary>
-        /// The class constructor. </summary>
+        /// The class constructor for a built-in type that is already loaded. </summary>
         /// <param name="node">The local node</param>
         public LocalSearchElement(dynNode node)
         {
@@ -89,27 +89,12 @@ namespace Dynamo.Search.SearchElements
         }
 
         /// <summary>
-        /// The class constructor - use this constructor when for
-        /// custom nodes
+        ///     The class constructor - use this constructor for built-in types\
+        ///     that are not yet loaded.
         /// </summary>
-        /// <param name="funcDef">The FunctionDefinition for a custom node</param>
-        public LocalSearchElement(FunctionDefinition funcDef)
-        {
-//MVVM : method moved to dynamo view model
-            //this.Node = dynSettings.Controller.CreateNode( funcDef.FunctionId.ToString() );
-            this.Node = dynSettings.Controller.DynamoViewModel.CreateNode(funcDef.FunctionId.ToString());
-            this._name = Node.NickName;
-            this.Weight = 1.1;
-            this.Keywords = "";
-            this._description = "Custom Node";
-            this._type = "Custom Node";
-        }
-
-        /// <summary>
-        /// The class constructor - use this constructor when for
-        /// custom nodes
-        /// </summary>
-        /// <param name="funcDef">The FunctionDefinition for a custom node</param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="tags"></param>
         public LocalSearchElement(string name, string description, List<string> tags)
         {
             this.Node = null;
@@ -121,19 +106,35 @@ namespace Dynamo.Search.SearchElements
         }
 
         /// <summary>
-        /// The class constructor - use this constructor when for
-        /// custom nodes
+        ///     The class constructor - use this constructor when for
+        ///     custom nodes
         /// </summary>
-        /// <param name="funcDef">The FunctionDefinition for a custom node</param>
+        /// <param name="name">The name of the custom node</param>
+        /// <param name="guid">The unique id for the custom node</param>
         public LocalSearchElement(string name, Guid guid)
         {
             this.Node = null;
             this._name = name;
-            this.Weight = 1;
+            this.Weight = 0.9;
             this.Keywords = "";
             this._type = "Custom Node";
             this.Guid = guid;
             this._description = "";
+        }
+
+        /// <summary>
+        ///     The class constructor - use this constructor when for
+        ///     custom nodes
+        /// </summary>
+        /// <param name="funcDef">The FunctionDefinition for a custom node</param>
+        public LocalSearchElement(FunctionDefinition funcDef)
+        {
+            this.Node = dynSettings.Controller.DynamoViewModel.CreateNode(funcDef.FunctionId.ToString());
+            this._name = funcDef.Workspace.Name;
+            this.Weight = 1.1;
+            this.Keywords = "";
+            this._description = "Custom Node";
+            this._type = "Custom Node";
         }
 
         /// <summary>
@@ -166,7 +167,6 @@ namespace Dynamo.Search.SearchElements
                     {"guid", guid}
                 };
             //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeParams));
-//MVVM : command moved to dynamo model view
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.CreateNodeCommand, nodeParams));
             dynSettings.Controller.ProcessCommandQueue();
 
@@ -174,7 +174,6 @@ namespace Dynamo.Search.SearchElements
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
-//MVVM : moved command to dynamo model view
                 //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, placedNode.NodeUI));
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.SelectCommand, placedNode));
                 dynSettings.Controller.ProcessCommandQueue();

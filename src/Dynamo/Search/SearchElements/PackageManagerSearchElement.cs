@@ -55,7 +55,7 @@ namespace Dynamo.Search.SearchElements
 
             //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
 
-            if (!dynSettings.FunctionDict.ContainsKey(this.Guid))
+            if ( !dynSettings.Controller.CustomNodeLoader.Contains(guid) )
             {
                 // go get the node from online, place it in view asynchronously
                 dynSettings.Controller.PackageManagerClient.Download(this.Id, "", (finalGuid) => 

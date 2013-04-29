@@ -7,6 +7,8 @@ using Dynamo.Commands;
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Media;
+using Dynamo.Utilities;
+using Dynamo.Search;
 
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
@@ -29,7 +31,7 @@ namespace Dynamo.Search
     /// </summary>
     public partial class SearchView : UserControl
     {
-        public SearchView(SearchViewModel viewModel)
+        public SearchView( SearchViewModel viewModel)
         {
             DataContext = viewModel;
             InitializeComponent();
@@ -38,9 +40,9 @@ namespace Dynamo.Search
 
             SearchTextBox.IsVisibleChanged += delegate
                 {
-                    SearchTextBox.SelectAll();
-                    SearchTextBox.Focus();
-                    DynamoCommands.SearchCmd.Execute(null);
+                    DynamoCommands.Search.Execute(null);
+                    Keyboard.Focus(this.SearchTextBox);
+                    SearchTextBox.InputBindings.AddRange(dynSettings.Bench.InputBindings);
                 };
 
             SearchTextBox.GotKeyboardFocus += delegate
@@ -55,11 +57,7 @@ namespace Dynamo.Search
 
             SearchTextBox.LostKeyboardFocus += delegate
             {
-                if (SearchTextBox.Text == "")
-                {
-                    SearchTextBox.Text = "Search...";
-                    SearchTextBox.Foreground = Brushes.Gray;
-                }
+                SearchTextBox.Foreground = Brushes.Gray;
             };
         }
 
@@ -76,9 +74,16 @@ namespace Dynamo.Search
            ((SearchViewModel) DataContext).ExecuteSelected();
         }
 
+        public void ListBoxItem_Click(object sender, RoutedEventArgs e)
+        {
+            ((ListBoxItem)sender).IsSelected = true;
+            Keyboard.Focus(this.SearchTextBox);
+        }
+
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             ((SearchViewModel) DataContext).RemoveLastPartOfSearchText();
+            Keyboard.Focus(this.SearchTextBox);
         }
 
         public void ibtnServiceController_MouseLeftButtonUp(object sender, RoutedEventArgs e)
@@ -86,7 +91,6 @@ namespace Dynamo.Search
 
             RegionMenu.PlacementTarget = (UIElement)sender;
             RegionMenu.IsOpen = true;
-
         }
 
     }

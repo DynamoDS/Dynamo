@@ -20,6 +20,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Connectors;
+using Dynamo.Controls;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 using System.Windows.Media.Effects;
@@ -36,22 +37,11 @@ namespace Dynamo
                 : base(def.FunctionId.ToString())
             {
                 _def = def;
-                
+
                 //Set inputs and output
                 SetInputs(inputs);
                 foreach (var output in outputs)
-                    OutPortData.Add(new PortData(output, "function output", typeof(object)));
-
-//MVVM : drop shadow visibility is now bound to a parameter on the view model
-                /*
-                //Add a drop-shadow.
-                ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;
-
-                //Setup double-click behavior
-                NodeUI.MouseDoubleClick += delegate
-                {
-                    Controller.ViewCustomNodeWorkspace(_def);
-                };*/
+                    OutPortData.Add(new PortData(output, "function output", typeof (object)));
 
                 RegisterAllPorts();
             }
@@ -59,14 +49,21 @@ namespace Dynamo
             public dynFunction()
                 : base(null)
             {
-                /*//Setup double-click behavior
-                NodeUI.MouseDoubleClick += delegate
-                {
-                    Controller.ViewCustomNodeWorkspace(_def);
-                };
 
-                //Add a drop-shadow
-                ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;*/
+            }
+
+            public override void SetupCustomUIElements(dynNodeUI ui)
+            {
+                ((DropShadowEffect) ui.elementRectangle.Effect).Opacity = 1;
+                ((DropShadowEffect) ui.elementRectangle.Effect).Color = Colors.WhiteSmoke;
+                ((DropShadowEffect) ui.elementRectangle.Effect).BlurRadius = 20;
+                ((DropShadowEffect) ui.elementRectangle.Effect).ShadowDepth = 0;
+
+                //Setup double-click behavior
+                ui.MouseDoubleClick += delegate
+                    {
+                        Controller.DynamoViewModel.ViewCustomNodeWorkspace(_def);
+                    };
             }
 
             FunctionDefinition _def;

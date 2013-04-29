@@ -52,6 +52,8 @@ namespace Dynamo.Search.Regions
                 dynSettings.Controller.SearchViewModel.SearchDictionary.Remove((value) => value is PackageManagerSearchElement);
                 dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync(dynSettings.Controller.SearchViewModel.SearchText);
             }
+
+            dynSettings.ReturnFocusToSearch();
             
         }
     }
