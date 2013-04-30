@@ -56,8 +56,6 @@ namespace Dynamo
             get { return commandQueue; }
         }
 
-        //public dynBench Bench { get; private set; }
-
         public SortedDictionary<string, TypeLoadData> BuiltInTypesByNickname
         {
             get { return builtinTypesByNickname; }
@@ -69,9 +67,6 @@ namespace Dynamo
         }
 
         public ExecutionEnvironment FSchemeEnvironment { get; private set; }
-
-        private bool BenchActivated;
-        //public DynamoSplash SplashScreen { get; set; }
 
         #endregion
 

@@ -7,8 +7,6 @@ namespace DynamoSandbox
 {
     class Program
     {
-        static DynamoController dynamoController;
-
         [STAThread]
         static void Main(string[] args)
         {
@@ -16,15 +14,8 @@ namespace DynamoSandbox
 
             try
             {
-                bool startWithUI = true;
-
-                dynamoController = new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), startWithUI);
-
-                if (startWithUI)
-                {
-                    dynSettings.Bench.ShowDialog();
-                }
-                
+                new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), true);
+                dynSettings.Bench.ShowDialog();
             }
             catch (Exception e)
             {

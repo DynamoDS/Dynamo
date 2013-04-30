@@ -5,8 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using System.Windows.Threading;
-using Dynamo.Commands;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;

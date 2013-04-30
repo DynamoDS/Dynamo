@@ -74,10 +74,6 @@
     <Compile Include="PythonConsoleCompletionProvider.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
-      <Project>{F9B766BE-A5A3-4680-840F-649462340EE7}</Project>
-      <Name>DragCanvas</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoElements</Name>

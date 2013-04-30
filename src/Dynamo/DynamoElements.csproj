@@ -87,11 +87,10 @@ limitations under the License.
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\scripts\NodeGenerator\DynamoRevitCategories.cs">
-      <Link>DynamoRevitCategories.cs</Link>
-    </Compile>
     <Compile Include="Commands.cs" />
+    <Compile Include="DragCanvas.cs" />
     <Compile Include="DynamoLogger.cs" />
+    <Compile Include="DynamoSelection.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Models\dynModelBase.cs" />
     <Compile Include="Models\dynNoteModel.cs" />
@@ -110,9 +109,6 @@ limitations under the License.
     <Compile Include="Search\SearchElements\CommandElement.cs" />
     <Compile Include="Utilities\Converters.cs" />
     <Compile Include="DynamoController.cs" />
-    <Compile Include="DynamoSplash.xaml.cs">
-      <DependentUpon>DynamoSplash.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
@@ -207,10 +203,6 @@ limitations under the License.
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DynamoSplash.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="dynBench.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -277,16 +269,6 @@ limitations under the License.
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
-      <Project>{F9B766BE-A5A3-4680-840F-649462340EE7}</Project>
-      <Name>DragCanvas</Name>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoSelection\DynamoSelection.csproj">
-      <Project>{34115F51-F34F-463F-8281-68D5BBA63F30}</Project>
-      <Name>DynamoSelection</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
       <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
       <Name>FSchemeInterop</Name>

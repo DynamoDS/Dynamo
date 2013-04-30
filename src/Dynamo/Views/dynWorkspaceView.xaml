@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
-             xmlns:dragCanvas="clr-namespace:Dynamo.Controls;assembly=DragCanvas"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              MouseLeftButtonDown="DynWorkspaceView_OnMouseLeftButtonDown"
@@ -32,7 +31,7 @@
             <ItemsControl ItemsSource="{Binding Nodes}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <dragCanvas:DragCanvas
+                        <controls:DragCanvas
                                     Width="100000" 
                                     Height="100000" 
                                     Visibility="Visible"
@@ -41,7 +40,7 @@
                             <Canvas.Background>
                                 <SolidColorBrush Color="Transparent"/>
                             </Canvas.Background>
-                        </dragCanvas:DragCanvas>
+                        </controls:DragCanvas>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>

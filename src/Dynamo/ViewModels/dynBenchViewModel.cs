@@ -2729,58 +2729,9 @@ namespace Dynamo.Controls
                 }
             }
 
-            //if (result is dynDouble)
-            //    (result as dynDouble).Value = this.storedSearchNum;
-            //else if (result is dynStringInput)
-            //    (result as dynStringInput).Value = this.storedSearchStr;
-            //else if (result is dynBool)
-            //    (result as dynBool).Value = this.storedSearchBool;
-
             return result;
         }
 
-        /// <summary>
-        ///     This callback is executed when the BenchUI has completed activation.
-        /// </summary>
-        /// <parameter>The sender (presumably the Bench) </parameter>
-        /// <parameter>Any arguments it passes</parameter>
-//        private void OnBenchActivated(object sender, EventArgs e)
-//        {
-//            if (!_benchActivated)
-//            {
-//                _benchActivated = true;
-
-//                DynamoLoader.LoadCustomNodes(dynSettings.Bench);
-
-//                dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
-
-//                if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
-//                {
-//                    //MessageBox.Show("Workbench could not be opened.");
-//                    dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
-
-//                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
-//                    //dynSettings.Writer.WriteLine(UnlockLoadPath);
-
-//                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
-//                    {
-//                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
-//                        DynamoCommands.WriteToLogCmd.Execute(UnlockLoadPath);
-//                    }
-//                }
-
-//                UnlockLoadPath = null;
-
-//                Bench.UnlockUI();
-//                DynamoCommands.ShowSearchCmd.Execute(null);
-
-//                _model.HomeSpace.OnDisplayed();
-
-//#warning no longer using a splash screen
-//                //DynamoCommands.CloseSplashScreenCmd.Execute(null); // closed in bench activated
-//                Bench.WorkBench.Visibility = Visibility.Visible;
-//            }
-//        }
 
         /// <summary>
         ///     Sets the load path
@@ -2819,27 +2770,6 @@ namespace Dynamo.Controls
             
         }
 
-        //MVVM: setFunctionBackground superceded with binding to CurrentSpace
-        //internal void setFunctionBackground()
-        //{
-        //    //var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;
-        //    //bgBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x6B, 0x6B, 0x6B); //Dark
-        //    //bgBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0xBA, 0xBA, 0xBA); //Light
-
-        //    var bgBrush = (SolidColorBrush) outerCanvas.Background;
-        //    bgBrush.Color = Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A); //Dark
-        //}
-
-        //MVVM: setHomeBackground superceded with binding to CurrentSpace
-        //internal void setHomeBackground()
-        //{
-        //    //var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;
-        //    //bgBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
-        //    //bgBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0x7A, 0x7A, 0x7A); //Light
-
-        //    var bgBrush = (SolidColorBrush) outerCanvas.Background;
-        //    bgBrush.Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
-        //}
     }
 
     public class TypeLoadData
@@ -2885,61 +2815,4 @@ namespace Dynamo.Controls
         }
     }
 
-    //MVVM:Removed the splash screen commands
-    //public class ShowSplashScreenCommand : ICommand
-    //{
-    //    public ShowSplashScreenCommand()
-    //    {
-
-    //    }
-
-    //    public void Execute(object parameters)
-    //    {
-    //        if (dynSettings.Controller.SplashScreen == null)
-    //        {
-    //            dynSettings.Controller.SplashScreen = new Controls.DynamoSplash();
-    //        }
-    //        dynSettings.Controller.SplashScreen.Show();
-    //    }
-
-    //    public event EventHandler CanExecuteChanged
-    //    {
-    //        add { CommandManager.RequerySuggested += value; }
-    //        remove { CommandManager.RequerySuggested -= value; }
-    //    }
-
-    //    public bool CanExecute(object parameters)
-    //    {
-    //        if (dynSettings.Controller != null)
-    //        {
-    //            return true;
-    //        }
-
-    //        return false;
-    //    }
-    //}
-
-    //public class CloseSplashScreenCommand : ICommand
-    //{
-    //    public void Execute(object parameters)
-    //    {
-    //        dynSettings.Controller.SplashScreen.Close();
-    //    }
-
-    //    public event EventHandler CanExecuteChanged
-    //    {
-    //        add { CommandManager.RequerySuggested += value; }
-    //        remove { CommandManager.RequerySuggested -= value; }
-    //    }
-
-    //    public bool CanExecute(object parameters)
-    //    {
-    //        if (dynSettings.Controller.SplashScreen != null)
-    //        {
-    //            return true;
-    //        }
-
-    //        return false;
-    //    }
-    //}
 }
