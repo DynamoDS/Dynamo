@@ -31,63 +31,48 @@ using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Controls
 {
-    public delegate void PointEventHandler(object sender, EventArgs e);
+    
 
     public class DynamoViewModel:dynViewModelBase
     {
         public event EventHandler UILocked;
         public event EventHandler UIUnlocked;
-        public event EventHandler StopDragging;
         public event EventHandler RequestLayoutUpdate;
-        public event PointEventHandler CurrentOffsetChanged;
+        
 
         public virtual void OnUILocked(object sender, EventArgs e)
         {
             if (UILocked != null)
                 UILocked(this, e);
         }
-
         public virtual void OnUIUnlocked(object sender, EventArgs e)
         {
             if (UIUnlocked != null)
                 UIUnlocked(this, e);
         }
-
-        public virtual void OnStopDragging(object sender, EventArgs e)
-        {
-            if (StopDragging != null)
-                StopDragging(this, e);
-        }
-
         public virtual void OnRequestLayoutUpdate(object sender, EventArgs e)
         {
             if (RequestLayoutUpdate != null)
                 RequestLayoutUpdate(this, e);
         }
-
-        public virtual void OnCurrenOffsetChanged(object sender, PointEventArgs e)
-        {
-            if (CurrentOffsetChanged != null)
-                CurrentOffsetChanged(this, e);
-        }
         
+
         private DynamoModel _model;
 
         private string logText;
         private ConnectorType connectorType;
         private Point transformOrigin;
         private bool consoleShowing;
-        private dynConnectorViewModel activeConnector;
         private DynamoController controller;
         public StringWriter sw;
         private bool runEnabled = true;
         protected bool canRunDynamically = true;
         protected bool debug = false;
         protected bool dynamicRun = false;
-        private bool isConnecting = false;
+        
         private string UnlockLoadPath;
         private bool uiLocked = true;
-        private Point currentOffset = new Point(0,0);
+        
         private string editName = "";
 
         /// <summary>
@@ -129,12 +114,9 @@ namespace Dynamo.Controls
         public DelegateCommand<object> SelectCommand { get; set; }
         public DelegateCommand<object> SelectNeighborsCommand { get; set; }
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
-        public DelegateCommand UpdateSelectedConnectorsCommand { get; set; }
-        public DelegateCommand<object> CrossSelectCommand { get; set; }
-        public DelegateCommand<object> ContainSelectCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand RefactorCustomNodeCommand { get; set; }
-        public DelegateCommand<object> SetCurrentOffsetCommand { get; set; }
+        
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -191,16 +173,6 @@ namespace Dynamo.Controls
             }
         }
 
-        public dynConnectorViewModel ActiveConnector
-        {
-            get { return activeConnector; }
-            set
-            {
-                activeConnector = value;
-                RaisePropertyChanged("ActiveConnector");
-            }
-        }
-
         public DynamoController Controller
         {
             get { return controller; }
@@ -249,30 +221,6 @@ namespace Dynamo.Controls
             }
         }
 
-        /// <summary>
-        /// Specifies the pan location of the view
-        /// </summary>
-        public Point CurrentOffset
-        {
-            //get { return zoomBorder.GetTranslateTransformOrigin(); }
-            //set
-            //{
-            //    if (zoomBorder != null)
-            //    {
-            //        zoomBorder.SetTranslateTransformOrigin(value);
-            //    }
-            //    RaisePropertyChanged("CurrentOffset");
-            //}
-
-            get { return currentOffset; }
-            set 
-            { 
-                currentOffset = value;
-                OnCurrenOffsetChanged(this, new PointEventArgs(value));
-                //RaisePropertyChanged("CurrentOffset");
-            }
-        }
-
         public bool ViewingHomespace
         {
             get { return _model.CurrentSpace == _model.HomeSpace; }
@@ -293,23 +241,6 @@ namespace Dynamo.Controls
             get
             {
                 return Workspaces.First(x => x.WorkspaceModel == _model.CurrentSpace);
-            }
-        }
-
-        public bool IsConnecting
-        {
-            get { return isConnecting; }
-            set { isConnecting = value; }
-        }
-
-        public Color BackgroundColor
-        {
-            get
-            {
-                if(dynSettings.Controller.DynamoViewModel.Model.CurrentSpace == 
-                    dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
-                    return Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B);
-                return Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A);
             }
         }
 
@@ -372,12 +303,9 @@ namespace Dynamo.Controls
             SelectCommand = new DelegateCommand<object>(Select, CanSelect);
             SelectNeighborsCommand = new DelegateCommand<object>(SelectNeighbors, CanSelectNeighbors);
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
-            UpdateSelectedConnectorsCommand = new DelegateCommand(UpdateSelectedConnectors, CanUpdateSelectedConnectors);
-            CrossSelectCommand = new DelegateCommand<object>(CrossingSelect, CanCrossSelect);
-            ContainSelectCommand = new DelegateCommand<object>(ContainSelect, CanContainSelect);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
             RefactorCustomNodeCommand = new DelegateCommand(RefactorCustomNode, CanRefactorCustomNode);
-            SetCurrentOffsetCommand = new DelegateCommand<object>(SetCurrentOffset, CanSetCurrentOffset);
+
         }
 
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -402,7 +330,7 @@ namespace Dynamo.Controls
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
-                        _workspaces.Add(new dynWorkspaceViewModel(item as dynWorkspace));
+                        _workspaces.Add(new dynWorkspaceViewModel(item as dynWorkspace, this));
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
@@ -1274,61 +1202,64 @@ namespace Dynamo.Controls
                 node.GUID = Guid.NewGuid();
             }
 
-            // by default place node at center
-            var x = 0.0;
-            var y = 0.0;
+            //MVVM: replaced with OnRequestNodeCentered event
+            //// by default place node at center
+            //var x = 0.0;
+            //var y = 0.0;
+            //if (dynSettings.Bench != null)
+            //{
+            //    x = dynSettings.Controller
+            //        .Bench.outerCanvas.ActualWidth / 2.0;
+            //    y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
 
-            if (dynSettings.Bench != null)
-            {
-                x = dynSettings.Bench.outerCanvas.ActualWidth / 2.0;
-                y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
+            //    // apply small perturbation
+            //    // so node isn't right on top of last placed node
+            //    Random r = new Random();
+            //    x += (r.NextDouble() - 0.5) * 50;
+            //    y += (r.NextDouble() - 0.5) * 50;
+            //}
 
-                // apply small perturbation
-                // so node isn't right on top of last placed node
-                Random r = new Random();
-                x += (r.NextDouble() - 0.5) * 50;
-                y += (r.NextDouble() - 0.5) * 50;
-            }
+            //var transformFromOuterCanvas = data.ContainsKey("transformFromOuterCanvasCoordinates");
 
-            var transformFromOuterCanvas = data.ContainsKey("transformFromOuterCanvasCoordinates");
+            //if (data.ContainsKey("x"))
+            //    x = (double)data["x"];
 
-            if (data.ContainsKey("x"))
-                x = (double)data["x"];
+            //if (data.ContainsKey("y"))
+            //    y = (double)data["y"];
 
-            if (data.ContainsKey("y"))
-                y = (double)data["y"];
+            //Point dropPt = new Point(x, y);
 
-            Point dropPt = new Point(x, y);
+            //if (dynSettings.Bench != null)
+            //{
+            //    // Transform dropPt from outerCanvas space into zoomCanvas space
+            //    if (transformFromOuterCanvas)
+            //    {
+            //        var a = dynSettings.Bench.outerCanvas.TransformToDescendant(dynSettings.Bench.WorkBench);
+            //        dropPt = a.Transform(dropPt);
+            //    }
+            //}
 
-            if (dynSettings.Bench != null)
-            {
-                // Transform dropPt from outerCanvas space into zoomCanvas space
-                if (transformFromOuterCanvas)
-                {
-                    var a = dynSettings.Bench.outerCanvas.TransformToDescendant(dynSettings.Bench.WorkBench);
-                    dropPt = a.Transform(dropPt);
-                }
-            }
+            //// center the node at the drop point
+            //if (!Double.IsNaN(node.Width))
+            //    dropPt.X -= (node.Width / 2.0);
 
-            // center the node at the drop point
-            if (!Double.IsNaN(node.Width))
-                dropPt.X -= (node.Width / 2.0);
+            //if (!Double.IsNaN(node.Height))
+            //    dropPt.Y -= (node.Height / 2.0);
 
-            if (!Double.IsNaN(node.Height))
-                dropPt.Y -= (node.Height / 2.0);
+            ////MVVM: Don't do direct canvas manipulation here
+            ////Canvas.SetLeft(node, dropPt.X);
+            ////Canvas.SetTop(node, dropPt.Y);
 
-            //MVVM: Don't do direct canvas manipulation here
-            //Canvas.SetLeft(node, dropPt.X);
-            //Canvas.SetTop(node, dropPt.Y);
+            //if (!Double.IsNaN(node.Width))
+            //    dropPt.X -= (node.Height / 2.0);
 
-            if (!Double.IsNaN(node.Width))
-                dropPt.X -= (node.Height / 2.0);
+            //if (!Double.IsNaN(node.Height))
+            //    dropPt.Y -= (node.Height / 2.0);
 
-            if (!Double.IsNaN(node.Height))
-                dropPt.Y -= (node.Height / 2.0);
+            //node.X = dropPt.X;
+            //node.Y = dropPt.Y;
 
-            node.X = dropPt.X;
-            node.Y = dropPt.Y;
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new NodeEventArgs(node, data));
 
             //nodeUi.EnableInteraction();
             node.EnableInteraction();
@@ -1429,17 +1360,17 @@ namespace Dynamo.Controls
             // by default place note at center
             var x = 0.0;
             var y = 0.0;
-            if (dynSettings.Bench != null)
-            {
-                x = dynSettings.Bench.outerCanvas.ActualWidth / 2.0;
-                y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
+            //if (dynSettings.Bench != null)
+            //{
+            //    x = dynSettings.Bench.outerCanvas.ActualWidth / 2.0;
+            //    y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
 
-                // apply small perturbation
-                // so node isn't right on top of last placed node
-                var r = new Random();
-                x += (r.NextDouble() - 0.5) * 50;
-                y += (r.NextDouble() - 0.5) * 50;
-            }
+            //    // apply small perturbation
+            //    // so node isn't right on top of last placed node
+            //    var r = new Random();
+            //    x += (r.NextDouble() - 0.5) * 50;
+            //    y += (r.NextDouble() - 0.5) * 50;
+            //}
 
             if (inputs != null && inputs.ContainsKey("x"))
                 x = (double)inputs["x"];
@@ -1595,85 +1526,6 @@ namespace Dynamo.Controls
             //    LogScroller.ScrollToBottom();
         }
 
-        private void UpdateSelectedConnectors()
-        {
-            IEnumerable<dynConnector> allConnectors = DynamoSelection.Instance.Selection
-                                                               .Where(x => x is dynNode)
-                                                               .Select(x => x as dynNode)
-                                                               .SelectMany(
-                                                                   el => el.OutPorts
-                                                                           .SelectMany(x => x.Connectors)
-                                                                           .Concat(
-                                                                               el.InPorts.SelectMany(
-                                                                                   x => x.Connectors))).Distinct();
-
-            foreach (dynConnector connector in allConnectors)
-            {
-                Debug.WriteLine("Connectors no longer call redraw....is it still working?");
-                //connector.Redraw();
-            }
-        }
-
-        private bool CanUpdateSelectedConnectors()
-        {
-            return true;
-        }
-
-        private void CrossingSelect(object parameters)
-        {
-            var rect = (Rect)parameters;
-
-            foreach (dynNode n in _model.Nodes)
-            {
-                //check if the node is within the boundary
-                //double x0 = Canvas.GetLeft(n);
-                //double y0 = Canvas.GetTop(n);
-
-                double x0 = n.X;
-                double y0 = n.Y;
-
-                bool intersects = rect.IntersectsWith(new Rect(x0, y0, n.Width, n.Height));
-                if (intersects)
-                {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
-                }
-            }
-        }
-
-        private bool CanCrossSelect(object parameters)
-        {
-            return true;
-        }
-
-        private void ContainSelect(object parameters)
-        {
-            var rect = (Rect)parameters;
-
-            foreach (dynNode n in _model.Nodes)
-            {
-                //check if the node is within the boundary
-                //double x0 = Canvas.GetLeft(n);
-                //double y0 = Canvas.GetTop(n);
-                double x0 = n.X;
-                double y0 = n.Y;
-                double x1 = x0 + n.Width;
-                double y1 = y0 + n.Height;
-
-                bool contains = rect.Contains(x0, y0) && rect.Contains(x1, y1);
-                if (contains)
-                {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
-                }
-            }
-        }
-
-        private bool CanContainSelect(object parameters)
-        {
-            return true;
-        }
-
         private void PostUIActivation()
         {
 
@@ -1708,20 +1560,6 @@ namespace Dynamo.Controls
         }
 
         private bool CanDoPostUIActivation()
-        {
-            return true;
-        }
-
-        private void SetCurrentOffset(object parameter)
-        {
-            var p = (Point) parameter;
-
-            //set the current offset without triggering
-            //any property change notices.
-            currentOffset = new Point(p.X, p.Y);
-        }
-
-        private bool CanSetCurrentOffset(object parameter)
         {
             return true;
         }
@@ -2538,7 +2376,7 @@ namespace Dynamo.Controls
             //MVVM : replaced with the StopDragging event
             //Bench.WorkBench.isDragInProgress = false;
             //Bench.WorkBench.ignoreClick = true;
-            OnStopDragging(this, EventArgs.Empty);
+            CurrentSpaceViewModel.OnStopDragging(this, EventArgs.Empty);
 
 //MVVM : don't toggle visiblity manually.
             //Step 1: Make function workspace invisible
@@ -2616,12 +2454,12 @@ namespace Dynamo.Controls
                         if (att.Name.Equals("X"))
                         {
                             //Bench.CurrentX = Convert.ToDouble(att.Value);
-                            CurrentOffset = new Point(Convert.ToDouble(att.Value), CurrentOffset.Y);
+                            _model.CurrentSpace.CurrentOffset = new Point(Convert.ToDouble(att.Value), _model.CurrentSpace.CurrentOffset.Y);
                         }
                         else if (att.Name.Equals("Y"))
                         {
                             //Bench.CurrentY = Convert.ToDouble(att.Value);
-                            CurrentOffset = new Point(CurrentOffset.X, Convert.ToDouble(att.Value));
+                            _model.CurrentSpace.CurrentOffset = new Point(_model.CurrentSpace.CurrentOffset.X, Convert.ToDouble(att.Value));
                         }
                     }
                 }
@@ -3074,10 +2912,7 @@ namespace Dynamo.Controls
                 }
             }
 
-            if (Controller.Bench != null)
-            {
-                Controller.Bench.CenterViewOnElement(e);
-            }
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new NodeEventArgs(e,null));
             
         }
 
@@ -3123,6 +2958,27 @@ namespace Dynamo.Controls
         public PointEventArgs(Point p)
         {
             Point = p;
+        }
+    }
+
+    public class NodeEventArgs : EventArgs
+    {
+        public dynNode Node { get; set; }
+        public Dictionary<string, object> Data { get; set; } 
+        public NodeEventArgs(dynNode n, Dictionary<string, object> d )
+        {
+            Node = n;
+            Data = d;
+        }
+    }
+
+    public class ViewEventArgs : EventArgs
+    {
+        public System.Windows.Controls.UserControl View { get; set; }
+
+        public ViewEventArgs(System.Windows.Controls.UserControl v)
+        {
+            View = v;
         }
     }
 

@@ -153,7 +153,8 @@ namespace Dynamo.Utilities
 
                             node.RegisterAllPorts();
 
-                            dynSettings.Bench.WorkBench.UpdateLayout();
+                            //MVVM: don't call update layout here
+                            //dynSettings.Bench.WorkBench.UpdateLayout();
 
                             return new
                             {
@@ -513,7 +514,8 @@ namespace Dynamo.Utilities
 
             newlyPlacedCollapsedNode.DisableReporting();
 
-            dynSettings.Bench.WorkBench.UpdateLayout(); // without doing this, connectors fail to be created
+            //MVVM: don't call update layout here.
+            //dynSettings.Bench.WorkBench.UpdateLayout(); // without doing this, connectors fail to be created
 
             foreach (var nodeTuple in inConnectors)
             {
