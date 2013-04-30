@@ -75,6 +75,20 @@ namespace Dynamo
 
         #endregion
 
+        #region events
+
+        /// <summary>
+        /// An event which requests that a node be selected
+        /// </summary>
+        public event NodeEventHandler RequestNodeSelect;
+        public virtual void OnRequestSelect(object sender, NodeEventArgs e)
+        {
+            if (RequestNodeSelect != null)
+                RequestNodeSelect(sender, e);
+        }
+
+        #endregion
+
         #region Constructor and Initialization
 
         /// <summary>
@@ -244,9 +258,14 @@ namespace Dynamo
             worker.RunWorkerAsync();
         }
 
-        public delegate void CompletedRunHandler(DynamoController controller, bool success);
-        public event CompletedRunHandler OnRunCompleted;
-
+        public delegate void RunCompletedHandler(object controller, bool success);
+        public event RunCompletedHandler RunCompleted;
+        public virtual void OnRunCompleted(object sender, bool success)
+        {
+            if (RunCompleted != null)
+                RunCompleted(sender, success);
+        }
+        
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
             /* Execution Thread */

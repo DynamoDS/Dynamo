@@ -137,6 +137,7 @@ namespace Dynamo.Nodes
             set
             {
                 inPorts = value;
+                RaisePropertyChanged("InPorts");
             }
         }
 
@@ -146,6 +147,7 @@ namespace Dynamo.Nodes
             set
             {
                 outPorts = value;
+                RaisePropertyChanged("OutPorts");
             }
         }
 
@@ -358,10 +360,6 @@ namespace Dynamo.Nodes
                 return ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
             }
         }
-
-        
-
-        
 
         public bool InteractionEnabled
         {

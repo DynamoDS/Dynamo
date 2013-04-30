@@ -33,7 +33,7 @@ namespace Dynamo
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
 
-        public virtual void OnCurrenOffsetChanged(object sender, PointEventArgs e)
+        public virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
         {
             if (CurrentOffsetChanged != null)
                 CurrentOffsetChanged(this, e);
@@ -164,7 +164,7 @@ namespace Dynamo
             get { return _workspace.CurrentOffset; }
             set
             {
-                OnCurrenOffsetChanged(this, new PointEventArgs(value));
+                OnCurrentOffsetChanged(this, new PointEventArgs(value));
             }
         }
 
@@ -367,6 +367,15 @@ namespace Dynamo
         private bool CanSetCurrentOffset(object parameter)
         {
             return true;
+        }
+    }
+
+    public class NodeViewEventArgs:EventArgs
+    {
+        dynNodeViewModel ViewModel { get; set; }
+        public NodeViewEventArgs(dynNodeViewModel vm)
+        {
+            ViewModel = vm;
         }
     }
 }

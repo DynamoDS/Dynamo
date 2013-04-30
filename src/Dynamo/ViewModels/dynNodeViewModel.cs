@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
 using Dynamo.Connectors;
@@ -98,6 +99,11 @@ namespace Dynamo.Controls
             }
         }
 
+        public bool IsSelected
+        {
+            get { return nodeLogic.IsSelected; }
+        }
+
         public string NickName
         {
             get { return nodeLogic.NickName; }
@@ -128,7 +134,7 @@ namespace Dynamo.Controls
                 return nodeLogic.IsCustomFunction? 1:0;
             }
         }
-        
+
         /// <summary>
         /// Element's left position is two-way bound to this value
         /// </summary>
@@ -205,19 +211,52 @@ namespace Dynamo.Controls
             //and remove port model views
             logic.InPorts.CollectionChanged += inports_collectionChanged;
             logic.OutPorts.CollectionChanged += outports_collectionChanged;
-
+            
             logic.PropertyChanged += logic_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
 
             DeleteCommand = new DelegateCommand(DeleteNode, CanDeleteNode);
             SetLacingTypeCommand = new DelegateCommand<string>(new Action<string>(SetLacingType), CanSetLacingType);
+            SetStateCommand = new DelegateCommand<object>(SetState, CanSetState);
+            SelectCommand = new DelegateCommand(Select, CanSelect);
             ViewCustomNodeWorkspaceCommand = new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
             SetupCustomUIElementsCommand = new DelegateCommand<dynNodeUI>(SetupCustomUIElements, CanSetupCustomUIElements);
             ValidateConnectionsCommand = new DelegateCommand(ValidateConnections, CanValidateConnections);
-            SetStateCommand = new DelegateCommand<object>(SetState, CanSetState);
+            
+            //Do a one time setup of the initial ports on the node
+            //we can not do this automatically because this constructor
+            //is called after the node's constructor where the ports
+            //are initially registered
+            SetupInitialPortViewModels();
+
+            dynSettings.Controller.RequestNodeSelect += new NodeEventHandler(Controller_RequestNodeSelect);
         }
+
+        void Controller_RequestNodeSelect(object sender, EventArgs e)
+        {
+            dynNode n = (e as NodeEventArgs).Node;
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(SelectCommand, n));
+            dynSettings.Controller.ProcessCommandQueue();
+        }
+
         #endregion
+
+        /// <summary>
+        /// Do a one setup of the ports 
+        /// </summary>
+        private void SetupInitialPortViewModels()
+        {
+            foreach (var item in nodeLogic.InPorts)
+            {
+                InPorts.Add(new dynPortViewModel(item as dynPortModel, nodeLogic));
+            }
+
+            foreach (var item in nodeLogic.OutPorts)
+            {
+                OutPorts.Add(new dynPortViewModel(item as dynPortModel, nodeLogic));
+            }
+        }
 
         /// <summary>
         /// Respond to property changes on the model
@@ -230,12 +269,6 @@ namespace Dynamo.Controls
             {
                 case "CurrentSpace":
                     RaisePropertyChanged("NodeVisibility");
-                    break;
-                case "X":
-                    RaisePropertyChanged("Left");
-                    break;
-                case "Y":
-                    RaisePropertyChanged("Top");
                     break;
             }
         }
@@ -256,13 +289,16 @@ namespace Dynamo.Controls
                     RaisePropertyChanged("ArgumentLacing");
                     break;
                 case "X":
-                    RaisePropertyChanged("X");
+                    RaisePropertyChanged("Left");
                     break;
                 case "Y":
-                    RaisePropertyChanged("Y");
+                    RaisePropertyChanged("Top");
                     break;
                 case "InteractionEnabled":
                     RaisePropertyChanged("IsInteractionEnabled");
+                    break;
+                case "IsSelected":
+                    RaisePropertyChanged("IsSelected");
                     break;
             }
         }
@@ -367,7 +403,7 @@ namespace Dynamo.Controls
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    InPorts.Add(new dynPortViewModel(item as dynPortModel));
+                    InPorts.Add(new dynPortViewModel(item as dynPortModel,nodeLogic));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -391,7 +427,7 @@ namespace Dynamo.Controls
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    OutPorts.Add(new dynPortViewModel(item as dynPortModel));
+                    OutPorts.Add(new dynPortViewModel(item as dynPortModel, nodeLogic));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -442,6 +478,32 @@ namespace Dynamo.Controls
             if(parameter is ElementState)
                 return true;
             return false;
+        }
+
+        private void Select()
+        {
+            if (!nodeLogic.IsSelected)
+            {
+                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    DynamoSelection.Instance.ClearSelection();
+                }
+
+                if (!DynamoSelection.Instance.Selection.Contains(nodeLogic))
+                    DynamoSelection.Instance.Selection.Add(nodeLogic);
+            }
+            else
+            {
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    DynamoSelection.Instance.Selection.Remove(nodeLogic);
+                }
+            }
+        }
+
+        private bool CanSelect()
+        {
+            return true;
         }
 
         #region junk

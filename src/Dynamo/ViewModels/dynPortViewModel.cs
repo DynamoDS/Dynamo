@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Linq;
 using Dynamo.Connectors;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
 
@@ -12,7 +13,8 @@ namespace Dynamo.Connectors
 {
     public class dynPortViewModel : dynViewModelBase
     {
-        readonly dynPortModel _port;
+        private readonly dynPortModel _port;
+        private readonly dynNode _node;
 
         public DelegateCommand SetCenterCommand { get; set; }
         
@@ -26,24 +28,77 @@ namespace Dynamo.Connectors
             get { return _port.ToolTipContent; }
         }
 
+        public string PortName
+        {
+            get { return _port.PortName; }
+        }
+
+        public PortType PortType
+        {
+            get { return _port.PortType; }
+        }
+        
+        public bool IsSelected
+        {
+            get { return _node.IsSelected; }
+        }
+
+        public bool IsConnected
+        {
+            get { return _port.IsConnected; }
+        }
+
+        public ElementState State
+        {
+            get { return _node.State; }    
+        }
+
         public DelegateCommand ConnectCommand { get; set; }
         public DelegateCommand HighlightCommand { get; set; }
         public DelegateCommand UnHighlightCommand { get; set; }
 
-        public dynPortViewModel(dynPortModel port)
+        public dynPortViewModel(dynPortModel port, dynNode node)
         {
+            _node = node;
             _port = port;
             _port.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(_port_PropertyChanged);
-
+            _node.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(_node_PropertyChanged);
             ConnectCommand = new DelegateCommand(Connect, CanConnect);
             HighlightCommand = new DelegateCommand(Highlight, CanHighlight);
             UnHighlightCommand = new DelegateCommand(UnHighlight, CanUnHighlight);
         }
 
+        void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "IsSelected":
+                    RaisePropertyChanged("IsSelected");
+                    break;
+                case "State":
+                    RaisePropertyChanged("State");
+                    break;
+            }
+        }
+
         void _port_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == "ToolTipContent")
-                RaisePropertyChanged("ToolTipContent");
+            switch (e.PropertyName)
+            {
+                case "ToolTipContent":
+                    RaisePropertyChanged("ToolTipContent");
+                    break;
+                case "PortType":
+                    RaisePropertyChanged("PortType");
+                    break;
+                case "PortName":
+                    RaisePropertyChanged("PortName");
+                    break;
+                case "IsConnected":
+                    RaisePropertyChanged("IsConnected");
+                    break;
+            }
+            
         }
 
         /// <summary>

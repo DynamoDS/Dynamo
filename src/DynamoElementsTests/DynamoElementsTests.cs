@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Threading;
 using Dynamo.Commands;
+using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.Selection;
@@ -502,18 +503,7 @@ namespace Dynamo.Tests
             // select all of them one by one
             for (int i = 0; i < numNodes; i++)
             {
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.SelectCommand, null));
-                Assert.DoesNotThrow(() => controller.ProcessCommandQueue());
-
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.SelectCommand, 5));
-                Assert.DoesNotThrow(() => controller.ProcessCommandQueue());
-
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.SelectCommand, "noodle"));
-                Assert.DoesNotThrow(() => controller.ProcessCommandQueue());
-
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.SelectCommand,
-                                                                                     new StringBuilder()));
-                Assert.DoesNotThrow(() => controller.ProcessCommandQueue());
+                dynSettings.Controller.OnRequestSelect(this, new NodeEventArgs(null, null));
             }
         }
 
@@ -532,10 +522,7 @@ namespace Dynamo.Tests
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.SelectCommand,
-                                                                                     controller.DynamoViewModel.Model.Nodes[i]));
-                controller.ProcessCommandQueue();
-
+                controller.OnRequestSelect(null, new NodeEventArgs( controller.DynamoViewModel.Model.Nodes[i], null) );
                 Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
             }
         }
@@ -622,7 +609,7 @@ namespace Dynamo.Tests
             controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.RunExpressionCommand, null));
             controller.ProcessCommandQueue();
 
-            Thread.Sleep(1000);
+            Thread.Sleep(250);
 
             Assert.AreEqual((controller.DynamoViewModel.Model.Nodes[0]).PrintExpression(), "(Add 2 2)");
             Assert.AreEqual((controller.DynamoViewModel.Model.Nodes[3]).PrintExpression(), "(Watch (Add 2 2))");

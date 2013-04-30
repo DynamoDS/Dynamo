@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using Dynamo.Commands;
+using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 
@@ -173,8 +174,7 @@ namespace Dynamo.Search.SearchElements
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
-                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.SelectCommand, placedNode));
-                dynSettings.Controller.ProcessCommandQueue();
+                dynSettings.Controller.OnRequestSelect(this, new NodeEventArgs(placedNode, null));
             }
         }
 

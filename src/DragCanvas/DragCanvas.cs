@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -129,7 +130,7 @@ namespace Dynamo.Controls
           {
               foreach (ISelectable n in e.NewItems)
               {
-                  n.Select();
+                  //n.Select();
 
                   //UIElement el = (UIElement)n;
 
@@ -160,16 +161,11 @@ namespace Dynamo.Controls
               // call the deselect method on elements removed from the collection
               foreach (ISelectable n in e.OldItems)
               {
-                  (n as ISelectable).Deselect();
+                  //(n as ISelectable).Deselect();
 
                   // remove the corresponding offsetdata object
                   // for the element being removed
-                  List<OffsetData> toRemove = new List<OffsetData>();
-                  foreach (OffsetData od in offsets)
-                  {
-                      if (od.Node == n)
-                          toRemove.Add(od);
-                  }
+                  List<OffsetData> toRemove = offsets.Where(od => od.Node == n).ToList();
 
                   foreach (OffsetData od in toRemove)
                   {
@@ -301,39 +297,61 @@ namespace Dynamo.Controls
           //but we don't want an explicit reference to it
          if (!(bool)DataContext.GetType().GetProperty("IsConnecting").GetValue(DataContext, null))
          {
-             if (DynamoSelection.Instance.Selection.Count == 0)
-                 return;
-
              //test if we're hitting the background
              // Retrieve the coordinate of the mouse position.
              Point pt = e.GetPosition(this);
              Debug.WriteLine(string.Format("Hit point x:{0} y:{0}", pt.X, pt.Y));
 
-             hitResultsList.Clear();
+             if (DynamoSelection.Instance.Selection.Count == 0)
+                 return;
 
-             // Set up a callback to receive the hit test result enumeration.
-             VisualTreeHelper.HitTest(this, null,
-                     new HitTestResultCallback(MyHitTestResult),
-                     new PointHitTestParameters(pt));
+             //MVVM: We've changed the selection to contain models, not views,
+             //so the hit test code has been altered to use the Rect of the model.
+             //hitResultsList.Clear();
 
-             //if you hit a selectable object
-             foreach (DependencyObject dobj in hitResultsList)
+             //// Set up a callback to receive the hit test result enumeration.
+             //VisualTreeHelper.HitTest(this, null,
+             //        new HitTestResultCallback(MyHitTestResult),
+             //        new PointHitTestParameters(pt));
+
+             ////if you hit a selectable object
+             //foreach (DependencyObject dobj in hitResultsList)
+             //{
+             //    Debug.WriteLine(string.Format("Testing {0} for hit.", dobj.GetType().ToString()));
+             //    ISelectable sel = ElementClicked(dobj) as ISelectable;    //, typeof(ISelectable));
+             //    if (sel != null)
+             //    {
+             //        Debug.WriteLine(string.Format("Hit selectable {0}.", sel.GetType().ToString()));
+             //        base.OnMouseLeftButtonDown(e);
+
+             //        //this.isDragInProgress = false;
+
+             //        // Cache the mouse cursor location.
+             //        this.origCursorLocation = e.GetPosition(this);
+             //        Debug.WriteLine(string.Format("ResetCursorLocation point x:{0} y:{0}", this.origCursorLocation.X, this.origCursorLocation.Y));
+
+             //        //if (this.selection.Count == 0)
+             //        //    return;
+
+             //        this.isDragInProgress = true;
+
+             //        e.Handled = true;
+             //        return;
+             //    }
+             //}
+
+             //for every node in the current selection, see whether the mouse
+             //coordinates are within its rectangle. if so, start dragging.
+             foreach (ISelectable sel in DynamoSelection.Instance.Selection)
              {
-                 Debug.WriteLine(string.Format("Testing {0} for hit.", dobj.GetType().ToString()));
-                 ISelectable sel = ElementClicked(dobj) as ISelectable;    //, typeof(ISelectable));
-                 if (sel != null)
+                 if (sel.Rect.Contains(pt))
                  {
                      Debug.WriteLine(string.Format("Hit selectable {0}.", sel.GetType().ToString()));
                      base.OnMouseLeftButtonDown(e);
 
-                     //this.isDragInProgress = false;
-
                      // Cache the mouse cursor location.
                      this.origCursorLocation = e.GetPosition(this);
                      Debug.WriteLine(string.Format("ResetCursorLocation point x:{0} y:{0}", this.origCursorLocation.X, this.origCursorLocation.Y));
-
-                     //if (this.selection.Count == 0)
-                     //    return;
 
                      this.isDragInProgress = true;
 
@@ -341,6 +359,7 @@ namespace Dynamo.Controls
                      return;
                  }
              }
+
          }
       }
 
@@ -361,7 +380,7 @@ namespace Dynamo.Controls
          #region Calculate Offsets
 
          int count = 0;
-         foreach (UIElement el in DynamoSelection.Instance.Selection)
+         foreach (ISelectable sel in DynamoSelection.Instance.Selection)
          {
              OffsetData od = offsets[count];
  
@@ -388,12 +407,12 @@ namespace Dynamo.Controls
             #region Verify Drag Element Location
 
              count = 0;
-             foreach (UIElement el in DynamoSelection.Instance.Selection)
+             foreach (ISelectable sel in DynamoSelection.Instance.Selection)
              {
                  OffsetData od = offsets[count];
 
                  // Get the bounding rect of the drag element.
-                 Rect elemRect = this.CalculateDragElementRect(el, od.NewHorizontalOffset, od.NewVerticalOffset, od.ModifyLeftOffset, od.ModifyTopOffset);
+                 Rect elemRect = this.CalculateDragElementRect(sel, od.NewHorizontalOffset, od.NewVerticalOffset, od.ModifyLeftOffset, od.ModifyTopOffset);
 
                  // If the element is being dragged out of the viewable area, 
                  // determine the ideal rect location, so that the element is 
@@ -425,20 +444,22 @@ namespace Dynamo.Controls
          this.Dispatcher.Invoke(new Action(
                delegate
                {
-                   foreach (UIElement el in DynamoSelection.Instance.Selection)
+                   foreach (ISelectable el in DynamoSelection.Instance.Selection)
                  {
                      OffsetData od = offsets[count];
- 
+
                      if (od.ModifyLeftOffset)
-                         Canvas.SetLeft(el, od.NewHorizontalOffset);
+                         //Canvas.SetLeft(el, od.NewHorizontalOffset);
+                         el.X = od.NewHorizontalOffset;
                      else
-                         Canvas.SetRight(el, od.NewHorizontalOffset);
-
+                         //Canvas.SetRight(el, od.NewHorizontalOffset);
+                         el.X = od.NewHorizontalOffset + el.Width;
                      if (od.ModifyTopOffset)
-                         Canvas.SetTop(el, od.NewVerticalOffset);
+                         //Canvas.SetTop(el, od.NewVerticalOffset);
+                         el.Y = od.NewVerticalOffset;
                      else
-                         Canvas.SetBottom(el, od.NewVerticalOffset);
-
+                         //Canvas.SetBottom(el, od.NewVerticalOffset);
+                         el.Y = od.NewHorizontalOffset + el.Height;
                      count++;
                  }
                }
@@ -504,7 +525,7 @@ namespace Dynamo.Controls
       /// <summary>
       /// Returns a Rect which describes the bounds of the element being dragged.
       /// </summary>
-      private Rect CalculateDragElementRect(UIElement el, double newHorizOffset, double newVertOffset, bool modLeftOffset, bool modTopOffset)
+      private Rect CalculateDragElementRect(ISelectable el, double newHorizOffset, double newVertOffset, bool modLeftOffset, bool modTopOffset)
       {
 
           //if(this.elementsBeingDragged.Count == 0)
@@ -531,7 +552,8 @@ namespace Dynamo.Controls
 
          //Size elemSize = this.elementsBeingDragged.RenderSize;
 
-         Size elemSize = el.RenderSize;
+         //Size elemSize = el.RenderSize;
+         Size elemSize = new Size(el.Width,el.Height);
 
          double x, y;
 

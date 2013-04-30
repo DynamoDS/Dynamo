@@ -37,6 +37,9 @@ namespace Dynamo.Connectors
 
     public partial class dynPort : UserControl
     {
+        private Dynamo.Controls.DragCanvas canvas;
+        private dynPortViewModel vm;
+
 #warning dynPort view no longer needs to notify of property changes
         /*
         public event PropertyChangedEventHandler PropertyChanged;
@@ -51,10 +54,12 @@ namespace Dynamo.Connectors
 
         #region constructors
 
-        public dynPort(int index, PortType portType, dynNodeUI owner, string name)
+        //MVVM:make a default constructor
+        //public dynPort(int index, PortType portType, dynNodeUI owner, string name)
+        public dynPort()
         {
             InitializeComponent();
-
+            this.Loaded += new RoutedEventHandler(dynPort_Loaded);
             //this.MouseEnter += delegate { foreach (var c in connectors) c.Highlight(); };
             //this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
 
@@ -66,6 +71,14 @@ namespace Dynamo.Connectors
             ellipse1.DataContext = Owner;*/
 
             //portGrid.Loaded += new RoutedEventHandler(portGrid_Loaded);
+        }
+
+        void dynPort_Loaded(object sender, RoutedEventArgs e)
+        {
+            canvas = FindUpVisualTree<Dynamo.Controls.DragCanvas>(this);
+            vm = DataContext as dynPortViewModel;
+
+            vm.UpdateCenter(CalculateCenter());
         }
 
         #endregion constructors
@@ -114,7 +127,7 @@ namespace Dynamo.Connectors
         {
             //Debug.WriteLine(string.Format("Port {0} selected.", this.Index));
 
-            (DataContext as dynPortViewModel).ConnectCommand.Execute();
+            vm.ConnectCommand.Execute();
 
 #warning logic moved to command on the view model
             
@@ -178,16 +191,23 @@ namespace Dynamo.Connectors
 
         private void Ellipse1Dot_OnLayoutUpdated(object sender, EventArgs e)
         {
-            //set the center property on the view model
-            var viewModel = DataContext as dynPortViewModel;
-            viewModel.UpdateCenter(CalculateCenter());
+            if (vm != null)
+            {
+                //set the center property on the view model
+                vm.UpdateCenter(CalculateCenter());
+            }
         }
 
         Point CalculateCenter()
         {
-            GeneralTransform transform = portCircle.TransformToAncestor(dynSettings.Workbench);
-            Point rootPoint = transform.Transform(new Point(portCircle.Width / 2, portCircle.Height / 2));
-            return new Point(rootPoint.X, rootPoint.Y);
+            if (canvas != null)
+            {
+                GeneralTransform transform = portCircle.TransformToAncestor(canvas);
+                Point rootPoint = transform.Transform(new Point(portCircle.Width / 2, portCircle.Height / 2));
+                return new Point(rootPoint.X, rootPoint.Y); 
+            }
+
+            return new Point();
         }
 
         private void DynPort_OnMouseEnter(object sender, MouseEventArgs e)
@@ -198,6 +218,18 @@ namespace Dynamo.Connectors
         private void DynPort_OnMouseLeave(object sender, MouseEventArgs e)
         {
             (DataContext as dynPortViewModel).UnHighlightCommand.Execute();
+        }
+
+        // walk up the visual tree to find object of type T, starting from initial object
+        public static T FindUpVisualTree<T>(DependencyObject initial) where T : DependencyObject
+        {
+            DependencyObject current = initial;
+
+            while (current != null && current.GetType() != typeof(T))
+            {
+                current = VisualTreeHelper.GetParent(current);
+            }
+            return current as T;
         }
     }
 
