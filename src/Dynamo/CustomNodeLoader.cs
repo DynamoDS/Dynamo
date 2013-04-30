@@ -514,6 +514,8 @@ namespace Dynamo.Utilities
                 this.loadedNodes.Add(def.FunctionId, def);
 
                 dynWorkspace ws = def.Workspace;
+                
+                dynSettings.Controller.DynamoViewModel.Model.Workspaces.Add(ws);
 
                 //this.Log("Opening definition " + xmlPath + "...");
 
@@ -726,6 +728,7 @@ namespace Dynamo.Utilities
 
 //MVVM : this metho was removed. visibility should be controlled by current space binding
                 //DynamoController.hideWorkspace(ws);
+                //now we add the workspace to the workspace collection
 
                 ws.FilePath = xmlPath;
 

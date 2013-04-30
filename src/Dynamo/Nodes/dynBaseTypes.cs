@@ -1639,6 +1639,14 @@ namespace Dynamo.Nodes
             //turn off the border
             Background = clear;
             BorderThickness = new Thickness(0);
+
+            var bindingVal = new System.Windows.Data.Binding("Text")
+            {
+                Source = base.Text,
+                Mode = BindingMode.TwoWay,
+                Converter = new DoubleDisplay()
+            };
+            this.SetBinding(TextBlock.TextProperty, bindingVal);
         }
 
         private bool numeric;
@@ -1968,6 +1976,14 @@ namespace Dynamo.Nodes
             //NodeUI.topControl.Height = 50;
 
             NodeUI.UpdateLayout();
+
+            var bindingVal = new System.Windows.Data.Binding("Value")
+            {
+                Source = tb.Text,
+                Mode = BindingMode.TwoWay,
+                Converter = new DoubleDisplay()
+            };
+            tb.SetBinding(TextBlock.TextProperty, bindingVal);
         }
 
         public override double Value
@@ -1983,6 +1999,10 @@ namespace Dynamo.Nodes
 
                 base.Value = value;
 
+                //nodeLabel.Text = dynUtils.Ellipsis(value.ToString(), 5);
+                //tb.Text = value.ToString();
+                //tb.Pending = false;
+                RaisePropertyChanged("Value");
             }
         }
 
@@ -2009,6 +2029,8 @@ namespace Dynamo.Nodes
         dynTextBox mintb;
         dynTextBox maxtb;
         TextBox displayBox;
+        private double max = 100.0;
+        private double min = 0.0;
 
         public dynDoubleSliderInput()
         {
@@ -2029,8 +2051,8 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(tb_slider, 1);
             System.Windows.Controls.Grid.SetRow(tb_slider, 0);
             tb_slider.Value = 0.0;
-            tb_slider.Maximum = 100.0;
-            tb_slider.Minimum = 0.0;
+            //tb_slider.Maximum = 100.0;
+            //tb_slider.Minimum = 0.0;
             tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
             tb_slider.ValueChanged += delegate
@@ -2133,30 +2155,52 @@ namespace Dynamo.Nodes
             Canvas.SetTop(displayBox, NodeUI.Height);
             Canvas.SetZIndex(displayBox, int.MaxValue);
 
-            var binding = new System.Windows.Data.Binding("Value")
+            var bindingValue = new System.Windows.Data.Binding("Value")
             {
-                Source = tb_slider,
-                Mode = System.Windows.Data.BindingMode.OneWay,
+                Source = tb_slider.Value,
+                Mode = BindingMode.TwoWay,
+                Converter = new StringDisplay()
+            };
+            displayBox.SetBinding(TextBox.TextProperty, bindingValue);
+
+            var bindingMax = new System.Windows.Data.Binding("Max")
+            {
+                Source = tb_slider.Maximum,
+                Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay()
             };
-            displayBox.SetBinding(TextBox.TextProperty, binding);
+            maxtb.SetBinding(Slider.MaximumProperty, bindingMax);
+
+            var bindingMin = new System.Windows.Data.Binding("Min")
+            {
+                Source = tb_slider.Minimum,
+                Mode = BindingMode.TwoWay,
+                Converter = new DoubleDisplay()
+            };
+            mintb.SetBinding(Slider.MinimumProperty, bindingMin);
         }
 
-        #region Value Conversion
-        [ValueConversion(typeof(double), typeof(String))]
-        private class DoubleDisplay : IValueConverter
+        public double Max
         {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            get { return max; }
+            set
             {
-                return ((double)value).ToString("F4");
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                return null;
+                max = value;
+                RaisePropertyChanged("Max");
             }
         }
-        #endregion
+
+        public double Min
+        {
+            get { return min; }
+            set
+            {
+                min = value;
+                RaisePropertyChanged("Min");
+            } 
+        }
+
+        
 
         protected override double DeserializeValue(string val)
         {
@@ -2179,19 +2223,20 @@ namespace Dynamo.Nodes
 
                 if (value > tb_slider.Maximum)
                 {
-                    maxtb.Text = value.ToString();
-                    tb_slider.Maximum = value;
+                    //maxtb.Text = value.ToString();
+                    //tb_slider.Maximum = value;
                     //maxtb.Pending = false;
                 }
                 if (value < tb_slider.Minimum)
                 {
-                    mintb.Text = value.ToString();
-                    tb_slider.Minimum = value;
+                    //mintb.Text = value.ToString();
+                    //tb_slider.Minimum = value;
                     //mintb.Pending = false;
                 }
 
                 base.Value = value;
-                tb_slider.Value = value;
+                //tb_slider.Value = value;
+                RaisePropertyChanged("Value");
             }
         }
 
@@ -2731,5 +2776,34 @@ namespace Dynamo.Nodes
         }
     }
 
+    #endregion
+
+    #region Value Conversion
+    [ValueConversion(typeof(double), typeof(String))]
+    public class DoubleDisplay : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return ((double)value).ToString("F4");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class StringDisplay : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
     #endregion
 }
