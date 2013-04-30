@@ -8,6 +8,7 @@ using System.Windows.Shapes;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Selection;
+using DragCanvas = Dynamo.Controls.DragCanvas;
 
 namespace Dynamo.Views
 {
@@ -19,17 +20,19 @@ namespace Dynamo.Views
         private bool isWindowSelecting;
         private Point mouseDownPos;
         private dynWorkspaceViewModel vm;
+        private Dynamo.Controls.DragCanvas WorkBench = null;
 
         public dynWorkspaceView()
         {
             InitializeComponent();
 
             this.Loaded += new RoutedEventHandler(dynWorkspaceView_Loaded);
+            selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
+        }
 
-            //use events on the zoom border to push the 
-            //current offset down to the view model
-            zoomBorder.MouseWheel += new MouseWheelEventHandler(zoomBorder_MouseWheel);
-            zoomBorder.MouseMove += new MouseEventHandler(zoomBorder_MouseMove);
+        void selectionCanvas_Loaded(object sender, RoutedEventArgs e)
+        {
+            DrawGrid();
         }
 
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
@@ -42,7 +45,7 @@ namespace Dynamo.Views
             vm.UILocked+=new EventHandler(LockUI);
             vm.UIUnlocked+=new EventHandler(UnlockUI);
             vm.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
-            DrawGrid();
+            
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)
@@ -115,12 +118,12 @@ namespace Dynamo.Views
 
         void zoomBorder_MouseMove(object sender, MouseEventArgs e)
         {
-            vm.SetCurrentOffsetCommand.Execute(zoomBorder.GetTranslateTransformOrigin());
+            vm.SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
         }
 
         void zoomBorder_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            vm.SetCurrentOffsetCommand.Execute(zoomBorder.GetTranslateTransformOrigin());
+            vm.SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
         }
 
         void vm_CurrentOffsetChanged(object sender, EventArgs e)
@@ -350,36 +353,43 @@ namespace Dynamo.Views
             //WorkBench.Children.Clear();
             double gridSpacing = 100.0;
 
-            for (double i = 0.0; i < WorkBench.Width; i += gridSpacing)
+            for (double i = 0.0; i < selectionCanvas.ActualWidth; i += gridSpacing)
             {
                 var xLine = new Line();
                 xLine.Stroke = new SolidColorBrush(Color.FromRgb(100, 100, 100));
                 xLine.X1 = i;
                 xLine.Y1 = 0;
                 xLine.X2 = i;
-                xLine.Y2 = WorkBench.Height;
+                xLine.Y2 = selectionCanvas.ActualHeight;
                 xLine.HorizontalAlignment = HorizontalAlignment.Left;
                 xLine.VerticalAlignment = VerticalAlignment.Center;
                 xLine.StrokeThickness = 1;
-                WorkBench.Children.Add(xLine);
-                Dynamo.Controls.DragCanvas.SetCanBeDragged(xLine, false);
+                
+                selectionCanvas.Children.Add(xLine);
+                //Dynamo.Controls.DragCanvas.SetCanBeDragged(xLine, false);
                 xLine.IsHitTestVisible = false;
             }
-            for (double i = 0.0; i < WorkBench.Height; i += gridSpacing)
+            for (double i = 0.0; i < selectionCanvas.ActualHeight; i += gridSpacing)
             {
                 var yLine = new Line();
                 yLine.Stroke = new SolidColorBrush(Color.FromRgb(100, 100, 100));
                 yLine.X1 = 0;
                 yLine.Y1 = i;
-                yLine.X2 = WorkBench.Width;
+                yLine.X2 = selectionCanvas.ActualWidth;
                 yLine.Y2 = i;
                 yLine.HorizontalAlignment = HorizontalAlignment.Left;
                 yLine.VerticalAlignment = VerticalAlignment.Center;
                 yLine.StrokeThickness = 1;
-                WorkBench.Children.Add(yLine);
-                Dynamo.Controls.DragCanvas.SetCanBeDragged(yLine, false);
+                selectionCanvas.Children.Add(yLine);
+                //Dynamo.Controls.DragCanvas.SetCanBeDragged(yLine, false);
                 yLine.IsHitTestVisible = false;
             }
+        }
+
+        private void WorkBench_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            WorkBench = sender as Dynamo.Controls.DragCanvas;
+            //DrawGrid();
         }
     }
 }

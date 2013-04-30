@@ -111,7 +111,7 @@ namespace Dynamo.Controls
         public DelegateCommand<object> AddNoteCommand { get; set; }
         public DelegateCommand<object> DeleteCommand { get; set; }
         public DelegateCommand NodeFromSelectionCommand { get; set; }
-        public DelegateCommand<object> SelectCommand { get; set; }
+
         public DelegateCommand<object> SelectNeighborsCommand { get; set; }
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
@@ -300,7 +300,7 @@ namespace Dynamo.Controls
             AddNoteCommand = new DelegateCommand<object>(AddNote, CanAddNote);
             DeleteCommand = new DelegateCommand<object>(Delete, CanDelete);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
-            SelectCommand = new DelegateCommand<object>(Select, CanSelect);
+            
             SelectNeighborsCommand = new DelegateCommand<object>(SelectNeighbors, CanSelectNeighbors);
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
@@ -1405,40 +1405,6 @@ namespace Dynamo.Controls
             
 //MVVM : do not explicitly remove view
             //dynSettings.Workbench.Children.Remove(note);
-        }
-
-        private void Select(object parameters)
-        {
-            dynNode node = parameters as dynNode;
-
-            if (!node.IsSelected)
-            {
-                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
-                {
-                    DynamoSelection.Instance.ClearSelection();
-                }
-
-                if (!DynamoSelection.Instance.Selection.Contains(node))
-                    DynamoSelection.Instance.Selection.Add(node);
-            }
-            else
-            {
-                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-                {
-                    DynamoSelection.Instance.Selection.Remove(node);
-                }
-            }
-        }
-
-        private bool CanSelect(object parameters)
-        {
-            dynNode node = parameters as dynNode;
-            if (node == null)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         private void SelectNeighbors(object parameters)

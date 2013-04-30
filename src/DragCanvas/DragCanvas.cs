@@ -129,7 +129,7 @@ namespace Dynamo.Controls
           {
               foreach (ISelectable n in e.NewItems)
               {
-                  n.Select();
+                  //n.Select();
 
                   //UIElement el = (UIElement)n;
 
@@ -160,7 +160,7 @@ namespace Dynamo.Controls
               // call the deselect method on elements removed from the collection
               foreach (ISelectable n in e.OldItems)
               {
-                  (n as ISelectable).Deselect();
+                  //(n as ISelectable).Deselect();
 
                   // remove the corresponding offsetdata object
                   // for the element being removed

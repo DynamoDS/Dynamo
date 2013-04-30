@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Selection
@@ -36,7 +37,39 @@ namespace Dynamo.Selection
 
         private DynamoSelection()
         {
-            
+            Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(selection_CollectionChanged);
+        }
+
+        /// <summary>
+        /// A callback for automatically selecting and deselecting elements 
+        /// when they are added to the Selection collection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+            {
+                throw new Exception("To properly clean the selection, please use RemoveAll() instead.");
+            }
+
+            // call the select method on elements added to the collection
+            if (e.NewItems != null)
+            {
+                foreach (ISelectable n in e.NewItems)
+                {
+                    n.Select();
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                // call the deselect method on elements removed from the collection
+                foreach (ISelectable n in e.OldItems)
+                {
+                    n.Deselect();
+                }
+            }
         }
 
         public void ClearSelection()

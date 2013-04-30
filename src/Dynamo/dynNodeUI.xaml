@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Dynamo.Controls" xmlns:commands="clr-namespace:Dynamo.Commands"
+             xmlns:connectors="clr-namespace:Dynamo.Connectors"
              Height="{Binding Path=PreferredHeight}"
     MinWidth="100"
     Width="160" 
@@ -70,7 +71,11 @@
             Background="Transparent"
             Canvas.ZIndex="1" Width="Auto">
             <ItemsControl ItemsSource="{Binding Path=InPorts}">
-
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <connectors:dynPort></connectors:dynPort>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
         <StackPanel Name="gridRight" 
@@ -81,7 +86,11 @@
               Background="Transparent"
               Canvas.ZIndex="1" Width="Auto">
             <ItemsControl ItemsSource="{Binding Path=OutPorts}">
-                
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <connectors:dynPort></connectors:dynPort>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
         <Canvas Canvas.Left="0" 
@@ -94,12 +103,10 @@
                        Width="{Binding ElementName=topControl, Path=Width}"
                        Height="{Binding ElementName=topControl, Path=Height}"
                        Name="elementRectangle" 
-                       RadiusX="10" 
-                       RadiusY="10"
                        Canvas.ZIndex="90"
                        Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}" 
                        StrokeThickness="2"
-                       Fill="{Binding Path=State, Converter={StaticResource StateToColorConverter}, Mode=TwoWay}">
+                       Fill="{Binding Path=State, Converter={StaticResource StateToColorConverter}}">
                 <Rectangle.Effect>
                     <DropShadowEffect Opacity="{Binding Path=DropShadowOpacity}" />
                 </Rectangle.Effect>
@@ -119,7 +126,7 @@
                          VerticalAlignment="Top" 
                          HorizontalAlignment="Center"
                          TextTrimming="CharacterEllipsis"
-                         Text="{Binding NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Text="{Binding NickName, UpdateSourceTrigger=PropertyChanged}"
                          Margin="16,-22"
                          Padding="3"
                          FontSize="11" 

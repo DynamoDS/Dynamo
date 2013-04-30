@@ -75,6 +75,20 @@ namespace Dynamo
 
         #endregion
 
+        #region events
+
+        /// <summary>
+        /// An event which requests that a node be selected
+        /// </summary>
+        public event NodeEventHandler RequestNodeSelect;
+        public virtual void OnRequestSelect(object sender, NodeEventArgs e)
+        {
+            if (RequestNodeSelect != null)
+                RequestNodeSelect(sender, e);
+        }
+
+        #endregion
+
         #region Constructor and Initialization
 
         /// <summary>

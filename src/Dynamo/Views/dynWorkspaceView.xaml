@@ -17,7 +17,7 @@
                  ClipToBounds="True" 
                  Grid.Row="0" 
                  Grid.Column="2">
-            <controls:ZoomBorder ClipToBounds="True" x:Name="zoomBorder">
+            <!--<controls:ZoomBorder ClipToBounds="True" x:Name="zoomBorder">
                 <dragCanvas:DragCanvas x:Name="WorkBench"
                                     x:FieldModifier="public"
                                     Width="100000" 
@@ -35,8 +35,45 @@
                         <SolidColorBrush Color="Transparent"/>
                     </Canvas.Background>
                 </dragCanvas:DragCanvas>
-            </controls:ZoomBorder>
+            </controls:ZoomBorder>-->
 
+            <!--http://msdn.microsoft.com/en-us/library/system.windows.controls.itemscontrol.aspx-->
+
+            
+            <controls:ZoomBorder ClipToBounds="True" MouseWheel="zoomBorder_MouseWheel" 
+                                             MouseMove="zoomBorder_MouseMove" x:Name="zoomBorder">
+                <Grid>
+            <Canvas Name="selectionCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Rectangle
+                            x:Name="selectionBox"
+                            Visibility="Collapsed"
+                            Stroke="Black"
+                            StrokeThickness="1"
+                            IsHitTestVisible="False"
+                        />
+                    </Canvas>
+            <ItemsControl ItemsSource="{Binding Nodes}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <dragCanvas:DragCanvas
+                                    Width="100000" 
+                                    Height="100000" 
+                                    Visibility="Visible"
+                                    ContextMenuOpening="WorkBench_ContextMenuOpening" Loaded="WorkBench_OnLoaded" IsItemsHost="True">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="Transparent"/>
+                            </Canvas.Background>
+                        </dragCanvas:DragCanvas>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <controls:dynNodeUI></controls:dynNodeUI>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+                </Grid>
+            </controls:ZoomBorder>
             <Label Canvas.Top="40" Canvas.Right="0" Content="Not Under Package Control" Name="packageControlLabel" 
                        HorizontalContentAlignment="Right" Visibility ="Collapsed" FontSize="14"
                        FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />

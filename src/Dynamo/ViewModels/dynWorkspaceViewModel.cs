@@ -368,4 +368,13 @@ namespace Dynamo
             return true;
         }
     }
+
+    public class NodeViewEventArgs:EventArgs
+    {
+        dynNodeViewModel ViewModel { get; set; }
+        public NodeViewEventArgs(dynNodeViewModel vm)
+        {
+            ViewModel = vm;
+        }
+    }
 }

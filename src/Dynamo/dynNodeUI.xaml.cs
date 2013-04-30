@@ -14,27 +14,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
-using System.Windows.Threading;
-using Microsoft.FSharp.Collections;
-
 using Dynamo.Connectors;
 using Dynamo.Nodes;
-using Dynamo.FSchemeInterop;
-using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
-using Dynamo.Commands;
-using Microsoft.Practices.Prism.Commands;
-using Expression = Dynamo.FScheme.Expression;
 using Grid = System.Windows.Controls.Grid;
 
 namespace Dynamo.Controls
@@ -75,19 +60,24 @@ namespace Dynamo.Controls
         {
             InitializeComponent();
 
-            vm = DataContext as dynNodeViewModel;
+            this.Loaded += new RoutedEventHandler(dynNodeUI_Loaded);
+            inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
 
             //set the main grid's data context to 
             //this element
-            nickNameBlock.DataContext = this;
-            elementRectangle.DataContext = this;
-            topControl.DataContext = this;
-            elementRectangle.DataContext = this;
+            //nickNameBlock.DataContext = this;
+            //elementRectangle.DataContext = this;
+            //topControl.DataContext = this;
+            //elementRectangle.DataContext = this;
 
             //set the z index to 2
             Canvas.SetZIndex(this, 1);
 
-            inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
+        }
+
+        void dynNodeUI_Loaded(object sender, RoutedEventArgs e)
+        {
+            vm = DataContext as dynNodeViewModel;
             vm.NodeLogic.DispatchedToUI += new DispatchedToUIThreadHandler(NodeLogic_DispatchedToUI);
         }
 
@@ -180,9 +170,10 @@ namespace Dynamo.Controls
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             dynSettings.Bench.mainGrid.Focus();
-            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(vm.SelectCommand, this));
-            dynSettings.Controller.ProcessCommandQueue();
-            
+            //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(vm.SelectCommand, this));
+            //dynSettings.Controller.ProcessCommandQueue();
+            vm.SelectCommand.Execute();
+            e.Handled = true;
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)

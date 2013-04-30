@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -106,5 +107,6 @@ namespace Dynamo
         {
             IsSelected = false;
         }
+
     }
 }
