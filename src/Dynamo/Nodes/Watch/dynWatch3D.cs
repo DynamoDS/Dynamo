@@ -54,8 +54,6 @@ namespace Dynamo.Nodes
         private bool _requiresRedraw = false;
         private bool _isRendering = false;
 
-        bool _isScreenShot = false;
-
         public dynWatch3D()
         {
             InPortData.Add(new PortData("IN", "Incoming geometry objects.", typeof(object)));
@@ -72,18 +70,8 @@ namespace Dynamo.Nodes
             //take out the left and right margins and make this so it's not so wide
             NodeUI.inputGrid.Margin = new Thickness(10, 10, 10, 10);
 
-            _isScreenShot = true;
-
-            if (_isScreenShot)
-            {
-                NodeUI.topControl.Width = 800;
-                NodeUI.topControl.Height = 500;
-            }
-            else
-            {
-                NodeUI.topControl.Width = 400;
-                NodeUI.topControl.Height = 300;
-            }
+            NodeUI.topControl.Width = 800;
+            NodeUI.topControl.Height = 500;
 
             //add a 3D viewport to the input grid
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
