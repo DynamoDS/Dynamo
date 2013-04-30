@@ -341,17 +341,13 @@ namespace Dynamo
             base.Modified();
 
             var controller = dynSettings.Controller;
-            dynSettings.Bench.Dispatcher.BeginInvoke(new Action(
-                () =>
-                {
-                    if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)
-                    {
-                        if (!controller.Running)
-                            controller.RunExpression(false);
-                        else
-                            controller.QueueRun();
-                    }
-                }));
+            if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)
+            {
+                if (!controller.Running)
+                    controller.RunExpression(false);
+                else
+                    controller.QueueRun();
+            }
         }
 
         public override void OnDisplayed()

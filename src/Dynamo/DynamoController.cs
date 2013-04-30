@@ -89,9 +89,7 @@ namespace Dynamo
 
             //MVVM : create the view model to which the main window will bind
             //the DynamoModel is created therein
-            DynamoViewModel = new DynamoViewModel(this);
-            //DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in dynSettings.Bench activated
-
+            this.DynamoViewModel = new DynamoViewModel(this);
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -148,11 +146,17 @@ namespace Dynamo
             if (FScheme.RunTests(dynSettings.Controller.DynamoViewModel.Log))
             {
                 if (dynSettings.Bench != null)
-                    dynSettings.Controller.DynamoViewModel.Log("All Tests Passed. Core library loaded OK.");
+                    this.DynamoViewModel.Log("All Tests Passed. Core library loaded OK.");
             }
         }
 
         #endregion
+
+        public void ShutDown()
+        {
+            dynSettings.Controller = null;
+            Selection.DynamoSelection.Instance.ClearSelection();
+        }
 
         #region CommandQueue
     
@@ -240,6 +244,9 @@ namespace Dynamo
             worker.RunWorkerAsync();
         }
 
+        public delegate void CompletedRunHandler(DynamoController controller, bool success);
+        public event CompletedRunHandler OnRunCompleted;
+
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
             /* Execution Thread */
@@ -282,6 +289,8 @@ namespace Dynamo
                 //If we are forcing this, then make sure we don't run again either.
                 if (ex.Force)
                     runAgain = false;
+
+                OnRunCompleted(this, false);
             }
             catch (Exception ex)
             {
@@ -290,9 +299,7 @@ namespace Dynamo
                 //Catch unhandled exception
                 if (ex.Message.Length > 0)
                 {
-                    dynSettings.Bench.Dispatcher.Invoke(new Action(
-                                                delegate { dynSettings.Controller.DynamoViewModel.Log(ex); }
-                                                ));
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                 }
 
                 OnRunCancelled(true);
@@ -300,6 +307,8 @@ namespace Dynamo
                 //Reset the flags
                 runAgain = false;
                 RunCancelled = true;
+
+                OnRunCompleted(this, false);
             }
             finally
             {
@@ -321,6 +330,7 @@ namespace Dynamo
                 foreach (FunctionDefinition def in dynSettings.FunctionWasEvaluated)
                     def.RequiresRecalc = false;
 
+                
                 //If we should run again...
                 if (runAgain)
                 {
@@ -331,9 +341,13 @@ namespace Dynamo
                     {
                         //Run this method again from the main thread
                         dynSettings.Bench.Dispatcher.BeginInvoke(new Action(
-                                                         delegate { RunExpression(_showErrors); }
-                                                         ));
+                                                                     delegate { RunExpression(_showErrors); }
+                                                                     ));
                     }
+                }
+                else
+                {
+                    OnRunCompleted(this, true);
                 }
             }
         }

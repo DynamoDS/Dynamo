@@ -166,7 +166,6 @@ namespace Dynamo.Search.SearchElements
                     {"transformFromOuterCanvasCoordinates", true},
                     {"guid", guid}
                 };
-            //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeParams));
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.CreateNodeCommand, nodeParams));
             dynSettings.Controller.ProcessCommandQueue();
 
@@ -174,7 +173,6 @@ namespace Dynamo.Search.SearchElements
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
-                //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, placedNode.NodeUI));
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.SelectCommand, placedNode));
                 dynSettings.Controller.ProcessCommandQueue();
             }

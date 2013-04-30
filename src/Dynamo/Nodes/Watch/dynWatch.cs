@@ -38,8 +38,8 @@ namespace Dynamo.Nodes
     [NodeSearchTags("print", "output", "display")]
     public class dynWatch: dynNodeWithOneOutput
     {
-        WatchTree wt;
-        WatchTreeBranch wtb;
+        public WatchTree watchTree;
+        public WatchTreeBranch watchTreeBranch;
         //int oldPreferredHeight;
 
         private class WatchHandlers
@@ -100,13 +100,13 @@ namespace Dynamo.Nodes
             //oldPreferredHeight = NodeUI.PreferredHeight;
             NodeUI.Height = 200;
 
-            wt = new WatchTree();
-            //wt.TreeExpanded += new EventHandler(wt_TreeExpanded);
-            //wt.TreeCollapsed += new EventHandler(wt_TreeCollapsed);
+            watchTree = new WatchTree();
+            //watchTree.TreeExpanded += new EventHandler(wt_TreeExpanded);
+            //watchTree.TreeCollapsed += new EventHandler(wt_TreeCollapsed);
 
-            NodeUI.inputGrid.Children.Add(wt);
+            NodeUI.inputGrid.Children.Add(watchTree);
 
-            wtb = wt.FindResource("Tree") as WatchTreeBranch;
+            watchTreeBranch = watchTree.FindResource("Tree") as WatchTreeBranch;
         }
 
         void wt_TreeCollapsed(object sender, EventArgs e)
@@ -121,7 +121,7 @@ namespace Dynamo.Nodes
 
         void p_PortDisconnected(object sender, EventArgs e)
         {
-            wtb.Clear();
+            watchTreeBranch.Clear();
             //NodeUI.PreferredHeight = oldPreferredHeight;
         }
 
@@ -135,11 +135,11 @@ namespace Dynamo.Nodes
             DispatchOnUIThread(
                 delegate
                 {
-                    wtb.Clear();
+                    watchTreeBranch.Clear();
 
                     foreach (Value e in args)
                     {
-                        wtb.Add(Process(e, ref content, prefix, count));
+                        watchTreeBranch.Add(Process(e, ref content, prefix, count));
                         count++;
                     }
                 }
@@ -148,11 +148,11 @@ namespace Dynamo.Nodes
             //NodeUI.Dispatcher.Invoke(new Action(
             //    delegate
             //    {
-            //        wtb.Clear();
+            //        watchTreeBranch.Clear();
 
             //        foreach (Value e in args)
             //        {
-            //            wtb.Add(Process(e, ref content, prefix, count));
+            //            watchTreeBranch.Add(Process(e, ref content, prefix, count));
             //            count++;
             //        }
             //    }

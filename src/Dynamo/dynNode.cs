@@ -191,7 +191,12 @@ namespace Dynamo.Nodes
         /// </summary>
         private bool _report = true;
 
-        protected Value oldValue;
+        /// <summary>
+        /// Get the last computed value from the node.
+        /// </summary>
+        public Value OldValue { get; protected set; }
+
+
         protected internal ExecutionEnvironment macroEnvironment = null;
 
         //TODO: don't make this static (maybe)
@@ -645,20 +650,25 @@ namespace Dynamo.Nodes
 
         private Value evalIfDirty(FSharpList<Value> args)
         {
-            if (oldValue == null || !SaveResult || RequiresRecalc)
+            if (OldValue == null || !SaveResult || RequiresRecalc)
             {
                 //Evaluate arguments, then evaluate 
-                oldValue = evaluateNode(args);
+                OldValue = evaluateNode(args);
             }
             else
                 OnEvaluate();
 
-            return oldValue;
+            return OldValue;
         }
 
         private delegate Value innerEvaluationDelegate();
 
-        private Dictionary<PortData, Value> evaluationDict = new Dictionary<PortData, Value>();
+        public Dictionary<PortData, Value> evaluationDict = new Dictionary<PortData, Value>();
+
+        public Value GetValue(int outPortIndex)
+        {
+            return evaluationDict.Values.ElementAt(outPortIndex);
+        }
 
         protected internal virtual Value evaluateNode(FSharpList<Value> args)
         {
@@ -755,12 +765,12 @@ namespace Dynamo.Nodes
         protected internal virtual void __eval_internal(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             var argList = new List<string>();
-            if (args.Count() > 0)
+            if (args.Any())
             {
                 argList = args.Select(x => x.ToString()).ToList<string>();
             }
             var outPutsList = new List<string>();
-            if(outPuts.Count() > 0)
+            if(outPuts.Any())
             {
                 outPutsList = outPuts.Keys.Select(x=>x.NickName).ToList<string>();
             }

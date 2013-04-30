@@ -279,6 +279,7 @@ namespace Dynamo
         {
             var rect = (Rect)parameters;
 
+           
             foreach (dynNode n in WorkspaceModel.Nodes)
             {
                 //check if the node is within the boundary

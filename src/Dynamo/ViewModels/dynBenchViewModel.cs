@@ -8,9 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -18,12 +16,9 @@ using System.Windows.Media.Imaging;
 using System.Xml;
 using Dynamo.Commands;
 using Dynamo.Connectors;
-using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Nodes;
-using Dynamo.PackageManager;
-using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Utilties;
@@ -31,10 +26,12 @@ using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Controls
 {
-    
 
     public class DynamoViewModel:dynViewModelBase
     {
+
+        #region properties
+
         public event EventHandler UILocked;
         public event EventHandler UIUnlocked;
         public event EventHandler RequestLayoutUpdate;
@@ -255,6 +252,8 @@ namespace Dynamo.Controls
 
         }
 
+        #endregion
+
         public DynamoViewModel(DynamoController controller)
         {
             //MVVM: Instantiate the model
@@ -269,6 +268,7 @@ namespace Dynamo.Controls
             sw = new StringWriter();
             ConnectorType = ConnectorType.BEZIER;
 
+            #region Initialize Commands
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode,  CanGoToSourceCode);
             CleanupCommand = new DelegateCommand(Cleanup, CanCleanup);
@@ -305,7 +305,7 @@ namespace Dynamo.Controls
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
             RefactorCustomNodeCommand = new DelegateCommand(RefactorCustomNode, CanRefactorCustomNode);
-
+            #endregion
         }
 
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -350,11 +350,12 @@ namespace Dynamo.Controls
 
             if (!string.IsNullOrEmpty(xmlPath))
             {
-                if (dynSettings.Bench.UILocked)
-                {
-                    QueueLoad(xmlPath);
-                    return;
-                }
+
+                //if (dynSettings.Bench.UILocked)
+                //{
+                //    QueueLoad(xmlPath);
+                //    return;
+                //}
 
                 //dynSettings.Bench.LockUI();
                 OnUILocked(this, EventArgs.Empty);
@@ -821,7 +822,7 @@ namespace Dynamo.Controls
             //paste contents in
             DynamoSelection.Instance.Selection.RemoveAll();
 
-            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynNodeViewModel);
+            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynNode);
 
             var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnector);
 
@@ -831,9 +832,7 @@ namespace Dynamo.Controls
                 Guid newGuid = Guid.NewGuid();
                 nodeLookup.Add(node.GUID, newGuid);
 
-                Dictionary<string, object> nodeData = new Dictionary<string, object>();
-                //nodeData.Add("x", Canvas.GetLeft(node));
-                //nodeData.Add("y", Canvas.GetTop(node) + 100);
+                var nodeData = new Dictionary<string, object>();
                 nodeData.Add("x", node.X);
                 nodeData.Add("y", node.Y + 100);
                 nodeData.Add("name", node.NickName);
@@ -898,8 +897,7 @@ namespace Dynamo.Controls
 
                 connectionData.Add("start", startNode);
 
-                connectionData.Add("end", _model.CurrentSpace.Nodes
-                    .Where(x => x.GUID == (Guid)nodeLookup[c.End.Owner.GUID]).FirstOrDefault());
+                connectionData.Add("end", _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == (Guid)nodeLookup[c.End.Owner.GUID]));
 
                 connectionData.Add("port_start", c.Start.Index);
                 connectionData.Add("port_end", c.End.Index);
@@ -913,8 +911,7 @@ namespace Dynamo.Controls
             foreach (DictionaryEntry de in nodeLookup)
             {
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(AddToSelectionCommand,
-                    _model.CurrentSpace.Nodes
-                    .Where(x => x.GUID == (Guid)de.Value).FirstOrDefault()));
+                    _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == (Guid)de.Value)));
             }
 
             dynSettings.Controller.ProcessCommandQueue();
@@ -1135,7 +1132,7 @@ namespace Dynamo.Controls
 
         void CreateNode(object parameters)
         {
-            Dictionary<string, object> data = parameters as Dictionary<string, object>;
+            var data = parameters as Dictionary<string, object>;
             if (data == null)
             {
                 return;
@@ -1202,83 +1199,29 @@ namespace Dynamo.Controls
                 node.GUID = Guid.NewGuid();
             }
 
-            //MVVM: replaced with OnRequestNodeCentered event
-            //// by default place node at center
-            //var x = 0.0;
-            //var y = 0.0;
-            //if (dynSettings.Bench != null)
-            //{
-            //    x = dynSettings.Controller
-            //        .Bench.outerCanvas.ActualWidth / 2.0;
-            //    y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
-
-            //    // apply small perturbation
-            //    // so node isn't right on top of last placed node
-            //    Random r = new Random();
-            //    x += (r.NextDouble() - 0.5) * 50;
-            //    y += (r.NextDouble() - 0.5) * 50;
-            //}
-
-            //var transformFromOuterCanvas = data.ContainsKey("transformFromOuterCanvasCoordinates");
-
-            //if (data.ContainsKey("x"))
-            //    x = (double)data["x"];
-
-            //if (data.ContainsKey("y"))
-            //    y = (double)data["y"];
-
-            //Point dropPt = new Point(x, y);
-
-            //if (dynSettings.Bench != null)
-            //{
-            //    // Transform dropPt from outerCanvas space into zoomCanvas space
-            //    if (transformFromOuterCanvas)
-            //    {
-            //        var a = dynSettings.Bench.outerCanvas.TransformToDescendant(dynSettings.Bench.WorkBench);
-            //        dropPt = a.Transform(dropPt);
-            //    }
-            //}
-
-            //// center the node at the drop point
-            //if (!Double.IsNaN(node.Width))
-            //    dropPt.X -= (node.Width / 2.0);
-
-            //if (!Double.IsNaN(node.Height))
-            //    dropPt.Y -= (node.Height / 2.0);
-
-            ////MVVM: Don't do direct canvas manipulation here
-            ////Canvas.SetLeft(node, dropPt.X);
-            ////Canvas.SetTop(node, dropPt.Y);
-
-            //if (!Double.IsNaN(node.Width))
-            //    dropPt.X -= (node.Height / 2.0);
-
-            //if (!Double.IsNaN(node.Height))
-            //    dropPt.Y -= (node.Height / 2.0);
-
-            //node.X = dropPt.X;
-            //node.Y = dropPt.Y;
-
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new NodeEventArgs(node, data));
 
-            //nodeUi.EnableInteraction();
             node.EnableInteraction();
 
             if (ViewingHomespace)
             {
-                //NodeLogic.SaveResult = true;
                 node.SaveResult = true;
             }
         }
 
         bool CanCreateNode(object parameters)
         {
-            Dictionary<string, object> data = parameters as Dictionary<string, object>;
+            var data = parameters as Dictionary<string, object>;
 
-            if (data != null &&
-                (dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(data["name"].ToString()) ||
-                //dynSettings.Controller.CustomNodeLoader.Contains( Guid.Parse( data["name"].ToString() ) ) ||
-                    Controller.CustomNodeLoader.Contains(Guid.Parse((string)data["name"]))))
+            if (data == null)
+                return false;
+
+            Guid guid;
+            var name = data["name"].ToString();
+
+            if (dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(name)
+                    || dynSettings.Controller.BuiltInTypesByName.ContainsKey(name)
+                    || (Guid.TryParse(name, out guid) && dynSettings.Controller.CustomNodeLoader.Contains(guid)))
             {
                 return true;
             }
@@ -1528,34 +1471,28 @@ namespace Dynamo.Controls
 
         private void PostUIActivation()
         {
+            DynamoLoader.LoadCustomNodes(dynSettings.Bench, Controller.CustomNodeLoader, Controller.SearchViewModel);
 
-                DynamoLoader.LoadCustomNodes(dynSettings.Bench, Controller.CustomNodeLoader, Controller.SearchViewModel);
+            dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
 
-                dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
+            if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
+            {
+                dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
 
-                if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
+                if (DynamoCommands.WriteToLogCmd.CanExecute(null))
                 {
-                    //MessageBox.Show("Workbench could not be opened.");
-                    dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
-
-                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
-                    //dynSettings.Writer.WriteLine(UnlockLoadPath);
-
-                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
-                    {
-                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
-                        DynamoCommands.WriteToLogCmd.Execute(UnlockLoadPath);
-                    }
+                    DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
+                    DynamoCommands.WriteToLogCmd.Execute(UnlockLoadPath);
                 }
+            }
 
-                UnlockLoadPath = null;
+            UnlockLoadPath = null;
 
-                //Bench.UnlockUI();
-                OnUIUnlocked(this, EventArgs.Empty);
+            OnUIUnlocked(this, EventArgs.Empty);
 
-                DynamoCommands.ShowSearch.Execute(null);
+            DynamoCommands.ShowSearch.Execute(null);
 
-                _model.HomeSpace.OnDisplayed();
+            _model.HomeSpace.OnDisplayed();
 
         }
 

@@ -1931,8 +1931,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Creates a number.")]
     public class dynDoubleInput : dynDouble
     {
-        dynTextBox tb;
-        //TextBlock nodeLabel;
+        
         
         public dynDoubleInput()
         {
@@ -1946,7 +1945,7 @@ namespace Dynamo.Nodes
             NodeUI.topControl.Height = 40;
 
             //add a text box to the input grid of the control
-            tb = new dynTextBox();
+            var tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             NodeUI.inputGrid.Children.Add(tb);
@@ -1984,9 +1983,6 @@ namespace Dynamo.Nodes
 
                 base.Value = value;
 
-                //nodeLabel.Text = dynUtils.Ellipsis(value.ToString(), 5);
-                tb.Text = value.ToString();
-                tb.Pending = false;
             }
         }
 
