@@ -333,12 +333,15 @@ namespace Dynamo.Views
 
         private void LockUI(object sender, EventArgs e)
         {
-            WorkBench.Visibility = System.Windows.Visibility.Hidden;
+            //MVVM:this was pulled from the bench when we separated the workspaces
+            //but I don't think it's necessary any more with the tabs. Visibility
+            //of the canvas is now set to visible by default
+            //WorkBench.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private void UnlockUI(object sender, EventArgs e)
         {
-            WorkBench.Visibility = System.Windows.Visibility.Visible;
+            //WorkBench.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void DrawGrid()

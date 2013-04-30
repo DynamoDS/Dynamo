@@ -25,7 +25,7 @@
                                     x:FieldModifier="public"
                                     Width="100000" 
                                     Height="100000" 
-                                    Visibility="Hidden"
+                                    Visibility="Visible"
                                     ContextMenuOpening="WorkBench_ContextMenuOpening">
                     <Rectangle
                             x:Name="selectionBox"
