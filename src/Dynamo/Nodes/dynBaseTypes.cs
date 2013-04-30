@@ -40,6 +40,7 @@ using System.Text;
 using System.Windows.Input;
 using System.Windows.Data;
 using System.Globalization;
+using Binding = System.Windows.Forms.Binding;
 
 namespace Dynamo.Nodes
 {
@@ -1642,11 +1643,11 @@ namespace Dynamo.Nodes
 
             var bindingVal = new System.Windows.Data.Binding("Text")
             {
-                Source = base.Text,
+                Source = Text,
                 Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay()
+                Converter = new StringDisplay()
             };
-            this.SetBinding(TextBlock.TextProperty, bindingVal);
+            base.SetBinding(TextBox.TextProperty, bindingVal);
         }
 
         private bool numeric;
@@ -1704,7 +1705,7 @@ namespace Dynamo.Nodes
             get { return base.Text; }
             set
             {
-                base.Text = value;
+                //base.Text = value;
                 commit();
             }
         }
@@ -1764,6 +1765,7 @@ namespace Dynamo.Nodes
                 {
                     _value = value;
                     RequiresRecalc = value != null;
+                    RaisePropertyChanged("Value");
                 }
             }
         }
@@ -1939,8 +1941,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Creates a number.")]
     public class dynDoubleInput : dynDouble
     {
-        
-        
+
         public dynDoubleInput()
         {
             RegisterAllPorts();
@@ -1977,13 +1978,13 @@ namespace Dynamo.Nodes
 
             NodeUI.UpdateLayout();
 
+            tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
             {
-                Source = tb.Text,
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay()
             };
-            tb.SetBinding(TextBlock.TextProperty, bindingVal);
+            tb.SetBinding(TextBox.TextProperty, bindingVal);
         }
 
         public override double Value
@@ -2088,7 +2089,7 @@ namespace Dynamo.Nodes
             mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             mintb.Width = double.NaN;
             mintb.IsNumeric = true;
-            mintb.Text = "0";
+            //mintb.Text = "0";
             mintb.Margin = new Thickness(5);
             mintb.Padding = new Thickness(3);
             mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
@@ -2112,7 +2113,7 @@ namespace Dynamo.Nodes
             maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             maxtb.Width = double.NaN;
             maxtb.IsNumeric = true;
-            maxtb.Text = "100";
+            //maxtb.Text = "100";
             maxtb.Padding = new Thickness(3);
             maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             maxtb.OnChangeCommitted += delegate
@@ -2152,12 +2153,18 @@ namespace Dynamo.Nodes
                 Background = Brushes.White,
                 Foreground = Brushes.Black
             };
+            displayBox.DataContext = this;
+
             Canvas.SetTop(displayBox, NodeUI.Height);
             Canvas.SetZIndex(displayBox, int.MaxValue);
 
+            displayBox.DataContext = this;
+            maxtb.DataContext = this;
+            tb_slider.DataContext = this;
+            mintb.DataContext = this;
+
             var bindingValue = new System.Windows.Data.Binding("Value")
             {
-                Source = tb_slider.Value,
                 Mode = BindingMode.TwoWay,
                 Converter = new StringDisplay()
             };
@@ -2165,19 +2172,19 @@ namespace Dynamo.Nodes
 
             var bindingMax = new System.Windows.Data.Binding("Max")
             {
-                Source = tb_slider.Maximum,
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay()
             };
-            maxtb.SetBinding(Slider.MaximumProperty, bindingMax);
+            tb_slider.SetBinding(Slider.MaximumProperty, bindingMax);
+            maxtb.SetBinding(TextBox.TextProperty, bindingMax);
 
             var bindingMin = new System.Windows.Data.Binding("Min")
             {
-                Source = tb_slider.Minimum,
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay()
             };
-            mintb.SetBinding(Slider.MinimumProperty, bindingMin);
+            tb_slider.SetBinding(Slider.MinimumProperty, bindingMin);
+            mintb.SetBinding(TextBox.TextProperty, bindingMin);
         }
 
         public double Max
@@ -2200,8 +2207,6 @@ namespace Dynamo.Nodes
             } 
         }
 
-        
-
         protected override double DeserializeValue(string val)
         {
             try
@@ -2216,6 +2221,7 @@ namespace Dynamo.Nodes
 
         public override double Value
         {
+            get { return base.Value; }
             set
             {
                 if (base.Value == value)
@@ -2408,17 +2414,25 @@ namespace Dynamo.Nodes
 
             //remove the margins
             NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
+
+            tb.DataContext = this;
+            var bindingVal = new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new StringDisplay()
+            };
+            tb.SetBinding(TextBox.TextProperty, bindingVal);
         }
 
         public override string Value
         {
+            get { return base.Value; }
             set
             {
                 if (base.Value == value)
                     return;
 
                 base.Value = value;
-
                 //tb.Text = Utilities.Ellipsis(Value, 30);
             }
         }
@@ -2492,7 +2506,9 @@ namespace Dynamo.Nodes
             readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
             tb = new TextBox();
-            tb.Text = "No file selected.";
+            //tb.Text = "No file selected.";
+            Value = "No file selected.";
+
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
@@ -2514,6 +2530,14 @@ namespace Dynamo.Nodes
 
             NodeUI.topControl.Height = 60;
             NodeUI.UpdateLayout();
+
+            tb.DataContext = this;
+            var bindingVal = new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new FilePathDisplay()
+            };
+            tb.SetBinding(TextBox.TextProperty, bindingVal);
         }
 
         public override string Value
@@ -2526,9 +2550,9 @@ namespace Dynamo.Nodes
             {
                 base.Value = value;
 
-                tb.Text = string.IsNullOrEmpty(Value)
-                   ? "No file selected."
-                   : Value;
+                //tb.Text = string.IsNullOrEmpty(Value)
+                //   ? "No file selected."
+                //   : Value;
             }
         }
 
@@ -2798,6 +2822,20 @@ namespace Dynamo.Nodes
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class FilePathDisplay : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return string.IsNullOrEmpty(value.ToString())?
+                 "No file selected.": value.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
