@@ -276,6 +276,7 @@ namespace Dynamo
         public class dynOutput : dynNode
         {
             TextBox tb;
+            private string symbol;
 
             public dynOutput()
             {
@@ -301,6 +302,14 @@ namespace Dynamo
                 SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
                 tb.Background = backgroundBrush;
                 tb.BorderThickness = new Thickness(0);
+
+                tb.DataContext = this;
+                var bindingSymbol = new System.Windows.Data.Binding("Symbol")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Converter = new StringDisplay()
+                };
+                tb.SetBinding(TextBox.TextProperty, bindingSymbol);
             }
 
             public override bool RequiresRecalc
@@ -314,8 +323,17 @@ namespace Dynamo
 
             public string Symbol
             {
-                get { return tb.Text; }
-                set { tb.Text = value; }
+                get
+                {
+                    //return tb.Text;
+                    return symbol;
+                }
+                set
+                {
+                    //tb.Text = value;
+                    symbol = value;
+                    RaisePropertyChanged("Symbol");
+                }
             }
 
             public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)

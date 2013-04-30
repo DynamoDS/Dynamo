@@ -2227,18 +2227,18 @@ namespace Dynamo.Nodes
                 if (base.Value == value)
                     return;
 
-                if (value > tb_slider.Maximum)
-                {
-                    //maxtb.Text = value.ToString();
-                    //tb_slider.Maximum = value;
-                    //maxtb.Pending = false;
-                }
-                if (value < tb_slider.Minimum)
-                {
-                    //mintb.Text = value.ToString();
-                    //tb_slider.Minimum = value;
-                    //mintb.Pending = false;
-                }
+                //if (value > tb_slider.Maximum)
+                //{
+                //    maxtb.Text = value.ToString();
+                //    tb_slider.Maximum = value;
+                //    maxtb.Pending = false;
+                //}
+                //if (value < tb_slider.Minimum)
+                //{
+                //    mintb.Text = value.ToString();
+                //    tb_slider.Minimum = value;
+                //    mintb.Pending = false;
+                //}
 
                 base.Value = value;
                 //tb_slider.Value = value;
@@ -2268,12 +2268,14 @@ namespace Dynamo.Nodes
                         else if (attr.Name.Equals("min"))
                         {
                             //tb_slider.Minimum = Convert.ToDouble(attr.Value);
-                            mintb.Text = attr.Value;
+                            //mintb.Text = attr.Value;
+                            Min = Convert.ToDouble(attr.Value);
                         }
                         else if (attr.Name.Equals("max"))
                         {
                             //tb_slider.Maximum = Convert.ToDouble(attr.Value);
-                            maxtb.Text = attr.Value;
+                            //maxtb.Text = attr.Value;
+                            Max = Convert.ToDouble(attr.Value);
                         }
                     }
                 }
