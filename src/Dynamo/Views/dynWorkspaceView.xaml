@@ -74,8 +74,8 @@
                 </ItemsControl.ItemTemplate>
                         <ItemsControl.ItemContainerStyle>
                             <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding Left, Mode=TwoWay}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding Top, Mode=TwoWay}"/>
+                                <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Top}"/>
                             </Style>
                         </ItemsControl.ItemContainerStyle>
                     </ItemsControl>
