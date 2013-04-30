@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
@@ -143,6 +144,16 @@ namespace Dynamo
         {
             get { return isConnecting; }
             set { isConnecting = value; }
+        }
+
+        public Color BackgroundColor
+        {
+            get
+            {
+                if (_workspace == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
+                    return Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B);
+                return Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A);
+            }
         }
 
         /// <summary>

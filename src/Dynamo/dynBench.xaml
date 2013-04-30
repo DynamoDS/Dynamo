@@ -5,6 +5,7 @@
         xmlns:dynamo="clr-namespace:Dynamo"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:commands="clr-namespace:Dynamo.Commands"
+        xmlns:views="clr-namespace:Dynamo.Views"
         xmlns:utilities="clr-namespace:Dynamo.Utilities"
         x:Name="_this"
         Height="768" Width="1024"
@@ -218,10 +219,15 @@
                 Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3">
             <TabControl ItemsSource="{Binding Workspaces}">
                 <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
                 <DataTemplate>
-                    
+                    <views:dynWorkspaceView></views:dynWorkspaceView>
                 </DataTemplate>
-            </TabControl.ItemTemplate>
+            </TabControl.ContentTemplate>
         </TabControl>
         <!--outer canvas clips the inner canvas-->
             <!--<Canvas Name="outerCanvas" 

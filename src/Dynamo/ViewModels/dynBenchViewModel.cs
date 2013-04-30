@@ -243,17 +243,6 @@ namespace Dynamo.Controls
             }
         }
 
-        public Color BackgroundColor
-        {
-            get
-            {
-                if(dynSettings.Controller.DynamoViewModel.Model.CurrentSpace == 
-                    dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
-                    return Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B);
-                return Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A);
-            }
-        }
-
         public string EditName
         {
             get { return editName; }
