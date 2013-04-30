@@ -305,6 +305,8 @@ namespace Dynamo.Controls
              if (DynamoSelection.Instance.Selection.Count == 0)
                  return;
 
+             //MVVM: We've changed the selection to contain models, not views,
+             //so the hit test code has been altered to use the Rect of the model.
              //hitResultsList.Clear();
 
              //// Set up a callback to receive the hit test result enumeration.
