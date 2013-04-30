@@ -173,7 +173,7 @@ namespace Dynamo.Controls
             //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(vm.SelectCommand, this));
             //dynSettings.Controller.ProcessCommandQueue();
             vm.SelectCommand.Execute();
-            e.Handled = true;
+            //e.Handled = true;
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)

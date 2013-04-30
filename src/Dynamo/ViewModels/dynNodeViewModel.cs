@@ -289,10 +289,10 @@ namespace Dynamo.Controls
                     RaisePropertyChanged("ArgumentLacing");
                     break;
                 case "X":
-                    RaisePropertyChanged("X");
+                    RaisePropertyChanged("Left");
                     break;
                 case "Y":
-                    RaisePropertyChanged("Y");
+                    RaisePropertyChanged("Top");
                     break;
                 case "InteractionEnabled":
                     RaisePropertyChanged("IsInteractionEnabled");

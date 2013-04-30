@@ -59,7 +59,8 @@
                                     Width="100000" 
                                     Height="100000" 
                                     Visibility="Visible"
-                                    ContextMenuOpening="WorkBench_ContextMenuOpening" Loaded="WorkBench_OnLoaded" IsItemsHost="True">
+                                    ContextMenuOpening="WorkBench_ContextMenuOpening" 
+                                    Loaded="WorkBench_OnLoaded" IsItemsHost="True">
                             <Canvas.Background>
                                 <SolidColorBrush Color="Transparent"/>
                             </Canvas.Background>
@@ -71,7 +72,13 @@
                         <controls:dynNodeUI></controls:dynNodeUI>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding Left, Mode=TwoWay}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Top, Mode=TwoWay}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
                 </Grid>
             </controls:ZoomBorder>
             <Label Canvas.Top="40" Canvas.Right="0" Content="Not Under Package Control" Name="packageControlLabel" 

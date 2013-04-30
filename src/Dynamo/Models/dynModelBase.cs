@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Windows;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -66,6 +67,11 @@ namespace Dynamo
             }
         }
 
+        public Rect Rect
+        {
+            get{return new Rect(x,y,width,height);}
+        }
+
         public bool IsSelected
         {
             get { return _isSelected; }
@@ -107,6 +113,5 @@ namespace Dynamo
         {
             IsSelected = false;
         }
-
     }
 }

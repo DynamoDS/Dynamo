@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Selection
@@ -85,7 +86,7 @@ namespace Dynamo.Selection
         double Y { get; set; }
         double Width { get; set; }
         double Height { get; set; }
-
+        Rect Rect { get; }
         void Select();
         void Deselect();
     }
