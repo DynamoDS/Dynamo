@@ -18,9 +18,6 @@
                  Grid.Row="0" 
                  Grid.Column="2">
             <controls:ZoomBorder ClipToBounds="True" x:Name="zoomBorder">
-                <!--<controls:ZoomBorder.RenderTransform>
-                        <TranslateTransform X="{Binding Path=CurrentOffset.X,Mode=TwoWay}" Y="{Binding Path=CurrentOffset.Y, Mode=TwoWay}"/>
-                    </controls:ZoomBorder.RenderTransform>-->
                 <dragCanvas:DragCanvas x:Name="WorkBench"
                                     x:FieldModifier="public"
                                     Width="100000" 
@@ -34,7 +31,6 @@
                             StrokeThickness="1"
                             IsHitTestVisible="False"
                         />
-                    <!--<Ellipse Canvas.Left="0" Canvas.Right="0" Fill="Red" Width="10" Height="10" Name="debugPt" IsHitTestVisible="False"/>-->
                     <Canvas.Background>
                         <SolidColorBrush Color="Transparent"/>
                     </Canvas.Background>
