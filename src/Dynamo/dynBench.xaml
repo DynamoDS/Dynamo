@@ -217,63 +217,19 @@
 
     <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
                 Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3">
-            <TabControl ItemsSource="{Binding Workspaces}">
+            <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}"></TextBlock>
                     </DataTemplate>
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplate>
-                <DataTemplate>
-                    <views:dynWorkspaceView></views:dynWorkspaceView>
-                </DataTemplate>
-            </TabControl.ContentTemplate>
-        </TabControl>
-        <!--outer canvas clips the inner canvas-->
-            <!--<Canvas Name="outerCanvas" 
-                 Margin="0,0,0,0" 
-                 ClipToBounds="True" 
-                 Grid.Row="0" 
-                 Grid.Column="2">
-                <controls:ZoomBorder ClipToBounds="True" x:Name="zoomBorder">
-                    <dragCanvas:DragCanvas x:Name="WorkBench"
-                                    x:FieldModifier="public"
-                                    Width="100000" 
-                                    Height="100000" 
-                                    Visibility="Hidden"
-                                    ContextMenuOpening="WorkBench_ContextMenuOpening">
-                        <Rectangle
-                            x:Name="selectionBox"
-                            Visibility="Collapsed"
-                            Stroke="Black"
-                            StrokeThickness="1"
-                            IsHitTestVisible="False"
-                        />
-                        <Canvas.Background>
-                            <SolidColorBrush Color="Transparent"/>
-                        </Canvas.Background>
-                    </dragCanvas:DragCanvas>
-                </controls:ZoomBorder>
-
-                <Label Canvas.Top="40" Canvas.Right="0" Content="Not Under Package Control" Name="packageControlLabel" 
-                       HorizontalContentAlignment="Right" Visibility ="Collapsed" FontSize="14"
-                       FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
-
-                <Canvas.Background>
-                    <SolidColorBrush Color="{Binding BackgroundColor}" />
-                </Canvas.Background>
-                <Canvas.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem 
-                Header="_New Node From Selection" 
-                Name="NodeFromSelection"
-                Command="{Binding NodeFromSelectionCommand}"/>
-
-                    </ContextMenu>
-                </Canvas.ContextMenu>
-
-            </Canvas>-->
-        
+                    <DataTemplate>
+                        <views:dynWorkspaceView></views:dynWorkspaceView>
+                    </DataTemplate>
+                 </TabControl.ContentTemplate>
+            </TabControl>
+       
         </Border>
         
         <ScrollViewer Name="LogScroller" 

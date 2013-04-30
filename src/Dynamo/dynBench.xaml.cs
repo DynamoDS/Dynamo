@@ -70,6 +70,8 @@ namespace Dynamo.Controls
 
         void dynBench_Activated(object sender, EventArgs e)
         {
+
+            this.WorkspaceTabs.SelectedIndex = 0;
             vm = (DataContext as DynamoViewModel);
             vm.UILocked += new EventHandler(LockUI);
             vm.UIUnlocked += new EventHandler(UnlockUI);
