@@ -35,13 +35,13 @@ namespace Dynamo
             
             dynRevitSettings.Controller = this;
 
-            Predicate<dynNode> manualTransactionPredicate = delegate(dynNode node)
+            Predicate<dynNodeModel> manualTransactionPredicate = delegate(dynNodeModel node)
             {
                 return node is dynTransaction;
             };
             checkManualTransaction = new PredicateTraverser(manualTransactionPredicate);
 
-            Predicate<dynNode> requiresTransactionPredicate = delegate(dynNode node)
+            Predicate<dynNodeModel> requiresTransactionPredicate = delegate(dynNodeModel node)
             {
                 return node is dynRevitTransactionNode;
             };
@@ -504,7 +504,7 @@ namespace Dynamo
                 cleanup();
         }
 
-        protected override void Run(IEnumerable<dynNode> topElements, FScheme.Expression runningExpression)
+        protected override void Run(IEnumerable<dynNodeModel> topElements, FScheme.Expression runningExpression)
         {
 
             //If we are not running in debug...

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Controls.dynNodeUI"
+﻿<UserControl x:Class="Dynamo.Controls.dynNodeView"
     x:ClassModifier="public"
     x:FieldModifier="public"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -14,15 +14,15 @@
     PreviewKeyUp="OnPreviewKeyUp"
     MouseLeftButtonDown="topControl_MouseLeftButtonDown"
     MouseRightButtonDown="topControl_MouseRightButtonDown" 
-             MouseDoubleClick="DynNodeUI_OnMouseDoubleClick" 
+             MouseDoubleClick="dynNodeView_OnMouseDoubleClick" 
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Themes\DynamoColorsAndBrushes.xaml" />
-                <ResourceDictionary Source="Themes\DynamoConverters.xaml" />
-                <ResourceDictionary Source="Themes\DynamoModern.xaml" />
+                <ResourceDictionary Source="..\Themes\DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="..\Themes\DynamoConverters.xaml" />
+                <ResourceDictionary Source="..\Themes\DynamoModern.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

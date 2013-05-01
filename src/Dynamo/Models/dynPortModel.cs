@@ -32,7 +32,7 @@ namespace Dynamo.Connectors
         #region private fields
         Point center;
         bool isConnected;
-        dynNode owner;
+        dynNodeModel owner;
         int index;
         PortType portType;
         string name;
@@ -65,7 +65,7 @@ namespace Dynamo.Connectors
             set { portType = value; }
         }
 
-        public dynNode Owner
+        public dynNodeModel Owner
         {
             get { return owner; }
             set
@@ -129,7 +129,7 @@ namespace Dynamo.Connectors
         }
         #endregion
 
-        public dynPortModel(int index, PortType portType, dynNode owner, string name)
+        public dynPortModel(int index, PortType portType, dynNodeModel owner, string name)
         {
             Index = index;
             IsConnected = false;

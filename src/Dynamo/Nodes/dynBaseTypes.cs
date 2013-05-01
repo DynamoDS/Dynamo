@@ -134,7 +134,7 @@ namespace Dynamo.Nodes
             
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             System.Windows.Controls.Button addButton = new System.Windows.Controls.Button();
             addButton.Content = "+";
@@ -585,7 +585,7 @@ namespace Dynamo.Nodes
     [NodeName("Split Pair")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Deconstructs a list pair.")]
-    public class dynDeCons : dynNode
+    public class dynDeCons : dynNodeModel
     {
         public dynDeCons()
         {
@@ -696,7 +696,7 @@ namespace Dynamo.Nodes
             return Value.NewList(FSharpList<Value>.Empty);
         }
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
@@ -864,7 +864,7 @@ namespace Dynamo.Nodes
         }
 
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
@@ -934,12 +934,12 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
 
         }
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
@@ -1229,7 +1229,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Pi constant")]
     [NodeSearchTags("trigonometry", "circle", "π")]
     [IsInteractive(false)]
-    public class dynPi : dynNode
+    public class dynPi : dynNodeModel
     {
         public dynPi()
         {
@@ -1246,7 +1246,7 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
@@ -1403,7 +1403,7 @@ namespace Dynamo.Nodes
             return InPortData.Count + 1;
         }
 
-        private INode nestedBegins(Stack<Tuple<int, dynNode>> inputs, Dictionary<dynNode, Dictionary<int, INode>> preBuilt)
+        private INode nestedBegins(Stack<Tuple<int, dynNodeModel>> inputs, Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt)
         {
             var popped = inputs.Pop();
             var firstVal = popped.Item2.Build(preBuilt, popped.Item1);
@@ -1419,7 +1419,7 @@ namespace Dynamo.Nodes
                 return firstVal;
         }
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
@@ -1433,7 +1433,7 @@ namespace Dynamo.Nodes
                 result = new Dictionary<int, INode>(); 
                 result[outPort] = 
                     nestedBegins(
-                        new Stack<Tuple<int, dynNode>>(
+                        new Stack<Tuple<int, dynNodeModel>>(
                             Enumerable.Range(0, InPortData.Count).Select(x => Inputs[x])),
                     preBuilt);
                 preBuilt[this] = result;
@@ -1461,7 +1461,7 @@ namespace Dynamo.Nodes
             return "arg";
         }
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
@@ -1515,7 +1515,7 @@ namespace Dynamo.Nodes
     [NodeName("If")]
     [NodeCategory(BuiltinNodeCategories.BOOLEAN)]
     [NodeDescription("Conditional statement")]
-    public class dynConditional : dynNode
+    public class dynConditional : dynNodeModel
     {
         public dynConditional()
         {
@@ -1526,7 +1526,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
@@ -1556,7 +1556,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             //add a text box to the input grid of the control
             button = new System.Windows.Controls.Button();
@@ -1778,7 +1778,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", type.Name, type));
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             //add an edit window option to the 
             //main context window
@@ -1947,7 +1947,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
 
             NodeUI.topControl.Width = 80;
@@ -2038,7 +2038,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
 
             NodeUI.topControl.Width = 240;
@@ -2302,7 +2302,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             //inputGrid.Margin = new System.Windows.Thickness(5,5,20,5);
 
@@ -2399,7 +2399,7 @@ namespace Dynamo.Nodes
             Value = "";
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             //add a text box to the input grid of the control
             tb = new dynTextBox();
@@ -2495,7 +2495,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             //add a button to the inputGrid on the dynElement
             System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();

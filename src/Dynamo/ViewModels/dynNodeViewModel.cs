@@ -44,7 +44,7 @@ namespace Dynamo.Controls
         ObservableCollection<dynPortViewModel> inPorts = new ObservableCollection<dynPortViewModel>();
         ObservableCollection<dynPortViewModel> outPorts = new ObservableCollection<dynPortViewModel>();
         
-        dynNode nodeLogic;
+        dynNodeModel nodeLogic;
         
         int preferredHeight = 30;
         private bool isFullyConnected = false;
@@ -69,7 +69,7 @@ namespace Dynamo.Controls
             get { return nodeLogic.ArgumentLacing; }
         }
 
-        public dynNode NodeLogic
+        public dynNodeModel NodeLogic
         {
             get { return nodeLogic; }
         }
@@ -180,7 +180,7 @@ namespace Dynamo.Controls
         public DelegateCommand SelectCommand { get; set; }
         public DelegateCommand ViewCustomNodeWorkspaceCommand { get; set; }
         public DelegateCommand<object> SetLayoutCommand { get; set; }
-        public DelegateCommand<dynNodeUI> SetupCustomUIElementsCommand { get; set; }
+        public DelegateCommand<dynNodeView> SetupCustomUIElementsCommand { get; set; }
         public DelegateCommand ValidateConnectionsCommand { get; set; }
         #endregion
 
@@ -190,7 +190,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="nickName"></param>
-        public dynNodeViewModel(dynNode logic)
+        public dynNodeViewModel(dynNodeModel logic)
         {
             nodeLogic = logic;
 
@@ -208,7 +208,7 @@ namespace Dynamo.Controls
             SelectCommand = new DelegateCommand(Select, CanSelect);
             ViewCustomNodeWorkspaceCommand = new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
-            SetupCustomUIElementsCommand = new DelegateCommand<dynNodeUI>(SetupCustomUIElements, CanSetupCustomUIElements);
+            SetupCustomUIElementsCommand = new DelegateCommand<dynNodeView>(SetupCustomUIElements, CanSetupCustomUIElements);
             ValidateConnectionsCommand = new DelegateCommand(ValidateConnections, CanValidateConnections);
             
             //Do a one time setup of the initial ports on the node
@@ -222,7 +222,7 @@ namespace Dynamo.Controls
 
         void Controller_RequestNodeSelect(object sender, EventArgs e)
         {
-            dynNode n = (e as NodeEventArgs).Node;
+            dynNodeModel n = (e as NodeEventArgs).Node;
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(SelectCommand, n));
             dynSettings.Controller.ProcessCommandQueue();
         }
@@ -445,12 +445,12 @@ namespace Dynamo.Controls
             //    p.Update();
         }
 
-        private void SetupCustomUIElements(dynNodeUI NodeUI)
+        private void SetupCustomUIElements(dynNodeView NodeUI)
         {
             nodeLogic.SetupCustomUIElements(NodeUI);
         }
 
-        private bool CanSetupCustomUIElements(dynNodeUI NodeUI)
+        private bool CanSetupCustomUIElements(dynNodeView NodeUI)
         {
             return true;
         }

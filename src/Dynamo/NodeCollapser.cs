@@ -22,9 +22,9 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         /// <param name="currentWorkspace"> The workspace where</param>
-        internal static void Collapse(IEnumerable<dynNode> selectedNodes, dynWorkspace currentWorkspace)
+        internal static void Collapse(IEnumerable<dynNodeModel> selectedNodes, dynWorkspace currentWorkspace)
         {
-            var selectedNodeSet = new HashSet<dynNode>(selectedNodes);
+            var selectedNodeSet = new HashSet<dynNodeModel>(selectedNodes);
 
             // TODO: this code needs refactoring
             #region Prompt
@@ -69,14 +69,14 @@ namespace Dynamo.Utilities
             #region Determine Inputs and Outputs
 
             //Step 1: determine which nodes will be inputs to the new node
-            var inputs = new HashSet<Tuple<dynNode, int, Tuple<int, dynNode>>>(
+            var inputs = new HashSet<Tuple<dynNodeModel, int, Tuple<int, dynNodeModel>>>(
                     selectedNodeSet
                         .SelectMany(node => Enumerable.Range(0, node.InPortData.Count)
                             .Where(node.HasInput)
                             .Select(data => Tuple.Create(node, data, node.Inputs[data]))
                                                  .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
-            var outputs = new HashSet<Tuple<dynNode, int, Tuple<int, dynNode>>>(
+            var outputs = new HashSet<Tuple<dynNodeModel, int, Tuple<int, dynNodeModel>>>(
                 selectedNodeSet.SelectMany(
                     node => Enumerable.Range(0, node.OutPortData.Count).Where(node.HasOutput).SelectMany(
                         data => node.Outputs[data]
@@ -88,7 +88,7 @@ namespace Dynamo.Utilities
             #region Detect 1-node holes (higher-order function extraction)
 
             var curriedNodeArgs =
-                new HashSet<dynNode>(
+                new HashSet<dynNodeModel>(
                     inputs
                         .Select(x => x.Item3.Item2)
                         .Intersect(outputs.Select(x => x.Item3.Item2)))
@@ -99,7 +99,7 @@ namespace Dynamo.Utilities
 
                             //MVVM : Don't make direct reference to view here
                             //MVVM: no reference to view here
-                            //dynNodeUI nodeUI = node.NodeUI;
+                            //dynNodeView nodeUI = node.NodeUI;
 
                             var elNameAttrib =
                                 node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as
@@ -207,7 +207,7 @@ namespace Dynamo.Utilities
 
 //MVVM : do not set location of view directly
             double leftShift = leftMost - 250;
-            foreach (dynNode node in newNodeWorkspace.Nodes)
+            foreach (dynNodeModel node in newNodeWorkspace.Nodes)
             {
                 //Canvas.SetLeft(node, Canvas.GetLeft(node) - leftShift);
                 //Canvas.SetTop(node, Canvas.GetTop(node) - topMost);
@@ -269,7 +269,7 @@ namespace Dynamo.Utilities
 
             newNodeWorkspace.Nodes.ToList().ForEach(x => x.DisableReporting());
 
-            var inConnectors = new List<Tuple<dynNode, int, int>>();
+            var inConnectors = new List<Tuple<dynNodeModel, int, int>>();
 
             #region Process inputs
 
@@ -278,14 +278,14 @@ namespace Dynamo.Utilities
             {
                 int inputIndex = input.Item1;
 
-                dynNode inputReceiverNode = input.Item2.Item1;
+                dynNodeModel inputReceiverNode = input.Item2.Item1;
                 int inputReceiverData = input.Item2.Item2;
 
-                dynNode inputNode = input.Item2.Item3.Item2;
+                dynNodeModel inputNode = input.Item2.Item3.Item2;
                 int inputData = input.Item2.Item3.Item1;
 
 //MVVM : replace NodeUI reference with node
-                inConnectors.Add(new Tuple<dynNode, int, int>(inputNode, inputData, inputIndex));
+                inConnectors.Add(new Tuple<dynNodeModel, int, int>(inputNode, inputData, inputIndex));
 
                 //Create Symbol Node
                 var node = new dynSymbol
@@ -294,7 +294,7 @@ namespace Dynamo.Utilities
                 };
 
                 //MVVM : Don't make direct reference to view here
-                //dynNodeUI nodeUI = node.NodeUI;
+                //dynNodeView nodeUI = node.NodeUI;
                 
                 var elNameAttrib =
                     node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
@@ -364,18 +364,18 @@ namespace Dynamo.Utilities
             #region Process outputs
 
             //List of all inner nodes to connect an output. Unique.
-            var outportList = new List<Tuple<dynNode, int>>();
+            var outportList = new List<Tuple<dynNodeModel, int>>();
 
-            var outConnectors = new List<Tuple<dynNode, int, int>>();
+            var outConnectors = new List<Tuple<dynNodeModel, int, int>>();
 
             int i = 0;
             foreach (var output in outputs)
             {
                 if (outportList.All(x => !(x.Item1 == output.Item1 && x.Item2 == output.Item2)))
                 {
-                    dynNode outputSenderNode = output.Item1;
+                    dynNodeModel outputSenderNode = output.Item1;
                     int outputSenderData = output.Item2;
-                    dynNode outputReceiverNode = output.Item3.Item2;
+                    dynNodeModel outputReceiverNode = output.Item3.Item2;
 
                     if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
                         continue;
@@ -388,7 +388,7 @@ namespace Dynamo.Utilities
                         Symbol = outputSenderNode.OutPortData[outputSenderData].NickName
                     };
 
-                    //dynNodeUI nodeUI = node.NodeUI;
+                    //dynNodeView nodeUI = node.NodeUI;
 
                     var elNameAttrib =
                         node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), false)[0] as NodeNameAttribute;
@@ -435,13 +435,13 @@ namespace Dynamo.Utilities
             foreach (var output in outputs)
             {
                 //Node to be connected to in CurrentSpace
-                dynNode outputSenderNode = output.Item1;
+                dynNodeModel outputSenderNode = output.Item1;
 
                 //Port to be connected to on outPutNode_outer
                 int outputSenderData = output.Item2;
 
                 int outputReceiverData = output.Item3.Item1;
-                dynNode outputReceiverNode = output.Item3.Item2;
+                dynNodeModel outputReceiverNode = output.Item3.Item2;
 
                 var curriedNode = curriedNodeArgs.FirstOrDefault(
                     x => x.OuterNode == outputReceiverNode);
@@ -449,8 +449,8 @@ namespace Dynamo.Utilities
                 if (curriedNode == null)
                 {
                     // we create the connectors in the current space later
-//MVVM : replaced multiple dynNodeUI refrences with dynNode
-                    outConnectors.Add(new Tuple<dynNode, int, int>(outputReceiverNode,
+//MVVM : replaced multiple dynNodeView refrences with dynNode
+                    outConnectors.Add(new Tuple<dynNodeModel, int, int>(outputReceiverNode,
                                                                      outportList.FindIndex(x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
                                                                      outputReceiverData));
                 }
@@ -480,7 +480,7 @@ namespace Dynamo.Utilities
 //MVVM : Do not set view visibility here. It will be controlled by active workspace binding.
             //Step 4: make nodes invisible
             // and update positions
-            /*foreach (dynNodeUI node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
+            /*foreach (dynNodeView node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
                 node.Visibility = Visibility.Hidden;
 
             foreach (dynConnector connector in newNodeWorkspace.Connectors)

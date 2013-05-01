@@ -28,7 +28,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             //widen the control
             NodeUI.topControl.Width = 300;

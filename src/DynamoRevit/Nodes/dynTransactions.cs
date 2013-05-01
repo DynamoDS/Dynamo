@@ -57,7 +57,7 @@ namespace Dynamo.Nodes
                 this.RequiresRecalc = val;
         }
 
-        protected override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+        protected override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
@@ -135,7 +135,7 @@ namespace Dynamo.Nodes
                                 dynRevitSettings.Controller.EndTransaction();
                                 dynRevitSettings.Controller.InIdleThread = false;
 
-                                dynNodeUI.UpdateLayoutDelegate uld = new dynNodeUI.UpdateLayoutDelegate(node.NodeUI.CallUpdateLayout);
+                                dynNodeView.UpdateLayoutDelegate uld = new dynNodeView.UpdateLayoutDelegate(node.NodeUI.CallUpdateLayout);
                                 node.NodeUI.Dispatcher.Invoke(uld, DispatcherPriority.Background, new object[] { node.NodeUI });
                                 node.NodeUI.ValidateConnections();
                             }

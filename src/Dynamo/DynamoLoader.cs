@@ -101,7 +101,7 @@ namespace Dynamo.Utilties
         {
             return t.Namespace == "Dynamo.Nodes" &&
                    !t.IsAbstract &&
-                   t.IsSubclassOf(typeof(dynNode));
+                   t.IsSubclassOf(typeof(dynNodeModel));
         }
 
         /// <summary>

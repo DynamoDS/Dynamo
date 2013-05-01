@@ -14,7 +14,7 @@
     
     <UserControl.Resources>
         <DataTemplate DataType="{x:Type controls:dynNodeViewModel}">
-            <controls:dynNodeUI></controls:dynNodeUI>
+            <controls:dynNodeView></controls:dynNodeView>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type nodes:dynNoteViewModel}">

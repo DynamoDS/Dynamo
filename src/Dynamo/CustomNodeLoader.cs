@@ -340,11 +340,11 @@ namespace Dynamo.Utilities
 
                 if (!outputs.Any())
                 {
-                    var topMost = new List<Tuple<int, dynNode>>();
+                    var topMost = new List<Tuple<int, dynNodeModel>>();
 
-                    IEnumerable<dynNode> topMostNodes = ws.GetTopMostNodes();
+                    IEnumerable<dynNodeModel> topMostNodes = ws.GetTopMostNodes();
 
-                    foreach (dynNode topNode in topMostNodes)
+                    foreach (dynNodeModel topNode in topMostNodes)
                     {
                         foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
                         {
@@ -574,7 +574,7 @@ namespace Dynamo.Utilities
                     else
                         t = tData.Type;
 
-                    dynNode el = dynSettings.Controller.DynamoViewModel.CreateNodeInstance(t, nickname, guid);
+                    dynNodeModel el = dynSettings.Controller.DynamoViewModel.CreateNodeInstance(t, nickname, guid);
 
                     // note - this is because the connectors fail to be created if there's not added
                     // to the canvas
@@ -646,10 +646,10 @@ namespace Dynamo.Utilities
                     int portType = Convert.ToInt16(portTypeAttrib.Value);
 
                     //find the elements to connect
-                    dynNode start = null;
-                    dynNode end = null;
+                    dynNodeModel start = null;
+                    dynNodeModel end = null;
 
-                    foreach (dynNode e in ws.Nodes)
+                    foreach (dynNodeModel e in ws.Nodes)
                     {
                         if (e.GUID == guidStart)
                         {
@@ -723,7 +723,7 @@ namespace Dynamo.Utilities
 
                 #endregion
 
-                foreach (dynNode e in ws.Nodes)
+                foreach (dynNodeModel e in ws.Nodes)
                     e.EnableReporting();
 
 //MVVM : this metho was removed. visibility should be controlled by current space binding
@@ -760,9 +760,9 @@ namespace Dynamo.Utilities
             #region Find outputs
 
             // Find output elements for the node
-            IEnumerable<dynNode> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
+            IEnumerable<dynNodeModel> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
 
-            var topMost = new List<Tuple<int, dynNode>>();
+            var topMost = new List<Tuple<int, dynNodeModel>>();
 
             IEnumerable<string> outputNames;
 
@@ -779,11 +779,11 @@ namespace Dynamo.Utilities
             {
                 // if there are no explicitly defined output nodes
                 // get the top most nodes and set THEM as tht output
-                IEnumerable<dynNode> topMostNodes = functionWorkspace.GetTopMostNodes();
+                IEnumerable<dynNodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
 
                 var outNames = new List<string>();
 
-                foreach (dynNode topNode in topMostNodes)
+                foreach (dynNodeModel topNode in topMostNodes)
                 {
                     foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
                     {
@@ -807,11 +807,11 @@ namespace Dynamo.Utilities
             }
 
             //Find function entry point, and then compile the function and add it to our environment
-            IEnumerable<dynNode> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
+            IEnumerable<dynNodeModel> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
             IEnumerable<string> inputNames = variables.Select(x => (x as dynSymbol).Symbol);
 
             INode top;
-            var buildDict = new Dictionary<dynNode, Dictionary<int, INode>>();
+            var buildDict = new Dictionary<dynNodeModel, Dictionary<int, INode>>();
 
             if (topMost.Count > 1)
             {
@@ -837,7 +837,7 @@ namespace Dynamo.Utilities
             if (outputs.Any())
             {
                 var beginNode = new BeginNode();
-                List<dynNode> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
+                List<dynNodeModel> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
                 foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
                 {
                     beginNode.AddInput(tNode.Index.ToString());

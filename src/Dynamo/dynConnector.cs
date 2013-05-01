@@ -52,7 +52,7 @@ namespace Dynamo.Connectors
         
         #region constructors
         
-        public dynConnector(dynNode start, dynNode end, int startIndex, int endIndex, int portType, bool visible)
+        public dynConnector(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType, bool visible)
         {
             //don't try to create a connector with a bad start,
             //end, or if we're trying to connector the same
@@ -83,7 +83,7 @@ namespace Dynamo.Connectors
             //ConnectorType = dynSettings.Controller.DynamoViewModel.ConnectorType;
         }
 
-        public dynConnector(dynNode start, dynNode end, int startIndex, int endIndex, int portType)
+        public dynConnector(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType)
             : this(start, end, startIndex, endIndex, portType, true)
         { }
         #endregion

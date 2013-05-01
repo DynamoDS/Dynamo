@@ -180,8 +180,8 @@ namespace Dynamo.Commands
         {
             this._client = dynSettings.Controller.PackageManagerClient;
 
-            var nodeList = DynamoSelection.Instance.Selection.Where(x => x is dynNode && ((dynNode)x) is dynFunction )
-                                        .Select(x => ( ((dynNode)x) as dynFunction ).Definition.FunctionId ).ToList();
+            var nodeList = DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel && ((dynNodeModel)x) is dynFunction )
+                                        .Select(x => ( ((dynNodeModel)x) as dynFunction ).Definition.FunctionId ).ToList();
 
             if (nodeList.Count != 1)
             {

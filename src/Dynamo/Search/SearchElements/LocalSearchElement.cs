@@ -39,7 +39,7 @@ namespace Dynamo.Search.SearchElements
         /// Node property </summary>
         /// <value>
         /// The node used to instantiate this object </value>
-        public dynNode Node { get; internal set; }
+        public dynNodeModel Node { get; internal set; }
 
         /// <summary>
         /// Type property </summary>
@@ -79,7 +79,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// The class constructor for a built-in type that is already loaded. </summary>
         /// <param name="node">The local node</param>
-        public LocalSearchElement(dynNode node)
+        public LocalSearchElement(dynNodeModel node)
         {
             this.Node = node;
             this._name = Node.NickName;

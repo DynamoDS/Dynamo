@@ -14,7 +14,7 @@ namespace Dynamo.Connectors
     public class dynPortViewModel : dynViewModelBase
     {
         private readonly dynPortModel _port;
-        private readonly dynNode _node;
+        private readonly dynNodeModel _node;
 
         public DelegateCommand SetCenterCommand { get; set; }
         
@@ -57,7 +57,7 @@ namespace Dynamo.Connectors
         public DelegateCommand HighlightCommand { get; set; }
         public DelegateCommand UnHighlightCommand { get; set; }
 
-        public dynPortViewModel(dynPortModel port, dynNode node)
+        public dynPortViewModel(dynPortModel port, dynNodeModel node)
         {
             _node = node;
             _port = port;

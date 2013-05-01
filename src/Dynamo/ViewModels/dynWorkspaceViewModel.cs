@@ -189,7 +189,7 @@ namespace Dynamo
             }
         }
 
-        public dynWorkspace ModelModel
+        public dynWorkspace Model
         {
             get { return _model; }
         }
@@ -294,7 +294,7 @@ namespace Dynamo
                     foreach (var item in e.NewItems)
                     {
                         //add a corresponding note
-                        var viewModel = new dynNodeViewModel(item as dynNode);
+                        var viewModel = new dynNodeViewModel(item as dynNodeModel);
                         _nodes.Add(viewModel);
                     }
                     break;
@@ -324,8 +324,7 @@ namespace Dynamo
         {
             var rect = (Rect)parameters;
 
-           
-            foreach (dynNode n in ModelModel.Nodes)
+            foreach (dynNodeModel n in Model.Nodes)
             {
                 //check if the node is within the boundary
                 //double x0 = Canvas.GetLeft(n);
@@ -353,7 +352,7 @@ namespace Dynamo
         {
             var rect = (Rect)parameters;
 
-            foreach (dynNode n in ModelModel.Nodes)
+            foreach (dynNodeModel n in Model.Nodes)
             {
                 //check if the node is within the boundary
                 //double x0 = Canvas.GetLeft(n);
@@ -378,7 +377,8 @@ namespace Dynamo
 
         private void UpdateSelectedConnectors()
         {
-            IEnumerable<dynConnector> allConnectors = DynamoSelection.Instance.Selection.OfType<dynNode>()
+
+            var allConnectors = DynamoSelection.Instance.Selection.OfType<dynNodeModel>()
                                                                .SelectMany(
                                                                    el => el.OutPorts
                                                                            .SelectMany(x => x.Connectors)

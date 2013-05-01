@@ -632,7 +632,7 @@ namespace Dynamo.Search
         ///     Adds a local DynNode to search
         /// </summary>
         /// <param name="dynNode">A Dynamo node object</param>
-        public void Add(dynNode dynNode)
+        public void Add(dynNodeModel dynNode)
         {
             var searchEle = new LocalSearchElement(dynNode);
 
