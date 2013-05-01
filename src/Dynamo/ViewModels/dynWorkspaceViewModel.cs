@@ -174,7 +174,7 @@ namespace Dynamo
 
         public bool IsCurrentSpace
         {
-            get { return dynSettings.Controller.DynamoModel.CurrentSpace == _workspace; }
+            get { return dynSettings.Controller.DynamoModel.CurrentSpace == _model; }
         }
 
         /// <summary>
@@ -378,7 +378,7 @@ namespace Dynamo
 
         private void UpdateSelectedConnectors()
         {
-            var allConnectors = DynamoSelection.Instance.Selection.OfType<dynNode>()
+            IEnumerable<dynConnector> allConnectors = DynamoSelection.Instance.Selection.OfType<dynNode>()
                                                                .SelectMany(
                                                                    el => el.OutPorts
                                                                            .SelectMany(x => x.Connectors)

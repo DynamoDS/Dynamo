@@ -23,15 +23,16 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Interaction logic for dynNoteView.xaml
     /// </summary>
-    public partial class dynNoteView : UserControl
+    public partial class dynNoteView : UserControl, IViewModelView<dynNoteViewModel>
     {
-        private dynNoteViewModel vm;
+       public dynNoteViewModel ViewModel
+       {
+           get { return (dynNoteViewModel)DataContext; }
+       }
 
         public dynNoteView()
         {
             InitializeComponent();
-
-            vm = DataContext as dynNoteViewModel;
 
             noteText.PreviewMouseDown += new MouseButtonEventHandler(noteText_PreviewMouseDown);
         }
@@ -44,12 +45,12 @@ namespace Dynamo.Nodes
             //}
 
             //MVVM: replaced with command
-            vm.SelectCommand.Execute();
+            ViewModel.SelectCommand.Execute();
         }
 
         private void editItem_Click(object sender, RoutedEventArgs e)
         {
-            dynEditWindow editWindow = new dynEditWindow();
+            var editWindow = new dynEditWindow();
             
             //set the text of the edit window to begin
             editWindow.editText.Text = noteText.Text;
@@ -67,5 +68,6 @@ namespace Dynamo.Nodes
         {
             dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(this);
         }
+
     }
 }

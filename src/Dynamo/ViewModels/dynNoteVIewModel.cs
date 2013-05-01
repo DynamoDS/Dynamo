@@ -23,12 +23,12 @@ namespace Dynamo.Nodes
             }
         }
 
-        public double X
+        public double Left
         {
             get { return _note.X; }
         }
 
-        public double Y
+        public double Top
         {
             get { return _note.Y; }
         }
@@ -94,11 +94,11 @@ namespace Dynamo.Nodes
         {
             switch (e.PropertyName)
             {
-                case "X":
-                    RaisePropertyChanged("X");
+                case "Left":
+                    RaisePropertyChanged("Left");
                     break;
-                case "Y":
-                    RaisePropertyChanged("Y");
+                case "Top":
+                    RaisePropertyChanged("Top");
                     break;
                 case "Text":
                     RaisePropertyChanged("Text");

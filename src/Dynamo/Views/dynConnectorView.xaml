@@ -27,6 +27,7 @@
                 </PathGeometry>
             </Path.Data>
         </Path>
+        
         <Path Stroke="{Binding Path=StrokeBrush}" StrokeThickness="{Binding StrokeThickness}" 
               Name="plineConnector" MouseEnter="Highlight" MouseLeave="Unhighlight"
               Visibility="{Binding PlineVisibility}">

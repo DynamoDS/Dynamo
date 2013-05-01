@@ -1,25 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Dynamo.Connectors;
-using Dynamo.Utilities;
 
 namespace Dynamo.Nodes.Views
 {
     /// <summary>
     /// Interaction logic for dynConnectorView.xaml
     /// </summary>
-    public partial class dynConnectorView : UserControl
+    public partial class dynConnectorView : UserControl, IViewModelView<dynConnectorViewModel>
     {
         
         //const double STROKE_OPACITY = .6;
@@ -129,14 +118,17 @@ namespace Dynamo.Nodes.Views
 
         private void Highlight(object sender, MouseEventArgs e)
         {
-            (DataContext as dynConnectorViewModel).HighlightCommand.Execute();
+            ViewModel.HighlightCommand.Execute();
         }
 
         private void Unhighlight(object sender, MouseEventArgs e)
         {
-            (DataContext as dynConnectorViewModel).UnHighlightCommand.Execute();
+            ViewModel.UnHighlightCommand.Execute();
         }
 
-        
+        public dynConnectorViewModel ViewModel
+        {
+            get { return (dynConnectorViewModel) DataContext; }
+        }
     }
 }
