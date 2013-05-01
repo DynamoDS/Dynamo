@@ -267,10 +267,10 @@ namespace Dynamo
             /* Execution Thread */
 
             //Get our entry points (elements with nothing connected to output)
-            IEnumerable<dynNode> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes();
+            IEnumerable<dynNodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes();
 
             //Mark the topmost as dirty/clean
-            foreach (dynNode topMost in topElements)
+            foreach (dynNodeModel topMost in topElements)
                 topMost.MarkDirty();
 
             //TODO: Flesh out error handling
@@ -278,8 +278,8 @@ namespace Dynamo
             {
                 var topNode = new BeginNode(new List<string>());
                 int i = 0;
-                var buildDict = new Dictionary<dynNode, Dictionary<int, INode>>();
-                foreach (dynNode topMost in topElements)
+                var buildDict = new Dictionary<dynNodeModel, Dictionary<int, INode>>();
+                foreach (dynNodeModel topMost in topElements)
                 {
                     string inputName = i.ToString();
                     topNode.AddInput(inputName);
@@ -367,7 +367,7 @@ namespace Dynamo
             }
         }
 
-        protected internal virtual void Run(IEnumerable<dynNode> topElements, FScheme.Expression runningExpression)
+        protected internal virtual void Run(IEnumerable<dynNodeModel> topElements, FScheme.Expression runningExpression)
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
@@ -378,7 +378,7 @@ namespace Dynamo
                     dynSettings.Bench.Dispatcher.Invoke(new Action(
                                                 delegate
                                                     {
-                                                        foreach (dynNode node in topElements)
+                                                        foreach (dynNodeModel node in topElements)
                                                         {
                                                             string exp = node.PrintExpression();
                                                             dynSettings.Controller.DynamoViewModel.Log("> " + exp);

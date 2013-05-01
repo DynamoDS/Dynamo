@@ -49,7 +49,7 @@ namespace Dynamo
             }
         }
 
-        public List<dynNode> Nodes
+        public List<dynNodeModel> Nodes
         {
             get { return CurrentSpace.Nodes.ToList(); }
         }

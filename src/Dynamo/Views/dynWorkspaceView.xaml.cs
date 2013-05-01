@@ -59,7 +59,7 @@ namespace Dynamo.Views
         {
             double x = 0;
             double y = 0;
-            dynNode node = (e as NodeEventArgs).Node;
+            dynNodeModel node = (e as NodeEventArgs).Node;
             Dictionary<string, object> data = (e as NodeEventArgs).Data;
 
             x = outerCanvas.ActualWidth / 2.0;
@@ -327,7 +327,7 @@ namespace Dynamo.Views
 
             //double left = Canvas.GetLeft(e);
             //double top = Canvas.GetTop(e);
-            dynNode n = (e as NodeEventArgs).Node;
+            dynNodeModel n = (e as NodeEventArgs).Node;
 
             double left = n.X;
             double top = n.Y;

@@ -13,7 +13,7 @@ using Dynamo.Connectors;
 
 namespace Dynamo.Revit
 {
-    public abstract class dynRevitTransactionNode : dynNode
+    public abstract class dynRevitTransactionNode : dynNodeModel
     {
         //TODO: Move from dynElementSettings to another static area in DynamoRevit
         protected Autodesk.Revit.UI.UIDocument UIDocument
@@ -275,7 +275,7 @@ namespace Dynamo.Revit
             /// trigger a workspace modification event (dynamic running and saving).
             /// </summary>
             /// <param name="id">ElementId of the element to watch.</param>
-            public static void RegisterEvalOnModified(this dynNode node, ElementId id, Action modAction = null, Action delAction = null)
+            public static void RegisterEvalOnModified(this dynNodeModel node, ElementId id, Action modAction = null, Action delAction = null)
             {
                 var u = dynRevitSettings.Controller.Updater;
                 u.RegisterChangeHook(
@@ -295,7 +295,7 @@ namespace Dynamo.Revit
             /// been registered with RegisterEvalOnModified
             /// </summary>
             /// <param name="id">ElementId of the element to stop watching.</param>
-            public static void UnregisterEvalOnModified(this dynNode node, ElementId id)
+            public static void UnregisterEvalOnModified(this dynNodeModel node, ElementId id)
             {
                 var u = dynRevitSettings.Controller.Updater;
                 u.UnRegisterChangeHook(
@@ -321,7 +321,7 @@ namespace Dynamo.Revit
                 };
             }
 
-            static DynElementUpdateDelegate ReEvalOnModified(dynNode node, Action modifiedAction)
+            static DynElementUpdateDelegate ReEvalOnModified(dynNodeModel node, Action modifiedAction)
             {
                 return delegate(List<ElementId> modified)
                 {

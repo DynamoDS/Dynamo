@@ -115,7 +115,7 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private static void UpdateElement(object sender, MouseButtonEventArgs e)
         {
-            var el = sender as dynNode;
+            var el = sender as dynNodeModel;
             foreach (dynPortModel p in el.InPorts)
             {
                 //p.Update();

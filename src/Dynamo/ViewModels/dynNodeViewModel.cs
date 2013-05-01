@@ -44,7 +44,7 @@ namespace Dynamo.Controls
         ObservableCollection<dynPortViewModel> inPorts = new ObservableCollection<dynPortViewModel>();
         ObservableCollection<dynPortViewModel> outPorts = new ObservableCollection<dynPortViewModel>();
         
-        dynNode nodeLogic;
+        dynNodeModel nodeLogic;
         
         int preferredHeight = 30;
         private bool isFullyConnected = false;
@@ -69,7 +69,7 @@ namespace Dynamo.Controls
             get { return nodeLogic.ArgumentLacing; }
         }
 
-        public dynNode NodeLogic
+        public dynNodeModel NodeLogic
         {
             get { return nodeLogic; }
         }
@@ -190,7 +190,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="nickName"></param>
-        public dynNodeViewModel(dynNode logic)
+        public dynNodeViewModel(dynNodeModel logic)
         {
             nodeLogic = logic;
 
@@ -222,7 +222,7 @@ namespace Dynamo.Controls
 
         void Controller_RequestNodeSelect(object sender, EventArgs e)
         {
-            dynNode n = (e as NodeEventArgs).Node;
+            dynNodeModel n = (e as NodeEventArgs).Node;
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(SelectCommand, n));
             dynSettings.Controller.ProcessCommandQueue();
         }

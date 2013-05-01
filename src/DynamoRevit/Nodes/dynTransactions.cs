@@ -57,7 +57,7 @@ namespace Dynamo.Nodes
                 this.RequiresRecalc = val;
         }
 
-        protected override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+        protected override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
             {

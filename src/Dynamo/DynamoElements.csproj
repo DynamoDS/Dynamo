@@ -150,7 +150,7 @@ limitations under the License.
     <Compile Include="dynConnector.cs" />
     <Compile Include="Nodes\dynFiles.cs" />
     <Compile Include="dynFunction.cs" />
-    <Compile Include="dynNode.cs" />
+    <Compile Include="Models\dynNodeModel.cs" />
     <Compile Include="dynNodeUI.xaml.cs">
       <DependentUpon>dynNodeUI.xaml</DependentUpon>
     </Compile>

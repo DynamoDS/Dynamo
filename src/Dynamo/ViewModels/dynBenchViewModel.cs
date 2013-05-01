@@ -252,7 +252,7 @@ namespace Dynamo.Controls
         {
             get
             {
-                return Workspaces.First(x => x.ModelModel == _model.CurrentSpace);
+                return Workspaces.First(x => x.Model == _model.CurrentSpace);
             }
         }
 
@@ -352,7 +352,7 @@ namespace Dynamo.Controls
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
-                        _workspaces.Remove(_workspaces.ToList().First(x => x.ModelModel == item));
+                        _workspaces.Remove(_workspaces.ToList().First(x => x.Model == item));
                     break;
             }
         }
@@ -704,7 +704,7 @@ namespace Dynamo.Controls
                 if (t.Namespace == "Dynamo.Nodes" &&
                     !t.IsAbstract &&
                     attribs.Length > 0 &&
-                    t.IsSubclassOf(typeof(dynNode)))
+                    t.IsSubclassOf(typeof(dynNodeModel)))
                 {
                     NodeCategoryAttribute elCatAttrib = attribs[0] as NodeCategoryAttribute;
 
@@ -749,7 +749,7 @@ namespace Dynamo.Controls
                     object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
 
                     NodeNameAttribute elNameAttrib = attribs[0] as NodeNameAttribute;
-                    dynNode el = CreateInstanceAndAddNodeToWorkspace(
+                    dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(
                            t, elNameAttrib.Name, Guid.NewGuid(), x, y,
                            _model.CurrentSpace
                         );
@@ -805,7 +805,7 @@ namespace Dynamo.Controls
                         dynSettings.Controller.ClipBoard.Add(el);
 
                         //dynNodeUI n = el as dynNodeUI;
-                        dynNode n = el as dynNode;
+                        dynNodeModel n = el as dynNodeModel;
                         if (n != null)
                         {
                             var connectors = n.InPorts.ToList().SelectMany(x => x.Connectors)
@@ -840,11 +840,11 @@ namespace Dynamo.Controls
             //paste contents in
             DynamoSelection.Instance.Selection.RemoveAll();
 
-            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynNode);
+            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynNodeModel);
 
             var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnector);
 
-            foreach (dynNode node in nodes)
+            foreach (dynNodeModel node in nodes)
             {
                 //create a new guid for us to use
                 Guid newGuid = Guid.NewGuid();
@@ -892,7 +892,7 @@ namespace Dynamo.Controls
             {
                 Dictionary<string, object> connectionData = new Dictionary<string, object>();
 
-                dynNode startNode = null;
+                dynNodeModel startNode = null;
 
                 try
                 {
@@ -1001,7 +1001,7 @@ namespace Dynamo.Controls
                 //calculate the necessary width and height
                 double width = 0;
                 double height = 0;
-                foreach (dynNode n in _model.Nodes)
+                foreach (dynNodeModel n in _model.Nodes)
                 {
                     /*Point relativePoint = n.TransformToAncestor(dynSettings.Workbench)
                           .Transform(new Point(0, 0));
@@ -1136,8 +1136,8 @@ namespace Dynamo.Controls
         private void CreateNodeFromSelection()
         {
             CollapseNodes(
-                DynamoSelection.Instance.Selection.Where(x => x is dynNode)
-                    .Select(x => (x as dynNode)));
+                DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel)
+                    .Select(x => (x as dynNodeModel)));
 
         }
 
@@ -1158,7 +1158,7 @@ namespace Dynamo.Controls
                 return;
             }
 
-            dynNode node = CreateNode(data["name"].ToString());
+            dynNodeModel node = CreateNode(data["name"].ToString());
 
 //MVVM : Don't add the view explicitly
             /*dynNodeUI nodeUi = node.NodeUI;
@@ -1253,8 +1253,8 @@ namespace Dynamo.Controls
         {
             Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
 
-            dynNode start = (dynNode)connectionData["start"];
-            dynNode end = (dynNode)connectionData["end"];
+            dynNodeModel start = (dynNodeModel)connectionData["start"];
+            dynNodeModel end = (dynNodeModel)connectionData["end"];
             int startIndex = (int)connectionData["port_start"];
             int endIndex = (int)connectionData["port_end"];
 
@@ -1281,7 +1281,7 @@ namespace Dynamo.Controls
             if (parameters != null)
             {
                 dynNoteModel note = parameters as dynNoteModel;
-                dynNode node = parameters as dynNode;
+                dynNodeModel node = parameters as dynNodeModel;
 
                 if (node != null)
                 {
@@ -1297,7 +1297,7 @@ namespace Dynamo.Controls
                 for (int i = DynamoSelection.Instance.Selection.Count - 1; i >= 0; i--)
                 {
                     dynNoteModel note = DynamoSelection.Instance.Selection[i] as dynNoteModel;
-                    dynNode node = DynamoSelection.Instance.Selection[i] as dynNode;
+                    dynNodeModel node = DynamoSelection.Instance.Selection[i] as dynNodeModel;
 
                     if (node != null)
                     {
@@ -1376,7 +1376,7 @@ namespace Dynamo.Controls
 
             foreach (ISelectable sel in sels)
             {
-                ((dynNode)sel).SelectNeighbors();
+                ((dynNodeModel)sel).SelectNeighbors();
             }
         }
 
@@ -1385,7 +1385,7 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private static void DeleteNode(dynNode node)
+        private static void DeleteNode(dynNodeModel node)
         {
             foreach (var p in node.OutPorts)
             {
@@ -1413,7 +1413,7 @@ namespace Dynamo.Controls
 
         private void AddToSelection(object parameters)
         {
-            dynNode node = parameters as dynNode;
+            dynNodeModel node = parameters as dynNodeModel;
 
             if (!node.IsSelected)
             {
@@ -1424,7 +1424,7 @@ namespace Dynamo.Controls
 
         private bool CanAddToSelection(object parameters)
         {
-            dynNode node = parameters as dynNode;
+            dynNodeModel node = parameters as dynNodeModel;
             if (node == null)
             {
                 return false;
@@ -1632,7 +1632,7 @@ namespace Dynamo.Controls
                         t = tData.Type;
 
 //MVVM : no longer need to specify visibility here
-                    dynNode el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws); //Visibility.Hidden);
+                    dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws); //Visibility.Hidden);
 
                     if (el == null)
                         return false;
@@ -1687,10 +1687,10 @@ namespace Dynamo.Controls
                     int portType = Convert.ToInt16(portTypeAttrib.Value);
 
                     //find the elements to connect
-                    dynNode start = null;
-                    dynNode end = null;
+                    dynNodeModel start = null;
+                    dynNodeModel end = null;
 
-                    foreach (dynNode e in ws.Nodes)
+                    foreach (dynNodeModel e in ws.Nodes)
                     {
                         if (e.GUID == guidStart)
                         {
@@ -1765,7 +1765,7 @@ namespace Dynamo.Controls
 
                 #endregion
 
-                foreach (dynNode e in ws.Nodes)
+                foreach (dynNodeModel e in ws.Nodes)
                     e.EnableReporting();
 
                 DynamoModel.hideWorkspace(ws);
@@ -1847,7 +1847,7 @@ namespace Dynamo.Controls
         ///     places the newly created symbol (defining a lambda) in the Controller's FScheme Environment.  
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
-        internal void CollapseNodes(IEnumerable<dynNode> selectedNodes)
+        internal void CollapseNodes(IEnumerable<dynNodeModel> selectedNodes)
         {
             Dynamo.Utilities.NodeCollapser.Collapse(selectedNodes, _model.CurrentSpace);
         }
@@ -1864,7 +1864,7 @@ namespace Dynamo.Controls
             Controller.SearchViewModel.Refactor(def, editName, (_model.CurrentSpace).Name);
 
             //Update existing function nodes
-            foreach (dynNode el in AllNodes)
+            foreach (dynNodeModel el in AllNodes)
             {
                 if (el is dynFunction)
                 {
@@ -1913,13 +1913,13 @@ namespace Dynamo.Controls
             return true;
         }
 
-        public IEnumerable<dynNode> AllNodes
+        public IEnumerable<dynNodeModel> AllNodes
         {
             get
             {
                 return _model.HomeSpace.Nodes.Concat(
                     Controller.CustomNodeLoader.GetLoadedDefinitions().Aggregate(
-                        (IEnumerable<dynNode>)new List<dynNode>(),
+                        (IEnumerable<dynNodeModel>)new List<dynNodeModel>(),
                         (a, x) => a.Concat(x.Workspace.Nodes)
                         )
                     );
@@ -1968,9 +1968,9 @@ namespace Dynamo.Controls
                 #region Find outputs
 
                 // Find output elements for the node
-                IEnumerable<dynNode> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
+                IEnumerable<dynNodeModel> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
 
-                var topMost = new List<Tuple<int, dynNode>>();
+                var topMost = new List<Tuple<int, dynNodeModel>>();
 
                 IEnumerable<string> outputNames;
 
@@ -1987,11 +1987,11 @@ namespace Dynamo.Controls
                 {
                     // if there are no explicitly defined output nodes
                     // get the top most nodes and set THEM as tht output
-                    IEnumerable<dynNode> topMostNodes = functionWorkspace.GetTopMostNodes();
+                    IEnumerable<dynNodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
 
                     var outNames = new List<string>();
 
-                    foreach (dynNode topNode in topMostNodes)
+                    foreach (dynNodeModel topNode in topMostNodes)
                     {
                         foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
                         {
@@ -2015,11 +2015,11 @@ namespace Dynamo.Controls
                 }
 
                 //Find function entry point, and then compile the function and add it to our environment
-                IEnumerable<dynNode> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
+                IEnumerable<dynNodeModel> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
                 IEnumerable<string> inputNames = variables.Select(x => (x as dynSymbol).Symbol);
 
                 INode top;
-                var buildDict = new Dictionary<dynNode, Dictionary<int, INode>>();
+                var buildDict = new Dictionary<dynNodeModel, Dictionary<int, INode>>();
 
                 if (topMost.Count > 1)
                 {
@@ -2045,7 +2045,7 @@ namespace Dynamo.Controls
                 if (outputs.Any())
                 {
                     var beginNode = new BeginNode();
-                    List<dynNode> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
+                    List<dynNodeModel> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
                     foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
                     {
                         beginNode.AddInput(tNode.Index.ToString());
@@ -2065,7 +2065,7 @@ namespace Dynamo.Controls
                 Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), expression);
 
                 //Update existing function nodes which point to this function to match its changes
-                foreach (dynNode el in AllNodes)
+                foreach (dynNodeModel el in AllNodes)
                 {
                     if (el is dynFunction)
                     {
@@ -2081,7 +2081,7 @@ namespace Dynamo.Controls
                 }
 
                 //Call OnSave for all saved elements
-                foreach (dynNode el in functionWorkspace.Nodes)
+                foreach (dynNodeModel el in functionWorkspace.Nodes)
                     el.onSave();
 
             }
@@ -2162,7 +2162,7 @@ namespace Dynamo.Controls
         /// <param name="x"> The x coordinate where the dynNodeUI will be placed </param>
         /// <param name="y"> The x coordinate where the dynNodeUI will be placed</param>
         /// <returns> The newly instantiate dynNode</returns>
-        public dynNode CreateInstanceAndAddNodeToWorkspace(Type elementType, string nickName, Guid guid,
+        public dynNodeModel CreateInstanceAndAddNodeToWorkspace(Type elementType, string nickName, Guid guid,
             double x, double y, dynWorkspace ws)    //Visibility vis = Visibility.Visible)
         {
             try
@@ -2205,9 +2205,9 @@ namespace Dynamo.Controls
         /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
         /// <param name="guid"> The unique identifier for the node in the workspace. </param>
         /// <returns> The newly instantiated dynNode</returns>
-        public dynNode CreateNodeInstance(Type elementType, string nickName, Guid guid)
+        public dynNodeModel CreateNodeInstance(Type elementType, string nickName, Guid guid)
         {
-            var node = (dynNode)Activator.CreateInstance(elementType);
+            var node = (dynNodeModel)Activator.CreateInstance(elementType);
 
             //dynNodeUI nodeUI = node.NodeUI;
 
@@ -2438,7 +2438,7 @@ namespace Dynamo.Controls
                     else
                         t = tData.Type;
 
-                    dynNode el = CreateInstanceAndAddNodeToWorkspace(
+                    dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(
                         t, nickname, guid, x, y,
                         _model.CurrentSpace
                         );
@@ -2512,10 +2512,10 @@ namespace Dynamo.Controls
                     int portType = Convert.ToInt16(portTypeAttrib.Value);
 
                     //find the elements to connect
-                    dynNode start = null;
-                    dynNode end = null;
+                    dynNodeModel start = null;
+                    dynNodeModel end = null;
 
-                    foreach (dynNode e in _model.Nodes)
+                    foreach (dynNodeModel e in _model.Nodes)
                     {
                         if (e.GUID == guidStart)
                         {
@@ -2580,7 +2580,7 @@ namespace Dynamo.Controls
 
                 #endregion
 
-                foreach (dynNode e in _model.CurrentSpace.Nodes)
+                foreach (dynNodeModel e in _model.CurrentSpace.Nodes)
                     e.EnableReporting();
 
                 #endregion
@@ -2603,9 +2603,9 @@ namespace Dynamo.Controls
             Log("Clearing workflow...");
 
             //Copy locally
-            List<dynNode> elements = _model.Nodes.ToList();
+            List<dynNodeModel> elements = _model.Nodes.ToList();
 
-            foreach (dynNode el in elements)
+            foreach (dynNodeModel el in elements)
             {
                 el.DisableReporting();
                 try
@@ -2617,7 +2617,7 @@ namespace Dynamo.Controls
                 }
             }
 
-            foreach (dynNode el in elements)
+            foreach (dynNodeModel el in elements)
             {
                 foreach (dynPortModel p in el.InPorts)
                 {
@@ -2656,7 +2656,7 @@ namespace Dynamo.Controls
             var workSpace = new FuncWorkspace(
                 name, category, workspaceOffsetX, workspaceOffsetY);
 
-            List<dynNode> newElements = workSpace.Nodes.ToList();
+            List<dynNodeModel> newElements = workSpace.Nodes.ToList();
             List<dynConnector> newConnectors = workSpace.Connectors.ToList();
 
             var functionDefinition = new FunctionDefinition(id)
@@ -2703,16 +2703,16 @@ namespace Dynamo.Controls
             return new dynFunction(inputs, outputs, functionDefinition);
         }
 
-        internal dynNode CreateNode(string name)
+        internal dynNodeModel CreateNode(string name)
         {
-            dynNode result;
+            dynNodeModel result;
 
             if (Controller.BuiltInTypesByName.ContainsKey(name))
             {
                 TypeLoadData tld = Controller.BuiltInTypesByName[name];
 
                 ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
-                var newEl = (dynNode)obj.Unwrap();
+                var newEl = (dynNodeModel)obj.Unwrap();
                 newEl.DisableInteraction();
                 result = newEl;
             }
@@ -2723,7 +2723,7 @@ namespace Dynamo.Controls
                 {
 
                     ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
-                    var newEl = (dynNode)obj.Unwrap();
+                    var newEl = (dynNodeModel)obj.Unwrap();
                     newEl.DisableInteraction();
                     result = newEl;
                 }
@@ -2761,7 +2761,7 @@ namespace Dynamo.Controls
             UnlockLoadPath = path;
         }
 
-        internal void ShowElement(dynNode e)
+        internal void ShowElement(dynNodeModel e)
         {
             if (dynamicRun)
                 return;
@@ -2816,9 +2816,9 @@ namespace Dynamo.Controls
 
     public class NodeEventArgs : EventArgs
     {
-        public dynNode Node { get; set; }
+        public dynNodeModel Node { get; set; }
         public Dictionary<string, object> Data { get; set; } 
-        public NodeEventArgs(dynNode n, Dictionary<string, object> d )
+        public NodeEventArgs(dynNodeModel n, Dictionary<string, object> d )
         {
             Node = n;
             Data = d;

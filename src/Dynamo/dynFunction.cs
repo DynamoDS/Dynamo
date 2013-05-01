@@ -273,7 +273,7 @@ namespace Dynamo
         [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
         [NodeDescription("A function output")]
         [IsInteractive(false)]
-        public class dynOutput : dynNode
+        public class dynOutput : dynNodeModel
         {
             TextBox tb;
             private string symbol;
@@ -362,7 +362,7 @@ namespace Dynamo
         [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
         [NodeDescription("A function variable")]
         [IsInteractive(false)]
-        public class dynSymbol : dynNode
+        public class dynSymbol : dynNodeModel
         {
             TextBox tb;
             private string symbol;
@@ -430,7 +430,7 @@ namespace Dynamo
                 }
             }
 
-            protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+            protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
             {
                 Dictionary<int, INode> result;
                 if (!preBuilt.TryGetValue(this, out result))
@@ -504,8 +504,8 @@ namespace Dynamo
 
         public Guid FunctionId { get; private set; }
         public dynWorkspace Workspace { get; internal set; }
-        public List<Tuple<int, dynNode>> OutPortMappings { get; internal set; }
-        public List<Tuple<int, dynNode>> InPortMappings { get; internal set; }
+        public List<Tuple<int, dynNodeModel>> OutPortMappings { get; internal set; }
+        public List<Tuple<int, dynNodeModel>> InPortMappings { get; internal set; }
         public bool RequiresRecalc { get; internal set; }
 
         public IEnumerable<FunctionDefinition> Dependencies
