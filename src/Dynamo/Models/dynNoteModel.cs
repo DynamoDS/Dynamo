@@ -2,27 +2,6 @@
 {
     public class dynNoteModel:dynModelBase
     {
-        private double _x;
-        private double _y;
-
-        public double X
-        {
-            get { return _x; }
-            set
-            {
-                _x = value;
-                RaisePropertyChanged("X");
-            }
-        }
-        public double Y 
-        { 
-            get { return _y; }
-            set { 
-                _y = value;
-                RaisePropertyChanged("Y");
-            }
-        }
-
         private string _text;
         public string Text
         {
