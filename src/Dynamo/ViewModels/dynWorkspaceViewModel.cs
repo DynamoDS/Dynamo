@@ -24,7 +24,7 @@ namespace Dynamo
     {
         #region Properties
 
-        public dynWorkspace _model;
+        public dynWorkspaceModel _model;
         
         private bool isConnecting = false;
 
@@ -189,14 +189,14 @@ namespace Dynamo
             }
         }
 
-        public dynWorkspace Model
+        public dynWorkspaceModel Model
         {
             get { return _model; }
         }
 
         #endregion
 
-        public dynWorkspaceViewModel(dynWorkspace model, DynamoViewModel vm)
+        public dynWorkspaceViewModel(dynWorkspaceModel model, DynamoViewModel vm)
         {
             _model = model;
            
@@ -386,7 +386,7 @@ namespace Dynamo
                                                                                el.InPorts.SelectMany(
                                                                                    x => x.Connectors))).Distinct();
 
-            foreach (dynConnector connector in allConnectors)
+            foreach (dynConnectorModel connector in allConnectors)
             {
                 Debug.WriteLine("Connectors no longer call redraw....is it still working?");
                 //connector.Redraw();

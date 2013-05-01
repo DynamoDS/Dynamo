@@ -503,7 +503,7 @@ namespace Dynamo
         }
 
         public Guid FunctionId { get; private set; }
-        public dynWorkspace Workspace { get; internal set; }
+        public dynWorkspaceModel Workspace { get; internal set; }
         public List<Tuple<int, dynNodeModel>> OutPortMappings { get; internal set; }
         public List<Tuple<int, dynNodeModel>> InPortMappings { get; internal set; }
         public bool RequiresRecalc { get; internal set; }

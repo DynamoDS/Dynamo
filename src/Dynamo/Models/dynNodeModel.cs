@@ -58,7 +58,7 @@ namespace Dynamo.Nodes
                 DispatchedToUI(this, e);
         }
 
-        public dynWorkspace WorkSpace;
+        public dynWorkspaceModel WorkSpace;
         public ObservableCollection<PortData> InPortData { get; private set; }
         public ObservableCollection<PortData> OutPortData { get; private set; }
         Dictionary<dynPortModel, PortData> portDataDict = new Dictionary<dynPortModel, PortData>();
@@ -1140,13 +1140,13 @@ namespace Dynamo.Nodes
             var outConnectors = this.outPorts.SelectMany(x => x.Connectors);
             var inConnectors = this.inPorts.SelectMany(x => x.Connectors);
 
-            foreach (dynConnector c in outConnectors)
+            foreach (dynConnectorModel c in outConnectors)
             {
                 if (!DynamoSelection.Instance.Selection.Contains(c.End.Owner))
                     DynamoSelection.Instance.Selection.Add(c.End.Owner);
             }
 
-            foreach (dynConnector c in inConnectors)
+            foreach (dynConnectorModel c in inConnectors)
             {
                 if (!DynamoSelection.Instance.Selection.Contains(c.Start.Owner))
                     DynamoSelection.Instance.Selection.Add(c.Start.Owner);

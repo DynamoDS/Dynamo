@@ -36,13 +36,13 @@ namespace Dynamo.Connectors
         int index;
         PortType portType;
         string name;
-        ObservableCollection<dynConnector> connectors = new ObservableCollection<dynConnector>();
+        ObservableCollection<dynConnectorModel> connectors = new ObservableCollection<dynConnectorModel>();
 
         #endregion
 
         #region public members
 
-        public ObservableCollection<dynConnector> Connectors
+        public ObservableCollection<dynConnectorModel> Connectors
         {
             get { return connectors; }
             set { connectors = value; }
@@ -138,7 +138,7 @@ namespace Dynamo.Connectors
             PortName = name;
         }
 
-        public void Connect(dynConnector connector)
+        public void Connect(dynConnectorModel connector)
         {
             connectors.Add(connector);
 
@@ -148,7 +148,7 @@ namespace Dynamo.Connectors
             IsConnected = true;
         }
 
-        public void Disconnect(dynConnector connector)
+        public void Disconnect(dynConnectorModel connector)
         {
             //throw the event for a connection
             OnPortDisconnected(EventArgs.Empty);

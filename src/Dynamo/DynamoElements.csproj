@@ -148,21 +148,21 @@ limitations under the License.
     </Compile>
     <Compile Include="dynCollection.cs" />
     <Compile Include="Nodes\dynCommunication.cs" />
-    <Compile Include="dynConnector.cs" />
+    <Compile Include="Models\dynConnectorModel.cs" />
     <Compile Include="Nodes\dynFiles.cs" />
     <Compile Include="dynFunction.cs" />
     <Compile Include="Models\dynNodeModel.cs" />
     <Compile Include="Views\dynNodeView.xaml.cs">
       <DependentUpon>dynNodeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynNoteView.xaml.cs">
+    <Compile Include="Views\dynNoteView.xaml.cs">
       <DependentUpon>dynNoteView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynPort.xaml.cs">
-      <DependentUpon>dynPort.xaml</DependentUpon>
+    <Compile Include="Views\dynPortView.xaml.cs">
+      <DependentUpon>dynPortView.xaml</DependentUpon>
     </Compile>
     <Compile Include="dynUtils.cs" />
-    <Compile Include="dynWorkspace.cs" />
+    <Compile Include="Models\dynWorkspaceModel.cs" />
     <Compile Include="FunctionNamePrompt.xaml.cs">
       <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
     </Compile>
@@ -216,11 +216,11 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="dynNoteView.xaml">
+    <Page Include="Views\dynNoteView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="dynPort.xaml">
+    <Page Include="Views\dynPortView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -231,7 +231,7 @@ namespace Dynamo.Controls
 
         public bool IsAbleToGoHome { get; set; }
 
-        public dynWorkspace CurrentSpace
+        public dynWorkspaceModel CurrentSpace
         {
             get { return _model.CurrentSpace; }
         }
@@ -348,7 +348,7 @@ namespace Dynamo.Controls
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
-                        _workspaces.Add(new dynWorkspaceViewModel(item as dynWorkspace, this));
+                        _workspaces.Add(new dynWorkspaceViewModel(item as dynWorkspaceModel, this));
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
@@ -842,7 +842,7 @@ namespace Dynamo.Controls
 
             var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynNodeModel);
 
-            var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnector);
+            var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnectorModel);
 
             foreach (dynNodeModel node in nodes)
             {
@@ -888,7 +888,7 @@ namespace Dynamo.Controls
             //dynSettings.Bench.UpdateLayout();
             OnRequestLayoutUpdate(this, EventArgs.Empty);
 
-            foreach (dynConnector c in connectors)
+            foreach (dynConnectorModel c in connectors)
             {
                 Dictionary<string, object> connectionData = new Dictionary<string, object>();
 
@@ -1258,7 +1258,7 @@ namespace Dynamo.Controls
             int startIndex = (int)connectionData["port_start"];
             int endIndex = (int)connectionData["port_end"];
 
-            dynConnector c = new dynConnector(start, end, startIndex, endIndex, 0);
+            dynConnectorModel c = new dynConnectorModel(start, end, startIndex, endIndex, 0);
 
             _model.CurrentSpace.Connectors.Add(c);
         }
@@ -1345,7 +1345,7 @@ namespace Dynamo.Controls
             var n = new dynNoteModel(x, y);
 
             n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
-            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspace)inputs["workspace"];
+            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspaceModel)inputs["workspace"];
 
             ws.Notes.Add(n);
             
@@ -1570,7 +1570,7 @@ namespace Dynamo.Controls
                     false, cx, cy
                     );
 
-                dynWorkspace ws = def.Workspace;
+                dynWorkspaceModel ws = def.Workspace;
 
                 //this.Log("Opening definition " + xmlPath + "...");
 
@@ -1719,7 +1719,7 @@ namespace Dynamo.Controls
                     {
                         if (start != null && end != null && start != end)
                         {
-                            var newConnector = new dynConnector(
+                            var newConnector = new dynConnectorModel(
                                 start, end,
                                 startIndex, endIndex,
                                 portType, false
@@ -1819,7 +1819,7 @@ namespace Dynamo.Controls
         {
             if (!String.IsNullOrEmpty(path))
             {
-                if (!dynWorkspace.SaveWorkspace(path, _model.CurrentSpace))
+                if (!dynWorkspaceModel.SaveWorkspace(path, _model.CurrentSpace))
                 {
                     Log("Workbench could not be saved.");
                 }
@@ -1939,7 +1939,7 @@ namespace Dynamo.Controls
                 return;
 
             // Get the internal nodes for the function
-            dynWorkspace functionWorkspace = definition.Workspace;
+            dynWorkspaceModel functionWorkspace = definition.Workspace;
 
             // If asked to, write the definition to file
             if (writeDefinition)
@@ -1953,7 +1953,7 @@ namespace Dynamo.Controls
                         Directory.CreateDirectory(pluginsPath);
 
                     string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
-                    dynWorkspace.SaveWorkspace(path, functionWorkspace);
+                    dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
                     Controller.SearchViewModel.Add(definition.Workspace);
                 }
                 catch (Exception e)
@@ -2105,7 +2105,7 @@ namespace Dynamo.Controls
                 return "";
 
             // Get the internal nodes for the function
-            dynWorkspace functionWorkspace = definition.Workspace;
+            dynWorkspaceModel functionWorkspace = definition.Workspace;
 
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
@@ -2116,7 +2116,7 @@ namespace Dynamo.Controls
                     Directory.CreateDirectory(pluginsPath);
 
                 string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
-                dynWorkspace.SaveWorkspace(path, functionWorkspace);
+                dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
                 return path;
             }
             catch (Exception e)
@@ -2163,7 +2163,7 @@ namespace Dynamo.Controls
         /// <param name="y"> The x coordinate where the dynNodeView will be placed</param>
         /// <returns> The newly instantiate dynNode</returns>
         public dynNodeModel CreateInstanceAndAddNodeToWorkspace(Type elementType, string nickName, Guid guid,
-            double x, double y, dynWorkspace ws)    //Visibility vis = Visibility.Visible)
+            double x, double y, dynWorkspaceModel ws)    //Visibility vis = Visibility.Visible)
         {
             try
             {
@@ -2293,7 +2293,7 @@ namespace Dynamo.Controls
             if (symbol == null || _model.CurrentSpace.Name.Equals(symbol.Workspace.Name))
                 return;
 
-            dynWorkspace newWs = symbol.Workspace;
+            dynWorkspaceModel newWs = symbol.Workspace;
 
             //Make sure we aren't dragging
             //MVVM : replaced with the StopDragging event
@@ -2542,7 +2542,7 @@ namespace Dynamo.Controls
 
                     if (start != null && end != null && start != end)
                     {
-                        var newConnector = new dynConnector(start, end,
+                        var newConnector = new dynConnectorModel(start, end,
                                                             startIndex, endIndex, portType);
 
                         _model.CurrentSpace.Connectors.Add(newConnector);
@@ -2657,7 +2657,7 @@ namespace Dynamo.Controls
                 name, category, workspaceOffsetX, workspaceOffsetY);
 
             List<dynNodeModel> newElements = workSpace.Nodes.ToList();
-            List<dynConnector> newConnectors = workSpace.Connectors.ToList();
+            List<dynConnectorModel> newConnectors = workSpace.Connectors.ToList();
 
             var functionDefinition = new FunctionDefinition(id)
             {

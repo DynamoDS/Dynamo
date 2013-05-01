@@ -113,7 +113,7 @@ namespace Dynamo.Connectors
         //MVVM: Obsolete method - updating of conenctors should happen automatically with bindings.
         public void Update()
         {
-            foreach (dynConnector c in _port.Connectors)
+            foreach (dynConnectorModel c in _port.Connectors)
             {
                 //calling this with null will have
                 //no effect
