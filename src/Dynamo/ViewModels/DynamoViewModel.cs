@@ -2377,12 +2377,14 @@ namespace Dynamo.Controls
                         if (att.Name.Equals("X"))
                         {
                             //Bench.CurrentX = Convert.ToDouble(att.Value);
-                            _model.CurrentSpace.CurrentOffset = new Point(Convert.ToDouble(att.Value), _model.CurrentSpace.CurrentOffset.Y);
+                            //_model.CurrentSpace.CurrentOffset = new Point(Convert.ToDouble(att.Value), _model.CurrentSpace.CurrentOffset.Y);
+                            _model.CurrentSpace.X = Convert.ToDouble(att.Value);
                         }
                         else if (att.Name.Equals("Y"))
                         {
                             //Bench.CurrentY = Convert.ToDouble(att.Value);
-                            _model.CurrentSpace.CurrentOffset = new Point(_model.CurrentSpace.CurrentOffset.X, Convert.ToDouble(att.Value));
+                            //_model.CurrentSpace.CurrentOffset = new Point(_model.CurrentSpace.CurrentOffset.X, Convert.ToDouble(att.Value));
+                            _model.CurrentSpace.Y = Convert.ToDouble(att.Value);
                         }
                     }
                 }

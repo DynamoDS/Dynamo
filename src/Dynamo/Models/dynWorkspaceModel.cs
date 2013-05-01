@@ -33,7 +33,7 @@ namespace Dynamo
 
         #region Properties
         private string _name;
-        private System.Windows.Point currentOffset = new System.Windows.Point(0, 0);
+        //private System.Windows.Point currentOffset = new System.Windows.Point(0, 0);
         private double x = 0.0;
         private double y = 0.0;
         private double height = 100;
@@ -52,19 +52,6 @@ namespace Dynamo
             {
                 _name = value;
                 RaisePropertyChanged("Name");
-            }
-        }
-
-        /// <summary>
-        /// Specifies the pan location of the view
-        /// </summary>
-        public Point CurrentOffset
-        {
-            get { return currentOffset; }
-            set
-            {
-                currentOffset = value;
-                RaisePropertyChanged("CurrentOffset");
             }
         }
 
