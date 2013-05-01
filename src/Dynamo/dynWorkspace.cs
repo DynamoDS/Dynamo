@@ -36,8 +36,6 @@ namespace Dynamo
         public ObservableCollection<dynConnector> Connectors { get; private set; }
         public ObservableCollection<dynNoteModel> Notes { get; private set; }
 
-        //private DynamoModel _model;
-
         public string FilePath { get; set; }
 
         public String Name
@@ -71,17 +69,11 @@ namespace Dynamo
 
         public abstract void OnDisplayed();
 
-        //public DynamoModel Model
-        //{
-        //    get { return _model; }
-        //}
-
         //Hide default constructor.
         private dynWorkspace() { }
 
         protected dynWorkspace(String name, List<dynNode> e, List<dynConnector> c, double x, double y)
         {
-            //_model = model;
             Name = name;
 //MVVM : made all lists into observable collections
             Nodes = new ObservableCollection<dynNode>(e);
