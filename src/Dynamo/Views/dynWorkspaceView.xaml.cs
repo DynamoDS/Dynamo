@@ -45,7 +45,6 @@ namespace Dynamo.Views
             vm.UILocked+=new EventHandler(LockUI);
             vm.UIUnlocked+=new EventHandler(UnlockUI);
             vm.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
-            
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)

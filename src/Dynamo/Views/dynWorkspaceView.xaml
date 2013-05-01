@@ -3,12 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:views="clr-namespace:Dynamo.Nodes.Views"
+             xmlns:nodes="clr-namespace:Dynamo.Nodes" xmlns:dynamo="clr-namespace:Dynamo"
+             xmlns:connectors="clr-namespace:Dynamo.Connectors"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              MouseLeftButtonDown="DynWorkspaceView_OnMouseLeftButtonDown"
              MouseUp="DynWorkspaceView_OnMouseUp"
-             MouseMove="DynWorkspaceView_OnMouseMove">
+             MouseMove="DynWorkspaceView_OnMouseMove" d:DataContext="{d:DesignData dynamo:dynWorkspaceViewModel}">
+    
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type controls:dynNodeViewModel}">
+            <controls:dynNodeUI></controls:dynNodeUI>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type nodes:dynNoteViewModel}">
+            <nodes:dynNoteView></nodes:dynNoteView>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type connectors:dynConnectorViewModel}">
+            <views:dynConnectorView></views:dynConnectorView>
+        </DataTemplate>
+        
+    </UserControl.Resources>
     
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Canvas Name="outerCanvas" 
@@ -28,35 +45,36 @@
                             IsHitTestVisible="False"
                         />
                     </Canvas>
-            <ItemsControl ItemsSource="{Binding Nodes}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <controls:DragCanvas
+
+                    <ItemsControl ItemsSource="{Binding WorkspaceElements}">
+                    
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <controls:DragCanvas
                                     Width="100000" 
                                     Height="100000" 
                                     Visibility="Visible"
                                     ContextMenuOpening="WorkBench_ContextMenuOpening" 
                                     Loaded="WorkBench_OnLoaded" IsItemsHost="True">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="Transparent"/>
-                            </Canvas.Background>
-                        </controls:DragCanvas>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <controls:dynNodeUI></controls:dynNodeUI>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding Left}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding Top}"/>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                    </ItemsControl>
+                                    <Canvas.Background>
+                                        <SolidColorBrush Color="Transparent"/>
+                                    </Canvas.Background>
+                                </controls:DragCanvas>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                            <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    
+                </ItemsControl>
+
                 </Grid>
             </controls:ZoomBorder>
+            
             <Label Canvas.Top="40" Canvas.Right="0" Content="Not Under Package Control" Name="packageControlLabel" 
                        HorizontalContentAlignment="Right" Visibility ="Collapsed" FontSize="14"
                        FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />

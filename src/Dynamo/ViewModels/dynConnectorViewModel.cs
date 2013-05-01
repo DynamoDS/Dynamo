@@ -26,10 +26,12 @@ namespace Dynamo.Connectors
         double end_dot_size = 6;
         private dynPortModel start;
         private dynPortModel end;
-        private dynConnector _connector;
+        private dynConnector _model;
         bool isDrawing = false;
         ConnectorType connectorType;
         Brush strokeBrush;
+
+        #region Properties
 
         public DelegateCommand<object> ConnectCommand { get; set; }
         public DelegateCommand RedrawCommand { get; set; }
@@ -38,7 +40,7 @@ namespace Dynamo.Connectors
 
         public dynConnector ConnectorModel
         {
-            get { return _connector; }
+            get { return _model; }
         }
 
         public bool IsDrawing
@@ -61,7 +63,7 @@ namespace Dynamo.Connectors
         /// </summary>
         public Point Bez_StartPoint
         {
-            get { return _connector.Start.Center; }
+            get { return _model.Start.Center; }
         }
 
         public Point Bez_Point1
@@ -137,7 +139,7 @@ namespace Dynamo.Connectors
         {
             get
             {
-                if (dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Connectors.Contains(_connector)
+                if (dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Connectors.Contains(_model)
                     && dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
                     return Visibility.Visible;
                 return Visibility.Hidden;
@@ -152,12 +154,15 @@ namespace Dynamo.Connectors
         {
             get
             {
-                if (dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Connectors.Contains(_connector)
+                if (dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Connectors.Contains(_model)
                     && dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.POLYLINE)
                     return Visibility.Visible;
                 return Visibility.Hidden;
             }
         }
+
+
+#endregion
 
         //construct a view and start drawing.
         public dynConnectorViewModel(dynPortModel port)
@@ -292,7 +297,7 @@ namespace Dynamo.Connectors
                 Redraw();
         }
 
-        void _connector_Connected(object sender, EventArgs e)
+        void ModelConnected(object sender, EventArgs e)
         {
             throw new NotImplementedException();
         }
@@ -302,11 +307,11 @@ namespace Dynamo.Connectors
             //make the connector model
             dynPortModel end = parameters as dynPortModel;
 
-            _connector = new dynConnector(start.Owner, end.Owner, start.Index, end.Index, 0);
-            _connector.Connected += _connector_Connected;
+            _model = new dynConnector(start.Owner, end.Owner, start.Index, end.Index, 0);
+            _model.Connected += ModelConnected;
 
-            _connector.Start.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Start_PropertyChanged);
-            _connector.End.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(End_PropertyChanged);
+            _model.Start.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Start_PropertyChanged);
+            _model.End.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(End_PropertyChanged);
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
         }
 
@@ -338,7 +343,7 @@ namespace Dynamo.Connectors
 //MVVM : Remove condition on isDrawing
             //if (isDrawing)
             //{
-                if (_connector.Start != null)
+                if (_model.Start != null)
                 {
                     /*connectorPoints.StartPoint = pStart.Center;
                     plineFigure.StartPoint = pStart.Center;*/
@@ -373,18 +378,18 @@ namespace Dynamo.Connectors
                     double distance = 0.0;
                     if (connectorType == Connectors.ConnectorType.BEZIER)
                     {
-                        distance = Math.Sqrt(Math.Pow(_connector.End.Center.X - _connector.Start.Center.X, 2) + Math.Pow(_connector.End.Center.Y - _connector.Start.Center.Y, 2));
+                        distance = Math.Sqrt(Math.Pow(_model.End.Center.X - _model.Start.Center.X, 2) + Math.Pow(_model.End.Center.Y - _model.Start.Center.Y, 2));
                         bezOffset = .3 * distance;
                     }
                     else
                     {
-                        distance = _connector.End.Center.X - _connector.Start.Center.X;
+                        distance = _model.End.Center.X - _model.Start.Center.X;
                         bezOffset = distance / 2;
                     }
 
-                    bez_point1 = new Point(_connector.Start.Center.X + bezOffset, _connector.Start.Center.Y);
-                    bez_point2 = new Point(_connector.End.Center.X - bezOffset, _connector.End.Center.Y);
-                    bez_point3 = _connector.End.Center;
+                    bez_point1 = new Point(_model.Start.Center.X + bezOffset, _model.Start.Center.Y);
+                    bez_point2 = new Point(_model.End.Center.X - bezOffset, _model.End.Center.Y);
+                    bez_point3 = _model.End.Center;
 
                     dot_top = bez_point3.Y - end_dot_size / 2;
                     dot_left = bez_point3.X - end_dot_size/2;
@@ -399,27 +404,38 @@ namespace Dynamo.Connectors
         /// <param name="p2"></param>
         public void Redraw(Point p2 )
         {
-            if (_connector.Start != null)
+            Console.WriteLine("Redraw connector");
+            Point startPt;
+
+            if (_model != null && _model.Start != null)
             {
-                double distance = 0.0;
-                if (connectorType == Connectors.ConnectorType.BEZIER)
-                {
-                    distance = Math.Sqrt(Math.Pow(p2.X - _connector.Start.Center.X, 2) + Math.Pow(p2.Y - _connector.Start.Center.Y, 2));
-                    bezOffset = .3 * distance;
-                }
-                else
-                {
-                    distance = p2.X - _connector.Start.Center.X;
-                    bezOffset = distance / 2;
-                }
-
-                bez_point1 = new Point(_connector.Start.Center.X + bezOffset, _connector.Start.Center.Y);
-                bez_point2 = new Point(p2.X - bezOffset, _connector.End.Center.Y);
-                bez_point3 = p2;
-
-                dot_top = bez_point3.Y - end_dot_size / 2;
-                dot_left = bez_point3.X - end_dot_size / 2;
+                startPt = _model.Start.Center;
             }
+            else
+            {
+                startPt = start.Center;
+            }
+
+            double distance = 0.0;
+            if (connectorType == Connectors.ConnectorType.BEZIER)
+            {
+                //distance = Math.Sqrt(Math.Pow(p2.X - _model.Start.Center.X, 2) + Math.Pow(p2.Y - _model.Start.Center.Y, 2));
+                distance = p2.X - startPt.X;
+                bezOffset = .3 * distance;
+            }
+            else
+            {
+                distance = p2.X - startPt.X;
+                bezOffset = distance / 2;
+            }
+
+            bez_point1 = new Point(startPt.X + bezOffset, startPt.Y);
+            bez_point2 = new Point(p2.X - bezOffset, p2.Y);
+            bez_point3 = p2;
+
+            dot_top = bez_point3.Y - end_dot_size / 2;
+            dot_left = bez_point3.X - end_dot_size / 2;
+
         }
 
         private bool CanRedraw()

@@ -9,7 +9,7 @@ using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Nodes
 {
-    public class dynNoteViewModel:dynViewModelBase
+    public class dynNoteViewModel: dynViewModelBase
     {
         private dynNoteModel _note;
 

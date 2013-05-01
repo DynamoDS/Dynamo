@@ -99,7 +99,7 @@ limitations under the License.
     <Compile Include="ViewModels\dynBenchViewModel.cs" />
     <Compile Include="ViewModels\dynConnectorViewModel.cs" />
     <Compile Include="ViewModels\dynNodeViewModel.cs" />
-    <Compile Include="ViewModels\dynNoteVIewModel.cs" />
+    <Compile Include="ViewModels\dynNoteViewModel.cs" />
     <Compile Include="ViewModels\dynPortViewModel.cs" />
     <Compile Include="ViewModels\dynViewModelBase.cs" />
     <Compile Include="ViewModels\dynWorkspaceViewModel.cs" />
@@ -154,8 +154,8 @@ limitations under the License.
     <Compile Include="dynNodeUI.xaml.cs">
       <DependentUpon>dynNodeUI.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynNote.xaml.cs">
-      <DependentUpon>dynNote.xaml</DependentUpon>
+    <Compile Include="dynNoteView.xaml.cs">
+      <DependentUpon>dynNoteView.xaml</DependentUpon>
     </Compile>
     <Compile Include="dynPort.xaml.cs">
       <DependentUpon>dynPort.xaml</DependentUpon>
@@ -215,7 +215,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="dynNote.xaml">
+    <Page Include="dynNoteView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -88,7 +88,7 @@ namespace Dynamo
             //    e.NodeUI.Visibility = Visibility.Collapsed;
             //foreach (dynConnector c in ws.Connectors)
             //    c.Visible = false;
-            //foreach (dynNote n in ws.Notes)
+            //foreach (dynNoteView n in ws.Notes)
             //    n.Visibility = Visibility.Hidden;
             //throw new NotImplementedException("Verify that workspace visbility is now bound.");
         }

@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Media;
 using Dynamo.Connectors;
 using Dynamo.Controls;
@@ -21,8 +22,10 @@ namespace Dynamo
 
     public class dynWorkspaceViewModel: dynViewModelBase
     {
-        public dynWorkspace _workspace;
-        private dynConnectorViewModel activeConnector;
+        #region Properties
+
+        public dynWorkspace _model;
+        
         private bool isConnecting = false;
 
         public event EventHandler StopDragging;
@@ -71,7 +74,19 @@ namespace Dynamo
 
         ObservableCollection<dynConnectorViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
         ObservableCollection<dynNodeViewModel> _nodes = new ObservableCollection<dynNodeViewModel>();
-        ObservableCollection<dynNoteViewModel> _notes = new ObservableCollection<dynNoteViewModel>(); 
+        ObservableCollection<dynNoteViewModel> _notes = new ObservableCollection<dynNoteViewModel>();
+        
+        private CompositeCollection _workspaceElements = new CompositeCollection();
+        public CompositeCollection WorkspaceElements
+        {
+            get { return _workspaceElements; }
+            set
+            {
+                _workspaceElements = value;
+                RaisePropertyChanged("Nodes");
+                RaisePropertyChanged("WorkspaceElements");
+            }
+        }
 
         public ObservableCollection<dynConnectorViewModel> Connectors
         {
@@ -109,12 +124,13 @@ namespace Dynamo
         {
             get
             {
-                if (_workspace == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
+                if (_model == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
                     return "Home";
-                return _workspace.Name;
+                return _model.Name;
             }
         }
 
+        private dynConnectorViewModel activeConnector;
         public dynConnectorViewModel ActiveConnector
         {
             get { return activeConnector; }
@@ -129,7 +145,7 @@ namespace Dynamo
         {
             get
             {
-                if (_workspace != dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
+                if (_model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
             }
@@ -137,7 +153,7 @@ namespace Dynamo
 
         public bool CanEditName
         {
-            get { return _workspace != dynSettings.Controller.DynamoViewModel.Model.HomeSpace; }
+            get { return _model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace; }
         }
 
         public bool IsConnecting
@@ -150,7 +166,7 @@ namespace Dynamo
         {
             get
             {
-                if (_workspace == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
+                if (_model == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
                     return Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B);
                 return Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A);
             }
@@ -161,29 +177,43 @@ namespace Dynamo
         /// </summary>
         public Point CurrentOffset
         {
-            get { return _workspace.CurrentOffset; }
+            get { return _model.CurrentOffset; }
             set
             {
                 OnCurrentOffsetChanged(this, new PointEventArgs(value));
             }
         }
 
-        public dynWorkspace WorkspaceModel
+        public dynWorkspace ModelModel
         {
-            get { return _workspace; }
+            get { return _model; }
         }
 
-        public dynWorkspaceViewModel(dynWorkspace workspace, DynamoViewModel vm)
+        #endregion
+
+        public dynWorkspaceViewModel(dynWorkspace model, DynamoViewModel vm)
         {
-            _workspace = workspace;
-            
+            _model = model;
+           
+            var nodesColl = new CollectionContainer();
+            nodesColl.Collection = Nodes;
+            WorkspaceElements.Add(nodesColl);
+
+            var connColl = new CollectionContainer();
+            connColl.Collection = Connectors;
+            WorkspaceElements.Add(connColl);
+
+            var notesColl = new CollectionContainer();
+            notesColl.Collection = Notes;
+            WorkspaceElements.Add(notesColl);
+
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
             //connector view models are added during connection
-            _workspace.Nodes.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Nodes_CollectionChanged);
-            _workspace.Notes.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Notes_CollectionChanged);
-            _workspace.Connectors.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Connectors_CollectionChanged);
-            _workspace.PropertyChanged += Workspace_PropertyChanged;
+            _model.Nodes.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Nodes_CollectionChanged);
+            _model.Notes.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Notes_CollectionChanged);
+            _model.Connectors.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Connectors_CollectionChanged);
+            _model.PropertyChanged += ModelPropertyChanged;
 
             CrossSelectCommand = new DelegateCommand<object>(CrossingSelect, CanCrossSelect);
             ContainSelectCommand = new DelegateCommand<object>(ContainSelect, CanContainSelect);
@@ -262,7 +292,7 @@ namespace Dynamo
             }
         }
 
-        void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void ModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -280,7 +310,7 @@ namespace Dynamo
             var rect = (Rect)parameters;
 
            
-            foreach (dynNode n in WorkspaceModel.Nodes)
+            foreach (dynNode n in ModelModel.Nodes)
             {
                 //check if the node is within the boundary
                 //double x0 = Canvas.GetLeft(n);
@@ -308,7 +338,7 @@ namespace Dynamo
         {
             var rect = (Rect)parameters;
 
-            foreach (dynNode n in WorkspaceModel.Nodes)
+            foreach (dynNode n in ModelModel.Nodes)
             {
                 //check if the node is within the boundary
                 //double x0 = Canvas.GetLeft(n);
@@ -329,13 +359,11 @@ namespace Dynamo
         private bool CanCrossSelect(object parameters)
         {
             return true;
-        }
+        } 
 
         private void UpdateSelectedConnectors()
         {
-            IEnumerable<dynConnector> allConnectors = DynamoSelection.Instance.Selection
-                                                               .Where(x => x is dynNode)
-                                                               .Select(x => x as dynNode)
+            var allConnectors = DynamoSelection.Instance.Selection.OfType<dynNode>()
                                                                .SelectMany(
                                                                    el => el.OutPorts
                                                                            .SelectMany(x => x.Connectors)
@@ -361,7 +389,7 @@ namespace Dynamo
 
             //set the current offset without triggering
             //any property change notices.
-            _workspace.CurrentOffset = new Point(p.X, p.Y);
+            _model.CurrentOffset = new Point(p.X, p.Y);
         }
 
         private bool CanSetCurrentOffset(object parameter)

@@ -21,13 +21,13 @@ using Dynamo.Selection;
 namespace Dynamo.Nodes
 {
     /// <summary>
-    /// Interaction logic for dynNote.xaml
+    /// Interaction logic for dynNoteView.xaml
     /// </summary>
-    public partial class dynNote : UserControl
+    public partial class dynNoteView : UserControl
     {
         private dynNoteViewModel vm;
 
-        public dynNote()
+        public dynNoteView()
         {
             InitializeComponent();
 

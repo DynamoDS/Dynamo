@@ -14,18 +14,7 @@
 
 using System;
 using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Shapes;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows.Data;
-
 using Dynamo.Nodes;
-using Dynamo.Controls;
-using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Connectors
 {

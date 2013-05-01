@@ -252,7 +252,7 @@ namespace Dynamo.Controls
         {
             get
             {
-                return Workspaces.First(x => x.WorkspaceModel == _model.CurrentSpace);
+                return Workspaces.First(x => x.ModelModel == _model.CurrentSpace);
             }
         }
 
@@ -350,7 +350,7 @@ namespace Dynamo.Controls
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
-                        _workspaces.Remove(_workspaces.ToList().First(x => x.WorkspaceModel == item));
+                        _workspaces.Remove(_workspaces.ToList().First(x => x.ModelModel == item));
                     break;
             }
         }
@@ -1748,7 +1748,7 @@ namespace Dynamo.Controls
                         double x = Convert.ToDouble(xAttrib.Value);
                         double y = Convert.ToDouble(yAttrib.Value);
 
-                        //dynNote n = Bench.AddNote(text, x, y, ws);
+                        //dynNoteView n = Bench.AddNote(text, x, y, ws);
                         //Bench.AddNote(text, x, y, ws);
 
                         var paramDict = new Dictionary<string, object>();
@@ -2244,7 +2244,7 @@ namespace Dynamo.Controls
             {
                 con.Visible = false;
             }
-            foreach (dynNote note in _model.CurrentSpace.Notes)
+            foreach (dynNoteView note in _model.CurrentSpace.Notes)
             {
                 note.Visibility = Visibility.Hidden;
             }*/
@@ -2263,7 +2263,7 @@ namespace Dynamo.Controls
             {
                 con.Visible = true;
             }
-            foreach (dynNote note in _model.CurrentSpace.Notes)
+            foreach (dynNoteView note in _model.CurrentSpace.Notes)
             {
                 note.Visibility = Visibility.Visible;
             }*/
@@ -2309,7 +2309,7 @@ namespace Dynamo.Controls
             {
                 con.Visible = false;
             }
-            foreach (dynNote note in _model.CurrentSpace.Notes)
+            foreach (dynNoteView note in _model.CurrentSpace.Notes)
             {
                 note.Visibility = Visibility.Hidden;
             }*/
@@ -2335,7 +2335,7 @@ namespace Dynamo.Controls
                 con.Visible = true;
             }
 
-            foreach (dynNote note in _model.CurrentSpace.Notes)
+            foreach (dynNoteView note in _model.CurrentSpace.Notes)
             {
                 note.Visibility = Visibility.Visible;
             }*/
@@ -2564,7 +2564,7 @@ namespace Dynamo.Controls
                         double x = Convert.ToDouble(xAttrib.Value);
                         double y = Convert.ToDouble(yAttrib.Value);
 
-                        //dynNote n = Bench.AddNote(text, x, y, this.CurrentSpace);
+                        //dynNoteView n = Bench.AddNote(text, x, y, this.CurrentSpace);
                         //Bench.AddNote(text, x, y, this.CurrentSpace);
 
                         var paramDict = new Dictionary<string, object>();
@@ -2632,7 +2632,7 @@ namespace Dynamo.Controls
                 //dynSettings.Workbench.Children.Remove(el.NodeUI);
             }
 
-            /*foreach (dynNote n in _model.CurrentSpace.Notes)
+            /*foreach (dynNoteView n in _model.CurrentSpace.Notes)
             {
                 dynSettings.Workbench.Children.Remove(n);
             }*/

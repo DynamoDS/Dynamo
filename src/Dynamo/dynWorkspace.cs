@@ -29,6 +29,8 @@ namespace Dynamo
 {
     public abstract class dynWorkspace : NotificationObject
     {
+
+        #region Properties
         private string _name;
         private System.Windows.Point currentOffset = new System.Windows.Point(0, 0);
 
@@ -67,6 +69,8 @@ namespace Dynamo
             }
         }
 
+        #endregion
+
         public event Action OnModified;
 
         public abstract void OnDisplayed();
@@ -81,14 +85,15 @@ namespace Dynamo
 
         protected dynWorkspace(String name, List<dynNode> e, List<dynConnector> c, double x, double y)
         {
-            //_model = model;
             Name = name;
-//MVVM : made all lists into observable collections
             Nodes = new ObservableCollection<dynNode>(e);
             Connectors = new ObservableCollection<dynConnector>(c);
             PositionX = x;
             PositionY = y;
             Notes = new ObservableCollection<dynNoteModel>();
+            var n = new dynNoteModel(10, 10);
+            n.Text = "helloooo";
+            this.Notes.Add( n );
         }
 
         public void DisableReporting()
@@ -289,6 +294,7 @@ namespace Dynamo
         public override void OnDisplayed()
         {
             var bench = dynSettings.Bench;
+
 
             //if (bench.addMenuItemsDictNew.ContainsKey("Variable"))
             //    return;
