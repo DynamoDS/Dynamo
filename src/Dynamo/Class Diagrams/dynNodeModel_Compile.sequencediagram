@@ -1,0 +1,353 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SequenceDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" dslVersion="1.0.0.0" Id="cdaf5cd9-8488-45a1-beee-f03daba09e39" name="dynNodeModel_Compile" mode="DotNet" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner">
+  <packagedElements>
+    <packageHasNamedElement>
+      <interaction Id="fcd761df-a374-4f58-b6a2-23c029aab1db" name="dynNodeModel_Compile" collapseFragmentsFlag="false" isActiveClass="false" isAbstract="false" isLeaf="false" isReentrant="false">
+        <fragments>
+          <behaviorExecutionSpecification Id="02b67db4-25a5-45ed-998b-eb0a6cc43e5f" name="BehaviorExecutionSpecification">
+            <coveredLifelines>
+              <lifelineMoniker Id="07dbba53-00ce-4734-98d9-1229ff3562a1" LastKnownName="this : dynNodeModel" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker Id="21d7238e-1461-4a93-91a1-7e5da1c4148f" LastKnownName="ExecutionOccurrenceSpecification" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker Id="66317ea6-de7e-4feb-9ae4-0e4b607a0d04" LastKnownName="ExecutionOccurrenceSpecification" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker Id="b037b85d-151d-48cf-a956-5e68b8c4e92a" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="d0079c3a-f53a-466a-a4f2-c38c02ec5d5a" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="8cd3696b-478e-41c2-95ed-5023304b3734" LastKnownName="MessageOccurrenceSpecification" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification Id="66317ea6-de7e-4feb-9ae4-0e4b607a0d04" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="fc57e664-ac14-4afb-a170-698c80fb98df" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="07dbba53-00ce-4734-98d9-1229ff3562a1" LastKnownName="this : dynNodeModel" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="b037b85d-151d-48cf-a956-5e68b8c4e92a" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="07dbba53-00ce-4734-98d9-1229ff3562a1" LastKnownName="this : dynNodeModel" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <lostFoundTarget Id="e107d2a4-1efe-4db8-b8de-e3b66302042d" name="LostFoundTarget" />
+          <behaviorExecutionSpecification Id="c4224128-5ce4-424d-b327-4a98b97fe929" name="BehaviorExecutionSpecification">
+            <coveredLifelines>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker Id="e87b75ce-d017-4038-8d0a-9fa677435bc4" LastKnownName="ExecutionOccurrenceSpecification" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker Id="07188dfb-5811-41f0-9517-4f06af8925ac" LastKnownName="ExecutionOccurrenceSpecification" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker Id="751d8a32-4d6f-40d4-a190-0e3b63f36a78" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="675d43ab-65f8-4759-9549-984b7ea9f9f7" LastKnownName="MessageOccurrenceSpecification" />
+              <executionOccurrenceSpecificationMoniker Id="651b1b4b-a6ac-41cd-a4a3-47871d5f756d" LastKnownName="ExecutionOccurrenceSpecification" />
+              <executionOccurrenceSpecificationMoniker Id="6031b520-3ff6-4199-ad5e-d06a799b9ccb" LastKnownName="ExecutionOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="a3507472-a328-4a53-b147-8e230f3abf72" LastKnownName="MessageOccurrenceSpecification" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification Id="07188dfb-5811-41f0-9517-4f06af8925ac" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="598901a2-c1db-44de-b4c6-18cddd90256a" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="751d8a32-4d6f-40d4-a190-0e3b63f36a78" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="d0079c3a-f53a-466a-a4f2-c38c02ec5d5a" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="07dbba53-00ce-4734-98d9-1229ff3562a1" LastKnownName="this : dynNodeModel" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="675d43ab-65f8-4759-9549-984b7ea9f9f7" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <behaviorExecutionSpecification Id="618e5b8b-b091-49e8-9cbb-e137ddb9d494" name="BehaviorExecutionSpecification">
+            <coveredLifelines>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker Id="6031b520-3ff6-4199-ad5e-d06a799b9ccb" LastKnownName="ExecutionOccurrenceSpecification" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker Id="651b1b4b-a6ac-41cd-a4a3-47871d5f756d" LastKnownName="ExecutionOccurrenceSpecification" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker Id="cff8111d-02ea-46b9-a4fa-8ba23fa09486" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="2a35da2a-e1d9-42c5-b923-56612a84f227" LastKnownName="MessageOccurrenceSpecification" />
+              <executionOccurrenceSpecificationMoniker Id="57fcb3ef-8005-4823-a148-df42e9c1ece5" LastKnownName="ExecutionOccurrenceSpecification" />
+              <executionOccurrenceSpecificationMoniker Id="440348fc-d988-41c9-8fc5-b178aff80893" LastKnownName="ExecutionOccurrenceSpecification" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification Id="651b1b4b-a6ac-41cd-a4a3-47871d5f756d" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="0993ca5a-c422-4945-afec-ed8de0c5c7ab" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="cff8111d-02ea-46b9-a4fa-8ba23fa09486" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="2a35da2a-e1d9-42c5-b923-56612a84f227" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <behaviorExecutionSpecification Id="f20521e8-c395-4b79-adb9-41bd2a7bea94" name="BehaviorExecutionSpecification">
+            <coveredLifelines>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker Id="440348fc-d988-41c9-8fc5-b178aff80893" LastKnownName="ExecutionOccurrenceSpecification" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker Id="57fcb3ef-8005-4823-a148-df42e9c1ece5" LastKnownName="ExecutionOccurrenceSpecification" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker Id="431d8021-7c14-4117-ae1f-766b2668f9c1" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="263299c5-5440-4cde-9af0-da533f8daab7" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="b0ee40e2-5996-4dad-9432-b8a6812f6990" LastKnownName="MessageOccurrenceSpecification" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification Id="57fcb3ef-8005-4823-a148-df42e9c1ece5" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="5b576579-4aba-4586-86ec-6463d06273f8" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="431d8021-7c14-4117-ae1f-766b2668f9c1" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="263299c5-5440-4cde-9af0-da533f8daab7" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <lostFoundTarget Id="4ad5c2be-fb72-4643-abbc-f53f8334b40a" name="LostFoundTarget" />
+          <messageOccurrenceSpecification Id="b0ee40e2-5996-4dad-9432-b8a6812f6990" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <lostFoundTarget Id="d4867c0f-d295-40d9-92dd-f9f1e655c280" name="LostFoundTarget" />
+          <executionOccurrenceSpecification Id="440348fc-d988-41c9-8fc5-b178aff80893" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="f233af6a-920f-4755-897b-d11853ccac1e" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <executionOccurrenceSpecification Id="6031b520-3ff6-4199-ad5e-d06a799b9ccb" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="06cfdeb0-b08e-4fb7-8b42-bb47ac6f60d4" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="8cd3696b-478e-41c2-95ed-5023304b3734" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="07dbba53-00ce-4734-98d9-1229ff3562a1" LastKnownName="this : dynNodeModel" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="a3507472-a328-4a53-b147-8e230f3abf72" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification Id="e87b75ce-d017-4038-8d0a-9fa677435bc4" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="f541850c-467c-4a5b-a35a-822b3c581d40" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="58448cce-ed5c-4830-9762-3f2f0d397034" LastKnownName="ExternalFunctionNode : ExternalFunctionNode" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <executionOccurrenceSpecification Id="21d7238e-1461-4a93-91a1-7e5da1c4148f" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="dee41cdf-c413-4578-bae3-a7f8a19559af" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="07dbba53-00ce-4734-98d9-1229ff3562a1" LastKnownName="this : dynNodeModel" />
+            </covered>
+          </executionOccurrenceSpecification>
+        </fragments>
+        <lifelines>
+          <lifeline Id="07dbba53-00ce-4734-98d9-1229ff3562a1" name="this : dynNodeModel" isActor="false" lifelineDisplayName="this : dynNodeModel" referencedInstance="(Assembly=$(7858fa8c-475f-4b8e-b468-1f8200778cf8.OutputPathUri) Namespace=Dynamo.Nodes Type=dynNodeModel ObjectInstance=&quot;Object instance 2&quot;)" referencedType="Dynamo.Nodes.dynNodeModel">
+            <referencesInternal>
+              <reference Id="c5a41289-b1eb-41a7-b8bd-c78269e27c80" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Dynamo.Nodes)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(7858fa8c-475f-4b8e-b468-1f8200778cf8.OutputPathUri)&amp;quot; Namespace=Dynamo.Nodes Type=dynNodeModel)&quot;)" tag="DGQL" />
+              <reference Id="a9a9377e-503a-4150-88ed-28a2220fb739" handle="(Assembly=&quot;$(7858fa8c-475f-4b8e-b468-1f8200778cf8.OutputPathUri)&quot; Namespace=Dynamo.Nodes Type=dynNodeModel)" tag="DGML" />
+            </referencesInternal>
+            <topLevelOccurrences>
+              <executionOccurrenceSpecificationMoniker Id="66317ea6-de7e-4feb-9ae4-0e4b607a0d04" LastKnownName="ExecutionOccurrenceSpecification" />
+              <executionOccurrenceSpecificationMoniker Id="21d7238e-1461-4a93-91a1-7e5da1c4148f" LastKnownName="ExecutionOccurrenceSpecification" />
+            </topLevelOccurrences>
+          </lifeline>
+          <lifeline Id="58448cce-ed5c-4830-9762-3f2f0d397034" name="ExternalFunctionNode : ExternalFunctionNode" isActor="false" lifelineDisplayName="ExternalFunctionNode : ExternalFunctionNode" referencedInstance="(Assembly=$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri) Namespace=Dynamo.FSchemeInterop.Node Type=ExternalFunctionNode ObjectInstance=&quot;Object instance 5&quot;)" referencedType="Dynamo.FSchemeInterop.Node.ExternalFunctionNode">
+            <referencesInternal>
+              <reference Id="e10e43b1-3db7-4782-a246-74c93a88ea32" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Dynamo.FSchemeInterop.Node)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&amp;quot; Namespace=Dynamo.FSchemeInterop.Node Type=ExternalFunctionNode)&quot;)" tag="DGQL" />
+              <reference Id="f497516f-b9da-4c01-a8d0-2046e8aa1f53" handle="(Assembly=&quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&quot; Namespace=Dynamo.FSchemeInterop.Node Type=ExternalFunctionNode)" tag="DGML" />
+            </referencesInternal>
+            <topLevelOccurrences>
+              <executionOccurrenceSpecificationMoniker Id="07188dfb-5811-41f0-9517-4f06af8925ac" LastKnownName="ExecutionOccurrenceSpecification" />
+              <executionOccurrenceSpecificationMoniker Id="e87b75ce-d017-4038-8d0a-9fa677435bc4" LastKnownName="ExecutionOccurrenceSpecification" />
+            </topLevelOccurrences>
+          </lifeline>
+        </lifelines>
+        <messages>
+          <message Id="dc765734-0002-4372-b8df-eb33ec51e42f" name="Compile" messageKind="Found" messageSort="AsynchCall" createSelfMessage="false">
+            <referencesInternal>
+              <reference Id="f46044c2-67e1-4234-880b-f4423557090a" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Dynamo.Nodes)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(7858fa8c-475f-4b8e-b468-1f8200778cf8.OutputPathUri)&amp;quot; Namespace=Dynamo.Nodes Type=dynNodeModel)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(7858fa8c-475f-4b8e-b468-1f8200778cf8.OutputPathUri)&amp;quot; Namespace=Dynamo.Nodes Type=dynNodeModel Member=(Name=Compile OverloadingParameters=[(Assembly=&amp;quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&amp;quot; Namespace=System.Collections.Generic Type=(Name=IEnumerable GenericParameterCount=1 GenericArguments=[(Assembly=&amp;quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&amp;quot; Namespace=System Type=String)]))]))&quot;)" tag="DGQL" />
+              <reference Id="35f67d2f-7d27-4de9-9b7b-39ebce1d7d80" handle="(Assembly=&quot;$(7858fa8c-475f-4b8e-b468-1f8200778cf8.OutputPathUri)&quot; Namespace=Dynamo.Nodes Type=dynNodeModel Member=(Name=Compile OverloadingParameters=[(Assembly=&quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&quot; Namespace=System.Collections.Generic Type=(Name=IEnumerable GenericParameterCount=1 GenericArguments=[(Assembly=&quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&quot; Namespace=System Type=String)]))]))" tag="DGML" />
+            </referencesInternal>
+            <sendEvent>
+              <lostFoundTargetMoniker Id="e107d2a4-1efe-4db8-b8de-e3b66302042d" LastKnownName="LostFoundTarget" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="b037b85d-151d-48cf-a956-5e68b8c4e92a" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+          <message Id="082ce1b9-e44c-44c0-9c28-e4bcdaf9c3e8" name="Create ExternalFunctionNode" messageKind="Complete" messageSort="CreateMessage" createSelfMessage="false" signatureText="new ExternalFunctionNode(evalIfDirty, portNames)">
+            <referencesInternal>
+              <reference Id="396b21d0-38e2-4ce5-b4ee-c4dbe0ee4298" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Dynamo.FSchemeInterop.Node)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&amp;quot; Namespace=Dynamo.FSchemeInterop.Node Type=ExternalFunctionNode)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&amp;quot; Namespace=Dynamo.FSchemeInterop.Node Type=ExternalFunctionNode Member=(Name=.ctor OverloadingParameters=[(Assembly=&amp;quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&amp;quot; Namespace=System Type=(Name=Converter GenericParameterCount=2 GenericArguments=[(Assembly=&amp;quot;$(ReferenceAssembliesUri)/Microsoft/FSharp/2.0/Runtime/v4.0/FSharp.Core.dll&amp;quot; Namespace=Microsoft.FSharp.Collections Type=(Name=FSharpList GenericParameterCount=1 GenericArguments=[(Assembly=&amp;quot;$(PersonalUri)/GitHub/Dynamo/bin/Debug/FScheme.dll&amp;quot; Namespace=Dynamo Type=(Name=Value ParentType=FScheme))])),(Assembly=&amp;quot;$(PersonalUri)/GitHub/Dynamo/bin/Debug/FScheme.dll&amp;quot; Namespace=Dynamo Type=(Name=Value ParentType=FScheme))])),(Assembly=&amp;quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&amp;quot; Namespace=System.Collections.Generic Type=(Name=IEnumerable GenericParameterCount=1 GenericArguments=[(Assembly=&amp;quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&amp;quot; Namespace=System Type=String)]))]))&quot;)" tag="DGQL" />
+              <reference Id="ce71cabb-d562-497c-83d4-08f2521d3917" handle="(Assembly=&quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&quot; Namespace=Dynamo.FSchemeInterop.Node Type=ExternalFunctionNode Member=(Name=.ctor OverloadingParameters=[(Assembly=&quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&quot; Namespace=System Type=(Name=Converter GenericParameterCount=2 GenericArguments=[(Assembly=&quot;$(ReferenceAssembliesUri)/Microsoft/FSharp/2.0/Runtime/v4.0/FSharp.Core.dll&quot; Namespace=Microsoft.FSharp.Collections Type=(Name=FSharpList GenericParameterCount=1 GenericArguments=[(Assembly=&quot;$(PersonalUri)/GitHub/Dynamo/bin/Debug/FScheme.dll&quot; Namespace=Dynamo Type=(Name=Value ParentType=FScheme))])),(Assembly=&quot;$(PersonalUri)/GitHub/Dynamo/bin/Debug/FScheme.dll&quot; Namespace=Dynamo Type=(Name=Value ParentType=FScheme))])),(Assembly=&quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&quot; Namespace=System.Collections.Generic Type=(Name=IEnumerable GenericParameterCount=1 GenericArguments=[(Assembly=&quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&quot; Namespace=System Type=String)]))]))" tag="DGML" />
+            </referencesInternal>
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker Id="d0079c3a-f53a-466a-a4f2-c38c02ec5d5a" LastKnownName="MessageOccurrenceSpecification" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="751d8a32-4d6f-40d4-a190-0e3b63f36a78" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+          <message Id="fd0f2710-7139-4cb7-b51f-ba874e4e365a" name="&lt;&lt;return&gt;&gt;" messageKind="Complete" messageSort="Reply" createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker Id="a3507472-a328-4a53-b147-8e230f3abf72" LastKnownName="MessageOccurrenceSpecification" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="8cd3696b-478e-41c2-95ed-5023304b3734" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+          <message Id="4a40ca0b-200b-4f88-86a0-0c299add03b5" name="Create ProcedureCallNode" messageKind="Complete" messageSort="CreateMessage" createSelfMessage="true" signatureText="base(inputList)">
+            <referencesInternal>
+              <reference Id="d4d76e6a-296d-4d46-bd37-ad756acde706" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Dynamo.FSchemeInterop.Node)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&amp;quot; Namespace=Dynamo.FSchemeInterop.Node Type=ProcedureCallNode)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&amp;quot; Namespace=Dynamo.FSchemeInterop.Node Type=ProcedureCallNode Member=(Name=.ctor OverloadingParameters=[(Assembly=&amp;quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&amp;quot; Namespace=System.Collections.Generic Type=(Name=IEnumerable GenericParameterCount=1 GenericArguments=[(Assembly=&amp;quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&amp;quot; Namespace=System Type=String)]))]))&quot;)" tag="DGQL" />
+              <reference Id="12606343-3d57-459c-b8be-5c91605fa0dd" handle="(Assembly=&quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&quot; Namespace=Dynamo.FSchemeInterop.Node Type=ProcedureCallNode Member=(Name=.ctor OverloadingParameters=[(Assembly=&quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&quot; Namespace=System.Collections.Generic Type=(Name=IEnumerable GenericParameterCount=1 GenericArguments=[(Assembly=&quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&quot; Namespace=System Type=String)]))]))" tag="DGML" />
+            </referencesInternal>
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker Id="675d43ab-65f8-4759-9549-984b7ea9f9f7" LastKnownName="MessageOccurrenceSpecification" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="cff8111d-02ea-46b9-a4fa-8ba23fa09486" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+          <message Id="2f39cce2-6cd2-4570-a981-68829ada3c69" name="Create InputNode" messageKind="Complete" messageSort="CreateMessage" createSelfMessage="true" signatureText="base(inputNames)">
+            <referencesInternal>
+              <reference Id="532266e7-9080-4352-a1d6-5b3691dfd109" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Dynamo.FSchemeInterop.Node)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&amp;quot; Namespace=Dynamo.FSchemeInterop.Node Type=InputNode)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&amp;quot; Namespace=Dynamo.FSchemeInterop.Node Type=InputNode Member=(Name=.ctor OverloadingParameters=[(Assembly=&amp;quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&amp;quot; Namespace=System.Collections.Generic Type=(Name=IEnumerable GenericParameterCount=1 GenericArguments=[(Assembly=&amp;quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&amp;quot; Namespace=System Type=String)]))]))&quot;)" tag="DGQL" />
+              <reference Id="f9c8c10b-fa9a-4721-a757-7460141c0dcc" handle="(Assembly=&quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&quot; Namespace=Dynamo.FSchemeInterop.Node Type=InputNode Member=(Name=.ctor OverloadingParameters=[(Assembly=&quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&quot; Namespace=System.Collections.Generic Type=(Name=IEnumerable GenericParameterCount=1 GenericArguments=[(Assembly=&quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&quot; Namespace=System Type=String)]))]))" tag="DGML" />
+            </referencesInternal>
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker Id="2a35da2a-e1d9-42c5-b923-56612a84f227" LastKnownName="MessageOccurrenceSpecification" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="431d8021-7c14-4117-ae1f-766b2668f9c1" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+          <message Id="2a8190a1-69a7-4132-b179-bf48453a5a41" name="Create Dictionary&lt;String,INode&gt;" messageKind="Lost" messageSort="AsynchCall" createSelfMessage="false">
+            <referencesInternal>
+              <reference Id="dee71dc5-6e08-4305-a561-0e21d5ab7092" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=System.Collections.Generic)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&amp;quot; Namespace=System.Collections.Generic Type=(Name=Dictionary GenericParameterCount=2))&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&amp;quot; Namespace=System.Collections.Generic Type=(Name=Dictionary GenericParameterCount=2) Member=.ctor)&quot;)" tag="DGQL" />
+              <reference Id="6a5bd668-ebac-4e23-90a2-cf18a6135d95" handle="(Assembly=&quot;$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll&quot; Namespace=System.Collections.Generic Type=(Name=Dictionary GenericParameterCount=2) Member=.ctor)" tag="DGML" />
+            </referencesInternal>
+            <generationState>H4sIAAAAAAAEAO2YbWvTYBSG759S+qG0MBoRGaKrMDp1BZ1jrZ/GkDZ9WTVNapOq8dd7PSdpm3ZFxY/uISQ5uc/7OcnhkDP1NdFKcw0Vcf3J01hde4r0Bs5QC7BXOtNA90ikulHCkammHrId1dXUOXiK3EIj9HLQhr5qbXIvNUUvgvtCgR1do66xnmhW+qjhrZBKoZv6oec6VQu5G7CpRTlRrJBr7cDf3LQCvYcKzWrKOcV3UMnhO9hKX8DautJr8jnG+6Zn8J9ALbASGu48jEDHVpVqZjUsFRZSLaFcdB1qmvOcWXxtsk1MbwI3w1JCFin4W8unqH6IpQFaS9Nvbq12dGHcjd4Q6RzZfd1rwwuNzFDnc41EhoWnD+TPuc/gLwzNiKajW9/F33Sx2p0+mKtjTNYtnRyt2/FafTSplWXZw0/M/YIYwr1eBHRrDnUJOjKJ3Dq/QDIAmZd6E+g1Mbjq9LFxbxFMsByXb0FCxJt8j+dYtd3+g50r7mPr264WvS3a0h1ni2mw4294fk74OfE4uujnxL/MCbdvOAszq3++nRfdUmfnbahPoBF3V0ln4x30CF5kGse+ggY8171qP04qETV4dvy6bTQpXYpNO7ds1/bW18nZ7USuL3Xbhnr2dWbWneIt9VPOT7nH0UU/5fw25OeEnxN+Tvzf29AHbH0uv8DDfWcT1WkZu4tnaREXfvYjGYCtbXcqdqxL6CHyVQ/7cm7H2vxpcl9FYEjwII4CPfw3VaB/+2/rF8qBPcgGEwAA
+(Assembly="$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll" Namespace=System.Collections.Generic Type=(Name=Dictionary GenericParameterCount=2 GenericArguments=[(Assembly="$(FxReferenceAssembliesUri)/.NETFramework/v4.0/mscorlib.dll" Namespace=System Type=String),(Assembly=$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri) Namespace=Dynamo.FSchemeInterop.Node Type=INode)]) ObjectInstance="Object instance 6")
+ExternalFunctionNode.arguments : Dictionary&lt;String,INode&gt;
+new Dictionary&lt;string, INode&gt;()</generationState>
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker Id="263299c5-5440-4cde-9af0-da533f8daab7" LastKnownName="MessageOccurrenceSpecification" />
+            </sendEvent>
+            <receiveEvent>
+              <lostFoundTargetMoniker Id="4ad5c2be-fb72-4643-abbc-f53f8334b40a" LastKnownName="LostFoundTarget" />
+            </receiveEvent>
+          </message>
+          <message Id="ea4f37c6-09dc-4674-9751-88bb2f09993e" name="Create INode" messageKind="Lost" messageSort="AsynchCall" createSelfMessage="false">
+            <referencesInternal>
+              <reference Id="35bfc99d-b9dd-4e95-99fb-59af1316c2e9" handle="+ Id.Equals(&quot;Microsoft.Solution.ClassView&quot;) /&#xD;&#xA;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Namespace=Dynamo.FSchemeInterop.Node)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&amp;quot; Namespace=Dynamo.FSchemeInterop.Node Type=INode)&quot;)/&#xD;&#xA;&quot;Microsoft.Contains&quot;/&#xD;&#xA;+ Id.EqualsIgnoreCase(&quot;(Assembly=&amp;quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&amp;quot; Namespace=Dynamo.FSchemeInterop.Node Type=INode Member=.ctor)&quot;)" tag="DGQL" />
+              <reference Id="dd6c6485-d3e6-4463-8d12-aaba2928bdb4" handle="(Assembly=&quot;$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri)&quot; Namespace=Dynamo.FSchemeInterop.Node Type=INode Member=.ctor)" tag="DGML" />
+              <reference Id="4ad1d423-a5c4-442c-b674-326e7c8b0b09" handle="backplane://Backplane/Microsoft.VisualStudio.TeamArchitect.SequenceDesigner.ToolAdapter.SequenceServiceManager/7858fa8c-475f-4b8e-b468-1f8200778cf8\INode_INode.sequencediagram/Message@.Create INode#8d7892e4-c23e-485d-8a61-10de273ce0b7" tag="Navigation" />
+            </referencesInternal>
+            <generationState>H4sIAAAAAAAEAO2ZbW8SQRDH56Nc+sLQxHDGaGNqMWmwtI1aG6mvjDEHvSJ6HMiCip++v5m7gzvAiiTGKBsCt/ufh52HndnNcSRtiWUsfYkk4fcHs2tp2iyRFpRIBmDP5Eiu5CMcTt7IkM9EAjmHtyF7UpNjcAffQDrIzUBv4E1ADiW0T9NGb41rzG+IdCQpz+do68rU1knRq7RTpCdyBtoxjhkUtWTIrAMtk4sZT6XHuIUfXeyLTcu56dF1hjKSOlaqN4Fc5N440Aj+GDvLuuu/0HPB85p5QCxmICp/It9zntSi1sKiFB0TrBwyKmT2idNCrkB9BLeNoO5RlepBHYMVkWzm3AsrIvkAmvDUCKuOl4w70BKT2HT9Pdvxjkylhs/M4ymIammZrDM+rRb13KEjMl2xrxZfLTtXLa+R+8RYqcv1UFjwOLdT1x6ZdZFZWF31CmxaqsEzxhH85RWqfFqDxUnlKrNgPnoB52znd5TyjLBiUqK+yiOhkg3LSK/i336eCV+P20fvd7rbPfmCBt2zT38S2Uuzspff2AI8ybgc4xo1+0QOWDdk78doUMvi+clUXa9vUiFe9KGrVsf3hrXD0o3wm9XqZzCNywnerKN9lUfQHzAaoKVruK7QmWel7Nn6DLWJgLM8DJDSjpWYZ4ue48BPzZ/sLtutZKg216rZ7pfksk4TLMleGp5JZNlv2jmfWo95uMJ/vJLfhrzzWbwji+XstMHGVtE9PLu/471kcXq/5/u3z/D6mt71J2/Bvj58l/t/sui73DZdzt+GfJ/YrSz6PvFv34Y2ectxsNFbjvLtabv3HAEZUyRcsSRDC87qzN0ps/zeP0M3/d/gFp8xLtBiGAAA
+(Assembly=$(f25808d6-df62-4732-9453-d4978079864c.OutputPathUri) Namespace=Dynamo.FSchemeInterop.Node Type=ExternalFunctionNode ObjectInstance="Object instance 5")
+ExternalFunctionNode : ExternalFunctionNode
+</generationState>
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker Id="b0ee40e2-5996-4dad-9432-b8a6812f6990" LastKnownName="MessageOccurrenceSpecification" />
+            </sendEvent>
+            <receiveEvent>
+              <lostFoundTargetMoniker Id="d4867c0f-d295-40d9-92dd-f9f1e655c280" LastKnownName="LostFoundTarget" />
+            </receiveEvent>
+          </message>
+        </messages>
+      </interaction>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="fc57e664-ac14-4afb-a170-698c80fb98df" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="dee41cdf-c413-4578-bae3-a7f8a19559af" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="598901a2-c1db-44de-b4c6-18cddd90256a" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="f541850c-467c-4a5b-a35a-822b3c581d40" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="0993ca5a-c422-4945-afec-ed8de0c5c7ab" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="06cfdeb0-b08e-4fb7-8b42-bb47ac6f60d4" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="5b576579-4aba-4586-86ec-6463d06273f8" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="f233af6a-920f-4755-897b-d11853ccac1e" name="ExecutionEvent" />
+    </packageHasNamedElement>
+  </packagedElements>
+</SequenceDesignerModel>

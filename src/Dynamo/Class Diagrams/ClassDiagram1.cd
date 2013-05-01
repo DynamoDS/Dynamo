@@ -64,9 +64,10 @@
   <Class Name="Dynamo.dynWorkspaceModel">
     <Position X="5.5" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAiIAAAAAAAAQAgADAAgAQAAIAAAABAAABACACAEAA=</HashCode>
+      <HashCode>AAAiIAAABAAAAQQAQDAAAEQAACAAAABAAABgCACAcAA=</HashCode>
       <FileName>Models\dynWorkspaceModel.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Dynamo.FuncWorkspace">
     <Position X="8.75" Y="2.75" Width="1.5" />
