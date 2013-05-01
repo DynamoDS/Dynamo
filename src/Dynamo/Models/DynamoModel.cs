@@ -15,10 +15,10 @@ namespace Dynamo
     /// </summary>
     public class DynamoModel:dynModelBase
     {
-        private ObservableCollection<dynWorkspace> _workSpaces = new ObservableCollection<dynWorkspace>();
-        private dynWorkspace _cspace;
+        private ObservableCollection<dynWorkspaceModel> _workSpaces = new ObservableCollection<dynWorkspaceModel>();
+        private dynWorkspaceModel _cspace;
 
-        public dynWorkspace CurrentSpace
+        public dynWorkspaceModel CurrentSpace
         {
             get { return _cspace; }
             internal set
@@ -35,12 +35,12 @@ namespace Dynamo
             }
         }
 
-        public dynWorkspace HomeSpace { get; protected set; }
+        public dynWorkspaceModel HomeSpace { get; protected set; }
 
         /// <summary>
         /// A collection of workspaces in the dynamo model.
         /// </summary>
-        public ObservableCollection<dynWorkspace> Workspaces
+        public ObservableCollection<dynWorkspaceModel> Workspaces
         {
             get { return _workSpaces; }
             set 
@@ -76,13 +76,13 @@ namespace Dynamo
         /// Remove a workspace from the dynamo model.
         /// </summary>
         /// <param name="workspace"></param>
-        public void RemoveWorkspace(dynWorkspace workspace)
+        public void RemoveWorkspace(dynWorkspaceModel workspace)
         {
             _workSpaces.Remove(workspace);
         }
 
         //MVVM : visibility should be bound to current space
-        public static void hideWorkspace(dynWorkspace ws)
+        public static void hideWorkspace(dynWorkspaceModel ws)
         {
             //foreach (dynNode e in ws.Nodes)
             //    e.NodeUI.Visibility = Visibility.Collapsed;

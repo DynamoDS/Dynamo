@@ -27,7 +27,7 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {
-    public abstract class dynWorkspace : NotificationObject
+    public abstract class dynWorkspaceModel : NotificationObject
     {
 
         #region Properties
@@ -74,9 +74,9 @@ namespace Dynamo
         public abstract void OnDisplayed();
 
         //Hide default constructor.
-        private dynWorkspace() { }
+        private dynWorkspaceModel() { }
 
-        protected dynWorkspace(String name, List<dynNodeModel> e, List<dynConnectorModel> c, double x, double y)
+        protected dynWorkspaceModel(String name, List<dynNodeModel> e, List<dynConnectorModel> c, double x, double y)
         {
             Name = name;
 
@@ -121,7 +121,7 @@ namespace Dynamo
         /// <param name="xmlPath">The path to save to</param>
         /// <param name="workSpace">The workspace</param>
         /// <returns>Whether the operation was successful</returns>
-        public static bool SaveWorkspace(string xmlPath, dynWorkspace workSpace)
+        public static bool SaveWorkspace(string xmlPath, dynWorkspaceModel workSpace)
         {
             dynSettings.Controller.DynamoViewModel.Log("Saving " + xmlPath + "...");
             try
@@ -151,7 +151,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="workSpace">The workspace</param>
         /// <returns>The generated xmldoc</returns>
-        public static XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace, bool savingHomespace)
+        public static XmlDocument GetXmlDocFromWorkspace(dynWorkspaceModel workSpace, bool savingHomespace)
         {
             try
             {
@@ -250,7 +250,7 @@ namespace Dynamo
             new Dictionary<string, dynNodeView>();
     }
 
-    public class FuncWorkspace : dynWorkspace
+    public class FuncWorkspace : dynWorkspaceModel
     {
         public String Category { get; set; }
 
@@ -306,7 +306,7 @@ namespace Dynamo
         }
     }
 
-    public class HomeWorkspace : dynWorkspace
+    public class HomeWorkspace : dynWorkspaceModel
     {
         #region Contructors
 

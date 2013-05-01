@@ -58,7 +58,7 @@ namespace Dynamo.Nodes
                 DispatchedToUI(this, e);
         }
 
-        public dynWorkspace WorkSpace;
+        public dynWorkspaceModel WorkSpace;
         public ObservableCollection<PortData> InPortData { get; private set; }
         public ObservableCollection<PortData> OutPortData { get; private set; }
         Dictionary<dynPortModel, PortData> portDataDict = new Dictionary<dynPortModel, PortData>();

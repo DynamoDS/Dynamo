@@ -487,7 +487,7 @@ namespace Dynamo.Search
         ///     Adds a Workspace object to the search dictionary using it's Name property for a name
         /// </summary>
         /// <param name="workspace">A dynWorkspace to add</param>
-        public void Add(dynWorkspace workspace)
+        public void Add(dynWorkspaceModel workspace)
         {
             Add(workspace, workspace.Name);
         }
@@ -497,7 +497,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="workspace">A dynWorkspace to add</param>
         /// <param name="name">The name to use</param>
-        public void Add(dynWorkspace workspace, string name)
+        public void Add(dynWorkspaceModel workspace, string name)
         {
             if (name == "Home")
                 return;

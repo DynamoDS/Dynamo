@@ -326,7 +326,7 @@ namespace Dynamo.Utilities
                 def = this.loadedNodes[guid];
             }
 
-            dynWorkspace ws = def.Workspace;
+            dynWorkspaceModel ws = def.Workspace;
 
             //TODO: Update to base off of Definition
 
@@ -435,7 +435,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="workspace">The workspace which you'd like to find the Definition for</param>
         /// <returns>A valid function definition if the FunctionDefinition is already loaded, otherwise null. </returns>
-        public FunctionDefinition GetDefinitionFromWorkspace(dynWorkspace workspace)
+        public FunctionDefinition GetDefinitionFromWorkspace(dynWorkspaceModel workspace)
         {
             return this.loadedNodes.Values.FirstOrDefault((def) => def.Workspace == workspace);
         }
@@ -513,7 +513,7 @@ namespace Dynamo.Utilities
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
                 this.loadedNodes.Add(def.FunctionId, def);
 
-                dynWorkspace ws = def.Workspace;
+                dynWorkspaceModel ws = def.Workspace;
                 
                 dynSettings.Controller.DynamoViewModel.Model.Workspaces.Add(ws);
 
@@ -755,7 +755,7 @@ namespace Dynamo.Utilities
                 return null;
 
             // Get the internal nodes for the function
-            dynWorkspace functionWorkspace = definition.Workspace;
+            dynWorkspaceModel functionWorkspace = definition.Workspace;
 
             #region Find outputs
 

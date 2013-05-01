@@ -22,7 +22,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         /// <param name="currentWorkspace"> The workspace where</param>
-        internal static void Collapse(IEnumerable<dynNodeModel> selectedNodes, dynWorkspace currentWorkspace)
+        internal static void Collapse(IEnumerable<dynNodeModel> selectedNodes, dynWorkspaceModel currentWorkspace)
         {
             var selectedNodeSet = new HashSet<dynNodeModel>(selectedNodes);
 
