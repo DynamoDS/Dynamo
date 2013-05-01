@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="300"
              MouseLeftButtonDown="DynWorkspaceView_OnMouseLeftButtonDown"
              MouseUp="DynWorkspaceView_OnMouseUp"
-             MouseMove="DynWorkspaceView_OnMouseMove">
+             MouseMove="DynWorkspaceView_OnMouseMove" IsHitTestVisible="{Binding IsCurrentSpace}">
     
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Canvas Name="outerCanvas" 

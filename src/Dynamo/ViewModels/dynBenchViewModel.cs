@@ -276,6 +276,8 @@ namespace Dynamo.Controls
             _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
             _model.PropertyChanged += _model_PropertyChanged;
 
+            dynSettings.Controller.DynamoModel = _model;
+
             _model.AddHomeWorkspace();
             _model.CurrentSpace = _model.HomeSpace;
 

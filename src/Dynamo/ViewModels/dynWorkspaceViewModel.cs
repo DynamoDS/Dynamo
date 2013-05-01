@@ -156,6 +156,11 @@ namespace Dynamo
             }
         }
 
+        public bool IsCurrentSpace
+        {
+            get { return dynSettings.Controller.DynamoModel.CurrentSpace == _workspace; }
+        }
+
         /// <summary>
         /// Specifies the pan location of the view
         /// </summary>
@@ -192,6 +197,16 @@ namespace Dynamo
 
             vm.UILocked += new EventHandler(DynamoViewModel_UILocked);
             vm.UIUnlocked += new EventHandler(DynamoViewModel_UIUnlocked);
+        }
+
+        void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "CurrentSpace":
+                    RaisePropertyChanged("IsCurrentSpace");
+                    break;
+            }
         }
 
         void DynamoViewModel_UIUnlocked(object sender, EventArgs e)
