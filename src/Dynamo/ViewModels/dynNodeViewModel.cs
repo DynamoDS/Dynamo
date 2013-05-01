@@ -170,19 +170,6 @@ namespace Dynamo.Controls
             get { return nodeLogic.InteractionEnabled; }
         }
 
-        public Visibility NodeVisibility
-        {
-            get
-            {
-                if (nodeLogic.WorkSpace == dynSettings.Controller.DynamoViewModel.CurrentSpace)
-                {
-                    return Visibility.Visible;
-                }
-                
-                return Visibility.Collapsed;
-            }
-        }
-
         #endregion
 
         #region commands

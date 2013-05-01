@@ -17,8 +17,7 @@
              MouseDoubleClick="DynNodeUI_OnMouseDoubleClick" 
              LayoutUpdated="DynNodeUI_OnLayoutUpdated" 
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
-             Canvas.Top="{Binding Top, Mode=TwoWay}"
-             Visibility="{Binding NodeVisibility}">
+             Canvas.Top="{Binding Top, Mode=TwoWay}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
