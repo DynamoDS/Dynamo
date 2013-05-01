@@ -294,7 +294,9 @@ namespace Dynamo
                 NodeUI.inputGrid.Children.Add(tb);
                 System.Windows.Controls.Grid.SetColumn(tb, 0);
                 System.Windows.Controls.Grid.SetRow(tb, 0);
-                tb.Text = "";
+                //tb.Text = "";
+                symbol = "";
+
                 //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
                 //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
@@ -381,7 +383,8 @@ namespace Dynamo
                 NodeUI.inputGrid.Children.Add(tb);
                 System.Windows.Controls.Grid.SetColumn(tb, 0);
                 System.Windows.Controls.Grid.SetRow(tb, 0);
-                tb.Text = "";
+                //tb.Text = "";
+                symbol = "";
                 //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
                 //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
@@ -393,8 +396,13 @@ namespace Dynamo
                 //MVVM:
                 //create a two way binding between the value of
                 //the text box and the Symbol property
-                var binding = new Binding {Path = new PropertyPath("Symbol"), Mode = BindingMode.TwoWay};
-                tb.SetBinding(TextBox.TextProperty, binding);
+                tb.DataContext = this;
+                var bindingSymbol = new System.Windows.Data.Binding("Symbol")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Converter = new StringDisplay()
+                };
+                tb.SetBinding(TextBox.TextProperty, bindingSymbol);
             }
 
             public override bool RequiresRecalc
