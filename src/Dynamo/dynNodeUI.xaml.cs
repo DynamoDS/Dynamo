@@ -188,22 +188,5 @@ namespace Dynamo.Controls
             if (viewModel != null)
                 viewModel.ViewCustomNodeWorkspaceCommand.Execute();
         }
-
-        /// <summary>
-        /// Whenever layout is updated drive some layout values down to the model
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DynNodeUI_OnLayoutUpdated(object sender, EventArgs e)
-        {
-            var dict = new Dictionary<string, double>();
-            dict["X"] = Canvas.GetLeft(this);
-            dict["Y"] = Canvas.GetTop(this);
-            dict["Height"] = ActualHeight;
-            dict["Width"] = ActualWidth;
-            var viewModel = DataContext as dynNodeViewModel;
-            if(viewModel != null)
-                viewModel.SetLayoutCommand.Execute(dict);
-        }
     }
 }
