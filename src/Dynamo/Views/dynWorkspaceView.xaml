@@ -10,7 +10,7 @@
              d:DesignHeight="300" d:DesignWidth="300"
              MouseLeftButtonDown="DynWorkspaceView_OnMouseLeftButtonDown"
              MouseUp="DynWorkspaceView_OnMouseUp"
-             MouseMove="DynWorkspaceView_OnMouseMove" d:DataContext="{d:DesignData dynamo:dynWorkspaceViewModel}">
+             MouseMove="DynWorkspaceView_OnMouseMove" IsHitTestVisible="{Binding IsCurrentSpace}">
     
     <UserControl.Resources>
         <DataTemplate DataType="{x:Type controls:dynNodeViewModel}">

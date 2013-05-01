@@ -19,7 +19,7 @@ namespace Dynamo.Views
     {
         private bool isWindowSelecting;
         private Point mouseDownPos;
-        private dynWorkspaceViewModel vm;
+        //private dynWorkspaceViewModel vm;
         private Dynamo.Controls.DragCanvas WorkBench = null;
 
         public dynWorkspaceView()
@@ -37,7 +37,7 @@ namespace Dynamo.Views
 
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
         {
-            vm = DataContext as dynWorkspaceViewModel;
+            dynWorkspaceViewModel vm = DataContext as dynWorkspaceViewModel;
             vm.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
             vm.StopDragging += new EventHandler(vm_StopDragging);
             vm.RequestCenterViewOnElement+=new NodeEventHandler(CenterViewOnElement);
@@ -117,12 +117,12 @@ namespace Dynamo.Views
 
         void zoomBorder_MouseMove(object sender, MouseEventArgs e)
         {
-            vm.SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
+            (DataContext as dynWorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
         }
 
         void zoomBorder_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            vm.SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
+            (DataContext as dynWorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
         }
 
         void vm_CurrentOffsetChanged(object sender, EventArgs e)
@@ -132,7 +132,9 @@ namespace Dynamo.Views
 
         private void DynWorkspaceView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!vm.IsConnecting)
+            dynWorkspaceViewModel vm = (DataContext as dynWorkspaceViewModel);
+
+            if (!(DataContext as dynWorkspaceViewModel).IsConnecting)
             {
                 #region window selection
 
@@ -178,6 +180,8 @@ namespace Dynamo.Views
         private void DynWorkspaceView_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             //Debug.WriteLine("Starting mouse up.");
+
+            dynWorkspaceViewModel vm = (DataContext as dynWorkspaceViewModel);
 
             if (e.ChangedButton == MouseButton.Left)
             {
@@ -232,6 +236,8 @@ namespace Dynamo.Views
 
         private void DynWorkspaceView_OnMouseMove(object sender, MouseEventArgs e)
         {
+            dynWorkspaceViewModel vm = (DataContext as dynWorkspaceViewModel);
+
             //Canvas.SetLeft(debugPt, e.GetPosition(dynSettings.Workbench).X - debugPt.Width/2);
             //Canvas.SetTop(debugPt, e.GetPosition(dynSettings.Workbench).Y - debugPt.Height / 2);
 
@@ -317,6 +323,8 @@ namespace Dynamo.Views
 
         internal void CenterViewOnElement(object sender, EventArgs e)
         {
+            dynWorkspaceViewModel vm = (DataContext as dynWorkspaceViewModel);
+
             //double left = Canvas.GetLeft(e);
             //double top = Canvas.GetTop(e);
             dynNode n = (e as NodeEventArgs).Node;

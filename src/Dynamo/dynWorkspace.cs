@@ -38,8 +38,6 @@ namespace Dynamo
         public ObservableCollection<dynConnector> Connectors { get; private set; }
         public ObservableCollection<dynNoteModel> Notes { get; private set; }
 
-        //private DynamoModel _model;
-
         public string FilePath { get; set; }
 
         public String Name
@@ -74,11 +72,6 @@ namespace Dynamo
         public event Action OnModified;
 
         public abstract void OnDisplayed();
-
-        //public DynamoModel Model
-        //{
-        //    get { return _model; }
-        //}
 
         //Hide default constructor.
         private dynWorkspace() { }
