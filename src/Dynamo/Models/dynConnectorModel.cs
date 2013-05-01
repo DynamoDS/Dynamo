@@ -22,7 +22,7 @@ namespace Dynamo.Connectors
 
     public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
 
-    public class dynConnector:dynModelBase
+    public class dynConnectorModel:dynModelBase
     {
         public event ConnectorConnectedHandler Connected;
 
@@ -52,7 +52,7 @@ namespace Dynamo.Connectors
         
         #region constructors
         
-        public dynConnector(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType, bool visible)
+        public dynConnectorModel(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType, bool visible)
         {
             //don't try to create a connector with a bad start,
             //end, or if we're trying to connector the same
@@ -83,7 +83,7 @@ namespace Dynamo.Connectors
             //ConnectorType = dynSettings.Controller.DynamoViewModel.ConnectorType;
         }
 
-        public dynConnector(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType)
+        public dynConnectorModel(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType)
             : this(start, end, startIndex, endIndex, portType, true)
         { }
         #endregion

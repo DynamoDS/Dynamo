@@ -147,7 +147,7 @@ limitations under the License.
     </Compile>
     <Compile Include="dynCollection.cs" />
     <Compile Include="Nodes\dynCommunication.cs" />
-    <Compile Include="dynConnector.cs" />
+    <Compile Include="Models\dynConnectorModel.cs" />
     <Compile Include="Nodes\dynFiles.cs" />
     <Compile Include="dynFunction.cs" />
     <Compile Include="Models\dynNodeModel.cs" />

@@ -385,7 +385,7 @@ namespace Dynamo
                                                                                el.InPorts.SelectMany(
                                                                                    x => x.Connectors))).Distinct();
 
-            foreach (dynConnector connector in allConnectors)
+            foreach (dynConnectorModel connector in allConnectors)
             {
                 Debug.WriteLine("Connectors no longer call redraw....is it still working?");
                 //connector.Redraw();

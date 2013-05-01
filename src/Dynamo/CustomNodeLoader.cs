@@ -678,7 +678,7 @@ namespace Dynamo.Utilities
                     {
                         if (start != null && end != null && start != end)
                         {
-                            var newConnector = new dynConnector(
+                            var newConnector = new dynConnectorModel(
                                 start, end,
                                 startIndex, endIndex,
                                 portType, false

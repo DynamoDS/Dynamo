@@ -26,7 +26,7 @@ namespace Dynamo.Connectors
         double end_dot_size = 6;
         private dynPortModel start;
         private dynPortModel end;
-        private dynConnector _model;
+        private dynConnectorModel _model;
         bool isDrawing = false;
         ConnectorType connectorType;
         Brush strokeBrush;
@@ -38,7 +38,7 @@ namespace Dynamo.Connectors
         public DelegateCommand HighlightCommand { get; set; }
         public DelegateCommand UnHighlightCommand { get; set; }
 
-        public dynConnector ConnectorModel
+        public dynConnectorModel ConnectorModel
         {
             get { return _model; }
         }
@@ -307,7 +307,7 @@ namespace Dynamo.Connectors
             //make the connector model
             dynPortModel end = parameters as dynPortModel;
 
-            _model = new dynConnector(start.Owner, end.Owner, start.Index, end.Index, 0);
+            _model = new dynConnectorModel(start.Owner, end.Owner, start.Index, end.Index, 0);
             _model.Connected += ModelConnected;
 
             _model.Start.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Start_PropertyChanged);

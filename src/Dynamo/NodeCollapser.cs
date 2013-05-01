@@ -190,7 +190,7 @@ namespace Dynamo.Utilities
 
             #region Move selection to new workspace
 
-            var connectors = new HashSet<dynConnector>(
+            var connectors = new HashSet<dynConnectorModel>(
                 currentWorkspace.Connectors.Where(
                     conn => selectedNodeSet.Contains(conn.Start.Owner)
                             && selectedNodeSet.Contains(conn.End.Owner)));
@@ -245,7 +245,7 @@ namespace Dynamo.Utilities
             #region Destroy all hanging connectors
 
             //Step 6: connect inputs and outputs
-            foreach (dynConnector connector in currentWorkspace.Connectors
+            foreach (dynConnectorModel connector in currentWorkspace.Connectors
                                                            .Where(
                                                                c =>
                                                                selectedNodeSet.Contains(c.Start.Owner) &&
@@ -255,7 +255,7 @@ namespace Dynamo.Utilities
                 connector.Kill();
             }
 
-            foreach (dynConnector connector in currentWorkspace.Connectors
+            foreach (dynConnectorModel connector in currentWorkspace.Connectors
                                                            .Where(
                                                                c =>
                                                                !selectedNodeSet.Contains(c.Start.Owner) &&
@@ -329,7 +329,7 @@ namespace Dynamo.Utilities
                 if (curriedNode == null)
                 {
                     //Connect it (new dynConnector)
-                    newNodeWorkspace.Connectors.Add(new dynConnector(
+                    newNodeWorkspace.Connectors.Add(new dynConnectorModel(
                                                         node,
                                                         inputReceiverNode,
                                                         0,
@@ -340,7 +340,7 @@ namespace Dynamo.Utilities
                 else
                 {
                     //Connect it to the applier
-                    newNodeWorkspace.Connectors.Add(new dynConnector(
+                    newNodeWorkspace.Connectors.Add(new dynConnectorModel(
                                                         node,
                                                         curriedNode.InnerNode,
                                                         0,
@@ -349,7 +349,7 @@ namespace Dynamo.Utilities
                                                         false));
 
                     //Connect applier to the inner input receiver
-                    newNodeWorkspace.Connectors.Add(new dynConnector(
+                    newNodeWorkspace.Connectors.Add(new dynConnectorModel(
                                                         curriedNode.InnerNode,
                                                         inputReceiverNode,
                                                         0,
@@ -417,7 +417,7 @@ namespace Dynamo.Utilities
                     node.X = rightMost + 75 - leftShift;
                     node.Y = i*(50 + node.Height);
 
-                    newNodeWorkspace.Connectors.Add(new dynConnector(
+                    newNodeWorkspace.Connectors.Add(new dynConnectorModel(
                                                         outputSenderNode,
                                                         node,
                                                         outputSenderData,
@@ -464,7 +464,7 @@ namespace Dynamo.Utilities
                     int targetPortIndex = curriedNode.OuterNodePortDataList.IndexOf(targetPort);
                     
                     //Connect it (new dynConnector)
-                    newNodeWorkspace.Connectors.Add(new dynConnector(
+                    newNodeWorkspace.Connectors.Add(new dynConnectorModel(
                                                         outputSenderNode,
                                                         curriedNode.InnerNode,
                                                         outputSenderData,
@@ -520,7 +520,7 @@ namespace Dynamo.Utilities
             foreach (var nodeTuple in inConnectors)
             {
                 currentWorkspace.Connectors.Add(
-                    new dynConnector(
+                    new dynConnectorModel(
                         nodeTuple.Item1,
                         newlyPlacedCollapsedNode,
                         nodeTuple.Item2,
@@ -532,7 +532,7 @@ namespace Dynamo.Utilities
             foreach (var nodeTuple in outConnectors)
             {
                 currentWorkspace.Connectors.Add(
-                    new dynConnector(
+                    new dynConnectorModel(
                         newlyPlacedCollapsedNode,
                         nodeTuple.Item1,
                         nodeTuple.Item2,

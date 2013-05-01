@@ -35,7 +35,7 @@ namespace Dynamo
         private System.Windows.Point currentOffset = new System.Windows.Point(0, 0);
 
         public ObservableCollection<dynNodeModel> Nodes { get; private set; }
-        public ObservableCollection<dynConnector> Connectors { get; private set; }
+        public ObservableCollection<dynConnectorModel> Connectors { get; private set; }
         public ObservableCollection<dynNoteModel> Notes { get; private set; }
 
         public string FilePath { get; set; }
@@ -76,12 +76,12 @@ namespace Dynamo
         //Hide default constructor.
         private dynWorkspace() { }
 
-        protected dynWorkspace(String name, List<dynNodeModel> e, List<dynConnector> c, double x, double y)
+        protected dynWorkspace(String name, List<dynNodeModel> e, List<dynConnectorModel> c, double x, double y)
         {
             Name = name;
 
             Nodes = new ObservableCollection<dynNodeModel>(e);
-            Connectors = new ObservableCollection<dynConnector>(c);
+            Connectors = new ObservableCollection<dynConnectorModel>(c);
             PositionX = x;
             PositionY = y;
             Notes = new ObservableCollection<dynNoteModel>();
@@ -202,7 +202,7 @@ namespace Dynamo
                 {
                     foreach (dynPortModel port in el.OutPorts)
                     {
-                        foreach (dynConnector c in port.Connectors.Where(c => c.Start != null && c.End != null))
+                        foreach (dynConnectorModel c in port.Connectors.Where(c => c.Start != null && c.End != null))
                         {
                             XmlElement connector = xmlDoc.CreateElement(c.GetType().ToString());
                             connectorList.AppendChild(connector);
@@ -258,18 +258,18 @@ namespace Dynamo
         #region Contructors
 
         public FuncWorkspace()
-            : this("", "", new List<dynNodeModel>(), new List<dynConnector>(), 0, 0)
+            : this("", "", new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
         { }
 
         public FuncWorkspace(String name, String category)
-            : this(name, category, new List<dynNodeModel>(), new List<dynConnector>(), 0, 0)
+            : this(name, category, new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
         { }
 
         public FuncWorkspace(String name, String category, double x, double y)
-            : this(name, category, new List<dynNodeModel>(), new List<dynConnector>(), x, y)
+            : this(name, category, new List<dynNodeModel>(), new List<dynConnectorModel>(), x, y)
         { }
 
-        public FuncWorkspace(String name, String category, List<dynNodeModel> e, List<dynConnector> c, double x, double y)
+        public FuncWorkspace(String name, String category, List<dynNodeModel> e, List<dynConnectorModel> c, double x, double y)
             : base(name, e, c, x, y)
         {
             this.Category = category;
@@ -313,14 +313,14 @@ namespace Dynamo
         private static bool initializedFunctionDefinition = false;
 
         public HomeWorkspace()
-            : this(new List<dynNodeModel>(), new List<dynConnector>(), 0, 0)
+            : this(new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
         { }
 
         public HomeWorkspace(double x, double y)
-            : this(new List<dynNodeModel>(), new List<dynConnector>(), x, y)
+            : this(new List<dynNodeModel>(), new List<dynConnectorModel>(), x, y)
         { }
 
-        public HomeWorkspace(List<dynNodeModel> e, List<dynConnector> c, double x, double y)
+        public HomeWorkspace(List<dynNodeModel> e, List<dynConnectorModel> c, double x, double y)
             : base("Home", e, c, x, y)
         {
             if (!initializedFunctionDefinition)

@@ -842,7 +842,7 @@ namespace Dynamo.Controls
 
             var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynNodeModel);
 
-            var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnector);
+            var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnectorModel);
 
             foreach (dynNodeModel node in nodes)
             {
@@ -888,7 +888,7 @@ namespace Dynamo.Controls
             //dynSettings.Bench.UpdateLayout();
             OnRequestLayoutUpdate(this, EventArgs.Empty);
 
-            foreach (dynConnector c in connectors)
+            foreach (dynConnectorModel c in connectors)
             {
                 Dictionary<string, object> connectionData = new Dictionary<string, object>();
 
@@ -1258,7 +1258,7 @@ namespace Dynamo.Controls
             int startIndex = (int)connectionData["port_start"];
             int endIndex = (int)connectionData["port_end"];
 
-            dynConnector c = new dynConnector(start, end, startIndex, endIndex, 0);
+            dynConnectorModel c = new dynConnectorModel(start, end, startIndex, endIndex, 0);
 
             _model.CurrentSpace.Connectors.Add(c);
         }
@@ -1719,7 +1719,7 @@ namespace Dynamo.Controls
                     {
                         if (start != null && end != null && start != end)
                         {
-                            var newConnector = new dynConnector(
+                            var newConnector = new dynConnectorModel(
                                 start, end,
                                 startIndex, endIndex,
                                 portType, false
@@ -2542,7 +2542,7 @@ namespace Dynamo.Controls
 
                     if (start != null && end != null && start != end)
                     {
-                        var newConnector = new dynConnector(start, end,
+                        var newConnector = new dynConnectorModel(start, end,
                                                             startIndex, endIndex, portType);
 
                         _model.CurrentSpace.Connectors.Add(newConnector);
@@ -2657,7 +2657,7 @@ namespace Dynamo.Controls
                 name, category, workspaceOffsetX, workspaceOffsetY);
 
             List<dynNodeModel> newElements = workSpace.Nodes.ToList();
-            List<dynConnector> newConnectors = workSpace.Connectors.ToList();
+            List<dynConnectorModel> newConnectors = workSpace.Connectors.ToList();
 
             var functionDefinition = new FunctionDefinition(id)
             {
