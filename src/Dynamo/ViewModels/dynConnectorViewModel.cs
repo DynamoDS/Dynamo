@@ -14,6 +14,10 @@ namespace Dynamo.Connectors
 {
     public class dynConnectorViewModel:dynViewModelBase
     {
+
+
+        #region Properties
+
         private double stroke_thickness = 2;
         private const double highlight_thickness = 6;
 
@@ -30,8 +34,6 @@ namespace Dynamo.Connectors
         bool isDrawing = false;
         ConnectorType connectorType;
         Brush strokeBrush;
-
-        #region Properties
 
         public DelegateCommand<object> ConnectCommand { get; set; }
         public DelegateCommand RedrawCommand { get; set; }
@@ -172,7 +174,7 @@ namespace Dynamo.Connectors
             HighlightCommand = new DelegateCommand(Highlight, CanHighlight);
             UnHighlightCommand = new DelegateCommand(Unhighlight, CanUnHighlight);
 
-            BrushConverter bc = new BrushConverter();
+            var bc = new BrushConverter();
             strokeBrush = (Brush)bc.ConvertFrom("#313131");
 
             //don't allow connections to start at an input port
@@ -404,7 +406,7 @@ namespace Dynamo.Connectors
         /// <param name="p2"></param>
         public void Redraw(Point p2 )
         {
-            Console.WriteLine("Redraw connector");
+
             Point startPt;
 
             if (_model != null && _model.Start != null)

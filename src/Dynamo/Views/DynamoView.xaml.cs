@@ -31,7 +31,7 @@ namespace Dynamo.Controls
     /// <summary>
     ///     Interaction logic for DynamoForm.xaml
     /// </summary>
-    public partial class dynBench : Window
+    public partial class DynamoView : Window
     {
         public const int CANVAS_OFFSET_Y = 0;
         public const int CANVAS_OFFSET_X = 0;
@@ -56,7 +56,7 @@ namespace Dynamo.Controls
 
         public bool UILocked { get; private set; }
 
-        public dynBench()
+        public DynamoView()
         {
             InitializeComponent();
 

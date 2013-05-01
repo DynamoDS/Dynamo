@@ -1510,8 +1510,8 @@ namespace Dynamo.Controls
 
                 string funName = null;
                 string category = "";
-                double cx = dynBench.CANVAS_OFFSET_X;
-                double cy = dynBench.CANVAS_OFFSET_Y;
+                double cx = DynamoView.CANVAS_OFFSET_X;
+                double cy = DynamoView.CANVAS_OFFSET_Y;
                 string id = "";
 
                 // load the header
@@ -2649,8 +2649,8 @@ namespace Dynamo.Controls
                                                 string name,
                                                 string category,
                                                 bool display,
-                                                double workspaceOffsetX = dynBench.CANVAS_OFFSET_X,
-                                                double workspaceOffsetY = dynBench.CANVAS_OFFSET_Y)
+                                                double workspaceOffsetX = DynamoView.CANVAS_OFFSET_X,
+                                                double workspaceOffsetY = DynamoView.CANVAS_OFFSET_Y)
         {
             //Add an entry to the funcdict
             var workSpace = new FuncWorkspace(

@@ -50,7 +50,7 @@ namespace Dynamo.Utilities
 
         public static dynCollection Collection { get; internal set; }
 
-        public static dynBench Bench { get; internal set; }
+        public static DynamoView Bench { get; internal set; }
 
         public static DynamoController Controller { get; internal set; }
 

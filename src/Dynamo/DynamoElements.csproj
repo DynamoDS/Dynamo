@@ -143,8 +143,8 @@ limitations under the License.
     <Compile Include="Nodes\dynTimer.cs" />
     <Compile Include="Nodes\dynArduino.cs" />
     <Compile Include="Nodes\dynBaseTypes.cs" />
-    <Compile Include="dynBench.xaml.cs">
-      <DependentUpon>dynBench.xaml</DependentUpon>
+    <Compile Include="Views\DynamoView.xaml.cs">
+      <DependentUpon>DynamoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="dynCollection.cs" />
     <Compile Include="Nodes\dynCommunication.cs" />
@@ -196,6 +196,7 @@ limitations under the License.
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="Class Diagrams\ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -204,7 +205,7 @@ limitations under the License.
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="dynBench.xaml">
+    <Page Include="Views\DynamoView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

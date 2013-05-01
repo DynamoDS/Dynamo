@@ -15,7 +15,7 @@
                 <PathGeometry>
                     <PathGeometry.Figures>
                         <PathFigureCollection>
-                            <PathFigure StartPoint="{Binding Path=Bez_StartPoint}">
+                            <PathFigure StartPoint="{Binding Bez_StartPoint}">
                                 <PathFigure.Segments>
                                     <PathSegmentCollection>
                                         <BezierSegment Point1="{Binding Bez_Point1}" Point2="{Binding Bez_Point2}" Point3="{Binding Bez_Point3}" />

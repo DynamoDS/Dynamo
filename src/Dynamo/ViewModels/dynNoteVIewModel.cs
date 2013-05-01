@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -70,11 +69,6 @@ namespace Dynamo.Nodes
 
         private void Select()
         {
-            Console.WriteLine(_model.X);
-            Console.WriteLine(_model.Y);
-            Console.WriteLine(_model.Height);
-            Console.WriteLine(_model.Width);
-
             if (!_model.IsSelected)
             {
                 if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
@@ -95,6 +89,12 @@ namespace Dynamo.Nodes
                     DynamoSelection.Instance.Selection.Remove(_model);
                 }
             }
+        }
+
+        public void UpdateSizeFromView(double x, double y)
+        {
+            this._model.X = x;
+            this._model.Y = y;
         }
 
         private bool CanSelect()

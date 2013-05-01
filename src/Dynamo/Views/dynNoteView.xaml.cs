@@ -12,6 +12,7 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,15 +26,17 @@ namespace Dynamo.Nodes
     /// </summary>
     public partial class dynNoteView : UserControl, IViewModelView<dynNoteViewModel>
     {
-       public dynNoteViewModel ViewModel
-       {
-           get { return (dynNoteViewModel)DataContext; }
-       }
+        public dynNoteViewModel ViewModel
+        {
+            get { return (dynNoteViewModel)DataContext; }
+        }
 
         public dynNoteView()
         {
             InitializeComponent();
 
+            // update the size of the element when the text changes
+            noteText.SizeChanged += (sender, args) => ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
             noteText.PreviewMouseDown += new MouseButtonEventHandler(noteText_PreviewMouseDown);
         }
 
