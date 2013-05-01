@@ -5,7 +5,7 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {
-    public abstract class dynModelBase : NotificationObject, ISelectable
+    public abstract class dynModelBase : NotificationObject, ISelectable, ILocatable
     {
         private Guid _guid;
         private bool _isSelected = false;

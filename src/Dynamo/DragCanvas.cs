@@ -128,8 +128,12 @@ namespace Dynamo.Controls
             // call the select method on elements added to the collection
             if (e.NewItems != null)
             {
-                foreach (ISelectable n in e.NewItems)
+                foreach (ISelectable sel in e.NewItems)
                 {
+                    var n = sel as ILocatable;
+                    
+                    if (n == null)
+                        continue;
                     //n.Select();
 
                     //UIElement el = (UIElement)n;
@@ -344,7 +348,11 @@ namespace Dynamo.Controls
                 //coordinates are within its rectangle. if so, start dragging.
                 foreach (ISelectable sel in DynamoSelection.Instance.Selection)
                 {
-                    if (sel.Rect.Contains(pt))
+                    var el = sel as ILocatable;
+                    if(el == null)
+                        continue;
+
+                    if (el.Rect.Contains(pt))
                     {
                         Debug.WriteLine(string.Format("Hit selectable {0}.", sel.GetType().ToString()));
                         base.OnMouseLeftButtonDown(e);
@@ -409,10 +417,14 @@ namespace Dynamo.Controls
                 count = 0;
                 foreach (ISelectable sel in DynamoSelection.Instance.Selection)
                 {
+                    var el = sel as ILocatable;
+                    if (el == null)
+                        continue;
+
                     OffsetData od = offsets[count];
 
                     // Get the bounding rect of the drag element.
-                    Rect elemRect = this.CalculateDragElementRect(sel, od.NewHorizontalOffset, od.NewVerticalOffset, od.ModifyLeftOffset, od.ModifyTopOffset);
+                    Rect elemRect = this.CalculateDragElementRect(el, od.NewHorizontalOffset, od.NewVerticalOffset, od.ModifyLeftOffset, od.ModifyTopOffset);
 
                     // If the element is being dragged out of the viewable area, 
                     // determine the ideal rect location, so that the element is 
@@ -444,8 +456,12 @@ namespace Dynamo.Controls
             this.Dispatcher.Invoke(new Action(
                   delegate
                   {
-                      foreach (ISelectable el in DynamoSelection.Instance.Selection)
+                      foreach (ISelectable sel in DynamoSelection.Instance.Selection)
                       {
+                          var el = sel as ILocatable;
+                          if (el == null)
+                              continue;
+
                           OffsetData od = offsets[count];
 
                           if (od.ModifyLeftOffset)
@@ -481,8 +497,12 @@ namespace Dynamo.Controls
             // recalculate the offsets for all items in
             // the selection. 
             int count = 0;
-            foreach (ISelectable n in DynamoSelection.Instance.Selection)
+            foreach (ISelectable sel in DynamoSelection.Instance.Selection)
             {
+                var n = sel as ILocatable;
+                if (n == null)
+                    continue;
+
                 //UIElement el = (UIElement)n;
 
                 //double left = Canvas.GetLeft(el);
@@ -525,7 +545,7 @@ namespace Dynamo.Controls
         /// <summary>
         /// Returns a Rect which describes the bounds of the element being dragged.
         /// </summary>
-        private Rect CalculateDragElementRect(ISelectable el, double newHorizOffset, double newVertOffset, bool modLeftOffset, bool modTopOffset)
+        private Rect CalculateDragElementRect(ILocatable el, double newHorizOffset, double newVertOffset, bool modLeftOffset, bool modTopOffset)
         {
 
             //if(this.elementsBeingDragged.Count == 0)
