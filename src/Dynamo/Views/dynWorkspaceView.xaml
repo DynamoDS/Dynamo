@@ -15,23 +15,25 @@
 
     
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        
         <Canvas Name="outerCanvas" 
                  Margin="0,0,0,0" 
                  ClipToBounds="True" 
                  Grid.Row="0" 
                  Grid.Column="2">
+            
             <controls:ZoomBorder ClipToBounds="True" MouseWheel="zoomBorder_MouseWheel" 
                                              MouseMove="zoomBorder_MouseMove" x:Name="zoomBorder">
                 <Grid>
-            <Canvas Name="selectionCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <Rectangle
-                            x:Name="selectionBox"
-                            Visibility="Collapsed"
-                            Stroke="Black"
-                            StrokeThickness="1"
-                            IsHitTestVisible="False"
-                        />
-            </Canvas>
+                    <Canvas Name="selectionCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <Rectangle
+                                    x:Name="selectionBox"
+                                    Visibility="Collapsed"
+                                    Stroke="Black"
+                                    StrokeThickness="1"
+                                    IsHitTestVisible="False"
+                                />
+                    </Canvas>
 
                     <ItemsControl ItemsSource="{Binding WorkspaceElements}">
 
@@ -75,23 +77,20 @@
                     
                 </ItemsControl>
 
-                </Grid>
-            </controls:ZoomBorder>
+            </Grid>
+                
+        </controls:ZoomBorder>
             
             <Label Canvas.Top="40" Canvas.Right="0" Content="Not Under Package Control" Name="packageControlLabel" 
-                       HorizontalContentAlignment="Right" Visibility ="Collapsed" FontSize="14"
-                       FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
+                        HorizontalContentAlignment="Right" Visibility ="Collapsed" FontSize="14"
+                        FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
 
             <Canvas.Background>
                 <SolidColorBrush Color="{Binding BackgroundColor}" />
             </Canvas.Background>
             <Canvas.ContextMenu>
                 <ContextMenu>
-                    <MenuItem 
-                Header="_New Node From Selection" 
-                Name="NodeFromSelection"
-                Command="{Binding NodeFromSelectionCommand}"/>
-
+                    <MenuItem  Header="_New Node From Selection"  Name="NodeFromSelection" Command="{Binding NodeFromSelectionCommand}"/>
                 </ContextMenu>
             </Canvas.ContextMenu>
 

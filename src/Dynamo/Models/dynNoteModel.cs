@@ -2,6 +2,7 @@
 {
     public class dynNoteModel:dynModelBase
     {
+        #region Properties
         private double _x;
         private double _y;
 
@@ -33,10 +34,13 @@
                 RaisePropertyChanged("Text");
             }
         }
+        #endregion
+
         public dynNoteModel(double x, double y)
         {
             X = x;
             Y = y;
         }
+
     }
 }
