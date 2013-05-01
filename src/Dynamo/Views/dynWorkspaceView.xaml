@@ -12,20 +12,7 @@
              MouseUp="DynWorkspaceView_OnMouseUp"
              MouseMove="DynWorkspaceView_OnMouseMove" IsHitTestVisible="{Binding IsCurrentSpace}">
     
-    <UserControl.Resources>
-        <DataTemplate DataType="{x:Type controls:dynNodeViewModel}">
-            <controls:dynNodeView></controls:dynNodeView>
-        </DataTemplate>
 
-        <DataTemplate DataType="{x:Type nodes:dynNoteViewModel}">
-            <nodes:dynNoteView></nodes:dynNoteView>
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type connectors:dynConnectorViewModel}">
-            <views:dynConnectorView></views:dynConnectorView>
-        </DataTemplate>
-        
-    </UserControl.Resources>
     
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Canvas Name="outerCanvas" 
@@ -44,10 +31,26 @@
                             StrokeThickness="1"
                             IsHitTestVisible="False"
                         />
-                    </Canvas>
+            </Canvas>
 
                     <ItemsControl ItemsSource="{Binding WorkspaceElements}">
-                    
+
+                        <ItemsControl.Resources>
+
+                            <DataTemplate DataType="{x:Type controls:dynNodeViewModel}">
+                                <controls:dynNodeView></controls:dynNodeView>
+                            </DataTemplate>
+
+                            <DataTemplate DataType="{x:Type nodes:dynNoteViewModel}">
+                                <nodes:dynNoteView></nodes:dynNoteView>
+                            </DataTemplate>
+
+                            <DataTemplate DataType="{x:Type connectors:dynConnectorViewModel}">
+                                <views:dynConnectorView></views:dynConnectorView>
+                            </DataTemplate>
+
+                        </ItemsControl.Resources>
+                        
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <controls:DragCanvas

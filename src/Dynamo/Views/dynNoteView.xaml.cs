@@ -39,12 +39,6 @@ namespace Dynamo.Nodes
 
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            //if (!DynamoSelection.Instance.Selection.Contains(this))
-            //{
-            //    DynamoSelection.Instance.Selection.Add(this);
-            //}
-
-            //MVVM: replaced with command
             ViewModel.SelectCommand.Execute();
         }
 

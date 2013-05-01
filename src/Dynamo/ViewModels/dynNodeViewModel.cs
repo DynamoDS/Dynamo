@@ -185,11 +185,7 @@ namespace Dynamo.Controls
         #endregion
 
         #region constructors
-        /// <summary>
-        /// dynElement constructor for use by workbench in creating dynElements
-        /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="nickName"></param>
+
         public dynNodeViewModel(dynNodeModel logic)
         {
             nodeLogic = logic;

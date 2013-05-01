@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
+using System.Windows.Input;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
@@ -11,31 +8,39 @@ namespace Dynamo.Nodes
 {
     public class dynNoteViewModel: dynViewModelBase
     {
-        private dynNoteModel _note;
 
-        public dynNoteModel Note
+        #region Properties
+        
+        private dynNoteModel _model;
+
+        public dynNoteModel Model
         {
-            get { return _note; }
+            get { return _model; }
             set 
             { 
-                _note = value;
-                RaisePropertyChanged("Note");
+                _model = value;
+                RaisePropertyChanged("Model");
             }
         }
 
         public double Left
         {
-            get { return _note.X; }
+            get { return _model.X; }
         }
 
         public double Top
         {
-            get { return _note.Y; }
+            get { return _model.Y; }
         }
 
         public string Text
         {
-            get { return _note.Text; }
+            get { return _model.Text; }
+        }
+
+        public bool IsSelected
+        {
+            get { return _model.IsSelected; }
         }
 
         public DelegateCommand SelectCommand { get; set; }
@@ -44,16 +49,18 @@ namespace Dynamo.Nodes
         {
             get
             {
-                if(dynSettings.Controller.DynamoViewModel.CurrentSpace.Notes.Contains(_note))
+                if(dynSettings.Controller.DynamoViewModel.CurrentSpace.Notes.Contains(_model))
                     return Visibility.Visible;
                 return Visibility.Hidden;
             }
         }
         
-        public dynNoteViewModel(dynNoteModel note)
+        #endregion
+
+        public dynNoteViewModel(dynNoteModel model)
         {
-            _note = note;
-            note.PropertyChanged += note_PropertyChanged;
+            _model = model;
+            model.PropertyChanged += note_PropertyChanged;
 
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
             SelectCommand = new DelegateCommand(Select, CanSelect);
@@ -62,12 +69,31 @@ namespace Dynamo.Nodes
 
         private void Select()
         {
-            DynamoSelection.Instance.Selection.Add(_note);
+            if (!_model.IsSelected)
+            {
+                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    DynamoSelection.Instance.ClearSelection();
+                }
+
+                if (!DynamoSelection.Instance.Selection.Contains(_model))
+                {
+                    DynamoSelection.Instance.Selection.Add(_model);
+                }
+
+            }
+            else
+            {
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    DynamoSelection.Instance.Selection.Remove(_model);
+                }
+            }
         }
 
         private bool CanSelect()
         {
-            if (!DynamoSelection.Instance.Selection.Contains(_note))
+            if (!DynamoSelection.Instance.Selection.Contains(_model))
             {
                 return true;
             }
@@ -94,14 +120,17 @@ namespace Dynamo.Nodes
         {
             switch (e.PropertyName)
             {
-                case "Left":
+                case "X":
                     RaisePropertyChanged("Left");
                     break;
-                case "Top":
+                case "Y":
                     RaisePropertyChanged("Top");
                     break;
                 case "Text":
                     RaisePropertyChanged("Text");
+                    break;
+                case "IsSelected":
+                    RaisePropertyChanged("IsSelected");
                     break;
             }
         }

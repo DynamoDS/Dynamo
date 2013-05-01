@@ -280,7 +280,7 @@ namespace Dynamo
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
-                        _notes.Remove(_notes.First(x => x.Note == item));
+                        _notes.Remove(_notes.First(x => x.Model == item));
                     }
                     break;
             }

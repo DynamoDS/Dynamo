@@ -91,7 +91,7 @@ limitations under the License.
     <Compile Include="DragCanvas.cs" />
     <Compile Include="DynamoLogger.cs" />
     <Compile Include="DynamoSelection.cs" />
-    <Compile Include="IViewModelView.cs" />
+    <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Models\dynModelBase.cs" />
     <Compile Include="Models\dynNoteModel.cs" />

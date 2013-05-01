@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.Windows;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism.ViewModel;
