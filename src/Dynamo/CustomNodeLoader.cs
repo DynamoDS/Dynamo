@@ -461,8 +461,8 @@ namespace Dynamo.Utilities
 
                 string funName = null;
                 string category = "";
-                double cx = dynBench.CANVAS_OFFSET_X;
-                double cy = dynBench.CANVAS_OFFSET_Y;
+                double cx = DynamoView.CANVAS_OFFSET_X;
+                double cy = DynamoView.CANVAS_OFFSET_Y;
                 string id = "";
 
                 // load the header

@@ -157,7 +157,7 @@ namespace Dynamo.Utilties
         ///     Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
         /// <param name="bench">The bench where the UI will be loaded</param>
-        public static void LoadSamplesMenu(dynBench bench)
+        public static void LoadSamplesMenu(DynamoView bench)
         {
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string samplesPath = Path.Combine(directory, "samples");
@@ -238,7 +238,7 @@ namespace Dynamo.Utilties
         ///     directory where the executing assembly is located..
         /// </summary>
         /// <param name="bench">The logger is needed in order to tell how long it took.</param>
-        public static void LoadCustomNodes(dynBench bench, CustomNodeLoader customNodeLoader, SearchViewModel searchViewModel)
+        public static void LoadCustomNodes(DynamoView bench, CustomNodeLoader customNodeLoader, SearchViewModel searchViewModel)
         {
 
             // custom node loader

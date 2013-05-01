@@ -109,7 +109,7 @@ namespace Dynamo
 
             if (withUI)
             {
-                dynSettings.Bench = new dynBench();
+                dynSettings.Bench = new DynamoView();
                 dynSettings.Bench = dynSettings.Bench;
                 dynSettings.Bench.DataContext = DynamoViewModel;
             }
@@ -123,7 +123,7 @@ namespace Dynamo
             FSchemeEnvironment = env;
 
             //MVVM : moved to proper view constructor on dyndynSettings.Bench
-            DynamoViewModel.Model.CurrentSpace.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
+            DynamoViewModel.Model.CurrentSpace.CurrentOffset = new Point(DynamoView.CANVAS_OFFSET_X, DynamoView.CANVAS_OFFSET_Y);
             //dynSettings.Bench.CurrentOffset = new Point(dyndynSettings.Bench.CANVAS_OFFSET_X, dyndynSettings.Bench.CANVAS_OFFSET_Y);
             //dynSettings.Bench.InitializeComponent();
 
