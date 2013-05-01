@@ -1,7 +1,6 @@
 ﻿<Window x:Class="Dynamo.Controls.dynBench"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:dragCanvas="clr-namespace:Dynamo.Controls;assembly=DragCanvas"
         xmlns:dynamo="clr-namespace:Dynamo"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:commands="clr-namespace:Dynamo.Commands"
@@ -218,7 +217,7 @@
     <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
                 Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3">
             <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs" 
-                        SelectedIndex="{Binding CurrentWorkspaceIndex}">
+                        SelectedIndex="{Binding CurrentWorkspaceIndex}" >
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}"></TextBlock>
