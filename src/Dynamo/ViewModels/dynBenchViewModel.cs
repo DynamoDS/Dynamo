@@ -35,7 +35,7 @@ namespace Dynamo.Controls
         public event EventHandler UILocked;
         public event EventHandler UIUnlocked;
         public event EventHandler RequestLayoutUpdate;
-        
+        public event EventHandler WorkspaceChanged;
 
         public virtual void OnUILocked(object sender, EventArgs e)
         {
@@ -52,8 +52,14 @@ namespace Dynamo.Controls
             if (RequestLayoutUpdate != null)
                 RequestLayoutUpdate(this, e);
         }
+        public virtual void OnWorkspaceChanged(object sender, EventArgs e)
+        {
+            if (WorkspaceChanged != null)
+            {
+                WorkspaceChanged(this, e);
+            }
+        }
         
-
         private DynamoModel _model;
 
         private string logText;
@@ -230,6 +236,15 @@ namespace Dynamo.Controls
             get { return _model.CurrentSpace; }
         }
 
+        public int CurrentWorkspaceIndex
+        {
+            get { return _model.Workspaces.IndexOf(_model.CurrentSpace); }
+            set
+            {
+                _model.CurrentSpace = _model.Workspaces[value];
+            }
+        }
+
         /// <summary>
         /// Get the workspace view model whose workspace model is the model's current workspace
         /// </summary>
@@ -316,6 +331,7 @@ namespace Dynamo.Controls
                 RaisePropertyChanged("IsAbleToGoHome");
                 RaisePropertyChanged("CurrentSpace");
                 RaisePropertyChanged("BackgroundColor");
+                RaisePropertyChanged("CurrentWorkspaceIndex");
             } 
         }
 
@@ -1060,6 +1076,8 @@ namespace Dynamo.Controls
 
         private void GoToWorkspace(object parameter)
         {
+            //if this method is being called from search, the parameter will be
+            //a guid.
             if (parameter is Guid && dynSettings.Controller.CustomNodeLoader.Contains((Guid)parameter))
             {
                 ViewCustomNodeWorkspace(dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameter));

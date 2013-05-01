@@ -217,7 +217,8 @@
 
     <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
                 Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3">
-            <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs">
+            <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs" 
+                        SelectedIndex="{Binding CurrentWorkspaceIndex}">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}"></TextBlock>

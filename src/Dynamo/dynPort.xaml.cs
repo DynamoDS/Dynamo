@@ -13,18 +13,10 @@
 //limitations under the License.
 
 using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Diagnostics;
-using System.ComponentModel;
-
-using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Dynamo.Controls;
 
 namespace Dynamo.Connectors
 {
@@ -200,12 +192,12 @@ namespace Dynamo.Connectors
 
         Point CalculateCenter()
         {
-            if (canvas != null)
-            {
-                GeneralTransform transform = portCircle.TransformToAncestor(canvas);
-                Point rootPoint = transform.Transform(new Point(portCircle.Width / 2, portCircle.Height / 2));
-                return new Point(rootPoint.X, rootPoint.Y); 
-            }
+            //if (canvas != null)
+            //{
+            //    GeneralTransform transform = portCircle.TransformToAncestor(canvas);
+            //    Point rootPoint = transform.Transform(new Point(portCircle.Width / 2, portCircle.Height / 2));
+            //    return new Point(rootPoint.X, rootPoint.Y);
+            //}
 
             return new Point();
         }
