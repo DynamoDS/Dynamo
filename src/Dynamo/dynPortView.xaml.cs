@@ -27,7 +27,7 @@ namespace Dynamo.Connectors
     public delegate void PortDisconnectedHandler(object sender, EventArgs e);
     public enum PortType { INPUT, OUTPUT };
 
-    public partial class dynPort : UserControl
+    public partial class dynPortView : UserControl
     {
         private Dynamo.Controls.DragCanvas canvas;
         private dynPortViewModel vm;
@@ -48,7 +48,7 @@ namespace Dynamo.Connectors
 
         //MVVM:make a default constructor
         //public dynPort(int index, PortType portType, dynNodeView owner, string name)
-        public dynPort()
+        public dynPortView()
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(dynPort_Loaded);

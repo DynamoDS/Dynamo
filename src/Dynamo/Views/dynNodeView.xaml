@@ -71,7 +71,7 @@
             <ItemsControl ItemsSource="{Binding Path=InPorts}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <connectors:dynPort></connectors:dynPort>
+                        <connectors:dynPortView></connectors:dynPortView>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -86,7 +86,7 @@
             <ItemsControl ItemsSource="{Binding Path=OutPorts}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <connectors:dynPort></connectors:dynPort>
+                        <connectors:dynPortView></connectors:dynPortView>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

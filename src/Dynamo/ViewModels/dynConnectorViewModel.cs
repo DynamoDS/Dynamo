@@ -328,7 +328,7 @@ namespace Dynamo.Connectors
 
         private bool CanConnect(object parameters)
         {
-            if ((parameters as dynPort) == null)
+            if ((parameters as dynPortModel) == null)
                 return false;
 
             return true;

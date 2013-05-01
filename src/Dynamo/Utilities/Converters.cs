@@ -88,7 +88,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            ObservableCollection<dynPort> ports = (ObservableCollection<dynPort>)value;
+            ObservableCollection<dynPortViewModel> ports = (ObservableCollection<dynPortViewModel>)value;
             return Math.Max(30, ports.Count * 20 + 10); //spacing for inputs + title space + bottom space
         }
 

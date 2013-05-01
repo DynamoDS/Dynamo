@@ -31,7 +31,7 @@ namespace Dynamo.Controls
 
         #region private members
 
-        Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
+        Dictionary<dynPortView, PortData> portDataDict = new Dictionary<dynPortView, PortData>();
         private dynNodeViewModel vm;
 
         #endregion
