@@ -151,8 +151,8 @@ limitations under the License.
     <Compile Include="Nodes\dynFiles.cs" />
     <Compile Include="dynFunction.cs" />
     <Compile Include="Models\dynNodeModel.cs" />
-    <Compile Include="dynNodeUI.xaml.cs">
-      <DependentUpon>dynNodeUI.xaml</DependentUpon>
+    <Compile Include="Views\dynNodeView.xaml.cs">
+      <DependentUpon>dynNodeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="dynNoteView.xaml.cs">
       <DependentUpon>dynNoteView.xaml</DependentUpon>
@@ -207,7 +207,7 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="dynNodeUI.xaml">
+    <Page Include="Views\dynNodeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

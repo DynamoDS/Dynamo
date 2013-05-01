@@ -55,7 +55,7 @@ namespace Dynamo.Nodes
 
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
         {
             string[] serialPortNames = System.IO.Ports.SerialPort.GetPortNames();
 

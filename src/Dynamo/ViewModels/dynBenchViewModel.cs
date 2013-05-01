@@ -804,7 +804,7 @@ namespace Dynamo.Controls
                     {
                         dynSettings.Controller.ClipBoard.Add(el);
 
-                        //dynNodeUI n = el as dynNodeUI;
+                        //dynNodeView n = el as dynNodeView;
                         dynNodeModel n = el as dynNodeModel;
                         if (n != null)
                         {
@@ -1161,7 +1161,7 @@ namespace Dynamo.Controls
             dynNodeModel node = CreateNode(data["name"].ToString());
 
 //MVVM : Don't add the view explicitly
-            /*dynNodeUI nodeUi = node.NodeUI;
+            /*dynNodeView nodeUi = node.NodeUI;
             if (dynSettings.Workbench != null)
             {
                 dynSettings.Workbench.Children.Add(nodeUi);
@@ -2159,8 +2159,8 @@ namespace Dynamo.Controls
         /// <param name="elementType"> The Type object from which the node can be activated </param>
         /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
         /// <param name="guid"> The unique identifier for the node in the workspace. </param>
-        /// <param name="x"> The x coordinate where the dynNodeUI will be placed </param>
-        /// <param name="y"> The x coordinate where the dynNodeUI will be placed</param>
+        /// <param name="x"> The x coordinate where the dynNodeView will be placed </param>
+        /// <param name="y"> The x coordinate where the dynNodeView will be placed</param>
         /// <returns> The newly instantiate dynNode</returns>
         public dynNodeModel CreateInstanceAndAddNodeToWorkspace(Type elementType, string nickName, Guid guid,
             double x, double y, dynWorkspace ws)    //Visibility vis = Visibility.Visible)
@@ -2209,7 +2209,7 @@ namespace Dynamo.Controls
         {
             var node = (dynNodeModel)Activator.CreateInstance(elementType);
 
-            //dynNodeUI nodeUI = node.NodeUI;
+            //dynNodeView nodeUI = node.NodeUI;
 
             if (!string.IsNullOrEmpty(nickName))
             {

@@ -24,7 +24,7 @@ using Grid = System.Windows.Controls.Grid;
 
 namespace Dynamo.Controls
 {
-    public partial class dynNodeUI
+    public partial class dynNodeView
     {
         public delegate void SetToolTipDelegate(string message);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
@@ -38,7 +38,7 @@ namespace Dynamo.Controls
 
         #region public members
 
-        public dynNodeUI TopControl
+        public dynNodeView TopControl
         {
             get { return topControl; }
         }
@@ -56,11 +56,11 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="nickName"></param>
-        public dynNodeUI()
+        public dynNodeView()
         {
             InitializeComponent();
 
-            this.Loaded += new RoutedEventHandler(dynNodeUI_Loaded);
+            this.Loaded += new RoutedEventHandler(dynNodeView_Loaded);
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
 
             //set the main grid's data context to 
@@ -75,7 +75,7 @@ namespace Dynamo.Controls
 
         }
 
-        void dynNodeUI_Loaded(object sender, RoutedEventArgs e)
+        void dynNodeView_Loaded(object sender, RoutedEventArgs e)
         {
             vm = DataContext as dynNodeViewModel;
             vm.NodeLogic.DispatchedToUI += new DispatchedToUIThreadHandler(NodeLogic_DispatchedToUI);
@@ -182,7 +182,7 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        private void DynNodeUI_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void dynNodeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var viewModel = DataContext as dynNodeViewModel;
             if (viewModel != null)

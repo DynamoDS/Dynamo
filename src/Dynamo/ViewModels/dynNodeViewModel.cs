@@ -180,7 +180,7 @@ namespace Dynamo.Controls
         public DelegateCommand SelectCommand { get; set; }
         public DelegateCommand ViewCustomNodeWorkspaceCommand { get; set; }
         public DelegateCommand<object> SetLayoutCommand { get; set; }
-        public DelegateCommand<dynNodeUI> SetupCustomUIElementsCommand { get; set; }
+        public DelegateCommand<dynNodeView> SetupCustomUIElementsCommand { get; set; }
         public DelegateCommand ValidateConnectionsCommand { get; set; }
         #endregion
 
@@ -208,7 +208,7 @@ namespace Dynamo.Controls
             SelectCommand = new DelegateCommand(Select, CanSelect);
             ViewCustomNodeWorkspaceCommand = new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
-            SetupCustomUIElementsCommand = new DelegateCommand<dynNodeUI>(SetupCustomUIElements, CanSetupCustomUIElements);
+            SetupCustomUIElementsCommand = new DelegateCommand<dynNodeView>(SetupCustomUIElements, CanSetupCustomUIElements);
             ValidateConnectionsCommand = new DelegateCommand(ValidateConnections, CanValidateConnections);
             
             //Do a one time setup of the initial ports on the node
@@ -445,12 +445,12 @@ namespace Dynamo.Controls
             //    p.Update();
         }
 
-        private void SetupCustomUIElements(dynNodeUI NodeUI)
+        private void SetupCustomUIElements(dynNodeView NodeUI)
         {
             nodeLogic.SetupCustomUIElements(NodeUI);
         }
 
-        private bool CanSetupCustomUIElements(dynNodeUI NodeUI)
+        private bool CanSetupCustomUIElements(dynNodeView NodeUI)
         {
             return true;
         }

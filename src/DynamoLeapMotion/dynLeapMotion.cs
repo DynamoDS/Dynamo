@@ -65,7 +65,7 @@ namespace Dynamo.Nodes
             LeapEnable(true);
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             // Create a menuitem to enable/disable the Leap device
             menuItemLeapEnabled = new System.Windows.Controls.MenuItem();

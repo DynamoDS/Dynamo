@@ -39,14 +39,14 @@ namespace Dynamo.Controls
         internal Dictionary<string, Expander> addMenuCategoryDict
             = new Dictionary<string, Expander>();
 
-        internal Dictionary<string, dynNodeUI> addMenuItemsDictNew
-            = new Dictionary<string, dynNodeUI>();
+        internal Dictionary<string, dynNodeView> addMenuItemsDictNew
+            = new Dictionary<string, dynNodeView>();
 
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
 
         private Point dragOffset;
-        private dynNodeUI draggedElementMenuItem;
-        private dynNodeUI draggedNode;
+        private dynNodeView draggedElementMenuItem;
+        private dynNodeView draggedNode;
         private bool editingName;
         private bool hoveringEditBox;
         //private bool isWindowSelecting;
@@ -460,7 +460,7 @@ namespace Dynamo.Controls
             if (UILocked)
                 return;
 
-            dynNodeUI el = draggedNode;
+            dynNodeView el = draggedNode;
 
             Point pos = e.GetPosition(overlayCanvas);
 
@@ -475,7 +475,7 @@ namespace Dynamo.Controls
             /*if (UILocked)
                 return;
 
-            dynNodeUI el = draggedNode;
+            dynNodeView el = draggedNode;
 
             Point pos = e.GetPosition(WorkBench);
 

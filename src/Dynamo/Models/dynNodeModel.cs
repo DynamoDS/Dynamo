@@ -64,7 +64,7 @@ namespace Dynamo.Nodes
         Dictionary<dynPortModel, PortData> portDataDict = new Dictionary<dynPortModel, PortData>();
         
 //MVVM : node should not reference its view directly
-        //public dynNodeUI NodeUI;
+        //public dynNodeView NodeUI;
         
         public Dictionary<int, Tuple<int, dynNodeModel>> Inputs = 
             new Dictionary<int, Tuple<int, dynNodeModel>>();
@@ -375,7 +375,7 @@ namespace Dynamo.Nodes
         {
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
-            //NodeUI = new dynNodeUI(this);
+            //NodeUI = new dynNodeView(this);
 
             //Fetch the element name from the custom attribute.
             var nameArray = GetType().GetCustomAttributes(typeof(NodeNameAttribute), true);
@@ -1124,7 +1124,7 @@ namespace Dynamo.Nodes
             State = inPorts.Select(x => x).Any(x => x.Connectors.Count == 0) ? ElementState.DEAD : ElementState.ACTIVE;
         }
 
-        private void SetState(dynNodeUI el, ElementState state)
+        private void SetState(dynNodeView el, ElementState state)
         {
             State = state;
         }
@@ -1186,7 +1186,7 @@ namespace Dynamo.Nodes
         /// Called back from the view to enable users to setup their own view elements
         /// </summary>
         /// <param name="parameter"></param>
-        public virtual void SetupCustomUIElements(dynNodeUI NodeUI)
+        public virtual void SetupCustomUIElements(dynNodeView NodeUI)
         {
             
         }

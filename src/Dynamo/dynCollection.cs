@@ -22,9 +22,9 @@ namespace Dynamo.Nodes
 {
     public class dynCollection
     {
-        List<List<dynNodeUI>> elements = new List<List<dynNodeUI>>();
+        List<List<dynNodeView>> elements = new List<List<dynNodeView>>();
 
-        public List<List<dynNodeUI>> Elements
+        public List<List<dynNodeView>> Elements
         {
             get { return elements; }
         }

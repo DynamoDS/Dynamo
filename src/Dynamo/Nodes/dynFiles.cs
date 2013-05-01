@@ -173,7 +173,7 @@ namespace Dynamo.Nodes
 
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
         {
             image1 = new System.Windows.Controls.Image();
             image1.Width = 320;

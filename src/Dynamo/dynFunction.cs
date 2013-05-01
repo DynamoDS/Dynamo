@@ -53,7 +53,7 @@ namespace Dynamo
 
             }
 
-            public override void SetupCustomUIElements(dynNodeUI ui)
+            public override void SetupCustomUIElements(dynNodeView ui)
             {
                 ((DropShadowEffect) ui.elementRectangle.Effect).Opacity = 1;
                 ((DropShadowEffect) ui.elementRectangle.Effect).Color = Colors.WhiteSmoke;
@@ -285,7 +285,7 @@ namespace Dynamo
                 RegisterAllPorts();
             }
 
-            public override void SetupCustomUIElements(Controls.dynNodeUI NodeUI)
+            public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
             {
                 //add a text box to the input grid of the control
                 tb = new TextBox();
@@ -374,7 +374,7 @@ namespace Dynamo
                 RegisterAllPorts();
             }
 
-            public override void SetupCustomUIElements(Controls.dynNodeUI NodeUI)
+            public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
             {
                 //add a text box to the input grid of the control
                 tb = new TextBox();

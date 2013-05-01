@@ -47,7 +47,7 @@ namespace Dynamo.Connectors
         #region constructors
 
         //MVVM:make a default constructor
-        //public dynPort(int index, PortType portType, dynNodeUI owner, string name)
+        //public dynPort(int index, PortType portType, dynNodeView owner, string name)
         public dynPort()
         {
             InitializeComponent();

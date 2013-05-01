@@ -89,7 +89,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             //take out the left and right margins
             //and make this so it's not so wide

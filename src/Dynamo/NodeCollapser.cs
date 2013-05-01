@@ -99,7 +99,7 @@ namespace Dynamo.Utilities
 
                             //MVVM : Don't make direct reference to view here
                             //MVVM: no reference to view here
-                            //dynNodeUI nodeUI = node.NodeUI;
+                            //dynNodeView nodeUI = node.NodeUI;
 
                             var elNameAttrib =
                                 node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as
@@ -294,7 +294,7 @@ namespace Dynamo.Utilities
                 };
 
                 //MVVM : Don't make direct reference to view here
-                //dynNodeUI nodeUI = node.NodeUI;
+                //dynNodeView nodeUI = node.NodeUI;
                 
                 var elNameAttrib =
                     node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
@@ -388,7 +388,7 @@ namespace Dynamo.Utilities
                         Symbol = outputSenderNode.OutPortData[outputSenderData].NickName
                     };
 
-                    //dynNodeUI nodeUI = node.NodeUI;
+                    //dynNodeView nodeUI = node.NodeUI;
 
                     var elNameAttrib =
                         node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), false)[0] as NodeNameAttribute;
@@ -449,7 +449,7 @@ namespace Dynamo.Utilities
                 if (curriedNode == null)
                 {
                     // we create the connectors in the current space later
-//MVVM : replaced multiple dynNodeUI refrences with dynNode
+//MVVM : replaced multiple dynNodeView refrences with dynNode
                     outConnectors.Add(new Tuple<dynNodeModel, int, int>(outputReceiverNode,
                                                                      outportList.FindIndex(x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
                                                                      outputReceiverData));
@@ -480,7 +480,7 @@ namespace Dynamo.Utilities
 //MVVM : Do not set view visibility here. It will be controlled by active workspace binding.
             //Step 4: make nodes invisible
             // and update positions
-            /*foreach (dynNodeUI node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
+            /*foreach (dynNodeView node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
                 node.Visibility = Visibility.Hidden;
 
             foreach (dynConnector connector in newNodeWorkspace.Connectors)

@@ -134,7 +134,7 @@ namespace Dynamo.Nodes
             
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             System.Windows.Controls.Button addButton = new System.Windows.Controls.Button();
             addButton.Content = "+";
@@ -934,7 +934,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
 
         }
@@ -1556,7 +1556,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             //add a text box to the input grid of the control
             button = new System.Windows.Controls.Button();
@@ -1778,7 +1778,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", type.Name, type));
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             //add an edit window option to the 
             //main context window
@@ -1947,7 +1947,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
 
             NodeUI.topControl.Width = 80;
@@ -2038,7 +2038,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
 
             NodeUI.topControl.Width = 240;
@@ -2302,7 +2302,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             //inputGrid.Margin = new System.Windows.Thickness(5,5,20,5);
 
@@ -2399,7 +2399,7 @@ namespace Dynamo.Nodes
             Value = "";
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             //add a text box to the input grid of the control
             tb = new dynTextBox();
@@ -2495,7 +2495,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             //add a button to the inputGrid on the dynElement
             System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();
