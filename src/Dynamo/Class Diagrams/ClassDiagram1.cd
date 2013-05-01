@@ -50,7 +50,7 @@
   <Class Name="Dynamo.Nodes.dynNoteModel">
     <Position X="4.5" Y="7.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAIAAQAAAAAAAAAAAAAAAAAAAAIAAAACAAAYAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAACAAAAAA=</HashCode>
       <FileName>Models\dynNoteModel.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -62,7 +62,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Dynamo.dynWorkspaceModel">
-    <Position X="6.5" Y="0.5" Width="1.5" />
+    <Position X="5.5" Y="0.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAiIAAAAAAAAQAgADAAgAQAAIAAAABAAABACACAEAA=</HashCode>
       <FileName>Models\dynWorkspaceModel.cs</FileName>
