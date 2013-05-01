@@ -161,7 +161,7 @@ limitations under the License.
       <DependentUpon>dynPortView.xaml</DependentUpon>
     </Compile>
     <Compile Include="dynUtils.cs" />
-    <Compile Include="dynWorkspaceModel.cs" />
+    <Compile Include="Models\dynWorkspaceModel.cs" />
     <Compile Include="FunctionNamePrompt.xaml.cs">
       <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
     </Compile>
