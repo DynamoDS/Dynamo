@@ -82,12 +82,10 @@ namespace Dynamo
 
             Nodes = new ObservableCollection<dynNodeModel>(e);
             Connectors = new ObservableCollection<dynConnectorModel>(c);
+            Notes = new ObservableCollection<dynNoteModel>();
             PositionX = x;
             PositionY = y;
-            Notes = new ObservableCollection<dynNoteModel>();
-            var n = new dynNoteModel(10, 10);
-            n.Text = "helloooo";
-            this.Notes.Add( n );
+            
         }
 
         public void DisableReporting()
