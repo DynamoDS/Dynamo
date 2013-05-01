@@ -136,7 +136,16 @@ namespace Dynamo
             get { return activeConnector; }
             set
             {
-                activeConnector = value;
+                if (value != null)
+                {
+                    WorkspaceElements.Add(value);
+                    activeConnector = value;
+                }    
+                else
+                {
+                    WorkspaceElements.Remove(activeConnector);
+                }
+                
                 RaisePropertyChanged("ActiveConnector");
             }
         }

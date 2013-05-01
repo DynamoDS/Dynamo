@@ -48,6 +48,11 @@ namespace Dynamo.Connectors
             get { return _port.IsConnected; }
         }
 
+        //public Point Center
+        //{
+        //    get { return _port.Center; }
+        //}
+
         public ElementState State
         {
             get { return _node.State; }    
@@ -78,6 +83,9 @@ namespace Dynamo.Connectors
                 case "State":
                     RaisePropertyChanged("State");
                     break;
+                case "ToolTipContent":
+                    RaisePropertyChanged("ToolTipContent");
+                    break;
             }
         }
 
@@ -97,6 +105,9 @@ namespace Dynamo.Connectors
                 case "IsConnected":
                     RaisePropertyChanged("IsConnected");
                     break;
+                //case "Center":
+                //    RaisePropertyChanged("Center");
+                //    break;
             }
             
         }
@@ -108,17 +119,6 @@ namespace Dynamo.Connectors
         public void UpdateCenter(Point center)
         {
             _port.Center = center;
-        }
-
-        //MVVM: Obsolete method - updating of conenctors should happen automatically with bindings.
-        public void Update()
-        {
-            foreach (dynConnectorModel c in _port.Connectors)
-            {
-                //calling this with null will have
-                //no effect
-                //c.Redraw();
-            }
         }
 
         private void Connect()
@@ -158,6 +158,7 @@ namespace Dynamo.Connectors
 
                         //Create a connector view model to begin drawing
                         var c = new dynConnectorViewModel(_port);
+                        //dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Connectors.Add(c);
                         dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
                         dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
 

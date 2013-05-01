@@ -19,7 +19,6 @@ namespace Dynamo.Views
     {
         private bool isWindowSelecting;
         private Point mouseDownPos;
-        //private dynWorkspaceViewModel vm;
         private Dynamo.Controls.DragCanvas WorkBench = null;
 
         public dynWorkspaceView()
@@ -37,7 +36,7 @@ namespace Dynamo.Views
 
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
         {
-            dynWorkspaceViewModel vm = DataContext as dynWorkspaceViewModel;
+            var vm = DataContext as dynWorkspaceViewModel;
             vm.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
             vm.StopDragging += new EventHandler(vm_StopDragging);
             vm.RequestCenterViewOnElement+=new NodeEventHandler(CenterViewOnElement);
@@ -67,7 +66,7 @@ namespace Dynamo.Views
 
             // apply small perturbation
             // so node isn't right on top of last placed node
-            Random r = new Random();
+            var r = new Random();
             x += (r.NextDouble() - 0.5) * 50;
             y += (r.NextDouble() - 0.5) * 50;
             
@@ -165,7 +164,6 @@ namespace Dynamo.Views
             {
                 if (vm.ActiveConnector != null)
                 {
-                    vm.ActiveConnector.ConnectorModel.Kill();
                     vm.IsConnecting = false;
                     vm.ActiveConnector = null;
                 }

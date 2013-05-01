@@ -192,12 +192,12 @@ namespace Dynamo.Connectors
 
         Point CalculateCenter()
         {
-            //if (canvas != null)
-            //{
-            //    GeneralTransform transform = portCircle.TransformToAncestor(canvas);
-            //    Point rootPoint = transform.Transform(new Point(portCircle.Width / 2, portCircle.Height / 2));
-            //    return new Point(rootPoint.X, rootPoint.Y);
-            //}
+            if (canvas != null)
+            {
+                GeneralTransform transform = portCircle.TransformToAncestor(canvas);
+                Point rootPoint = transform.Transform(new Point(portCircle.Width / 2, portCircle.Height / 2));
+                return new Point(rootPoint.X, rootPoint.Y);
+            }
 
             return new Point();
         }

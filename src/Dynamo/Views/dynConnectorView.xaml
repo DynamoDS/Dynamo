@@ -2,23 +2,26 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:vm="clr-namespace:Dynamo.Connectors"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+
     <Grid>
-        <Ellipse Name="endDot" Width="6" Height="6" Fill="Black" IsHitTestVisible="False" 
-                 Canvas.Top="{Binding Dot_Top}" Canvas.Left="{Binding Dot_Left}"/>
-        <Path Stroke="{Binding Path=StrokeBrush}" StrokeThickness="{Binding StrokeThickness}" 
+
+        <!--<Ellipse Name="endDot" Width="6" Height="6" Fill="Black" IsHitTestVisible="False" 
+                 Canvas.Top="{Binding BezStartPoint.Y}" Canvas.Left="{Binding BezStartPoint.X}"--> 
+
+        <Path Stroke="{Binding StrokeBrush}" StrokeThickness="{Binding StrokeThickness}"
               Name="connector" MouseEnter="Highlight" MouseLeave="Unhighlight"
-              Visibility="{Binding BezVisibility}">
+              Visibility="Visible">
             <Path.Data>
                 <PathGeometry>
                     <PathGeometry.Figures>
                         <PathFigureCollection>
-                            <PathFigure StartPoint="{Binding Bez_StartPoint}">
+                            <PathFigure StartPoint="{Binding BezStartPoint}">
                                 <PathFigure.Segments>
                                     <PathSegmentCollection>
-                                        <BezierSegment Point1="{Binding Bez_Point1}" Point2="{Binding Bez_Point2}" Point3="{Binding Bez_Point3}" />
+                                        <BezierSegment Point1="{Binding BezPoint1}" Point2="{Binding BezPoint2}" Point3="{Binding BezPoint3}" />
                                     </PathSegmentCollection>
                                 </PathFigure.Segments>
                             </PathFigure>
@@ -35,12 +38,12 @@
                 <PathGeometry>
                     <PathGeometry.Figures>
                         <PathFigureCollection>
-                            <PathFigure StartPoint="{Binding Path=Bez_StartPoint}">
+                            <PathFigure StartPoint="{Binding Path=BezStartPoint}">
                                 <PathFigure.Segments>
                                     <PathSegmentCollection>
-                                        <LineSegment Point="{Binding Bez_Point1}"/> 
-                                        <LineSegment Point="{Binding Bez_Point2}"/> 
-                                        <LineSegment Point="{Binding Bez_Point3}"/>
+                                        <LineSegment Point="{Binding BezPoint1}"/> 
+                                        <LineSegment Point="{Binding BezPoint2}"/> 
+                                        <LineSegment Point="{Binding BezPoint3}"/>
                                     </PathSegmentCollection>
                                 </PathFigure.Segments>
                             </PathFigure>
@@ -49,5 +52,7 @@
                 </PathGeometry>
             </Path.Data>
         </Path>
+        
+        
     </Grid>
 </UserControl>
