@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 using Dynamo.Connectors;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Controls;
 using Dynamo.Nodes;
@@ -27,12 +28,16 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {
-    public abstract class dynWorkspaceModel : NotificationObject
+    public abstract class dynWorkspaceModel : NotificationObject, ILocatable
     {
 
         #region Properties
         private string _name;
         private System.Windows.Point currentOffset = new System.Windows.Point(0, 0);
+        private double x = 0.0;
+        private double y = 0.0;
+        private double height = 100;
+        private double width = 100;
 
         public ObservableCollection<dynNodeModel> Nodes { get; private set; }
         public ObservableCollection<dynConnectorModel> Connectors { get; private set; }
@@ -50,10 +55,6 @@ namespace Dynamo
             }
         }
 
-        public double PositionX { get; set; }
-
-        public double PositionY { get; set; }
-
         /// <summary>
         /// Specifies the pan location of the view
         /// </summary>
@@ -65,6 +66,66 @@ namespace Dynamo
                 currentOffset = value;
                 RaisePropertyChanged("CurrentOffset");
             }
+        }
+
+        /// <summary>
+        /// Get or set the X position of the workspace.
+        /// </summary>
+        public double X
+        {
+            get { return x; }
+            set
+            {
+                x = value;
+                RaisePropertyChanged("X");
+            }
+        }
+
+        /// <summary>
+        /// Get or set the Y position of the workspace
+        /// </summary>
+        public double Y
+        {
+            get { return y; }
+            set
+            {
+                y = value;
+                RaisePropertyChanged("Y");
+            }
+        }
+
+        /// <summary>
+        /// Get the height of the workspace's bounds.
+        /// </summary>
+        public double Height
+        {
+            get { return height; }
+            set
+            {
+                height = value;
+                RaisePropertyChanged("Height");
+            }
+        }
+
+        /// <summary>
+        /// Get the width of the workspace's bounds.
+        /// </summary>
+        public double Width
+        {
+            get { return width; }
+            set
+            {
+                width = value;
+                RaisePropertyChanged("Width");
+            }
+        }
+
+        /// <summary>
+        /// Get the bounds of the workspace.
+        /// </summary>
+        public Rect Rect
+        {
+            get { return new Rect(x, y, width, height); }
         }
 
         #endregion
@@ -83,8 +144,8 @@ namespace Dynamo
             Nodes = new ObservableCollection<dynNodeModel>(e);
             Connectors = new ObservableCollection<dynConnectorModel>(c);
             Notes = new ObservableCollection<dynNoteModel>();
-            PositionX = x;
-            PositionY = y;
+            X = x;
+            Y = y;
             
         }
 
@@ -158,8 +219,8 @@ namespace Dynamo
                 xmlDoc.CreateXmlDeclaration("1.0", null, null);
 
                 XmlElement root = xmlDoc.CreateElement("dynWorkspace"); //write the root element
-                root.SetAttribute("X", workSpace.PositionX.ToString());
-                root.SetAttribute("Y", workSpace.PositionY.ToString());
+                root.SetAttribute("X", workSpace.X.ToString());
+                root.SetAttribute("Y", workSpace.Y.ToString());
 
                 if (!savingHomespace) //If we are not saving the home space
                 {
