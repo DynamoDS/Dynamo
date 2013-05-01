@@ -191,7 +191,10 @@ namespace Dynamo
         /// </summary>
         public Point CurrentOffset
         {
-            get { return _model.CurrentOffset; }
+            get
+            {
+                return new Point(_model.X, _model.Y);
+            }
             set
             {
                 OnCurrentOffsetChanged(this, new PointEventArgs(value));
@@ -323,7 +326,10 @@ namespace Dynamo
                 case "Name":
                     RaisePropertyChanged("Name");
                     break;
-                case "CurrentOffset":
+                case "X":
+                    RaisePropertyChanged("CurrentOffset");
+                    break;
+                case "Y":
                     RaisePropertyChanged("CurrentOffset");
                     break;
             }
@@ -413,7 +419,9 @@ namespace Dynamo
 
             //set the current offset without triggering
             //any property change notices.
-            _model.CurrentOffset = new Point(p.X, p.Y);
+            //_model.CurrentOffset = new Point(p.X, p.Y);
+            _model.X = p.X;
+            _model.Y = p.Y;
         }
 
         private bool CanSetCurrentOffset(object parameter)

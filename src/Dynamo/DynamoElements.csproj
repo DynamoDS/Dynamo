@@ -191,12 +191,20 @@ limitations under the License.
     </Compile>
     <Compile Include="ZoomBorder.cs" />
     <Compile Include="Search\SearchDictionary.cs" />
+    <EmbeddedResource Include="DynamoController_EvaluationThread.sequencediagram.layout">
+      <DependentUpon>DynamoController_EvaluationThread.sequencediagram</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DynamoController_RunExpression.sequencediagram.layout">
+      <DependentUpon>DynamoController_RunExpression.sequencediagram</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Class Diagrams\ClassDiagram1.cd" />
+    <None Include="DynamoController_EvaluationThread.sequencediagram" />
+    <None Include="DynamoController_RunExpression.sequencediagram" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

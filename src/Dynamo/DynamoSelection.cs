@@ -86,15 +86,6 @@ namespace Dynamo.Selection
         void Deselect();
     }
 
-    public interface ILocatable
-    {
-        double X { get; set; }
-        double Y { get; set; }
-        double Width { get; set; }
-        double Height { get; set; }
-        Rect Rect { get; }
-    }
-
     public static class Extensions
     {
         public static void RemoveAll(this ObservableCollection<ISelectable> list)
