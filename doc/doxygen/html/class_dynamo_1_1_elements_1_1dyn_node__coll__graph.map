@@ -1,4 +1,0 @@
-<map id="Dynamo.Elements.dynNode" name="Dynamo.Elements.dynNode">
-<area shape="rect" id="node3" href="$interface_dynamo_1_1_elements_1_1_i_dynamic.html" title="{IDynamic\n||+ Draw()\l+ Destroy()\l}" alt="" coords="121,57,207,149"/>
-<area shape="rect" id="node6" href="$class_dynamo_1_1_f_scheme_interop_1_1_execution_environment.html" title="{Dynamo.FSchemeInterop.Execution\lEnvironment\n||+ ExecutionEnvironment()\l+ DefineSymbol()\l+ DefineExternal()\l+ DefineExternal()\l+ Evaluate()\l+ RemoveSymbol()\l+ LookupSymbol()\l+ ToString()\l}" alt="" coords="509,5,739,200"/>
-</map>
