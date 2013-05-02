@@ -1149,22 +1149,14 @@ namespace Dynamo.Controls
             }
 
             dynNodeModel node = CreateNode(data["name"].ToString());
-
-//MVVM : Don't add the view explicitly
-            /*dynNodeView nodeUi = node.NodeUI;
-            if (dynSettings.Workbench != null)
+            if (node == null)
             {
-                dynSettings.Workbench.Children.Add(nodeUi);
-            }*/
-            
-            //dynSettings.Controller.Nodes.Add(NodeLogic);
-            //NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
+                DynamoCommands.WriteToLogCmd.Execute("Failed to create the node");
+                return;
+            } 
 
             _model.CurrentSpace.Nodes.Add(node);
             node.WorkSpace = dynSettings.Controller.DynamoViewModel.CurrentSpace;
-
-//MVVM : Don't set any view properties on the node here
-            //nodeUi.Opacity = 1;
 
             //if we've received a value in the dictionary
             //try to set the value on the node
@@ -2650,20 +2642,7 @@ namespace Dynamo.Controls
                         SaveFunction(def);
                 }
 
-//MVVM : hiding workspace should no longer be necessary due to visibility bindings
-                //DynamoController.hideWorkspace(_model.CurrentSpace);
-
                 _model.CurrentSpace = workSpace;
-
-//MVVM : replaced with bindings
-                /*Bench.homeButton.IsEnabled = true;
-
-                Bench.workspaceLabel.Content = CurrentSpace.Name;
-
-                Bench.editNameButton.Visibility = Visibility.Visible;
-                Bench.editNameButton.IsHitTestVisible = true;
-
-                Bench.setFunctionBackground();*/
             }
 
             return functionDefinition;

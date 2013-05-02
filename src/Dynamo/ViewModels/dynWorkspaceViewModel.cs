@@ -315,9 +315,10 @@ namespace Dynamo
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
                     {
-                        //add a corresponding note
-                        var viewModel = new dynNodeViewModel(item as dynNodeModel);
-                        _nodes.Add(viewModel);
+                        if (item != null && item is dynNodeModel)
+                        {
+                            _nodes.Add(new dynNodeViewModel(item as dynNodeModel));
+                        }
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
