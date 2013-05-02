@@ -60,11 +60,14 @@ namespace Dynamo
                 ((DropShadowEffect) ui.elementRectangle.Effect).BlurRadius = 20;
                 ((DropShadowEffect) ui.elementRectangle.Effect).ShadowDepth = 0;
 
-                //Setup double-click behavior
-                ui.MouseDoubleClick += delegate
-                    {
-                        Controller.DynamoViewModel.ViewCustomNodeWorkspace(_def);
-                    };
+                ui.MouseDoubleClick += new System.Windows.Input.MouseButtonEventHandler(ui_MouseDoubleClick);
+
+            }
+
+            void ui_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+            {
+                Controller.DynamoViewModel.ViewCustomNodeWorkspace(_def);
+                e.Handled = true;
             }
 
             FunctionDefinition _def;
