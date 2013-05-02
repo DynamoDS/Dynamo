@@ -369,13 +369,6 @@ namespace Dynamo.Controls
             if (!string.IsNullOrEmpty(xmlPath))
             {
 
-                //if (dynSettings.Bench.UILocked)
-                //{
-                //    QueueLoad(xmlPath);
-                //    return;
-                //}
-
-                //dynSettings.Bench.LockUI();
                 OnUILocked(this, EventArgs.Empty);
 
                 if (!OpenDefinition(xmlPath))
@@ -383,16 +376,13 @@ namespace Dynamo.Controls
                     //MessageBox.Show("Workbench could not be opened.");
                     Log("Workbench could not be opened.");
 
-                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
-                    //dynSettings.Writer.WriteLine(xmlPath);
-
                     if (DynamoCommands.WriteToLogCmd.CanExecute(null))
                     {
                         DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
                         DynamoCommands.WriteToLogCmd.Execute(xmlPath);
                     }
                 }
-                //dynSettings.Bench.UnlockUI();
+
                 OnUIUnlocked(this, EventArgs.Empty);
             }
 
@@ -1159,22 +1149,14 @@ namespace Dynamo.Controls
             }
 
             dynNodeModel node = CreateNode(data["name"].ToString());
-
-//MVVM : Don't add the view explicitly
-            /*dynNodeView nodeUi = node.NodeUI;
-            if (dynSettings.Workbench != null)
+            if (node == null)
             {
-                dynSettings.Workbench.Children.Add(nodeUi);
-            }*/
-            
-            //dynSettings.Controller.Nodes.Add(NodeLogic);
-            //NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
+                DynamoCommands.WriteToLogCmd.Execute("Failed to create the node");
+                return;
+            } 
 
             _model.CurrentSpace.Nodes.Add(node);
             node.WorkSpace = dynSettings.Controller.DynamoViewModel.CurrentSpace;
-
-//MVVM : Don't set any view properties on the node here
-            //nodeUi.Opacity = 1;
 
             //if we've received a value in the dictionary
             //try to set the value on the node
@@ -1285,7 +1267,7 @@ namespace Dynamo.Controls
 
                 if (node != null)
                 {
-                    DeleteNode(node);
+                    DeleteNodeAndItsConnectors(node);
                 }
                 else if (note != null)
                 {
@@ -1301,7 +1283,7 @@ namespace Dynamo.Controls
 
                     if (node != null)
                     {
-                        DeleteNode(node);
+                        DeleteNodeAndItsConnectors(node);
                     }
                     else if (note != null)
                     {
@@ -1385,35 +1367,23 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private static void DeleteNode(dynNodeModel node)
+        private static void DeleteNodeAndItsConnectors(dynNodeModel node)
         {
-            foreach (var p in node.OutPorts)
+            foreach (var conn in node.AllConnectors().ToList())
             {
-                for (int j = p.Connectors.Count - 1; j >= 0; j--)
-                {
-                    p.Connectors[j].Kill();
-                }
-            }
-
-            foreach (var p in node.InPorts)
-            {
-                for (int j = p.Connectors.Count - 1; j >= 0; j--)
-                {
-                    p.Connectors[j].Kill();
-                }
+                conn.NotifyConnectedPorts();
+                dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Connectors.Remove(conn);
             }
 
             node.Cleanup();
             DynamoSelection.Instance.Selection.Remove(node);
-            //dynSettings.Controller.Nodes.Remove(node.NodeLogic);
             dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Nodes.Remove(node);
-//MVVM : will be removed implicitly
-            //dynSettings.Workbench.Children.Remove(node);
+
         }
 
         private void AddToSelection(object parameters)
         {
-            dynNodeModel node = parameters as dynNodeModel;
+            var node = parameters as dynNodeModel;
 
             if (!node.IsSelected)
             {
@@ -1768,7 +1738,7 @@ namespace Dynamo.Controls
                 foreach (dynNodeModel e in ws.Nodes)
                     e.EnableReporting();
 
-                DynamoModel.hideWorkspace(ws);
+                //DynamoModel.hideWorkspace(ws);
 
                 ws.FilePath = xmlPath;
 
@@ -2624,25 +2594,17 @@ namespace Dynamo.Controls
                 foreach (dynPortModel p in el.InPorts)
                 {
                     for (int i = p.Connectors.Count - 1; i >= 0; i--)
-                        p.Connectors[i].Kill();
+                        p.Connectors[i].NotifyConnectedPorts();
                 }
                 foreach (dynPortModel port in el.OutPorts)
                 {
                     for (int i = port.Connectors.Count - 1; i >= 0; i--)
-                        port.Connectors[i].Kill();
+                        port.Connectors[i].NotifyConnectedPorts();
                 }
-
-//MVVM : don't explicitly remove view
-                //dynSettings.Workbench.Children.Remove(el.NodeUI);
             }
 
-            /*foreach (dynNoteView n in _model.CurrentSpace.Notes)
-            {
-                dynSettings.Workbench.Children.Remove(n);
-            }*/
-
-            _model.CurrentSpace.Nodes.Clear();
             _model.CurrentSpace.Connectors.Clear();
+            _model.CurrentSpace.Nodes.Clear();
             _model.CurrentSpace.Notes.Clear();
             _model.CurrentSpace.Modified();
         }
@@ -2680,20 +2642,7 @@ namespace Dynamo.Controls
                         SaveFunction(def);
                 }
 
-//MVVM : hiding workspace should no longer be necessary due to visibility bindings
-                //DynamoController.hideWorkspace(_model.CurrentSpace);
-
                 _model.CurrentSpace = workSpace;
-
-//MVVM : replaced with bindings
-                /*Bench.homeButton.IsEnabled = true;
-
-                Bench.workspaceLabel.Content = CurrentSpace.Name;
-
-                Bench.editNameButton.Visibility = Visibility.Visible;
-                Bench.editNameButton.IsHitTestVisible = true;
-
-                Bench.setFunctionBackground();*/
             }
 
             return functionDefinition;

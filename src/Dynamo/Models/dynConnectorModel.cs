@@ -22,8 +22,11 @@ namespace Dynamo.Connectors
 
     public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
 
-    public class dynConnectorModel:dynModelBase
+    public class dynConnectorModel: dynModelBase
     {
+
+        #region properties
+
         public event ConnectorConnectedHandler Connected;
 
         protected virtual void OnConnected(EventArgs e)
@@ -50,6 +53,8 @@ namespace Dynamo.Connectors
             }
         }
         
+        #endregion 
+
         #region constructors
         
         public dynConnectorModel(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType, bool visible)
@@ -69,18 +74,8 @@ namespace Dynamo.Connectors
             if (portType == 0)
                 endPort = end.InPorts[endIndex];
 
-            //connect the two ports
-            //get start point
-
             pStart.Connect(this);
-
-            //isDrawing = true;
-
             this.Connect(endPort);
-
-            //MVVM: the visibility of one connector type or another is now bound
-            //to the DynamoViewModel's ConnectorType property
-            //ConnectorType = dynSettings.Controller.DynamoViewModel.ConnectorType;
         }
 
         public dynConnectorModel(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType)
@@ -112,9 +107,6 @@ namespace Dynamo.Connectors
             }
 
             //turn the line solid
-//MVVM : Do not make edits to the view here
-            /*connector.StrokeDashArray.Clear();
-            plineConnector.StrokeDashArray.Clear();*/
             pEnd = p;
 
             if (pEnd != null)
@@ -145,48 +137,18 @@ namespace Dynamo.Connectors
 
             p.Disconnect(this);
 
-//MVVM : Do not make edits to the view here
-
-            //turn the connector back to dashed
-            /*connector.StrokeDashArray.Add(5);
-            connector.StrokeDashArray.Add(2);
-
-            plineConnector.StrokeDashArray.Add(5);
-            plineConnector.StrokeDashArray.Add(2);*/
-
         }
 
-        public void Kill()
+        public void NotifyConnectedPorts()
         {
             if (pStart != null && pStart.Connectors.Contains(this))
             {
                 pStart.Disconnect(this);
-                //pStart.Connectors.Remove(this);
-                //do not remove the owner's output element
             }
             if (pEnd != null && pEnd.Connectors.Contains(this))
             {
                 pEnd.Disconnect(this);
-                //remove the reference to the
-                //dynElement attached to port A
-
-                //if (pEnd.Index < pEnd.Owner.InPortData.Count)
-                //{
-                //   pEnd.Owner.InPortData[pEnd.Index].Object = null;
-                //}
             }
-
-            pStart = null;
-            pEnd = null;
-
-//MVVM : Do not manage view on canvas here
-            /*dynSettings.Workbench.Children.Remove(connector);
-            dynSettings.Workbench.Children.Remove(plineConnector);
-            dynSettings.Workbench.Children.Remove(endDot);
-            dynSettings.Bench.RemoveConnector(this);
-             
-
-            isDrawing = false;*/
         }
 
     }

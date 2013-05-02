@@ -97,6 +97,7 @@ limitations under the License.
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Utilities\Extensions.cs" />
+    <Compile Include="Utilities\WPF.cs" />
     <Compile Include="ViewModels\DynamoViewModel.cs" />
     <Compile Include="ViewModels\dynConnectorViewModel.cs" />
     <Compile Include="ViewModels\dynNodeViewModel.cs" />

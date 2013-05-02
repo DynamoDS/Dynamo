@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
-using System.Windows;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;

@@ -5,12 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d">
 
-
     <Grid>
 
         <Canvas Canvas.Top="0" Canvas.Left="0">
             
-            <Ellipse Name="endDot" Width="6" Height="6" Margin="-3"  Fill="Black" IsHitTestVisible="False" MouseLeftButtonDown="EndDot_OnMouseDown"
+            <Ellipse Name="endDot" Width="6" Height="6" Margin="-3"  Fill="Black" IsHitTestVisible="False"
                  Canvas.Top="{Binding BezPoint3.Y}" Canvas.Left="{Binding BezPoint3.X}" />
             
             <Ellipse Name="startDot" Width="6" Height="6" Margin="-3"  Fill="Black" IsHitTestVisible="False"
@@ -18,8 +17,8 @@
             
         </Canvas>
 
-        <Path Stroke="{Binding StrokeBrush}" StrokeThickness="{Binding StrokeThickness}"
-              Name="connector" MouseEnter="Highlight" MouseLeave="Unhighlight" MouseLeftButtonDown="Connector_OnMouseDown"
+        <Path Stroke="{Binding StrokeBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
+              Name="connector" MouseEnter="Highlight" MouseLeave="Unhighlight"
               Visibility="Visible">
             <Path.Data>
                 <PathGeometry>

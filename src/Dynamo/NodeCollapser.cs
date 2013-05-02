@@ -252,7 +252,7 @@ namespace Dynamo.Utilities
                                                                !selectedNodeSet.Contains(c.End.Owner))
                                                            .ToList())
             {
-                connector.Kill();
+                connector.NotifyConnectedPorts();
             }
 
             foreach (dynConnectorModel connector in currentWorkspace.Connectors
@@ -262,7 +262,7 @@ namespace Dynamo.Utilities
                                                                selectedNodeSet.Contains(c.End.Owner)).ToList()
                 )
             {
-                connector.Kill();
+                connector.NotifyConnectedPorts();
             }
 
             #endregion

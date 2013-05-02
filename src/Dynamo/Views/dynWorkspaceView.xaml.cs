@@ -234,7 +234,7 @@ namespace Dynamo.Views
 
         private void DynWorkspaceView_OnMouseMove(object sender, MouseEventArgs e)
         {
-            dynWorkspaceViewModel vm = (DataContext as dynWorkspaceViewModel);
+            var vm = (DataContext as dynWorkspaceViewModel);
 
             //Canvas.SetLeft(debugPt, e.GetPosition(dynSettings.Workbench).X - debugPt.Width/2);
             //Canvas.SetTop(debugPt, e.GetPosition(dynSettings.Workbench).Y - debugPt.Height / 2);

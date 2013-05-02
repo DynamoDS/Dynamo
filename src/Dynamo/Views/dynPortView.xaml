@@ -17,6 +17,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    
     <Grid Name="mainGrid">
         <Grid Name="portGrid">
             <Grid.ColumnDefinitions>
@@ -55,7 +56,7 @@
                     Name="ellipse1Dot" 
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Center" 
-                     LayoutUpdated="Ellipse1Dot_OnLayoutUpdated"
+                    LayoutUpdated="Ellipse1Dot_OnLayoutUpdated"
                     Fill="{Binding Path=IsConnected, Converter={StaticResource PortConnectedBooleanToBrushConverter}, Mode=OneWay}" 
                      Grid.Column="1">
             </Ellipse>

@@ -17,6 +17,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Nodes;
+using Dynamo.Utilities;
 
 namespace Dynamo.Connectors
 {
@@ -27,10 +29,9 @@ namespace Dynamo.Connectors
     public delegate void PortDisconnectedHandler(object sender, EventArgs e);
     public enum PortType { INPUT, OUTPUT };
 
-    public partial class dynPortView : UserControl
+    public partial class dynPortView : UserControl, IViewModelView<dynPortViewModel>
     {
         private Dynamo.Controls.DragCanvas canvas;
-        private dynPortViewModel vm;
 
         #region constructors
 
@@ -42,10 +43,8 @@ namespace Dynamo.Connectors
 
         void dynPort_Loaded(object sender, RoutedEventArgs e)
         {
-            canvas = FindUpVisualTree<Dynamo.Controls.DragCanvas>(this);
-            vm = DataContext as dynPortViewModel;
-
-            vm.UpdateCenter(CalculateCenter());
+            canvas = WPF.FindUpVisualTree<Dynamo.Controls.DragCanvas>(this);
+            ViewModel.UpdateCenter(CalculateCenter());
         }
 
         #endregion constructors
@@ -55,29 +54,16 @@ namespace Dynamo.Connectors
             get
             {
                 throw new NotImplementedException("Implement port Visibility parameter getter.");
-                //return connector.Opacity > 0;
             }
             set
             {
                 throw new NotImplementedException("Implement port Visibility parameter setter.");
-                /*if (value)
-                {
-                    connector.Opacity = STROKE_OPACITY;
-                    plineConnector.Opacity = STROKE_OPACITY;
-                    endDot.Opacity = STROKE_OPACITY;
-                }
-                else
-                {
-                    connector.Opacity = 0;
-                    plineConnector.Opacity = 0;
-                    endDot.Opacity = 0;
-                }*/
             }
         }
 
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            vm.ConnectCommand.Execute();
+            ViewModel.ConnectCommand.Execute();
     
             //set the handled flag so that the element doesn't get dragged
             e.Handled = true;
@@ -86,17 +72,16 @@ namespace Dynamo.Connectors
 
         private void Ellipse1Dot_OnLayoutUpdated(object sender, EventArgs e)
         {
-            if (vm != null)
+            if (ViewModel != null)
             {
                 //set the center property on the view model
-                vm.UpdateCenter(CalculateCenter());
+                ViewModel.UpdateCenter(CalculateCenter());
             }
         }
 
         Point CalculateCenter()
         {
-            
-            if (canvas != null)
+            if (canvas != null && ellipse1Dot.IsDescendantOf(canvas))
             {
                 var transform = portCircle.TransformToAncestor(canvas); // need to check if it is an ancestor first
                 var rootPoint = transform.Transform(new Point(portCircle.Width/2, portCircle.Height/2));
@@ -108,24 +93,23 @@ namespace Dynamo.Connectors
 
         private void DynPort_OnMouseEnter(object sender, MouseEventArgs e)
         {
-            (DataContext as dynPortViewModel).HighlightCommand.Execute();
+            ViewModel.HighlightCommand.Execute();
         }
 
         private void DynPort_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            (DataContext as dynPortViewModel).UnHighlightCommand.Execute();
+            ViewModel.UnHighlightCommand.Execute();
         }
 
-        // walk up the visual tree to find object of type T, starting from initial object
-        public static T FindUpVisualTree<T>(DependencyObject initial) where T : DependencyObject
+        public dynPortViewModel ViewModel
         {
-            DependencyObject current = initial;
-
-            while (current != null && current.GetType() != typeof(T))
+            get
             {
-                current = VisualTreeHelper.GetParent(current);
+                if (this.DataContext is dynPortViewModel)
+                    return (dynPortViewModel) this.DataContext;
+                else
+                    return null;
             }
-            return current as T;
         }
     }
 
