@@ -68,6 +68,11 @@ namespace Dynamo.Controls
         public LacingStrategy ArgumentLacing
         {
             get { return nodeLogic.ArgumentLacing; }
+            set
+            {
+                nodeLogic.ArgumentLacing = value;
+                RaisePropertyChanged("ArgumentLacing");
+            }
         }
 
         public dynNodeModel NodeLogic
@@ -268,9 +273,6 @@ namespace Dynamo.Controls
             {
                 case "NickName":
                     RaisePropertyChanged("NickName");
-                    break;
-                case "ArgumentLacing":
-                    RaisePropertyChanged("ArgumentLacing");
                     break;
                 case "X":
                     RaisePropertyChanged("Left");
