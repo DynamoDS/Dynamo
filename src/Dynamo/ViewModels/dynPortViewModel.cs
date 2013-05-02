@@ -162,31 +162,13 @@ namespace Dynamo.Connectors
                     }
                 }
             }
-            else
+            else  // attempt to complete the connection
             {
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ConnectCommand.Execute(_port);
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Connectors.Add(dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector);
+                // add the active connector to the 
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = false;
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = null;
-
-//MVVM : Might be broken logic here. Would like to handle connection in one command
-                /*
-                //attempt a connection between the port
-                //and the connector
-                if (!dynSettings.Controller.DynamoViewModel.ActiveConnector.Connect(_port))
-                {
-                    dynSettings.Controller.DynamoViewModel.ActiveConnector.Kill();
-                    dynSettings.Controller.DynamoViewModel.IsConnecting = false;
-                    dynSettings.Controller.DynamoViewModel.ActiveConnector = null;
-                }
-                else
-                {
-                    //you've already started connecting
-                    //now you're going to stop
-                    dynSettings.Controller.DynamoViewModel.CurrentSpace.Connectors.Add(dynSettings.Controller.DynamoViewModel.ActiveConnector);
-                    dynSettings.Controller.DynamoViewModel.IsConnecting = false;
-                    dynSettings.Controller.DynamoViewModel.ActiveConnector = null;
-                }
-                 * */
             }
         }
 

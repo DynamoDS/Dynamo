@@ -198,7 +198,9 @@ namespace Dynamo.Connectors
 
             start = port;
 
-            port.PropertyChanged += Start_PropertyChanged;
+            // makes sure that all of the positions on the curve path are
+            // set
+            this.Redraw(port.Center);
 
         }
 
