@@ -17,24 +17,32 @@ namespace Dynamo.Nodes.Views
             Dynamo.Controls.DragCanvas.SetCanBeDragged(this, false);
         }
 
-        void endDot_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        void EndDot_OnMouseDown(object sender, MouseEventArgs e)
         {
-            throw new NotImplementedException();
+           Console.WriteLine("HI");
         }
 
         private void Highlight(object sender, MouseEventArgs e)
         {
-            ViewModel.HighlightCommand.Execute();
+            if (DataContext is dynConnectorViewModel)
+                ViewModel.HighlightCommand.Execute();
         }
 
         private void Unhighlight(object sender, MouseEventArgs e)
         {
-            ViewModel.UnHighlightCommand.Execute();
+            if (DataContext is dynConnectorViewModel)
+                ViewModel.UnHighlightCommand.Execute();
         }
 
         public dynConnectorViewModel ViewModel
         {
             get { return (dynConnectorViewModel) DataContext; }
         }
+
+        void Connector_OnMouseDown(object sender, MouseEventArgs e)
+        {
+           // Let the click pass through the connector
+        }
+
     }
 }

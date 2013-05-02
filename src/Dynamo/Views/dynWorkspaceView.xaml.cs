@@ -246,27 +246,6 @@ namespace Dynamo.Views
                 vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
             }
 
-            //If we are currently dragging elements, redraw the element to
-            //match the new mouse coordinates.
-            if (WorkBench.isDragInProgress)
-            {
-                //IEnumerable<dynConnector> allConnectors = DynamoSelection.Instance.Selection
-                //                                                   .Where(x => x is dynNode)
-                //                                                   .Select(x => x as dynNode)
-                //                                                   .SelectMany(
-                //                                                       el => el.OutPorts
-                //                                                               .SelectMany(x => x.Connectors)
-                //                                                               .Concat(
-                //                                                                   el.InPorts.SelectMany(
-                //                                                                       x => x.Connectors))).Distinct();
-
-                //foreach (dynConnector connector in allConnectors)
-                //{
-                //    connector.Redraw();
-                //}
-                vm.UpdateSelectedConnectorsCommand.Execute();
-            }
-
             if (isWindowSelecting)
             {
                 // When the mouse is held down, reposition the drag selection box.

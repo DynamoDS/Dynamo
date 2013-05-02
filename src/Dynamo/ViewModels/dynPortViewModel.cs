@@ -48,10 +48,10 @@ namespace Dynamo.Connectors
             get { return _port.IsConnected; }
         }
 
-        //public Point Center
-        //{
-        //    get { return _port.Center; }
-        //}
+        public Point Center
+        {
+            get { return _port.Center; }
+        }
 
         public ElementState State
         {
@@ -105,9 +105,9 @@ namespace Dynamo.Connectors
                 case "IsConnected":
                     RaisePropertyChanged("IsConnected");
                     break;
-                //case "Center":
-                //    RaisePropertyChanged("Center");
-                //    break;
+                case "Center":
+                    RaisePropertyChanged("Center");
+                    break;
             }
             
         }
@@ -123,8 +123,6 @@ namespace Dynamo.Connectors
 
         private void Connect()
         {
-            //dynBench bench = dynSettings.Bench;
-
             if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting)
             {
                 //test if port already has a connection if so grab it
@@ -142,9 +140,6 @@ namespace Dynamo.Connectors
                     _port.Connectors[0].Kill();
                     dynSettings.Controller.DynamoViewModel.CurrentSpace.Connectors.Remove(_port.Connectors[0]);
 
-                    //dynSettings.Controller.DynamoViewModel.ActiveConnector = _port.Connectors[0];
-                    //dynSettings.Controller.DynamoViewModel.ActiveConnector.Disconnect(_port);
-
                     dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
                     dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
                     
@@ -153,15 +148,13 @@ namespace Dynamo.Connectors
                 {
                     try
                     {
-                        //you've begun creating a connector
-                        //dynConnector c = new dynConnector(_port, bench.WorkBench, e.GetPosition(bench.WorkBench));
-
                         //Create a connector view model to begin drawing
-                        var c = new dynConnectorViewModel(_port);
-                        //dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Connectors.Add(c);
-                        dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
-                        dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
-
+                        if (_port.PortType != PortType.INPUT)
+                        {
+                            var c = new dynConnectorViewModel(_port);
+                            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
+                            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -169,31 +162,13 @@ namespace Dynamo.Connectors
                     }
                 }
             }
-            else
+            else  // attempt to complete the connection
             {
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ConnectCommand.Execute(_port);
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Connectors.Add(dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector);
+                // add the active connector to the 
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = false;
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = null;
-
-//MVVM : Might be broken logic here. Would like to handle connection in one command
-                /*
-                //attempt a connection between the port
-                //and the connector
-                if (!dynSettings.Controller.DynamoViewModel.ActiveConnector.Connect(_port))
-                {
-                    dynSettings.Controller.DynamoViewModel.ActiveConnector.Kill();
-                    dynSettings.Controller.DynamoViewModel.IsConnecting = false;
-                    dynSettings.Controller.DynamoViewModel.ActiveConnector = null;
-                }
-                else
-                {
-                    //you've already started connecting
-                    //now you're going to stop
-                    dynSettings.Controller.DynamoViewModel.CurrentSpace.Connectors.Add(dynSettings.Controller.DynamoViewModel.ActiveConnector);
-                    dynSettings.Controller.DynamoViewModel.IsConnecting = false;
-                    dynSettings.Controller.DynamoViewModel.ActiveConnector = null;
-                }
-                 * */
             }
         }
 
@@ -206,7 +181,6 @@ namespace Dynamo.Connectors
         {
            var connectorViewModels = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Connectors.Where(
                 x => _port.Connectors.Contains(x.ConnectorModel));
-
         }
 
         private bool CanHighlight()

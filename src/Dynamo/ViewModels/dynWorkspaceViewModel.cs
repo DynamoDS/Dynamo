@@ -265,6 +265,13 @@ namespace Dynamo
         {
             switch(e.Action)
             {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var item in e.NewItems)
+                    {
+                        var viewModel = new dynConnectorViewModel(item as dynConnectorModel);
+                        _connectors.Add(viewModel);
+                    }
+                    break;
                 case NotifyCollectionChangedAction.Remove:
                     //connector view models are added to the collection in during connector connection operations
                     //we'll only respond to removal here

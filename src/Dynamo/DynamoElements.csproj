@@ -122,7 +122,6 @@ limitations under the License.
     <Compile Include="PackageManager\Publish\PackageManagerPublishView.xaml.cs">
       <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Search\RecursiveSearchDictionary.cs" />
     <Compile Include="Search\Regions\PackageManagerRegion.cs" />
     <Compile Include="Search\Regions\RegionBase.cs" />
     <Compile Include="Search\Regions\RevitAPIRegion.cs" />
@@ -191,24 +190,13 @@ limitations under the License.
     </Compile>
     <Compile Include="ZoomBorder.cs" />
     <Compile Include="Search\SearchDictionary.cs" />
-    <EmbeddedResource Include="Diagrams\DynamoController_EvaluationThread.sequencediagram.layout">
-      <DependentUpon>DynamoController_EvaluationThread.sequencediagram</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagrams\dynNodeModel_Compile.sequencediagram.layout">
-      <DependentUpon>dynNodeModel_Compile.sequencediagram</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Diagrams\DynamoController_DynamoController_1.sequencediagram.layout">
-      <DependentUpon>DynamoController_DynamoController_1.sequencediagram</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="Class Diagrams\ClassDiagram1.cd" />
     <None Include="Diagrams\ClassDiagram1.cd" />
-    <None Include="Diagrams\DynamoController_EvaluationThread.sequencediagram" />
-    <None Include="Diagrams\dynNodeModel_Compile.sequencediagram" />
-    <None Include="Diagrams\DynamoController_DynamoController_1.sequencediagram" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

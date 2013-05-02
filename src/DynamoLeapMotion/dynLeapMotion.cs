@@ -23,20 +23,12 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml;
 using System.Windows.Media.Media3D;
 using Microsoft.FSharp.Collections;
-
 using Dynamo.Connectors;
-using Dynamo.Utilities;
-using Dynamo.FSchemeInterop;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Controls;
 
-using Leap;
 
 namespace Dynamo.Nodes
 {
