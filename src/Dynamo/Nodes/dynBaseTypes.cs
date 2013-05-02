@@ -2810,7 +2810,7 @@ namespace Dynamo.Nodes
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((double)value).ToString("F4");
+            return value==null?"":((double)value).ToString("F4");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2823,7 +2823,7 @@ namespace Dynamo.Nodes
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value.ToString();
+            return value==null?"": value.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
