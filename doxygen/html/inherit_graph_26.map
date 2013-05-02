@@ -1,0 +1,8 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$class_dynamo_1_1_search_1_1_search_elements_1_1_search_element_base.html" title="A base class for elements found in search " alt="" coords="5,135,224,177"/>
+<area shape="rect" id="node2" href="$class_dynamo_1_1_search_1_1_search_elements_1_1_category_search_element.html" title="Dynamo.Search.SearchElements.\lCategorySearchElement" alt="" coords="272,5,491,46"/>
+<area shape="rect" id="node3" href="$class_dynamo_1_1_search_1_1_search_elements_1_1_command_element.html" title="A search element representing a command to execute" alt="" coords="272,70,491,111"/>
+<area shape="rect" id="node4" href="$class_dynamo_1_1_search_1_1_search_elements_1_1_local_search_element.html" title="A search element representing a local node " alt="" coords="272,135,491,177"/>
+<area shape="rect" id="node5" href="$class_dynamo_1_1_search_1_1_search_elements_1_1_package_manager_search_element.html" title="A search element representing an element from the package manager " alt="" coords="272,201,491,242"/>
+<area shape="rect" id="node6" href="$class_dynamo_1_1_search_1_1_search_elements_1_1_workspace_search_element.html" title="A search element representing a workspace that can be navigated to " alt="" coords="272,266,491,307"/>
+</map>
