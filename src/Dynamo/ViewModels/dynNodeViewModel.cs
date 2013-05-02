@@ -45,6 +45,7 @@ namespace Dynamo.Controls
         ObservableCollection<dynPortViewModel> outPorts = new ObservableCollection<dynPortViewModel>();
         
         dynNodeModel nodeLogic;
+        public dynNodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; }}
         
         int preferredHeight = 30;
         private bool isFullyConnected = false;

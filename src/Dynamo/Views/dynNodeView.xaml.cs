@@ -24,19 +24,10 @@ using Grid = System.Windows.Controls.Grid;
 
 namespace Dynamo.Controls
 {
-    public partial class dynNodeView
+    public partial class dynNodeView : IViewModelView<dynNodeViewModel>
     {
         public delegate void SetToolTipDelegate(string message);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
-
-        #region private members
-
-        Dictionary<dynPortView, PortData> portDataDict = new Dictionary<dynPortView, PortData>();
-        private dynNodeViewModel vm;
-
-        #endregion
-
-        #region public members
 
         public dynNodeView TopControl
         {
@@ -47,8 +38,6 @@ namespace Dynamo.Controls
         {
             get { return inputGrid; }
         }
-
-        #endregion
 
         #region constructors
         /// <summary>
@@ -62,23 +51,25 @@ namespace Dynamo.Controls
 
             this.Loaded += new RoutedEventHandler(dynNodeView_Loaded);
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
-
-            //set the main grid's data context to 
-            //this element
-            //nickNameBlock.DataContext = this;
-            //elementRectangle.DataContext = this;
-            //topControl.DataContext = this;
-            //elementRectangle.DataContext = this;
-
-            //set the z index to 2
+            this.LayoutUpdated += OnLayoutUpdated;
+            
             Canvas.SetZIndex(this, 1);
 
         }
 
+        private void OnLayoutUpdated(object sender, EventArgs eventArgs)
+        {
+            if (ViewModel != null)
+            {
+                ViewModel.NodeLogic.Height = this.ActualHeight;
+                ViewModel.NodeLogic.Width = this.ActualWidth;
+            }
+  
+        }
+
         void dynNodeView_Loaded(object sender, RoutedEventArgs e)
         {
-            vm = DataContext as dynNodeViewModel;
-            vm.NodeLogic.DispatchedToUI += new DispatchedToUIThreadHandler(NodeLogic_DispatchedToUI);
+            ViewModel.NodeLogic.DispatchedToUI += new DispatchedToUIThreadHandler(NodeLogic_DispatchedToUI);
         }
 
         void NodeLogic_DispatchedToUI(object sender, UIDispatcherEventArgs e)
@@ -91,7 +82,7 @@ namespace Dynamo.Controls
             //once the input grid is loaded, send a command
             //to the view model, which will be pushed down
             //to the model to ask for types to load custom UI elements
-            vm.SetupCustomUIElementsCommand.Execute(this);
+            ViewModel.SetupCustomUIElementsCommand.Execute(this);
         }
 
         #endregion
@@ -111,8 +102,8 @@ namespace Dynamo.Controls
             }
 
             //set the state using the view model's command
-            if (vm.SetStateCommand.CanExecute(ElementState.DEAD))
-                vm.SetStateCommand.Execute(ElementState.DEAD);
+            if (ViewModel.SetStateCommand.CanExecute(ElementState.DEAD))
+                ViewModel.SetStateCommand.Execute(ElementState.DEAD);
         }
 
         internal void EnableInteraction()
@@ -125,7 +116,7 @@ namespace Dynamo.Controls
 
             //MVVM: converted to command on view model
             //ValidateConnections();
-            vm.ValidateConnectionsCommand.Execute();
+            ViewModel.ValidateConnectionsCommand.Execute();
         }
 
         public void CallUpdateLayout(FrameworkElement el)
@@ -138,23 +129,11 @@ namespace Dynamo.Controls
 
         }
 
-        //for information about routed events see:
-        //http://msdn.microsoft.com/en-us/library/ms742806.aspx
-
-        //tunneling event
-        //from MSDN "...Tunneling routed events are often used or handled as part of the compositing for a 
-        //control, such that events from composite parts can be deliberately suppressed or replaced by 
-        //events that are specific to the complete control.
-        //starts at parent and climbs down children to element
         private void OnPreviewKeyUp(object sender, KeyEventArgs e)
         {
             //e.Handled = true;
         }
 
-        //bubbling event
-        //from MSDN "...Bubbling routed events are generally used to report input or state changes 
-        //from distinct controls or other UI elements."
-        //starts at element and climbs up parents to root
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
             //set handled to avoid triggering key press
@@ -172,7 +151,7 @@ namespace Dynamo.Controls
             dynSettings.Bench.mainGrid.Focus();
             //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(vm.SelectCommand, this));
             //dynSettings.Controller.ProcessCommandQueue();
-            vm.SelectCommand.Execute();
+            ViewModel.SelectCommand.Execute();
             //e.Handled = true;
         }
 
@@ -187,6 +166,17 @@ namespace Dynamo.Controls
             var viewModel = DataContext as dynNodeViewModel;
             if (viewModel != null)
                 viewModel.ViewCustomNodeWorkspaceCommand.Execute();
+        }
+
+        public dynNodeViewModel ViewModel
+        {
+            get
+            {
+                if (this.DataContext is dynNodeViewModel)
+                    return (dynNodeViewModel)this.DataContext;
+                else
+                    return null;
+            }
         }
     }
 }
