@@ -1090,20 +1090,17 @@ namespace Dynamo.Controls
 
         private void DisplayFunction(object parameters)
         {
-            ViewCustomNodeWorkspace((parameters as FunctionDefinition));
+            Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameters);
         }
 
         private bool CanDisplayFunction(object parameters)
-        {
-            var test = dynSettings.CustomNodes;
+        { 
+            var id = dynSettings.CustomNodes.FirstOrDefault(x => x.Value == (Guid) parameters).Value;
 
-            FunctionDefinition fd = parameters as FunctionDefinition;
-            if (fd == null)
-            {
-                return false;
-            }
+            if (id!=null)
+                return true;
 
-            return true;
+            return false;
         }
 
         private void SetConnectorType(object parameters)
