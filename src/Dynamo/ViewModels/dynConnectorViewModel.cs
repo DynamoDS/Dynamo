@@ -18,25 +18,8 @@ namespace Dynamo.Connectors
 
         #region Properties
 
-        double bezOffset = 20;
-        
         private dynPortModel start;
-        private dynPortModel end;
         private dynConnectorModel _model;
-        bool isDrawing = false;
-        ConnectorType connectorType;
-        Brush strokeBrush;
-
-        public double Left
-        {
-            get { return 0;  }
-        }
-
-        public double Top
-        {
-            get { return 0; }
-        }
-
 
         public DelegateCommand<object> ConnectCommand { get; set; }
         public DelegateCommand RedrawCommand { get; set; }
@@ -48,25 +31,32 @@ namespace Dynamo.Connectors
             get { return _model; }
         }
 
-        public bool IsDrawing
-        {
-            get { return isDrawing; }
-        }
-
+        Brush _strokeBrush;
         public Brush StrokeBrush
         {
-            get { return strokeBrush; }
+            get { return _strokeBrush; }
             set
             {
-                strokeBrush = value;
+                _strokeBrush = value;
                 RaisePropertyChanged("StrokeBrush");
             }
         }
 
+        public double Left
+        {
+            get { return 0; }
+        }
+
+        public double Top
+        {
+            get { return 0; }
+        }
+
+
         /// <summary>
-        /// The start point of the path pulled from the port's center
+        ///     The start point of the path pulled from the port's center
         /// </summary>
-        public Point BezStartPoint
+        public Point BezPoint0
         {
             get
             {
@@ -159,31 +149,6 @@ namespace Dynamo.Connectors
             }
         }
 
-        /*public ConnectorType ConnectorType
-        {
-            get { return connectorType; }
-            set
-            {
-//MVVM : Use a binding to set the connector type
-                if (value == Connectors.ConnectorType.BEZIER)
-                {
-                    //hide the polyline
-                    plineConnector.Visibility = System.Windows.Visibility.Hidden;
-                    //show the bez
-                    connector.Visibility = System.Windows.Visibility.Visible;
-                }
-                else if (value == Connectors.ConnectorType.POLYLINE)
-                {
-                    //show the polyline
-                    plineConnector.Visibility = System.Windows.Visibility.Visible;
-                    //hide the bez
-                    connector.Visibility = System.Windows.Visibility.Hidden;
-                }
-
-                connectorType = value;
-            }
-        }*/
-
         /// <summary>
         /// Returns visible if the connectors is in the current space and the 
         /// model's current connector type is BEZIER
@@ -193,10 +158,7 @@ namespace Dynamo.Connectors
         {
             get
             {
-                //if (dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Connectors.Contains(_model)
-                //    && dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
                 return _bezVisibility;
-                //return Visibility.Hidden;
             }
             set
             {
@@ -209,14 +171,14 @@ namespace Dynamo.Connectors
         /// Returns visible if the connectors is in the current space and the 
         /// model's current connector type is POLYLINE
         /// </summary>
+        private Visibility _plineVisibility = Visibility.Hidden;
         public Visibility PlineVisibility
         {
-            get
+            get { return _plineVisibility; }
+            set
             {
-                if (dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Connectors.Contains(_model)
-                    && dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.POLYLINE)
-                    return Visibility.Visible;
-                return Visibility.Hidden;
+                _plineVisibility = value;
+                RaisePropertyChanged("PlineVisibility");
             }
         }
 
@@ -232,39 +194,29 @@ namespace Dynamo.Connectors
             UnHighlightCommand = new DelegateCommand(Unhighlight, CanUnHighlight);
 
             var bc = new BrushConverter();
-            strokeBrush = (Brush)bc.ConvertFrom("#313131");
+            _strokeBrush = (Brush)bc.ConvertFrom("#313131");
 
             start = port;
 
-            // shouldn't be doing this kind of check in a constructor
-
-            ////don't allow connections to start at an input port
-            //if (port.PortType != PortType.INPUT)
-            //{
-            //    start = port;
-
-            //    //add ourself to the collection of view models on the workspace view model
-            //    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Connectors.Add(this);
-            //    isDrawing = true;
-
-            //}
-            //else
-            //{
-            //    throw new InvalidPortException();
-            //}
+            port.PropertyChanged += Start_PropertyChanged;
 
         }
-        
-        void End_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Center")
-                Redraw();
-        }
 
-        void Start_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        public dynConnectorViewModel(dynConnectorModel model)
         {
-            if(e.PropertyName == "Center")
-                Redraw();
+            ConnectCommand = new DelegateCommand<object>(Connect, CanConnect);
+            RedrawCommand = new DelegateCommand(Redraw, CanRedraw);
+            HighlightCommand = new DelegateCommand(Highlight, CanHighlight);
+            UnHighlightCommand = new DelegateCommand(Unhighlight, CanUnHighlight);
+
+            var bc = new BrushConverter();
+            _strokeBrush = (Brush)bc.ConvertFrom("#313131");
+
+            _model = model;
+
+            _model.Start.PropertyChanged += Start_PropertyChanged;
+            _model.End.PropertyChanged += End_PropertyChanged;
+            _model.PropertyChanged += Model_PropertyChanged;
         }
 
         void ModelConnected(object sender, EventArgs e)
@@ -275,14 +227,14 @@ namespace Dynamo.Connectors
         private void Connect(object parameters)
         {
             //make the connector model
-            dynPortModel end = parameters as dynPortModel;
+            var end = parameters as dynPortModel;
 
             _model = new dynConnectorModel(start.Owner, end.Owner, start.Index, end.Index, 0);
             _model.Connected += ModelConnected;
 
-            _model.Start.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Start_PropertyChanged);
-            _model.End.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(End_PropertyChanged);
-            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
+            _model.Start.PropertyChanged += Start_PropertyChanged;
+            _model.End.PropertyChanged += End_PropertyChanged;
+            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
         }
 
         void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -296,6 +248,23 @@ namespace Dynamo.Connectors
             }
         }
 
+        void End_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Center")
+            {
+                Redraw();
+            }   
+        }
+
+        void Start_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Center")
+            {
+                Redraw();
+                RaisePropertyChanged("BezPoint0");
+            }  
+        }
+
         private bool CanConnect(object parameters)
         {
             if ((parameters as dynPortModel) == null)
@@ -305,39 +274,24 @@ namespace Dynamo.Connectors
         }
 
         /// <summary>
-        /// Recalculate the connector's points when a node is moved.
+        ///     Recalculate the path points using the internal model.
         /// </summary>
         public void Redraw()
         {
-            double distance = 0.0;
-            if (connectorType == Connectors.ConnectorType.BEZIER)
-            {
-                distance = Math.Sqrt(Math.Pow(_model.End.Center.X - BezStartPoint.X, 2) + Math.Pow(_model.End.Center.Y - BezStartPoint.Y, 2));
-                bezOffset = .3 * distance;
-            }
-            else
-            {
-                distance = _model.End.Center.X - BezStartPoint.X;
-                bezOffset = distance / 2;
-            }
-
-            BezPoint1 = new Point(_model.Start.Center.X + bezOffset, _model.Start.Center.Y);
-            BezPoint2 = new Point(_model.End.Center.X - bezOffset, _model.End.Center.Y);
-            BezPoint3 = _model.End.Center;
-
-            DotTop = _bezPoint3.Y - _endDotSize / 2;
-            DotLeft = _bezPoint3.X - _endDotSize / 2;
+            this.Redraw(this.ConnectorModel.End.Center);
         }
 
         /// <summary>
-        /// Recalculate the connector's points during a drag
+        ///     Recalculate the connector's points given the end point
         /// </summary>
-        /// <param name="p2"></param>
+        /// <param name="p2">The position of the end point</param>
         public void Redraw(Point p2 )
         {
+            BezPoint3 = p2;
 
-            double distance = p2.X - BezStartPoint.X;
-            if (connectorType == Connectors.ConnectorType.BEZIER)
+            var bezOffset = 0.0;
+            double distance = BezPoint3.X - BezPoint0.X;
+            if ( this.BezVisibility == Visibility.Visible )
             {
                 bezOffset = .3 * distance;
             }
@@ -346,12 +300,11 @@ namespace Dynamo.Connectors
                 bezOffset = distance / 2;
             }
 
-            BezPoint1 = new Point(BezStartPoint.X + bezOffset, BezStartPoint.Y);
+            BezPoint1 = new Point(BezPoint0.X + bezOffset, BezPoint0.Y);
             BezPoint2 = new Point(p2.X - bezOffset, p2.Y);
-            BezPoint3 = p2;
 
-            DotTop= _bezPoint3.Y - _endDotSize / 2;
-            DotLeft = _bezPoint3.X - _endDotSize / 2;
+            DotTop = BezPoint3.Y - EndDotSize / 2;
+            DotLeft = BezPoint3.X - EndDotSize / 2;
 
         }
 

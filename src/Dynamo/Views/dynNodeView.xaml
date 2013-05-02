@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Dynamo.Controls" xmlns:commands="clr-namespace:Dynamo.Commands"
              xmlns:connectors="clr-namespace:Dynamo.Connectors"
-             Height="{Binding Path=PreferredHeight}"
+             Height="Auto"
     MinWidth="100"
     Width="160" 
     Name="topControl" 
@@ -17,6 +17,8 @@
              MouseDoubleClick="dynNodeView_OnMouseDoubleClick" 
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">
+    
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,6 +28,8 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    
+    
     <UserControl.ToolTip>
         <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
             <Canvas Canvas.Left="0" Canvas.Top="0" Width="Auto">
@@ -45,7 +49,11 @@
             </StackPanel>
         </Grid>
     </UserControl.ToolTip>
+    
     <Grid Name="grid">
+
+        <!-- CONTEXT MENU -->
+        
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
                 <MenuItem Name="deleteElem_cm" Header="Delete" Command="{Binding Path=DeleteCommand}"/>
@@ -62,12 +70,16 @@
                 </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
+
+        <!-- INPUT PORTS -->
+
         <StackPanel Name="gridLeft" 
             Margin="-7,5,0,5"
             HorizontalAlignment="Left"
             IsHitTestVisible="True" 
             Background="Transparent"
             Canvas.ZIndex="1" Width="Auto">
+            
             <ItemsControl ItemsSource="{Binding Path=InPorts}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -75,7 +87,11 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+            
         </StackPanel>
+        
+        <!-- OUTPUT PORTS -->
+        
         <StackPanel Name="gridRight" 
               HorizontalAlignment="Right" 
               VerticalAlignment="Stretch"
@@ -91,6 +107,9 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
+
+        <!-- CENTER CANVAS -->
+        
         <Canvas Canvas.Left="0" 
                 Canvas.Top="0" 
                 Name="elementCanvas" 
@@ -98,8 +117,8 @@
             <Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"
                        Canvas.Top="0"
-                       Width="{Binding ElementName=topControl, Path=Width}"
-                       Height="{Binding ElementName=topControl, Path=Height}"
+                       Width="{Binding ElementName=topControl, Path=ActualWidth}"
+                       Height="{Binding ElementName=topControl, Path=ActualHeight}"
                        Name="elementRectangle" 
                        Canvas.ZIndex="90"
                        Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}" 
@@ -111,6 +130,7 @@
             </Rectangle>
             
         </Canvas>
+        
         <Grid Name="inputGrid"
             x:FieldModifier="public"
             VerticalAlignment="Stretch"
@@ -125,7 +145,7 @@
                          HorizontalAlignment="Center"
                          TextTrimming="CharacterEllipsis"
                          Text="{Binding NickName, UpdateSourceTrigger=PropertyChanged}"
-                         Margin="16,-22"
+                         Margin="0,-22"
                          Padding="3"
                          FontSize="11" 
                          FontWeight="Normal" 
@@ -138,5 +158,6 @@
                          Background="#99000000" FontStyle="Normal" Foreground="LightGray">
             </TextBlock>
 
-    </Grid>
+        </Grid>
+    
 </UserControl>

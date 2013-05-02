@@ -2,14 +2,14 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:vm="clr-namespace:Dynamo.Connectors"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 
     <Grid>
 
-        <!--<Ellipse Name="endDot" Width="6" Height="6" Fill="Black" IsHitTestVisible="False" 
-                 Canvas.Top="{Binding BezStartPoint.Y}" Canvas.Left="{Binding BezStartPoint.X}"--> 
+        <Ellipse Name="endDot" Width="6" Height="6" Fill="Black" IsHitTestVisible="False" 
+                 Canvas.Top="{Binding BezPoint0.Y}" Canvas.Left="{Binding BezPoint0.X}" />
 
         <Path Stroke="{Binding StrokeBrush}" StrokeThickness="{Binding StrokeThickness}"
               Name="connector" MouseEnter="Highlight" MouseLeave="Unhighlight"
@@ -18,7 +18,7 @@
                 <PathGeometry>
                     <PathGeometry.Figures>
                         <PathFigureCollection>
-                            <PathFigure StartPoint="{Binding BezStartPoint}">
+                            <PathFigure StartPoint="{Binding BezPoint0}">
                                 <PathFigure.Segments>
                                     <PathSegmentCollection>
                                         <BezierSegment Point1="{Binding BezPoint1}" Point2="{Binding BezPoint2}" Point3="{Binding BezPoint3}" />

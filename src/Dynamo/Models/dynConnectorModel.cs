@@ -189,49 +189,6 @@ namespace Dynamo.Connectors
             isDrawing = false;*/
         }
 
-        //public void Redraw()
-        //{
-        //    if (pStart == null && pEnd == null)
-        //        return;
-
-        //    double distance = 0.0;
-        //    if (connectorType == Connectors.ConnectorType.BEZIER)
-        //    {
-        //        distance = Math.Sqrt(Math.Pow(pEnd.Center.X - pStart.Center.X, 2) + Math.Pow(pEnd.Center.Y - pStart.Center.Y, 2));
-        //        bezOffset = .3 * distance;
-        //    }
-        //    else
-        //    {
-        //        distance = pEnd.Center.X - pStart.Center.X;
-        //        bezOffset = distance / 2;
-        //    }
-
-
-        //    //don't redraw with null end points;
-        //    if (pStart != null)
-        //    {
-        //        connectorPoints.StartPoint = pStart.Center;
-        //        plineFigure.StartPoint = pStart.Center;
-
-        //        connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
-        //        pline.Points[0] = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
-        //    }
-        //    if (pEnd != null)
-        //    {
-
-        //        if (pEnd.PortType == PortType.INPUT)
-        //        {
-        //            connectorCurve.Point2 = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
-        //            pline.Points[1] = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
-        //        }
-        //        connectorCurve.Point3 = pEnd.Center;
-        //        pline.Points[2] = pEnd.Center;
-
-        //        Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
-        //        Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);
-        //    }
-        //}
-
     }
 
     public class InvalidPortException : ApplicationException

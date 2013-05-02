@@ -190,7 +190,7 @@ namespace Dynamo.Controls
         {
             nodeLogic = logic;
 
-            //respond to collection changed events to add
+            //respond to collection changed events to sadd
             //and remove port model views
             logic.InPorts.CollectionChanged += inports_collectionChanged;
             logic.OutPorts.CollectionChanged += outports_collectionChanged;
