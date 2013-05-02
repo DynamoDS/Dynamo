@@ -733,9 +733,6 @@ namespace Dynamo.Controls
                 paramDict.Add("text", de.Key.ToString());
                 paramDict.Add("workspace", _model.CurrentSpace);
 
-                //MVVM: Need indirect reference to command on view model
-                //DynamoCommands.AddNoteCmd.Execute(paramDict);
-                
                 if(AddNoteCommand.CanExecute(paramDict))
                     AddNoteCommand.Execute(paramDict);
 
@@ -946,18 +943,6 @@ namespace Dynamo.Controls
 
         private void ToggleConsoleShowing()
         {
-#warning Console showing is now bound
-            //if (dynSettings.Bench.ConsoleShowing)
-            //{
-            //    dynSettings.Bench.consoleRow.Height = new GridLength(0.0);
-            //    dynSettings.Bench.ConsoleShowing = false;
-            //}
-            //else
-            //{
-            //    dynSettings.Bench.consoleRow.Height = new GridLength(100.0);
-            //    dynSettings.Bench.ConsoleShowing = true;
-            //}
-
             if (ConsoleShowing)
             {
                 ConsoleShowing = false;
@@ -1107,15 +1092,11 @@ namespace Dynamo.Controls
         {
             if (parameters.ToString() == "BEZIER")
             {
-                //MVVM: visibility of one type of connector or another
-                //should now be handled in bindings
-                //_model.CurrentSpace.Connectors.ToList().ForEach(x => x.ConnectorType = ConnectorType.BEZIER);
                 connectorType = ConnectorType.BEZIER;
             }
             else
             {
                 connectorType = ConnectorType.POLYLINE;
-                //_model.CurrentSpace.Connectors.ToList().ForEach(x => x.ConnectorType = ConnectorType.POLYLINE);
             }
         }
 
@@ -1311,17 +1292,6 @@ namespace Dynamo.Controls
             // by default place note at center
             var x = 0.0;
             var y = 0.0;
-            //if (dynSettings.Bench != null)
-            //{
-            //    x = dynSettings.Bench.outerCanvas.ActualWidth / 2.0;
-            //    y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
-
-            //    // apply small perturbation
-            //    // so node isn't right on top of last placed node
-            //    var r = new Random();
-            //    x += (r.NextDouble() - 0.5) * 50;
-            //    y += (r.NextDouble() - 0.5) * 50;
-            //}
 
             if (inputs != null && inputs.ContainsKey("x"))
                 x = (double)inputs["x"];
@@ -1353,9 +1323,6 @@ namespace Dynamo.Controls
         {
             DynamoSelection.Instance.Selection.Remove(note);
             _model.CurrentSpace.Notes.Remove(note);
-            
-//MVVM : do not explicitly remove view
-            //dynSettings.Workbench.Children.Remove(note);
         }
 
         private void SelectNeighbors(object parameters)
@@ -1607,8 +1574,7 @@ namespace Dynamo.Controls
                     else
                         t = tData.Type;
 
-//MVVM : no longer need to specify visibility here
-                    dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws); //Visibility.Hidden);
+                    dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws);
 
                     if (el == null)
                         return false;
@@ -1682,15 +1648,6 @@ namespace Dynamo.Controls
                         }
                     }
 
-                    //don't connect if the end element is an instance map
-                    //those have a morphing set of inputs
-                    //dynInstanceParameterMap endTest = end as dynInstanceParameterMap;
-
-                    //if (endTest != null)
-                    //{
-                    //    continue;
-                    //}
-
                     try
                     {
                         if (start != null && end != null && start != end)
@@ -1725,9 +1682,6 @@ namespace Dynamo.Controls
                         string text = textAttrib.Value;
                         double x = Convert.ToDouble(xAttrib.Value);
                         double y = Convert.ToDouble(yAttrib.Value);
-
-                        //dynNoteView n = Bench.AddNote(text, x, y, ws);
-                        //Bench.AddNote(text, x, y, ws);
 
                         var paramDict = new Dictionary<string, object>();
                         paramDict.Add("x", x);
@@ -2151,19 +2105,8 @@ namespace Dynamo.Controls
                 ws.Nodes.Add(node);
                 node.WorkSpace = ws;
 
-//MVVM : don't edit view elements here
-                //nodeUI.Visibility = vis;
-
-                //Bench.WorkBench.Children.Add(nodeUI);
-
-                //Canvas.SetLeft(nodeUI, x);
-                //Canvas.SetTop(nodeUI, y);
                 node.X = x;
                 node.Y = y;
-
-                //create an event on the element itself
-                //to update the elements ports and connectors
-                //nodeUI.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
 
                 return node;
             }
@@ -2214,49 +2157,14 @@ namespace Dynamo.Controls
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
         internal void ViewHomeWorkspace()
         {
-            //Step 1: Make function workspace invisible
-            /*foreach (dynNode ele in _model.Nodes)
-            {
-                ele.NodeUI.Visibility = Visibility.Collapsed;
-            }
-            foreach (dynConnector con in _model.CurrentSpace.Connectors)
-            {
-                con.Visible = false;
-            }
-            foreach (dynNoteView note in _model.CurrentSpace.Notes)
-            {
-                note.Visibility = Visibility.Hidden;
-            }*/
 
-            //Step 3: Save function
             SaveFunction( Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace) );
 
             //Step 4: Make home workspace visible
             _model.CurrentSpace = _model.HomeSpace;
 
-            /*foreach (dynNode ele in _model.Nodes)
-            {
-                ele.NodeUI.Visibility = Visibility.Visible;
-            }
-            foreach (dynConnector con in _model.CurrentSpace.Connectors)
-            {
-                con.Visible = true;
-            }
-            foreach (dynNoteView note in _model.CurrentSpace.Notes)
-            {
-                note.Visibility = Visibility.Visible;
-            }*/
-
             // TODO: get this out of here
             Controller.PackageManagerClient.HidePackageControlInformation();
-
-            //Bench.workspaceLabel.Content = "Home";
-
-//MVVM : button enable state is handled by command
-            //Bench.homeButton.IsEnabled = false;
-            //Bench.editNameButton.Visibility = Visibility.Collapsed;
-            //Bench.editNameButton.IsHitTestVisible = false;
-            //Bench.setHomeBackground();
 
             _model.CurrentSpace.OnDisplayed();
         }
@@ -2272,27 +2180,7 @@ namespace Dynamo.Controls
 
             dynWorkspaceModel newWs = symbol.Workspace;
 
-            //Make sure we aren't dragging
-            //MVVM : replaced with the StopDragging event
-            //Bench.WorkBench.isDragInProgress = false;
-            //Bench.WorkBench.ignoreClick = true;
             CurrentSpaceViewModel.OnStopDragging(this, EventArgs.Empty);
-
-//MVVM : don't toggle visiblity manually.
-            //Step 1: Make function workspace invisible
-            /*foreach (dynNode ele in Nodes)
-            {
-                ele.NodeUI.Visibility = Visibility.Collapsed;
-            }
-            foreach (dynConnector con in _model.CurrentSpace.Connectors)
-            {
-                con.Visible = false;
-            }
-            foreach (dynNoteView note in _model.CurrentSpace.Notes)
-            {
-                note.Visibility = Visibility.Hidden;
-            }*/
-            //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
             if (!ViewingHomespace)
             {
@@ -2304,31 +2192,6 @@ namespace Dynamo.Controls
             }
 
             _model.CurrentSpace = newWs;
-
-            /*foreach (dynNode ele in Nodes)
-            {
-                ele.NodeUI.Visibility = Visibility.Visible;
-            }
-            foreach (dynConnector con in _model.CurrentSpace.Connectors)
-            {
-                con.Visible = true;
-            }
-
-            foreach (dynNoteView note in _model.CurrentSpace.Notes)
-            {
-                note.Visibility = Visibility.Visible;
-            }*/
-
-            //this.saveFuncItem.IsEnabled = true;
-//MVVM : button enable state is handled by command
-            //Bench.homeButton.IsEnabled = true;
-            //this.varItem.IsEnabled = true;
-
-            /*Bench.workspaceLabel.Content = symbol.Workspace.Name;
-
-            Bench.editNameButton.Visibility = Visibility.Visible;
-            Bench.editNameButton.IsHitTestVisible = true;
-            Bench.setFunctionBackground();*/
 
             Controller.PackageManagerClient.ShowPackageControlInformation();
 
