@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['generatecompletiondata',['GenerateCompletionData',['../class_dynamo_python_1_1_python_console_completion_data_provider.html#af46ae55c3c0fcb79da32d12ad133f3be',1,'DynamoPython::PythonConsoleCompletionDataProvider']]],
   ['getdefinitionfromworkspace',['GetDefinitionFromWorkspace',['../class_dynamo_1_1_utilities_1_1_custom_node_loader.html#a43fda17b8f6507b64439611d44d672d5',1,'Dynamo::Utilities::CustomNodeLoader']]],
   ['getfunctiondefinition',['GetFunctionDefinition',['../class_dynamo_1_1_utilities_1_1_custom_node_loader.html#ada597dd8d65ceaba0bfef104f6c6d53a',1,'Dynamo::Utilities::CustomNodeLoader']]],
   ['getguidfromname',['GetGuidFromName',['../class_dynamo_1_1_utilities_1_1_custom_node_loader.html#a720fd0c98375655fd95eb7c80fc886ca',1,'Dynamo::Utilities::CustomNodeLoader']]],
@@ -13,5 +14,6 @@ var searchData=
   ['getpackageupload',['GetPackageUpload',['../class_dynamo_1_1_package_manager_1_1_package_manager_client.html#adfb25c53dc62d658046ee7c8d6a4f2c1',1,'Dynamo::PackageManager::PackageManagerClient']]],
   ['getpackageversionupload',['GetPackageVersionUpload',['../class_dynamo_1_1_package_manager_1_1_package_manager_client.html#a5aedd92df64150d115d18e3aa8dce199',1,'Dynamo::PackageManager::PackageManagerClient']]],
   ['getpropertyvalue',['GetPropertyValue',['../class_xaml_generated_namespace_1_1_generated_internal_type_helper.html#afdc9fe15b56607d02082908d934480c6',1,'XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo propertyInfo, object target, System.Globalization.CultureInfo culture)'],['../class_xaml_generated_namespace_1_1_generated_internal_type_helper.html#afdc9fe15b56607d02082908d934480c6',1,'XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo propertyInfo, object target, System.Globalization.CultureInfo culture)']]],
+  ['getsundirection',['GetSunDirection',['../class_dynamo_1_1_nodes_1_1dyn_sun_path_direction.html#a48311f3d944f11bb8b02e1e6bdc90314',1,'Dynamo::Nodes::dynSunPathDirection']]],
   ['getxmldocfromworkspace',['GetXmlDocFromWorkspace',['../class_dynamo_1_1dyn_workspace_model.html#abf4131b909395d0b40a4a8b23b2c16a1',1,'Dynamo::dynWorkspaceModel']]]
 ];

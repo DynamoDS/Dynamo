@@ -1,0 +1,3 @@
+<map id="Dynamo.DynamoController" name="Dynamo.DynamoController">
+<area shape="rect" id="node2" href="$class_dynamo_1_1_dynamo_controller___revit.html" title="{Dynamo.DynamoController\l_Revit\n|+ InIdleThread\l+ Updater\l+ TransMode\l+ CanRunDynamically\l+ DynamicRunEnabled\l+ RunInDebug\l+ Transaction\l|+ DynamoController_Revit()\l+ InitTransaction()\l+ EndTransaction()\l+ CancelTransaction()\l+ IsTransactionActive()\l~ RegisterSuccessfulDeleteHook()\l~ RegisterDeleteHook()\l# CreateFunction()\l# OnRunCancelled()\l# OnEvaluationCompleted()\l# Run()\l}" alt="" coords="9,513,231,839"/>
+</map>

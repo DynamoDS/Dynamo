@@ -1,0 +1,3 @@
+<map id="Dynamo.DynamoController_Revit" name="Dynamo.DynamoController_Revit">
+<area shape="rect" id="node2" href="$class_dynamo_1_1_dynamo_controller.html" title="{DynamoController\n|+ CustomNodeLoader\l+ SearchViewModel\l+ PackageManagerLoginViewModel\l+ PackageManagerPublishView\lModel\l+ PackageManagerClient\l+ DynamoViewModel\l+ DynamoModel\l+ ClipBoard\l+ IsProcessingCommandQueue\l+ CommandQueue\l+ BuiltInTypesByNickname\l+ BuiltInTypesByName\l+ FSchemeEnvironment\l+ Running\l+ RunCancelled\l|+ OnRequestSelect()\l+ DynamoController()\l+ ShutDown()\l+ ProcessCommandQueue()\l+ RunExpression()\l+ RunCompletedHandler()\l+ OnRunCompleted()\l~ QueueRun()\l~ Run()\l# EvaluationThread()\l# OnRunCancelled()\l# OnEvaluationCompleted()\l}" alt="" coords="5,5,235,464"/>
+</map>

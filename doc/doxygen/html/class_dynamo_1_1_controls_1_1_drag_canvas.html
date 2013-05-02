@@ -105,15 +105,37 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 Inheritance diagram for Dynamo.Controls.DragCanvas:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_dynamo_1_1_controls_1_1_drag_canvas__inherit__graph.png" border="0" usemap="#_dynamo_8_controls_8_drag_canvas_inherit__map" alt="Inheritance graph"/></div>
+<map name="_dynamo_8_controls_8_drag_canvas_inherit__map" id="_dynamo_8_controls_8_drag_canvas_inherit__map">
+</map>
 </div>
 <div class="dynheader">
 Collaboration diagram for Dynamo.Controls.DragCanvas:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_dynamo_1_1_controls_1_1_drag_canvas__coll__graph.png" border="0" usemap="#_dynamo_8_controls_8_drag_canvas_coll__map" alt="Collaboration graph"/></div>
+<map name="_dynamo_8_controls_8_drag_canvas_coll__map" id="_dynamo_8_controls_8_drag_canvas_coll__map">
+</map>
 </div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a9981bd09d220ec4636a0fe5cd1108595"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html#a9981bd09d220ec4636a0fe5cd1108595">DragCanvas</a> ()</td></tr>
+<tr class="memdesc:a9981bd09d220ec4636a0fe5cd1108595"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of <a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html" title="A Canvas which manages dragging of the UIElements it contains. ">DragCanvas</a>. UIElements in the <a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html" title="A Canvas which manages dragging of the UIElements it contains. ">DragCanvas</a> will immediately be draggable by the user.  <a href="#a9981bd09d220ec4636a0fe5cd1108595">More...</a><br/></td></tr>
+<tr class="separator:a9981bd09d220ec4636a0fe5cd1108595"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b8a83478995748b21b0ff39e2e084bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html#a8b8a83478995748b21b0ff39e2e084bd">BringToFront</a> (UIElement element)</td></tr>
+<tr class="memdesc:a8b8a83478995748b21b0ff39e2e084bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assigns the element a z-index which will ensure that it is in front of every other element in the Canvas. The z-index of every element whose z-index is between the element's old and new z-index will have its z-index decremented by one.  <a href="#a8b8a83478995748b21b0ff39e2e084bd">More...</a><br/></td></tr>
+<tr class="separator:a8b8a83478995748b21b0ff39e2e084bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad35d7540efc02e69a6b7d140daa94d2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html#ad35d7540efc02e69a6b7d140daa94d2d">SendToBack</a> (UIElement element)</td></tr>
+<tr class="memdesc:ad35d7540efc02e69a6b7d140daa94d2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assigns the element a z-index which will ensure that it is behind every other element in the Canvas. The z-index of every element whose z-index is between the element's old and new z-index will have its z-index incremented by one.  <a href="#ad35d7540efc02e69a6b7d140daa94d2d">More...</a><br/></td></tr>
+<tr class="separator:ad35d7540efc02e69a6b7d140daa94d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a775ff63d6fa850e0f93d5530168b2660"><td class="memItemLeft" align="right" valign="top">UIElement&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html#a775ff63d6fa850e0f93d5530168b2660">FindCanvasChild</a> (DependencyObject depObj)</td></tr>
+<tr class="memdesc:a775ff63d6fa850e0f93d5530168b2660"><td class="mdescLeft">&#160;</td><td class="mdescRight">Walks up the visual tree starting with the specified DependencyObject, looking for a UIElement which is a child of the Canvas. If a suitable element is not found, null is returned. If the 'depObj' object is a UIElement in the Canvas's Children collection, it will be returned.  <a href="#a775ff63d6fa850e0f93d5530168b2660">More...</a><br/></td></tr>
+<tr class="separator:a775ff63d6fa850e0f93d5530168b2660"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd6ee3ffa35bd780830bdd250736af3f"><td class="memItemLeft" align="right" valign="top">UIElement&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html#acd6ee3ffa35bd780830bdd250736af3f">ElementClicked</a> (DependencyObject depObj)</td></tr>
+<tr class="memdesc:acd6ee3ffa35bd780830bdd250736af3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the user control of type 'testType' by traversing the tree.  <a href="#acd6ee3ffa35bd780830bdd250736af3f">More...</a><br/></td></tr>
+<tr class="separator:acd6ee3ffa35bd780830bdd250736af3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2445eee5adcdbd5cc73fb73e91aac4c6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2445eee5adcdbd5cc73fb73e91aac4c6"></a>
+HitTestResultBehavior&#160;</td><td class="memItemRight" valign="bottom"><b>MyHitTestResult</b> (HitTestResult result)</td></tr>
+<tr class="separator:a2445eee5adcdbd5cc73fb73e91aac4c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9981bd09d220ec4636a0fe5cd1108595"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html#a9981bd09d220ec4636a0fe5cd1108595">DragCanvas</a> ()</td></tr>
 <tr class="memdesc:a9981bd09d220ec4636a0fe5cd1108595"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of <a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html" title="A Canvas which manages dragging of the UIElements it contains. ">DragCanvas</a>. UIElements in the <a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html" title="A Canvas which manages dragging of the UIElements it contains. ">DragCanvas</a> will immediately be draggable by the user.  <a href="#a9981bd09d220ec4636a0fe5cd1108595">More...</a><br/></td></tr>
 <tr class="separator:a9981bd09d220ec4636a0fe5cd1108595"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -141,27 +163,33 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><b>GetCanBeDragge
 <tr class="memitem:a04bed7df95bc49d02779d96e36eb79fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a04bed7df95bc49d02779d96e36eb79fb"></a>
 static void&#160;</td><td class="memItemRight" valign="bottom"><b>SetCanBeDragged</b> (UIElement uiElement, bool value)</td></tr>
 <tr class="separator:a04bed7df95bc49d02779d96e36eb79fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf196e0e36467a027515323c90f002ce"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abf196e0e36467a027515323c90f002ce"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><b>GetCanBeDragged</b> (UIElement uiElement)</td></tr>
+<tr class="separator:abf196e0e36467a027515323c90f002ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04bed7df95bc49d02779d96e36eb79fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a04bed7df95bc49d02779d96e36eb79fb"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><b>SetCanBeDragged</b> (UIElement uiElement, bool value)</td></tr>
+<tr class="separator:a04bed7df95bc49d02779d96e36eb79fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ae4aed7df28b1a5f06f7896040af9f348"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae4aed7df28b1a5f06f7896040af9f348"></a>
+<tr class="memitem:a0ab4d9ad332ff030aa1427f3e86a464d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0ab4d9ad332ff030aa1427f3e86a464d"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>isDragInProgress</b></td></tr>
-<tr class="separator:ae4aed7df28b1a5f06f7896040af9f348"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd91ce321eea439330c8d01544347329"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acd91ce321eea439330c8d01544347329"></a>
+<tr class="separator:a0ab4d9ad332ff030aa1427f3e86a464d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81eb3650947adbd1b8592306e1606f4b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a81eb3650947adbd1b8592306e1606f4b"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>ignoreClick</b></td></tr>
-<tr class="separator:acd91ce321eea439330c8d01544347329"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a81eb3650947adbd1b8592306e1606f4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a239bda19cd92b8f68643f5ca9a4d9faf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a239bda19cd92b8f68643f5ca9a4d9faf"></a>
+<tr class="memitem:a5d65d4ced1a85400846d672a0eb860f3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5d65d4ced1a85400846d672a0eb860f3"></a>
 static readonly DependencyProperty&#160;</td><td class="memItemRight" valign="bottom"><b>CanBeDraggedProperty</b></td></tr>
-<tr class="separator:a239bda19cd92b8f68643f5ca9a4d9faf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30fd30b058d27de0df771efafecbd786"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a30fd30b058d27de0df771efafecbd786"></a>
+<tr class="separator:a5d65d4ced1a85400846d672a0eb860f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98e5807f12a35b0f9d381c24cb5e00be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a98e5807f12a35b0f9d381c24cb5e00be"></a>
 static readonly DependencyProperty&#160;</td><td class="memItemRight" valign="bottom"><b>AllowDraggingProperty</b></td></tr>
-<tr class="separator:a30fd30b058d27de0df771efafecbd786"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfde8cfb2a5241bafd5142553eaf76cb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abfde8cfb2a5241bafd5142553eaf76cb"></a>
+<tr class="separator:a98e5807f12a35b0f9d381c24cb5e00be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a172ab19a0968d0cd1cb14f341e507608"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a172ab19a0968d0cd1cb14f341e507608"></a>
 static readonly DependencyProperty&#160;</td><td class="memItemRight" valign="bottom"><b>AllowDragOutOfViewProperty</b></td></tr>
-<tr class="separator:abfde8cfb2a5241bafd5142553eaf76cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a172ab19a0968d0cd1cb14f341e507608"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -174,19 +202,53 @@ override void&#160;</td><td class="memItemRight" valign="bottom"><b>OnPreviewMou
 <tr class="memitem:aa8f3e8a621c7e12559a596b47664db92"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8f3e8a621c7e12559a596b47664db92"></a>
 override void&#160;</td><td class="memItemRight" valign="bottom"><b>OnMouseUp</b> (MouseButtonEventArgs e)</td></tr>
 <tr class="separator:aa8f3e8a621c7e12559a596b47664db92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0af57f744ac57a80a7849a66c30cd7b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab0af57f744ac57a80a7849a66c30cd7b"></a>
+override void&#160;</td><td class="memItemRight" valign="bottom"><b>OnMouseLeftButtonDown</b> (MouseButtonEventArgs e)</td></tr>
+<tr class="separator:ab0af57f744ac57a80a7849a66c30cd7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a187c003d33d5b18fde65810fea01956f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a187c003d33d5b18fde65810fea01956f"></a>
+override void&#160;</td><td class="memItemRight" valign="bottom"><b>OnPreviewMouseMove</b> (MouseEventArgs e)</td></tr>
+<tr class="separator:a187c003d33d5b18fde65810fea01956f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8f3e8a621c7e12559a596b47664db92"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8f3e8a621c7e12559a596b47664db92"></a>
+override void&#160;</td><td class="memItemRight" valign="bottom"><b>OnMouseUp</b> (MouseButtonEventArgs e)</td></tr>
+<tr class="separator:aa8f3e8a621c7e12559a596b47664db92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
 Properties</h2></td></tr>
-<tr class="memitem:af880a05a8c29e588d19e26d8001446df"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html#af880a05a8c29e588d19e26d8001446df">AllowDragging</a><code> [get, set]</code></td></tr>
-<tr class="memdesc:af880a05a8c29e588d19e26d8001446df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets/sets whether elements in the <a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html" title="A Canvas which manages dragging of the UIElements it contains. ">DragCanvas</a> should be draggable by the user. The default value is true. This is a dependency property.  <a href="#af880a05a8c29e588d19e26d8001446df">More...</a><br/></td></tr>
-<tr class="separator:af880a05a8c29e588d19e26d8001446df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8957ac6452a93de3981a2e1e0a5d7767"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html#a8957ac6452a93de3981a2e1e0a5d7767">AllowDragOutOfView</a><code> [get, set]</code></td></tr>
-<tr class="memdesc:a8957ac6452a93de3981a2e1e0a5d7767"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets/sets whether the user should be able to drag elements in the <a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html" title="A Canvas which manages dragging of the UIElements it contains. ">DragCanvas</a> out of the viewable area. The default value is false. This is a dependency property.  <a href="#a8957ac6452a93de3981a2e1e0a5d7767">More...</a><br/></td></tr>
-<tr class="separator:a8957ac6452a93de3981a2e1e0a5d7767"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a052869c3ee478cc23eda4bbfcfdc399e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html#a052869c3ee478cc23eda4bbfcfdc399e">AllowDragging</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a052869c3ee478cc23eda4bbfcfdc399e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets/sets whether elements in the <a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html" title="A Canvas which manages dragging of the UIElements it contains. ">DragCanvas</a> should be draggable by the user. The default value is true. This is a dependency property.  <a href="#a052869c3ee478cc23eda4bbfcfdc399e">More...</a><br/></td></tr>
+<tr class="separator:a052869c3ee478cc23eda4bbfcfdc399e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae60a19f420d5b6f85d95f4b511be2b73"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html#ae60a19f420d5b6f85d95f4b511be2b73">AllowDragOutOfView</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:ae60a19f420d5b6f85d95f4b511be2b73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets/sets whether the user should be able to drag elements in the <a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html" title="A Canvas which manages dragging of the UIElements it contains. ">DragCanvas</a> out of the viewable area. The default value is false. This is a dependency property.  <a href="#ae60a19f420d5b6f85d95f4b511be2b73">More...</a><br/></td></tr>
+<tr class="separator:ae60a19f420d5b6f85d95f4b511be2b73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A Canvas which manages dragging of the UIElements it contains. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a9981bd09d220ec4636a0fe5cd1108595"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Dynamo.Controls.DragCanvas.DragCanvas </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Initializes a new instance of <a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html" title="A Canvas which manages dragging of the UIElements it contains. ">DragCanvas</a>. UIElements in the <a class="el" href="class_dynamo_1_1_controls_1_1_drag_canvas.html" title="A Canvas which manages dragging of the UIElements it contains. ">DragCanvas</a> will immediately be draggable by the user. </p>
+
+</div>
+</div>
 <a class="anchor" id="a9981bd09d220ec4636a0fe5cd1108595"></a>
 <div class="memitem">
 <div class="memproto">
@@ -245,6 +307,38 @@ Properties</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a8b8a83478995748b21b0ff39e2e084bd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Dynamo.Controls.DragCanvas.BringToFront </td>
+          <td>(</td>
+          <td class="paramtype">UIElement&#160;</td>
+          <td class="paramname"><em>element</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Assigns the element a z-index which will ensure that it is in front of every other element in the Canvas. The z-index of every element whose z-index is between the element's old and new z-index will have its z-index decremented by one. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">targetElement</td><td>The element to be sent to the front of the z-order. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="acd6ee3ffa35bd780830bdd250736af3f"></a>
 <div class="memitem">
 <div class="memproto">
@@ -269,6 +363,65 @@ Properties</h2></td></tr>
 
 <p>Find the user control of type 'testType' by traversing the tree. </p>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="acd6ee3ffa35bd780830bdd250736af3f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">UIElement Dynamo.Controls.DragCanvas.ElementClicked </td>
+          <td>(</td>
+          <td class="paramtype">DependencyObject&#160;</td>
+          <td class="paramname"><em>depObj</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Find the user control of type 'testType' by traversing the tree. </p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a775ff63d6fa850e0f93d5530168b2660"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">UIElement Dynamo.Controls.DragCanvas.FindCanvasChild </td>
+          <td>(</td>
+          <td class="paramtype">DependencyObject&#160;</td>
+          <td class="paramname"><em>depObj</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Walks up the visual tree starting with the specified DependencyObject, looking for a UIElement which is a child of the Canvas. If a suitable element is not found, null is returned. If the 'depObj' object is a UIElement in the Canvas's Children collection, it will be returned. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">depObj</td><td>A DependencyObject from which the search begins. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -336,8 +489,40 @@ Properties</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ad35d7540efc02e69a6b7d140daa94d2d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Dynamo.Controls.DragCanvas.SendToBack </td>
+          <td>(</td>
+          <td class="paramtype">UIElement&#160;</td>
+          <td class="paramname"><em>element</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Assigns the element a z-index which will ensure that it is behind every other element in the Canvas. The z-index of every element whose z-index is between the element's old and new z-index will have its z-index incremented by one. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">targetElement</td><td>The element to be sent to the back of the z-order. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Property Documentation</h2>
-<a class="anchor" id="af880a05a8c29e588d19e26d8001446df"></a>
+<a class="anchor" id="a052869c3ee478cc23eda4bbfcfdc399e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -359,7 +544,7 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a8957ac6452a93de3981a2e1e0a5d7767"></a>
+<a class="anchor" id="ae60a19f420d5b6f85d95f4b511be2b73"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -381,13 +566,14 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>C:/Users/Ian/Documents/GitHub/Dynamo/src/DragCanvas/DragCanvas.cs</li>
 <li>C:/Users/Ian/Documents/GitHub/Dynamo/src/Dynamo/DragCanvas.cs</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 2 2013 06:30:53 for Dynamo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu May 2 2013 08:29:52 for Dynamo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

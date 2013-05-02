@@ -5,7 +5,10 @@ var searchData=
   ['addfunctiondefinition',['AddFunctionDefinition',['../class_dynamo_1_1_utilities_1_1_custom_node_loader.html#ad88a51661c5408e72df0ffdebc240833',1,'Dynamo::Utilities::CustomNodeLoader']]],
   ['addhomeworkspace',['AddHomeWorkspace',['../class_dynamo_1_1_dynamo_model.html#a2d10ab9b123a910f8dbcb8a17a0267fa',1,'Dynamo::DynamoModel']]],
   ['addport',['AddPort',['../class_dynamo_1_1_elements_1_1dyn_node.html#aaf9e670c46cc4897c5a94c47da021847',1,'Dynamo.Elements.dynNode.AddPort()'],['../class_dynamo_1_1_nodes_1_1dyn_node_model.html#a975bb60caaa060d7689f72e4a5db5cbc',1,'Dynamo.Nodes.dynNodeModel.AddPort()']]],
-  ['allowdragging',['AllowDragging',['../class_dynamo_1_1_controls_1_1_drag_canvas.html#af880a05a8c29e588d19e26d8001446df',1,'Dynamo::Controls::DragCanvas']]],
-  ['allowdragoutofview',['AllowDragOutOfView',['../class_dynamo_1_1_controls_1_1_drag_canvas.html#a8957ac6452a93de3981a2e1e0a5d7767',1,'Dynamo::Controls::DragCanvas']]],
+  ['allowdragging',['AllowDragging',['../class_dynamo_1_1_controls_1_1_drag_canvas.html#a052869c3ee478cc23eda4bbfcfdc399e',1,'Dynamo::Controls::DragCanvas']]],
+  ['allowdragoutofview',['AllowDragOutOfView',['../class_dynamo_1_1_controls_1_1_drag_canvas.html#ae60a19f420d5b6f85d95f4b511be2b73',1,'Dynamo::Controls::DragCanvas']]],
+  ['anonymousfunctionnode',['AnonymousFunctionNode',['../class_dynamo_1_1_f_scheme_interop_1_1_node_1_1_anonymous_function_node.html',1,'Dynamo::FSchemeInterop::Node']]],
+  ['appliernode',['ApplierNode',['../class_dynamo_1_1_f_scheme_interop_1_1_node_1_1_applier_node.html',1,'Dynamo::FSchemeInterop::Node']]],
+  ['appliernodeexception',['ApplierNodeException',['../class_dynamo_1_1_f_scheme_interop_1_1_node_1_1_applier_node_exception.html',1,'Dynamo::FSchemeInterop::Node']]],
   ['argumentlacing',['ArgumentLacing',['../class_dynamo_1_1_nodes_1_1dyn_node_model.html#a3e0e8399d15afe8a07e3558dbf0f570b',1,'Dynamo::Nodes::dynNodeModel']]]
 ];
