@@ -1,0 +1,7 @@
+<map id="Dynamo.Search.SearchElements.SearchElementBase" name="Dynamo.Search.SearchElements.SearchElementBase">
+<area shape="rect" id="node2" href="$class_dynamo_1_1_search_1_1_search_elements_1_1_category_search_element.html" title="{Dynamo.Search.SearchElements.\lCategorySearchElement\n|+ Type\l+ Name\l+ Description\l+ Keywords\l+ Weight\l+ NumElements\l|+ CategorySearchElement()\l+ Execute()\l}" alt="" coords="5,265,224,445"/>
+<area shape="rect" id="node3" href="$class_dynamo_1_1_search_1_1_search_elements_1_1_command_element.html" title="A search element representing a command to execute" alt="" coords="248,265,467,445"/>
+<area shape="rect" id="node4" href="$class_dynamo_1_1_search_1_1_search_elements_1_1_local_search_element.html" title="A search element representing a local node " alt="" coords="491,235,709,474"/>
+<area shape="rect" id="node5" href="$class_dynamo_1_1_search_1_1_search_elements_1_1_package_manager_search_element.html" title="A search element representing an element from the package manager " alt="" coords="733,250,965,459"/>
+<area shape="rect" id="node6" href="$class_dynamo_1_1_search_1_1_search_elements_1_1_workspace_search_element.html" title="A search element representing a workspace that can be navigated to " alt="" coords="989,265,1208,445"/>
+</map>

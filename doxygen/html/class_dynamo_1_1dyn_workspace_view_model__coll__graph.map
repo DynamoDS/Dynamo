@@ -1,0 +1,5 @@
+<map id="Dynamo.dynWorkspaceViewModel" name="Dynamo.dynWorkspaceViewModel">
+<area shape="rect" id="node2" href="$class_dynamo_1_1dyn_view_model_base.html" title="{dynViewModelBase\n||}" alt="" coords="5,309,141,387"/>
+<area shape="rect" id="node4" href="$class_dynamo_1_1dyn_workspace_model.html" title="{Dynamo.dynWorkspaceModel\n|+ Nodes\l+ Connectors\l+ Notes\l+ FilePath\l+ Name\l+ X\l+ Y\l+ Height\l+ Width\l+ Rect\l|+ OnDisplayed()\l+ DisableReporting()\l+ EnableReporting()\l+ Modified()\l+ GetTopMostNodes()\l+ SaveWorkspace()\l+ GetXmlDocFromWorkspace()\l# dynWorkspaceModel()\l}" alt="" coords="165,192,368,504"/>
+<area shape="rect" id="node5" href="$interface_dynamo_1_1_i_locatable.html" title="{ILocatable\n|+ X\l+ Y\l+ Width\l+ Height\l+ Rect\l|}" alt="" coords="226,5,307,141"/>
+</map>

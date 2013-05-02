@@ -1,0 +1,5 @@
+<map id="Dynamo.dynWorkspaceModel" name="Dynamo.dynWorkspaceModel">
+<area shape="rect" id="node4" href="$class_dynamo_1_1_func_workspace.html" title="{Dynamo.FuncWorkspace\n|+ Category\l|+ FuncWorkspace()\l+ FuncWorkspace()\l+ FuncWorkspace()\l+ FuncWorkspace()\l+ Modified()\l+ OnDisplayed()\l}" alt="" coords="5,550,173,701"/>
+<area shape="rect" id="node5" href="$class_dynamo_1_1_home_workspace.html" title="{Dynamo.HomeWorkspace\n||+ HomeWorkspace()\l+ HomeWorkspace()\l+ HomeWorkspace()\l+ Modified()\l+ OnDisplayed()\l}" alt="" coords="198,557,372,693"/>
+<area shape="rect" id="node3" href="$interface_dynamo_1_1_i_locatable.html" title="{ILocatable\n|+ X\l+ Y\l+ Width\l+ Height\l+ Rect\l|}" alt="" coords="210,5,291,141"/>
+</map>

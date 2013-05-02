@@ -1,0 +1,43 @@
+<map id="Dynamo.Nodes.dynBuiltinFunction" name="Dynamo.Nodes.dynBuiltinFunction">
+<area shape="rect" id="node8" href="$class_dynamo_1_1_nodes_1_1dyn_addition.html" title="{Dynamo.Nodes.dynAddition\n||+ dynAddition()\l}" alt="" coords="5,1521,187,1599"/>
+<area shape="rect" id="node9" href="$class_dynamo_1_1_nodes_1_1dyn_and.html" title="{Dynamo.Nodes.dynAnd\n||+ dynAnd()\l~ Build()\l}" alt="" coords="211,1514,369,1606"/>
+<area shape="rect" id="node10" href="$class_dynamo_1_1_nodes_1_1dyn_append.html" title="{Dynamo.Nodes.dynAppend\n||+ dynAppend()\l}" alt="" coords="394,1521,573,1599"/>
+<area shape="rect" id="node11" href="$class_dynamo_1_1_nodes_1_1dyn_build_seq.html" title="{Dynamo.Nodes.dynBuildSeq\n||+ dynBuildSeq()\l}" alt="" coords="598,1521,785,1599"/>
+<area shape="rect" id="node12" href="$class_dynamo_1_1_nodes_1_1dyn_comparison.html" title="{Dynamo.Nodes.dynComparison\n||# dynComparison()\l# dynComparison()\l}" alt="" coords="811,1514,1016,1606"/>
+<area shape="rect" id="node18" href="$class_dynamo_1_1_nodes_1_1dyn_division.html" title="{Dynamo.Nodes.dynDivision\n||+ dynDivision()\l}" alt="" coords="1041,1521,1220,1599"/>
+<area shape="rect" id="node19" href="$class_dynamo_1_1_nodes_1_1dyn_drop_list.html" title="{Dynamo.Nodes.dynDropList\n||+ dynDropList()\l}" alt="" coords="1245,1521,1429,1599"/>
+<area shape="rect" id="node20" href="$class_dynamo_1_1_nodes_1_1dyn_filter.html" title="{Dynamo.Nodes.dynFilter\n||+ dynFilter()\l}" alt="" coords="1453,1521,1619,1599"/>
+<area shape="rect" id="node21" href="$class_dynamo_1_1_nodes_1_1dyn_first.html" title="{Dynamo.Nodes.dynFirst\n||+ dynFirst()\l}" alt="" coords="1643,1521,1805,1599"/>
+<area shape="rect" id="node22" href="$class_dynamo_1_1_nodes_1_1dyn_fold.html" title="{Dynamo.Nodes.dynFold\n||+ dynFold()\l}" alt="" coords="1830,1521,1991,1599"/>
+<area shape="rect" id="node23" href="$class_dynamo_1_1_nodes_1_1dyn_function.html" title="{Dynamo.Nodes.dynFunction\n|+ Definition\l+ RequiresRecalc\l|+ dynFunction()\l+ dynFunction()\l+ SetupCustomUIElements()\l+ SetInputs()\l+ SetOutputs()\l+ SaveElement()\l+ LoadElement()\l}" alt="" coords="2015,1470,2203,1650"/>
+<area shape="rect" id="node24" href="$class_dynamo_1_1_nodes_1_1dyn_get_from_list.html" title="{Dynamo.Nodes.dynGetFromList\n||+ dynGetFromList()\l}" alt="" coords="2228,1521,2436,1599"/>
+<area shape="rect" id="node25" href="$class_dynamo_1_1_nodes_1_1dyn_is_empty.html" title="{Dynamo.Nodes.dynIsEmpty\n||+ dynIsEmpty()\l}" alt="" coords="2460,1521,2644,1599"/>
+<area shape="rect" id="node26" href="$class_dynamo_1_1_nodes_1_1dyn_length.html" title="{Dynamo.Nodes.dynLength\n||+ dynLength()\l}" alt="" coords="2669,1521,2843,1599"/>
+<area shape="rect" id="node27" href="$class_dynamo_1_1_nodes_1_1dyn_list.html" title="{Dynamo.Nodes.dynList\n||+ dynList()\l}" alt="" coords="2868,1521,3025,1599"/>
+<area shape="rect" id="node28" href="$class_dynamo_1_1_nodes_1_1dyn_map.html" title="{Dynamo.Nodes.dynMap\n||+ dynMap()\l}" alt="" coords="3050,1521,3211,1599"/>
+<area shape="rect" id="node29" href="$class_dynamo_1_1_nodes_1_1dyn_modulo.html" title="{Dynamo.Nodes.dynModulo\n||+ dynModulo()\l}" alt="" coords="3236,1521,3415,1599"/>
+<area shape="rect" id="node30" href="$class_dynamo_1_1_nodes_1_1dyn_multiplication.html" title="{Dynamo.Nodes.dynMultiplication\n||+ dynMultiplication()\l}" alt="" coords="3439,1521,3651,1599"/>
+<area shape="rect" id="node31" href="$class_dynamo_1_1_nodes_1_1dyn_not.html" title="{Dynamo.Nodes.dynNot\n||+ dynNot()\l}" alt="" coords="3675,1521,3831,1599"/>
+<area shape="rect" id="node32" href="$class_dynamo_1_1_nodes_1_1dyn_num2_string.html" title="{Dynamo.Nodes.dynNum2String\n||+ dynNum2String()\l}" alt="" coords="3855,1521,4059,1599"/>
+<area shape="rect" id="node33" href="$class_dynamo_1_1_nodes_1_1dyn_or.html" title="{Dynamo.Nodes.dynOr\n||+ dynOr()\l+ SetupCustomUIElements()\l~ Build()\l}" alt="" coords="4083,1507,4271,1613"/>
+<area shape="rect" id="node34" href="$class_dynamo_1_1_nodes_1_1dyn_pow.html" title="{Dynamo.Nodes.dynPow\n||+ dynPow()\l}" alt="" coords="4295,1521,4456,1599"/>
+<area shape="rect" id="node35" href="$class_dynamo_1_1_nodes_1_1dyn_rest.html" title="{Dynamo.Nodes.dynRest\n||+ dynRest()\l}" alt="" coords="4481,1521,4644,1599"/>
+<area shape="rect" id="node36" href="$class_dynamo_1_1_nodes_1_1dyn_reverse.html" title="{Dynamo.Nodes.dynReverse\n||+ dynReverse()\l}" alt="" coords="4669,1521,4851,1599"/>
+<area shape="rect" id="node37" href="$class_dynamo_1_1_nodes_1_1dyn_sort.html" title="{Dynamo.Nodes.dynSort\n||+ dynSort()\l}" alt="" coords="4876,1521,5036,1599"/>
+<area shape="rect" id="node38" href="$class_dynamo_1_1_nodes_1_1dyn_sort_by.html" title="{Dynamo.Nodes.dynSortBy\n||+ dynSortBy()\l}" alt="" coords="5060,1521,5236,1599"/>
+<area shape="rect" id="node39" href="$class_dynamo_1_1_nodes_1_1dyn_sort_with.html" title="{Dynamo.Nodes.dynSortWith\n||+ dynSortWith()\l}" alt="" coords="5260,1521,5447,1599"/>
+<area shape="rect" id="node40" href="$class_dynamo_1_1_nodes_1_1dyn_string2_num.html" title="{Dynamo.Nodes.dynString2Num\n||+ dynString2Num()\l}" alt="" coords="5471,1521,5675,1599"/>
+<area shape="rect" id="node41" href="$class_dynamo_1_1_nodes_1_1dyn_subtraction.html" title="{Dynamo.Nodes.dynSubtraction\n||+ dynSubtraction()\l}" alt="" coords="5700,1521,5903,1599"/>
+<area shape="rect" id="node42" href="$class_dynamo_1_1_nodes_1_1dyn_take_list.html" title="{Dynamo.Nodes.dynTakeList\n||+ dynTakeList()\l}" alt="" coords="5927,1521,6112,1599"/>
+<area shape="rect" id="node43" href="$class_dynamo_1_1_nodes_1_1dyn_xor.html" title="{Dynamo.Nodes.dynXor\n||+ dynXor()\l}" alt="" coords="6137,1521,6292,1599"/>
+<area shape="rect" id="node2" href="$class_dynamo_1_1_nodes_1_1dyn_node_with_one_output.html" title="{dynNodeWithOneOutput\n||+ Evaluate()\l+ Evaluate()\l}" alt="" coords="3049,1174,3212,1266"/>
+<area shape="rect" id="node3" href="$class_dynamo_1_1_nodes_1_1dyn_node_model.html" title="{dynNodeModel\n|+ WorkSpace\l+ Inputs\l+ Outputs\l+ evaluationDict\l+ InPortData\l+ OutPortData\l+ IsCustomFunction\l+ State\l+ ToolTipText\l+ NickName\l+ InPorts\l+ OutPorts\l+ ArgumentLacing\l+ Category\land 11 more...\l~ macroEnvironment\l|+ Evaluate()\l+ OnDispatchedToUI()\l+ dynNodeModel()\l+ SaveElement()\l+ LoadElement()\l+ MarkDirty()\l+ GetValue()\l+ Destroy()\l+ PrintExpression()\l+ TryGetInput()\land 14 more...\l~ BuildExpression()\l~ Build()\l~ OnSave()\l~ onSave()\l~ evaluateNode()\l~ __eval_internal()\l~ DisableReporting()\l~ EnableReporting()\l~ ConnectInput()\l~ ConnectOutput()\l~ DisconnectInput()\l~ DisconnectOutput()\l~ DisableInteraction()\l~ EnableInteraction()\l# Compile()\l# OnEvaluate()\l# OnRunCancelled()\l}" alt="" coords="3055,432,3205,1125"/>
+<area shape="rect" id="node4" href="$class_dynamo_1_1dyn_model_base.html" title="{dynModelBase\n|+ X\l+ Y\l+ Height\l+ Width\l+ Rect\l+ IsSelected\l+ GUID\l|+ Select()\l+ Deselect()\l# dynModelBase()\l}" alt="" coords="3067,189,3193,384"/>
+<area shape="rect" id="node6" href="$interface_dynamo_1_1_selection_1_1_i_selectable.html" title="{ISelectable\n|+ IsSelected\l|+ Select()\l+ Deselect()\l}" alt="" coords="3083,27,3177,119"/>
+<area shape="rect" id="node7" href="$interface_dynamo_1_1_i_locatable.html" title="{ILocatable\n|+ X\l+ Y\l+ Width\l+ Height\l+ Rect\l|}" alt="" coords="3202,5,3283,141"/>
+<area shape="rect" id="node13" href="$class_dynamo_1_1_nodes_1_1dyn_equal.html" title="{Dynamo.Nodes.dynEqual\n||+ dynEqual()\l}" alt="" coords="386,1707,555,1784"/>
+<area shape="rect" id="node14" href="$class_dynamo_1_1_nodes_1_1dyn_greater_than.html" title="{Dynamo.Nodes.dynGreaterThan\n||+ dynGreaterThan()\l}" alt="" coords="579,1707,785,1784"/>
+<area shape="rect" id="node15" href="$class_dynamo_1_1_nodes_1_1dyn_greater_than_equals.html" title="{Dynamo.Nodes.dynGreaterThan\lEquals\n||+ dynGreaterThanEquals()\l}" alt="" coords="810,1699,1016,1791"/>
+<area shape="rect" id="node16" href="$class_dynamo_1_1_nodes_1_1dyn_less_than.html" title="{Dynamo.Nodes.dynLessThan\n||+ dynLessThan()\l}" alt="" coords="1041,1707,1233,1784"/>
+<area shape="rect" id="node17" href="$class_dynamo_1_1_nodes_1_1dyn_less_than_equals.html" title="{Dynamo.Nodes.dynLessThan\lEquals\n||+ dynLessThanEquals()\l}" alt="" coords="1257,1699,1449,1791"/>
+</map>
