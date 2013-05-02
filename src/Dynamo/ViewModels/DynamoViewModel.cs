@@ -1934,6 +1934,7 @@ namespace Dynamo.Controls
                     string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
                     dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
                     Controller.SearchViewModel.Add(definition.Workspace);
+                    Controller.CustomNodeLoader.UpdateSearchPath();
                 }
                 catch (Exception e)
                 {
