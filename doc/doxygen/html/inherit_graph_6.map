@@ -1,0 +1,26 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node2" href="$class_dynamo_1_1_connectors_1_1dyn_port.html" title="dynPort " alt="" coords="331,376,520,403"/>
+<area shape="rect" id="node3" href="$class_dynamo_1_1_connectors_1_1dyn_port_view.html" title="dynPortView " alt="" coords="317,528,534,555"/>
+<area shape="rect" id="node4" href="$class_dynamo_1_1_controls_1_1_dynamo_splash.html" title="DynamoSplash " alt="" coords="318,123,533,149"/>
+<area shape="rect" id="node5" href="$class_dynamo_1_1_controls_1_1_dynamo_view.html" title="DynamoView " alt="" coords="324,173,527,200"/>
+<area shape="rect" id="node6" href="$class_dynamo_1_1_controls_1_1dyn_bench.html" title="dynBench " alt="" coords="333,224,517,251"/>
+<area shape="rect" id="node7" href="$class_dynamo_1_1_controls_1_1dyn_node_u_i.html" title="dynNodeUI " alt="" coords="331,427,520,453"/>
+<area shape="rect" id="node8" href="$class_dynamo_1_1_controls_1_1dyn_node_view.html" title="dynNodeView " alt="" coords="323,477,528,504"/>
+<area shape="rect" id="node9" href="$class_dynamo_1_1_controls_1_1_watch_tree.html" title="Interaction logic for WatchTree.xaml " alt="" coords="331,761,520,788"/>
+<area shape="rect" id="node10" href="$class_dynamo_1_1_nodes_1_1dyn_edit_window.html" title="Interaction logic for dynEditWindow.xaml " alt="" coords="323,5,528,32"/>
+<area shape="rect" id="node11" href="$class_dynamo_1_1_nodes_1_1dyn_note.html" title="dynNote " alt="" coords="344,275,507,301"/>
+<area shape="rect" id="node12" href="$class_dynamo_1_1_nodes_1_1dyn_note_view.html" title="dynNoteView " alt="" coords="330,863,521,889"/>
+<area shape="rect" id="node13" href="$class_dynamo_1_1_nodes_1_1_function_name_prompt.html" title="Interaction logic for FunctionNamePrompt.xaml " alt="" coords="326,57,525,98"/>
+<area shape="rect" id="node14" href="$class_dynamo_1_1_nodes_1_1_views_1_1dyn_connector_view.html" title="dynConnectorView " alt="" coords="294,913,557,940"/>
+<area shape="rect" id="node15" href="$class_dynamo_1_1_nodes_1_1_watch_control.html" title="WatchControl " alt="" coords="328,325,523,352"/>
+<area shape="rect" id="node16" href="$class_dynamo_1_1_package_manager_1_1_package_manager_login_view.html" title="PackageManagerLoginView " alt="" coords="310,579,541,621"/>
+<area shape="rect" id="node17" href="$class_dynamo_1_1_package_manager_1_1_package_manager_publish_view.html" title="PackageManagerPublishView " alt="" coords="310,645,541,686"/>
+<area shape="rect" id="node18" href="$class_dynamo_1_1_search_1_1_search_view.html" title="SearchView " alt="" coords="331,812,519,839"/>
+<area shape="rect" id="node19" href="$class_dynamo_1_1_views_1_1dyn_workspace_view.html" title="dynWorkspaceView " alt="" coords="311,711,539,737"/>
+<area shape="rect" id="node21" href="$class_dynamo_1_1_utilities_1_1_observable_dictionary_3_01_t_key_00_01_t_value_01_4.html" title="Dynamo.Utilities.Observable\lDictionary\&lt; TKey, TValue \&gt;" alt="" coords="333,1066,518,1107"/>
+<area shape="rect" id="node22" href="$interface_dynamo_1_1_elements_1_1_i_dynamic.html" title="Dynamo.Elements.IDynamic" alt="" coords="32,964,219,991"/>
+<area shape="rect" id="node23" href="$class_dynamo_1_1_elements_1_1dyn_node.html" title="Dynamo.Elements.dynNode" alt="" coords="333,964,517,991"/>
+<area shape="rect" id="node24" href="$class_dynamo_1_1_elements_1_1dyn_element_id.html" title="Dynamo.Elements.dynElementId" alt="" coords="606,964,818,991"/>
+<area shape="rect" id="node27" href="$class_dynamo_1_1_controls_1_1_watch_node.html" title="Dynamo.Controls.WatchNode" alt="" coords="328,1015,523,1041"/>
+<area shape="rect" id="node29" href="$interface_dynamo_1_1_nodes_1_1_i_view_model_view_3_01_t_01_4.html" title="Dynamo.Nodes.IViewModelView\&lt; T \&gt;" alt="" coords="5,888,245,915"/>
+</map>
