@@ -24,13 +24,6 @@ namespace Dynamo
             internal set
             {
                 _cspace = value;
-                //Bench.CurrentX = _cspace.PositionX;
-                //Bench.CurrentY = _cspace.PositionY;
-
-                //if (Bench != null)
-                //    Bench.CurrentOffset = new Point(_cspace.PositionX, _cspace.PositionY);
-                
-                //TODO: Also set the name here.
                 RaisePropertyChanged("CurrentSpace");
             }
         }
@@ -81,17 +74,6 @@ namespace Dynamo
             _workSpaces.Remove(workspace);
         }
 
-        //MVVM : visibility should be bound to current space
-        public static void hideWorkspace(dynWorkspaceModel ws)
-        {
-            //foreach (dynNode e in ws.Nodes)
-            //    e.NodeUI.Visibility = Visibility.Collapsed;
-            //foreach (dynConnector c in ws.Connectors)
-            //    c.Visible = false;
-            //foreach (dynNoteView n in ws.Notes)
-            //    n.Visibility = Visibility.Hidden;
-            //throw new NotImplementedException("Verify that workspace visbility is now bound.");
-        }
     }
 
     public class DynamoModelUpdateArgs : EventArgs

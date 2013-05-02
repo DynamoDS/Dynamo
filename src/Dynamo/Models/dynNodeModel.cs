@@ -12,7 +12,6 @@ using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 using Dynamo.Commands;
-using Microsoft.Practices.Prism.ViewModel;
 using Value = Dynamo.FScheme.Value;
 
 
@@ -50,6 +49,8 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+
+        #region Properties
 
         public event DispatchedToUIThreadHandler DispatchedToUI;
         public void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
@@ -212,61 +213,6 @@ namespace Dynamo.Nodes
             get { return dynSettings.Controller; }
         }
 
-        /*public bool IsSelected
-        {
-            //TODO:Remove brush setting from here
-            //brushes should be controlled by a converter
-
-            get
-            {
-                return isSelected;
-            }
-            set
-            {
-                isSelected = value;
-                RaisePropertyChanged("IsSelected");
-
-                //MVVM : Set colors from a binding, not here.
-                //if (isSelected)
-                //{
-                //    var inConnectors = inPorts.SelectMany(x => x.Connectors);
-                //    var outConnectors = outPorts.SelectMany(x => x.Connectors);
-
-                //    foreach (dynConnector c in inConnectors)
-                //    {
-                //        if (c.Start != null && c.Start.Owner.IsSelected)
-                //        {
-                //            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Colors.Cyan, 0);
-                //        }
-                //        else
-                //        {
-                //            c.StrokeBrush = new LinearGradientBrush(Color.FromRgb(31, 31, 31), Colors.Cyan, 0);
-                //        }
-                //    }
-                //    foreach (dynConnector c in outConnectors)
-                //    {
-                //        if (c.End != null & c.End.Owner.IsSelected)
-                //        {
-                //            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Colors.Cyan, 0);
-                //        }
-                //        else
-                //        {
-                //            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Color.FromRgb(31, 31, 31), 0);
-                //        }
-                //    }
-                //}
-                //else
-                //{
-                //    foreach (dynConnector c in inPorts.SelectMany(x => x.Connectors)
-                //        .Concat(outPorts.SelectMany(x => x.Connectors)))
-                //    {
-                //        c.StrokeBrush = new SolidColorBrush(Color.FromRgb(31, 31, 31));
-                //    }
-
-                //}
-            }
-        }*/
-        
         private bool _isDirty = true;
 
         ///<summary>
@@ -371,18 +317,19 @@ namespace Dynamo.Nodes
             }
         }
 
+        #endregion
+
         public dynNodeModel()
         {
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
-            //NodeUI = new dynNodeView(this);
 
             //Fetch the element name from the custom attribute.
             var nameArray = GetType().GetCustomAttributes(typeof(NodeNameAttribute), true);
 
             if (nameArray.Length > 0)
             {
-                NodeNameAttribute elNameAttrib = nameArray[0] as NodeNameAttribute;
+                var elNameAttrib = nameArray[0] as NodeNameAttribute;
                 if (elNameAttrib != null)
                 {
                     NickName = elNameAttrib.Name;
@@ -1022,7 +969,7 @@ namespace Dynamo.Nodes
 
                 while (inport.Connectors.Any())
                 {
-                    inport.Connectors[0].Kill();
+                    inport.Connectors[0].NotifyConnectedPorts();
                 }
             }
         }
@@ -1111,6 +1058,11 @@ namespace Dynamo.Nodes
                 string description = ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
                 ToolTipText = description;
             }
+        }
+
+        public IEnumerable<dynConnectorModel> AllConnectors()
+        {
+            return inPorts.Concat(outPorts).SelectMany((port) => port.Connectors);
         }
 
         /// <summary>

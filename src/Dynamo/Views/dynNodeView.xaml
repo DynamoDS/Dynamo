@@ -49,8 +49,8 @@
             </StackPanel>
         </Grid>
     </UserControl.ToolTip>
-    
-    <Grid Name="grid">
+
+    <Grid Name="grid" Canvas.ZIndex="100">
 
         <!-- CONTEXT MENU -->
         

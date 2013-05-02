@@ -283,6 +283,9 @@ namespace Dynamo.Controls
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
                     break;
+                case "State":
+                    RaisePropertyChanged("State");
+                    break;
             }
         }
 
@@ -297,7 +300,7 @@ namespace Dynamo.Controls
             {
                 for (int j = port.Connectors.Count - 1; j >= 0; j--)
                 {
-                    port.Connectors[j].Kill();
+                    port.Connectors[j].NotifyConnectedPorts();
                 }
             }
 
@@ -305,7 +308,7 @@ namespace Dynamo.Controls
             {
                 for (int j = port.Connectors.Count - 1; j >= 0; j--)
                 {
-                    port.Connectors[j].Kill();
+                    port.Connectors[j].NotifyConnectedPorts();
                 }
             }
 

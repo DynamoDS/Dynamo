@@ -39,9 +39,9 @@ namespace Dynamo
         private double height = 100;
         private double width = 100;
 
-        public ObservableCollection<dynNodeModel> Nodes { get; private set; }
-        public ObservableCollection<dynConnectorModel> Connectors { get; private set; }
-        public ObservableCollection<dynNoteModel> Notes { get; private set; }
+        public ObservableCollection<dynNodeModel> Nodes { get; internal set; }
+        public ObservableCollection<dynConnectorModel> Connectors { get; internal set; }
+        public ObservableCollection<dynNoteModel> Notes { get; internal set; }
 
         public string FilePath { get; set; }
 
@@ -354,9 +354,6 @@ namespace Dynamo
 
     public class HomeWorkspace : dynWorkspaceModel
     {
-        #region Contructors
-
-        private static bool initializedFunctionDefinition = false;
 
         public HomeWorkspace()
             : this(new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
@@ -369,18 +366,7 @@ namespace Dynamo
         public HomeWorkspace(List<dynNodeModel> e, List<dynConnectorModel> c, double x, double y)
             : base("Home", e, c, x, y)
         {
-            if (!initializedFunctionDefinition)
-            {
-                // todo: this is a special case
-                //var homeGuid = Guid.Parse("32AAC852-90A7-4FBD-B78A-8FDB69302670");
-                //var homeWorkspaceFuncDef = new FunctionDefinition();
-                //homeWorkspaceFuncDef.Workspace = this;
-                //dynSettings.FunctionDict.Add(homeGuid, homeWorkspaceFuncDef);
-                //initializedFunctionDefinition = true;
-            }
         }
-
-        #endregion
 
         public override void Modified()
         {
@@ -398,21 +384,7 @@ namespace Dynamo
 
         public override void OnDisplayed()
         {
-            var bench = dynSettings.Bench;
-            
-            //if (!bench.addMenuItemsDictNew.ContainsKey("Variable"))
-            //    return;
-
-            //var variable = bench.addMenuItemsDictNew["Variable"];
-            //var output = bench.addMenuItemsDictNew["Output"];
-            //bench.addMenuItemsDictNew.Remove("Variable");
-            //bench.addMenuItemsDictNew.Remove("Output");
-            //variable.Visibility = Visibility.Collapsed;
-            //variable.Visibility = Visibility.Collapsed;
-            //WorkspaceHelpers.hiddenNodes["Variable"] = variable;
-            //WorkspaceHelpers.hiddenNodes["Output"] = output;
-
-            //dynSettings.Controller.UpdateSearch(bench.SearchBox.Text.Trim());
+            var bench = dynSettings.Bench;  // ewwwy
         }
     }
 }

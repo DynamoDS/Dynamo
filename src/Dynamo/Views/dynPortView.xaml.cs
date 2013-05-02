@@ -86,6 +86,7 @@ namespace Dynamo.Connectors
 
         private void Ellipse1Dot_OnLayoutUpdated(object sender, EventArgs e)
         {
+            
             if (vm != null)
             {
                 //set the center property on the view model
@@ -95,8 +96,7 @@ namespace Dynamo.Connectors
 
         Point CalculateCenter()
         {
-            
-            if (canvas != null)
+            if (canvas != null && ellipse1Dot.IsDescendantOf(canvas))
             {
                 var transform = portCircle.TransformToAncestor(canvas); // need to check if it is an ancestor first
                 var rootPoint = transform.Transform(new Point(portCircle.Width/2, portCircle.Height/2));

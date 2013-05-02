@@ -369,13 +369,6 @@ namespace Dynamo.Controls
             if (!string.IsNullOrEmpty(xmlPath))
             {
 
-                //if (dynSettings.Bench.UILocked)
-                //{
-                //    QueueLoad(xmlPath);
-                //    return;
-                //}
-
-                //dynSettings.Bench.LockUI();
                 OnUILocked(this, EventArgs.Empty);
 
                 if (!OpenDefinition(xmlPath))
@@ -383,16 +376,13 @@ namespace Dynamo.Controls
                     //MessageBox.Show("Workbench could not be opened.");
                     Log("Workbench could not be opened.");
 
-                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
-                    //dynSettings.Writer.WriteLine(xmlPath);
-
                     if (DynamoCommands.WriteToLogCmd.CanExecute(null))
                     {
                         DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
                         DynamoCommands.WriteToLogCmd.Execute(xmlPath);
                     }
                 }
-                //dynSettings.Bench.UnlockUI();
+
                 OnUIUnlocked(this, EventArgs.Empty);
             }
 
@@ -1285,7 +1275,7 @@ namespace Dynamo.Controls
 
                 if (node != null)
                 {
-                    DeleteNode(node);
+                    DeleteNodeAndItsConnectors(node);
                 }
                 else if (note != null)
                 {
@@ -1301,7 +1291,7 @@ namespace Dynamo.Controls
 
                     if (node != null)
                     {
-                        DeleteNode(node);
+                        DeleteNodeAndItsConnectors(node);
                     }
                     else if (note != null)
                     {
@@ -1385,35 +1375,23 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private static void DeleteNode(dynNodeModel node)
+        private static void DeleteNodeAndItsConnectors(dynNodeModel node)
         {
-            foreach (var p in node.OutPorts)
+            foreach (var conn in node.AllConnectors().ToList())
             {
-                for (int j = p.Connectors.Count - 1; j >= 0; j--)
-                {
-                    p.Connectors[j].Kill();
-                }
-            }
-
-            foreach (var p in node.InPorts)
-            {
-                for (int j = p.Connectors.Count - 1; j >= 0; j--)
-                {
-                    p.Connectors[j].Kill();
-                }
+                conn.NotifyConnectedPorts();
+                dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Connectors.Remove(conn);
             }
 
             node.Cleanup();
             DynamoSelection.Instance.Selection.Remove(node);
-            //dynSettings.Controller.Nodes.Remove(node.NodeLogic);
             dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Nodes.Remove(node);
-//MVVM : will be removed implicitly
-            //dynSettings.Workbench.Children.Remove(node);
+
         }
 
         private void AddToSelection(object parameters)
         {
-            dynNodeModel node = parameters as dynNodeModel;
+            var node = parameters as dynNodeModel;
 
             if (!node.IsSelected)
             {
@@ -1768,7 +1746,7 @@ namespace Dynamo.Controls
                 foreach (dynNodeModel e in ws.Nodes)
                     e.EnableReporting();
 
-                DynamoModel.hideWorkspace(ws);
+                //DynamoModel.hideWorkspace(ws);
 
                 ws.FilePath = xmlPath;
 
@@ -2624,25 +2602,17 @@ namespace Dynamo.Controls
                 foreach (dynPortModel p in el.InPorts)
                 {
                     for (int i = p.Connectors.Count - 1; i >= 0; i--)
-                        p.Connectors[i].Kill();
+                        p.Connectors[i].NotifyConnectedPorts();
                 }
                 foreach (dynPortModel port in el.OutPorts)
                 {
                     for (int i = port.Connectors.Count - 1; i >= 0; i--)
-                        port.Connectors[i].Kill();
+                        port.Connectors[i].NotifyConnectedPorts();
                 }
-
-//MVVM : don't explicitly remove view
-                //dynSettings.Workbench.Children.Remove(el.NodeUI);
             }
 
-            /*foreach (dynNoteView n in _model.CurrentSpace.Notes)
-            {
-                dynSettings.Workbench.Children.Remove(n);
-            }*/
-
-            _model.CurrentSpace.Nodes.Clear();
             _model.CurrentSpace.Connectors.Clear();
+            _model.CurrentSpace.Nodes.Clear();
             _model.CurrentSpace.Notes.Clear();
             _model.CurrentSpace.Modified();
         }

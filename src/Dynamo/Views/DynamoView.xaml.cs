@@ -260,7 +260,7 @@ namespace Dynamo.Controls
             //{
             //    if (vm.ActiveConnector != null)
             //    {
-            //        vm.ActiveConnector.ConnectorModel.Kill();
+            //        vm.ActiveConnector.ConnectorModel.NotifyConnectedPorts();
             //        vm.IsConnecting = false;
             //        vm.ActiveConnector = null;
             //    }

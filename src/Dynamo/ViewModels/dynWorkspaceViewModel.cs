@@ -272,9 +272,10 @@ namespace Dynamo
                         _connectors.Add(viewModel);
                     }
                     break;
+                case NotifyCollectionChangedAction.Reset:
+                    _connectors.Clear();
+                    break;
                 case NotifyCollectionChangedAction.Remove:
-                    //connector view models are added to the collection in during connector connection operations
-                    //we'll only respond to removal here
                     foreach (var item in e.OldItems)
                     {
                         _connectors.Remove(_connectors.First(x => x.ConnectorModel == item));
@@ -295,7 +296,9 @@ namespace Dynamo
                         _notes.Add(viewModel);
                     }
                     break;
-
+                case NotifyCollectionChangedAction.Reset:
+                    _notes.Clear();
+                    break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
@@ -316,6 +319,9 @@ namespace Dynamo
                         var viewModel = new dynNodeViewModel(item as dynNodeModel);
                         _nodes.Add(viewModel);
                     }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    _nodes.Clear();
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)

@@ -15,10 +15,11 @@ namespace Dynamo.Connectors
     public class dynConnectorViewModel:dynViewModelBase
     {
 
-
         #region Properties
 
-        private dynPortModel start;
+        private dynPortModel _activeStartPort;
+        public dynPortModel ActiveStartPort { get { return _activeStartPort; } internal set { _activeStartPort = value; } }
+
         private dynConnectorModel _model;
 
         public DelegateCommand<object> ConnectCommand { get; set; }
@@ -42,6 +43,16 @@ namespace Dynamo.Connectors
             }
         }
 
+        private bool _isHitTestVisible = false;
+        public bool IsHitTestVisible
+        {
+            get { return _isHitTestVisible;  } 
+            set { 
+                _isHitTestVisible = value;
+                RaisePropertyChanged("IsHitTestVisible");
+            }
+        }
+
         public double Left
         {
             get { return 0; }
@@ -52,7 +63,6 @@ namespace Dynamo.Connectors
             get { return 0; }
         }
 
-
         /// <summary>
         ///     The start point of the path pulled from the port's center
         /// </summary>
@@ -61,8 +71,11 @@ namespace Dynamo.Connectors
             get
             {
                 if (_model == null)
-                    return start.Center;
-                return _model.Start.Center;
+                    return _activeStartPort.Center;
+                else if (_model.Start != null)
+                    return _model.Start.Center;
+                else
+                    return new Point();
             }
         }
 
@@ -196,13 +209,22 @@ namespace Dynamo.Connectors
             var bc = new BrushConverter();
             _strokeBrush = (Brush)bc.ConvertFrom("#313131");
 
-            start = port;
+            _activeStartPort = port;
 
             // makes sure that all of the positions on the curve path are
             // set
             this.Redraw(port.Center);
 
         }
+
+        //MVVM : put this here somewhere
+
+        //turn the connector back to dashed
+        /*connector.StrokeDashArray.Add(5);
+        connector.StrokeDashArray.Add(2);
+
+        plineConnector.StrokeDashArray.Add(5);
+        plineConnector.StrokeDashArray.Add(2);*/
 
         public dynConnectorViewModel(dynConnectorModel model)
         {
@@ -231,12 +253,13 @@ namespace Dynamo.Connectors
             //make the connector model
             var end = parameters as dynPortModel;
 
-            _model = new dynConnectorModel(start.Owner, end.Owner, start.Index, end.Index, 0);
+            _model = new dynConnectorModel(_activeStartPort.Owner, end.Owner, _activeStartPort.Index, end.Index, 0);
             _model.Connected += ModelConnected;
 
             _model.Start.PropertyChanged += Start_PropertyChanged;
             _model.End.PropertyChanged += End_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
+            IsHitTestVisible = false;
         }
 
         void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -280,7 +303,8 @@ namespace Dynamo.Connectors
         /// </summary>
         public void Redraw()
         {
-            this.Redraw(this.ConnectorModel.End.Center);
+            if (this.ConnectorModel.End != null)
+                this.Redraw(this.ConnectorModel.End.Center);
         }
 
         /// <summary>

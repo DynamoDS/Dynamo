@@ -130,19 +130,19 @@ namespace Dynamo.Connectors
                 //don't allow the grabbing of the start connector
                 if (_port.Connectors.Count > 0 && _port.Connectors[0].Start != _port)
                 {
-                    //create a new view model with the start referencing the 
-                    //start of the connector you're about to remove
+                    //define the new active connector
                     var c = new dynConnectorViewModel(_port.Connectors[0].Start);
+                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
+                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
 
                     //disconnect the connector model from its start and end ports
                     //and remove it from the connectors collection. this will also
                     //remove the view model
-                    _port.Connectors[0].Kill();
-                    dynSettings.Controller.DynamoViewModel.CurrentSpace.Connectors.Remove(_port.Connectors[0]);
+                    var successfulRemoval = dynSettings.Controller.DynamoViewModel.CurrentSpace.Connectors.Remove(_port.Connectors[0]);
+                    _port.Connectors[0].NotifyConnectedPorts();
+                    Console.WriteLine(successfulRemoval);
 
-                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
-                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
-                    
+
                 }
                 else
                 {
@@ -164,9 +164,15 @@ namespace Dynamo.Connectors
             }
             else  // attempt to complete the connection
             {
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ConnectCommand.Execute(_port);
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Connectors.Add(dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector);
-                // add the active connector to the 
+                // create the new connector model
+                var start = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ActiveStartPort;
+                var end = _port;
+                var newConnectorModel = new dynConnectorModel(start.Owner, end.Owner, start.Index, end.Index, 0);
+
+                // Add to the current workspace
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Model.Connectors.Add(newConnectorModel);
+
+                // Cleanup
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = false;
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = null;
             }
