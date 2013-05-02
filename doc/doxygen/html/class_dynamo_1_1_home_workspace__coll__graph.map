@@ -1,0 +1,4 @@
+<map id="Dynamo.HomeWorkspace" name="Dynamo.HomeWorkspace">
+<area shape="rect" id="node2" href="$class_dynamo_1_1dyn_workspace_model.html" title="{dynWorkspaceModel\n|+ Nodes\l+ Connectors\l+ Notes\l+ FilePath\l+ Name\l+ X\l+ Y\l+ Height\l+ Width\l+ Rect\l|+ OnDisplayed()\l+ DisableReporting()\l+ EnableReporting()\l+ Modified()\l+ GetTopMostNodes()\l+ SaveWorkspace()\l+ GetXmlDocFromWorkspace()\l# dynWorkspaceModel()\l}" alt="" coords="28,189,231,501"/>
+<area shape="rect" id="node4" href="$interface_dynamo_1_1_i_locatable.html" title="{ILocatable\n|+ X\l+ Y\l+ Width\l+ Height\l+ Rect\l|}" alt="" coords="153,5,233,141"/>
+</map>

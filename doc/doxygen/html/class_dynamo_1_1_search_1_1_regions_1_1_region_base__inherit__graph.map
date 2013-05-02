@@ -1,0 +1,4 @@
+<map id="Dynamo.Search.Regions.RegionBase" name="Dynamo.Search.Regions.RegionBase">
+<area shape="rect" id="node3" href="$class_dynamo_1_1_search_1_1_regions_1_1_package_manager_region.html" title="{Dynamo.Search.Regions.Package\lManagerRegion\n|+ CanExecuteChanged\l|+ CanExecute()\l+ Execute()\l}" alt="" coords="5,272,227,379"/>
+<area shape="rect" id="node4" href="$class_dynamo_1_1_search_1_1_regions_1_1_revit_a_p_i_region.html" title="{Dynamo.Search.Regions.Revit\lAPIRegion\n|+ CanExecuteChanged\l|+ CanExecute()\l+ Execute()\l}" alt="" coords="251,272,449,379"/>
+</map>
