@@ -236,11 +236,18 @@ namespace Dynamo.Controls
             get { return _model.CurrentSpace; }
         }
 
+        /// <summary>
+        /// The index in the collection of workspaces of the current workspace.
+        /// This property is bound to the SelectedIndex property in the workspaces tab control
+        /// </summary>
         public int CurrentWorkspaceIndex
         {
             get { return _model.Workspaces.IndexOf(_model.CurrentSpace); }
             set
             {
+                //before you set the value, save the current workspace
+                if(_model.CurrentSpace != _model.HomeSpace)
+                    SaveFunction(Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace));
                 _model.CurrentSpace = _model.Workspaces[value];
             }
         }
@@ -1088,6 +1095,8 @@ namespace Dynamo.Controls
 
         private bool CanDisplayFunction(object parameters)
         {
+            var test = dynSettings.CustomNodes;
+
             FunctionDefinition fd = parameters as FunctionDefinition;
             if (fd == null)
             {
@@ -2619,6 +2628,8 @@ namespace Dynamo.Controls
             //Add an entry to the funcdict
             var workSpace = new FuncWorkspace(
                 name, category, workspaceOffsetX, workspaceOffsetY);
+
+            _model.Workspaces.Add(workSpace);
 
             List<dynNodeModel> newElements = workSpace.Nodes.ToList();
             List<dynConnectorModel> newConnectors = workSpace.Connectors.ToList();
