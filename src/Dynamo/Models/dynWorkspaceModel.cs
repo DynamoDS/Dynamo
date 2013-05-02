@@ -213,9 +213,14 @@ namespace Dynamo
                 {
                     root.SetAttribute("Name", workSpace.Name);
                     root.SetAttribute("Category", ((FuncWorkspace)workSpace).Category);
-                    root.SetAttribute(
-                            "ID", 
-                            dynSettings.Controller.CustomNodeLoader.GetGuidFromName(workSpace.Name).ToString());
+
+                    Guid guid = dynSettings.Controller.CustomNodeLoader.GetGuidFromName(workSpace.Name);
+
+                    //friends don't let friends save an empty GUID
+                    if (guid == Guid.Empty)
+                        guid = Guid.NewGuid();
+                    
+                    root.SetAttribute("ID", guid.ToString());
                 }
 
                 xmlDoc.AppendChild(root);
