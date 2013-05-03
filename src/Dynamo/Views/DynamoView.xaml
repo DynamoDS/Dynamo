@@ -8,11 +8,6 @@
         xmlns:utilities="clr-namespace:Dynamo.Utilities"
         x:Name="_this"
         Height="768" Width="1024"
-        MouseMove="OnMouseMove" 
-        MouseLeftButtonDown="OnMouseLeftButtonDown"
-        MouseDown="OnMouseDown"
-        MouseUp="OnMouseUp"
-        PreviewKeyDown="OnPreviewKeyDown"
         Closed="WindowClosed" 
         MinHeight="600" 
         MinWidth="800" 
@@ -309,7 +304,6 @@
               VerticalAlignment="Stretch" 
               Width="Auto" 
               IsHitTestVisible="False" 
-              MouseUp="OverlayCanvas_OnMouseUp" 
               PreviewMouseMove="OverlayCanvas_OnMouseMove"
               Visibility="Visible">
         </Canvas>
