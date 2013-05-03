@@ -74,7 +74,7 @@
         <!-- INPUT PORTS -->
 
         <StackPanel Name="gridLeft" 
-            Margin="-7,5,0,5"
+            Margin="5,5,0,5"
             HorizontalAlignment="Left"
             IsHitTestVisible="True" 
             Background="Transparent"
@@ -95,7 +95,7 @@
         <StackPanel Name="gridRight" 
               HorizontalAlignment="Right" 
               VerticalAlignment="Stretch"
-              Margin="0,5,-7,5" 
+              Margin="0,5,5,5" 
               IsHitTestVisible="True" 
               Background="Transparent"
               Canvas.ZIndex="1" Width="Auto">

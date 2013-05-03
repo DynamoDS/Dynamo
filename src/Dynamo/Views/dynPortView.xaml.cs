@@ -81,11 +81,15 @@ namespace Dynamo.Connectors
 
         Point CalculateCenter()
         {
-            if (canvas != null && ellipse1Dot.IsDescendantOf(canvas))
+            if (canvas != null && portRect.IsDescendantOf(canvas))
             {
-                var transform = portCircle.TransformToAncestor(canvas); // need to check if it is an ancestor first
-                var rootPoint = transform.Transform(new Point(portCircle.Width/2, portCircle.Height/2));
-                return new Point(rootPoint.X, rootPoint.Y);
+                var transform = portRect.TransformToAncestor(canvas); // need to check if it is an ancestor first
+                var rootPoint = transform.Transform(new Point(portRect.ActualWidth / 2, portRect.ActualHeight / 2));
+                
+                //put the "center" at one edge of the port
+                if(ViewModel.PortType == PortType.INPUT)
+                    return new Point(rootPoint.X - portRect.ActualWidth / 2, rootPoint.Y);
+                return new Point(rootPoint.X + portRect.ActualWidth/2, rootPoint.Y);
             }
 
             return new Point();

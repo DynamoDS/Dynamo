@@ -4,6 +4,7 @@
     xmlns:connectors="clr-namespace:Dynamo.Connectors"
     Height="20" 
     Width="Auto"
+             MinWidth="50"
     MouseLeftButtonDown="UserControl_MouseLeftButtonDown" 
              MouseEnter="DynPort_OnMouseEnter"
              MouseLeave="DynPort_OnMouseLeave"
@@ -20,73 +21,40 @@
     
     <Grid Name="mainGrid">
         <Grid Name="portGrid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="20"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
             <Grid.ToolTip>
                 <ToolTip Name="toolTip1">
                     <TextBlock Name="toolTipText" FontFamily="Courier New" FontSize="11" Text="{Binding Path=ToolTipContent}"/>
                 </ToolTip>
             </Grid.ToolTip>
-            <Ellipse Height="20" 
-                    Width="20" 
-                    Name="ellipse1" 
-                    HorizontalAlignment="Left" 
-                    VerticalAlignment="Center" 
-                    Fill="{Binding Path=State, Converter={StaticResource StateToColorConverter}, Mode=OneWay}"
-                    IsHitTestVisible="True" 
-                    Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}"
-                    StrokeThickness="2" Grid.Column="1">
-                <Ellipse.Clip>
-                    <RectangleGeometry Rect="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=DataContext.PortType, Converter={StaticResource PortTypeToClipConverter}, Mode=OneWay}"/>
-                </Ellipse.Clip>
-            </Ellipse>
-            <Ellipse Height="8" 
-                    Width="8" 
-                    Name="portCircle" 
-                    HorizontalAlignment="Center" 
-                    VerticalAlignment="Center" 
-                    Fill="White" 
-                    Grid.Column="1">
-            </Ellipse>
-            <Ellipse Height="6" 
-                    Width="6" 
-                    Name="ellipse1Dot" 
-                    HorizontalAlignment="Center" 
-                    VerticalAlignment="Center" 
-                    LayoutUpdated="Ellipse1Dot_OnLayoutUpdated"
-                    Fill="{Binding Path=IsConnected, Converter={StaticResource PortConnectedBooleanToBrushConverter}, Mode=OneWay}" 
-                     Grid.Column="1">
-            </Ellipse>
+            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                    Name="portRect" IsHitTestVisible="True" LayoutUpdated="Ellipse1Dot_OnLayoutUpdated">
+                <Canvas.Style>
+                    <Style TargetType="{x:Type Canvas}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="White"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="1.0"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Background" Value="White"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Opacity" Value=".5"></Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Canvas.Style>
+            </Canvas>
+
             <TextBlock Name="portNameTb" Width="Auto"
                    Text="{Binding Path=PortName,Mode=TwoWay}"
                    VerticalAlignment="Center"
-                   TextAlignment="{Binding Path=PortType, Converter={StaticResource PortTypeToTextAlignmentConverter}, Mode=OneWay}"
                    FontSize="12" FontFamily="Arial"
+                       Padding="3"
                    IsHitTestVisible="False" 
-                   Background="{x:Null}" Foreground="#FF505050" 
-                   Grid.Column="{Binding Path=PortType, Converter={StaticResource PortTypeToGridColumnConverter}, Mode=OneWay}"/>
-            <!--<TextBlock Name="testOutputText" Width="Auto"
-                       HorizontalAlignment="Right"
-                   Text="Output"
-                   VerticalAlignment="center"
-                   TextAlignment="Right"
-
-                   FontSize="12" FontFamily="Arial" 
-                   IsHitTestVisible="False" 
-                   Background="{x:Null}" Foreground="#FF505050" 
-                   Grid.Column="0"/>
-            <TextBlock Name="testInputText" Width="Auto"
-                       HorizontalAlignment="Left"
-                   Text="Input"
-                   VerticalAlignment="Center"
-                   TextAlignment="Left"
-                   FontSize="12" FontFamily="Arial" 
-                   IsHitTestVisible="False" 
-                   Background="{x:Null}" Foreground="#FF505050" 
-                   Grid.Column="2"/>-->
+                   Background="{x:Null}" Foreground="#FF505050"/>
         </Grid>
     </Grid>
 </UserControl>

@@ -278,15 +278,17 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            PortType p = (PortType)value;
-            if (p == PortType.INPUT)
-            {
-                return new Thickness(20, 0, 0, 0);
-            }
-            else
-            {
-                return new Thickness(-20, 0, 0, 0);
-            }
+            //PortType p = (PortType)value;
+            //if (p == PortType.INPUT)
+            //{
+            //    return new Thickness(20, 0, 0, 0);
+            //}
+            //else
+            //{
+            //    return new Thickness(-20, 0, 0, 0);
+            //}
+
+            return new Thickness(0, 0, 0, 0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
