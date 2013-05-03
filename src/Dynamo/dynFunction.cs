@@ -279,7 +279,7 @@ namespace Dynamo
         public class dynOutput : dynNodeModel
         {
             TextBox tb;
-            private string symbol;
+            private string symbol = "";
 
             public dynOutput()
             {
@@ -297,11 +297,6 @@ namespace Dynamo
                 NodeUI.inputGrid.Children.Add(tb);
                 System.Windows.Controls.Grid.SetColumn(tb, 0);
                 System.Windows.Controls.Grid.SetRow(tb, 0);
-                //tb.Text = "";
-                symbol = "";
-
-                //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
-                //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
                 //turn off the border
                 SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
@@ -315,6 +310,13 @@ namespace Dynamo
                     Converter = new StringDisplay()
                 };
                 tb.SetBinding(TextBox.TextProperty, bindingSymbol);
+
+                tb.TextChanged += tb_TextChanged;
+            }
+
+            void tb_TextChanged(object sender, TextChangedEventArgs e)
+            {
+                Symbol = tb.Text;
             }
 
             public override bool RequiresRecalc
@@ -330,12 +332,10 @@ namespace Dynamo
             {
                 get
                 {
-                    //return tb.Text;
                     return symbol;
                 }
                 set
                 {
-                    //tb.Text = value;
                     symbol = value;
                     RaisePropertyChanged("Symbol");
                 }
@@ -368,7 +368,7 @@ namespace Dynamo
         public class dynSymbol : dynNodeModel
         {
             TextBox tb;
-            private string symbol;
+            private string symbol = "";
 
             public dynSymbol()
             {
@@ -386,19 +386,12 @@ namespace Dynamo
                 NodeUI.inputGrid.Children.Add(tb);
                 System.Windows.Controls.Grid.SetColumn(tb, 0);
                 System.Windows.Controls.Grid.SetRow(tb, 0);
-                //tb.Text = "";
-                symbol = "";
-                //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
-                //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
                 //turn off the border
                 SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
                 tb.Background = backgroundBrush;
                 tb.BorderThickness = new Thickness(0);
 
-                //MVVM:
-                //create a two way binding between the value of
-                //the text box and the Symbol property
                 tb.DataContext = this;
                 var bindingSymbol = new System.Windows.Data.Binding("Symbol")
                 {
@@ -406,6 +399,14 @@ namespace Dynamo
                     Converter = new StringDisplay()
                 };
                 tb.SetBinding(TextBox.TextProperty, bindingSymbol);
+
+                tb.TextChanged += new TextChangedEventHandler(tb_TextChanged);
+
+            }
+
+            void tb_TextChanged(object sender, TextChangedEventArgs e)
+            {
+                Symbol = tb.Text;
             }
 
             public override bool RequiresRecalc
