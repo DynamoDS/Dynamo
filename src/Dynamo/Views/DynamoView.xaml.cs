@@ -224,48 +224,10 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            //Focus();
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseEventArgs e)
         {
-            //if (!vm.IsConnecting)
-            //{
-            //    #region window selection
-
-            //    //WorkBench.ClearSelection();
-            //    DynamoSelection.Instance.ClearSelection();
-
-            //    //DEBUG WINDOW SELECTION
-            //    // Capture and track the mouse.
-            //    isWindowSelecting = true;
-            //    mouseDownPos = e.GetPosition(WorkBench);
-            //    //workBench.CaptureMouse();
-
-            //    // Initial placement of the drag selection box.         
-            //    Canvas.SetLeft(selectionBox, mouseDownPos.X);
-            //    Canvas.SetTop(selectionBox, mouseDownPos.Y);
-            //    selectionBox.Width = 0;
-            //    selectionBox.Height = 0;
-
-            //    // Make the drag selection box visible.
-            //    selectionBox.Visibility = Visibility.Visible;
-
-            //    #endregion
-            //}
-
-            ////if you click on the canvas and you're connecting
-            ////then drop the connector, otherwise do nothing
-            //if (vm != null)
-            //{
-            //    if (vm.ActiveConnector != null)
-            //    {
-            //        vm.ActiveConnector.ConnectorModel.NotifyConnectedPorts();
-            //        vm.IsConnecting = false;
-            //        vm.ActiveConnector = null;
-            //    }
-            //}
-
             if (editingName && !hoveringEditBox)
             {
                 DisableEditNameBox();
@@ -279,76 +241,11 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            ////Debug.WriteLine("Starting mouse up.");
-
-            //if (e.ChangedButton == MouseButton.Left)
-            //{
-            //    beginNameEditClick = false;
-
-            //    if (isWindowSelecting)
-            //    {
-            //        #region release window selection
-
-            //        //DEBUG WINDOW SELECTION
-            //        // Release the mouse capture and stop tracking it.
-            //        isWindowSelecting = false;
-            //        //workBench.ReleaseMouseCapture();
-
-            //        // Hide the drag selection box.
-            //        selectionBox.Visibility = Visibility.Collapsed;
-
-            //        Point mouseUpPos = e.GetPosition(WorkBench);
-
-            //        //clear the selected elements
-            //        DynamoSelection.Instance.ClearSelection();
-
-            //        var rect =
-            //            new Rect(
-            //                Canvas.GetLeft(selectionBox),
-            //                Canvas.GetTop(selectionBox),
-            //                selectionBox.Width,
-            //                selectionBox.Height);
-
-            //        if (mouseUpPos.X > mouseDownPos.X)
-            //        {
-            //            #region contain select
-
-            //            vm.ContainSelectCommand.Execute(rect);
-
-            //            #endregion
-            //        }
-            //        else if (mouseUpPos.X < mouseDownPos.X)
-            //        {
-            //            #region crossing select
-
-            //            vm.CrossSelectCommand.Execute(rect);
-
-            //            #endregion
-            //        }
-
-            //        #endregion
-            //    }
-            //}
         }
 
         private void WindowClosed(object sender, EventArgs e)
         {
-            //if (sw != null)
-            //{
-            //    sw.Close();
-            //    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
-            //    {
-            //        DynamoCommands.WriteToLogCmd.Execute("Dynamo ended " + DateTime.Now.ToString());
-            //    }
-
-            //    dynSettings.FinishLogging();
-            //}
-
-            //end the transaction 
-            //dynSettings.MainTransaction.Commit();
-
             vm.CleanupCommand.Execute();
-
         }
 
         private void OnPreviewKeyDown(object sender, KeyEventArgs e)
@@ -371,11 +268,6 @@ namespace Dynamo.Controls
             }
         }
 
-        //internal void RemoveConnector(dynConnector c)
-        //{
-        //    Controller.CurrentSpace.Connectors.Remove(c);
-        //}
-
         private void image1_MouseEnter(object sender, MouseEventArgs e)
         {
             //highlight
@@ -388,28 +280,12 @@ namespace Dynamo.Controls
 
         private void image1_MouseLeave(object sender, MouseEventArgs e)
         {
-            //unhighlight
             this.WorkspaceTitleContainer.Background = new SolidColorBrush(Colors.Transparent);
         }
 
         private void image1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            //if (beginNameEditClick)
-            //{
-            //    if (editingName)
-            //    {
-            //        Controller.RefactorCustomNode();
-            //        DisableEditNameBox();
-            //    }
-            //    else
-            //    {
-            //        EnableEditNameBox();
-            //    }
-            //}
-            //beginNameEditClick = false;
-
             vm.RefactorCustomNodeCommand.Execute();
-
         }
 
         private void image1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

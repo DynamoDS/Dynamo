@@ -969,7 +969,7 @@ namespace Dynamo.Nodes
 
                 while (inport.Connectors.Any())
                 {
-                    inport.Connectors[0].NotifyConnectedPorts();
+                    inport.Connectors[0].NotifyConnectedPortsOfDeletion();
                 }
             }
         }

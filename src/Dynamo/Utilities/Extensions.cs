@@ -19,11 +19,10 @@ namespace Dynamo.Utilities
         public static ObservableCollection<T> RemoveAll<T>(
             this ObservableCollection<T> coll, Predicate<T> predicate )
         {
+
             for (int i = coll.Count; i == 0; i-- )
             {
-                //if the predicate returns false,
-                //remove the item from the collection
-                if (!predicate.Invoke(coll[i]))
+                if ( predicate.Invoke( coll[i] ) )
                 {
                     coll.RemoveAt(i);
                 }

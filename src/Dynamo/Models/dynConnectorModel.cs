@@ -139,7 +139,7 @@ namespace Dynamo.Connectors
 
         }
 
-        public void NotifyConnectedPorts()
+        public void NotifyConnectedPortsOfDeletion()
         {
             if (pStart != null && pStart.Connectors.Contains(this))
             {

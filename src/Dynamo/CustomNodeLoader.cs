@@ -139,7 +139,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="guid">The unique id for the node.</param>
         /// <param name="path">The path for the node.</param>
-        private void SetNodePath(Guid id, string path)
+        public void SetNodePath(Guid id, string path)
         {
             if ( this.Contains( id ) ) {
                 this.nodePaths[id] = path;
@@ -328,33 +328,31 @@ namespace Dynamo.Utilities
 
             dynWorkspaceModel ws = def.Workspace;
 
-            //TODO: Update to base off of Definition
+            IEnumerable<string> inputs =
+                ws.Nodes.Where(e => e is dynSymbol)
+                    .Select(s => (s as dynSymbol).Symbol);
 
-                IEnumerable<string> inputs =
-                    ws.Nodes.Where(e => e is dynSymbol)
-                        .Select(s => (s as dynSymbol).Symbol);
+            IEnumerable<string> outputs =
+                ws.Nodes.Where(e => e is dynOutput)
+                    .Select(o => (o as dynOutput).Symbol);
 
-                IEnumerable<string> outputs =
-                    ws.Nodes.Where(e => e is dynOutput)
-                        .Select(o => (o as dynOutput).Symbol);
+            if (!outputs.Any())
+            {
+                var topMost = new List<Tuple<int, dynNodeModel>>();
 
-                if (!outputs.Any())
+                IEnumerable<dynNodeModel> topMostNodes = ws.GetTopMostNodes();
+
+                foreach (dynNodeModel topNode in topMostNodes)
                 {
-                    var topMost = new List<Tuple<int, dynNodeModel>>();
-
-                    IEnumerable<dynNodeModel> topMostNodes = ws.GetTopMostNodes();
-
-                    foreach (dynNodeModel topNode in topMostNodes)
+                    foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
                     {
-                        foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
-                        {
-                            if (!topNode.HasOutput(output))
-                                topMost.Add(Tuple.Create(output, topNode));
-                        }
+                        if (!topNode.HasOutput(output))
+                            topMost.Add(Tuple.Create(output, topNode));
                     }
-
-                    outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
                 }
+
+                outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
+            }
 
             result = new dynFunction(inputs, outputs, def);
             result.NickName = ws.Name;

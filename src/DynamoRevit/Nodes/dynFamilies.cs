@@ -464,7 +464,7 @@ namespace Dynamo.Nodes
     //         while (p.Connectors.Count > 0)
     //         {
     //            dynConnector c = p.Connectors[p.Connectors.Count - 1] as dynConnector;
-    //            c.NotifyConnectedPorts();
+    //            c.NotifyConnectedPortsOfDeletion();
     //         }
     //      }
 

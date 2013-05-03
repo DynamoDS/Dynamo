@@ -303,7 +303,7 @@ namespace Dynamo.Controls
             {
                 for (int j = port.Connectors.Count - 1; j >= 0; j--)
                 {
-                    port.Connectors[j].NotifyConnectedPorts();
+                    port.Connectors[j].NotifyConnectedPortsOfDeletion();
                 }
             }
 
@@ -311,7 +311,7 @@ namespace Dynamo.Controls
             {
                 for (int j = port.Connectors.Count - 1; j >= 0; j--)
                 {
-                    port.Connectors[j].NotifyConnectedPorts();
+                    port.Connectors[j].NotifyConnectedPortsOfDeletion();
                 }
             }
 
