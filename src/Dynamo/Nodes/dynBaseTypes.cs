@@ -1950,10 +1950,6 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
-
-            NodeUI.topControl.Width = 80;
-            NodeUI.topControl.Height = 40;
-
             //add a text box to the input grid of the control
             var tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -1962,20 +1958,13 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = true;
-            tb.Margin = new Thickness(5);
-            tb.Padding = new Thickness(3);
             tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            tb.Text = "0.0";
+            Value = 0.0;
+
             tb.OnChangeCommitted += delegate { 
                 Value = DeserializeValue(tb.Text);
                 dynSettings.ReturnFocusToSearch();
             };
-
-            //take out the left and right margins
-            //and make this so it's not so wide
-            NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
-            NodeUI.topControl.Width = 100;
-            //NodeUI.topControl.Height = 50;
 
             NodeUI.UpdateLayout();
 
@@ -2000,10 +1989,6 @@ namespace Dynamo.Nodes
                     return;
 
                 base.Value = value;
-
-                //nodeLabel.Text = dynUtils.Ellipsis(value.ToString(), 5);
-                //tb.Text = value.ToString();
-                //tb.Pending = false;
                 RaisePropertyChanged("Value");
             }
         }
@@ -2037,14 +2022,11 @@ namespace Dynamo.Nodes
         public dynDoubleSliderInput()
         {
             RegisterAllPorts();
+            Value = 50.0;
         }
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
-
-            NodeUI.topControl.Width = 240;
-            NodeUI.topControl.Height = 40;
-
             //add a slider control to the input grid of the control
             tb_slider = new System.Windows.Controls.Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -2052,9 +2034,9 @@ namespace Dynamo.Nodes
             NodeUI.inputGrid.Children.Add(tb_slider);
             System.Windows.Controls.Grid.SetColumn(tb_slider, 1);
             System.Windows.Controls.Grid.SetRow(tb_slider, 0);
-            tb_slider.Value = 0.0;
-            //tb_slider.Maximum = 100.0;
-            //tb_slider.Minimum = 0.0;
+
+            tb_slider.Width = 200;
+
             tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
             tb_slider.ValueChanged += delegate
@@ -2085,14 +2067,11 @@ namespace Dynamo.Nodes
             };
 
             mintb = new dynTextBox();
-            //mintb.MaxLength = 3;
             mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             mintb.Width = double.NaN;
             mintb.IsNumeric = true;
-            //mintb.Text = "0";
-            mintb.Margin = new Thickness(5);
-            mintb.Padding = new Thickness(3);
+
             mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             mintb.OnChangeCommitted += delegate
             {
@@ -2109,13 +2088,11 @@ namespace Dynamo.Nodes
             //mintb.Pending = false;
 
             maxtb = new dynTextBox();
-            //maxtb.MaxLength = 3;
             maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             maxtb.Width = double.NaN;
             maxtb.IsNumeric = true;
-            //maxtb.Text = "100";
-            maxtb.Padding = new Thickness(3);
+
             maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             maxtb.OnChangeCommitted += delegate
             {
@@ -2129,9 +2106,7 @@ namespace Dynamo.Nodes
                 }
                 dynSettings.ReturnFocusToSearch();
             };
-            //maxtb.Pending = false;
 
-            //NodeUI.SetColumnAmount(3);
             NodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
             NodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
             NodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -2139,14 +2114,8 @@ namespace Dynamo.Nodes
             NodeUI.inputGrid.Children.Add(mintb);
             NodeUI.inputGrid.Children.Add(maxtb);
 
-            //make the middle column containing the slider
-            //take up most of the width
-            NodeUI.inputGrid.ColumnDefinitions[1].Width = new GridLength(.60 * NodeUI.Width);
-
             System.Windows.Controls.Grid.SetColumn(mintb, 0);
             System.Windows.Controls.Grid.SetColumn(maxtb, 2);
-
-            NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
 
             displayBox = new TextBox()
             {
@@ -2154,7 +2123,6 @@ namespace Dynamo.Nodes
                 Background = Brushes.White,
                 Foreground = Brushes.Black
             };
-            displayBox.DataContext = this;
 
             Canvas.SetTop(displayBox, NodeUI.Height);
             Canvas.SetZIndex(displayBox, int.MaxValue);
@@ -2228,21 +2196,7 @@ namespace Dynamo.Nodes
                 if (base.Value == value)
                     return;
 
-                //if (value > tb_slider.Maximum)
-                //{
-                //    maxtb.Text = value.ToString();
-                //    tb_slider.Maximum = value;
-                //    maxtb.Pending = false;
-                //}
-                //if (value < tb_slider.Minimum)
-                //{
-                //    mintb.Text = value.ToString();
-                //    tb_slider.Minimum = value;
-                //    mintb.Pending = false;
-                //}
-
                 base.Value = value;
-                //tb_slider.Value = value;
                 RaisePropertyChanged("Value");
             }
         }
@@ -2404,19 +2358,13 @@ namespace Dynamo.Nodes
         {
             //add a text box to the input grid of the control
             tb = new dynTextBox();
-            //tb = new TextBlock();
 
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             NodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.Text = "";
 
             tb.OnChangeCommitted += delegate { Value = tb.Text; dynSettings.ReturnFocusToSearch(); };
-
-            //remove the margins
-            NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
 
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
@@ -2436,21 +2384,8 @@ namespace Dynamo.Nodes
                     return;
 
                 base.Value = value;
-                //tb.Text = Utilities.Ellipsis(Value, 30);
             }
         }
-
-        /*
-        void tb_LostFocus(object sender, RoutedEventArgs e)
-        {
-            Value = tb.Text;
-        }
-
-        void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key.Equals(Keys.Enter))
-                Value = tb.Text;
-        }*/
 
         protected override string DeserializeValue(string val)
         {
@@ -2475,7 +2410,7 @@ namespace Dynamo.Nodes
                         if (attr.Name.Equals("value"))
                         {
                             Value = DeserializeValue(System.Web.HttpUtility.UrlDecode(attr.Value));
-                            tb.Text = Utilities.Ellipsis(Value, 30);
+                            //tb.Text = Utilities.Ellipsis(Value, 30);
                         }
 
                     }

@@ -91,38 +91,16 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
-            //take out the left and right margins
-            //and make this so it's not so wide
-            NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
-            NodeUI.topControl.Width = 300;
-
-            //set a default height
-            //oldPreferredHeight = NodeUI.PreferredHeight;
-            NodeUI.Height = 200;
-
             watchTree = new WatchTree();
-            //watchTree.TreeExpanded += new EventHandler(wt_TreeExpanded);
-            //watchTree.TreeCollapsed += new EventHandler(wt_TreeCollapsed);
 
             NodeUI.inputGrid.Children.Add(watchTree);
 
             watchTreeBranch = watchTree.FindResource("Tree") as WatchTreeBranch;
         }
 
-        void wt_TreeCollapsed(object sender, EventArgs e)
-        {
-            //NodeUI.PreferredHeight = oldPreferredHeight;
-        }
-
-        void wt_TreeExpanded(object sender, EventArgs e)
-        {
-            //NodeUI.PreferredHeight = 200;
-        }
-
         void p_PortDisconnected(object sender, EventArgs e)
         {
             watchTreeBranch.Clear();
-            //NodeUI.PreferredHeight = oldPreferredHeight;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -144,19 +122,6 @@ namespace Dynamo.Nodes
                     }
                 }
             );
-
-            //NodeUI.Dispatcher.Invoke(new Action(
-            //    delegate
-            //    {
-            //        watchTreeBranch.Clear();
-
-            //        foreach (Value e in args)
-            //        {
-            //            watchTreeBranch.Add(Process(e, ref content, prefix, count));
-            //            count++;
-            //        }
-            //    }
-            //));
 
             //return the content that has been gathered
             return args[0]; //watch should be a 'pass through' node

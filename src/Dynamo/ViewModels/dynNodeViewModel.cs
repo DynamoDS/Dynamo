@@ -119,18 +119,18 @@ namespace Dynamo.Controls
             get { return nodeLogic.State; }
         }
 
-        public int PreferredHeight
-        {
-            get
-            {
-                return preferredHeight;
-            }
-            set
-            {
-                preferredHeight = value;
-                RaisePropertyChanged("PreferredHeight");
-            }
-        }
+        //public int PreferredHeight
+        //{
+        //    get
+        //    {
+        //        return preferredHeight;
+        //    }
+        //    set
+        //    {
+        //        preferredHeight = value;
+        //        RaisePropertyChanged("PreferredHeight");
+        //    }
+        //}
         
         public double DropShadowOpacity
         {
@@ -362,7 +362,7 @@ namespace Dynamo.Controls
         void inports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             //The visual height of the node is bound to preferred height.
-            PreferredHeight = Math.Max(inPorts.Count * 20 + 10, outPorts.Count * 20 + 10); //spacing for inputs + title space + bottom space
+            //PreferredHeight = Math.Max(inPorts.Count * 20 + 10, outPorts.Count * 20 + 10); //spacing for inputs + title space + bottom space
 
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
@@ -386,7 +386,7 @@ namespace Dynamo.Controls
         void outports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             //The visual height of the node is bound to preferred height.
-            PreferredHeight = Math.Max(inPorts.Count * 20 + 10, outPorts.Count * 20 + 10); //spacing for inputs + title space + bottom space
+            //PreferredHeight = Math.Max(inPorts.Count * 20 + 10, outPorts.Count * 20 + 10); //spacing for inputs + title space + bottom space
 
             if (e.Action == NotifyCollectionChangedAction.Add)
             {

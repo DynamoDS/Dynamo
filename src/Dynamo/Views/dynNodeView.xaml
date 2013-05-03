@@ -75,11 +75,11 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Canvas.ZIndex="101" Grid.Row="1" Margin="5">
+        <Grid Canvas.ZIndex="101" Grid.Row="1" Margin="5" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="Auto" MinWidth="20"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -88,7 +88,8 @@
         <!-- INPUT PORTS -->
 
         <StackPanel Name="gridLeft" 
-            HorizontalAlignment="Left"
+            HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
             IsHitTestVisible="True" 
             Background="Transparent"
             Canvas.ZIndex="1" Width="Auto" Grid.Column="0" Grid.Row="1">
@@ -120,12 +121,15 @@
             </ItemsControl>
         </StackPanel>
 
+        <!-- INPUT GRID -->
+            
         <Grid Name="inputGrid"
             x:FieldModifier="public"
             VerticalAlignment="Stretch"
             HorizontalAlignment="Stretch"
             Height="Auto"
             Width="Auto"
+              Margin="5,0,5,0"
               Canvas.ZIndex="300"  
               IsEnabled="{Binding Path=IsInteractionEnabled}" Grid.Column="1"/>
         </Grid>
@@ -153,7 +157,7 @@
         <Canvas Canvas.Left="0" 
                 Canvas.Top="0" 
                 Name="elementCanvas" 
-                Grid.Row="1">
+                Grid.Row="0" Grid.RowSpan="2">
             <Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"
                        Canvas.Top="0"
@@ -172,3 +176,5 @@
         </Canvas>
     </Grid>
 </UserControl>
+
+    
