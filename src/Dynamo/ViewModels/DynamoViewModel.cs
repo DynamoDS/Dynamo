@@ -1862,7 +1862,7 @@ namespace Dynamo.Controls
         ///     function and saving it to the FSchemeEnvironment
         /// </summary>
         /// <param name="definition">The definition to saveo</param>
-        /// <param name="bool">Whether to write the function to file</param>
+        /// <param name="bool">Whether to write the function to file.</param>
         /// <returns>Whether the operation was successful</returns>
         public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true)
         {
