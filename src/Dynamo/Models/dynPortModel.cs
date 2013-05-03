@@ -173,7 +173,7 @@ namespace Dynamo.Connectors
         internal void KillAllConnectors()
         {
             foreach (var c in connectors.ToList())
-                c.NotifyConnectedPorts();
+                c.NotifyConnectedPortsOfDeletion();
         }
     }
 

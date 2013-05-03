@@ -146,7 +146,7 @@ namespace Dynamo.Connectors
                     //and remove it from the connectors collection. this will also
                     //remove the view model
                     var successfulRemoval = dynSettings.Controller.DynamoViewModel.CurrentSpace.Connectors.Remove(_port.Connectors[0]);
-                    _port.Connectors[0].NotifyConnectedPorts();
+                    _port.Connectors[0].NotifyConnectedPortsOfDeletion();
                     Console.WriteLine(successfulRemoval);
 
 

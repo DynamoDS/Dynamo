@@ -82,24 +82,4 @@ namespace Dynamo.Nodes
         }
     }
 
-    [IsInteractive(true)]
-    [NodeName("Enum")]
-    [NodeCategory(BuiltinNodeCategories.MISC)]
-    [NodeDescription("Represent an enum in a drop-down list.")]
-    public class dynEnum1 : dynEnum
-    {
-        enum test { TOM, DICK, LARRY };
-
-        public dynEnum1()
-        {
-            
-        }
-
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
-        {
-            base.SetupCustomUIElements(NodeUI);
-
-            WireToEnum(Enum.GetValues(typeof(test)));
-        }
-    }
 }

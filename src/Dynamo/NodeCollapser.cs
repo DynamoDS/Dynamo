@@ -171,14 +171,6 @@ namespace Dynamo.Utilities
 
             #region UI Positioning Calculations
 
-//MVVM : use node positioning calculations to set a property and bind that to the view
-            /*double avgX = selectedNodeSet.Average(node => Canvas.GetLeft(node.NodeUI));
-            double avgY = selectedNodeSet.Average(node => Canvas.GetTop(node.NodeUI));
-
-            double leftMost = selectedNodeSet.Min(node => Canvas.GetLeft(node.NodeUI)) + 24;
-            double topMost = selectedNodeSet.Min(node => Canvas.GetTop(node.NodeUI));
-            double rightMost = selectedNodeSet.Max(node => Canvas.GetLeft(node.NodeUI) + node.NodeUI.Width);*/
-
             double avgX = selectedNodeSet.Average(node => node.X);
             double avgY = selectedNodeSet.Average(node => node.Y);
 
@@ -190,27 +182,28 @@ namespace Dynamo.Utilities
 
             #region Move selection to new workspace
 
-            var connectors = new HashSet<dynConnectorModel>(
-                currentWorkspace.Connectors.Where(
-                    conn => selectedNodeSet.Contains(conn.Start.Owner)
-                            && selectedNodeSet.Contains(conn.End.Owner)));
+            var connectors = new HashSet<dynConnectorModel>(currentWorkspace.Connectors.Where(
+                                                                conn => selectedNodeSet.Contains(conn.Start.Owner)
+                                                                    && selectedNodeSet.Contains(conn.End.Owner)));
 
             //Step 2: move all nodes to new workspace
             //  remove from old
-            //MVVM: confirm that the extension we've defined here does what we expect.
-            currentWorkspace.Nodes.RemoveAll(selectedNodeSet.Contains);
-            currentWorkspace.Connectors.RemoveAll(connectors.Contains);
+            foreach (var ele in selectedNodeSet)
+            {
+                currentWorkspace.Nodes.Remove(ele);
+            }
+            foreach (var ele in connectors)
+            {
+                currentWorkspace.Connectors.Remove(ele);
+            }
 
             //  add to new
             newNodeWorkspace.Nodes.AddRange(selectedNodeSet);
             newNodeWorkspace.Connectors.AddRange(connectors);
 
-//MVVM : do not set location of view directly
             double leftShift = leftMost - 250;
             foreach (dynNodeModel node in newNodeWorkspace.Nodes)
             {
-                //Canvas.SetLeft(node, Canvas.GetLeft(node) - leftShift);
-                //Canvas.SetTop(node, Canvas.GetTop(node) - topMost);
                 node.X = node.X - leftShift;
                 node.Y = node.Y - topMost;
             }
@@ -232,11 +225,6 @@ namespace Dynamo.Utilities
             currentWorkspace.Nodes.Add(collapsedNode);
             collapsedNode.WorkSpace = currentWorkspace;
 
-//MVVM : do not set view in collection here
-            /*dynSettings.Bench.WorkBench.Children.Add(collapsedNode.NodeUI);
-
-            Canvas.SetLeft(collapsedNode.NodeUI, avgX);
-            Canvas.SetTop(collapsedNode.NodeUI, avgY);*/
             collapsedNode.X = avgX;
             collapsedNode.Y = avgY;
 
@@ -245,24 +233,15 @@ namespace Dynamo.Utilities
             #region Destroy all hanging connectors
 
             //Step 6: connect inputs and outputs
-            foreach (dynConnectorModel connector in currentWorkspace.Connectors
-                                                           .Where(
-                                                               c =>
-                                                               selectedNodeSet.Contains(c.Start.Owner) &&
-                                                               !selectedNodeSet.Contains(c.End.Owner))
-                                                           .ToList())
-            {
-                connector.NotifyConnectedPorts();
-            }
 
-            foreach (dynConnectorModel connector in currentWorkspace.Connectors
-                                                           .Where(
-                                                               c =>
-                                                               !selectedNodeSet.Contains(c.Start.Owner) &&
-                                                               selectedNodeSet.Contains(c.End.Owner)).ToList()
-                )
+            var removeConnectors = currentWorkspace.Connectors.Where(c =>
+                                                                     selectedNodeSet.Contains(c.Start.Owner) ||
+                                                                     selectedNodeSet.Contains(c.End.Owner))
+                                                   .ToList();
+            foreach (dynConnectorModel connector in removeConnectors)
             {
-                connector.NotifyConnectedPorts();
+                connector.NotifyConnectedPortsOfDeletion();
+                currentWorkspace.Connectors.Remove(connector);
             }
 
             #endregion
@@ -475,30 +454,15 @@ namespace Dynamo.Utilities
 
             #endregion
 
-            #region Make new workspace invisible
-
-//MVVM : Do not set view visibility here. It will be controlled by active workspace binding.
-            //Step 4: make nodes invisible
-            // and update positions
-            /*foreach (dynNodeView node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
-                node.Visibility = Visibility.Hidden;
-
-            foreach (dynConnector connector in newNodeWorkspace.Connectors)
-                connector.Visible = false;*/
-
-            #endregion
-
             //set the name on the node
             collapsedNode.NickName = newNodeName;
 
             currentWorkspace.Nodes.Remove(collapsedNode);
 
-//MVVM : Don't remove the view directly
-            //dynSettings.Bench.WorkBench.Children.Remove(collapsedNode.NodeUI);
-
             // save and load the definition from file
+            dynSettings.Controller.CustomNodeLoader.SetNodeInfo(newNodeName, newNodeCategory, newNodeDefinition.FunctionId, "");
             var path = dynSettings.Controller.DynamoViewModel.SaveFunctionOnly(newNodeDefinition);
-            dynSettings.Controller.CustomNodeLoader.SetNodeInfo(newNodeName, newNodeCategory, newNodeDefinition.FunctionId, path);
+            dynSettings.Controller.CustomNodeLoader.SetNodePath(newNodeDefinition.FunctionId, path);
             dynSettings.Controller.SearchViewModel.Add(newNodeName, newNodeCategory, newNodeDefinition.FunctionId);
 
             dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
@@ -512,10 +476,11 @@ namespace Dynamo.Utilities
                                             .Where(node => node is dynFunction)
                                             .First(node => ((dynFunction)node).Definition.FunctionId == newNodeDefinition.FunctionId);
 
-            newlyPlacedCollapsedNode.DisableReporting();
+            // place the node as intended, not centered
+            newlyPlacedCollapsedNode.X = avgX;
+            newlyPlacedCollapsedNode.Y = avgY;
 
-            //MVVM: don't call update layout here.
-            //dynSettings.Bench.WorkBench.UpdateLayout(); // without doing this, connectors fail to be created
+            newlyPlacedCollapsedNode.DisableReporting();
 
             foreach (var nodeTuple in inConnectors)
             {

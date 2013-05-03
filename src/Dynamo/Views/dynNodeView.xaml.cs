@@ -40,11 +40,7 @@ namespace Dynamo.Controls
         }
 
         #region constructors
-        /// <summary>
-        /// dynElement constructor for use by workbench in creating dynElements
-        /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="nickName"></param>
+
         public dynNodeView()
         {
             InitializeComponent();
@@ -149,10 +145,7 @@ namespace Dynamo.Controls
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             dynSettings.Bench.mainGrid.Focus();
-            //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(vm.SelectCommand, this));
-            //dynSettings.Controller.ProcessCommandQueue();
             ViewModel.SelectCommand.Execute();
-            //e.Handled = true;
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)

@@ -18,7 +18,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Collections.ObjectModel;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
@@ -204,7 +203,7 @@ namespace Dynamo.Controls
             logic.PropertyChanged += logic_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
 
-            DeleteCommand = new DelegateCommand(DeleteNode, CanDeleteNode);
+            DeleteCommand = new DelegateCommand(DeleteNodeAndItsConnectors, CanDeleteNode);
             SetLacingTypeCommand = new DelegateCommand<string>(new Action<string>(SetLacingType), CanSetLacingType);
             SetStateCommand = new DelegateCommand<object>(SetState, CanSetState);
             SelectCommand = new DelegateCommand(Select, CanSelect);
@@ -297,31 +296,9 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void DeleteNode()
+        private void DeleteNodeAndItsConnectors()
         {
-            foreach (var port in nodeLogic.OutPorts)
-            {
-                for (int j = port.Connectors.Count - 1; j >= 0; j--)
-                {
-                    port.Connectors[j].NotifyConnectedPorts();
-                }
-            }
-
-            foreach (var port in nodeLogic.InPorts)
-            {
-                for (int j = port.Connectors.Count - 1; j >= 0; j--)
-                {
-                    port.Connectors[j].NotifyConnectedPorts();
-                }
-            }
-
-            NodeLogic.DisableReporting();
-            NodeLogic.Destroy();
-            NodeLogic.Cleanup();
-
-            DynamoSelection.Instance.Selection.Remove(nodeLogic);
-            dynSettings.Controller.DynamoViewModel.Model.Nodes.Remove(NodeLogic);
-            //dynSettings.Workbench.Children.Remove(node);
+            dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(this.nodeLogic);
         }
 
         void SetLacingType(string parameter)
@@ -440,13 +417,6 @@ namespace Dynamo.Controls
             return true;
         }
 
-        //MVVM: Obselete method - updates to connectors should be handled by bindings.
-        public void UpdateConnections()
-        {
-            //foreach (var p in nodeLogic.InPorts.Concat(nodeLogic.OutPorts))
-            //    p.Update();
-        }
-
         private void SetupCustomUIElements(dynNodeView NodeUI)
         {
             nodeLogic.SetupCustomUIElements(NodeUI);
@@ -495,17 +465,6 @@ namespace Dynamo.Controls
             return true;
         }
 
-        #region junk
-        //public void CallUpdateLayout(FrameworkElement el)
-        //{
-        //    el.UpdateLayout();
-        //}
-
-        //public void SetTooltip(string message)
-        //{
-        //    this.ToolTipText = message;
-        //}
-        #endregion
     }
 }
 

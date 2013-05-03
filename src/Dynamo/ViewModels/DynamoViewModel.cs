@@ -325,7 +325,9 @@ namespace Dynamo.Controls
             AddNoteCommand = new DelegateCommand<object>(AddNote, CanAddNote);
             DeleteCommand = new DelegateCommand<object>(Delete, CanDelete);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
-            
+            DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
+
+
             SelectNeighborsCommand = new DelegateCommand<object>(SelectNeighbors, CanSelectNeighbors);
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
@@ -1119,12 +1121,15 @@ namespace Dynamo.Controls
             CollapseNodes(
                 DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel)
                     .Select(x => (x as dynNodeModel)));
-
         }
 
+        private void NodeFromSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            NodeFromSelectionCommand.RaiseCanExecuteChanged();
+        }
         private bool CanCreateNodeFromSelection()
         {
-            if (DynamoSelection.Instance.Selection.Count > 0)
+            if ( DynamoSelection.Instance.Selection.Count(x => x is dynNodeModel) > 1)
             {
                 return true;
             }
@@ -1348,14 +1353,15 @@ namespace Dynamo.Controls
         {
             foreach (var conn in node.AllConnectors().ToList())
             {
-                conn.NotifyConnectedPorts();
+                conn.NotifyConnectedPortsOfDeletion();
                 dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Connectors.Remove(conn);
             }
 
+            node.DisableReporting();
+            node.Destroy();
             node.Cleanup();
             DynamoSelection.Instance.Selection.Remove(node);
-            dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Nodes.Remove(node);
-
+            node.WorkSpace.Nodes.Remove(node);
         }
 
         private void AddToSelection(object parameters)
@@ -2469,12 +2475,12 @@ namespace Dynamo.Controls
                 foreach (dynPortModel p in el.InPorts)
                 {
                     for (int i = p.Connectors.Count - 1; i >= 0; i--)
-                        p.Connectors[i].NotifyConnectedPorts();
+                        p.Connectors[i].NotifyConnectedPortsOfDeletion();
                 }
                 foreach (dynPortModel port in el.OutPorts)
                 {
                     for (int i = port.Connectors.Count - 1; i >= 0; i--)
-                        port.Connectors[i].NotifyConnectedPorts();
+                        port.Connectors[i].NotifyConnectedPortsOfDeletion();
                 }
             }
 
