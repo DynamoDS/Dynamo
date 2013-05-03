@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,12 +33,40 @@ namespace Dynamo
     {
 
         #region Properties
+
         private string _name;
-        //private System.Windows.Point currentOffset = new System.Windows.Point(0, 0);
         private double x = 0.0;
         private double y = 0.0;
         private double height = 100;
         private double width = 100;
+
+        /// <summary>
+        ///     The date of the last save.
+        /// </summary>
+        private DateTime _lastSaved;
+        public DateTime LastSaved
+        {
+            get { return _lastSaved; }
+            set
+            {
+                _lastSaved = value;
+                RaisePropertyChanged("LastSaved");
+            }
+        }
+
+        /// <summary>
+        ///     Are there unsaved changes in the workspace?
+        /// </summary>
+        private bool _unsavedChanges;
+        public bool UnsavedChanges
+        {
+            get { return _unsavedChanges; }
+            set
+            {
+                _unsavedChanges = value;
+                RaisePropertyChanged("UnsavedChanges");
+            }
+        }
 
         public ObservableCollection<dynNodeModel> Nodes { get; internal set; }
         public ObservableCollection<dynConnectorModel> Connectors { get; internal set; }
@@ -133,7 +162,42 @@ namespace Dynamo
             Notes = new ObservableCollection<dynNoteModel>();
             X = x;
             Y = y;
-            
+
+            Nodes.CollectionChanged += MarkUnsaved;
+            Notes.CollectionChanged += MarkUnsaved;
+            Connectors.CollectionChanged += MarkUnsaved;
+
+            this.UnsavedChanges = true;
+            this.LastSaved = DateTime.Now;
+
+            this.WorkspaceSaved += OnWorkspaceSaved;
+        }
+
+        public delegate void WorkspaceSavedEvent(dynWorkspaceModel model);
+        public event WorkspaceSavedEvent WorkspaceSaved;
+
+        /// <summary>
+        ///     If there are observers for the save, notifies them
+        /// </summary>
+        private void OnWorkspaceSaved()
+        {
+            if (WorkspaceSaved != null)
+                WorkspaceSaved(this);
+        }
+
+        /// <summary>
+        ///     Updates relevant parameters on save
+        /// </summary>
+        /// <param name="model">The workspace that was just saved</param>
+        private static void OnWorkspaceSaved(dynWorkspaceModel model)
+        {
+            model.LastSaved = DateTime.Now;
+            model.UnsavedChanges = false;
+        }
+
+        private void MarkUnsaved(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            this.UnsavedChanges = true;
         }
 
         public void DisableReporting()
@@ -172,13 +236,11 @@ namespace Dynamo
             dynSettings.Controller.DynamoViewModel.Log("Saving " + xmlPath + "...");
             try
             {
-
-//MVVM : Is this test valid for the Homeworskpace?
                 var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace is HomeWorkspace);
                 xmlDoc.Save(xmlPath);
-
-                //cache the file path for future save operations
                 workSpace.FilePath = xmlPath;
+
+                workSpace.OnWorkspaceSaved();
             }
             catch (Exception ex)
             {

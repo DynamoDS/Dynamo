@@ -10,7 +10,6 @@ using System.Reflection;
 using System.Runtime.Remoting;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml;
@@ -492,20 +491,15 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void ShowSaveDialogAndSaveResult()
+        private FileDialog GetSaveDialog(dynWorkspaceModel workspace)
         {
-            FileDialog _fileDialog = null;
-
-            if (_fileDialog == null)
+            FileDialog fileDialog = new SaveFileDialog
             {
-                _fileDialog = new SaveFileDialog
-                {
-                    AddExtension = true,
-                };
-            }
+                AddExtension = true,
+            };
 
             string ext, fltr;
-            if (ViewingHomespace)
+            if ( workspace == _model.HomeSpace )
             {
                 ext = ".dyn";
                 fltr = "Dynamo Workspace (*.dyn)|*.dyn";
@@ -517,10 +511,17 @@ namespace Dynamo.Controls
             }
             fltr += "|All files (*.*)|*.*";
 
-            _fileDialog.FileName = _model.CurrentSpace.Name + ext;
-            _fileDialog.AddExtension = true;
-            _fileDialog.DefaultExt = ext;
-            _fileDialog.Filter = fltr;
+            fileDialog.FileName = workspace.Name + ext;
+            fileDialog.AddExtension = true;
+            fileDialog.DefaultExt = ext;
+            fileDialog.Filter = fltr;
+
+            return fileDialog;
+        }
+
+        private void ShowSaveDialogAndSaveResult()
+        {
+            FileDialog _fileDialog = GetSaveDialog(_model.CurrentSpace);
 
             //if the xmlPath is not empty set the default directory
             if (!string.IsNullOrEmpty(_model.CurrentSpace.FilePath))
@@ -598,7 +599,7 @@ namespace Dynamo.Controls
 
         private void GoToWiki()
         {
-            System.Diagnostics.Process.Start("https://github.com/ikeough/Dynamo/wiki");
+            Process.Start("https://github.com/ikeough/Dynamo/wiki");
         }
 
         private bool CanGoToWiki()
@@ -608,7 +609,7 @@ namespace Dynamo.Controls
 
         private void GoToSourceCode()
         {
-            System.Diagnostics.Process.Start("https://github.com/ikeough/Dynamo");
+            Process.Start("https://github.com/ikeough/Dynamo");
         }
 
         private bool CanGoToSourceCode()
@@ -620,8 +621,6 @@ namespace Dynamo.Controls
         {
 
             DynamoLogger.Instance.FinishLogging();
-
-            //TODO: Other exit logic?
         }
 
         private bool CanCleanup()
@@ -631,8 +630,26 @@ namespace Dynamo.Controls
 
         private void Exit()
         {
+            // check if all of the workspaces are saved
+            foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.UnsavedChanges))
+            {
+                var result = System.Windows.MessageBox.Show("You have unsaved changes to " + wvm.Model.Name + "\n\n Would you like to save your changes?", "Confirmation", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    var fd = this.GetSaveDialog(wvm.Model);
+                    if (fd.ShowDialog() == DialogResult.OK)
+                    {
+                        if (SaveAsCommand.CanExecute(fd.FileName))
+                            SaveAsCommand.CanExecute(fd.FileName);
+                    }
+                }  
+                if (result == MessageBoxResult.Cancel)
+                    return;
+            }
+
             this.Cleanup();
             dynSettings.Bench.Close();
+            
         }
 
         private bool CanExit()
@@ -1751,15 +1768,26 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        ///     Save to a specific file path, if the path is null or empty, does nothing.
+        ///     Save the current workspace to a specific file path, if the path is null or empty, does nothing.
         ///     If successful, the CurrentSpace.FilePath field is updated as a side effect
         /// </summary>
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
+            this.SaveAs(path, _model.CurrentSpace);
+        }
+
+        /// <summary>
+        ///     Save to a specific file path, if the path is null or empty, does nothing.
+        ///     If successful, the CurrentSpace.FilePath field is updated as a side effect
+        /// </summary>
+        /// <param name="path">The path to save to</param>
+        /// <param name="workspace">The workspace to save</param>
+        internal void SaveAs(string path, dynWorkspaceModel workspace)
+        {
             if (!String.IsNullOrEmpty(path))
             {
-                if (!dynWorkspaceModel.SaveWorkspace(path, _model.CurrentSpace))
+                if (!dynWorkspaceModel.SaveWorkspace(path, workspace))
                 {
                     Log("Workbench could not be saved.");
                 }

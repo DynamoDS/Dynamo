@@ -5,7 +5,7 @@
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:commands="clr-namespace:Dynamo.Commands"
         xmlns:views="clr-namespace:Dynamo.Views"
-        xmlns:utilities="clr-namespace:Dynamo.Utilities"
+        xmlns:utilities="clr-namespace:Dynamo.Utilities" xmlns:sys="clr-namespace:System;assembly=mscorlib"
         x:Name="_this"
         Height="768" Width="1024"
         Closed="WindowClosed" 
@@ -207,20 +207,91 @@
 
         </Menu>
 
-    <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
-                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3">
+        <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
+                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="Black">
+            
             <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs" 
-                        SelectedIndex="{Binding CurrentWorkspaceIndex}" >
+                        SelectedIndex="{Binding CurrentWorkspaceIndex}" Background="#222" Padding ="0">
+                
+                <TabControl.Resources>
+
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabItem}">
+                                    <Grid>
+                                        <Border 
+                                          Name="Border"
+                                          Background="#444"
+                                          BorderBrush="Black" 
+                                          BorderThickness="1,1,1,0" >
+                                            <ContentPresenter x:Name="ContentSite"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                ContentSource="Header" />
+                                        </Border>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                    <Style TargetType="{x:Type Button}" x:Key="CloseButtonStyle">
+                        <Style.Resources>
+                            <sys:Double x:Key="CloseButtonWidth">6</sys:Double>
+                            <sys:Double x:Key="CloseCircleWidth">12</sys:Double>
+                            <sys:Double x:Key="CloseButtonOffset">3</sys:Double>
+                        </Style.Resources>
+                        <Setter Property="Height" Value="10" />
+                        <Setter Property="Width" Value="{StaticResource CloseCircleWidth}" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Foreground" Value="DarkGray" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    
+                                    <Canvas Background="Transparent" x:Name="CloseButton" Margin="0" Width="{StaticResource CloseCircleWidth}" Height="{StaticResource CloseCircleWidth}">
+                                        <Ellipse Width="{StaticResource CloseCircleWidth}" Fill="{TemplateBinding Background}" Height="{StaticResource CloseCircleWidth}" />
+                                        <Canvas Canvas.Left="{StaticResource CloseButtonOffset}" Canvas.Top="{StaticResource CloseButtonOffset}" Background="Transparent" Width="{StaticResource CloseButtonWidth}" Height="{StaticResource CloseButtonWidth}">
+                                            <Line X1="0" Y1="0" X2="{StaticResource CloseButtonWidth}" Y2="{StaticResource CloseButtonWidth}" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                                            <Line X1="0" Y1="{StaticResource CloseButtonWidth}" X2="{StaticResource CloseButtonWidth}" Y2="0" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                                        </Canvas>
+                                    </Canvas>
+                                    
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="DarkGray" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    
+                </TabControl.Resources>
+                
                 <TabControl.ItemTemplate>
+                    
                     <DataTemplate>
-                        <TextBlock Text="{Binding Name}"></TextBlock>
+                        
+                        <StackPanel Orientation="Horizontal" Background="#444" Margin="10,5,10,5">
+                            <TextBlock Foreground ="GhostWhite" Text="{Binding Name}" Margin="5,2,10,0"></TextBlock>
+                            <Button Style="{StaticResource CloseButtonStyle}"></Button>
+                        </StackPanel>
+                        
                     </DataTemplate>
+                    
                 </TabControl.ItemTemplate>
+                
                 <TabControl.ContentTemplate>
                     <DataTemplate>
                         <views:dynWorkspaceView></views:dynWorkspaceView>
                     </DataTemplate>
                  </TabControl.ContentTemplate>
+                
             </TabControl>
        
         </Border>
