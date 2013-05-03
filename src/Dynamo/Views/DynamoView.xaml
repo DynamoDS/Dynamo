@@ -291,22 +291,6 @@
                       Content="Debug" VerticalContentAlignment="Center"/>
             
         </WrapPanel>
-
-
-        <DockPanel Grid.Row="4" Grid.Column="2" Name="WorkspaceTitleContainer" HorizontalAlignment="Right">
-
-            <Image Name="editNameButton" Margin="6" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon_white_24.png" Height="24" Width="24"
-                            MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" 
-                            MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="Collapsed" IsHitTestVisible="False" HorizontalAlignment="Right"/>
-
-            <TextBox FontSize="16" Padding="12" Margin="0" Name="editNameBox" Width="150"
-                         Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" Height="{Binding Path=ActualHeight,ElementName=WorkspaceTitleContainer}"
-                         IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
-
-            <Label Padding="12" Content="Home" Name="workspaceLabel" 
-                               HorizontalContentAlignment="Right" FontSize="16" FontStyle="Italic" Background="Black" Foreground="AliceBlue"
-                               FontFamily="Trebuchet MS" IsHitTestVisible="False" HorizontalAlignment="Right"/>
-        </DockPanel>
         
         <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" Visibility ="Hidden" HorizontalAlignment="Right">
 
