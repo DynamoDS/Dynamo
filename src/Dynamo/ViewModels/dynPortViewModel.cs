@@ -30,7 +30,14 @@ namespace Dynamo.Connectors
 
         public string PortName
         {
-            get { return _port.PortName; }
+            get
+            {
+                return _port.PortName;
+            }
+            set 
+            { 
+                _port.PortName = value;
+            }
         }
 
         public PortType PortType

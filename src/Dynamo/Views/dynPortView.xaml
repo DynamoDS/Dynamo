@@ -61,7 +61,7 @@
                      Grid.Column="1">
             </Ellipse>
             <TextBlock Name="portNameTb" Width="Auto"
-                   Text="{Binding Path=PortName,Mode=OneWay}"
+                   Text="{Binding Path=PortName,Mode=TwoWay}"
                    VerticalAlignment="Center"
                    TextAlignment="{Binding Path=PortType, Converter={StaticResource PortTypeToTextAlignmentConverter}, Mode=OneWay}"
                    FontSize="12" FontFamily="Arial"

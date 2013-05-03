@@ -850,7 +850,10 @@ namespace Dynamo.Controls
                 var nodeData = new Dictionary<string, object>();
                 nodeData.Add("x", node.X);
                 nodeData.Add("y", node.Y + 100);
-                nodeData.Add("name", node.NickName);
+                if(node is dynFunction)
+                    nodeData.Add("name", (node as dynFunction).Definition.FunctionId);
+                else
+                    nodeData.Add("name", node.NickName);
                 nodeData.Add("guid", newGuid);
 
                 if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.GetType()))
@@ -1867,7 +1870,7 @@ namespace Dynamo.Controls
         ///     function and saving it to the FSchemeEnvironment
         /// </summary>
         /// <param name="definition">The definition to saveo</param>
-        /// <param name="bool">Whether to write the function to file</param>
+        /// <param name="bool">Whether to write the function to file.</param>
         /// <returns>Whether the operation was successful</returns>
         public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true)
         {
@@ -1875,7 +1878,7 @@ namespace Dynamo.Controls
                 return;
 
             // Get the internal nodes for the function
-            dynWorkspaceModel functionWorkspace = definition.Workspace;
+            var functionWorkspace = definition.Workspace as FuncWorkspace;
 
             // If asked to, write the definition to file
             if (writeDefinition)
@@ -1891,7 +1894,8 @@ namespace Dynamo.Controls
                     string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
                     dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
                     Controller.SearchViewModel.Add(definition.Workspace);
-                    Controller.CustomNodeLoader.UpdateSearchPath();
+                    Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, 
+                        functionWorkspace.Category, definition.FunctionId,path);
                 }
                 catch (Exception e)
                 {

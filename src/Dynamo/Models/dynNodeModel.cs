@@ -866,7 +866,7 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Add a port to this node
+        /// Add a port to this node. If the port already exists, return that port.
         /// </summary>
         /// <param name="portType"></param>
         /// <param name="name"></param>
@@ -878,7 +878,14 @@ namespace Dynamo.Nodes
             {
                 if (inPorts.Count > index)
                 {
-                    return inPorts[index];
+                    dynPortModel p = inPorts[index];
+
+                    //update the name on the node
+                    //e.x. when the node is being re-registered during a custom
+                    //node save
+                    p.PortName = name;
+
+                    return p;
                 }
                 else
                 {
