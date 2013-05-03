@@ -1870,7 +1870,7 @@ namespace Dynamo.Controls
                 return;
 
             // Get the internal nodes for the function
-            dynWorkspaceModel functionWorkspace = definition.Workspace;
+            var functionWorkspace = definition.Workspace as FuncWorkspace;
 
             // If asked to, write the definition to file
             if (writeDefinition)
@@ -1886,7 +1886,8 @@ namespace Dynamo.Controls
                     string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
                     dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
                     Controller.SearchViewModel.Add(definition.Workspace);
-                    Controller.CustomNodeLoader.UpdateSearchPath();
+                    Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, 
+                        functionWorkspace.Category, definition.FunctionId,path);
                 }
                 catch (Exception e)
                 {
