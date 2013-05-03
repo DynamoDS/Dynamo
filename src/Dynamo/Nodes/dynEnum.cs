@@ -92,6 +92,13 @@ namespace Dynamo.Nodes
 
         public dynEnum1()
         {
+            
+        }
+
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        {
+            base.SetupCustomUIElements(NodeUI);
+
             WireToEnum(Enum.GetValues(typeof(test)));
         }
     }
