@@ -178,7 +178,7 @@ namespace Dynamo.Nodes
             image1 = new System.Windows.Controls.Image();
             image1.Width = 320;
             image1.Height = 240;
-            image1.Margin = new Thickness(5);
+            //image1.Margin = new Thickness(5);
             image1.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             image1.Name = "image1";
             image1.VerticalAlignment = System.Windows.VerticalAlignment.Top;
@@ -186,8 +186,8 @@ namespace Dynamo.Nodes
             //image1.Margin = new Thickness(0, 0, 0, 0);
 
             NodeUI.inputGrid.Children.Add(image1);
-            NodeUI.Width = 450;
-            NodeUI.Height = 240 + 5;
+            //NodeUI.Width = 450;
+            //NodeUI.Height = 240 + 5;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
