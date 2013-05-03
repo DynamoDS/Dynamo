@@ -493,9 +493,6 @@ namespace Dynamo.Utilities
 
             currentWorkspace.Nodes.Remove(collapsedNode);
 
-//MVVM : Don't remove the view directly
-            //dynSettings.Bench.WorkBench.Children.Remove(collapsedNode.NodeUI);
-
             // save and load the definition from file
             var path = dynSettings.Controller.DynamoViewModel.SaveFunctionOnly(newNodeDefinition);
             dynSettings.Controller.CustomNodeLoader.SetNodeInfo(newNodeName, newNodeCategory, newNodeDefinition.FunctionId, path);
@@ -513,9 +510,6 @@ namespace Dynamo.Utilities
                                             .First(node => ((dynFunction)node).Definition.FunctionId == newNodeDefinition.FunctionId);
 
             newlyPlacedCollapsedNode.DisableReporting();
-
-            //MVVM: don't call update layout here.
-            //dynSettings.Bench.WorkBench.UpdateLayout(); // without doing this, connectors fail to be created
 
             foreach (var nodeTuple in inConnectors)
             {

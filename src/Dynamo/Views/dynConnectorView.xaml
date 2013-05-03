@@ -8,6 +8,7 @@
     <Grid>
 
         <Grid.Resources>
+            
             <Style x:Key="ConnectorStyle" TargetType="Path">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Path=IsConnecting, Mode=OneWay}" Value="True">
@@ -15,6 +16,7 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
+            
         </Grid.Resources>
         
         <Canvas Canvas.Top="0" Canvas.Left="0">
