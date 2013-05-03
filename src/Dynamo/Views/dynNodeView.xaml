@@ -7,7 +7,7 @@
              xmlns:connectors="clr-namespace:Dynamo.Connectors"
              Height="Auto"
     MinWidth="100"
-    Width="160" 
+    Width="Auto" 
     Name="topControl" 
     Loaded="topControl_Loaded" 
     KeyUp="OnKeyUp" 
@@ -51,6 +51,10 @@
     </UserControl.ToolTip>
 
     <Grid Name="grid" Canvas.ZIndex="100">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
 
         <!-- CONTEXT MENU -->
         
@@ -71,14 +75,23 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Canvas.ZIndex="101" Grid.Row="1" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto" MinWidth="20"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            
         <!-- INPUT PORTS -->
 
         <StackPanel Name="gridLeft" 
-            Margin="5,5,0,5"
             HorizontalAlignment="Left"
             IsHitTestVisible="True" 
             Background="Transparent"
-            Canvas.ZIndex="1" Width="Auto">
+            Canvas.ZIndex="1" Width="Auto" Grid.Column="0" Grid.Row="1">
             
             <ItemsControl ItemsSource="{Binding Path=InPorts}">
                 <ItemsControl.ItemTemplate>
@@ -95,10 +108,9 @@
         <StackPanel Name="gridRight" 
               HorizontalAlignment="Right" 
               VerticalAlignment="Stretch"
-              Margin="0,5,5,5" 
               IsHitTestVisible="True" 
               Background="Transparent"
-              Canvas.ZIndex="1" Width="Auto">
+              Canvas.ZIndex="1" Width="Auto" Grid.Column="2" Grid.Row="1">
             <ItemsControl ItemsSource="{Binding Path=OutPorts}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -108,12 +120,40 @@
             </ItemsControl>
         </StackPanel>
 
-        <!-- CENTER CANVAS -->
+        <Grid Name="inputGrid"
+            x:FieldModifier="public"
+            VerticalAlignment="Stretch"
+            HorizontalAlignment="Stretch"
+            Height="Auto"
+            Width="Auto"
+              Canvas.ZIndex="300"  
+              IsEnabled="{Binding Path=IsInteractionEnabled}" Grid.Column="1"/>
+        </Grid>
+
+        <TextBlock  
+                         Name="nickNameBlock" 
+                         VerticalAlignment="Top" 
+                         HorizontalAlignment="Center"
+                         TextTrimming="CharacterEllipsis"
+                         Text="{Binding NickName, UpdateSourceTrigger=PropertyChanged}"
+                         Padding="3"
+                         FontSize="11" 
+                         FontWeight="Normal" 
+                         TextAlignment="Center" 
+                         IsHitTestVisible="False" 
+                         Canvas.ZIndex="99" 
+                         Height ="22"
+                         Width="{Binding ElementName=grid, Path=ActualWidth}"
+                         MaxWidth="{Binding ElementName=grid, Path=ActualWidth}"
+                         Background="#99000000" FontStyle="Normal" Foreground="LightGray" Grid.Row="0">
+        </TextBlock>
         
+        <!-- CENTER CANVAS -->
+
         <Canvas Canvas.Left="0" 
                 Canvas.Top="0" 
                 Name="elementCanvas" 
-                Margin="0,0,0,0">
+                Grid.Row="1">
             <Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"
                        Canvas.Top="0"
@@ -128,36 +168,7 @@
                     <DropShadowEffect Opacity="{Binding Path=DropShadowOpacity}" />
                 </Rectangle.Effect>
             </Rectangle>
-            
+
         </Canvas>
-        
-        <Grid Name="inputGrid"
-            x:FieldModifier="public"
-            VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch"
-            Height="Auto"
-            Width="Auto"
-            Margin="45,5,45,5" Canvas.ZIndex="300"  IsEnabled="{Binding Path=IsInteractionEnabled}" />
-
-            <TextBlock  
-                         Name="nickNameBlock" 
-                         VerticalAlignment="Top" 
-                         HorizontalAlignment="Center"
-                         TextTrimming="CharacterEllipsis"
-                         Text="{Binding NickName, UpdateSourceTrigger=PropertyChanged}"
-                         Margin="0,-22"
-                         Padding="3"
-                         FontSize="11" 
-                         FontWeight="Normal" 
-                         TextAlignment="Center" 
-                         IsHitTestVisible="False" 
-                         Canvas.ZIndex="99" 
-                         Height ="22"
-                         Width="{Binding ElementName=grid, Path=ActualWidth}"
-                         MaxWidth="{Binding ElementName=grid, Path=ActualWidth}"
-                         Background="#99000000" FontStyle="Normal" Foreground="LightGray">
-            </TextBlock>
-
-        </Grid>
-    
+    </Grid>
 </UserControl>
