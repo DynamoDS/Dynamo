@@ -42,7 +42,11 @@ namespace Dynamo.Nodes
         protected dynElementSelection(PortData outPortData)
         {
             OutPortData.Add(outPortData);
+            RegisterAllPorts();
+        }
 
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             //add a button to the inputGrid on the dynElement
             selectButton = new System.Windows.Controls.Button();
             selectButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
@@ -63,15 +67,15 @@ namespace Dynamo.Nodes
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
 
-            NodeUI.SetRowAmount(2);
+            //NodeUI.SetRowAmount(2);
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
             NodeUI.inputGrid.Children.Add(tb);
             NodeUI.inputGrid.Children.Add(selectButton);
 
             System.Windows.Controls.Grid.SetRow(selectButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
-
-            RegisterAllPorts();
 
             NodeUI.topControl.Height = 60;
             NodeUI.topControl.Width = 200;
@@ -199,6 +203,11 @@ namespace Dynamo.Nodes
         protected dynMultipleElementSelection(PortData outData)
         {
             OutPortData.Add(outData);
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
 
             //add a button to the inputGrid on the dynElement
             selectButton = new System.Windows.Controls.Button();
@@ -220,15 +229,15 @@ namespace Dynamo.Nodes
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
 
-            NodeUI.SetRowAmount(2);
+            //NodeUI.SetRowAmount(2);
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
             NodeUI.inputGrid.Children.Add(tb);
             NodeUI.inputGrid.Children.Add(selectButton);
 
             System.Windows.Controls.Grid.SetRow(selectButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
-
-            RegisterAllPorts();
 
             NodeUI.topControl.Height = 60;
             NodeUI.UpdateLayout();

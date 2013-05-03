@@ -53,6 +53,8 @@ namespace Dynamo.Controls
 
         }
 
+        #endregion
+
         private void OnLayoutUpdated(object sender, EventArgs eventArgs)
         {
             if (ViewModel != null)
@@ -80,8 +82,6 @@ namespace Dynamo.Controls
             //to the model to ask for types to load custom UI elements
             ViewModel.SetupCustomUIElementsCommand.Execute(this);
         }
-
-        #endregion
 
         private Dictionary<UIElement, bool> enabledDict 
             = new Dictionary<UIElement, bool>();

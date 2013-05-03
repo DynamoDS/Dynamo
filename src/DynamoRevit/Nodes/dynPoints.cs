@@ -452,10 +452,13 @@ namespace Dynamo.Nodes
 
         public dynPlaneFromRefPoint()
         {
-
             InPortData.Add(new PortData("pt", "The point to extract the plane from", typeof(object)));
             OutPortData.Add(new PortData("r", "Reference", typeof(Reference)));
+            RegisterAllPorts();
+        }
 
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             //add a drop down list to the window
             combo = new ComboBox();
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -472,8 +475,6 @@ namespace Dynamo.Nodes
             };
 
             PopulateComboBox();
-
-            RegisterAllPorts();
         }
 
         void combo_DropDownOpened(object sender, EventArgs e)

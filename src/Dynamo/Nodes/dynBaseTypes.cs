@@ -75,6 +75,7 @@ namespace Dynamo.Nodes
         public const string SELECTION = "Selection";
         public const string EXECUTION = "Execution";
         public const string SIMULATION = "Simulation";
+        public const string REVIT_API = "Revit API";
     }
 
     static class Utilities

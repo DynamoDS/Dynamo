@@ -121,6 +121,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource_en_us.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Nodes_32_32.png" />

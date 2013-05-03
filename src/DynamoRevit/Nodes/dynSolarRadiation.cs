@@ -75,7 +75,12 @@ namespace Dynamo.Nodes
         public dynAnalysisResultsBySelection()
         {
             OutPortData.Add(new PortData("ar", "Analysis Results referenced by this operation.", typeof(Element)));
+            RegisterAllPorts();
 
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             //add a button to the inputGrid on the dynElement
             Button analysisResultButt = new Button();
             NodeUI.inputGrid.Children.Add(analysisResultButt);
@@ -86,9 +91,6 @@ namespace Dynamo.Nodes
             analysisResultButt.Content = "Select AR";
             analysisResultButt.HorizontalAlignment = HorizontalAlignment.Stretch;
             analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
-
-            RegisterAllPorts();
-
         }
 
         public Element pickedAnalysisResult;
@@ -163,7 +165,11 @@ namespace Dynamo.Nodes
         public dynSunPathDirection()
         {
             OutPortData.Add(new PortData("XYZ", "XYZ", typeof(XYZ)));
+            RegisterAllPorts();  
+        }
 
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             //add a button to the inputGrid on the dynElement
             sunPathButt = new System.Windows.Controls.Button();
             //this.inputGrid.Children.Add(sunPathButt);
@@ -194,12 +200,9 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(sunPathButt, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            RegisterAllPorts();
-
             NodeUI.topControl.Height = 60;
             NodeUI.UpdateLayout();
         }
-
 
         /// <summary>
         /// Description of ShadowCalculatorUtils.

@@ -193,7 +193,7 @@ namespace Dynamo.Utilities
                 {
                     ReferencePoint rp = null;
 
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
@@ -233,7 +233,7 @@ namespace Dynamo.Utilities
                     CurveElement c = null;
                     Curve cv = null;
 
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
@@ -265,7 +265,7 @@ namespace Dynamo.Utilities
                     //CurveElement c = null;
                     //Curve cv = null;
 
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
@@ -318,7 +318,7 @@ namespace Dynamo.Utilities
                 {
                     Face f = null;
 
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
@@ -356,7 +356,7 @@ namespace Dynamo.Utilities
             {
                 try
                 {
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
@@ -390,7 +390,7 @@ namespace Dynamo.Utilities
                 {
                     Form f = null;
 
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
@@ -425,7 +425,7 @@ namespace Dynamo.Utilities
                 {
                     //FamilySymbol fs = null;
 
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
@@ -457,7 +457,7 @@ namespace Dynamo.Utilities
             {
                 try
                 {
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
@@ -484,7 +484,7 @@ namespace Dynamo.Utilities
             {
                 try
                 {
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
@@ -521,7 +521,7 @@ namespace Dynamo.Utilities
                     {
                         sfm.GetRegisteredResults();
 
-                        Selection choices = doc.Selection;
+                        Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                         choices.Elements.Clear();
 

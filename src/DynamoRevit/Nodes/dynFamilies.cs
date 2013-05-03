@@ -43,6 +43,13 @@ namespace Dynamo.Nodes
 
         public dynFamilyTypeSelector()
         {
+            OutPortData.Add(new PortData("", "Family type", typeof(FamilySymbol)));
+
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             //widen the control
             NodeUI.topControl.Width = 300;
 
@@ -62,10 +69,6 @@ namespace Dynamo.Nodes
             };
 
             PopulateComboBox();
-            
-            OutPortData.Add(new PortData("", "Family type", typeof(FamilySymbol)));
-
-            RegisterAllPorts();
         }
 
         void combo_DropDownOpened(object sender, EventArgs e)
@@ -135,6 +138,14 @@ namespace Dynamo.Nodes
 
         public dynFamilyInstanceParameterSelector()
         {
+            InPortData.Add(new PortData("f", "Family Symbol or Instance", typeof(Element)));
+            OutPortData.Add(new PortData("", "Parameter Name", typeof(string)));
+
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             //widen the control
             NodeUI.topControl.Width = 175;
 
@@ -155,11 +166,6 @@ namespace Dynamo.Nodes
             };
 
             paramBox.IsEnabled = false;
-
-            InPortData.Add(new PortData("f", "Family Symbol or Instance", typeof(Element)));
-            OutPortData.Add(new PortData("", "Parameter Name", typeof(string)));
-
-            RegisterAllPorts();
         }
 
         private static string getStorageTypeString(StorageType st)

@@ -17,6 +17,7 @@ using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Controls;
 using Microsoft.FSharp.Collections;
 using System.IO.Ports;
 using Dynamo.Connectors;
@@ -44,6 +45,7 @@ namespace Dynamo.Nodes
         List<LinesVisual3D> linesList;
         System.Windows.Point rightMousePoint;
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
+        private dynNodeView nodeUI;
 
         bool isScreenShot= false;
         //bool isDrawingPoints;
@@ -72,13 +74,19 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("OUT", "Watch contents, passed through", typeof(object)));
 
             RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
+            //TODO: find a way that we don't have to store this reference
+            nodeUI = NodeUI;
 
             //get rid of right click delete
             //this.MainContextMenu.Items.Clear();
 
             MenuItem mi = new MenuItem();
             mi.Header = "Zoom to Fit";
-            mi.Click +=new RoutedEventHandler(mi_Click);
+            mi.Click += new RoutedEventHandler(mi_Click);
 
             NodeUI.MainContextMenu.Items.Add(mi);
 
@@ -112,7 +120,7 @@ namespace Dynamo.Nodes
             //RenderOptions.SetEdgeMode(view,EdgeMode.Aliased);
             RenderOptions.SetEdgeMode(view, EdgeMode.Unspecified);
             view.ShowViewCube = false;
-            
+
             //view.IsHitTestVisible = true;
             view.ShowFrameRate = true;
 
@@ -165,7 +173,7 @@ namespace Dynamo.Nodes
             Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
             backgroundRect.Stroke = strokeBrush;
             backgroundRect.StrokeThickness = 1;
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250,250,216));
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
             backgroundRect.Fill = backgroundBrush;
             NodeUI.inputGrid.Children.Add(backgroundRect);
             NodeUI.inputGrid.Children.Add(view);
@@ -175,7 +183,7 @@ namespace Dynamo.Nodes
 
         void view_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            rightMousePoint = e.GetPosition(NodeUI.topControl);
+            rightMousePoint = e.GetPosition(nodeUI.topControl);
         }
 
         void view_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -183,7 +191,7 @@ namespace Dynamo.Nodes
             //if the mouse has moved, and this is a right
             //click, we assume rotation. handle the event
             //so we don't show the context menu
-            if (e.GetPosition(NodeUI.topControl) != rightMousePoint)
+            if (e.GetPosition(nodeUI.topControl) != rightMousePoint)
             {
                 e.Handled = true;
             }
@@ -219,8 +227,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
-
-            NodeUI.Dispatcher.Invoke(new Action(
+            OnDispatchedToUI(this, new UIDispatcherEventArgs(new Action(
                delegate
                {
                     //If we are receiving a list, we test to see if they are XYZs or curves and then make Preview3d elements.
@@ -269,7 +276,7 @@ namespace Dynamo.Nodes
                             RaisePropertyChanged("Points");
                         }
                     }
-               }));
+               })));;
 
             return input; //watch 3d should be a 'pass through' node
             

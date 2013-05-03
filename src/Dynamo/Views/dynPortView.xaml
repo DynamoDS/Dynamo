@@ -47,7 +47,7 @@
                     </Style>
                 </Canvas.Style>
             </Canvas>
-
+            
             <TextBlock Name="portNameTb" Width="Auto"
                    Text="{Binding Path=PortName,Mode=TwoWay}"
                    VerticalAlignment="Center"

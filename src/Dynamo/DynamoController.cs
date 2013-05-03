@@ -89,7 +89,7 @@ namespace Dynamo
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(ExecutionEnvironment env, bool withUI)
+        public DynamoController(ExecutionEnvironment env, bool withUI, Type viewModelType)
         {
             dynSettings.Controller = this;
 
@@ -98,7 +98,8 @@ namespace Dynamo
 
             //MVVM : create the view model to which the main window will bind
             //the DynamoModel is created therein
-            this.DynamoViewModel = new DynamoViewModel(this);
+            //this.DynamoViewModel = new DynamoViewModel(this);
+            this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(viewModelType,new object[]{this});
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

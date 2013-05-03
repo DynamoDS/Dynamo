@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Autodesk.Revit.DB;
@@ -90,13 +90,15 @@ namespace Dynamo.Revit
         {
             var controller = dynRevitSettings.Controller;
 
-            bool debug = controller.RunInDebug;
+            bool debug = controller.DynamoViewModel.RunInDebug;
 
             if (!debug)
             {
                 #region no debug
 
-                if (controller.TransMode == DynamoController_Revit.TransactionMode.Manual && !controller.IsTransactionActive())
+                if ((controller.DynamoViewModel as DynamoRevitViewModel).TransMode == 
+                    DynamoRevitViewModel.TransactionMode.Manual && 
+                    !controller.IsTransactionActive())
                 {
                     throw new Exception("A Revit transaction is required in order evaluate this element.");
                 }
@@ -122,7 +124,7 @@ namespace Dynamo.Revit
 
                 Bench.Dispatcher.Invoke(new Action(
                    () =>
-                      dynSettings.Controller.DynamoViewModel.Log("Starting a debug transaction for element: " + NodeUI.NickName)
+                      dynSettings.Controller.DynamoViewModel.Log("Starting a debug transaction for element: " + NickName)
                 ));
 
                 IdlePromise.ExecuteOnIdle(
@@ -197,7 +199,7 @@ namespace Dynamo.Revit
                    {
                        runCount = 0;
 
-                       var query = controller.HomeSpace.Nodes
+                       var query = controller.DynamoViewModel.Model.HomeSpace.Nodes
                            .Where(x => x is dynFunctionWithRevit)
                            .Select(x => (x as dynFunctionWithRevit).ElementsContainer)
                            .Where(c => c.HasElements(this))
