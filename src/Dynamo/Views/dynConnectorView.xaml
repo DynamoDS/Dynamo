@@ -7,6 +7,16 @@
 
     <Grid>
 
+        <Grid.Resources>
+            <Style x:Key="ConnectorStyle" TargetType="Path">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=IsConnecting, Mode=OneWay}" Value="True">
+                        <Setter Property="StrokeDashArray" Value="2"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
+        
         <Canvas Canvas.Top="0" Canvas.Left="0">
             
             <Ellipse Name="endDot" Width="6" Height="6" Margin="-3"  Fill="Black" IsHitTestVisible="False"
@@ -19,7 +29,8 @@
 
         <Path Stroke="{Binding StrokeBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
               Name="connector" MouseEnter="Highlight" MouseLeave="Unhighlight"
-              Visibility="{Binding BezVisibility}">
+              Visibility="{Binding BezVisibility}" Style="{StaticResource ConnectorStyle}">
+            
             <Path.Data>
                 <PathGeometry>
                     <PathGeometry.Figures>
@@ -36,10 +47,11 @@
                 </PathGeometry>
             </Path.Data>
         </Path>
-        
-        <Path Stroke="{Binding Path=StrokeBrush}" StrokeThickness="{Binding StrokeThickness}" 
-              Name="plineConnector" MouseEnter="Highlight" MouseLeave="Unhighlight"
+
+        <Path Stroke="{Binding Path=StrokeBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
+              Name="plineConnector" MouseEnter="Highlight" MouseLeave="Unhighlight" Style="{StaticResource ConnectorStyle}"
               Visibility="{Binding PlineVisibility}">
+            
             <Path.Data>
                 <PathGeometry>
                     <PathGeometry.Figures>

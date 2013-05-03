@@ -64,6 +64,7 @@ namespace Dynamo.Controls
 
         private string logText;
         private ConnectorType connectorType;
+
         private Point transformOrigin;
         private bool consoleShowing;
         private DynamoController controller;

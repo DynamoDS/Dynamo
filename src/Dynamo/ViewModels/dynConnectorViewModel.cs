@@ -43,6 +43,17 @@ namespace Dynamo.Connectors
             }
         }
 
+        private bool _isConnecting = false;
+        public bool IsConnecting
+        {
+            get { return _isConnecting; }
+            set
+            {
+                _isConnecting = value;
+                RaisePropertyChanged("IsConnecting");
+            }
+        }
+
         private bool _isHitTestVisible = false;
         public bool IsHitTestVisible
         {
@@ -212,6 +223,7 @@ namespace Dynamo.Connectors
             var bc = new BrushConverter();
             _strokeBrush = (Brush)bc.ConvertFrom("#313131");
 
+            IsConnecting = true;
             _activeStartPort = port;
 
             // makes sure that all of the positions on the curve path are
@@ -219,15 +231,6 @@ namespace Dynamo.Connectors
             this.Redraw(port.Center);
 
         }
-
-        //MVVM : put this here somewhere
-
-        //turn the connector back to dashed
-        /*connector.StrokeDashArray.Add(5);
-        connector.StrokeDashArray.Add(2);
-
-        plineConnector.StrokeDashArray.Add(5);
-        plineConnector.StrokeDashArray.Add(2);*/
 
         public dynConnectorViewModel(dynConnectorModel model)
         {
@@ -240,10 +243,12 @@ namespace Dynamo.Connectors
             _strokeBrush = (Brush)bc.ConvertFrom("#313131");
 
             _model = model;
-
+            
             _model.Start.PropertyChanged += Start_PropertyChanged;
             _model.End.PropertyChanged += End_PropertyChanged;
             _model.PropertyChanged += Model_PropertyChanged;
+
+            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
         }
 
         void ModelConnected(object sender, EventArgs e)
@@ -262,7 +267,7 @@ namespace Dynamo.Connectors
             _model.Start.PropertyChanged += Start_PropertyChanged;
             _model.End.PropertyChanged += End_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
-            dynSettings.Controller.DynamoViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DynamoViewModel_PropertyChanged);
+            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
             IsHitTestVisible = false;
         }
 
@@ -271,9 +276,17 @@ namespace Dynamo.Connectors
             switch (e.PropertyName)
             {
                 case "ConnectorType":
-                    RaisePropertyChanged("BezVisibility");
-                    RaisePropertyChanged("PlineVisibility");
-                    break;
+                    if (dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
+                    {
+                        BezVisibility = Visibility.Visible;
+                        PlineVisibility = Visibility.Hidden;
+                    }
+                    else
+                    {
+                        BezVisibility = Visibility.Hidden;
+                        PlineVisibility = Visibility.Visible;
+                    }
+                break;
             }
         }
 

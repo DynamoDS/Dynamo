@@ -159,6 +159,26 @@
             <MenuItem Header="_View" Name="viewMenu">
                 <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
                           Command="{Binding Path=ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
+
+                <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
+                    <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" 
+                              IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
+                              Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="BEZIER" Header="Curves"/>
+
+                    <MenuItem Name="settings_plines" IsCheckable="True" 
+
+                              IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
+                              Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
+                </MenuItem>
+
+                <MenuItem Focusable="False" Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >
+                    <MenuItem Focusable="False" Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
+                    <MenuItem Focusable="False" Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
+                    <MenuItem Focusable="False" Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
+
+                    <MenuItem Focusable="False" Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
+                </MenuItem>
+                
             </MenuItem>
 
             <MenuItem Header="_Workspaces" Name="workspacesMenu">
@@ -175,29 +195,6 @@
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
                 </MenuItem>
-            </MenuItem>
-
-            <MenuItem Header="Settings" Focusable="False">
-
-                <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
-                    <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" 
-                              IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
-                              Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="BEZIER" Header="Curves"/>
-
-                    <MenuItem Name="settings_plines" IsCheckable="True" 
-
-                              IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
-                              Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
-                </MenuItem>
-
-               <MenuItem Focusable="False" Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >
-          <MenuItem Focusable="False" Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
-          <MenuItem Focusable="False" Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
-          <MenuItem Focusable="False" Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
-
-          <MenuItem Focusable="False" Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
-        </MenuItem>
-              
             </MenuItem>
 
             <MenuItem Header="Help" Focusable="False">
