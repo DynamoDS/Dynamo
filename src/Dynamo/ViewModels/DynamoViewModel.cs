@@ -848,7 +848,10 @@ namespace Dynamo.Controls
                 var nodeData = new Dictionary<string, object>();
                 nodeData.Add("x", node.X);
                 nodeData.Add("y", node.Y + 100);
-                nodeData.Add("name", node.NickName);
+                if(node is dynFunction)
+                    nodeData.Add("name", (node as dynFunction).Definition.FunctionId);
+                else
+                    nodeData.Add("name", node.NickName);
                 nodeData.Add("guid", newGuid);
 
                 if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.GetType()))
