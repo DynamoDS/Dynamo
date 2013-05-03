@@ -4,7 +4,7 @@
     xmlns:connectors="clr-namespace:Dynamo.Connectors"
     Height="20" 
     Width="Auto"
-             MinWidth="50"
+             MinWidth="20"
     MouseLeftButtonDown="UserControl_MouseLeftButtonDown" 
              MouseEnter="DynPort_OnMouseEnter"
              MouseLeave="DynPort_OnMouseLeave"
