@@ -1357,10 +1357,11 @@ namespace Dynamo.Controls
                 dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Connectors.Remove(conn);
             }
 
+            node.DisableReporting();
+            node.Destroy();
             node.Cleanup();
             DynamoSelection.Instance.Selection.Remove(node);
-            dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Nodes.Remove(node);
-
+            node.WorkSpace.Nodes.Remove(node);
         }
 
         private void AddToSelection(object parameters)

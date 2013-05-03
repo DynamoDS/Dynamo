@@ -13,7 +13,6 @@
 //limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -27,16 +26,10 @@ namespace Dynamo.Controls
     {
         public const int CANVAS_OFFSET_Y = 0;
         public const int CANVAS_OFFSET_X = 0;
-        
-        internal Dictionary<string, Expander> addMenuCategoryDict
-            = new Dictionary<string, Expander>();
-
-        internal Dictionary<string, dynNodeView> addMenuItemsDictNew
-            = new Dictionary<string, dynNodeView>();
 
         private Point dragOffset;
         private dynNodeView draggedNode;
-        private DynamoViewModel vm;
+        private DynamoViewModel _vm;
 
         public bool UILocked { get; private set; }
 
@@ -56,13 +49,12 @@ namespace Dynamo.Controls
         {
 
             this.WorkspaceTabs.SelectedIndex = 0;
-            vm = (DataContext as DynamoViewModel);
-            vm.UILocked += LockUI;
-            vm.UIUnlocked += UnlockUI;
+            _vm = (DataContext as DynamoViewModel);
+            _vm.UILocked += LockUI;
+            _vm.UIUnlocked += UnlockUI;
 
-            vm.RequestLayoutUpdate += vm_RequestLayoutUpdate;
-            //tell the view model to do some port ui-loading 
-            vm.PostUIActivationCommand.Execute();
+            _vm.RequestLayoutUpdate += vm_RequestLayoutUpdate;
+            _vm.PostUIActivationCommand.Execute();
         }
 
         private void LockUI(object sender, EventArgs e)
@@ -88,7 +80,7 @@ namespace Dynamo.Controls
 
         private void WindowClosed(object sender, EventArgs e)
         {
-            vm.CleanupCommand.Execute();
+            _vm.CleanupCommand.Execute();
         }
 
         private void OverlayCanvas_OnMouseMove(object sender, MouseEventArgs e)
