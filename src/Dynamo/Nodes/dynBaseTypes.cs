@@ -2259,8 +2259,6 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
-            //inputGrid.Margin = new System.Windows.Thickness(5,5,20,5);
-
             //add a text box to the input grid of the control
             rbTrue = new System.Windows.Controls.RadioButton();
             rbFalse = new System.Windows.Controls.RadioButton();
@@ -2294,7 +2292,17 @@ namespace Dynamo.Nodes
             rbFalse.IsChecked = true;
             rbTrue.Checked += new System.Windows.RoutedEventHandler(rbTrue_Checked);
             rbFalse.Checked += new System.Windows.RoutedEventHandler(rbFalse_Checked);
-            //outPort.Object = false;
+
+            if (Value)
+            {
+                rbFalse.IsChecked = false;
+                rbTrue.IsChecked = true;
+            }
+            else
+            {
+                rbFalse.IsChecked = true;
+                rbTrue.IsChecked = false;
+            }
         }
 
         protected override bool DeserializeValue(string val)
@@ -2314,15 +2322,20 @@ namespace Dynamo.Nodes
             set
             {
                 base.Value = value;
-                if (value)
+
+                //TODO: replace this with a binding
+                if (rbFalse != null)
                 {
-                    rbFalse.IsChecked = false;
-                    rbTrue.IsChecked = true;
-                }
-                else
-                {
-                    rbFalse.IsChecked = true;
-                    rbTrue.IsChecked = false;
+                    if (value)
+                    {
+                        rbFalse.IsChecked = false;
+                        rbTrue.IsChecked = true;
+                    }
+                    else
+                    {
+                        rbFalse.IsChecked = true;
+                        rbTrue.IsChecked = false;
+                    }
                 }
             }
         }
@@ -2435,7 +2448,7 @@ namespace Dynamo.Nodes
         {
             //add a button to the inputGrid on the dynElement
             System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();
-            readFileButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+            //readFileButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
             readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             readFileButton.Click += new System.Windows.RoutedEventHandler(readFileButton_Click);
@@ -2444,7 +2457,6 @@ namespace Dynamo.Nodes
             readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
             tb = new TextBox();
-            //tb.Text = "No file selected.";
             Value = "No file selected.";
 
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -2466,8 +2478,8 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(readFileButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            NodeUI.topControl.Height = 60;
-            NodeUI.UpdateLayout();
+            //NodeUI.topControl.Height = 60;
+            //NodeUI.UpdateLayout();
 
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
