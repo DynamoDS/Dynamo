@@ -166,16 +166,16 @@ namespace Dynamo.Connectors
         /// Returns visible if the connectors is in the current space and the 
         /// model's current connector type is BEZIER
         /// </summary>
-        private Visibility _bezVisibility = Visibility.Visible;
         public Visibility BezVisibility
         {
             get
             {
-                return _bezVisibility;
+                if (dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
+                    return Visibility.Visible;
+                return Visibility.Hidden;
             }
             set
             {
-                _bezVisibility = value;
                 RaisePropertyChanged("BezVisibility");
             }
         }
@@ -184,13 +184,16 @@ namespace Dynamo.Connectors
         /// Returns visible if the connectors is in the current space and the 
         /// model's current connector type is POLYLINE
         /// </summary>
-        private Visibility _plineVisibility = Visibility.Hidden;
         public Visibility PlineVisibility
         {
-            get { return _plineVisibility; }
+            get
+            {
+                if (dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.POLYLINE)
+                    return Visibility.Visible;
+                return Visibility.Hidden;
+            }
             set
             {
-                _plineVisibility = value;
                 RaisePropertyChanged("PlineVisibility");
             }
         }
@@ -259,7 +262,19 @@ namespace Dynamo.Connectors
             _model.Start.PropertyChanged += Start_PropertyChanged;
             _model.End.PropertyChanged += End_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
+            dynSettings.Controller.DynamoViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DynamoViewModel_PropertyChanged);
             IsHitTestVisible = false;
+        }
+
+        void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ConnectorType":
+                    RaisePropertyChanged("BezVisibility");
+                    RaisePropertyChanged("PlineVisibility");
+                    break;
+            }
         }
 
         void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

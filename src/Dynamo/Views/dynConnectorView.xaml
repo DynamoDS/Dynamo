@@ -19,7 +19,7 @@
 
         <Path Stroke="{Binding StrokeBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
               Name="connector" MouseEnter="Highlight" MouseLeave="Unhighlight"
-              Visibility="Visible">
+              Visibility="{Binding BezVisibility}">
             <Path.Data>
                 <PathGeometry>
                     <PathGeometry.Figures>
