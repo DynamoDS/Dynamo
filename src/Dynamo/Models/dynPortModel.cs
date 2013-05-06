@@ -204,7 +204,7 @@ namespace Dynamo.Connectors
         public PortData(string nickName, string tip, Type portType)
         {
             if (string.IsNullOrEmpty(nickName))
-                NickName = ">>";
+                NickName = ">";
             else
                 NickName = nickName;
             ToolTipString = tip;

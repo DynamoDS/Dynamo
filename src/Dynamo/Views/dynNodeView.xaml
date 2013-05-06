@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:Dynamo.Controls" xmlns:commands="clr-namespace:Dynamo.Commands"
              xmlns:connectors="clr-namespace:Dynamo.Connectors"
              Height="Auto"
-    MinWidth="100"
     Width="Auto" 
     Name="topControl" 
     Loaded="topControl_Loaded" 
@@ -77,9 +76,9 @@
 
         <Grid Canvas.ZIndex="101" Grid.Row="1" Margin="5" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="Auto" MinWidth="20"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto" MinWidth="40"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
