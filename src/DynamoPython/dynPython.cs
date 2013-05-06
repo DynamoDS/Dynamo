@@ -169,10 +169,14 @@ namespace Dynamo.Nodes
             catch (SyntaxErrorException ex)
             {
                 throw new Exception(
-                   ex.Message
-                   + " at Line " + (ex.Line - 4)
-                   + ", Column " + ex.Column
-                );
+                    ex.Message
+                    + " at Line " + (ex.Line - 4)
+                    + ", Column " + ex.Column
+                    );
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message + ":" + e.StackTrace);
             }
 
             Value result = Value.NewNumber(1);

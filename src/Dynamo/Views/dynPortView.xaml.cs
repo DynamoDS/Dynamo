@@ -88,8 +88,8 @@ namespace Dynamo.Connectors
                 
                 //put the "center" at one edge of the port
                 if(ViewModel.PortType == PortType.INPUT)
-                    return new Point(rootPoint.X - portRect.ActualWidth / 2 - 5, rootPoint.Y);
-                return new Point(rootPoint.X + portRect.ActualWidth/2 + 5, rootPoint.Y);
+                    return new Point(rootPoint.X - portRect.ActualWidth / 2 - 3, rootPoint.Y);
+                return new Point(rootPoint.X + portRect.ActualWidth/2 + 3, rootPoint.Y);
             }
 
             return new Point();
