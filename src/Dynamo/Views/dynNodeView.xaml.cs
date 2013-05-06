@@ -50,7 +50,7 @@ namespace Dynamo.Controls
             this.LayoutUpdated += OnLayoutUpdated;
             
             Canvas.SetZIndex(this, 1);
-
+            
         }
 
         #endregion
