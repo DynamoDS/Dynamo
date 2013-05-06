@@ -512,10 +512,6 @@ namespace Dynamo.Utilities
                 this.loadedNodes.Add(def.FunctionId, def);
 
                 dynWorkspaceModel ws = def.Workspace;
-                
-                dynSettings.Controller.DynamoViewModel.Model.Workspaces.Add(ws);
-
-                //this.Log("Opening definition " + xmlPath + "...");
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
@@ -747,7 +743,7 @@ namespace Dynamo.Utilities
             return true;
         }
 
-        private static FScheme.Expression CompileFunction( FunctionDefinition definition ) {
+        public static FScheme.Expression CompileFunction( FunctionDefinition definition ) {
 
             if (definition == null)
                 return null;

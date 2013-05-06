@@ -245,12 +245,18 @@ namespace Dynamo.Controls
             get { return _model.Workspaces.IndexOf(_model.CurrentSpace); }
             set
             {
-                //before you set the value, save the current workspace
-                if(_model.CurrentSpace != _model.HomeSpace)
-                    SaveFunction(Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace));
+                //before you set the value, save and compile the workspace
+                if (_model.CurrentSpace != _model.HomeSpace)
+                {
+                    var def = Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace);
+                    SaveFunction(def, true, false);
+                }
+                    
                 _model.CurrentSpace = _model.Workspaces[value];
             }
         }
+
+
 
         /// <summary>
         /// Get the workspace view model whose workspace model is the model's current workspace
@@ -1901,7 +1907,7 @@ namespace Dynamo.Controls
         /// <param name="definition">The definition to saveo</param>
         /// <param name="bool">Whether to write the function to file.</param>
         /// <returns>Whether the operation was successful</returns>
-        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true)
+        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = true)
         {
             if (definition == null)
                 return;
@@ -1922,9 +1928,9 @@ namespace Dynamo.Controls
 
                     string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
                     dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
-                    Controller.SearchViewModel.Add(definition.Workspace);
-                    Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, 
-                        functionWorkspace.Category, definition.FunctionId,path);
+                    if (addToSearch) 
+                        Controller.SearchViewModel.Add(definition.Workspace);
+                    Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId, path);
                 }
                 catch (Exception e)
                 {
@@ -2197,15 +2203,12 @@ namespace Dynamo.Controls
         internal void ViewHomeWorkspace()
         {
 
-            SaveFunction( Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace) );
+            SaveFunctionOnly( Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace) );
 
             //Step 4: Make home workspace visible
             _model.CurrentSpace = _model.HomeSpace;
-
-            // TODO: get this out of here
-            Controller.PackageManagerClient.HidePackageControlInformation();
-
             _model.CurrentSpace.OnDisplayed();
+
         }
 
         /// <summary>
@@ -2218,22 +2221,16 @@ namespace Dynamo.Controls
                 return;
 
             dynWorkspaceModel newWs = symbol.Workspace;
+            this._model.Workspaces.Add(newWs);
 
             CurrentSpaceViewModel.OnStopDragging(this, EventArgs.Empty);
 
             if (!ViewingHomespace)
             {
-                //Step 2: Store function workspace in the function dictionary
-                //this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
-
-                //Step 3: Save function
-                SaveFunction(Controller.CustomNodeLoader.GetDefinitionFromWorkspace(newWs));
+                SaveFunctionOnly(Controller.CustomNodeLoader.GetDefinitionFromWorkspace(newWs));
             }
 
             _model.CurrentSpace = newWs;
-
-            Controller.PackageManagerClient.ShowPackageControlInformation();
-
             _model.CurrentSpace.OnDisplayed();
         }
 

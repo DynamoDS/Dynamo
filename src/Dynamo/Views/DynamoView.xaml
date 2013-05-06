@@ -222,9 +222,20 @@
                                     <Grid>
                                         <Border 
                                           Name="Border"
-                                          Background="#444"
                                           BorderBrush="Black" 
                                           BorderThickness="1,1,1,0" >
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                            <Setter Property="Background" Value="#555"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
+                                                            <Setter Property="Background" Value="#333"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
                                             <ContentPresenter x:Name="ContentSite"
                                                 VerticalAlignment="Center"
                                                 HorizontalAlignment="Center"
@@ -242,8 +253,8 @@
                             <sys:Double x:Key="CloseCircleWidth">12</sys:Double>
                             <sys:Double x:Key="CloseButtonOffset">3</sys:Double>
                         </Style.Resources>
-                        <Setter Property="Height" Value="10" />
-                        <Setter Property="Width" Value="{StaticResource CloseCircleWidth}" />
+                        <!--<Setter Property="Height" Value="10" />
+                        <Setter Property="Width" Value="{StaticResource CloseCircleWidth}" />-->
                         <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="HorizontalAlignment" Value="Center" />
                         <Setter Property="Background" Value="Transparent" />
@@ -253,11 +264,25 @@
                                 <ControlTemplate TargetType="Button">
                                     
                                     <Canvas Background="Transparent" x:Name="CloseButton" Margin="0" Width="{StaticResource CloseCircleWidth}" Height="{StaticResource CloseCircleWidth}">
+                                        
                                         <Ellipse Width="{StaticResource CloseCircleWidth}" Fill="{TemplateBinding Background}" Height="{StaticResource CloseCircleWidth}" />
                                         <Canvas Canvas.Left="{StaticResource CloseButtonOffset}" Canvas.Top="{StaticResource CloseButtonOffset}" Background="Transparent" Width="{StaticResource CloseButtonWidth}" Height="{StaticResource CloseButtonWidth}">
                                             <Line X1="0" Y1="0" X2="{StaticResource CloseButtonWidth}" Y2="{StaticResource CloseButtonWidth}" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
                                             <Line X1="0" Y1="{StaticResource CloseButtonWidth}" X2="{StaticResource CloseButtonWidth}" Y2="0" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
                                         </Canvas>
+
+                                        <Canvas.Style>
+                                            <Style TargetType="Canvas">
+                                                <Style.Triggers>
+
+                                                    <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type dynamo:HomeWorkspace}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Canvas.Style>
+                                        
                                     </Canvas>
                                     
                                 </ControlTemplate>
@@ -277,9 +302,11 @@
                     
                     <DataTemplate>
                         
-                        <StackPanel Orientation="Horizontal" Background="#444" Margin="10,5,10,5">
+                        <StackPanel Orientation="Horizontal" Margin="10,5,10,5">
                             <TextBlock Foreground ="GhostWhite" Text="{Binding Name}" Margin="5,2,10,0"></TextBlock>
-                            <Button Style="{StaticResource CloseButtonStyle}"></Button>
+                            <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}">
+                                
+                            </Button>
                         </StackPanel>
                         
                     </DataTemplate>

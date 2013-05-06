@@ -355,6 +355,18 @@ namespace Dynamo
 
         #endregion
 
+        /// <summary>
+        ///     Defines whether this is the current space in Dynamo
+        /// </summary>
+        private bool _isCurrentSpace = false;
+        public bool IsCurrentSpace
+        {
+            get { return _isCurrentSpace; }
+            set { 
+                _isCurrentSpace = value;
+                RaisePropertyChanged("IsCurrentSpace");
+            }
+        }
     }
 
     internal static class WorkspaceHelpers

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Data;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,32 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class WorkspaceTypeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is dynWorkspaceViewModel)
+            {
+                var val = (value as dynWorkspaceViewModel).Model.GetType();
+                return val;
+            }
+
+            if (value is dynWorkspaceModel)
+            {
+                return value.GetType();
+            }
+
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
         {
             return null;
         }

@@ -22,7 +22,7 @@ namespace Dynamo
 
     public class dynWorkspaceViewModel: dynViewModelBase
     {
-        #region Properties
+        #region Properties and Fields
 
         public dynWorkspaceModel _model;
         
@@ -115,6 +115,7 @@ namespace Dynamo
             }
         }
 
+        public DelegateCommand<object> HideCommand { get; set; }
         public DelegateCommand<object> CrossSelectCommand { get; set; }
         public DelegateCommand<object> ContainSelectCommand { get; set; }
         public DelegateCommand UpdateSelectedConnectorsCommand { get; set; }
@@ -183,7 +184,7 @@ namespace Dynamo
 
         public bool IsCurrentSpace
         {
-            get { return dynSettings.Controller.DynamoModel.CurrentSpace == _model; }
+            get { return _model.IsCurrentSpace; }
         }
 
         /// <summary>
@@ -232,6 +233,7 @@ namespace Dynamo
             _model.Connectors.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Connectors_CollectionChanged);
             _model.PropertyChanged += ModelPropertyChanged;
 
+            HideCommand = new DelegateCommand<object>(Hide, CanHide);
             CrossSelectCommand = new DelegateCommand<object>(CrossingSelect, CanCrossSelect);
             ContainSelectCommand = new DelegateCommand<object>(ContainSelect, CanContainSelect);
             UpdateSelectedConnectorsCommand = new DelegateCommand(UpdateSelectedConnectors, CanUpdateSelectedConnectors);
@@ -239,16 +241,11 @@ namespace Dynamo
 
             vm.UILocked += new EventHandler(DynamoViewModel_UILocked);
             vm.UIUnlocked += new EventHandler(DynamoViewModel_UIUnlocked);
-        }
 
-        void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "CurrentSpace":
-                    RaisePropertyChanged("IsCurrentSpace");
-                    break;
-            }
+            // sync collections
+            Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes ));
+            Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
+            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Notes));
         }
 
         void DynamoViewModel_UIUnlocked(object sender, EventArgs e)
@@ -346,7 +343,22 @@ namespace Dynamo
                 case "Y":
                     RaisePropertyChanged("CurrentOffset");
                     break;
+                case "IsCurrentSpace":
+                    RaisePropertyChanged("IsCurrentSpace");
+                    break;
             }
+        }
+
+        private void Hide(object parameters)
+        {
+            Console.WriteLine("Query to save the workspace if not saved");
+            dynSettings.Controller.DynamoViewModel.Model.HideWorkspace(this._model);
+        }
+
+        private bool CanHide(object parameters)
+        {
+            // can hide anything but the home workspace
+            return dynSettings.Controller.DynamoViewModel.Model.HomeSpace != this._model;
         }
 
         private void ContainSelect(object parameters)
