@@ -16,6 +16,7 @@ namespace Dynamo
     public class DynamoModel:dynModelBase
     {
         private ObservableCollection<dynWorkspaceModel> _workSpaces = new ObservableCollection<dynWorkspaceModel>();
+        private ObservableCollection<dynWorkspaceModel> _hiddenWorkspaces = new ObservableCollection<dynWorkspaceModel>();
         private dynWorkspaceModel _cspace;
 
         public dynWorkspaceModel CurrentSpace
@@ -23,7 +24,10 @@ namespace Dynamo
             get { return _cspace; }
             internal set
             {
+                if (_cspace != null)
+                    _cspace.IsCurrentSpace = false;
                 _cspace = value;
+                _cspace.IsCurrentSpace = true;
                 RaisePropertyChanged("CurrentSpace");
             }
         }
@@ -31,7 +35,7 @@ namespace Dynamo
         public dynWorkspaceModel HomeSpace { get; protected set; }
 
         /// <summary>
-        /// A collection of workspaces in the dynamo model.
+        ///     The collection of visible workspaces in Dynamo
         /// </summary>
         public ObservableCollection<dynWorkspaceModel> Workspaces
         {
@@ -47,11 +51,11 @@ namespace Dynamo
             get { return CurrentSpace.Nodes.ToList(); }
         }
 
-        /// <summary>
-        /// Construct a Dynamo Model and create a home space.
-        /// </summary>
-        public DynamoModel()
-        {          
+        public void HideWorkspace(dynWorkspaceModel workspace)
+        {
+            this.CurrentSpace = _workSpaces[0];  // typically the home workspace
+            _workSpaces.Remove(workspace);
+            _hiddenWorkspaces.Add(workspace);
         }
 
         /// <summary>

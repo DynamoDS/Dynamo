@@ -5,7 +5,8 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="..\Themes\DynamoColorsAndBrushes.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    
+
+    <controls:WorkspaceTypeConverter x:Key="WorkspaceTypeConverter" />
     <controls:MarginConverter x:Key="MarginConverter" />
     <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter" 
                                       TrueBrush="Cyan" 
