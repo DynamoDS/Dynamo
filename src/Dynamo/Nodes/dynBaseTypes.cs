@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -1959,7 +1960,6 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = true;
             tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            Value = 0.0;
 
             tb.OnChangeCommitted += delegate { 
                 Value = DeserializeValue(tb.Text);
@@ -2022,7 +2022,6 @@ namespace Dynamo.Nodes
         public dynDoubleSliderInput()
         {
             RegisterAllPorts();
-            Value = 50.0;
         }
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
@@ -2041,10 +2040,9 @@ namespace Dynamo.Nodes
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
             tb_slider.ValueChanged += delegate
             {
-                Value = tb_slider.Value;
-
                 var pos = Mouse.GetPosition(NodeUI.elementCanvas);
                 Canvas.SetLeft(displayBox, pos.X);
+                Canvas.SetTop(displayBox, Height);
             };
 
             tb_slider.PreviewMouseDown += delegate
@@ -2052,7 +2050,6 @@ namespace Dynamo.Nodes
                 if (NodeUI.IsEnabled && !NodeUI.elementCanvas.Children.Contains(displayBox))
                 {
                     NodeUI.elementCanvas.Children.Add(displayBox);
-
                     var pos = Mouse.GetPosition(NodeUI.elementCanvas);
                     Canvas.SetLeft(displayBox, pos.X);
                 }
@@ -2077,11 +2074,11 @@ namespace Dynamo.Nodes
             {
                 try
                 {
-                    tb_slider.Minimum = Convert.ToDouble(mintb.Text);
+                    Min = Convert.ToDouble(mintb.Text);
                 }
                 catch
                 {
-                    tb_slider.Minimum = 0;
+                    Min = 0;
                 }
                 dynSettings.ReturnFocusToSearch();
             };
@@ -2098,11 +2095,11 @@ namespace Dynamo.Nodes
             {
                 try
                 {
-                    tb_slider.Maximum = Convert.ToDouble(maxtb.Text);
+                    Max = Convert.ToDouble(maxtb.Text);
                 }
                 catch
                 {
-                    tb_slider.Maximum = 0;
+                    Max = 100;
                 }
                 dynSettings.ReturnFocusToSearch();
             };
@@ -2135,32 +2132,55 @@ namespace Dynamo.Nodes
             var bindingValue = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new StringDisplay()
+                Converter = new StringDisplay(),
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
             displayBox.SetBinding(TextBox.TextProperty, bindingValue);
+
+            var sliderBinding = new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            tb_slider.SetBinding(Slider.ValueProperty, sliderBinding);
 
             var bindingMax = new System.Windows.Data.Binding("Max")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay()
+                Converter = new DoubleDisplay(),
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
             tb_slider.SetBinding(Slider.MaximumProperty, bindingMax);
-            maxtb.SetBinding(TextBox.TextProperty, bindingMax);
+            maxtb.SetBinding(dynTextBox.TextProperty, bindingMax);
 
             var bindingMin = new System.Windows.Data.Binding("Min")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay()
+                Converter = new DoubleDisplay(),
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
             tb_slider.SetBinding(Slider.MinimumProperty, bindingMin);
-            mintb.SetBinding(TextBox.TextProperty, bindingMin);
+            mintb.SetBinding(dynTextBox.TextProperty, bindingMin);
         }
 
+        public override double Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                Debug.WriteLine("Setting Value...");
+                base.Value = value;
+                RaisePropertyChanged("Value");
+            }
+        }
         public double Max
         {
             get { return max; }
             set
             {
+                Debug.WriteLine("Setting Max...");
                 max = value;
                 RaisePropertyChanged("Max");
             }
@@ -2171,6 +2191,7 @@ namespace Dynamo.Nodes
             get { return min; }
             set
             {
+                Debug.WriteLine("Setting Min...");
                 min = value;
                 RaisePropertyChanged("Min");
             } 
@@ -2185,19 +2206,6 @@ namespace Dynamo.Nodes
             catch
             {
                 return 0;
-            }
-        }
-
-        public override double Value
-        {
-            get { return base.Value; }
-            set
-            {
-                if (base.Value == value)
-                    return;
-
-                base.Value = value;
-                RaisePropertyChanged("Value");
             }
         }
 
@@ -2237,11 +2245,7 @@ namespace Dynamo.Nodes
             }
         }
 
-
-
     }
-
- 
 
     [NodeName("Boolean")]
     [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
@@ -2289,20 +2293,25 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(rbFalse, 1);
             System.Windows.Controls.Grid.SetRow(rbFalse, 0);
 
-            rbFalse.IsChecked = true;
+            //rbFalse.IsChecked = true;
             rbTrue.Checked += new System.Windows.RoutedEventHandler(rbTrue_Checked);
             rbFalse.Checked += new System.Windows.RoutedEventHandler(rbFalse_Checked);
 
-            if (Value)
+            rbFalse.DataContext = this;
+            rbTrue.DataContext = this;
+
+            var rbTrueBinding = new System.Windows.Data.Binding("Value")
             {
-                rbFalse.IsChecked = false;
-                rbTrue.IsChecked = true;
-            }
-            else
+                Mode = BindingMode.TwoWay,
+            };
+            rbTrue.SetBinding(System.Windows.Controls.RadioButton.IsCheckedProperty, rbTrueBinding);
+
+            var rbFalseBinding = new System.Windows.Data.Binding("Value")
             {
-                rbFalse.IsChecked = true;
-                rbTrue.IsChecked = false;
-            }
+                Mode = BindingMode.TwoWay,
+                Converter = new InverseBoolDisplay()
+            };
+            rbFalse.SetBinding(System.Windows.Controls.RadioButton.IsCheckedProperty, rbFalseBinding);
         }
 
         protected override bool DeserializeValue(string val)
@@ -2317,38 +2326,15 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override bool Value
-        {
-            set
-            {
-                base.Value = value;
-
-                //TODO: replace this with a binding
-                if (rbFalse != null)
-                {
-                    if (value)
-                    {
-                        rbFalse.IsChecked = false;
-                        rbTrue.IsChecked = true;
-                    }
-                    else
-                    {
-                        rbFalse.IsChecked = true;
-                        rbTrue.IsChecked = false;
-                    }
-                }
-            }
-        }
-
         void rbFalse_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            Value = false;
+            //Value = false;
             dynSettings.ReturnFocusToSearch();
         }
 
         void rbTrue_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            Value = true;
+            //Value = true;
             dynSettings.ReturnFocusToSearch();
         }
     }
@@ -2375,7 +2361,6 @@ namespace Dynamo.Nodes
             NodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
-            tb.Text = "";
 
             tb.OnChangeCommitted += delegate { Value = tb.Text; dynSettings.ReturnFocusToSearch(); };
 
@@ -2457,7 +2442,8 @@ namespace Dynamo.Nodes
             readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
             tb = new TextBox();
-            Value = "No file selected.";
+            if(string.IsNullOrEmpty(Value))
+                Value = "No file selected.";
 
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
@@ -2791,6 +2777,27 @@ namespace Dynamo.Nodes
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
+        }
+    }
+
+    public class InverseBoolDisplay : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is bool)
+            {
+                return !(bool)value;
+            }
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is bool)
+            {
+                return !(bool)value;
+            }
+            return value;
         }
     }
     #endregion
