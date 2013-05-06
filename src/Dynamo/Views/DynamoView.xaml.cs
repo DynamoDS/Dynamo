@@ -80,7 +80,7 @@ namespace Dynamo.Controls
 
         private void WindowClosing(object sender, CancelEventArgs  e)
         {
-            var res = _vm.AttemptSavesOrCancel();
+            var res = _vm.AskUserToSaveWorkspacesOrCancel();
             if (!res)
                 e.Cancel = true;
         }

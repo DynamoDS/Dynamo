@@ -78,6 +78,10 @@ namespace Dynamo
             _workSpaces.Remove(workspace);
         }
 
+
+        public static bool RunEnabled { get; set; }
+
+        public static bool RunInDebug { get; set; }
     }
 
     public class DynamoModelUpdateArgs : EventArgs

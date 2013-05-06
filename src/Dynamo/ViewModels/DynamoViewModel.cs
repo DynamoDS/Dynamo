@@ -625,25 +625,54 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
+        ///     Attempts to save a given workspace.  Shows a save as dialog if the 
+        ///     workspace does not already have a path associated with it
+        /// </summary>
+        /// <param name="workspace">The workspace for which to show the dialog</param>
+        private void ShowSaveDialogIfNeededAndSave(dynWorkspaceModel workspace)
+        {
+            if (workspace.FilePath != null)
+            {
+                this.SaveAs(workspace.FilePath, workspace);
+            }
+            else
+            {
+                var fd = this.GetSaveDialog(workspace);
+                if (fd.ShowDialog() == DialogResult.OK)
+                {
+                    this.SaveAs(fd.FileName, workspace);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Shows a message box asking the user to save the workspace and allows saving.
+        /// </summary>
+        /// <param name="workspace">The workspace for which to show the dialog</param>
+        /// <returns>False if the user cancels, otherwise true</returns>
+        public bool AskUserToSaveWorkspaceOrCancel(dynWorkspaceModel workspace)
+        {
+            var result = System.Windows.MessageBox.Show("You have unsaved changes to " + workspace.Name + "\n\n Would you like to save your changes?", "Confirmation", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                this.ShowSaveDialogIfNeededAndSave(workspace);
+            }
+            else if (result == MessageBoxResult.Cancel)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         ///     Ask the user if they want to save any unsaved changes, return false if the user cancels.
         /// </summary>
         /// <returns>Whether the cleanup was completed or cancelled.</returns>
-        public bool AttemptSavesOrCancel()
+        public bool AskUserToSaveWorkspacesOrCancel()
         {
-            // check if all of the workspaces are saved
             foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
             {
-                var result = System.Windows.MessageBox.Show("You have unsaved changes to " + wvm.Model.Name + "\n\n Would you like to save your changes?", "Confirmation", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-                if (result == MessageBoxResult.Yes)
-                {
-                    var fd = this.GetSaveDialog(wvm.Model);
-                    if (fd.ShowDialog() == DialogResult.OK)
-                    {
-                        if (SaveAsCommand.CanExecute(fd.FileName))
-                            SaveAsCommand.CanExecute(fd.FileName);
-                    }
-                }
-                if (result == MessageBoxResult.Cancel)
+                if (!AskUserToSaveWorkspaceOrCancel(wvm.Model))
                     return false;
             }
             return true;
@@ -661,7 +690,7 @@ namespace Dynamo.Controls
 
         private void Exit()
         {
-            if (!AttemptSavesOrCancel())
+            if (!AskUserToSaveWorkspacesOrCancel())
                 return;
             this.Cleanup();
             dynSettings.Bench.Close();
@@ -2264,14 +2293,10 @@ namespace Dynamo.Controls
                     {
                         if (att.Name.Equals("X"))
                         {
-                            //Bench.CurrentX = Convert.ToDouble(att.Value);
-                            //_model.CurrentSpace.CurrentOffset = new Point(Convert.ToDouble(att.Value), _model.CurrentSpace.CurrentOffset.Y);
                             _model.CurrentSpace.X = Convert.ToDouble(att.Value);
                         }
                         else if (att.Name.Equals("Y"))
                         {
-                            //Bench.CurrentY = Convert.ToDouble(att.Value);
-                            //_model.CurrentSpace.CurrentOffset = new Point(_model.CurrentSpace.CurrentOffset.X, Convert.ToDouble(att.Value));
                             _model.CurrentSpace.Y = Convert.ToDouble(att.Value);
                         }
                     }
@@ -2358,10 +2383,7 @@ namespace Dynamo.Controls
                             fun.Symbol = funId.ToString();
                         }
 
-                        if (dynSettings.Controller.CustomNodeLoader.IsInitialized(funId))
-                            fun.Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
-                        else
-                            fun.Error("No definition found.");
+                        fun.Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
 
                     }
 
