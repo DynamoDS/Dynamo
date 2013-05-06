@@ -25,25 +25,30 @@ namespace Dynamo.Views
         {
             InitializeComponent();
 
-            this.Loaded += new RoutedEventHandler(dynWorkspaceView_Loaded);
             selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
+            DataContextChanged += new DependencyPropertyChangedEventHandler(dynWorkspaceView_DataContextChanged);
+        }
+
+        /// <summary>
+        /// Handler for the DataContextChangedEvent. Hanndles registration of event listeners.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void dynWorkspaceView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var vm = DataContext as dynWorkspaceViewModel;
+            vm.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
+            vm.StopDragging += new EventHandler(vm_StopDragging);
+            vm.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
+            vm.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
+            vm.UILocked += new EventHandler(LockUI);
+            vm.UIUnlocked += new EventHandler(UnlockUI);
+            vm.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
         }
 
         void selectionCanvas_Loaded(object sender, RoutedEventArgs e)
         {
             DrawGrid();
-        }
-
-        void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
-        {
-            var vm = DataContext as dynWorkspaceViewModel;
-            vm.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
-            vm.StopDragging += new EventHandler(vm_StopDragging);
-            vm.RequestCenterViewOnElement+=new NodeEventHandler(CenterViewOnElement);
-            vm.RequestNodeCentered+=new NodeEventHandler(vm_RequestNodeCentered);
-            vm.UILocked+=new EventHandler(LockUI);
-            vm.UIUnlocked+=new EventHandler(UnlockUI);
-            vm.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)
