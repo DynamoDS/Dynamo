@@ -8,6 +8,7 @@
         xmlns:utilities="clr-namespace:Dynamo.Utilities" xmlns:sys="clr-namespace:System;assembly=mscorlib"
         x:Name="_this"
         Height="768" Width="1024"
+        Closing="WindowClosing" 
         Closed="WindowClosed" 
         MinHeight="600" 
         MinWidth="800" 
@@ -253,8 +254,6 @@
                             <sys:Double x:Key="CloseCircleWidth">12</sys:Double>
                             <sys:Double x:Key="CloseButtonOffset">3</sys:Double>
                         </Style.Resources>
-                        <!--<Setter Property="Height" Value="10" />
-                        <Setter Property="Width" Value="{StaticResource CloseCircleWidth}" />-->
                         <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="HorizontalAlignment" Value="Center" />
                         <Setter Property="Background" Value="Transparent" />
@@ -267,8 +266,10 @@
                                         
                                         <Ellipse Width="{StaticResource CloseCircleWidth}" Fill="{TemplateBinding Background}" Height="{StaticResource CloseCircleWidth}" />
                                         <Canvas Canvas.Left="{StaticResource CloseButtonOffset}" Canvas.Top="{StaticResource CloseButtonOffset}" Background="Transparent" Width="{StaticResource CloseButtonWidth}" Height="{StaticResource CloseButtonWidth}">
+                                            
                                             <Line X1="0" Y1="0" X2="{StaticResource CloseButtonWidth}" Y2="{StaticResource CloseButtonWidth}" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
                                             <Line X1="0" Y1="{StaticResource CloseButtonWidth}" X2="{StaticResource CloseButtonWidth}" Y2="0" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                                        
                                         </Canvas>
 
                                         <Canvas.Style>
@@ -278,7 +279,7 @@
                                                     <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type dynamo:HomeWorkspace}">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
-                                                    
+
                                                 </Style.Triggers>
                                             </Style>
                                         </Canvas.Style>
@@ -303,10 +304,27 @@
                     <DataTemplate>
                         
                         <StackPanel Orientation="Horizontal" Margin="10,5,10,5">
-                            <TextBlock Foreground ="GhostWhite" Text="{Binding Name}" Margin="5,2,10,0"></TextBlock>
-                            <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}">
-                                
-                            </Button>
+                            
+                            <TextBlock Name="NameOfWorkspace" Foreground ="GhostWhite" Text="{Binding Name}" Margin="5,2,0,0"></TextBlock>
+
+                            <TextBlock Name="UnsavedChangesIndicator" Foreground ="GhostWhite" Text="*" Margin="5,2,10,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="False">
+                                                <Setter Property="Visibility" Value="Hidden"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            
+                            <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
+
                         </StackPanel>
                         
                     </DataTemplate>

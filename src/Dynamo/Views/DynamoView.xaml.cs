@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -75,7 +76,13 @@ namespace Dynamo.Controls
             overlayCanvas.IsHitTestVisible = false;
             overlayCanvas.Cursor = null;
             overlayCanvas.ForceCursor = false;
+        }
 
+        private void WindowClosing(object sender, CancelEventArgs  e)
+        {
+            var res = _vm.AttemptSavesOrCancel();
+            if (!res)
+                e.Cancel = true;
         }
 
         private void WindowClosed(object sender, EventArgs e)
