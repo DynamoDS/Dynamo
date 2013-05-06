@@ -16,10 +16,14 @@
                                       TrueBrush="Black"
                                       FalseBrush="White">
     </controls:BooleanToBrushConverter>
+    <controls:BooleanToSelectionColorConverter x:Key="BooleanToSelectionColorConverter" 
+                                True="Cyan" 
+                                False="Black">
+    </controls:BooleanToSelectionColorConverter>
     <controls:StateToColorConverter x:Key="StateToColorConverter"
-                                         ActiveBrush="{StaticResource nodeActiveBrush}"
-                                         DeadBrush="{StaticResource nodeDeadBrush}"
-                                         ErrorBrush="{StaticResource nodeErrorBrush}">
+                                        ActiveBrush="{StaticResource nodeActiveBrush}"
+                                        DeadBrush="{StaticResource nodeDeadBrush}"
+                                        ErrorBrush="{StaticResource nodeErrorBrush}">
     </controls:StateToColorConverter>
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>

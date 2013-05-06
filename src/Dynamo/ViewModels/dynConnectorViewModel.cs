@@ -149,6 +149,27 @@ namespace Dynamo.Connectors
             }
         }
 
+        public bool IsStartSelected
+        {
+            get
+            {
+                if (ConnectorModel!=null && ConnectorModel.Start.Owner != null)
+                    return ConnectorModel.Start.Owner.IsSelected;
+                else return false;
+            }
+        }
+
+        public bool IsEndSelected
+        {
+            get
+            {
+                if(ConnectorModel!=null && ConnectorModel.End.Owner != null)
+                    return ConnectorModel.End.Owner.IsSelected;
+                return false;
+            }
+        }
+
+
         private double _endDotSize = 6;
         public double EndDotSize
         {
@@ -247,8 +268,30 @@ namespace Dynamo.Connectors
             _model.Start.PropertyChanged += Start_PropertyChanged;
             _model.End.PropertyChanged += End_PropertyChanged;
             _model.PropertyChanged += Model_PropertyChanged;
+            _model.Start.Owner.PropertyChanged += StartOwner_PropertyChanged;
+            _model.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
 
             dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+        }
+
+        void StartOwner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "IsSelected":
+                    RaisePropertyChanged("IsStartSelected");
+                    break;
+            }
+        }
+
+        void EndOwner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "IsSelected":
+                    RaisePropertyChanged("IsEndSelected");
+                    break;
+            }
         }
 
         void ModelConnected(object sender, EventArgs e)
@@ -303,19 +346,23 @@ namespace Dynamo.Connectors
 
         void End_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Center")
+            switch (e.PropertyName)
             {
-                Redraw();
-            }   
+                case "Center":
+                    Redraw();
+                    break;
+            }
         }
 
         void Start_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Center")
+            switch (e.PropertyName)
             {
-                Redraw();
-                RaisePropertyChanged("BezPoint0");
-            }  
+                case "Center":
+                    Redraw();
+                    RaisePropertyChanged("BezPoint0");
+                    break;
+            }
         }
 
         private bool CanConnect(object parameters)

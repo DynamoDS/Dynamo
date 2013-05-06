@@ -81,6 +81,32 @@ namespace Dynamo.Controls
         }
     }
 
+    public class BooleanToSelectionColorConverter : IValueConverter
+    {
+        public Color True { get; set; }
+        public Color False { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            bool condition = (bool)value;
+            if (condition)
+            {
+                //return new SolidColorBrush(Colors.Cyan);
+                return True;
+            }
+            else
+            {
+                //return new SolidColorBrush(Colors.Black);
+                return False;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class StateToColorConverter : IValueConverter
     {
         //http://stackoverflow.com/questions/3238590/accessing-colors-in-a-resource-dictionary-from-a-value-converter

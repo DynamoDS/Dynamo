@@ -8,28 +8,39 @@
     <Grid>
 
         <Grid.Resources>
-            
-            <Style x:Key="ConnectorStyle" TargetType="Path">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding Path=IsConnecting, Mode=OneWay}" Value="True">
-                        <Setter Property="StrokeDashArray" Value="2"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-            
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="..\Themes\DynamoColorsAndBrushes.xaml" />
+                    <ResourceDictionary Source="..\Themes\DynamoConverters.xaml" />
+                    <ResourceDictionary Source="..\Themes\DynamoModern.xaml" />
+                </ResourceDictionary.MergedDictionaries>
+                
+                <LinearGradientBrush x:Key="SelectionGradientBrush">
+                    <GradientStop Color="{Binding IsStartSelected, Converter={StaticResource BooleanToSelectionColorConverter}}" Offset="0"></GradientStop>
+                    <GradientStop Color="{Binding IsEndSelected, Converter={StaticResource BooleanToSelectionColorConverter}}" Offset="1"></GradientStop>
+                </LinearGradientBrush>
+
+                <Style x:Key="ConnectorStyle" TargetType="Path">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsConnecting, Mode=OneWay}" Value="True">
+                            <Setter Property="StrokeDashArray" Value="2"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ResourceDictionary>
         </Grid.Resources>
         
         <Canvas Canvas.Top="0" Canvas.Left="0" ZIndex="2">
-            
-            <Ellipse Name="endDot" Width="6" Height="6" Margin="-3"  Fill="Black" IsHitTestVisible="False"
+
+            <Ellipse Name="endDot" Width="6" Height="6" Margin="-3"  Fill="{Binding IsEndSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
                  Canvas.Top="{Binding BezPoint3.Y}" Canvas.Left="{Binding BezPoint3.X}"/>
-            
-            <Ellipse Name="startDot" Width="6" Height="6" Margin="-3"  Fill="Black" IsHitTestVisible="False"
+
+            <Ellipse Name="startDot" Width="6" Height="6" Margin="-3"  Fill="{Binding IsStartSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
                  Canvas.Top="{Binding BezPoint0.Y}" Canvas.Left="{Binding BezPoint0.X}"/>
             
         </Canvas>
 
-        <Path Stroke="{Binding StrokeBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
+        <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
               Name="connector" MouseEnter="Highlight" MouseLeave="Unhighlight"
               Visibility="{Binding BezVisibility}" Style="{StaticResource ConnectorStyle}" Canvas.ZIndex="1">
             
@@ -50,7 +61,7 @@
             </Path.Data>
         </Path>
 
-        <Path Stroke="{Binding Path=StrokeBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
+        <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
               Name="plineConnector" MouseEnter="Highlight" MouseLeave="Unhighlight" Style="{StaticResource ConnectorStyle}"
               Visibility="{Binding PlineVisibility}" Canvas.ZIndex="1">
             
