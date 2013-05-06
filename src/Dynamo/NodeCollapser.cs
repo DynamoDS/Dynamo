@@ -26,7 +26,6 @@ namespace Dynamo.Utilities
         {
             var selectedNodeSet = new HashSet<dynNodeModel>(selectedNodes);
 
-            // TODO: this code needs refactoring
             #region Prompt
 
             //First, prompt the user to enter a name
