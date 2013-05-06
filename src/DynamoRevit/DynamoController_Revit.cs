@@ -37,7 +37,7 @@ namespace Dynamo
 
             dynRevitSettings.Revit.Application.DocumentClosed += new EventHandler<Autodesk.Revit.DB.Events.DocumentClosedEventArgs>(Application_DocumentClosed);
             dynRevitSettings.Revit.Application.DocumentOpened += new EventHandler<Autodesk.Revit.DB.Events.DocumentOpenedEventArgs>(Application_DocumentOpened);
-        
+            
         }
 
         void Application_DocumentOpened(object sender, Autodesk.Revit.DB.Events.DocumentOpenedEventArgs e)
@@ -46,7 +46,7 @@ namespace Dynamo
             if (dynRevitSettings.Doc == null)
             {
                 dynRevitSettings.Doc = dynRevitSettings.Revit.ActiveUIDocument;
-                //Bench.Controller.RunEnabled = true;
+                
                 this.DynamoViewModel.RunEnabled = true;
             }
         }
@@ -55,7 +55,6 @@ namespace Dynamo
         {
             //Disable running against revit without a document
             dynRevitSettings.Doc = null;
-            //Bench.Controller.RunEnabled = false;
             DynamoViewModel.RunEnabled = false;
         }
 
