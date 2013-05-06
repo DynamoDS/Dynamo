@@ -359,8 +359,10 @@ namespace Dynamo
 
         private void Hide(object parameters)
         {
-            Console.WriteLine("Query to save the workspace if not saved");
-            dynSettings.Controller.DynamoViewModel.Model.HideWorkspace(this._model);
+            if ( !this.Model.HasUnsavedChanges|| dynSettings.Controller.DynamoViewModel.AskUserToSaveWorkspaceOrCancel(this.Model))
+            {
+                dynSettings.Controller.DynamoViewModel.Model.HideWorkspace(this._model);
+            }
         }
 
         private bool CanHide(object parameters)

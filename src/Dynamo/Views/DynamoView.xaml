@@ -306,8 +306,24 @@
                         <StackPanel Orientation="Horizontal" Margin="10,5,10,5">
                             
                             <TextBlock Name="NameOfWorkspace" Foreground ="GhostWhite" Text="{Binding Name}" Margin="5,2,0,0"></TextBlock>
-
-                            <TextBlock Name="UnsavedChangesIndicator" Foreground ="GhostWhite" Text="*" Margin="5,2,10,0">
+                            <TextBlock Name="WorkspaceTypeIndicator" Foreground ="GhostWhite" Margin="0,2,0,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            
+                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type dynamo:HomeWorkspace}">
+                                                <Setter Property="Text" Value=".dyn"/>
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type dynamo:FuncWorkspace}">
+                                                <Setter Property="Text" Value=".dyf"/>
+                                            </DataTrigger>
+                                            
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <TextBlock Name="UnsavedChangesIndicator" Foreground ="GhostWhite" Text="*" Margin="0,2,10,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -321,7 +337,7 @@
                                         </Style.Triggers>
                                     </Style>
                                 </TextBlock.Style>
-                            </TextBlock>
+                            </TextBlock>    
                             
                             <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
 
