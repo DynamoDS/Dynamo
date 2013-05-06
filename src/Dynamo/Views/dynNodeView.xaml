@@ -142,6 +142,7 @@
                          HorizontalAlignment="Stretch"
                          TextTrimming="CharacterEllipsis"
                          Text="{Binding NickName, UpdateSourceTrigger=PropertyChanged}"
+                            Margin="2,2,2,0"
                          Padding="3"
                          FontSize="11" 
                          FontWeight="Normal" 
