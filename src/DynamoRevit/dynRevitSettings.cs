@@ -231,7 +231,6 @@ namespace Dynamo.Utilities
                 try
                 {
                     CurveElement c = null;
-                    Curve cv = null;
 
                     Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
@@ -242,13 +241,8 @@ namespace Dynamo.Utilities
 
                     Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
 
-                    //c = curveRef.Element as ModelCurve;
                     c = dynRevitSettings.Revit.ActiveUIDocument.Document.GetElement(curveRef) as CurveElement;
 
-                    if (c != null)
-                    {
-                        cv = c.GeometryCurve;
-                    }
                     return c;
                 }
                 catch (Exception ex)
@@ -258,35 +252,20 @@ namespace Dynamo.Utilities
                 }
             }
 
-            public static CurveArray RequestMultipleCurveElementsSelection(UIDocument doc, string message)
+            public static IList<Element> RequestMultipleCurveElementsSelection(UIDocument doc, string message)
             {
                 try
                 {
-                    //CurveElement c = null;
-                    //Curve cv = null;
-
                     Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
-
                     choices.Elements.Clear();
 
-
-                    //MessageBox.Show(message);
                     dynSettings.Controller.DynamoViewModel.Log(message);
 
-                    CurveArray ca = new CurveArray();
+                    var ca = new ElementArray();
                     ISelectionFilter selFilter = new CurveSelectionFilter();
-                    IList<Element> eList = doc.Selection.PickElementsByRectangle(//selFilter,
-                        "Select multiple curves") as IList<Element>;
+                    return doc.Selection.PickElementsByRectangle(//selFilter,
+                        "Window select multiple curves.") as IList<Element>;
 
-
-                    foreach (CurveElement c in eList)
-                    {
-                        if (c != null)
-                        {
-                            ca.Append(c.GeometryCurve as Curve);
-                        }
-                    }
-                    return ca;
                 }
                 catch (Exception ex)
                 {

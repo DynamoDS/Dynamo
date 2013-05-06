@@ -712,28 +712,21 @@ namespace Dynamo.Nodes
     [NodeDescription("Select a set of curves from the document.")]
     public class dynMultipleCurvesBySelection : dynMultipleElementSelection
     {
-        CurveArray curves;
-
         public dynMultipleCurvesBySelection()
             : base(new PortData("curves", "The curves", typeof(CurveElement)))
         { }
 
         protected override void OnSelectClick()
         {
-            curves = dynRevitSettings.SelectionHelper.RequestMultipleCurveElementsSelection(
+            if (this.SelectedElements != null)
+            {
+                SelectedElements.Clear();
+                SelectedElements = null;
+            }
+
+            SelectedElements = dynRevitSettings.SelectionHelper.RequestMultipleCurveElementsSelection(
                dynRevitSettings.Doc, "Select a set of curves."
             );
-            this.SelectedElements.Clear();
-            try
-            {
-                foreach (Element e in curves)
-                {
-                    this.SelectedElements.Add(e);
-                }
-            }
-            catch (Exception)
-            {
-            }
 
             RaisePropertyChanged("SelectionText");
         }
