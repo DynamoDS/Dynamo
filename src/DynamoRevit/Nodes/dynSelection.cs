@@ -388,7 +388,15 @@ namespace Dynamo.Nodes
             if (this.SelectedElements == null)
                 throw new Exception("Nothing selected.");
 
-            return Value.NewContainer(this.SelectedElements);
+            FSharpList<Value> result = FSharpList<Value>.Empty;
+
+            var els = new List<Value>();
+            foreach (Element el in this.SelectedElements)
+            {
+                els.Add(Value.NewContainer(el));
+            }
+
+            return Value.NewList(Utils.SequenceToFSharpList(els));
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
