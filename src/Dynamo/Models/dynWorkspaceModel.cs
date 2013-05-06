@@ -57,14 +57,14 @@ namespace Dynamo
         /// <summary>
         ///     Are there unsaved changes in the workspace?
         /// </summary>
-        private bool _unsavedChanges;
-        public bool UnsavedChanges
+        private bool _hasUnsavedChanges;
+        public bool HasUnsavedChanges
         {
-            get { return _unsavedChanges; }
+            get { return _hasUnsavedChanges; }
             set
             {
-                _unsavedChanges = value;
-                RaisePropertyChanged("UnsavedChanges");
+                _hasUnsavedChanges = value;
+                RaisePropertyChanged("HasUnsavedChanges");
             }
         }
 
@@ -167,7 +167,7 @@ namespace Dynamo
             Notes.CollectionChanged += MarkUnsaved;
             Connectors.CollectionChanged += MarkUnsaved;
 
-            this.UnsavedChanges = true;
+            this.HasUnsavedChanges = false;
             this.LastSaved = DateTime.Now;
 
             this.WorkspaceSaved += OnWorkspaceSaved;
@@ -192,12 +192,12 @@ namespace Dynamo
         private static void OnWorkspaceSaved(dynWorkspaceModel model)
         {
             model.LastSaved = DateTime.Now;
-            model.UnsavedChanges = false;
+            model.HasUnsavedChanges = false;
         }
 
         private void MarkUnsaved(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            this.UnsavedChanges = true;
+            this.HasUnsavedChanges = true;
         }
 
         public void DisableReporting()
@@ -406,8 +406,8 @@ namespace Dynamo
         {
             base.Modified();
 
-            dynSettings.Controller.DynamoViewModel.SaveFunction(
-                dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(this));
+            //dynSettings.Controller.DynamoViewModel.SaveFunction(
+            //    dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(this));
         }
 
         public override void OnDisplayed()

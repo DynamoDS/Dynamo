@@ -620,9 +620,6 @@ namespace Dynamo.Utilities
 
                 #endregion
 
-                //MVVM: don't call update layout here.
-                //dynSettings.Bench.WorkBench.UpdateLayout();
-
                 #region instantiate connectors
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
@@ -658,15 +655,6 @@ namespace Dynamo.Utilities
                             break;
                         }
                     }
-
-                    //don't connect if the end element is an instance map
-                    //those have a morphing set of inputs
-                    //dynInstanceParameterMap endTest = end as dynInstanceParameterMap;
-
-                    //if (endTest != null)
-                    //{
-                    //    continue;
-                    //}
 
                     try
                     {
@@ -720,16 +708,14 @@ namespace Dynamo.Utilities
                 foreach (dynNodeModel e in ws.Nodes)
                     e.EnableReporting();
 
-//MVVM : this metho was removed. visibility should be controlled by current space binding
-                //DynamoController.hideWorkspace(ws);
-                //now we add the workspace to the workspace collection
-
                 ws.FilePath = xmlPath;
 
                 controller.PackageManagerClient.LoadPackageHeader(def, funName);
 
                 var expression = CompileFunction(def);
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), expression);
+
+                
 
             }
             catch (Exception ex)

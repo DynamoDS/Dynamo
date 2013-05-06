@@ -187,6 +187,11 @@ namespace Dynamo
             get { return _model.IsCurrentSpace; }
         }
 
+        public bool HasUnsavedChanges
+        {
+            get { return _model.HasUnsavedChanges; }
+        }
+
         /// <summary>
         /// Specifies the pan location of the view
         /// </summary>
@@ -345,6 +350,9 @@ namespace Dynamo
                     break;
                 case "IsCurrentSpace":
                     RaisePropertyChanged("IsCurrentSpace");
+                    break;
+                case "HasUnsavedChanges":
+                    RaisePropertyChanged("HasUnsavedChanges");
                     break;
             }
         }

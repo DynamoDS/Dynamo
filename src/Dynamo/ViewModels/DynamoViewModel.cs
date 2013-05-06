@@ -246,11 +246,12 @@ namespace Dynamo.Controls
             set
             {
                 //before you set the value, save and compile the workspace
-                if (_model.CurrentSpace != _model.HomeSpace)
-                {
-                    var def = Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace);
-                    SaveFunction(def, true, false);
-                }
+
+                //if (_model.CurrentSpace != _model.HomeSpace)
+                //{
+                //    var def = Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace);
+                //    SaveFunction(def, true, false);
+                //}
                     
                 _model.CurrentSpace = _model.Workspaces[value];
             }
@@ -623,21 +624,14 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void Cleanup()
-        {
-
-            DynamoLogger.Instance.FinishLogging();
-        }
-
-        private bool CanCleanup()
-        {
-            return true;
-        }
-
-        private void Exit()
+        /// <summary>
+        ///     Ask the user if they want to save any unsaved changes, return false if the user cancels.
+        /// </summary>
+        /// <returns>Whether the cleanup was completed or cancelled.</returns>
+        public bool AttemptSavesOrCancel()
         {
             // check if all of the workspaces are saved
-            foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.UnsavedChanges))
+            foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
             {
                 var result = System.Windows.MessageBox.Show("You have unsaved changes to " + wvm.Model.Name + "\n\n Would you like to save your changes?", "Confirmation", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
@@ -648,14 +642,29 @@ namespace Dynamo.Controls
                         if (SaveAsCommand.CanExecute(fd.FileName))
                             SaveAsCommand.CanExecute(fd.FileName);
                     }
-                }  
+                }
                 if (result == MessageBoxResult.Cancel)
-                    return;
+                    return false;
             }
+            return true;
+        }
 
+        public void Cleanup()
+        {
+            DynamoLogger.Instance.FinishLogging();
+        }
+
+        private bool CanCleanup()
+        {
+            return true;
+        }
+
+        private void Exit()
+        {
+            if (!AttemptSavesOrCancel())
+                return;
             this.Cleanup();
             dynSettings.Bench.Close();
-            
         }
 
         private bool CanExit()
@@ -1150,6 +1159,7 @@ namespace Dynamo.Controls
         {
             NodeFromSelectionCommand.RaiseCanExecuteChanged();
         }
+
         private bool CanCreateNodeFromSelection()
         {
             if ( DynamoSelection.Instance.Selection.Count(x => x is dynNodeModel) > 1)
@@ -2203,7 +2213,8 @@ namespace Dynamo.Controls
         internal void ViewHomeWorkspace()
         {
 
-            SaveFunctionOnly( Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace) );
+// AUTOSAVE: This is manually performed now, replace this with a non-overwriting autosave
+            //SaveFunctionOnly( Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace) );
 
             //Step 4: Make home workspace visible
             _model.CurrentSpace = _model.HomeSpace;
@@ -2225,10 +2236,11 @@ namespace Dynamo.Controls
 
             CurrentSpaceViewModel.OnStopDragging(this, EventArgs.Empty);
 
-            if (!ViewingHomespace)
-            {
-                SaveFunctionOnly(Controller.CustomNodeLoader.GetDefinitionFromWorkspace(newWs));
-            }
+// AUTOSAVE: This is manually performed now, replace this with a non-overwriting autosave
+            //if (!ViewingHomespace)
+            //{
+            //    SaveFunctionOnly(Controller.CustomNodeLoader.GetDefinitionFromWorkspace(newWs));
+            //}
 
             _model.CurrentSpace = newWs;
             _model.CurrentSpace.OnDisplayed();
