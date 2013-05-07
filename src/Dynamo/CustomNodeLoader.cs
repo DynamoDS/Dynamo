@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using Dynamo.Nodes;
 using System.IO;
@@ -9,9 +8,6 @@ using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Controls;
 using Dynamo.Commands;
 
 namespace Dynamo.Utilities
