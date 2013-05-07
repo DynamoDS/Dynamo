@@ -92,20 +92,7 @@ namespace Dynamo.Nodes
 
             //take out the left and right margins
             //and make this so it's not so wide
-            NodeUI.inputGrid.Margin = new Thickness(10, 10, 10, 10);
-
-            isScreenShot = true;
-
-            if (isScreenShot)
-            {
-                NodeUI.topControl.Width = 800;
-                NodeUI.topControl.Height = 500;
-            }
-            else
-            {
-                NodeUI.topControl.Width = 400;
-                NodeUI.topControl.Height = 300;
-            }
+            //NodeUI.inputGrid.Margin = new Thickness(10, 10, 10, 10);
 
             //this.elementShine.Visibility = System.Windows.Visibility.Hidden;
             //this.elementRectangle.Visibility = System.Windows.Visibility.Hidden;
@@ -132,6 +119,22 @@ namespace Dynamo.Nodes
 
             points = new PointsVisual3D { Color = Colors.Black, Size = 4 };
             view.Children.Add(points);
+
+            isScreenShot = true;
+            if (isScreenShot)
+            {
+                //NodeUI.topControl.Width = 800;
+                //NodeUI.topControl.Height = 500;
+                view.Width = 800;
+                view.Height = 500;
+            }
+            else
+            {
+                //NodeUI.topControl.Width = 400;
+                //NodeUI.topControl.Height = 300;
+                view.Width = 400;
+                view.Height = 300;
+            }
 
             // a list of 10 colors to be used for 
             // mapping analysis results
@@ -166,8 +169,8 @@ namespace Dynamo.Nodes
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             backgroundRect.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-            backgroundRect.RadiusX = 10;
-            backgroundRect.RadiusY = 10;
+            //backgroundRect.RadiusX = 10;
+            //backgroundRect.RadiusY = 10;
             backgroundRect.IsHitTestVisible = false;
             BrushConverter bc = new BrushConverter();
             Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");

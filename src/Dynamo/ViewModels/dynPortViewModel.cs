@@ -171,6 +171,11 @@ namespace Dynamo.Connectors
             }
             else  // attempt to complete the connection
             {
+                //don't attempt connection to a port which
+                //is already connected
+                if (_port.Connectors.Count > 0)
+                    return;
+
                 // create the new connector model
                 var start = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ActiveStartPort;
                 var end = _port;
