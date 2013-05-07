@@ -82,7 +82,7 @@ namespace Dynamo.Connectors
         /// <summary>
         ///     The start point of the path pulled from the port's center
         /// </summary>
-        public Point BezPoint0
+        public Point CurvePoint0
         {
             get
             {
@@ -96,39 +96,39 @@ namespace Dynamo.Connectors
         }
 
         
-        private Point _bezPoint1;
-        public Point BezPoint1
+        private Point _curvePoint1;
+        public Point CurvePoint1
         {
             get
             {
-                return _bezPoint1;
+                return _curvePoint1;
             }
             set
             {
-                _bezPoint1 = value;
-                RaisePropertyChanged("BezPoint1");
-            }
-        }
-
-        private Point _bezPoint2;
-        public Point BezPoint2
-        {
-            get { return _bezPoint2; }
-            set
-            {
-                _bezPoint2 = value;
-                RaisePropertyChanged("BezPoint2");
+                _curvePoint1 = value;
+                RaisePropertyChanged("CurvePoint1");
             }
         }
 
-        private Point _bezPoint3;
-        public Point BezPoint3
+        private Point _curvePoint2;
+        public Point CurvePoint2
         {
-            get { return _bezPoint3; }
+            get { return _curvePoint2; }
             set
             {
-                _bezPoint3 = value;
-                RaisePropertyChanged("BezPoint3");
+                _curvePoint2 = value;
+                RaisePropertyChanged("CurvePoint2");
+            }
+        }
+
+        private Point _curvePoint3;
+        public Point CurvePoint3
+        {
+            get { return _curvePoint3; }
+            set
+            {
+                _curvePoint3 = value;
+                RaisePropertyChanged("CurvePoint3");
             }
         }
 
@@ -365,7 +365,7 @@ namespace Dynamo.Connectors
             {
                 case "Center":
                     Redraw();
-                    RaisePropertyChanged("BezPoint0");
+                    RaisePropertyChanged("CurvePoint0");
                     break;
             }
         }
@@ -393,24 +393,26 @@ namespace Dynamo.Connectors
         /// <param name="p2">The position of the end point</param>
         public void Redraw(Point p2 )
         {
-            BezPoint3 = p2;
+            CurvePoint3 = p2;
 
-            var bezOffset = 0.0;
-            double distance = BezPoint3.X - BezPoint0.X;
+            var offset = 0.0;
+            double distance = 0;
             if ( this.BezVisibility == Visibility.Visible )
             {
-                bezOffset = .3 * distance;
+                distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
+                offset = .3 * distance;
             }
             else
             {
-                bezOffset = distance / 2;
+                distance = CurvePoint3.X - CurvePoint0.X;
+                offset = distance / 2;
             }
 
-            BezPoint1 = new Point(BezPoint0.X + bezOffset, BezPoint0.Y);
-            BezPoint2 = new Point(p2.X - bezOffset, p2.Y);
+            CurvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
+            CurvePoint2 = new Point(p2.X - offset, p2.Y);
 
-            DotTop = BezPoint3.Y - EndDotSize / 2;
-            DotLeft = BezPoint3.X - EndDotSize / 2;
+            DotTop = CurvePoint3.Y - EndDotSize / 2;
+            DotLeft = CurvePoint3.X - EndDotSize / 2;
 
         }
 

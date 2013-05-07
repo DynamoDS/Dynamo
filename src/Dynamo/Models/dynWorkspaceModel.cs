@@ -72,7 +72,16 @@ namespace Dynamo
         public ObservableCollection<dynConnectorModel> Connectors { get; internal set; }
         public ObservableCollection<dynNoteModel> Notes { get; internal set; }
 
-        public string FilePath { get; set; }
+        private string _filePath;
+        public string FilePath
+        {
+            get { return _filePath; }
+            set
+            {
+                _filePath = value;
+                RaisePropertyChanged("FilePath");
+            }
+        }
 
         public String Name
         {
