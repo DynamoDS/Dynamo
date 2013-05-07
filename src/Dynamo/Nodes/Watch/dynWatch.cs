@@ -40,7 +40,6 @@ namespace Dynamo.Nodes
     {
         public WatchTree watchTree;
         public WatchTreeBranch watchTreeBranch;
-        //int oldPreferredHeight;
 
         private class WatchHandlers
         {
