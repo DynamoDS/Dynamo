@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:connectors="clr-namespace:Dynamo.Connectors"
     Height="Auto"
-    MaxHeight="400"
     Width="Auto" 
     Name="topControl" 
     Loaded="topControl_Loaded" 
