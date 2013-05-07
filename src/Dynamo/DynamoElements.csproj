@@ -190,8 +190,8 @@ limitations under the License.
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="WatchControl.xaml.cs">
-      <DependentUpon>WatchControl.xaml</DependentUpon>
+    <Compile Include="Views\WatchView.xaml.cs">
+      <DependentUpon>WatchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\dynConnectorView.xaml.cs">
       <DependentUpon>dynConnectorView.xaml</DependentUpon>
@@ -280,7 +280,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WatchControl.xaml">
+    <Page Include="Views\WatchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

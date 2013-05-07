@@ -25,6 +25,7 @@ using Value = Dynamo.FScheme.Value;
 using HelixToolkit.Wpf;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
+using Dynamo.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Data;
@@ -38,7 +39,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Shows a dynamic preview of geometry.")]
     public class dynWatch3D : dynNodeWithOneOutput
     {
-        WatchControl _watchView;
+        WatchView _watchView;
 
         private PointsVisual3D _points;
         private LinesVisual3D _lines;
@@ -48,7 +49,6 @@ namespace Dynamo.Nodes
         public Point3DCollection Lines { get; set; }
         public List<Mesh3D> Meshes { get; set; }
 
-        System.Windows.Point _rightMousePoint;
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
         
         private bool _requiresRedraw = false;
@@ -71,20 +71,14 @@ namespace Dynamo.Nodes
             NodeUI.MainContextMenu.Items.Add(mi);
 
             //take out the left and right margins and make this so it's not so wide
-            NodeUI.inputGrid.Margin = new Thickness(10, 10, 10, 10);
-
-            NodeUI.topControl.Width = 800;
-            NodeUI.topControl.Height = 500;
+            //NodeUI.inputGrid.Margin = new Thickness(10, 10, 10, 10);
 
             //add a 3D viewport to the input grid
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
-            _watchView = new WatchControl();
+            _watchView = new WatchView();
             _watchView.watch_view.DataContext = this;
 
             RenderOptions.SetEdgeMode(_watchView, EdgeMode.Unspecified);
-
-            _watchView.MouseRightButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseRightButtonUp);
-            _watchView.PreviewMouseRightButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
             Points = new Point3DCollection();
             Lines = new Point3DCollection();
@@ -99,6 +93,9 @@ namespace Dynamo.Nodes
             _watchView.watch_view.Children.Add(_points);
 
             _watchView.watch_view.Children.Add(new DefaultLights());
+
+            _watchView.Width = 400;
+            _watchView.Height = 300;
 
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -116,22 +113,6 @@ namespace Dynamo.Nodes
             NodeUI.inputGrid.Children.Add(_watchView);
 
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
-        }
-
-        void view_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-
-        }
-
-        void view_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            //if the mouse has moved, and this is a right
-            //click, we assume rotation. handle the event
-            //so we don't show the context menu
-            //if (e.GetPosition(NodeUI.topControl) != _rightMousePoint)
-            //{
-            //    e.Handled = true;
-            //}
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
