@@ -32,17 +32,17 @@
         
         <Canvas Canvas.Top="0" Canvas.Left="0" ZIndex="1">
 
-            <Ellipse Name="endDot" Width="6" Height="6" Margin="-3"  Fill="{Binding IsEndSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
-                 Canvas.Top="{Binding BezPoint3.Y}" Canvas.Left="{Binding BezPoint3.X}"/>
+            <Ellipse Name="endDot" Width="10" Height="10" Margin="-5"  Fill="{Binding IsEndSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
+                 Canvas.Top="{Binding CurvePoint3.Y}" Canvas.Left="{Binding CurvePoint3.X}" Canvas.ZIndex="1"/>
 
-            <Ellipse Name="startDot" Width="6" Height="6" Margin="-3"  Fill="{Binding IsStartSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
-                 Canvas.Top="{Binding BezPoint0.Y}" Canvas.Left="{Binding BezPoint0.X}"/>
+            <Ellipse Name="startDot" Width="10" Height="10" Margin="-5"  Fill="{Binding IsStartSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
+                 Canvas.Top="{Binding CurvePoint0.Y}" Canvas.Left="{Binding CurvePoint0.X}" Canvas.ZIndex="1"/>
             
         </Canvas>
 
         <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
               Name="connector" MouseEnter="Highlight" MouseLeave="Unhighlight"
-              Visibility="{Binding BezVisibility}" Style="{StaticResource ConnectorStyle}" Canvas.ZIndex="1">
+              Visibility="{Binding BezVisibility}" Style="{StaticResource ConnectorStyle}" Canvas.ZIndex="0">
             
             <Path.Data>
                 <PathGeometry>
@@ -63,7 +63,7 @@
 
         <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
               Name="plineConnector" MouseEnter="Highlight" MouseLeave="Unhighlight" Style="{StaticResource ConnectorStyle}"
-              Visibility="{Binding PlineVisibility}" Canvas.ZIndex="1">
+              Visibility="{Binding PlineVisibility}" Canvas.ZIndex="0">
             
             <Path.Data>
                 <PathGeometry>

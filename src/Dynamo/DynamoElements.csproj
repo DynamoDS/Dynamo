@@ -60,6 +60,10 @@ limitations under the License.
     <Reference Include="Greg">
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
     </Reference>
+    <Reference Include="HelixToolkit.Wpf, Version=2012.4.24.1, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -115,6 +119,8 @@ limitations under the License.
     <Compile Include="DynamoController.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
+    <Compile Include="Nodes\dynIDrawable.cs" />
+    <Compile Include="Nodes\Watch\dynWatch3D.cs" />
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
     <Compile Include="PackageManager\Login\PackageManagerLoginViewModel.cs" />
     <Compile Include="PackageManager\Login\PackageManagerLoginView.xaml.cs">
@@ -183,6 +189,9 @@ limitations under the License.
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Views\WatchView.xaml.cs">
+      <DependentUpon>WatchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\dynConnectorView.xaml.cs">
       <DependentUpon>dynConnectorView.xaml</DependentUpon>
@@ -268,6 +277,10 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Resource>
     <Page Include="Themes\DynamoText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WatchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

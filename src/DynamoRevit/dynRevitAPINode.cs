@@ -8,6 +8,10 @@ using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.Revit;
+
+using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf;
+
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Microsoft.FSharp.Collections;
@@ -43,8 +47,11 @@ namespace Dynamo.Nodes
                 this.DeleteElement(e);
             }
 
-            return dynRevitUtils.InvokeAPIMethod(this, args, base_type, pi, mi, return_type);
+            Value result = dynRevitUtils.InvokeAPIMethod(this, args, base_type, pi, mi, return_type);
+
+            return result;
         }
+
     }
 
     /// <summary>
