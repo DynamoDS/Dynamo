@@ -166,6 +166,11 @@ namespace Dynamo.Controls
             }
         }
 
+        public double ZIndex
+        {
+            get { return 3; }
+        }
+
         /// <summary>
         /// Input grid's enabled state is now bound to this property
         /// which tracks the node model's InteractionEnabled property

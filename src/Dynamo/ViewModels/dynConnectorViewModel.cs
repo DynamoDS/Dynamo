@@ -74,6 +74,11 @@ namespace Dynamo.Connectors
             get { return 0; }
         }
 
+        public double ZIndex
+        {
+            get { return 1; }
+        }
+
         /// <summary>
         ///     The start point of the path pulled from the port's center
         /// </summary>

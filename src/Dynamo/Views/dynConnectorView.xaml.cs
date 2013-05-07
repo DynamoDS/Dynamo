@@ -15,6 +15,7 @@ namespace Dynamo.Nodes.Views
         {
             InitializeComponent();
             Dynamo.Controls.DragCanvas.SetCanBeDragged(this, false);
+            Canvas.SetZIndex(this, 1);
         }
 
         void EndDot_OnMouseDown(object sender, MouseEventArgs e)

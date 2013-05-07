@@ -30,7 +30,7 @@
             </ResourceDictionary>
         </Grid.Resources>
         
-        <Canvas Canvas.Top="0" Canvas.Left="0" ZIndex="2">
+        <Canvas Canvas.Top="0" Canvas.Left="0" ZIndex="1">
 
             <Ellipse Name="endDot" Width="6" Height="6" Margin="-3"  Fill="{Binding IsEndSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
                  Canvas.Top="{Binding BezPoint3.Y}" Canvas.Left="{Binding BezPoint3.X}"/>

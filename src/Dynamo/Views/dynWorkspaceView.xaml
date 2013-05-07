@@ -49,7 +49,8 @@
                             <DataTemplate DataType="{x:Type connectors:dynConnectorViewModel}">
                                 <views:dynConnectorView></views:dynConnectorView>
                             </DataTemplate>
-
+                            
+                            
                         </ItemsControl.Resources>
                         
                         <ItemsControl.ItemsPanel>
@@ -71,10 +72,11 @@
                         <Style TargetType="ContentPresenter">
                             <Setter Property="Canvas.Left" Value="{Binding Left}"/>
                             <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+                            <Setter Property ="Panel.ZIndex" Value="{Binding ZIndex}"/>
                         </Style>
                     </ItemsControl.ItemContainerStyle>
-                    
-                </ItemsControl>
+
+                    </ItemsControl>
 
             </Grid>
                 

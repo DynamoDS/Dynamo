@@ -33,6 +33,11 @@ namespace Dynamo.Nodes
             get { return _model.Y; }
         }
 
+        public double ZIndex
+        {
+            get { return 2; }
+        }
+
         public string Text
         {
             get { return _model.Text; }
