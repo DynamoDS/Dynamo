@@ -51,18 +51,16 @@
     <Grid DataContext="{StaticResource Tree}">
         <TreeView Name="treeView1"
                   ItemsSource="{Binding}"
-                  Background="#FFE7E4E4" 
+                  Background="White" Opacity=".5" 
                   BorderBrush="{x:Null}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" DataType="{x:Type local:WatchNode}">
                     <StackPanel Orientation="Horizontal"
-                                    Width="Auto" 
-                                    Background="#FFD1D1D1"
-                                    Margin="2">
+                                    Width="Auto">
                         <TextBlock Text="{Binding Path=NodeLabel}" 
                                        VerticalAlignment="Center" 
                                        Margin="4,0,0,0"
-                                       Width="Auto"/>
+                                       Width="Auto" FontFamily="Consolas"/>
                         <Button Content="{Binding Path=Link}" 
                                     RenderTransformOrigin="0.5,0.5"
                                     Margin="10,2,2,2" 
@@ -74,12 +72,6 @@
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}">
-                    <EventSetter Event="TreeViewItem.Expanded" Handler="treeView1_Expanded"/>
-                    <EventSetter Event="TreeViewItem.Collapsed" Handler="treeView1_Collapsed"/>
-                </Style>
-            </TreeView.ItemContainerStyle>
         </TreeView>
     </Grid>
 </UserControl>

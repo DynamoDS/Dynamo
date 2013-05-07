@@ -70,16 +70,6 @@ namespace Dynamo.Controls
 
             node.Click();
         }
-
-        private void treeView1_Expanded(object sender, RoutedEventArgs e)
-        {
-            OnTreeExpanded(sender, EventArgs.Empty);
-        }
-
-        private void treeView1_Collapsed(object sender, RoutedEventArgs e)
-        {
-            OnTreeCollapsed(sender, EventArgs.Empty);
-        }
     }
 
     public class WatchNode : INotifyPropertyChanged
