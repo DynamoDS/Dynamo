@@ -35,7 +35,7 @@ using Dynamo.FSchemeInterop;
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class dynElementSelection: dynNodeWithOneOutput, IDrawable
+    public abstract class dynElementSelection: dynNodeWithOneOutput
     {
         TextBox tb;
         System.Windows.Controls.Button selectButton;
@@ -57,6 +57,8 @@ namespace Dynamo.Nodes
         /// </summary>
         //protected abstract string SelectionText { get; }
         protected string _selectionText;
+
+        public abstract string SelectionText { get; set; }
 
         protected dynElementSelection(PortData outPortData)
         {
@@ -133,7 +135,7 @@ namespace Dynamo.Nodes
         /// 
         protected abstract void OnSelectClick();
 
-        private Element selected = null;
+        private Element selected;
         /// <summary>
         /// The Element which is selected. Setting this property will automatically register the Element
         /// for proper updating, and will update this node's IsDirty value.
@@ -181,25 +183,6 @@ namespace Dynamo.Nodes
                     this.RequiresRecalc = true;
             }
         }
-
-        public RenderDescription Draw()
-        {
-            RenderDescription description = new RenderDescription();
-
-            // check if the selection hasn't been set yet
-            if (selected == null)
-                return description;
-
-            Dynamo.Revit.dynRevitTransactionNode.DrawElement(description, this.SelectedElement);
-
-            return description;
-        }
-
-        /// <summary>
-        /// Determines what the text should read on the node when the selection has been changed.
-        /// Is ignored in the case where nothing is selected.
-        /// </summary>
-        protected abstract string SelectionText { get; }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -661,7 +644,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Select a face from the document.")]
     public class dynFormElementBySelection : dynElementSelection
     {
-        Reference f = null;
+        Reference f;
 
         public dynFormElementBySelection()
             : base(new PortData("face", "The face", typeof(object)))
