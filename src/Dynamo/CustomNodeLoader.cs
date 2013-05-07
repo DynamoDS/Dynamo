@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using Dynamo.Nodes;
 using System.IO;
@@ -9,9 +8,6 @@ using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Controls;
 using Dynamo.Commands;
 
 namespace Dynamo.Utilities
@@ -139,7 +135,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="guid">The unique id for the node.</param>
         /// <param name="path">The path for the node.</param>
-        private void SetNodePath(Guid id, string path)
+        public void SetNodePath(Guid id, string path)
         {
             if ( this.Contains( id ) ) {
                 this.nodePaths[id] = path;
@@ -326,38 +322,36 @@ namespace Dynamo.Utilities
                 def = this.loadedNodes[guid];
             }
 
-            dynWorkspace ws = def.Workspace;
+            dynWorkspaceModel ws = def.Workspace;
 
-            //TODO: Update to base off of Definition
+            IEnumerable<string> inputs =
+                ws.Nodes.Where(e => e is dynSymbol)
+                    .Select(s => (s as dynSymbol).Symbol);
 
-                IEnumerable<string> inputs =
-                    ws.Nodes.Where(e => e is dynSymbol)
-                        .Select(s => (s as dynSymbol).Symbol);
+            IEnumerable<string> outputs =
+                ws.Nodes.Where(e => e is dynOutput)
+                    .Select(o => (o as dynOutput).Symbol);
 
-                IEnumerable<string> outputs =
-                    ws.Nodes.Where(e => e is dynOutput)
-                        .Select(o => (o as dynOutput).Symbol);
+            if (!outputs.Any())
+            {
+                var topMost = new List<Tuple<int, dynNodeModel>>();
 
-                if (!outputs.Any())
+                IEnumerable<dynNodeModel> topMostNodes = ws.GetTopMostNodes();
+
+                foreach (dynNodeModel topNode in topMostNodes)
                 {
-                    var topMost = new List<Tuple<int, dynNode>>();
-
-                    IEnumerable<dynNode> topMostNodes = ws.GetTopMostNodes();
-
-                    foreach (dynNode topNode in topMostNodes)
+                    foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
                     {
-                        foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
-                        {
-                            if (!topNode.HasOutput(output))
-                                topMost.Add(Tuple.Create(output, topNode));
-                        }
+                        if (!topNode.HasOutput(output))
+                            topMost.Add(Tuple.Create(output, topNode));
                     }
-
-                    outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
                 }
 
+                outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
+            }
+
             result = new dynFunction(inputs, outputs, def);
-            result.NodeUI.NickName = ws.Name;
+            result.NickName = ws.Name;
 
             return true;
         }
@@ -435,7 +429,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="workspace">The workspace which you'd like to find the Definition for</param>
         /// <returns>A valid function definition if the FunctionDefinition is already loaded, otherwise null. </returns>
-        public FunctionDefinition GetDefinitionFromWorkspace(dynWorkspace workspace)
+        public FunctionDefinition GetDefinitionFromWorkspace(dynWorkspaceModel workspace)
         {
             return this.loadedNodes.Values.FirstOrDefault((def) => def.Workspace == workspace);
         }
@@ -461,8 +455,8 @@ namespace Dynamo.Utilities
 
                 string funName = null;
                 string category = "";
-                double cx = dynBench.CANVAS_OFFSET_X;
-                double cy = dynBench.CANVAS_OFFSET_Y;
+                double cx = DynamoView.CANVAS_OFFSET_X;
+                double cy = DynamoView.CANVAS_OFFSET_Y;
                 string id = "";
 
                 // load the header
@@ -495,17 +489,7 @@ namespace Dynamo.Utilities
 
                 #endregion
 
-                //If there is no function name, then we are opening a home definition
-                if (funName == null)
-                {
-                    //View the home workspace, then open the bench file
-                    if (!controller.ViewingHomespace)
-                        controller.ViewHomeWorkspace(); //TODO: Refactor
-                    def = null;
-                    return controller.OpenWorkbench(xmlPath);
-                } 
-
-                dynSettings.Bench.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
+                DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
                 var workSpace = new FuncWorkspace(
                     funName, category.Length > 0
@@ -523,9 +507,7 @@ namespace Dynamo.Utilities
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
                 this.loadedNodes.Add(def.FunctionId, def);
 
-                dynWorkspace ws = def.Workspace;
-
-                //this.Log("Opening definition " + xmlPath + "...");
+                dynWorkspaceModel ws = def.Workspace;
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
@@ -570,19 +552,28 @@ namespace Dynamo.Utilities
                     TypeLoadData tData;
                     Type t;
 
-                    if (!controller.builtinTypesByTypeName.TryGetValue(typeName, out tData))
+                    if (!controller.BuiltInTypesByName.TryGetValue(typeName, out tData))
                     {
                         t = Type.GetType(typeName);
                         if (t == null)
                         {
-                            dynSettings.Bench.Log("Error loading definition. Could not load node of type: " + typeName);
+                            DynamoCommands.WriteToLogCmd.Execute("Error loading definition. Could not load node of type: " + typeName);
                             return false;
                         }
                     }
                     else
                         t = tData.Type;
 
-                    var el = controller.CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws, Visibility.Hidden);
+                    dynNodeModel el = dynSettings.Controller.DynamoViewModel.CreateNodeInstance(t, nickname, guid);
+
+                    // note - this is because the connectors fail to be created if there's not added
+                    // to the canvas
+                    ws.Nodes.Add(el);
+                    el.WorkSpace = ws;
+                    var node = el;
+
+                    node.X = x;
+                    node.Y = y;
 
                     if (el == null)
                         return false;
@@ -625,8 +616,6 @@ namespace Dynamo.Utilities
 
                 #endregion
 
-                dynSettings.Bench.WorkBench.UpdateLayout();
-
                 #region instantiate connectors
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
@@ -644,16 +633,16 @@ namespace Dynamo.Utilities
                     int portType = Convert.ToInt16(portTypeAttrib.Value);
 
                     //find the elements to connect
-                    dynNode start = null;
-                    dynNode end = null;
+                    dynNodeModel start = null;
+                    dynNodeModel end = null;
 
-                    foreach (dynNode e in ws.Nodes)
+                    foreach (dynNodeModel e in ws.Nodes)
                     {
-                        if (e.NodeUI.GUID == guidStart)
+                        if (e.GUID == guidStart)
                         {
                             start = e;
                         }
-                        else if (e.NodeUI.GUID == guidEnd)
+                        else if (e.GUID == guidEnd)
                         {
                             end = e;
                         }
@@ -663,21 +652,12 @@ namespace Dynamo.Utilities
                         }
                     }
 
-                    //don't connect if the end element is an instance map
-                    //those have a morphing set of inputs
-                    //dynInstanceParameterMap endTest = end as dynInstanceParameterMap;
-
-                    //if (endTest != null)
-                    //{
-                    //    continue;
-                    //}
-
                     try
                     {
                         if (start != null && end != null && start != end)
                         {
-                            var newConnector = new dynConnector(
-                                start.NodeUI, end.NodeUI,
+                            var newConnector = new dynConnectorModel(
+                                start, end,
                                 startIndex, endIndex,
                                 portType, false
                                 );
@@ -687,7 +667,7 @@ namespace Dynamo.Utilities
                     }
                     catch
                     {
-                        dynSettings.Bench.Log(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NodeUI.GUID, end.NodeUI.GUID));
+                        DynamoCommands.WriteToLogCmd.Execute(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
                     }
                 }
 
@@ -707,7 +687,7 @@ namespace Dynamo.Utilities
                         double x = Convert.ToDouble(xAttrib.Value);
                         double y = Convert.ToDouble(yAttrib.Value);
 
-                        //dynNote n = Bench.AddNote(text, x, y, ws);
+                        //dynNoteView n = Bench.AddNote(text, x, y, ws);
                         //Bench.AddNote(text, x, y, ws);
 
                         var paramDict = new Dictionary<string, object>();
@@ -715,16 +695,14 @@ namespace Dynamo.Utilities
                         paramDict.Add("y", y);
                         paramDict.Add("text", text);
                         paramDict.Add("workspace", ws);
-                        DynamoCommands.AddNoteCmd.Execute(paramDict);
+                        dynSettings.Controller.DynamoViewModel.AddNoteCommand.Execute(paramDict);
                     }
                 }
 
                 #endregion
 
-                foreach (dynNode e in ws.Nodes)
+                foreach (dynNodeModel e in ws.Nodes)
                     e.EnableReporting();
-
-                DynamoController.hideWorkspace(ws);
 
                 ws.FilePath = xmlPath;
 
@@ -733,12 +711,13 @@ namespace Dynamo.Utilities
                 var expression = CompileFunction(def);
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), expression);
 
+                
+
             }
             catch (Exception ex)
             {
-                dynSettings.Bench.Log("There was an error opening the workbench.");
-                dynSettings.Bench.Log(ex);
-                controller.CleanWorkbench();
+                DynamoCommands.WriteToLogCmd.Execute("There was an error opening the workbench.");
+                DynamoCommands.WriteToLogCmd.Execute(ex);
                 def = null;
                 return false;
             }
@@ -746,20 +725,20 @@ namespace Dynamo.Utilities
             return true;
         }
 
-        private static FScheme.Expression CompileFunction( FunctionDefinition definition ) {
+        public static FScheme.Expression CompileFunction( FunctionDefinition definition ) {
 
             if (definition == null)
                 return null;
 
             // Get the internal nodes for the function
-            dynWorkspace functionWorkspace = definition.Workspace;
+            dynWorkspaceModel functionWorkspace = definition.Workspace;
 
             #region Find outputs
 
             // Find output elements for the node
-            IEnumerable<dynNode> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
+            IEnumerable<dynNodeModel> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
 
-            var topMost = new List<Tuple<int, dynNode>>();
+            var topMost = new List<Tuple<int, dynNodeModel>>();
 
             IEnumerable<string> outputNames;
 
@@ -776,11 +755,11 @@ namespace Dynamo.Utilities
             {
                 // if there are no explicitly defined output nodes
                 // get the top most nodes and set THEM as tht output
-                IEnumerable<dynNode> topMostNodes = functionWorkspace.GetTopMostNodes();
+                IEnumerable<dynNodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
 
                 var outNames = new List<string>();
 
-                foreach (dynNode topNode in topMostNodes)
+                foreach (dynNodeModel topNode in topMostNodes)
                 {
                     foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
                     {
@@ -800,15 +779,15 @@ namespace Dynamo.Utilities
             // color the node to define its connectivity
             foreach (var ele in topMost)
             {
-                ele.Item2.NodeUI.ValidateConnections();
+                ele.Item2.ValidateConnections();
             }
 
             //Find function entry point, and then compile the function and add it to our environment
-            IEnumerable<dynNode> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
+            IEnumerable<dynNodeModel> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
             IEnumerable<string> inputNames = variables.Select(x => (x as dynSymbol).Symbol);
 
             INode top;
-            var buildDict = new Dictionary<dynNode, Dictionary<int, INode>>();
+            var buildDict = new Dictionary<dynNodeModel, Dictionary<int, INode>>();
 
             if (topMost.Count > 1)
             {
@@ -834,7 +813,7 @@ namespace Dynamo.Utilities
             if (outputs.Any())
             {
                 var beginNode = new BeginNode();
-                List<dynNode> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
+                List<dynNodeModel> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
                 foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
                 {
                     beginNode.AddInput(tNode.Index.ToString());
@@ -847,7 +826,7 @@ namespace Dynamo.Utilities
             }
 
             // make the anonymous function
-            FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.NodeUI.GUID.ToString()),
+            FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.GUID.ToString()),
                                                             top.Compile());
                 
             return expression;

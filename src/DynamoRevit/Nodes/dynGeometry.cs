@@ -38,7 +38,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Z", "Z", typeof(double)));
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -62,7 +62,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("pt", "Reference Point", typeof(object)));
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -84,7 +84,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
             OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(double)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -103,7 +103,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
             OutPortData.Add(new PortData("Y", "Y value of given XYZ", typeof(double)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -122,7 +122,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
             OutPortData.Add(new PortData("Z", "Z value of given XYZ", typeof(double)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -140,7 +140,7 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -159,7 +159,7 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -178,7 +178,7 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -197,7 +197,7 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -218,7 +218,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("n", "Scale value.", typeof(double)));
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -241,7 +241,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("XYZb", "XYZ b", typeof(XYZ)));
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -265,7 +265,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(double)));
             OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(XYZ)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -313,7 +313,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(double)));
             OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(XYZ)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -369,7 +369,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("z-space", "The Z spacing.", typeof(double)));
             OutPortData.Add(new PortData("XYZs", "List of XYZs in the grid", typeof(XYZ)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -427,7 +427,7 @@ namespace Dynamo.Nodes
             //InPortData.Add(new PortData("spacing", "The spacing.", typeof(double)));
             OutPortData.Add(new PortData("XYZs", "List of XYZs in the array", typeof(XYZ)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -475,7 +475,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
             OutPortData.Add(new PortData("P", "Plane", typeof(Plane)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -501,7 +501,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("plane", "The plane in which to define the sketch.", typeof(object))); // SketchPlane can accept Plane, Reference or PlanarFace
             OutPortData.Add(new PortData("sp", "SketchPlane", typeof(dynSketchPlane)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -610,7 +610,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("line", "Line", typeof(Line)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -653,7 +653,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("end", "End XYZ", typeof(XYZ)));
             OutPortData.Add(new PortData("arc", "Arc", typeof(Arc)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -697,7 +697,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("end", "End Param", typeof(double)));
             OutPortData.Add(new PortData("arc", "Arc", typeof(Arc)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -737,7 +737,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("t", "Transform(Transform)", typeof(object)));
             OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Curve)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
 
@@ -761,7 +761,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("rad", "Radius", typeof(double)));
             OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(CurveLoop)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         const double RevitPI = 3.14159265358979;
@@ -801,7 +801,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("radY", "Minor Radius", typeof(double)));
             OutPortData.Add(new PortData("ell", "Ellipse", typeof(Ellipse)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         const double RevitPI = 3.14159265358979;
@@ -848,7 +848,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("end", "End Param", typeof(double)));
             OutPortData.Add(new PortData("ell", "Ellipse", typeof(Ellipse)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -891,7 +891,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("V", "V", typeof(double)));
             OutPortData.Add(new PortData("uv", "UV", typeof(UV)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -916,7 +916,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
             OutPortData.Add(new PortData("C", "Curve", typeof(CurveElement)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -970,7 +970,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("xyzs", "List of pts.(List XYZ)", typeof(object)));
             OutPortData.Add(new PortData("ell", "Ellipse", typeof(HermiteSpline)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

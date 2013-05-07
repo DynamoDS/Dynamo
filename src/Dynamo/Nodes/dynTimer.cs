@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(double)));
             OutPortData.Add(new PortData("", "Success", typeof(bool)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -58,7 +58,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(double)));
             OutPortData.Add(new PortData("", "Success?", typeof(bool)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         Thread delayThread;

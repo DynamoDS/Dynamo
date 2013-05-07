@@ -60,6 +60,57 @@ namespace Dynamo.FSchemeInterop
         }
 
         /// <summary>
+        ///     A utility function to obtain the CSharp number type from a Value
+        /// </summary>
+        /// <param name="value">A Value object that returns true for IsNumber</param>
+        /// <param name="convertedValue">The holder for the obtained value</param>
+        /// <returns>False if the first param returns false for IsNumber</returns>
+        public static bool Convert(FScheme.Value value, ref double convertedValue)
+        {
+            if (!value.IsNumber)
+                return false;
+            convertedValue = ((FScheme.Value.Number)value).Item;
+            return true;
+        }
+
+        /// <summary>
+        ///     A utility function to obtain the CSharp number type from a Value
+        /// </summary>
+        /// <param name="value">A Value object that returns true for IsNumber</param>
+        /// <param name="convertedValue">The holder for the obtained value</param>
+        /// <returns>False if the first param returns false for IsNumber</returns>
+        public static bool Convert(FScheme.Value value, ref string convertedValue)
+        {
+            if (value.IsString)
+            {
+                convertedValue = ((FScheme.Value.String)value).Item;
+                return true;
+            }
+
+            if (value.IsSymbol)
+            {
+                convertedValue = ((FScheme.Value.Symbol)value).Item;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     A utility function to obtain the CSharp number type from a Value
+        /// </summary>
+        /// <param name="value">A Value object that returns true for IsNumber</param>
+        /// <param name="convertedValue">The holder for the obtained value</param>
+        /// <returns>False if the first param returns false for IsNumber</returns>
+        public static bool Convert(FScheme.Value value, ref FSharpList<Value> convertedValue)
+        {
+            if (!value.IsList)
+                return false;
+            convertedValue = ((FScheme.Value.List)value).Item;
+            return true;
+        }
+
+        /// <summary>
         /// Converts a Func to an FSharpFunc.
         /// </summary>
         /// <param name="f"></param>

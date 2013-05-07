@@ -29,7 +29,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("c", "The color", typeof(object)));
             OutPortData.Add(new PortData("mag", "The magnitude of the color's vector", typeof(double)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
                    }
                    catch (Exception ex)
                    {
-                       Bench.Log(
+                       dynSettings.Controller.DynamoViewModel.Log(
                           "Error deleting elements: "
                           + ex.GetType().Name
                           + " -- " + ex.Message

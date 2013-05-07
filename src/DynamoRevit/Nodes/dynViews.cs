@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("name", "Name", typeof(string)));
             OutPortData.Add(new PortData("v", "Drafting View", typeof(dynDraftingView)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -75,7 +75,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        this.Bench.Log(string.Format("Could not create view: {0}", viewName));
+                        dynSettings.Controller.DynamoViewModel.Log(string.Format("Could not create view: {0}", viewName));
                     }
                 }
                 else

@@ -41,7 +41,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("dc ", "the divided path element", typeof(DividedPath)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -242,7 +242,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("ds ", "the divided surface element", typeof(DividedPath)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

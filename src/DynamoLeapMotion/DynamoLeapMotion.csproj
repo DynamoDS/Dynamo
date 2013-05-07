@@ -36,6 +36,7 @@
     <Reference Include="LeapCSharp.NET4.0">
       <HintPath>..\..\extern\Leap SDK 0.7.3_2234 Binaries\LeapCSharp.NET4.0.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
@@ -54,10 +55,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
-      <Project>{F9B766BE-A5A3-4680-840F-649462340EE7}</Project>
-      <Name>DragCanvas</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoElements</Name>

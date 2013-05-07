@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Autodesk.Revit.DB;
@@ -13,7 +13,7 @@ using Dynamo.Connectors;
 
 namespace Dynamo.Revit
 {
-    public abstract class dynRevitTransactionNode : dynNode
+    public abstract class dynRevitTransactionNode : dynNodeModel
     {
         //TODO: Move from dynElementSettings to another static area in DynamoRevit
         protected Autodesk.Revit.UI.UIDocument UIDocument
@@ -90,13 +90,15 @@ namespace Dynamo.Revit
         {
             var controller = dynRevitSettings.Controller;
 
-            bool debug = controller.RunInDebug;
+            bool debug = controller.DynamoViewModel.RunInDebug;
 
             if (!debug)
             {
                 #region no debug
 
-                if (controller.TransMode == DynamoController_Revit.TransactionMode.Manual && !controller.IsTransactionActive())
+                if ((controller.DynamoViewModel as DynamoRevitViewModel).TransMode == 
+                    DynamoRevitViewModel.TransactionMode.Manual && 
+                    !controller.IsTransactionActive())
                 {
                     throw new Exception("A Revit transaction is required in order evaluate this element.");
                 }
@@ -122,7 +124,7 @@ namespace Dynamo.Revit
 
                 Bench.Dispatcher.Invoke(new Action(
                    () =>
-                      Bench.Log("Starting a debug transaction for element: " + NodeUI.NickName)
+                      dynSettings.Controller.DynamoViewModel.Log("Starting a debug transaction for element: " + NickName)
                 ));
 
                 IdlePromise.ExecuteOnIdle(
@@ -197,7 +199,7 @@ namespace Dynamo.Revit
                    {
                        runCount = 0;
 
-                       var query = controller.HomeSpace.Nodes
+                       var query = controller.DynamoViewModel.Model.HomeSpace.Nodes
                            .Where(x => x is dynFunctionWithRevit)
                            .Select(x => (x as dynFunctionWithRevit).ElementsContainer)
                            .Where(c => c.HasElements(this))
@@ -221,7 +223,7 @@ namespace Dynamo.Revit
                    }
                    catch (Exception ex)
                    {
-                       Bench.Log(
+                       dynSettings.Controller.DynamoViewModel.Log(
                           "Error deleting elements: "
                           + ex.GetType().Name
                           + " -- " + ex.Message
@@ -275,7 +277,7 @@ namespace Dynamo.Revit
             /// trigger a workspace modification event (dynamic running and saving).
             /// </summary>
             /// <param name="id">ElementId of the element to watch.</param>
-            public static void RegisterEvalOnModified(this dynNode node, ElementId id, Action modAction = null, Action delAction = null)
+            public static void RegisterEvalOnModified(this dynNodeModel node, ElementId id, Action modAction = null, Action delAction = null)
             {
                 var u = dynRevitSettings.Controller.Updater;
                 u.RegisterChangeHook(
@@ -295,7 +297,7 @@ namespace Dynamo.Revit
             /// been registered with RegisterEvalOnModified
             /// </summary>
             /// <param name="id">ElementId of the element to stop watching.</param>
-            public static void UnregisterEvalOnModified(this dynNode node, ElementId id)
+            public static void UnregisterEvalOnModified(this dynNodeModel node, ElementId id)
             {
                 var u = dynRevitSettings.Controller.Updater;
                 u.UnRegisterChangeHook(
@@ -321,7 +323,7 @@ namespace Dynamo.Revit
                 };
             }
 
-            static DynElementUpdateDelegate ReEvalOnModified(dynNode node, Action modifiedAction)
+            static DynElementUpdateDelegate ReEvalOnModified(dynNodeModel node, Action modifiedAction)
             {
                 return delegate(List<ElementId> modified)
                 {

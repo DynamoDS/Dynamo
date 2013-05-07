@@ -19,6 +19,7 @@ using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using System.Windows.Controls;
 
@@ -64,16 +65,22 @@ namespace Dynamo.Commands
             if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false)
             {
                 DynamoCommands.ShowLoginCmd.Execute(null);
-                dynSettings.Bench.Log("Must login first to publish a node.");
+                dynSettings.Controller.DynamoViewModel.Log("Must login first to publish a node.");
                 return;
             }
 
             if (!init)
             {
                 _view = new PackageManagerPublishView(dynSettings.Controller.PackageManagerPublishViewModel);
-                dynSettings.Bench.outerCanvas.Children.Add(_view);
-                Canvas.SetBottom(_view, 0);
-                Canvas.SetRight(_view, 0);
+
+                //MVVM: we now have an event called on the current workspace view model to 
+                //add the view to its outer canvas
+                //dynSettings.Bench.outerCanvas.Children.Add(_view);
+                //Canvas.SetBottom(_view, 0);
+                //Canvas.SetRight(_view, 0);
+
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(_view));
+
                 init = true;
             }
             
@@ -93,7 +100,7 @@ namespace Dynamo.Commands
             }
             else
             {
-                dynSettings.Bench.Log("Failed to obtain function definition from node.");
+                dynSettings.Controller.DynamoViewModel.Log("Failed to obtain function definition from node.");
                 return;
             }
             
@@ -120,9 +127,14 @@ namespace Dynamo.Commands
             if (!_init)
             {
                 var loginView = new PackageManagerLoginView(dynSettings.Controller.PackageManagerLoginViewModel);
-                dynSettings.Bench.outerCanvas.Children.Add(loginView);
-                Canvas.SetBottom(loginView, 0);
-                Canvas.SetRight(loginView, 0);
+
+                //MVVM: event on current workspace model view now adds views to canvas
+                //dynSettings.Bench.outerCanvas.Children.Add(loginView);
+                //Canvas.SetBottom(loginView, 0);
+                //Canvas.SetRight(loginView, 0);
+
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(loginView));
+
                 _init = true;
             }
 
@@ -168,8 +180,8 @@ namespace Dynamo.Commands
         {
             this._client = dynSettings.Controller.PackageManagerClient;
 
-            var nodeList = dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI && ((dynNodeUI)x).NodeLogic is dynFunction )
-                                        .Select(x => ( ((dynNodeUI)x).NodeLogic as dynFunction ).Definition.FunctionId ).ToList();
+            var nodeList = DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel && ((dynNodeModel)x) is dynFunction )
+                                        .Select(x => ( ((dynNodeModel)x) as dynFunction ).Definition.FunctionId ).ToList();
 
             if (nodeList.Count != 1)
             {
@@ -210,14 +222,14 @@ namespace Dynamo.Commands
         {
             this._client = dynSettings.Controller.PackageManagerClient;
             
-            if ( dynSettings.Controller.ViewingHomespace )
+            if ( dynSettings.Controller.DynamoViewModel.ViewingHomespace )
             {
                 MessageBox.Show("You can't publish your the home workspace.", "Workspace Error", MessageBoxButton.OK, MessageBoxImage.Question);
                 return;
             }
 
             var currentFunDef =
-                dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(dynSettings.Controller.CurrentSpace);
+                dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(dynSettings.Controller.DynamoViewModel.CurrentSpace);
 
             if ( currentFunDef != null )
             {

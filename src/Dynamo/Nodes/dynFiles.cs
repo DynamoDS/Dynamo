@@ -112,7 +112,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
             OutPortData.Add(new PortData("contents", "File contents", typeof(string)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
@@ -168,26 +168,26 @@ namespace Dynamo.Nodes
 
             InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
             InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
+            RegisterAllPorts();
+            //Loaded += new RoutedEventHandler(topControl_Loaded);
 
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             image1 = new System.Windows.Controls.Image();
             image1.Width = 320;
             image1.Height = 240;
-            image1.Margin = new Thickness(5);
+            //image1.Margin = new Thickness(5);
             image1.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             image1.Name = "image1";
             image1.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-            
+
             //image1.Margin = new Thickness(0, 0, 0, 0);
 
             NodeUI.inputGrid.Children.Add(image1);
-
-            NodeUI.RegisterAllPorts();
-
-            NodeUI.Width = 450;
-            NodeUI.Height = 240 + 5;
-
-            //Loaded += new RoutedEventHandler(topControl_Loaded);
-
+            //NodeUI.Width = 450;
+            //NodeUI.Height = 240 + 5;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -205,19 +205,30 @@ namespace Dynamo.Nodes
                         using (Bitmap bmp = new Bitmap(storedPath))
                         {
 
-                            NodeUI.Dispatcher.Invoke(new Action(
-                                delegate
-                                {
-                                    // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
-                                    // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
-                                    // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
+                            //NodeUI.Dispatcher.Invoke(new Action(
+                            //    delegate
+                            //    {
+                            //        // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
+                            //        // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
+                            //        // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
 
-                                    var hbitmap = bmp.GetHbitmap();
-                                    var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
-                                    image1.Source = imageSource;
-                                }
-                            ));
+                            //        var hbitmap = bmp.GetHbitmap();
+                            //        var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
+                            //        image1.Source = imageSource;
+                            //    }
+                            //));
 
+                            //MVVM: now using node model's dispatch on ui thread method
+                            DispatchOnUIThread(delegate
+                            {
+                                // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
+                                // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
+                                // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
+
+                                var hbitmap = bmp.GetHbitmap();
+                                var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
+                                image1.Source = imageSource;
+                            });
 
                             // Do some processing
                             for (int y = 0; y < yDiv; y++)
@@ -232,7 +243,7 @@ namespace Dynamo.Nodes
                     }
                     catch (Exception e)
                     {
-                        Bench.Log(e.ToString());
+                        dynSettings.Controller.DynamoViewModel.Log(e.ToString());
                     }
 
 
@@ -254,7 +265,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("text", "Text to be written", typeof(string)));
             OutPortData.Add(new PortData("success?", "Whether or not the operation was successful.", typeof(bool)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -270,7 +281,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                Bench.Log(e);
+                dynSettings.Controller.DynamoViewModel.Log(e);
                 return Value.NewNumber(0);
             }
 
@@ -289,7 +300,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("data", "List of lists to write into CSV", typeof(IList<IList<string>>)));
             OutPortData.Add(new PortData("success?", "Whether or not the file writing was successful", typeof(bool)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -310,7 +321,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                Bench.Log(e);
+                dynSettings.Controller.DynamoViewModel.Log(e);
                 return Value.NewNumber(0);
             }
 
@@ -331,7 +342,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("path", "Path to the file to create a watcher for.", typeof(FileWatcher)));
             OutPortData.Add(new PortData("fw", "Instance of a FileWatcher.", typeof(FileWatcher)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -351,7 +362,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
             OutPortData.Add(new PortData("changed?", "Whether or not the file has been changed.", typeof(bool)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -374,7 +385,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("limit", "Amount of time (in milliseconds) to wait for an update before failing.", typeof(double)));
             OutPortData.Add(new PortData("changed?", "True: File was changed. False: Timed out.", typeof(bool)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -413,7 +424,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
             OutPortData.Add(new PortData("fw", "Updated watcher.", typeof(FileWatcher)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
