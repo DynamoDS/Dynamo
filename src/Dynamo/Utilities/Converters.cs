@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Windows.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
@@ -14,13 +13,31 @@ using Dynamo.Nodes;
 namespace Dynamo.Controls
 {
 
-    //[ValueConversion(typeof(double), typeof(Thickness))]
     public class MarginConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             double height = (double)value;
             return new Thickness(0, -1 * height - 3, 0, 0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class PathToFileNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is string)
+            {
+                // convert to path, get file name
+                return Path.GetFileName((string) value);
+            } 
+
+            return "Unsaved";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
