@@ -92,7 +92,7 @@ namespace Dynamo.Nodes
         public dynRevitDocument()
         {
             OutPortData.Add(new PortData("doc", "The active Revit doc.", typeof(Autodesk.Revit.DB.Document)));
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

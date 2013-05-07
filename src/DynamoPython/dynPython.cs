@@ -169,10 +169,14 @@ namespace Dynamo.Nodes
             catch (SyntaxErrorException ex)
             {
                 throw new Exception(
-                   ex.Message
-                   + " at Line " + (ex.Line - 4)
-                   + ", Column " + ex.Column
-                );
+                    ex.Message
+                    + " at Line " + (ex.Line - 4)
+                    + ", Column " + ex.Column
+                    );
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message + ":" + e.StackTrace);
             }
 
             Value result = Value.NewNumber(1);
@@ -246,6 +250,17 @@ namespace Dynamo.Nodes
 
         public dynPython()
         {
+            InPortData.Add(new PortData("IN", "Input", typeof(object)));
+            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
+            //topControl.Height = 200;
+            //topControl.Width = 300;
+
             //add an edit window option to the 
             //main context window
             var editWindowItem = new System.Windows.Controls.MenuItem();
@@ -253,15 +268,6 @@ namespace Dynamo.Nodes
             editWindowItem.IsCheckable = false;
             NodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
-
-            InPortData.Add(new PortData("IN", "Input", typeof(object)));
-            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
-
-            NodeUI.RegisterAllPorts();
-
-            //topControl.Height = 200;
-            //topControl.Width = 300;
-
             NodeUI.UpdateLayout();
         }
 
@@ -414,7 +420,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
             OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private List<Binding> makeBindings(IEnumerable<Value> args)

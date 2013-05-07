@@ -1,21 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media.Media3D;
 using System.Windows;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
-using System.Windows.Controls;
-using System.Diagnostics;
-
 using Microsoft.FSharp.Collections;
 using Microsoft.Kinect;
 
 using Dynamo.Connectors;
-using Dynamo.FSchemeInterop;
-using Dynamo.FSchemeInterop.Node;
-using Dynamo.Utilities;
 
 using Value = Dynamo.FScheme.Value;
 

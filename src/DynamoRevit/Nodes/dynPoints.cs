@@ -36,7 +36,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("xyz", "The point(s) from which to create reference points.", typeof(XYZ)));
             OutPortData.Add(new PortData("pt", "The Reference Point(s) created from this operation.", typeof(ReferencePoint)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -166,7 +166,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("dist", "Distance between points.", typeof(double)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private XYZ getXYZ(object arg)
@@ -211,7 +211,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("t", "Parameter on edge.", typeof(double)));
             OutPortData.Add(new PortData("pt", "PointOnEdge", typeof(ReferencePoint)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -266,7 +266,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("v", "V Parameter on face.", typeof(double)));
             OutPortData.Add(new PortData("pt", "PointOnFace", typeof(ReferencePoint)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -339,7 +339,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("UV", "U Parameter on face.", typeof(object)));
             OutPortData.Add(new PortData("pt", "PointOnFace", typeof(ReferencePoint)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -403,7 +403,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("d", "The offset distance", typeof(object)));
             OutPortData.Add(new PortData("pt", "Point", typeof(ReferencePoint)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -452,10 +452,13 @@ namespace Dynamo.Nodes
 
         public dynPlaneFromRefPoint()
         {
-
             InPortData.Add(new PortData("pt", "The point to extract the plane from", typeof(object)));
             OutPortData.Add(new PortData("r", "Reference", typeof(Reference)));
+            RegisterAllPorts();
+        }
 
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             //add a drop down list to the window
             combo = new ComboBox();
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -472,8 +475,6 @@ namespace Dynamo.Nodes
             };
 
             PopulateComboBox();
-
-            NodeUI.RegisterAllPorts();
         }
 
         void combo_DropDownOpened(object sender, EventArgs e)

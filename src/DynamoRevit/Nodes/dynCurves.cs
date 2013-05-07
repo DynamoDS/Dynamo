@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(SketchPlane)));
             OutPortData.Add(new PortData("mc", "Model Curve", typeof(ModelCurve)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -108,7 +108,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("refPts", "List of reference points", typeof(object)));
             OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("curve", "geometry curve", typeof(object)));
             OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -310,7 +310,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("curve", "Model Curve Element or Geometry Curve", typeof(object)));
             OutPortData.Add(new PortData("curveRef", "Curve Reference", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private Value makeCurveRef(object c, int count)
@@ -377,7 +377,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("mc", "Model Curve Element", typeof(object)));
             OutPortData.Add(new PortData("curve", "Curve", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private Value extractCurve(object c, int count)
@@ -442,7 +442,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(object)));
             OutPortData.Add(new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(ModelNurbSpline)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

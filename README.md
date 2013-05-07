@@ -51,7 +51,7 @@ New or Updated nodes
 - Dynamic Relaxation improvments
 
 UI:
-- Custom Node creation from Selection – are we using Custom or User-Created in the UI now? Is it consistent?
+- Custom Node creation from Selection
 - Multiple Outputs from custom nodes
 - Cut and Paste 
 - Box and Multi Select
@@ -65,7 +65,7 @@ Engineering:
 - Code Cleanup
 - Expanded code Documentation
 - Code Separation (Disentangle UI, Engine, Revit code)
-- API reflection:  Ability to automatically generate nodes from the API – are we shipping with the API nodes turned on? If so this  belongs above
+- API reflection:  Ability to automatically generate nodes from the API
 - Automated testing for improved stability
 
 Samples:

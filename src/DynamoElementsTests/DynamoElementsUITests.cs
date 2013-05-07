@@ -110,34 +110,6 @@
 //            Assert.AreEqual(0, tempFldrInfo.GetFiles().Length);
 //        }
 
-//        // ShowSplashScreenCmd
-
-//        [Test]
-//        public void CanShowAndCloseSplashScreen()
-//        {
-//            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ShowSplashScreenCmd,
-//                                                                                 null));
-//            dynSettings.Controller.ProcessCommandQueue();
-//            dynSettings.Controller.SplashScreen.Dispatcher.Invoke(
-//                (Action)(() =>
-//                {
-//                    Assert.AreEqual(true, dynSettings.Controller.SplashScreen.IsVisible);
-//                    dynSettings.Controller.CommandQueue.Enqueue(
-//                        Tuple.Create<object, object>(DynamoCommands.CloseSplashScreenCmd, null));
-//                    dynSettings.Controller.ProcessCommandQueue();
-//                    Assert.AreEqual(false, dynSettings.Controller.SplashScreen.IsVisible);
-//                }));
-//        }
-
-//        [Test]
-//        public void CanShowSplashScreenFromDefaultState()
-//        {
-//            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ShowSplashScreenCmd,
-//                                                                                 null));
-//            dynSettings.Controller.ProcessCommandQueue();
-//            dynSettings.Controller.SplashScreen.Dispatcher.Invoke(
-//                (Action)(() => { Assert.AreEqual(true, dynSettings.Controller.SplashScreen.IsVisible); }));
-//        }
 
 
 //        // ToggleConsoleShowingCommand

@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using Dynamo.Commands;
+using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 
@@ -38,7 +39,7 @@ namespace Dynamo.Search.SearchElements
         /// Node property </summary>
         /// <value>
         /// The node used to instantiate this object </value>
-        public dynNode Node { get; internal set; }
+        public dynNodeModel Node { get; internal set; }
 
         /// <summary>
         /// Type property </summary>
@@ -78,14 +79,14 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// The class constructor for a built-in type that is already loaded. </summary>
         /// <param name="node">The local node</param>
-        public LocalSearchElement(dynNode node)
+        public LocalSearchElement(dynNodeModel node)
         {
             this.Node = node;
-            this._name = Node.NodeUI.NickName;
+            this._name = Node.NickName;
             this.Weight = 1;
-            this.Keywords = String.Join(" ", node.NodeUI.Tags);
+            this.Keywords = String.Join(" ", node.Tags);
             this._type = "Node";
-            this._description = node.NodeUI.Description;
+            this._description = node.Description;
         }
 
         /// <summary>
@@ -129,8 +130,8 @@ namespace Dynamo.Search.SearchElements
         /// <param name="funcDef">The FunctionDefinition for a custom node</param>
         public LocalSearchElement(FunctionDefinition funcDef)
         {
-            this.Node = dynSettings.Controller.CreateNodeInstance(funcDef.FunctionId.ToString());
-            this._name = Node.NodeUI.NickName;
+            this.Node = dynSettings.Controller.DynamoViewModel.CreateNode(funcDef.FunctionId.ToString());
+            this._name = funcDef.Workspace.Name;
             this.Weight = 1.1;
             this.Keywords = "";
             this._description = "Custom Node";
@@ -166,15 +167,14 @@ namespace Dynamo.Search.SearchElements
                     {"transformFromOuterCanvasCoordinates", true},
                     {"guid", guid}
                 };
-            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeParams));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.CreateNodeCommand, nodeParams));
             dynSettings.Controller.ProcessCommandQueue();
 
             // select node
-            var placedNode = dynSettings.Controller.Nodes.Find((node) => node.NodeUI.GUID == guid);
+            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
-                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, placedNode.NodeUI));
-                dynSettings.Controller.ProcessCommandQueue();
+                dynSettings.Controller.OnRequestSelect(this, new NodeEventArgs(placedNode, null));
             }
         }
 

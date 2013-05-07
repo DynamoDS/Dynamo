@@ -25,7 +25,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("form", "Loft Form", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

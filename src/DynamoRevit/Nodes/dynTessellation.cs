@@ -24,7 +24,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("face", "The face on which to tessellate.", typeof(object)));
             OutPortData.Add(new PortData("out", "Tessellation data.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

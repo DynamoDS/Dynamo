@@ -40,21 +40,6 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class WatchTree : UserControl
     {
-        public event EventHandler TreeExpanded;
-        public event EventHandler TreeCollapsed;
-
-        protected virtual void OnTreeExpanded(object sender, EventArgs e)
-        {
-            if (TreeExpanded != null)
-                TreeExpanded(this, e);
-        }
-
-        protected virtual void OnTreeCollapsed(object sender, EventArgs e)
-        {
-            if (TreeCollapsed != null)
-                TreeCollapsed(this, e);
-        }
-
         public WatchTree()
         {
             InitializeComponent();
@@ -69,16 +54,6 @@ namespace Dynamo.Controls
             WatchNode node = (WatchNode)fe.DataContext;
 
             node.Click();
-        }
-
-        private void treeView1_Expanded(object sender, RoutedEventArgs e)
-        {
-            OnTreeExpanded(sender, EventArgs.Empty);
-        }
-
-        private void treeView1_Collapsed(object sender, RoutedEventArgs e)
-        {
-            OnTreeCollapsed(sender, EventArgs.Empty);
         }
     }
 
@@ -152,7 +127,7 @@ namespace Dynamo.Controls
     public sealed class NullToVisibiltyConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
+        { 
             return value == null ? System.Windows.Visibility.Hidden : System.Windows.Visibility.Visible;
         }
 
