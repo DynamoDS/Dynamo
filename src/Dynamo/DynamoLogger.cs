@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Dynamo.Nodes;
 
 namespace Dynamo
 {
@@ -42,6 +43,17 @@ namespace Dynamo
         {
             if(Writer!=null)
                 Writer.WriteLine(string.Format("{0} : {1}", DateTime.Now, message));
+        }
+
+        public void Log(dynNodeModel node)
+        {
+            string exp = node.PrintExpression();
+            Log("> " + exp);
+        }
+
+        public void Log(FScheme.Expression expression)
+        {
+            Log(FScheme.printExpression("\t", expression));
         }
 
         /// <summary>

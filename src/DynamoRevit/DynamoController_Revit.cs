@@ -411,12 +411,14 @@ namespace Dynamo
                 //If we don't need to be in the idle thread...
                 if (noIdleThread)
                 {
+                    DynamoLogger.Instance.Log("Running expression in evaluation thread...");
                     (DynamoViewModel as DynamoRevitViewModel).TransMode = DynamoRevitViewModel.TransactionMode.Manual; //Manual transaction control
                     this.InIdleThread = false; //Not in idle thread at the moment
                     base.Run(topElements, runningExpression); //Just run the Run Delegate
                 }
                 else //otherwise...
                 {
+                    DynamoLogger.Instance.Log("Running expression in Revit's Idle thread...");
                     (DynamoViewModel as DynamoRevitViewModel).TransMode = DynamoRevitViewModel.TransactionMode.Automatic; //Automatic transaction control
                     this.InIdleThread = true; //Now in the idle thread.
                     IdlePromise.ExecuteOnIdle(new Action(
