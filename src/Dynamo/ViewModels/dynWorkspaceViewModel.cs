@@ -131,6 +131,11 @@ namespace Dynamo
             }
         }
 
+        public string FilePath
+        {
+            get { return _model.FilePath; }
+        }
+
         private dynConnectorViewModel activeConnector;
         public dynConnectorViewModel ActiveConnector
         {
@@ -353,6 +358,9 @@ namespace Dynamo
                     break;
                 case "HasUnsavedChanges":
                     RaisePropertyChanged("HasUnsavedChanges");
+                    break;
+                case "FilePath":
+                    RaisePropertyChanged("FilePath");
                     break;
             }
         }

@@ -48,10 +48,10 @@
                 <PathGeometry>
                     <PathGeometry.Figures>
                         <PathFigureCollection>
-                            <PathFigure StartPoint="{Binding BezPoint0}">
+                            <PathFigure StartPoint="{Binding CurvePoint0}">
                                 <PathFigure.Segments>
                                     <PathSegmentCollection>
-                                        <BezierSegment Point1="{Binding BezPoint1}" Point2="{Binding BezPoint2}" Point3="{Binding BezPoint3}" />
+                                        <BezierSegment Point1="{Binding CurvePoint1}" Point2="{Binding CurvePoint2}" Point3="{Binding CurvePoint3}" />
                                     </PathSegmentCollection>
                                 </PathFigure.Segments>
                             </PathFigure>
@@ -69,12 +69,12 @@
                 <PathGeometry>
                     <PathGeometry.Figures>
                         <PathFigureCollection>
-                            <PathFigure StartPoint="{Binding BezPoint0}">
+                            <PathFigure StartPoint="{Binding CurvePoint0}">
                                 <PathFigure.Segments>
                                     <PathSegmentCollection>
-                                        <LineSegment Point="{Binding BezPoint1}"/> 
-                                        <LineSegment Point="{Binding BezPoint2}"/> 
-                                        <LineSegment Point="{Binding BezPoint3}"/>
+                                        <LineSegment Point="{Binding CurvePoint1}"/>
+                                        <LineSegment Point="{Binding CurvePoint2}"/>
+                                        <LineSegment Point="{Binding CurvePoint3}"/>
                                     </PathSegmentCollection>
                                 </PathFigure.Segments>
                             </PathFigure>
