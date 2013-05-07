@@ -1643,13 +1643,13 @@ namespace Dynamo.Nodes
             Background = clear;
             BorderThickness = new Thickness(0);
 
-            var bindingVal = new System.Windows.Data.Binding("Text")
-            {
-                Source = Text,
-                Mode = BindingMode.TwoWay,
-                Converter = new StringDisplay()
-            };
-            base.SetBinding(TextBox.TextProperty, bindingVal);
+            //var bindingVal = new System.Windows.Data.Binding("Text")
+            //{
+            //    Source = Text,
+            //    Mode = BindingMode.TwoWay,
+            //    Converter = new StringDisplay()
+            //};
+            //base.SetBinding(TextBox.TextProperty, bindingVal);
         }
 
         private bool numeric;
@@ -1947,6 +1947,7 @@ namespace Dynamo.Nodes
         public dynDoubleInput()
         {
             RegisterAllPorts();
+            Value = 0.0;
         }
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
@@ -1960,21 +1961,19 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = true;
             tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-
             tb.OnChangeCommitted += delegate { 
-                Value = DeserializeValue(tb.Text);
                 dynSettings.ReturnFocusToSearch();
             };
-
-            NodeUI.UpdateLayout();
 
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay()
+                Converter = new DoubleDisplay(),
+                NotifyOnValidationError = false
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
+            
         }
 
         public override double Value
@@ -2016,12 +2015,15 @@ namespace Dynamo.Nodes
         dynTextBox mintb;
         dynTextBox maxtb;
         TextBox displayBox;
-        private double max = 100.0;
-        private double min = 0.0;
+        private double max;
+        private double min;
 
         public dynDoubleSliderInput()
         {
             RegisterAllPorts();
+            Value = 50.0;
+            Min = 0.0;
+            Max = 100.0;
         }
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
@@ -2133,7 +2135,6 @@ namespace Dynamo.Nodes
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new StringDisplay(),
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
             displayBox.SetBinding(TextBox.TextProperty, bindingValue);
 
@@ -2147,7 +2148,6 @@ namespace Dynamo.Nodes
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay(),
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
             tb_slider.SetBinding(Slider.MaximumProperty, bindingMax);
             maxtb.SetBinding(dynTextBox.TextProperty, bindingMax);
@@ -2156,7 +2156,6 @@ namespace Dynamo.Nodes
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay(),
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
             tb_slider.SetBinding(Slider.MinimumProperty, bindingMin);
             mintb.SetBinding(dynTextBox.TextProperty, bindingMin);
