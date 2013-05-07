@@ -436,6 +436,9 @@ namespace Dynamo.Nodes
     [NodeDescription("Node to create a planar model curve.")]
     public class dynModelCurveNurbSpline : dynRevitTransactionNodeWithOneOutput
     {
+        private NurbSpline ns;
+        private ModelNurbSpline c;
+
         public dynModelCurveNurbSpline()
         {
             InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(object)));
@@ -450,42 +453,68 @@ namespace Dynamo.Nodes
                e => ((ReferencePoint)((Value.Container)e).Item).Position
             ).ToList();
 
-
             foreach (ElementId el in this.Elements)
             {
                 Element e;
                 if (dynUtils.TryGetElement(el, out e))
                 {
-                    this.UIDocument.Document.Delete(el);
+                    DeleteElement(el);
+                    ns = null;
+                    c = null;
                 }
+                    
             }
+
             if (pts.Count <= 1)
             {
                 throw new Exception("Not enough reference points to make a curve.");
             }
 
-            //make a curve
-            NurbSpline ns = this.UIDocument.Application.Application.Create.NewNurbSpline(
-               pts, Enumerable.Repeat(1.0, pts.Count).ToList()
-            );
-
-            double rawParam = ns.ComputeRawParameter(.5);
-            Transform t = ns.ComputeDerivatives(rawParam, false);
-
-            XYZ norm = t.BasisZ;
-
-            if (norm.GetLength() == 0)
+            if (ns == null)
             {
-                norm = XYZ.BasisZ;
+                //make a curve
+                ns = this.UIDocument.Application.Application.Create.NewNurbSpline(
+                    pts, Enumerable.Repeat(1.0, pts.Count).ToList());
+            }
+            else
+            {
+                DoubleArray arr = new DoubleArray();
+                
+                var weights = Enumerable.Repeat(1.0, pts.Count).ToList();
+                foreach (double weight in weights)
+                {
+                    double d = weight;
+                    arr.Append(ref d);
+                }
+                    
+                //update the existing curve
+                ns.SetControlPointsAndWeights(pts, arr);
             }
 
-            Plane p = new Plane(norm, t.Origin);
-            SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
-            //sps.Add(sp);
+            if (c == null)
+            {
+                double rawParam = ns.ComputeRawParameter(.5);
+                Transform t = ns.ComputeDerivatives(rawParam, false);
 
-            ModelNurbSpline c = (ModelNurbSpline)this.UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp);
+                XYZ norm = t.BasisZ;
 
-            this.Elements.Add(c.Id);
+                if (norm.GetLength() == 0)
+                {
+                    norm = XYZ.BasisZ;
+                }
+
+                Plane p = new Plane(norm, t.Origin);
+                SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
+                //sps.Add(sp);
+
+                c = (ModelNurbSpline) this.UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp);
+
+                this.Elements.Add(c.Id);
+            }
+            else
+            {
+                c.GeometryCurve = ns;
+            }
 
             return Value.NewContainer(c);
         }
