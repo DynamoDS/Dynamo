@@ -32,10 +32,10 @@
         
         <Canvas Canvas.Top="0" Canvas.Left="0" ZIndex="1">
 
-            <Ellipse Name="endDot" Width="10" Height="10" Margin="-5"  Fill="{Binding IsEndSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
+            <Ellipse Name="endDot" Width="8" Height="8" Margin="-5"  Fill="{Binding IsEndSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
                  Canvas.Top="{Binding CurvePoint3.Y}" Canvas.Left="{Binding CurvePoint3.X}" Canvas.ZIndex="1"/>
 
-            <Ellipse Name="startDot" Width="10" Height="10" Margin="-5"  Fill="{Binding IsStartSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
+            <Ellipse Name="startDot" Width="8" Height="8" Margin="-5"  Fill="{Binding IsStartSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
                  Canvas.Top="{Binding CurvePoint0.Y}" Canvas.Left="{Binding CurvePoint0.X}" Canvas.ZIndex="1"/>
             
         </Canvas>
