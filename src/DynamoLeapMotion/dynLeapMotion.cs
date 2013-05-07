@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿//Copyright © Autodesk, Inc. 2012. All rights reserved.
+=======
+//Copyright © Autodesk, Inc. 2012. All rights reserved.
+>>>>>>> 2ec6f35c8f2f9655bb27eff3fb81c69c167a56c6
 //
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -23,12 +27,29 @@
 //
 
 using System;
+<<<<<<< HEAD
 using System.Windows.Media.Media3D;
 using Microsoft.FSharp.Collections;
 using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Controls;
 
+=======
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml;
+using System.Windows.Media.Media3D;
+using Microsoft.FSharp.Collections;
+
+using Dynamo.Connectors;
+using Dynamo.Utilities;
+using Dynamo.FSchemeInterop;
+using Value = Dynamo.FScheme.Value;
+using Dynamo.Controls;
+
+using Leap;
+>>>>>>> 2ec6f35c8f2f9655bb27eff3fb81c69c167a56c6
 
 namespace Dynamo.Nodes
 {
@@ -65,6 +86,10 @@ namespace Dynamo.Nodes
             menuItemLeapEnabled.IsCheckable = true;
             menuItemLeapEnabled.IsChecked = (leapController != null);
             menuItemLeapEnabled.Checked += new System.Windows.RoutedEventHandler(menuItemLeapEnabled_Checked);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2ec6f35c8f2f9655bb27eff3fb81c69c167a56c6
             NodeUI.MainContextMenu.Items.Add(menuItemLeapEnabled);
         }
 
