@@ -58,8 +58,6 @@ namespace Dynamo.Nodes
         //protected abstract string SelectionText { get; }
         protected string _selectionText;
 
-        public abstract string SelectionText { get; set; }
-
         protected dynElementSelection(PortData outPortData)
         {
             OutPortData.Add(outPortData);

@@ -59,8 +59,11 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("IN", "Incoming geometry objects.", typeof(object)));
             OutPortData.Add(new PortData("OUT", "Watch contents, passed through", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
+        }
 
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             MenuItem mi = new MenuItem();
             mi.Header = "Zoom to Fit";
             mi.Click += new RoutedEventHandler(mi_Click);
@@ -117,7 +120,7 @@ namespace Dynamo.Nodes
 
         void view_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            _rightMousePoint = e.GetPosition(NodeUI.topControl);
+
         }
 
         void view_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -125,10 +128,10 @@ namespace Dynamo.Nodes
             //if the mouse has moved, and this is a right
             //click, we assume rotation. handle the event
             //so we don't show the context menu
-            if (e.GetPosition(NodeUI.topControl) != _rightMousePoint)
-            {
-                e.Handled = true;
-            }
+            //if (e.GetPosition(NodeUI.topControl) != _rightMousePoint)
+            //{
+            //    e.Handled = true;
+            //}
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
@@ -136,11 +139,11 @@ namespace Dynamo.Nodes
             _watchView.watch_view.ZoomExtents();
         }
 
-        private void GetUpstreamIDrawable(List<IDrawable>  drawables, Dictionary<int, Tuple<int, dynNode>> inputs)
+        private void GetUpstreamIDrawable(List<IDrawable> drawables, Dictionary<int, Tuple<int, dynNodeModel>> inputs)
         {
-            foreach (KeyValuePair<int, Tuple<int, dynNode>> pair in inputs)
+            foreach (KeyValuePair<int, Tuple<int, dynNodeModel>> pair in inputs)
             {
-                dynNode node = pair.Value.Item2;
+                dynNodeModel node = pair.Value.Item2;
                 IDrawable drawable = node as IDrawable;
 
                 if (drawable != null)

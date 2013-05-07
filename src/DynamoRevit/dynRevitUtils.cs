@@ -9,7 +9,6 @@ using System.Windows.Media.Media3D;
 
 using Dynamo.Nodes;
 using Dynamo.Revit;
-using Dynamo.Nodes;
 
 using Autodesk.Revit.DB;
 using Dynamo.FSchemeInterop;

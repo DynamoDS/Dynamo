@@ -192,6 +192,7 @@ limitations under the License.
     </Compile>
     <Compile Include="WatchControl.xaml.cs">
       <DependentUpon>WatchControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\dynConnectorView.xaml.cs">
       <DependentUpon>dynConnectorView.xaml</DependentUpon>
     </Compile>
