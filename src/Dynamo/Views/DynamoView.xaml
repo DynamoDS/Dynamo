@@ -216,6 +216,38 @@
                 
                 <TabControl.Resources>
 
+                    <Style  TargetType="{x:Type TabControl}">
+                        <Setter Property="OverridesDefaultStyle"
+          Value="True" />
+                        <Setter Property="SnapsToDevicePixels"
+          Value="True" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabControl}">
+                                    <Grid KeyboardNavigation.TabNavigation="Local">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <TabPanel x:Name="HeaderPanel"
+                                            Grid.Row="0" 
+                                            Margin="0,4,0,0"
+                                            Panel.ZIndex="1"
+                                            IsItemsHost="True"
+                                            KeyboardNavigation.TabIndex="1"
+                                            Background="Transparent" />
+                                        <Border x:Name="Border"
+                                          Grid.Row="1" 
+                                          BorderBrush="#4B4B4B"
+                                          BorderThickness="0,4,0,0">
+                                            <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
+                                        </Border>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    
                     <Style TargetType="{x:Type TabItem}">
                         <Setter Property="Template">
                             <Setter.Value>
@@ -224,15 +256,30 @@
                                         <Border 
                                           Name="Border"
                                           BorderBrush="Black" 
-                                          BorderThickness="1,1,1,0" >
+                                          CornerRadius="4,4,0,0"
+                                          BorderThickness="2,1,1,0" >
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                            <Setter Property="Background" Value="#555"/>
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                                                                        <GradientStop Color="#555" Offset="0.0" />
+                                                                        <GradientStop Color="#4B4B4B" Offset="1.0" />
+                                                                    </LinearGradientBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
-                                                            <Setter Property="Background" Value="#333"/>
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                                                                        <GradientStop Color="#333" Offset="0.0" />
+                                                                        <GradientStop Color="#111" Offset="1.0" />
+                                                                    </LinearGradientBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -304,40 +351,77 @@
                     <DataTemplate>
                         
                         <StackPanel Orientation="Horizontal" Margin="10,5,10,5">
-                            
-                            <TextBlock Name="NameOfWorkspace" Foreground ="GhostWhite" Text="{Binding Name}" Margin="5,2,0,0"></TextBlock>
-                            <TextBlock Name="WorkspaceTypeIndicator" Foreground ="GhostWhite" Margin="0,2,0,0">
+
+                            <TextBlock Name="WorkspaceName" Margin="0,2,0,0" >
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                <Setter Property="Foreground" Value="GhostWhite"></Setter>
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
+                                                <Setter Property="Foreground" Value="#999"></Setter>
+                                            </DataTrigger>
+                                            
                                             <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type dynamo:HomeWorkspace}">
-                                                <Setter Property="Text" Value=".dyn"/>
+                                                <Setter Property="Text" Value="Home"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
                                             </DataTrigger>
                                             
                                             <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type dynamo:FuncWorkspace}">
-                                                <Setter Property="Text" Value=".dyf"/>
+                                                <Setter Property="Text" Value="{Binding Name}"/>
                                             </DataTrigger>
                                             
                                         </Style.Triggers>
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
-                            <TextBlock Name="UnsavedChangesIndicator" Foreground ="GhostWhite" Text="*" Margin="0,2,10,0">
+
+                            <TextBlock Name="Spacer" Text=" -" Margin="0,2,0,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="True">
-                                                <Setter Property="Visibility" Value="Visible"/>
+                                            
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                <Setter Property="Foreground" Value="GhostWhite"></Setter>
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
+                                                <Setter Property="Foreground" Value="#999"></Setter>
                                             </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="False">
-                                                <Setter Property="Visibility" Value="Hidden"/>
-                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </TextBlock.Style>
-                            </TextBlock>    
+
+                            </TextBlock>
+
+                            <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                <Setter Property="Foreground" Value="GhostWhite"></Setter>
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
+                                                <Setter Property="Foreground" Value="#999"></Setter>
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="True">
+                                                <Setter Property="FontStyle" Value="Italic"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="False">
+                                                <Setter Property="FontStyle" Value="Normal"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>                                
+                                
+                            </TextBlock> 
                             
                             <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
 
