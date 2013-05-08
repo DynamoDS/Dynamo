@@ -188,7 +188,7 @@ namespace Dynamo.Connectors
         
         private const double HighlightThickness = 6;
 
-        private double _strokeThickness = 2;
+        private double _strokeThickness = 3;
         public double StrokeThickness
         {
             get { return _strokeThickness; }
@@ -247,7 +247,7 @@ namespace Dynamo.Connectors
             UnHighlightCommand = new DelegateCommand(Unhighlight, CanUnHighlight);
 
             var bc = new BrushConverter();
-            _strokeBrush = (Brush)bc.ConvertFrom("#313131");
+            StrokeBrush = (Brush)bc.ConvertFrom("#777");
 
             IsConnecting = true;
             _activeStartPort = port;
@@ -266,7 +266,7 @@ namespace Dynamo.Connectors
             UnHighlightCommand = new DelegateCommand(Unhighlight, CanUnHighlight);
 
             var bc = new BrushConverter();
-            _strokeBrush = (Brush)bc.ConvertFrom("#313131");
+            StrokeBrush = (Brush)bc.ConvertFrom("#777");
 
             _model = model;
             

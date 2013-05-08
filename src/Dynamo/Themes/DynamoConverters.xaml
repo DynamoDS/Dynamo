@@ -18,7 +18,7 @@
     </controls:BooleanToBrushConverter>
     <controls:BooleanToSelectionColorConverter x:Key="BooleanToSelectionColorConverter" 
                                 True="Cyan" 
-                                False="Black">
+                                False="#444">
     </controls:BooleanToSelectionColorConverter>
     <controls:StateToColorConverter x:Key="StateToColorConverter"
                                         ActiveBrush="{StaticResource nodeActiveBrush}"
