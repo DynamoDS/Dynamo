@@ -87,6 +87,33 @@ namespace Dynamo.Tests
         // OpenCommand
 
         [Test]
+        public void CanOpenAllSampleFilesWithoutError()
+        {
+            var di = new DirectoryInfo(@"..\..\doc\Distrib\Samples\");
+            int failCount = 0;
+
+            foreach (DirectoryInfo d in di.GetDirectories())
+            {
+                
+                foreach (FileInfo fi in d.GetFiles())
+                {
+                    try
+                    {
+                        controller.CommandQueue.Enqueue(
+                            Tuple.Create<object, object>(controller.DynamoViewModel.OpenCommand, fi.FullName));
+                        controller.ProcessCommandQueue();
+                    }
+                    catch
+                    {
+                        failCount++;
+                        Console.WriteLine(string.Format("Could not open {0}", fi.FullName));
+                    }
+                }
+            }
+            Assert.AreEqual(failCount, 0);
+        }
+
+        [Test]
         public void CanOpenGoodFile()
         {
             // NOTE rom PB: this test fails due to the fact that Bench is locked as it was never shown in these tests
