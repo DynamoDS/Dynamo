@@ -49,7 +49,8 @@ namespace Dynamo.Views
         void selectionCanvas_Loaded(object sender, RoutedEventArgs e)
         {
             DrawGrid();
-            //dynWatch3DFullscreen fullscreen_watch3D = new dynWatch3DFullscreen();
+
+            dynWatch3DFullscreen fullscreen_watch3D = new dynWatch3DFullscreen();
             //fullscreen_watch3D.SetupCustomUIElements(selectionCanvas);
             //selectionCanvas.Children.Add(fullscreen_watch3D.FullscreenWatchView());
         }
