@@ -96,7 +96,10 @@ namespace Dynamo.Nodes
 
         public ElementState State
         {
-            get { return state; }
+            get
+            {
+                return state;
+            }
             set
             {
                 if (value != ElementState.ERROR)
@@ -1175,6 +1178,7 @@ namespace Dynamo.Nodes
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             outPuts[OutPortData[0]] = Evaluate(args);
+            ValidateConnections();
         }
 
         public virtual Value Evaluate(FSharpList<Value> args)
