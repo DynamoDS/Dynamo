@@ -176,7 +176,11 @@ namespace Dynamo.Nodes
             }
             catch(Exception e)
             {
-                throw new Exception(e.Message + ":" + e.StackTrace);
+                dynSettings.Controller.DynamoViewModel.Log("Unable to execute python script:");
+                dynSettings.Controller.DynamoViewModel.Log(e.Message);
+                dynSettings.Controller.DynamoViewModel.Log(e.StackTrace);
+
+                return Value.NewNumber(0);
             }
 
             Value result = Value.NewNumber(1);

@@ -118,6 +118,7 @@ namespace Dynamo.Nodes
             this._model.Height = h;
         }
 
+
         private bool CanSelect()
         {
             if (!DynamoSelection.Instance.Selection.Contains(_model))
