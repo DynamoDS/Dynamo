@@ -18,7 +18,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Grid Name="mainGrid">
+    <Grid Name="mainGrid" Margin="0,0,0,2">
         <Grid Name="portGrid">
             <Grid.ToolTip>
                 <ToolTip Name="toolTip1">
@@ -50,8 +50,8 @@
             <TextBlock Name="portNameTb" Width="Auto"
                    Text="{Binding Path=PortName,Mode=TwoWay}"
                    VerticalAlignment="Center"
-                   FontSize="12" FontFamily="Arial"
-                       Padding="3"
+                   FontSize="12" FontFamily="Trebuchet"
+                       Padding="6,7,6,7"
                    IsHitTestVisible="False" 
                    Background="{x:Null}" Foreground="#FF505050"/>
         </Grid>

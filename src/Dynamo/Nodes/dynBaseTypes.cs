@@ -1635,21 +1635,12 @@ namespace Dynamo.Nodes
         public event Action OnChangeCommitted;
 
         private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-        //private static Brush waiting = Brushes.Orange;
 
         public dynTextBox()
         {
             //turn off the border
             Background = clear;
             BorderThickness = new Thickness(0);
-
-            //var bindingVal = new System.Windows.Data.Binding("Text")
-            //{
-            //    Source = Text,
-            //    Mode = BindingMode.TwoWay,
-            //    Converter = new StringDisplay()
-            //};
-            //base.SetBinding(TextBox.TextProperty, bindingVal);
         }
 
         private bool numeric;
@@ -1699,7 +1690,7 @@ namespace Dynamo.Nodes
             }
             Pending = false;
 
-            dynSettings.Bench.mainGrid.Focus();
+            //dynSettings.Bench.mainGrid.Focus();
         }
 
         new public string Text
@@ -1734,6 +1725,10 @@ namespace Dynamo.Nodes
 
                 CaretIndex = p;
             }
+
+            var expr = this.GetBindingExpression(TextBox.TextProperty);
+            if (expr != null)
+                expr.UpdateSource();
         }
 
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
@@ -1874,6 +1869,9 @@ namespace Dynamo.Nodes
         // http://stackoverflow.com/questions/6378681/how-can-i-use-net-style-escape-sequences-in-runtime-values
         private static string EscapeString(string s)
         {
+            if (s == null)
+                return "";
+
             Contract.Requires(s != null);
             Contract.Ensures(Contract.Result<string>() != null);
 
@@ -1961,7 +1959,8 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = true;
             tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            tb.OnChangeCommitted += delegate { 
+            tb.OnChangeCommitted += delegate
+            {
                 dynSettings.ReturnFocusToSearch();
             };
 
@@ -1970,7 +1969,9 @@ namespace Dynamo.Nodes
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay(),
-                NotifyOnValidationError = false
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
             
@@ -2141,6 +2142,8 @@ namespace Dynamo.Nodes
             var sliderBinding = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
             tb_slider.SetBinding(Slider.ValueProperty, sliderBinding);
 
@@ -2148,6 +2151,8 @@ namespace Dynamo.Nodes
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay(),
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb_slider.SetBinding(Slider.MaximumProperty, bindingMax);
             maxtb.SetBinding(dynTextBox.TextProperty, bindingMax);
@@ -2156,6 +2161,8 @@ namespace Dynamo.Nodes
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay(),
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb_slider.SetBinding(Slider.MinimumProperty, bindingMin);
             mintb.SetBinding(dynTextBox.TextProperty, bindingMin);
@@ -2361,13 +2368,18 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
 
-            tb.OnChangeCommitted += delegate { Value = tb.Text; dynSettings.ReturnFocusToSearch(); };
+            tb.OnChangeCommitted += delegate
+                {
+                    dynSettings.ReturnFocusToSearch();
+                };
 
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new StringDisplay()
+                //Converter = new StringDisplay(),
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
         }
@@ -2748,7 +2760,7 @@ namespace Dynamo.Nodes
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            return value.ToString();
         }
     }
 

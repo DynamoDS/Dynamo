@@ -26,7 +26,6 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-    
     <UserControl.ToolTip>
         <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
             <Canvas Canvas.Left="0" Canvas.Top="0" Width="Auto">
@@ -47,7 +46,8 @@
         </Grid>
     </UserControl.ToolTip>
 
-    <Grid Name="grid" Canvas.ZIndex="3">
+    <Grid Name="grid" Canvas.ZIndex="3" Margin="0">
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -75,7 +75,7 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
-        <Grid Canvas.ZIndex="4" Grid.Row="1" Margin="5" Grid.Column="0">
+        <Grid Canvas.ZIndex="4" Grid.Row="1" Margin="3,5,3,5" Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*" MinWidth="40"></ColumnDefinition>
@@ -91,6 +91,7 @@
             HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
             IsHitTestVisible="True" 
+            Margin="0"
             Background="Transparent"
             Canvas.ZIndex="1" Width="Auto" Grid.Column="0" Grid.Row="1">
             
@@ -140,13 +141,14 @@
                          TextTrimming="CharacterEllipsis"
                          Text="{Binding NickName, UpdateSourceTrigger=PropertyChanged}"
                             Margin="2,2,2,0"
-                         Padding="3"
+                         Padding="5"
                          FontSize="11" 
-                         FontWeight="Normal" 
+                            
+                         FontWeight="Bold" 
                          TextAlignment="Center" 
                          IsHitTestVisible="False" 
                          Canvas.ZIndex="5" 
-                         Height ="22"
+                         Height ="25"
                          Background="#99000000" FontStyle="Normal" Foreground="LightGray" 
             Grid.Row="0" Grid.Column="0">
         </TextBlock>
@@ -162,7 +164,7 @@
                        Name="elementRectangle" 
                        Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}" 
                        StrokeThickness="2"
-                       Fill="{Binding Path=State, Converter={StaticResource StateToColorConverter}}">
+                       Fill="{Binding Path=State, Converter={StaticResource StateToColorConverter}}" RadiusX="2" RadiusY="2">
                 <Rectangle.Effect>
                     <DropShadowEffect Opacity="{Binding Path=DropShadowOpacity}" />
                 </Rectangle.Effect>
