@@ -23,14 +23,30 @@ namespace Dynamo.Nodes
             }
         }
 
+        /// <summary>
+        /// Element's left position is two-way bound to this value
+        /// </summary>
         public double Left
         {
             get { return _model.X; }
+            set
+            {
+                _model.X = value;
+                RaisePropertyChanged("Left");
+            }
         }
 
+        /// <summary>
+        /// Element's top position is two-way bound to this value
+        /// </summary>
         public double Top
         {
             get { return _model.Y; }
+            set
+            {
+                _model.Y = value;
+                RaisePropertyChanged("Top");
+            }
         }
 
         public double ZIndex
@@ -41,6 +57,7 @@ namespace Dynamo.Nodes
         public string Text
         {
             get { return _model.Text; }
+            set { _model.Text = value; }
         }
 
         public bool IsSelected
@@ -69,7 +86,6 @@ namespace Dynamo.Nodes
 
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
             SelectCommand = new DelegateCommand(Select, CanSelect);
-        
         }
 
         private void Select()
@@ -96,10 +112,10 @@ namespace Dynamo.Nodes
             }
         }
 
-        public void UpdateSizeFromView(double x, double y)
+        public void UpdateSizeFromView(double w, double h)
         {
-            this._model.X = x;
-            this._model.Y = y;
+            this._model.Width = w;
+            this._model.Height = h;
         }
 
         private bool CanSelect()
@@ -143,6 +159,7 @@ namespace Dynamo.Nodes
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
                     break;
+
             }
         }
     }
