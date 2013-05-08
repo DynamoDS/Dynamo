@@ -142,8 +142,7 @@
                          Text="{Binding NickName, UpdateSourceTrigger=PropertyChanged}"
                             Margin="2,2,2,0"
                          Padding="5"
-                         FontSize="11" 
-                            
+                         FontSize="11"
                          FontWeight="Bold" 
                          TextAlignment="Center" 
                          IsHitTestVisible="False" 

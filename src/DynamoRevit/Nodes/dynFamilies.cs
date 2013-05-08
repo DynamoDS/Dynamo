@@ -50,11 +50,10 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
         {
-            //widen the control
-            NodeUI.topControl.Width = 300;
 
             //add a drop down list to the window
             combo = new ComboBox();
+            combo.Width = 300;
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             NodeUI.inputGrid.Children.Add(combo);
@@ -146,12 +145,12 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
         {
-            //widen the control
-            NodeUI.topControl.Width = 175;
 
             //add a drop down list to the window
             paramBox.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             paramBox.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            paramBox.Width = 175;
+
             NodeUI.inputGrid.Children.Add(paramBox);
             System.Windows.Controls.Grid.SetColumn(paramBox, 0);
             System.Windows.Controls.Grid.SetRow(paramBox, 0);

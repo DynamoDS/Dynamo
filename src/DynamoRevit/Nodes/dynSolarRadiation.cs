@@ -172,8 +172,7 @@ namespace Dynamo.Nodes
         {
             //add a button to the inputGrid on the dynElement
             sunPathButt = new System.Windows.Controls.Button();
-            //this.inputGrid.Children.Add(sunPathButt);
-            sunPathButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+
             sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             sunPathButt.Click += new System.Windows.RoutedEventHandler(registerButt_Click);
@@ -200,8 +199,6 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(sunPathButt, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            NodeUI.topControl.Height = 60;
-            NodeUI.UpdateLayout();
         }
 
         /// <summary>
