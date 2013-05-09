@@ -386,13 +386,7 @@ namespace Dynamo.Revit
 
                            controller.EndTransaction();
 
-                           //NodeUI.Dispatcher.BeginInvoke(new Action(
-                           //    delegate
-                           //    {
-                           //        NodeUI.UpdateLayout();
-                           //        NodeUI.ValidateConnections();
-                           //    }
-                           //));
+                           ValidateConnections();
                        }
                        catch (Exception ex)
                        {

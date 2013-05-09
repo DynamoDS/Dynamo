@@ -652,14 +652,7 @@ namespace Dynamo.Nodes
                                 .Select(
                                     pair => pair.Value)));
 
-//MVVM : don't use the dispatcher to invoke here
-                    //NodeUI.Dispatcher.BeginInvoke(new Action(
-                    //    delegate
-                    //    {
-                    //        NodeUI.UpdateLayout();
-                    //        NodeUI.ValidateConnections();
-                    //    }
-                    //));
+                    ValidateConnections();
                 }
                 catch (CancelEvaluationException ex)
                 {
@@ -862,9 +855,6 @@ namespace Dynamo.Nodes
         {
             RegisterInputs();
             RegisterOutputs();
-
-            //UpdateLayout();
-
             ValidateConnections();
         }
 
@@ -957,6 +947,8 @@ namespace Dynamo.Nodes
 
         void p_PortDisconnected(object sender, EventArgs e)
         {
+            ValidateConnections();
+
             var port = (dynPortModel)sender;
             if (port.PortType == PortType.INPUT)
             {
@@ -1086,11 +1078,6 @@ namespace Dynamo.Nodes
             State = inPorts.Select(x => x).Any(x => x.Connectors.Count == 0) ? ElementState.DEAD : ElementState.ACTIVE;
         }
 
-        private void SetState(dynNodeView el, ElementState state)
-        {
-            State = state;
-        }
-
         public void Error(string p)
         {
             State = ElementState.ERROR;
@@ -1120,26 +1107,12 @@ namespace Dynamo.Nodes
 
         internal void DisableInteraction()
         {
-//MVVM : IsEnabled on input grid elements is now bount to InteractionEnabled property
-            //enabledDict.Clear();
-
-            //foreach (UIElement e in inputGrid.Children)
-            //{
-            //    enabledDict[e] = e.IsEnabled;
-
-            //    e.IsEnabled = false;
-            //}
             State = ElementState.DEAD;
             InteractionEnabled = false;
         }
 
         internal void EnableInteraction()
         {
-            //foreach (UIElement e in inputGrid.Children)
-            //{
-            //    if (enabledDict.ContainsKey(e))
-            //        e.IsEnabled = enabledDict[e];
-            //}
             ValidateConnections();
             InteractionEnabled = true;
         }
