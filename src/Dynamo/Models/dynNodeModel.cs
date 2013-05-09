@@ -1150,7 +1150,41 @@ namespace Dynamo.Nodes
     {
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            outPuts[OutPortData[0]] = Evaluate(args);
+            List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
+            
+            //if any args are a list, then we will do
+            //a cartesian product and accumulate the results
+            //of the runs. do not do this behavior for the 
+            //dynWatch which expects lists and singles
+            //TODO:find a better way of specifying this
+            //that doesn't tie use to testing for dynWatch
+            if (args.Any(x => x.IsList) && !(this is dynWatch))
+            {
+                argSets.AddRange(args.Select(arg => (FSharpList<Value>) (!arg.IsList ? Utils.MakeFSharpList(arg) : ((Value.List) arg).Item)));
+
+                //compute the cartesian product of the sets
+                var cartProd = argSets.CartesianProduct();
+
+                //setup an empty list to hold results
+                FSharpList<Value> result = FSharpList<Value>.Empty;
+
+                //run the evaluate method for each set of 
+                //arguments in the cartesian result. do these
+                //in reverse order so our cons comes out the right
+                //way around
+                for (int i = cartProd.Count()-1; i >= 0; i-- )
+                {
+                    var evalResult = Evaluate(Utils.MakeFSharpList(cartProd.ElementAt(i).ToArray()));
+                    result = FSharpList<Value>.Cons(evalResult, result);
+                }
+
+                outPuts[OutPortData[0]] = Value.NewList(result);
+            }
+            else
+            {
+                outPuts[OutPortData[0]] = Evaluate(args);  
+            }
+            
             ValidateConnections();
         }
 
@@ -1158,6 +1192,7 @@ namespace Dynamo.Nodes
         {
             throw new NotImplementedException();
         }
+
     }
 
     #region class attributes
