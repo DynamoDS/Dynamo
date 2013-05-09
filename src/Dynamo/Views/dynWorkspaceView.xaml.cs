@@ -8,6 +8,7 @@ using System.Windows.Shapes;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using DragCanvas = Dynamo.Controls.DragCanvas;
 
 namespace Dynamo.Views
@@ -27,6 +28,12 @@ namespace Dynamo.Views
 
             selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
             DataContextChanged += new DependencyPropertyChangedEventHandler(dynWorkspaceView_DataContextChanged);
+
+            // Make new Watch3DFullscreenViewModel
+            // Make new Watch3DFullscreenView(input: viewmodel)
+            // attach to bench through mainGrid
+
+            // dynSettings.Bench.sidebarGrid.Children.Add(search);
         }
 
         /// <summary>
@@ -50,7 +57,15 @@ namespace Dynamo.Views
         {
             DrawGrid();
 
-            dynWatch3DFullscreen fullscreen_watch3D = new dynWatch3DFullscreen();
+            Watch3DFullscreenViewModel watchFullscreenViewModel = new Watch3DFullscreenViewModel();
+            WatchViewFullscreen fullscreen_view = new WatchViewFullscreen(watchFullscreenViewModel);
+
+            //outerCanvas.Children.Add(fullscreen_view);
+
+            //dynSettings.Bench.overlayCanvas.Children.Add(fullscreen_view);
+
+          
+            //dynWatch3DFullscreen fullscreen_watch3D = new dynWatch3DFullscreen();
             //fullscreen_watch3D.SetupCustomUIElements(selectionCanvas);
             //selectionCanvas.Children.Add(fullscreen_watch3D.FullscreenWatchView());
         }
