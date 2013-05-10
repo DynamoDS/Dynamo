@@ -17,7 +17,7 @@ namespace Dynamo.Nodes
     {
         public dynTransformIdentity()
         {
-            OutPortData.Add(new PortData("t", "Transform", typeof(object)));
+            OutPortData.Add(new PortData("t", "Transform", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -37,10 +37,10 @@ namespace Dynamo.Nodes
     {
         public dynTransformOriginAndVectors()
         {
-            InPortData.Add(new PortData("o", "Origin(XYZ)", typeof(object)));
-            InPortData.Add(new PortData("u", "Up(XYZ)", typeof(object)));
-            InPortData.Add(new PortData("forward", "Up(XYZ)", typeof(object)));
-            OutPortData.Add(new PortData("t", "Transform", typeof(object)));
+            InPortData.Add(new PortData("o", "Origin(XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("u", "Up(XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("forward", "Up(XYZ)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("t", "Transform", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -70,9 +70,9 @@ namespace Dynamo.Nodes
     {
         public dynTransformScaleBasis()
         {
-            InPortData.Add(new PortData("t", "TransformToScale(Transform)", typeof(object)));
-            InPortData.Add(new PortData("d", "Scale(Number)", typeof(object)));
-            OutPortData.Add(new PortData("ts", "Transform scaled.(Transform)", typeof(object)));
+            InPortData.Add(new PortData("t", "TransformToScale(Transform)", typeof(Value.Container)));
+            InPortData.Add(new PortData("d", "Scale(Number)", typeof(Value.Number)));
+            OutPortData.Add(new PortData("ts", "Transform scaled.(Transform)", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -95,10 +95,10 @@ namespace Dynamo.Nodes
     {
         public dynTransformRotation()
         {
-            InPortData.Add(new PortData("or", "Origin(XYZ)", typeof(object)));
-            InPortData.Add(new PortData("ax", "Axis(XYZ)", typeof(object)));
-            InPortData.Add(new PortData("dn", "Angle(Number)", typeof(object)));
-            OutPortData.Add(new PortData("t", "Transform", typeof(object)));
+            InPortData.Add(new PortData("or", "Origin(XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("ax", "Axis(XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("dn", "Angle(Number)", typeof(Value.Number)));
+            OutPortData.Add(new PortData("t", "Transform", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -122,8 +122,8 @@ namespace Dynamo.Nodes
     {
         public dynTransformTranslation()
         {
-            InPortData.Add(new PortData("v", "Vector(XYZ)", typeof(object)));
-            OutPortData.Add(new PortData("t", "Transform", typeof(object)));
+            InPortData.Add(new PortData("v", "Vector(XYZ)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("t", "Transform", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -145,8 +145,8 @@ namespace Dynamo.Nodes
     {
         public dynTransformReflection()
         {
-            InPortData.Add(new PortData("pl", "Plane(Plane)", typeof(object)));
-            OutPortData.Add(new PortData("t", "Transform", typeof(object)));
+            InPortData.Add(new PortData("pl", "Plane(Plane)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("t", "Transform", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -168,9 +168,9 @@ namespace Dynamo.Nodes
     {
         public dynTransformPoint()
         {
-            InPortData.Add(new PortData("t", "Transform(Plane)", typeof(object)));
-            InPortData.Add(new PortData("p1", "The point(XYZ)", typeof(object)));
-            OutPortData.Add(new PortData("p2", "The transformed point.(XYZ)", typeof(object)));
+            InPortData.Add(new PortData("t", "Transform(Plane)", typeof(Value.Container)));
+            InPortData.Add(new PortData("p1", "The point(XYZ)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("p2", "The transformed point.(XYZ)", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -215,9 +215,9 @@ namespace Dynamo.Nodes
     {
         public dynFaceComputerDerivative()
         {
-            InPortData.Add(new PortData("f", "The face to evaluate(Face)", typeof(object)));
-            InPortData.Add(new PortData("uv", "The parameter to evaluate(UV)", typeof(object)));
-            OutPortData.Add(new PortData("t", "Transform describing the face at the parameter(Transform)", typeof(object)));
+            InPortData.Add(new PortData("f", "The face to evaluate(Face)", typeof(Value.Container)));
+            InPortData.Add(new PortData("uv", "The parameter to evaluate(UV)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("t", "Transform describing the face at the parameter(Transform)", typeof(Value.Container)));
         
             RegisterAllPorts();
         }

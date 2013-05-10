@@ -1151,7 +1151,7 @@ namespace Dynamo.Nodes
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
-            
+
             //if any args are a list, then we will do
             //a cartesian product and accumulate the results
             //of the runs. do not do this behavior for the 
@@ -1161,7 +1161,7 @@ namespace Dynamo.Nodes
             if (args.Any(x => x.IsList) && !(this is dynWatch))
             {
                 argSets.AddRange(args.Select(arg => (FSharpList<Value>) (!arg.IsList ? Utils.MakeFSharpList(arg) : ((Value.List) arg).Item)));
-
+                //argSets.AddRange(args.Select());
                 //compute the cartesian product of the sets
                 var cartProd = argSets.CartesianProduct();
 

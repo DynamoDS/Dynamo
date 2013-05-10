@@ -33,9 +33,9 @@ namespace Dynamo.Nodes
     {
         public dynModelCurve()
         {
-            InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Curve)));
-            InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(SketchPlane)));
-            OutPortData.Add(new PortData("mc", "Model Curve", typeof(ModelCurve)));
+            InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Value.Container)));
+            InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("mc", "Model Curve", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -105,8 +105,8 @@ namespace Dynamo.Nodes
 
         public dynCurveByPoints()
         {
-            InPortData.Add(new PortData("refPts", "List of reference points", typeof(object)));
-            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(object)));
+            InPortData.Add(new PortData("refPts", "List of reference points", typeof(Value.List)));
+            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -161,8 +161,8 @@ namespace Dynamo.Nodes
     {
         public dynCurveByPointsByLine()
         {
-            InPortData.Add(new PortData("curve", "geometry curve", typeof(object)));
-            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(object)));
+            InPortData.Add(new PortData("curve", "geometry curve", typeof(Value.Container)));
+            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -307,8 +307,8 @@ namespace Dynamo.Nodes
     {
         public dynCurveRef()
         {
-            InPortData.Add(new PortData("curve", "Model Curve Element or Geometry Curve", typeof(object)));
-            OutPortData.Add(new PortData("curveRef", "Curve Reference", typeof(object)));
+            InPortData.Add(new PortData("curve", "Model Curve Element or Geometry Curve", typeof(Value.Container)));
+            OutPortData.Add(new PortData("curveRef", "Curve Reference", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -374,8 +374,8 @@ namespace Dynamo.Nodes
     {
         public dynCurveFromModelCurve()
         {
-            InPortData.Add(new PortData("mc", "Model Curve Element", typeof(object)));
-            OutPortData.Add(new PortData("curve", "Curve", typeof(object)));
+            InPortData.Add(new PortData("mc", "Model Curve Element", typeof(Value.Container)));
+            OutPortData.Add(new PortData("curve", "Curve", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -442,8 +442,8 @@ namespace Dynamo.Nodes
 
         public dynModelCurveNurbSpline()
         {
-            InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(object)));
-            OutPortData.Add(new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(ModelNurbSpline)));
+            InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(Value.List)));
+            OutPortData.Add(new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }

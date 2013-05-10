@@ -33,8 +33,8 @@ namespace Dynamo.Nodes
     {
         public dynReferencePointByXYZ()
         {
-            InPortData.Add(new PortData("xyz", "The point(s) from which to create reference points.", typeof(XYZ)));
-            OutPortData.Add(new PortData("pt", "The Reference Point(s) created from this operation.", typeof(ReferencePoint)));
+            InPortData.Add(new PortData("xyz", "The point(s) from which to create reference points.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("pt", "The Reference Point(s) created from this operation.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -161,10 +161,10 @@ namespace Dynamo.Nodes
     {
         public dynDistanceBetweenPoints()
         {
-            InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(object)));
-            InPortData.Add(new PortData("ptB", "A Reference point.", typeof(object)));
+            InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(Value.Container)));
+            InPortData.Add(new PortData("ptB", "A Reference point.", typeof(Value.Container)));
 
-            OutPortData.Add(new PortData("dist", "Distance between points.", typeof(double)));
+            OutPortData.Add(new PortData("dist", "Distance between points.", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -207,9 +207,9 @@ namespace Dynamo.Nodes
     {
         public dynPointOnEdge()
         {
-            InPortData.Add(new PortData("curve", "ModelCurve", typeof(Element)));
-            InPortData.Add(new PortData("t", "Parameter on edge.", typeof(double)));
-            OutPortData.Add(new PortData("pt", "PointOnEdge", typeof(ReferencePoint)));
+            InPortData.Add(new PortData("curve", "ModelCurve", typeof(Value.Container)));
+            InPortData.Add(new PortData("t", "Parameter on edge.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("pt", "PointOnEdge", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -261,10 +261,10 @@ namespace Dynamo.Nodes
     {
         public dynPointOnFace()
         {
-            InPortData.Add(new PortData("face", "ModelFace", typeof(Reference)));
-            InPortData.Add(new PortData("u", "U Parameter on face.", typeof(double)));
-            InPortData.Add(new PortData("v", "V Parameter on face.", typeof(double)));
-            OutPortData.Add(new PortData("pt", "PointOnFace", typeof(ReferencePoint)));
+            InPortData.Add(new PortData("face", "ModelFace", typeof(Value.Container)));
+            InPortData.Add(new PortData("u", "U Parameter on face.", typeof(Value.Number)));
+            InPortData.Add(new PortData("v", "V Parameter on face.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("pt", "PointOnFace", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -335,9 +335,9 @@ namespace Dynamo.Nodes
     {
         public dynPointOnFaceUV()
         {
-            InPortData.Add(new PortData("face", "ModelFace", typeof(Reference)));
-            InPortData.Add(new PortData("UV", "U Parameter on face.", typeof(object)));
-            OutPortData.Add(new PortData("pt", "PointOnFace", typeof(ReferencePoint)));
+            InPortData.Add(new PortData("face", "ModelFace", typeof(Value.Container)));
+            InPortData.Add(new PortData("UV", "UV Parameter on face.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("pt", "PointOnFace", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -398,10 +398,10 @@ namespace Dynamo.Nodes
     {
         public dynPointNormalDistance()
         {
-            InPortData.Add(new PortData("pt", "The point to reference", typeof(object)));
-            InPortData.Add(new PortData("norm", "The normal", typeof(object)));
-            InPortData.Add(new PortData("d", "The offset distance", typeof(object)));
-            OutPortData.Add(new PortData("pt", "Point", typeof(ReferencePoint)));
+            InPortData.Add(new PortData("pt", "The point to reference", typeof(Value.Container)));
+            InPortData.Add(new PortData("norm", "The normal", typeof(Value.Container)));
+            InPortData.Add(new PortData("d", "The offset distance", typeof(Value.Number)));
+            OutPortData.Add(new PortData("pt", "Point", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -452,8 +452,8 @@ namespace Dynamo.Nodes
 
         public dynPlaneFromRefPoint()
         {
-            InPortData.Add(new PortData("pt", "The point to extract the plane from", typeof(object)));
-            OutPortData.Add(new PortData("r", "Reference", typeof(Reference)));
+            InPortData.Add(new PortData("pt", "The point to extract the plane from", typeof(Value.Container)));
+            OutPortData.Add(new PortData("r", "Reference", typeof(Value.Container)));
             RegisterAllPorts();
         }
 

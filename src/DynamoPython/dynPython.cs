@@ -420,7 +420,7 @@ namespace Dynamo.Nodes
 
         public dynPythonString()
         {
-            InPortData.Add(new PortData("script", "Script to run", typeof(string)));
+            InPortData.Add(new PortData("script", "Script to run", typeof(Value.String)));
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
             OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 

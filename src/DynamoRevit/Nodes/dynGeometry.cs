@@ -33,10 +33,10 @@ namespace Dynamo.Nodes
     {
         public dynXYZ()
         {
-            InPortData.Add(new PortData("X", "X", typeof(double)));
-            InPortData.Add(new PortData("Y", "Y", typeof(double)));
-            InPortData.Add(new PortData("Z", "Z", typeof(double)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("X", "X", typeof(Value.Number)));
+            InPortData.Add(new PortData("Y", "Y", typeof(Value.Number)));
+            InPortData.Add(new PortData("Z", "Z", typeof(Value.Number)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -59,8 +59,8 @@ namespace Dynamo.Nodes
     {
         public dynXYZFromReferencePoint()
         {
-            InPortData.Add(new PortData("pt", "Reference Point", typeof(object)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("pt", "Reference Point", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -81,8 +81,8 @@ namespace Dynamo.Nodes
     { 
         public dynXYZGetX()
         {
-            InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
-            OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(double)));
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -100,8 +100,8 @@ namespace Dynamo.Nodes
     {
         public dynXYZGetY()
         {
-            InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
-            OutPortData.Add(new PortData("Y", "Y value of given XYZ", typeof(double)));
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Y", "Y value of given XYZ", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -119,8 +119,8 @@ namespace Dynamo.Nodes
     {
         public dynXYZGetZ()
         {
-            InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
-            OutPortData.Add(new PortData("Z", "Z value of given XYZ", typeof(double)));
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Z", "Z value of given XYZ", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -138,7 +138,7 @@ namespace Dynamo.Nodes
     {
         public dynXYZZero()
         {
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -157,7 +157,7 @@ namespace Dynamo.Nodes
     {
         public dynXYZBasisX()
         {
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -176,7 +176,7 @@ namespace Dynamo.Nodes
     {
         public dynXYZBasisY()
         {
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -195,7 +195,7 @@ namespace Dynamo.Nodes
     {
         public dynXYZBasisZ()
         {
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -214,9 +214,9 @@ namespace Dynamo.Nodes
     {
         public dynXYZScale()
         {
-            InPortData.Add(new PortData("XYZ", "XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("n", "Scale value.", typeof(double)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("XYZ", "XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("n", "Scale value.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -237,9 +237,9 @@ namespace Dynamo.Nodes
     {
         public dynXYZAdd()
         {
-            InPortData.Add(new PortData("XYZa", "XYZ a", typeof(XYZ)));
-            InPortData.Add(new PortData("XYZb", "XYZ b", typeof(XYZ)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("XYZa", "XYZ a", typeof(Value.Container)));
+            InPortData.Add(new PortData("XYZb", "XYZ b", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -260,10 +260,10 @@ namespace Dynamo.Nodes
     {
         public dynUVGrid()
         {
-            InPortData.Add(new PortData("dom", "A domain.", typeof(object)));
-            InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(double)));
-            InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(double)));
-            OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(XYZ)));
+            InPortData.Add(new PortData("dom", "A domain.", typeof(Value.List)));
+            InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(Value.Number)));
+            InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(Value.List)));
 
             RegisterAllPorts();
         }
@@ -308,10 +308,10 @@ namespace Dynamo.Nodes
     {
         public dynUVRandom()
         {
-            InPortData.Add(new PortData("dom", "A domain.", typeof(object)));
-            InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(double)));
-            InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(double)));
-            OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(XYZ)));
+            InPortData.Add(new PortData("dom", "A domain.", typeof(Value.List)));
+            InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(Value.Number)));
+            InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(Value.List)));
 
             RegisterAllPorts();
         }
@@ -358,16 +358,16 @@ namespace Dynamo.Nodes
     {
         public dynReferencePtGrid()
         {
-            InPortData.Add(new PortData("x-count", "Number in the X direction.", typeof(double)));
-            InPortData.Add(new PortData("y-count", "Number in the Y direction.", typeof(double)));
-            InPortData.Add(new PortData("z-count", "Number in the Z direction.", typeof(double)));
-            InPortData.Add(new PortData("x0", "Starting X Coordinate", typeof(double)));
-            InPortData.Add(new PortData("y0", "Starting Y Coordinate", typeof(double)));
-            InPortData.Add(new PortData("z0", "Starting Z Coordinate", typeof(double)));
-            InPortData.Add(new PortData("x-space", "The X spacing.", typeof(double)));
-            InPortData.Add(new PortData("y-space", "The Y spacing.", typeof(double)));
-            InPortData.Add(new PortData("z-space", "The Z spacing.", typeof(double)));
-            OutPortData.Add(new PortData("XYZs", "List of XYZs in the grid", typeof(XYZ)));
+            InPortData.Add(new PortData("x-count", "Number in the X direction.", typeof(Value.Number)));
+            InPortData.Add(new PortData("y-count", "Number in the Y direction.", typeof(Value.Number)));
+            InPortData.Add(new PortData("z-count", "Number in the Z direction.", typeof(Value.Number)));
+            InPortData.Add(new PortData("x0", "Starting X Coordinate", typeof(Value.Number)));
+            InPortData.Add(new PortData("y0", "Starting Y Coordinate", typeof(Value.Number)));
+            InPortData.Add(new PortData("z0", "Starting Z Coordinate", typeof(Value.Number)));
+            InPortData.Add(new PortData("x-space", "The X spacing.", typeof(Value.Number)));
+            InPortData.Add(new PortData("y-space", "The Y spacing.", typeof(Value.Number)));
+            InPortData.Add(new PortData("z-space", "The Z spacing.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("XYZs", "List of XYZs in the grid", typeof(Value.List)));
 
             RegisterAllPorts();
         }
@@ -421,11 +421,9 @@ namespace Dynamo.Nodes
     {
         public dynXYZArrayAlongCurve()
         {
-            InPortData.Add(new PortData("curve", "Curve", typeof(CurveElement)));
-            InPortData.Add(new PortData("count", "Number", typeof(double))); // just divide equally for now, dont worry about spacing and starting point
-            //InPortData.Add(new PortData("x0", "Starting Coordinate", typeof(double)));
-            //InPortData.Add(new PortData("spacing", "The spacing.", typeof(double)));
-            OutPortData.Add(new PortData("XYZs", "List of XYZs in the array", typeof(XYZ)));
+            InPortData.Add(new PortData("curve", "Curve", typeof(Value.Container)));
+            InPortData.Add(new PortData("count", "Number", typeof(Value.Number))); // just divide equally for now, dont worry about spacing and starting point
+            OutPortData.Add(new PortData("XYZs", "List of XYZs in the array", typeof(Value.List)));
 
             RegisterAllPorts();
         }
@@ -471,9 +469,9 @@ namespace Dynamo.Nodes
     {
         public dynPlane()
         {
-            InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(XYZ)));
-            InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
-            OutPortData.Add(new PortData("P", "Plane", typeof(Plane)));
+            InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("P", "Plane", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -498,8 +496,8 @@ namespace Dynamo.Nodes
     {
         public dynSketchPlane()
         {
-            InPortData.Add(new PortData("plane", "The plane in which to define the sketch.", typeof(object))); // SketchPlane can accept Plane, Reference or PlanarFace
-            OutPortData.Add(new PortData("sp", "SketchPlane", typeof(dynSketchPlane)));
+            InPortData.Add(new PortData("plane", "The plane in which to define the sketch.", typeof(Value.Container))); // SketchPlane can accept Plane, Reference or PlanarFace
+            OutPortData.Add(new PortData("sp", "SketchPlane", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -604,11 +602,11 @@ namespace Dynamo.Nodes
     {
         public dynLineBound()
         {
-            InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("end", "End XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("end", "End XYZ", typeof(Value.Container)));
             //InPortData.Add(new PortData("bound?", "Boolean: Is this line bounded?", typeof(bool)));
 
-            OutPortData.Add(new PortData("line", "Line", typeof(Line)));
+            OutPortData.Add(new PortData("line", "Line", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -648,10 +646,10 @@ namespace Dynamo.Nodes
     {
         public dynArcStartMiddleEnd()
         {
-            InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("mid", "XYZ on Curve", typeof(XYZ)));
-            InPortData.Add(new PortData("end", "End XYZ", typeof(XYZ)));
-            OutPortData.Add(new PortData("arc", "Arc", typeof(Arc)));
+            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("mid", "XYZ on Curve", typeof(Value.Container)));
+            InPortData.Add(new PortData("end", "End XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("arc", "Arc", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -691,11 +689,11 @@ namespace Dynamo.Nodes
     {
         public dynArcCenter()
         {
-            InPortData.Add(new PortData("center", "Center XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("radius", "Radius", typeof(double)));
-            InPortData.Add(new PortData("start", "Start Param", typeof(double)));
-            InPortData.Add(new PortData("end", "End Param", typeof(double)));
-            OutPortData.Add(new PortData("arc", "Arc", typeof(Arc)));
+            InPortData.Add(new PortData("center", "Center XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("radius", "Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("start", "Start Param", typeof(Value.Number)));
+            InPortData.Add(new PortData("end", "End Param", typeof(Value.Number)));
+            OutPortData.Add(new PortData("arc", "Arc", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -733,9 +731,9 @@ namespace Dynamo.Nodes
     {
         public dynCurveTransformed()
         {
-            InPortData.Add(new PortData("cv", "Curve(Curve)", typeof(object)));
-            InPortData.Add(new PortData("t", "Transform(Transform)", typeof(object)));
-            OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Curve)));
+            InPortData.Add(new PortData("cv", "Curve(Curve)", typeof(Value.Container)));
+            InPortData.Add(new PortData("t", "Transform(Transform)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -757,9 +755,9 @@ namespace Dynamo.Nodes
     {
         public dynCircle()
         {
-            InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("rad", "Radius", typeof(double)));
-            OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(CurveLoop)));
+            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("rad", "Radius", typeof(Value.Number)));
+            OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -796,10 +794,10 @@ namespace Dynamo.Nodes
     {
         public dynEllipse()
         {
-            InPortData.Add(new PortData("center", "Center XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("radX", "Major Radius", typeof(double)));
-            InPortData.Add(new PortData("radY", "Minor Radius", typeof(double)));
-            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Ellipse)));
+            InPortData.Add(new PortData("center", "Center XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("radX", "Major Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("radY", "Minor Radius", typeof(Value.Number)));
+            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -841,12 +839,12 @@ namespace Dynamo.Nodes
     {
         public dynEllipticalArc()
         {
-            InPortData.Add(new PortData("center", "Center XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("radX", "Major Radius", typeof(double)));
-            InPortData.Add(new PortData("radY", "Minor Radius", typeof(double)));
-            InPortData.Add(new PortData("start", "Start Param", typeof(double)));
-            InPortData.Add(new PortData("end", "End Param", typeof(double)));
-            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Ellipse)));
+            InPortData.Add(new PortData("center", "Center XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("radX", "Major Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("radY", "Minor Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("start", "Start Param", typeof(Value.Number)));
+            InPortData.Add(new PortData("end", "End Param", typeof(Value.Number)));
+            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -887,9 +885,9 @@ namespace Dynamo.Nodes
     {
         public dynUV()
         {
-            InPortData.Add(new PortData("U", "U", typeof(double)));
-            InPortData.Add(new PortData("V", "V", typeof(double)));
-            OutPortData.Add(new PortData("uv", "UV", typeof(UV)));
+            InPortData.Add(new PortData("U", "U", typeof(Value.Number)));
+            InPortData.Add(new PortData("V", "V", typeof(Value.Number)));
+            OutPortData.Add(new PortData("uv", "UV", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -912,9 +910,9 @@ namespace Dynamo.Nodes
     {
         public dynLineVectorfromXYZ()
         {
-            InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(XYZ)));
-            InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
-            OutPortData.Add(new PortData("C", "Curve", typeof(CurveElement)));
+            InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("C", "Curve", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -967,8 +965,8 @@ namespace Dynamo.Nodes
 
         public dynHermiteSpline()
         {
-            InPortData.Add(new PortData("xyzs", "List of pts.(List XYZ)", typeof(object)));
-            OutPortData.Add(new PortData("ell", "Ellipse", typeof(HermiteSpline)));
+            InPortData.Add(new PortData("xyzs", "List of pts.(List XYZ)", typeof(Value.List)));
+            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Value.Container)));
 
             RegisterAllPorts();
         }

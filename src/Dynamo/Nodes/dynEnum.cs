@@ -23,7 +23,7 @@ namespace Dynamo.Nodes
 
         public dynEnum()
         {
-            OutPortData.Add(new PortData("", "Enum", typeof(object)));
+            OutPortData.Add(new PortData("", "Enum", typeof(Value.Container)));
 
             RegisterAllPorts();
         }

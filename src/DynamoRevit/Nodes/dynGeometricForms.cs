@@ -19,9 +19,9 @@ namespace Dynamo.Nodes
     {
         public dynLoftForm()
         {
-            InPortData.Add(new PortData("solid/void", "True creates a solid, false a void", typeof(object)));
-            InPortData.Add(new PortData("refListList", "ReferenceArrayArray", typeof(object)));
-            InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(object)));
+            InPortData.Add(new PortData("solid/void", "True creates a solid, false a void", typeof(Value.Number)));
+            InPortData.Add(new PortData("refListList", "ReferenceArrayArray", typeof(Value.List)));
+            InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(Value.Container)));
 
             OutPortData.Add(new PortData("form", "Loft Form", typeof(object)));
 

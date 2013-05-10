@@ -36,8 +36,8 @@ namespace Dynamo.Nodes
     {
         public dynComputeSolarRadiationValue()
         {
-            InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(string)));
-            OutPortData.Add(new PortData("data", "The solar radiation computed data", typeof(double)));
+            InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(Value.String)));
+            OutPortData.Add(new PortData("data", "The solar radiation computed data", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -74,7 +74,7 @@ namespace Dynamo.Nodes
     {
         public dynAnalysisResultsBySelection()
         {
-            OutPortData.Add(new PortData("ar", "Analysis Results referenced by this operation.", typeof(Element)));
+            OutPortData.Add(new PortData("ar", "Analysis Results referenced by this operation.", typeof(Value.Container)));
             RegisterAllPorts();
 
         }
@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
 
         public dynSunPathDirection()
         {
-            OutPortData.Add(new PortData("XYZ", "XYZ", typeof(XYZ)));
+            OutPortData.Add(new PortData("XYZ", "XYZ", typeof(Value.Container)));
             RegisterAllPorts();  
         }
 

@@ -43,7 +43,7 @@ namespace Dynamo.Nodes
 
         public dynFamilyTypeSelector()
         {
-            OutPortData.Add(new PortData("", "Family type", typeof(FamilySymbol)));
+            OutPortData.Add(new PortData("", "Family type", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -137,8 +137,8 @@ namespace Dynamo.Nodes
 
         public dynFamilyInstanceParameterSelector()
         {
-            InPortData.Add(new PortData("f", "Family Symbol or Instance", typeof(Element)));
-            OutPortData.Add(new PortData("", "Parameter Name", typeof(string)));
+            InPortData.Add(new PortData("f", "Family Symbol or Instance", typeof(Value.Container)));
+            OutPortData.Add(new PortData("", "Parameter Name", typeof(Value.String)));
 
             RegisterAllPorts();
         }
@@ -708,9 +708,9 @@ namespace Dynamo.Nodes
     {
         public dynFamilyInstanceCreatorXYZ()
         {
-            InPortData.Add(new PortData("xyz", "xyz", typeof(object)));
-            InPortData.Add(new PortData("type", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
-            OutPortData.Add(new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance)));
+            InPortData.Add(new PortData("xyz", "xyz", typeof(Value.Container)));
+            InPortData.Add(new PortData("type", "The Family Symbol to use for instantiation.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("fi", "Family instances created by this operation.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -818,11 +818,11 @@ namespace Dynamo.Nodes
     {
         public dynFamilyInstanceCreatorLevel()
         {
-            InPortData.Add(new PortData("xyz", "xyz", typeof(object)));
-            InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
-            InPortData.Add(new PortData("lev", "The Level to use for instantiation.", typeof(FamilySymbol)));
+            InPortData.Add(new PortData("xyz", "xyz", typeof(Value.Container)));
+            InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(Value.Container)));
+            InPortData.Add(new PortData("lev", "The Level to use for instantiation.", typeof(Value.Container)));
 
-            OutPortData.Add(new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance)));
+            OutPortData.Add(new PortData("fi", "Family instances created by this operation.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -936,9 +936,9 @@ namespace Dynamo.Nodes
     {
         public dynCurvesFromFamilyInstance()
         {
-            InPortData.Add(new PortData("fi", "family instance", typeof(object)));
+            InPortData.Add(new PortData("fi", "family instance", typeof(Value.Container)));
 
-            OutPortData.Add(new PortData("curves", "Curves extracted by this operation.", typeof(Curve)));
+            OutPortData.Add(new PortData("curves", "Curves extracted by this operation.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -1132,10 +1132,10 @@ namespace Dynamo.Nodes
     {
         public dynFamilyInstanceParameterSetter()
         {
-            InPortData.Add(new PortData("fi", "Family instance.", typeof(object)));
-            InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof(object)));
+            InPortData.Add(new PortData("fi", "Family instance.", typeof(Value.Container)));
+            InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof(Value.String)));
             InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
-            OutPortData.Add(new PortData("fi", "Modified family instance.", typeof(object)));
+            OutPortData.Add(new PortData("fi", "Modified family instance.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -1256,8 +1256,8 @@ namespace Dynamo.Nodes
     {
         public dynFamilyInstanceParameterGetter()
         {
-            InPortData.Add(new PortData("fi", "Family instance.", typeof(FamilyInstance)));
-            InPortData.Add(new PortData("param", "Parameter to fetch.", typeof(string)));
+            InPortData.Add(new PortData("fi", "Family instance.", typeof(Value.Container)));
+            InPortData.Add(new PortData("param", "Parameter to fetch.", typeof(Value.String)));
 
             OutPortData.Add(new PortData("val", "Parameter value.", typeof(object)));
 
@@ -1371,10 +1371,10 @@ namespace Dynamo.Nodes
     {
         public dynFamilyTypeParameterSetter()
         {
-            InPortData.Add(new PortData("ft", "Family type.", typeof(object)));
-            InPortData.Add(new PortData("param", "Parameter to modify.", typeof(object)));
+            InPortData.Add(new PortData("ft", "Family type.", typeof(Value.Container)));
+            InPortData.Add(new PortData("param", "Parameter to modify.", typeof(Value.String)));
             InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
-            OutPortData.Add(new PortData("ft", "Modified family type.", typeof(object)));
+            OutPortData.Add(new PortData("ft", "Modified family type.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -1495,8 +1495,8 @@ namespace Dynamo.Nodes
     {
         public dynFamilyTypeParameterGetter()
         {
-            InPortData.Add(new PortData("ft", "Family type.", typeof(FamilySymbol)));
-            InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(string)));
+            InPortData.Add(new PortData("ft", "Family type.", typeof(Value.Container)));
+            InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(Value.String)));
 
             OutPortData.Add(new PortData("val", "Parameter value.", typeof(object)));
 
