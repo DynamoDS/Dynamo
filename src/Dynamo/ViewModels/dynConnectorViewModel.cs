@@ -235,7 +235,6 @@ namespace Dynamo.Connectors
             }
         }
 
-
 #endregion
 
         //construct a view and start drawing.

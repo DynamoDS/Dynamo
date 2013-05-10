@@ -113,8 +113,6 @@ namespace Dynamo.Controls
         public DelegateCommand<object> CreateConnectionCommand { get; set; }
         public DelegateCommand<object> AddNoteCommand { get; set; }
         public DelegateCommand<object> DeleteCommand { get; set; }
-        public DelegateCommand NodeFromSelectionCommand { get; set; }
-
         public DelegateCommand<object> SelectNeighborsCommand { get; set; }
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
@@ -330,10 +328,6 @@ namespace Dynamo.Controls
             CreateConnectionCommand = new DelegateCommand<object>(CreateConnection, CanCreateConnection);
             AddNoteCommand = new DelegateCommand<object>(AddNote, CanAddNote);
             DeleteCommand = new DelegateCommand<object>(Delete, CanDelete);
-            NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
-            DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
-
-
             SelectNeighborsCommand = new DelegateCommand<object>(SelectNeighbors, CanSelectNeighbors);
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
@@ -1177,27 +1171,6 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void CreateNodeFromSelection()
-        {
-            CollapseNodes(
-                DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel)
-                    .Select(x => (x as dynNodeModel)));
-        }
-
-        private void NodeFromSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            NodeFromSelectionCommand.RaiseCanExecuteChanged();
-        }
-
-        private bool CanCreateNodeFromSelection()
-        {
-            if ( DynamoSelection.Instance.Selection.Count(x => x is dynNodeModel) > 1)
-            {
-                return true;
-            }
-            return false;
-        }
-
         void CreateNode(object parameters)
         {
             var data = parameters as Dictionary<string, object>;
@@ -1851,18 +1824,6 @@ namespace Dynamo.Controls
         {
             if (!String.IsNullOrEmpty(_model.CurrentSpace.FilePath))
                 SaveAs(_model.CurrentSpace.FilePath);
-        }
-
-        /// <summary>
-        ///     Collapse a set of nodes in the current workspace.  Has the side effects of prompting the user
-        ///     first in order to obtain the name and category for the new node, 
-        ///     writes the function to a dyf file, adds it to the FunctionDict, adds it to search, and compiles and 
-        ///     places the newly created symbol (defining a lambda) in the Controller's FScheme Environment.  
-        /// </summary>
-        /// <param name="selectedNodes"> The function definition for the user-defined node </param>
-        internal void CollapseNodes(IEnumerable<dynNodeModel> selectedNodes)
-        {
-            Dynamo.Utilities.NodeCollapser.Collapse(selectedNodes, _model.CurrentSpace);
         }
 
         /// <summary>
