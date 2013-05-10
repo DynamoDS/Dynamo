@@ -124,6 +124,9 @@ namespace Dynamo.Nodes
         {
             foreach (KeyValuePair<int, Tuple<int, dynNodeModel>> pair in inputs)
             {
+                if (pair.Value == null)
+                    continue;
+
                 dynNodeModel node = pair.Value.Item2;
                 IDrawable drawable = node as IDrawable;
 
