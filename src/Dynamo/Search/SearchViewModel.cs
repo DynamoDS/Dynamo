@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Commands;
 using Dynamo.Nodes;
+using Dynamo.Nodes.Search;
 using Dynamo.Search.Regions;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
@@ -163,6 +164,9 @@ namespace Dynamo.Search
         public int MaxNumSearchResults { get; set; }
 
         #endregion
+
+        private ObservableCollection<RootBrowserCategory> _browserItems = new ObservableCollection<RootBrowserCategory>();
+        public ObservableCollection<RootBrowserCategory> BrowserItems { get { return _browserItems; } set { _browserItems = value; } }
 
         /// <summary>
         ///     The class constructor.
@@ -534,19 +538,67 @@ namespace Dynamo.Search
             var workspaceEle = new WorkspaceSearchElement(name, "Navigate to workspace called " + name);
             workspaceEle.Guid = functionId;
 
+            // create the node in search
+            var nodeEle = new LocalSearchElement(name, functionId);
+            SearchDictionary.Add(nodeEle, nodeEle.Name);
+            SearchDictionary.Add(nodeEle, category + "." + nodeEle.Name);
+
             if (!NodeCategories.ContainsKey(category))
             {
                 NodeCategories.Add(category, new CategorySearchElement(category));
             }
 
+            TryAddCategoryAndItem(category, nodeEle);
+
             NodeCategories[category].NumElements++;
 
             SearchDictionary.Add(workspaceEle, workspaceEle.Name);
+            
+        }
 
-            // create the node in search
-            var nodeEle = new LocalSearchElement(name, functionId);
-            SearchDictionary.Add(nodeEle, nodeEle.Name);
-            SearchDictionary.Add(nodeEle, category + "." + nodeEle.Name);
+        public Dictionary<string, BrowserItem> BrowserCategories = new Dictionary<string, BrowserItem>();
+
+        public void TryAddCategoryAndItem( string category, BrowserItem item )
+        {
+            if (BrowserCategories.ContainsKey(category)) // add item to existing category
+            {
+
+                BrowserCategories[category].Items.Add(item); 
+
+            } else if (category.Contains("|")) // split into multiple categories 
+            {
+
+                var items = category.Split('|').ToList();
+
+                if (items.Count() == 1) // create first level category and add item
+                {
+                    TryAddCategoryAndItem(items[0], item);
+                }
+                else if (items.Count() == 2) // create first, second level category and add item
+                {
+                    var parentCat = new RootBrowserCategory(items[0], BrowserItems);
+                    BrowserCategories.Add(items[0], parentCat);
+
+                    var browserCat = new BrowserCategory(items[1], parentCat.Items);
+                    BrowserCategories.Add(category, browserCat);
+                    parentCat.Items.Add(browserCat);
+                    browserCat.Items.Add(item);
+
+                    BrowserItems.Add(parentCat); // add the parent item to the browser items
+                }
+
+            }
+            else // a new category
+            {
+
+                var browserCat = new RootBrowserCategory(category, BrowserItems);
+                BrowserCategories.Add(category, browserCat);
+                browserCat.Items.Add(item);
+
+                BrowserItems.Add(browserCat);
+
+            }
+
         }
 
         /// <summary>
@@ -596,6 +648,7 @@ namespace Dynamo.Search
                     {
                         var nameEle = new CategorySearchElement(cat);
                         NodeCategories.Add(cat, nameEle);
+
                         SearchDictionary.Add(nameEle, cat);
                     }
                 }
@@ -605,10 +658,14 @@ namespace Dynamo.Search
                     {
                         var nameEle = new CategorySearchElement(cat);
                         NodeCategories.Add(cat, nameEle);
+
                         RevitApiSearchElements.Add(nameEle);
                     }
+
                 }
             }
+
+            TryAddCategoryAndItem(cat, searchEle);
 
             NodeCategories[cat].NumElements++;
 
@@ -648,6 +705,9 @@ namespace Dynamo.Search
                     {
                         var nameEle = new CategorySearchElement(cat);
                         NodeCategories.Add(cat, nameEle);
+
+                        TryAddCategoryAndItem(cat, searchEle);
+                        
                         SearchDictionary.Add(nameEle, cat);
                     }
                 }
@@ -656,6 +716,7 @@ namespace Dynamo.Search
                     if (!NodeCategories.ContainsKey(cat))
                     {
                         var nameEle = new CategorySearchElement(cat);
+                        TryAddCategoryAndItem(cat, searchEle);
                         NodeCategories.Add(cat, nameEle);
                         RevitApiSearchElements.Add(nameEle);
                     }

@@ -237,7 +237,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Identity")]
-    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeCategory(BuiltinNodeCategories.MISC + "|Stuff")]
     [NodeDescription("Identity function")]
     public class dynIdentity : dynNodeWithOneOutput
     {
@@ -258,7 +258,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Reverse")]
     [NodeDescription("Reverses a list")]
-    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeCategory(BuiltinNodeCategories.LIST + "|Stuff")]
     public class dynReverse : dynBuiltinFunction
     {
         public dynReverse()
@@ -273,7 +273,7 @@ namespace Dynamo.Nodes
 
     [NodeName("List")]
     [NodeDescription("Makes a new list out of the given inputs")]
-    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeCategory(BuiltinNodeCategories.LIST + "|Stuff")]
     public class dynNewList : dynVariableInput
     {
         public dynNewList()
