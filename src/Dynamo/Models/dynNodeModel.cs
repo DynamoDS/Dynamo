@@ -1150,6 +1150,11 @@ namespace Dynamo.Nodes
     {
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
+            //if this element maintains a collcection of references
+            //then clear the collection
+            if(this is IClearable)
+                (this as IClearable).ClearReferences();
+
             List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
 
             //if any args are a list, then we will do
