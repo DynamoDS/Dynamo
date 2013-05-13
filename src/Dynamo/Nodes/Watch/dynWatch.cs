@@ -78,7 +78,7 @@ namespace Dynamo.Nodes
         public dynWatch()
         {
             InPortData.Add(new PortData("", "Node to evaluate.", typeof(object)));
-            OutPortData.Add(new PortData("", "Watch contents.", typeof(string)));
+            OutPortData.Add(new PortData("", "Watch contents.", typeof(object)));
 
             RegisterAllPorts();
 

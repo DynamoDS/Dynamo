@@ -16,7 +16,7 @@
       <instance id="30574" />
     </Dynamo.Elements.dynPointBySelection>
     <Dynamo.Elements.dynWatch type="Dynamo.Elements.dynWatch" guid="d06cd90b-d3c7-4fd3-b530-21e981a1b710" nickname="Watch" x="497.5" y="321.25" />
-    <Dynamo.Elements.dyn3DPreview type="Dynamo.Elements.dyn3DPreview" guid="383677d8-a594-4040-b14a-e7fa9e73bfab" nickname="Watch 3D" x="769.769230769231" y="0" />
+    <Dynamo.Elements.dynWatch3D type="Dynamo.Elements.dynWatch3D" guid="383677d8-a594-4040-b14a-e7fa9e73bfab" nickname="Watch 3D" x="769.769230769231" y="0" />
     <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="6de77be2-fa0f-41ec-a494-151d47ad8274" nickname="List" x="508.519230769231" y="110">
       <Input name="item(s)" />
     </Dynamo.Elements.dynNewList>

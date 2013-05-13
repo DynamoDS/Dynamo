@@ -20,9 +20,9 @@ namespace Dynamo.Nodes
     {
         public dynDelaunayTessellation()
         {
-            InPortData.Add(new PortData("pts", "List of reference points.", typeof(object)));
-            InPortData.Add(new PortData("face", "The face on which to tessellate.", typeof(object)));
-            OutPortData.Add(new PortData("out", "Tessellation data.", typeof(object)));
+            InPortData.Add(new PortData("pts", "List of reference points.", typeof(Value.List)));
+            InPortData.Add(new PortData("face", "The face on which to tessellate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("out", "Tessellation data.", typeof(Value.List)));
 
             RegisterAllPorts();
         }

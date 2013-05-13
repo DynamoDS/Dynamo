@@ -15,6 +15,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Utilities;
 using Dynamo.Selection;
@@ -26,6 +27,7 @@ namespace Dynamo.Nodes
     /// </summary>
     public partial class dynNoteView : UserControl, IViewModelView<dynNoteViewModel>
     {
+        
         public dynNoteViewModel ViewModel
         {
             get { return (dynNoteViewModel)DataContext; }
@@ -48,17 +50,29 @@ namespace Dynamo.Nodes
         private void editItem_Click(object sender, RoutedEventArgs e)
         {
             var editWindow = new dynEditWindow();
-            
-            //set the text of the edit window to begin
-            editWindow.editText.Text = noteText.Text;
+
+            editWindow.editText.TextChanged += delegate
+                {
+                    var expr = editWindow.editText.GetBindingExpression(TextBox.TextProperty);
+                    if (expr != null)
+                        expr.UpdateSource();
+                };
+
+            //setup a binding with the edit window's text field
+            editWindow.editText.DataContext = DataContext as dynNoteViewModel;
+            var bindingVal = new System.Windows.Data.Binding("Text")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = (DataContext as dynNoteViewModel),
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
 
             if (editWindow.ShowDialog() != true)
             {
                 return;
             }
 
-            //set the value from the text in the box
-            noteText.Text = editWindow.editText.Text;
         }
 
         private void deleteItem_Click(object sender, RoutedEventArgs e)

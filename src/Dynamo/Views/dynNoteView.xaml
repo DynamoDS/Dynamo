@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200"
-             Height="Auto" Width="Auto" Visibility="{Binding NoteVisibility}">
+             Height="Auto" Width="Auto" Visibility="{Binding NoteVisibility}"
+             Canvas.Left="{Binding Left, Mode=TwoWay}" 
+             Canvas.Top="{Binding Top, Mode=TwoWay}">
     
     <Grid>
         <Grid.ContextMenu>

@@ -123,6 +123,7 @@ namespace Dynamo
         public DelegateCommand<object> ContainSelectCommand { get; set; }
         public DelegateCommand UpdateSelectedConnectorsCommand { get; set; }
         public DelegateCommand<object> SetCurrentOffsetCommand { get; set; }
+        public DelegateCommand NodeFromSelectionCommand { get; set; }
 
         public string Name
         {
@@ -283,6 +284,8 @@ namespace Dynamo
             ContainSelectCommand = new DelegateCommand<object>(ContainSelect, CanContainSelect);
             UpdateSelectedConnectorsCommand = new DelegateCommand(UpdateSelectedConnectors, CanUpdateSelectedConnectors);
             SetCurrentOffsetCommand = new DelegateCommand<object>(SetCurrentOffset, CanSetCurrentOffset);
+            NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
+            DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
 
             vm.UILocked += new EventHandler(DynamoViewModel_UILocked);
             vm.UIUnlocked += new EventHandler(DynamoViewModel_UIUnlocked);
@@ -506,6 +509,39 @@ namespace Dynamo
         private bool CanSetCurrentOffset(object parameter)
         {
             return true;
+        }
+
+        private void CreateNodeFromSelection()
+        {
+            CollapseNodes(
+                DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel)
+                    .Select(x => (x as dynNodeModel)));
+        }
+
+        private void NodeFromSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            NodeFromSelectionCommand.RaiseCanExecuteChanged();
+        }
+
+        private bool CanCreateNodeFromSelection()
+        {
+            if (DynamoSelection.Instance.Selection.Count(x => x is dynNodeModel) > 1)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        ///     Collapse a set of nodes in the current workspace.  Has the side effects of prompting the user
+        ///     first in order to obtain the name and category for the new node, 
+        ///     writes the function to a dyf file, adds it to the FunctionDict, adds it to search, and compiles and 
+        ///     places the newly created symbol (defining a lambda) in the Controller's FScheme Environment.  
+        /// </summary>
+        /// <param name="selectedNodes"> The function definition for the user-defined node </param>
+        internal void CollapseNodes(IEnumerable<dynNodeModel> selectedNodes)
+        {
+            Dynamo.Utilities.NodeCollapser.Collapse(selectedNodes, dynSettings.Controller.DynamoViewModel.CurrentSpace);
         }
     }
 

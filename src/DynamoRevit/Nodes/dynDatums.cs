@@ -33,8 +33,8 @@ namespace Dynamo.Nodes
     {
         public dynLevel()
         {
-            InPortData.Add(new PortData("h", "Height.", typeof(double)));
-            OutPortData.Add(new PortData("l", "Level", typeof(Level)));
+            InPortData.Add(new PortData("h", "Height.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("l", "Level", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -173,8 +173,8 @@ namespace Dynamo.Nodes
     {
         public dynReferencePlane()
         {
-            InPortData.Add(new PortData("l", "Geometry Line.", typeof(Line)));
-            OutPortData.Add(new PortData("ref", "Reference Plane", typeof(ReferencePlane)));
+            InPortData.Add(new PortData("l", "Geometry Line.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("ref", "Reference Plane", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -422,8 +422,8 @@ namespace Dynamo.Nodes
     {
         public dynColumnGrid()
         {
-            InPortData.Add(new PortData("line", "Geometry Line.", typeof(Line))); // MDJ TODO - expand this to work with curved grids.
-            OutPortData.Add(new PortData("grid", "Grid", typeof(Grid)));
+            InPortData.Add(new PortData("line", "Geometry Line.", typeof(Value.Container))); // MDJ TODO - expand this to work with curved grids.
+            OutPortData.Add(new PortData("grid", "Grid", typeof(Value.Container)));
 
             RegisterAllPorts();
         }

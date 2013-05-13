@@ -36,8 +36,8 @@ namespace Dynamo.Nodes
     {
         public dynComputeSolarRadiationValue()
         {
-            InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(string)));
-            OutPortData.Add(new PortData("data", "The solar radiation computed data", typeof(double)));
+            InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(Value.String)));
+            OutPortData.Add(new PortData("data", "The solar radiation computed data", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -74,7 +74,7 @@ namespace Dynamo.Nodes
     {
         public dynAnalysisResultsBySelection()
         {
-            OutPortData.Add(new PortData("ar", "Analysis Results referenced by this operation.", typeof(Element)));
+            OutPortData.Add(new PortData("ar", "Analysis Results referenced by this operation.", typeof(Value.Container)));
             RegisterAllPorts();
 
         }
@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
 
         public dynSunPathDirection()
         {
-            OutPortData.Add(new PortData("XYZ", "XYZ", typeof(XYZ)));
+            OutPortData.Add(new PortData("XYZ", "XYZ", typeof(Value.Container)));
             RegisterAllPorts();  
         }
 
@@ -172,8 +172,7 @@ namespace Dynamo.Nodes
         {
             //add a button to the inputGrid on the dynElement
             sunPathButt = new System.Windows.Controls.Button();
-            //this.inputGrid.Children.Add(sunPathButt);
-            sunPathButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+
             sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             sunPathButt.Click += new System.Windows.RoutedEventHandler(registerButt_Click);
@@ -200,8 +199,6 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(sunPathButt, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            NodeUI.topControl.Height = 60;
-            NodeUI.UpdateLayout();
         }
 
         /// <summary>

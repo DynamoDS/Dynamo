@@ -107,6 +107,23 @@ namespace Dynamo.Nodes
 
         protected abstract void GetIDrawablesForRendering(List<IDrawable> drawables);
 
+        private void GetUpstreamIDrawable(List<IDrawable> drawables, Dictionary<int, Tuple<int, dynNodeModel>> inputs)
+        {
+            foreach (KeyValuePair<int, Tuple<int, dynNodeModel>> pair in inputs)
+            {
+                if (pair.Value == null)
+                    continue;
+
+                dynNodeModel node = pair.Value.Item2;
+                IDrawable drawable = node as IDrawable;
+
+                if (drawable != null)
+                    drawables.Add(drawable);
+
+                GetUpstreamIDrawable(drawables, node.Inputs);
+            }
+        }
+
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
             if (_isRendering)

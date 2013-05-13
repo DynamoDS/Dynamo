@@ -265,6 +265,10 @@ namespace Dynamo.Revit
             {
                 DrawGeometryElement(description, obj);
             }
+            else if (typeof (Autodesk.Revit.DB.GeometryObject).IsAssignableFrom(obj.GetType()))
+            {
+                DrawGeometryObject(description, obj);
+            }
             else
             {
                 Element elem = obj as Element;
@@ -386,13 +390,7 @@ namespace Dynamo.Revit
 
                            controller.EndTransaction();
 
-                           //NodeUI.Dispatcher.BeginInvoke(new Action(
-                           //    delegate
-                           //    {
-                           //        NodeUI.UpdateLayout();
-                           //        NodeUI.ValidateConnections();
-                           //    }
-                           //));
+                           ValidateConnections();
                        }
                        catch (Exception ex)
                        {

@@ -97,12 +97,14 @@ namespace Dynamo.Connectors
 
         private void DynPort_OnMouseEnter(object sender, MouseEventArgs e)
         {
-            ViewModel.HighlightCommand.Execute();
+            if(ViewModel != null)
+                ViewModel.HighlightCommand.Execute();
         }
 
         private void DynPort_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            ViewModel.UnHighlightCommand.Execute();
+            if (ViewModel != null)
+                ViewModel.UnHighlightCommand.Execute();
         }
 
         public dynPortViewModel ViewModel

@@ -308,10 +308,9 @@ namespace Dynamo
                     dynEl.SetAttribute("type", el.GetType().ToString());
                     dynEl.SetAttribute("guid", el.GUID.ToString());
                     dynEl.SetAttribute("nickname", el.NickName);
-                    //dynEl.SetAttribute("x", Canvas.GetLeft(el.NodeUI).ToString());
-                    //dynEl.SetAttribute("y", Canvas.GetTop(el.NodeUI).ToString());
                     dynEl.SetAttribute("x", el.X.ToString());
                     dynEl.SetAttribute("y", el.Y.ToString());
+                    dynEl.SetAttribute("lacing", el.ArgumentLacing.ToString());
 
                     el.SaveElement(xmlDoc, dynEl);
                 }
