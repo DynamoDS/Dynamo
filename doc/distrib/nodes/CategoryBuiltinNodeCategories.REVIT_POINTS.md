@@ -1,4 +1,4 @@
-##Plane from Reference Point
+##Plane from Ref Point
 ###Description
 Extracts one of the primary Reference Planes from a Reference Point.
 
@@ -9,7 +9,7 @@ Extracts one of the primary Reference Planes from a Reference Point.
   * None
 
 
-##Reference Point
+##Ref Point
 ###Description
 Creates a reference point.
 
@@ -19,7 +19,7 @@ Creates a reference point.
   * None
 
 
-##Reference Point By Normal
+##Ref Point By Normal
 ###Description
 Owns a reference point which is projected from a point by normal and distance.
 
@@ -32,7 +32,7 @@ Owns a reference point which is projected from a point by normal and distance.
   * None
 
 
-##Reference Point Distance
+##Ref Point Dist
 ###Description
 Measures a distance between point(s).
 
@@ -42,7 +42,7 @@ Measures a distance between point(s).
   * None
 
 
-##Reference Point On Edge
+##Ref Point On Edge
 ###Description
 Creates an element which owns a reference point on a selected edge.
 
@@ -53,7 +53,7 @@ Creates an element which owns a reference point on a selected edge.
   * None
 
 
-##Reference Point On Face by UV
+##Ref Point On Face By UV
 ###Description
 Creates an element which owns a reference point on a selected face.
 
@@ -64,7 +64,7 @@ Creates an element which owns a reference point on a selected face.
   * None
 
 
-##Reference Point On Face by UV components
+##Ref Point On Face by UV
 ###Description
 Creates an element which owns a reference point on a selected face.
 

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿//Copyright © Autodesk, Inc. 2012. All rights reserved.
+=======
+//Copyright © Autodesk, Inc. 2012. All rights reserved.
+>>>>>>> 2ec6f35c8f2f9655bb27eff3fb81c69c167a56c6
 //
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -23,6 +27,14 @@
 //
 
 using System;
+<<<<<<< HEAD
+using System.Windows.Media.Media3D;
+using Microsoft.FSharp.Collections;
+using Dynamo.Connectors;
+using Value = Dynamo.FScheme.Value;
+using Dynamo.Controls;
+
+=======
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,6 +49,7 @@ using Value = Dynamo.FScheme.Value;
 using Dynamo.Controls;
 
 using Leap;
+>>>>>>> 2ec6f35c8f2f9655bb27eff3fb81c69c167a56c6
 
 namespace Dynamo.Nodes
 {
@@ -60,17 +73,24 @@ namespace Dynamo.Nodes
             // Output from this node is the data from a single frame
             OutPortData.Add(new PortData("Leap", "The Leap ViewModel", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
+            LeapEnable(true);
+        }
+
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        {
             // Create a menuitem to enable/disable the Leap device
             menuItemLeapEnabled = new System.Windows.Controls.MenuItem();
             menuItemLeapEnabled.Header = "Enable Leap";
             menuItemLeapEnabled.IsCheckable = true;
             menuItemLeapEnabled.IsChecked = (leapController != null);
             menuItemLeapEnabled.Checked += new System.Windows.RoutedEventHandler(menuItemLeapEnabled_Checked);
-            NodeUI.MainContextMenu.Items.Add(menuItemLeapEnabled);
+<<<<<<< HEAD
+=======
 
-            LeapEnable(true);
+>>>>>>> 2ec6f35c8f2f9655bb27eff3fb81c69c167a56c6
+            NodeUI.MainContextMenu.Items.Add(menuItemLeapEnabled);
         }
 
         void menuItemLeapEnabled_Checked(object sender, System.Windows.RoutedEventArgs e)
@@ -134,7 +154,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Frame", "The frame of data", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -164,7 +184,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Frame", "The frame of data", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -201,7 +221,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("ScaleFactor", "The scale factor", typeof(double)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -240,7 +260,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Translation", "The translation vector", typeof(Point3D)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -285,7 +305,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Rotation", "The XYZ rotation in radians", typeof(Point3D)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -329,7 +349,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Hand", "The hand read from the frame", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -364,7 +384,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Hand", "The hand read from the frame", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -394,7 +414,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Hand", "The hand read from the frame", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -424,7 +444,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Fingers", "The list of fingers.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -487,7 +507,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Index", "The index of the finger to read (1..N).", typeof(int)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -511,7 +531,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 0;    // 1st finger
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
     }
 
@@ -524,7 +544,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 1;    // 2nd finger
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
     }
 
@@ -537,7 +557,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 2;    // 3rd finger
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
     }
 
@@ -550,7 +570,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 3;    // 4th finger
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
     }
 
@@ -563,7 +583,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 4;    // 5th finger
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
     }
 
@@ -611,7 +631,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Index", "The index of the tool to read (1..N).", typeof(int)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -635,7 +655,7 @@ namespace Dynamo.Nodes
         {
             ToolIndex = 0;
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
     }
 
@@ -650,7 +670,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("XYZ", "The XYZ position in mms", typeof(Point3D)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

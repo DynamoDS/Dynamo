@@ -1,19 +1,15 @@
 ﻿//using System;
-//using System.Collections.Generic;
 //using System.IO;
-//using System.Linq;
 //using System.Reflection;
-//using System.Text;
 //using System.Windows.Threading;
 //using Dynamo.Commands;
-//using Dynamo.Nodes;
 //using Dynamo.Utilities;
 //using NUnit.Framework;
 
 //namespace Dynamo.Tests
 //{
 //    [TestFixture]
-//    internal class DynamoElementsUITests
+//    internal class DynamoElementsUiTests
 //    {
 //        [SetUp]
 //        public void Init()
@@ -72,7 +68,7 @@
 //            Dispatcher.CurrentDispatcher.InvokeShutdown();
 //        }
 
-//    // OpenCommand
+//        // OpenCommand
 
 //        [Test]
 //        public void CanOpenGoodFile()
@@ -87,7 +83,7 @@
 //            Assert.AreEqual(5, dynSettings.Controller.CurrentSpace.Nodes.Count);
 //        }
 
-//    // SaveImageCommand
+//        // SaveImageCommand
 
 //        [Test]
 //        public void CanSaveImage()
@@ -102,7 +98,7 @@
 //            Assert.False(File.Exists(path));
 //        }
 
- 
+
 //        [Test]
 //        public void CannotSaveImageWithBadPath()
 //        {
@@ -114,47 +110,9 @@
 //            Assert.AreEqual(0, tempFldrInfo.GetFiles().Length);
 //        }
 
-//    // ShowSplashScreenCmd
 
-//        [Test]
-//        public void CanShowAndCloseSplashScreen()
-//        {
-//            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ShowSplashScreenCmd,
-//                                                                                 null));
-//            dynSettings.Controller.ProcessCommandQueue();
-//            dynSettings.Controller.SplashScreen.Dispatcher.Invoke(
-//                (Action)(() =>
-//                {
-//                    Assert.AreEqual(true, dynSettings.Controller.SplashScreen.IsVisible);
-//                    dynSettings.Controller.CommandQueue.Enqueue(
-//                        Tuple.Create<object, object>(DynamoCommands.CloseSplashScreenCmd, null));
-//                    dynSettings.Controller.ProcessCommandQueue();
-//                    Assert.AreEqual(false, dynSettings.Controller.SplashScreen.IsVisible);
-//                }));
-//        }
 
-//        [Test]
-//        public void CanShowSplashScreenFromDefaultState()
-//        {
-//            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ShowSplashScreenCmd,
-//                                                                                 null));
-//            dynSettings.Controller.ProcessCommandQueue();
-//            dynSettings.Controller.SplashScreen.Dispatcher.Invoke(
-//                (Action)(() => { Assert.AreEqual(true, dynSettings.Controller.SplashScreen.IsVisible); }));
-//        }
-
-//        [Test]
-//        public void CanCloseSplashScreenFromDefaultState()
-//        {
-//            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CloseSplashScreenCmd,
-//                                                                                 null));
-//            dynSettings.Controller.ProcessCommandQueue();
-
-//            dynSettings.Controller.SplashScreen.Dispatcher.Invoke(
-//                (Action)(() => { Assert.AreEqual(false, dynSettings.Controller.SplashScreen.IsVisible); }));
-//        }
-
-//    // ToggleConsoleShowingCommand
+//        // ToggleConsoleShowingCommand
 
 //        [Test]
 //        public void CanShowConsoleWhenHidden()

@@ -38,9 +38,8 @@ namespace Dynamo.Nodes
     [NodeSearchTags("print", "output", "display")]
     public class dynWatch: dynNodeWithOneOutput
     {
-        WatchTree wt;
-        WatchTreeBranch wtb;
-        //int oldPreferredHeight;
+        public WatchTree watchTree;
+        public WatchTreeBranch watchTreeBranch;
 
         private class WatchHandlers
         {
@@ -79,47 +78,28 @@ namespace Dynamo.Nodes
         public dynWatch()
         {
             InPortData.Add(new PortData("", "Node to evaluate.", typeof(object)));
-            OutPortData.Add(new PortData("", "Watch contents.", typeof(string)));
+            OutPortData.Add(new PortData("", "Watch contents.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
-            //take out the left and right margins
-            //and make this so it's not so wide
-            NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
-            NodeUI.topControl.Width = 300;
-            
-            //set a default height
-            //oldPreferredHeight = NodeUI.PreferredHeight;
-            NodeUI.Height = 200;
-
-            wt = new WatchTree();
-            //wt.TreeExpanded += new EventHandler(wt_TreeExpanded);
-            //wt.TreeCollapsed += new EventHandler(wt_TreeCollapsed);
-
-            NodeUI.inputGrid.Children.Add(wt);
-
-            wtb = wt.FindResource("Tree") as WatchTreeBranch;
-            
-            foreach (dynPort p in NodeUI.InPorts)
+            foreach (dynPortModel p in InPorts)
             {
                 p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
             }
         }
 
-        void wt_TreeCollapsed(object sender, EventArgs e)
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
-            //NodeUI.PreferredHeight = oldPreferredHeight;
-        }
+            watchTree = new WatchTree();
 
-        void wt_TreeExpanded(object sender, EventArgs e)
-        {
-            //NodeUI.PreferredHeight = 200;
+            NodeUI.inputGrid.Children.Add(watchTree);
+
+            watchTreeBranch = watchTree.FindResource("Tree") as WatchTreeBranch;
         }
 
         void p_PortDisconnected(object sender, EventArgs e)
         {
-            wtb.Clear();
-            //NodeUI.PreferredHeight = oldPreferredHeight;
+            watchTreeBranch.Clear();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -129,18 +109,18 @@ namespace Dynamo.Nodes
 
             int count = 0;
 
-            NodeUI.Dispatcher.Invoke(new Action(
+            DispatchOnUIThread(
                 delegate
                 {
-                    wtb.Clear();
+                    watchTreeBranch.Clear();
 
                     foreach (Value e in args)
                     {
-                        wtb.Add(Process(e, ref content, prefix, count));
+                        watchTreeBranch.Add(Process(e, ref content, prefix, count));
                         count++;
                     }
                 }
-            ));
+            );
 
             //return the content that has been gathered
             return args[0]; //watch should be a 'pass through' node

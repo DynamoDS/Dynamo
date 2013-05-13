@@ -1,18 +1,18 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Windows.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Windows;
 
 using Dynamo.Connectors;
+using Dynamo.Nodes;
 
 namespace Dynamo.Controls
 {
 
-    //[ValueConversion(typeof(double), typeof(Thickness))]
     public class MarginConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -22,6 +22,51 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class PathToFileNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is string)
+            {
+                // convert to path, get file name
+                return Path.GetFileName((string) value);
+            } 
+
+            return "Unsaved";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class WorkspaceTypeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is dynWorkspaceViewModel)
+            {
+                var val = (value as dynWorkspaceViewModel).Model.GetType();
+                return val;
+            }
+
+            if (value is dynWorkspaceModel)
+            {
+                return value.GetType();
+            }
+
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
         {
             return null;
         }
@@ -44,6 +89,32 @@ namespace Dynamo.Controls
             {
                 //return new SolidColorBrush(Colors.Black);
                 return FalseBrush;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class BooleanToSelectionColorConverter : IValueConverter
+    {
+        public Color True { get; set; }
+        public Color False { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            bool condition = (bool)value;
+            if (condition)
+            {
+                //return new SolidColorBrush(Colors.Cyan);
+                return True;
+            }
+            else
+            {
+                //return new SolidColorBrush(Colors.Black);
+                return False;
             }
         }
 
@@ -87,7 +158,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            ObservableCollection<dynPort> ports = (ObservableCollection<dynPort>)value;
+            ObservableCollection<dynPortViewModel> ports = (ObservableCollection<dynPortViewModel>)value;
             return Math.Max(30, ports.Count * 20 + 10); //spacing for inputs + title space + bottom space
         }
 
@@ -277,15 +348,17 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            PortType p = (PortType)value;
-            if (p == PortType.INPUT)
-            {
-                return new Thickness(20, 0, 0, 0);
-            }
-            else
-            {
-                return new Thickness(-20, 0, 0, 0);
-            }
+            //PortType p = (PortType)value;
+            //if (p == PortType.INPUT)
+            //{
+            //    return new Thickness(20, 0, 0, 0);
+            //}
+            //else
+            //{
+            //    return new Thickness(-20, 0, 0, 0);
+            //}
+
+            return new Thickness(0, 0, 0, 0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -349,6 +422,22 @@ namespace Dynamo.Controls
             {
                 return new Rect(10, 0, 10, 20);
             }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class BoolToConsoleHeightConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            bool consoleShowing = (bool) value;
+            if (consoleShowing)
+                return 100.0;
+            return 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

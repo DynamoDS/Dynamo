@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Commands;
 using Dynamo.Search;
 using Dynamo.Controls;
 using System.Reflection;
@@ -26,7 +27,7 @@ namespace Dynamo.Utilties
         /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
         /// <param name="bench">The bench where logging errors will be sent</param>
-        internal static void LoadBuiltinTypes(SearchViewModel searchViewModel, DynamoController controller, dynBench bench)
+        internal static void LoadBuiltinTypes(SearchViewModel searchViewModel, DynamoController controller)//, dynBench bench)
         {
             Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
 
@@ -66,14 +67,15 @@ namespace Dynamo.Utilties
             foreach (string assemblyPath in allDynamoAssemblyPaths)
             {
                 if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
-                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath], searchViewModel, controller, bench);
+                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath], searchViewModel, controller);
+                        //, bench);
                 else
                 {
                     try
                     {
                         Assembly assembly = Assembly.LoadFrom(assemblyPath);
                         allLoadedAssemblies[assembly.GetName().Name] = assembly;
-                        LoadNodesFromAssembly(assembly, searchViewModel, controller, bench);
+                        LoadNodesFromAssembly(assembly, searchViewModel, controller);//, bench);
                     }
                     catch
                     {
@@ -99,7 +101,7 @@ namespace Dynamo.Utilties
         {
             return t.Namespace == "Dynamo.Nodes" &&
                    !t.IsAbstract &&
-                   t.IsSubclassOf(typeof(dynNode));
+                   t.IsSubclassOf(typeof(dynNodeModel));
         }
 
         /// <summary>
@@ -110,7 +112,7 @@ namespace Dynamo.Utilties
         /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
         /// <param name="bench">The bench where logging errors will be sent</param>
-        private static void LoadNodesFromAssembly(Assembly assembly, SearchViewModel searchViewModel, DynamoController controller, dynBench bench )
+        private static void LoadNodesFromAssembly(Assembly assembly, SearchViewModel searchViewModel, DynamoController controller)//, dynBench bench )
         {
             try
             {
@@ -127,25 +129,25 @@ namespace Dynamo.Utilties
                         searchViewModel.Add(t);
                         string typeName = (attribs[0] as NodeNameAttribute).Name;
                         var data = new TypeLoadData(assembly, t);
-                        controller.builtinTypesByNickname.Add(typeName, data);
-                        controller.builtinTypesByTypeName.Add(t.FullName, data);
+                        controller.BuiltInTypesByNickname.Add(typeName, data);
+                        controller.BuiltInTypesByName.Add(t.FullName, data);
                     }
                 }
             }
             catch (Exception e)
             {
-                bench.Log("Could not load types.");
-                bench.Log(e);
+                dynSettings.Controller.DynamoViewModel.Log("Could not load types.");
+                dynSettings.Controller.DynamoViewModel.Log(e);
                 if (e is ReflectionTypeLoadException)
                 {
                     var typeLoadException = e as ReflectionTypeLoadException;
                     Exception[] loaderExceptions = typeLoadException.LoaderExceptions;
-                    bench.Log("Dll Load Exception: " + loaderExceptions[0]);
-                    bench.Log(loaderExceptions[0].ToString());
+                    dynSettings.Controller.DynamoViewModel.Log("Dll Load Exception: " + loaderExceptions[0]);
+                    dynSettings.Controller.DynamoViewModel.Log(loaderExceptions[0].ToString());
                     if (loaderExceptions.Count() > 1)
                     {
-                        bench.Log("Dll Load Exception: " + loaderExceptions[1]);
-                        bench.Log(loaderExceptions[1].ToString());
+                        dynSettings.Controller.DynamoViewModel.Log("Dll Load Exception: " + loaderExceptions[1]);
+                        dynSettings.Controller.DynamoViewModel.Log(loaderExceptions[1].ToString());
                     }
                 }
             }
@@ -155,7 +157,7 @@ namespace Dynamo.Utilties
         ///     Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
         /// <param name="bench">The bench where the UI will be loaded</param>
-        public static void LoadSamplesMenu(dynBench bench)
+        public static void LoadSamplesMenu(DynamoView bench)
         {
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string samplesPath = Path.Combine(directory, "samples");
@@ -221,13 +223,13 @@ namespace Dynamo.Utilties
             var path = (string)((MenuItem)sender).Tag;
 
             if (dynSettings.Bench.UILocked)
-                dynSettings.Controller.QueueLoad(path);
+                dynSettings.Controller.DynamoViewModel.QueueLoad(path);
             else
             {
-                if (!dynSettings.Controller.ViewingHomespace)
-                    dynSettings.Controller.ViewHomeWorkspace();
+                if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
+                    dynSettings.Controller.DynamoViewModel.ViewHomeWorkspace();
 
-                dynSettings.Controller.OpenWorkbench(path);
+                dynSettings.Controller.DynamoViewModel.OpenWorkbench(path);
             }
         }
 
@@ -236,60 +238,29 @@ namespace Dynamo.Utilties
         ///     directory where the executing assembly is located..
         /// </summary>
         /// <param name="bench">The logger is needed in order to tell how long it took.</param>
-        public static void LoadCustomNodes(dynBench bench)
+        public static void LoadCustomNodes(DynamoView bench, CustomNodeLoader customNodeLoader, SearchViewModel searchViewModel)
         {
 
             // custom node loader
-
-            //CustomNodeLoader.UpdateSearchPath();
-
-            //var nn = CustomNodeLoader.GetNodeNameGuidPairs();
-
-            //// add nodes to search
-            //foreach (var pair in nn)
-            //{
-            //    SearchViewModel.Add(pair.Item1, pair.Item2);
-            //}
-
             var sw = new Stopwatch();
             sw.Start();
 
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string pluginsPath = Path.Combine(directory, "definitions");
+            customNodeLoader.UpdateSearchPath();
+            var nn = customNodeLoader.GetNodeNameCategoryAndGuidList();
 
-            if (Directory.Exists(pluginsPath))
+            // add nodes to search
+            foreach (var pair in nn)
             {
-                bench.Log("Autoloading definitions...");
-                LoadCustomNodesInDirectory(pluginsPath);
-
-                sw.Stop();
-                bench.Log(string.Format("{0} ellapsed for loading definitions.", sw.Elapsed));
+                searchViewModel.Add(pair.Item1, pair.Item2, pair.Item3);
             }
+            
+            sw.Stop();
+            DynamoCommands.WriteToLogCmd.Execute(string.Format("{0} ellapsed for loading definitions.", sw.Elapsed));
+
+            // update search view
+            searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
 
         }
-
-        /// <summary>
-        ///     Load all of the custom nodes in a given directory
-        /// </summary>
-        /// <param name="searchViewModel">The directory from which to enumerate the nodes</param>
-        private static void LoadCustomNodesInDirectory(string directory)
-        {
-            dynSettings.FunctionDict.Clear();
-            dynSettings.FunctionWasEvaluated.Clear();
-
-            var parentBuffer = new Dictionary<Guid, HashSet<Guid>>();
-            var childrenBuffer = new Dictionary<Guid, HashSet<FunctionDefinition>>();
-            string[] filePaths = Directory.GetFiles(directory, "*.dyf");
-            foreach (string filePath in filePaths)
-            {
-                dynSettings.Controller.OpenDefinition(filePath, childrenBuffer, parentBuffer);
-            }
-            foreach (dynNode e in dynSettings.Controller.AllNodes)
-            {
-                e.EnableReporting();
-            }
-        }
-
 
     }
 }

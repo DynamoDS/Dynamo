@@ -129,7 +129,7 @@ namespace Dynamo.Applications
     [Regeneration(RegenerationOption.Manual)]
     internal class DynamoRevit : IExternalCommand
     {
-        private static dynBench dynamoBench;
+        private static DynamoView dynamoBench;
         private UIDocument m_doc;
         private UIApplication m_revit;
 
@@ -142,7 +142,8 @@ namespace Dynamo.Applications
                 return Result.Succeeded;
             }
 
-            dynSettings.StartLogging();
+            //MVVM : don't start logging here.
+            DynamoLogger.Instance.StartLogging();
 
             try
             {
@@ -168,8 +169,8 @@ namespace Dynamo.Applications
                         IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
                         //show the window
-                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater);
-                        dynamoBench = dynamoController.Bench;
+                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, true, typeof(DynamoRevitViewModel));
+                        dynamoBench = dynSettings.Bench;
 
                         //set window handle and show dynamo
                         new WindowInteropHelper(dynamoBench).Owner = mwHandle;
@@ -189,12 +190,11 @@ namespace Dynamo.Applications
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                if (dynSettings.Writer != null)
-                {
-                    dynSettings.Writer.WriteLine(ex.Message);
-                    dynSettings.Writer.WriteLine(ex.StackTrace);
-                    dynSettings.Writer.WriteLine("Dynamo log ended " + DateTime.Now.ToString());
-                }
+
+                DynamoLogger.Instance.Log(ex.Message);
+                DynamoLogger.Instance.Log(ex.StackTrace);
+                DynamoLogger.Instance.Log("Dynamo log ended " + DateTime.Now.ToString());
+
                 return Result.Failed;
             }
 
@@ -203,12 +203,13 @@ namespace Dynamo.Applications
 
         private void dynamoForm_Closed(object sender, EventArgs e)
         {
+            IdlePromise.ClearPromises();
             dynamoBench = null;
         }
 
         private void dynamoForm_Loaded(object sender, RoutedEventArgs e)
         {
-            ((dynBench) sender).WindowState = WindowState.Maximized;
+            ((DynamoView) sender).WindowState = WindowState.Maximized;
         }
     }
 

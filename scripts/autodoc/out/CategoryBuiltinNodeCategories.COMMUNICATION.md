@@ -22,7 +22,7 @@ Read  from a Kinect.
 
 ##Leap
 ###Description
-Manages connection to a Leap Motion controller.
+Manages connection to a Leap Motion ViewModel.
 
 ###Inputs
   * **Read** *(object)* - Read a frame of data from the Leap
@@ -103,10 +103,10 @@ Reads the list of fingers from a Leap Motion hand.
 
 ##Leap Frame
 ###Description
-Current Frame from the Leap Motion controller.
+Current Frame from the Leap Motion ViewModel.
 
 ###Inputs
-  * **Leap** *(object)* - The Leap controller
+  * **Leap** *(object)* - The Leap ViewModel
 
 ###Output
   * None
@@ -114,10 +114,10 @@ Current Frame from the Leap Motion controller.
 
 ##Leap Frame N
 ###Description
-Frame from the Leap Motion controller.
+Frame from the Leap Motion ViewModel.
 
 ###Inputs
-  * **Leap** *(object)* - The Leap controller
+  * **Leap** *(object)* - The Leap ViewModel
 
 ###Output
   * None
@@ -128,7 +128,7 @@ Frame from the Leap Motion controller.
 The angle of rotation around the XYZ axis' derived from the overall rotational motion between the current frame and the specified frame.
 
 ###Inputs
-  * **Frame** *(object)* - A Frame from a Leap controller
+  * **Frame** *(object)* - A Frame from a Leap ViewModel
 
 ###Output
   * None
@@ -139,7 +139,7 @@ The angle of rotation around the XYZ axis' derived from the overall rotational m
 The scale factor derived from the overall motion between the current frame and the specified frame.
 
 ###Inputs
-  * **Frame** *(object)* - A Frame from a Leap controller
+  * **Frame** *(object)* - A Frame from a Leap ViewModel
 
 ###Output
   * None
@@ -150,7 +150,7 @@ The scale factor derived from the overall motion between the current frame and t
 The change of position derived from the overall linear motion between the current frame and the specified frame.
 
 ###Inputs
-  * **Frame** *(object)* - A Frame from a Leap controller
+  * **Frame** *(object)* - A Frame from a Leap ViewModel
 
 ###Output
   * None
@@ -201,7 +201,7 @@ Reads the position of a Leap Hand, Finger, or Tool.
 
 ##Leap Tool 1
 ###Description
-Reads tool #1 from a Leap Motion controller.
+Reads tool #1 from a Leap Motion ViewModel.
 
 
 
@@ -211,7 +211,7 @@ Reads tool #1 from a Leap Motion controller.
 
 ##Leap Tool N
 ###Description
-Reads a tool with a specified index from a Leap Motion controller.
+Reads a tool with a specified index from a Leap Motion ViewModel.
 
 
 

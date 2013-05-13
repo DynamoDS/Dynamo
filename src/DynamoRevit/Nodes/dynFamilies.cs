@@ -32,7 +32,7 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Family Type Selector")]
+    [NodeName("Select Fam")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Select a Family Type from a drop down list.")]
     [IsInteractive(true)]
@@ -43,11 +43,17 @@ namespace Dynamo.Nodes
 
         public dynFamilyTypeSelector()
         {
-            //widen the control
-            NodeUI.topControl.Width = 300;
+            OutPortData.Add(new PortData("", "Family type", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
 
             //add a drop down list to the window
             combo = new ComboBox();
+            combo.Width = 300;
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             NodeUI.inputGrid.Children.Add(combo);
@@ -62,10 +68,6 @@ namespace Dynamo.Nodes
             };
 
             PopulateComboBox();
-            
-            OutPortData.Add(new PortData("", "Family type", typeof(FamilySymbol)));
-
-            NodeUI.RegisterAllPorts();
         }
 
         void combo_DropDownOpened(object sender, EventArgs e)
@@ -122,7 +124,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Family Instance Parameter Selector")]
+    [NodeName("Select Fam Inst Param")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a paramter as a string.")]
     [IsInteractive(true)]
@@ -135,12 +137,20 @@ namespace Dynamo.Nodes
 
         public dynFamilyInstanceParameterSelector()
         {
-            //widen the control
-            NodeUI.topControl.Width = 175;
+            InPortData.Add(new PortData("f", "Family Symbol or Instance", typeof(Value.Container)));
+            OutPortData.Add(new PortData("", "Parameter Name", typeof(Value.String)));
+
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
 
             //add a drop down list to the window
             paramBox.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             paramBox.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            paramBox.Width = 175;
+
             NodeUI.inputGrid.Children.Add(paramBox);
             System.Windows.Controls.Grid.SetColumn(paramBox, 0);
             System.Windows.Controls.Grid.SetRow(paramBox, 0);
@@ -155,11 +165,6 @@ namespace Dynamo.Nodes
             };
 
             paramBox.IsEnabled = false;
-
-            InPortData.Add(new PortData("f", "Family Symbol or Instance", typeof(Element)));
-            OutPortData.Add(new PortData("", "Parameter Name", typeof(string)));
-
-            NodeUI.RegisterAllPorts();
         }
 
         private static string getStorageTypeString(StorageType st)
@@ -464,7 +469,7 @@ namespace Dynamo.Nodes
     //         while (p.Connectors.Count > 0)
     //         {
     //            dynConnector c = p.Connectors[p.Connectors.Count - 1] as dynConnector;
-    //            c.Kill();
+    //            c.NotifyConnectedPortsOfDeletion();
     //         }
     //      }
 
@@ -696,18 +701,18 @@ namespace Dynamo.Nodes
 
     #endregion
 
-    [NodeName("Family Instance Creator")]
+    [NodeName("Create Fam Inst")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates family instances at a given XYZ location.")]
     public class dynFamilyInstanceCreatorXYZ : dynRevitTransactionNodeWithOneOutput
     {
         public dynFamilyInstanceCreatorXYZ()
         {
-            InPortData.Add(new PortData("xyz", "xyz", typeof(object)));
-            InPortData.Add(new PortData("type", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
-            OutPortData.Add(new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance)));
+            InPortData.Add(new PortData("xyz", "xyz", typeof(Value.Container)));
+            InPortData.Add(new PortData("type", "The Family Symbol to use for instantiation.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("fi", "Family instances created by this operation.", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private Value makeFamilyInstance(object location, FamilySymbol fs, int count)
@@ -806,20 +811,20 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Family Instance By Level Creator")]
+    [NodeName("Create Fam Inst By Level")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates family instances in the given level.")]
     public class dynFamilyInstanceCreatorLevel : dynRevitTransactionNodeWithOneOutput
     {
         public dynFamilyInstanceCreatorLevel()
         {
-            InPortData.Add(new PortData("xyz", "xyz", typeof(object)));
-            InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
-            InPortData.Add(new PortData("lev", "The Level to use for instantiation.", typeof(FamilySymbol)));
+            InPortData.Add(new PortData("xyz", "xyz", typeof(Value.Container)));
+            InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(Value.Container)));
+            InPortData.Add(new PortData("lev", "The Level to use for instantiation.", typeof(Value.Container)));
 
-            OutPortData.Add(new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance)));
+            OutPortData.Add(new PortData("fi", "Family instances created by this operation.", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private Value makeFamilyInstance(object location, FamilySymbol fs, int count, Level level)
@@ -924,18 +929,18 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curves from Family")]
+    [NodeName("Curves from Fam")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Extracts curves from family instances.")]
     public class dynCurvesFromFamilyInstance : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurvesFromFamilyInstance()
         {
-            InPortData.Add(new PortData("fi", "family instance", typeof(object)));
+            InPortData.Add(new PortData("fi", "family instance", typeof(Value.Container)));
 
-            OutPortData.Add(new PortData("curves", "Curves extracted by this operation.", typeof(Curve)));
+            OutPortData.Add(new PortData("curves", "Curves extracted by this operation.", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private Value GetCurvesFromFamily(Autodesk.Revit.DB.FamilyInstance fi, int count,
@@ -1120,19 +1125,19 @@ namespace Dynamo.Nodes
     }
 
     //TODO: In Destroy(), have code that resets Elements back to their default.
-    [NodeName("Set Instance Parameter")]
+    [NodeName("Set Fam Inst Param")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Modifies a parameter on a family instance.")]
     public class dynFamilyInstanceParameterSetter : dynRevitTransactionNodeWithOneOutput
     {
         public dynFamilyInstanceParameterSetter()
         {
-            InPortData.Add(new PortData("fi", "Family instance.", typeof(object)));
-            InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof(object)));
+            InPortData.Add(new PortData("fi", "Family instance.", typeof(Value.Container)));
+            InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof(Value.String)));
             InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
-            OutPortData.Add(new PortData("fi", "Modified family instance.", typeof(object)));
+            OutPortData.Add(new PortData("fi", "Modified family instance.", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private static Value setParam(FamilyInstance fi, string paramName, Value valueExpr)
@@ -1244,19 +1249,19 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get Instance Parameter")]
+    [NodeName("Get Fam Inst Param")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Fetches the value of a parameter of a Family Instance.")]
     public class dynFamilyInstanceParameterGetter : dynRevitTransactionNodeWithOneOutput
     {
         public dynFamilyInstanceParameterGetter()
         {
-            InPortData.Add(new PortData("fi", "Family instance.", typeof(FamilyInstance)));
-            InPortData.Add(new PortData("param", "Parameter to fetch.", typeof(string)));
+            InPortData.Add(new PortData("fi", "Family instance.", typeof(Value.Container)));
+            InPortData.Add(new PortData("param", "Parameter to fetch.", typeof(Value.String)));
 
             OutPortData.Add(new PortData("val", "Parameter value.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private static Value getParam(FamilyInstance fi, string paramName)
@@ -1359,19 +1364,19 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Set Type Parameter")]
+    [NodeName("Set Fam Type Param")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Modifies a parameter on a family type.")]
     public class dynFamilyTypeParameterSetter : dynRevitTransactionNodeWithOneOutput
     {
         public dynFamilyTypeParameterSetter()
         {
-            InPortData.Add(new PortData("ft", "Family type.", typeof(object)));
-            InPortData.Add(new PortData("param", "Parameter to modify.", typeof(object)));
+            InPortData.Add(new PortData("ft", "Family type.", typeof(Value.Container)));
+            InPortData.Add(new PortData("param", "Parameter to modify.", typeof(Value.String)));
             InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
-            OutPortData.Add(new PortData("ft", "Modified family type.", typeof(object)));
+            OutPortData.Add(new PortData("ft", "Modified family type.", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private static Value setParam(FamilySymbol fi, string paramName, Value valueExpr)
@@ -1483,19 +1488,19 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get Type Parameter")]
+    [NodeName("Get Fam Type Param")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Fetches the value of a parameter of a Family Type.")]
     public class dynFamilyTypeParameterGetter : dynRevitTransactionNodeWithOneOutput
     {
         public dynFamilyTypeParameterGetter()
         {
-            InPortData.Add(new PortData("ft", "Family type.", typeof(FamilySymbol)));
-            InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(string)));
+            InPortData.Add(new PortData("ft", "Family type.", typeof(Value.Container)));
+            InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(Value.String)));
 
             OutPortData.Add(new PortData("val", "Parameter value.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private static Value getParam(FamilySymbol fi, string paramName)

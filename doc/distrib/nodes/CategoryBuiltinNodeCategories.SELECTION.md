@@ -8,22 +8,22 @@ Select an analysis result object from the document.
   * None
 
 
-##Family Parameter Selector
+##Select Fam
 ###Description
-Given a Family Instance or Symbol, allows the user to select a paramter as a string.
+Select a Family Type from a drop down list.
 
-###Inputs
-  * **f** *(Element)* - Family Symbol or Instance
+
 
 ###Output
   * None
 
 
-##Family Type Selector
+##Select Fam Inst Param
 ###Description
-Select a Family Type from a drop down list.
+Given a Family Instance or Symbol, allows the user to select a paramter as a string.
 
-
+###Inputs
+  * **f** *(Element)* - Family Symbol or Instance
 
 ###Output
   * None

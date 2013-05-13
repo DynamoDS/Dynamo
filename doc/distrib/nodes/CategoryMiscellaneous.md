@@ -1,6 +1,6 @@
-##1DSimplex
+##1D Noise Field
 ###Description
-Creates a 1D Field.
+Creates a randomly varying 1 field generated using simplex noise.
 
 ###Inputs
   * **x** *(double)* - X
@@ -9,9 +9,9 @@ Creates a 1D Field.
   * None
 
 
-##2DSimplex
+##2D Noise Field
 ###Description
-Creates a 2D Field.
+Creates a randomly varying 2D field generated using simplex noise.
 
 ###Inputs
   * **x** *(double)* - X
@@ -21,9 +21,9 @@ Creates a 2D Field.
   * None
 
 
-##3DSimplex
+##3D Noise Field
 ###Description
-Creates a 3D Field.
+Creates a randomly varying 3D Field generated using simplex noise.
 
 ###Inputs
   * **x** *(double)* - X

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,19 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using System.Diagnostics;
 
+=======
+using System.Windows;
+>>>>>>> 2ec6f35c8f2f9655bb27eff3fb81c69c167a56c6
 using Microsoft.FSharp.Collections;
 using Microsoft.Kinect;
 
 using Dynamo.Connectors;
+<<<<<<< HEAD
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
+=======
+>>>>>>> 2ec6f35c8f2f9655bb27eff3fb81c69c167a56c6
 
 using Value = Dynamo.FScheme.Value;
 
@@ -100,7 +107,11 @@ namespace Dynamo.Nodes
             //NodeUI.inputGrid.Children.Add(trackingCanvas);
             //trackingCanvas.Children.Add(rightHandEllipse);
 
+<<<<<<< HEAD
+            //RegisterAllPorts();
+=======
             //NodeUI.RegisterAllPorts();
+>>>>>>> 2ec6f35c8f2f9655bb27eff3fb81c69c167a56c6
 
             //NodeUI.Width = width + 120;// 450;
             //NodeUI.Height = height + 5;

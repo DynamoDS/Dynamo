@@ -5,7 +5,8 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="..\Themes\DynamoColorsAndBrushes.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    
+
+    <controls:WorkspaceTypeConverter x:Key="WorkspaceTypeConverter" />
     <controls:MarginConverter x:Key="MarginConverter" />
     <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter" 
                                       TrueBrush="Cyan" 
@@ -15,11 +16,16 @@
                                       TrueBrush="Black"
                                       FalseBrush="White">
     </controls:BooleanToBrushConverter>
+    <controls:BooleanToSelectionColorConverter x:Key="BooleanToSelectionColorConverter" 
+                                True="Cyan" 
+                                False="#444">
+    </controls:BooleanToSelectionColorConverter>
     <controls:StateToColorConverter x:Key="StateToColorConverter"
-                                         ActiveBrush="{StaticResource nodeActiveBrush}"
-                                         DeadBrush="{StaticResource nodeDeadBrush}"
-                                         ErrorBrush="{StaticResource nodeErrorBrush}">
+                                        ActiveBrush="{StaticResource nodeActiveBrush}"
+                                        DeadBrush="{StaticResource nodeDeadBrush}"
+                                        ErrorBrush="{StaticResource nodeErrorBrush}">
     </controls:StateToColorConverter>
+    <controls:PathToFileNameConverter x:Key="PathToFileNameConverter"/>
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
@@ -28,4 +34,5 @@
     <controls:PortTypeToTextAlignmentConverter x:Key="PortTypeToTextAlignmentConverter"/>
     <controls:PortTypeToGridColumnConverter x:Key="PortTypeToGridColumnConverter"/>
     <controls:PortTypeToClipConverter x:Key="PortTypeToClipConverter"/>
+    <controls:BoolToConsoleHeightConverter x:Key="BoolToConsoleHeightConverter"/>
 </ResourceDictionary>

@@ -1,0 +1,31 @@
+<dynWorkspace X="0" Y="0">
+  <dynElements>
+    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="09119126-c8e0-4971-9178-4d872b1c0b25" nickname="Watch 3D" x="935.763905264016" y="0" />
+    <Dynamo.Nodes.dynXYZScale type="Dynamo.Nodes.dynXYZScale" guid="bb3dbb82-fe6d-454b-b962-3640df6d90c8" nickname="XYZ Scale" x="254.135254646715" y="174.484867371379" />
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="9bdb5c01-74aa-4ccd-98fc-5a2df0a58407" nickname="Number Slider" x="0" y="212.361302415853">
+      <System.Double value="1.87878787878788" min="0" max="10" />
+    </Dynamo.Nodes.dynDoubleSliderInput>
+    <Dynamo.Nodes.dynLineBound type="Dynamo.Nodes.dynLineBound" guid="1d5dc974-1bf1-47cd-b4a0-3ff2ce803757" nickname="Line" x="718.354812209426" y="0" />
+    <Dynamo.Nodes.dynXYZZero type="Dynamo.Nodes.dynXYZZero" guid="509ad021-cc1d-4146-8cfc-61fa4929be0a" nickname="XYZ Zero" x="306.935971739051" y="12.5025470609168" />
+    <Dynamo.Nodes.dynXYZBasisX type="Dynamo.Nodes.dynXYZBasisX" guid="68c378b6-8fb7-42ed-af84-5942641901fe" nickname="XYZ BasisX" x="0" y="162.423442680275" />
+    <Dynamo.Nodes.dynTransformRotation type="Dynamo.Nodes.dynTransformRotation" guid="86819a2d-a70e-42c9-9858-226e2ccc3e1a" nickname="Transform Rotation" x="449.321573428493" y="238.11412210046" />
+    <Dynamo.Nodes.dynTransformPoint type="Dynamo.Nodes.dynTransformPoint" guid="0380f3fa-0bf3-49e8-b811-3b29fbb08fbf" nickname="Transform Point" x="665.161962002979" y="153.375143967045" />
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="31cc42d1-4006-4c8c-9ab9-68309544e1bc" nickname="Number Slider" x="209.223555624666" y="345.16720500961">
+      <System.Double value="0" min="0" max="6.24" />
+    </Dynamo.Nodes.dynDoubleSliderInput>
+    <Dynamo.Nodes.dynXYZBasisZ type="Dynamo.Nodes.dynXYZBasisZ" guid="cacbaad2-fac1-4b9d-a9a7-0167ba3bddc7" nickname="XYZ BasisZ" x="249.953091077717" y="257.191012587177" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="bb3dbb82-fe6d-454b-b962-3640df6d90c8" start_index="0" end="0380f3fa-0bf3-49e8-b811-3b29fbb08fbf" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="9bdb5c01-74aa-4ccd-98fc-5a2df0a58407" start_index="0" end="bb3dbb82-fe6d-454b-b962-3640df6d90c8" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="1d5dc974-1bf1-47cd-b4a0-3ff2ce803757" start_index="0" end="09119126-c8e0-4971-9178-4d872b1c0b25" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="509ad021-cc1d-4146-8cfc-61fa4929be0a" start_index="0" end="1d5dc974-1bf1-47cd-b4a0-3ff2ce803757" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="509ad021-cc1d-4146-8cfc-61fa4929be0a" start_index="0" end="86819a2d-a70e-42c9-9858-226e2ccc3e1a" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="68c378b6-8fb7-42ed-af84-5942641901fe" start_index="0" end="bb3dbb82-fe6d-454b-b962-3640df6d90c8" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="86819a2d-a70e-42c9-9858-226e2ccc3e1a" start_index="0" end="0380f3fa-0bf3-49e8-b811-3b29fbb08fbf" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="0380f3fa-0bf3-49e8-b811-3b29fbb08fbf" start_index="0" end="1d5dc974-1bf1-47cd-b4a0-3ff2ce803757" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="31cc42d1-4006-4c8c-9ab9-68309544e1bc" start_index="0" end="86819a2d-a70e-42c9-9858-226e2ccc3e1a" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="cacbaad2-fac1-4b9d-a9a7-0167ba3bddc7" start_index="0" end="86819a2d-a70e-42c9-9858-226e2ccc3e1a" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

@@ -29,11 +29,11 @@ namespace Dynamo.Nodes
     {
         public dynNormalEvaluate()
         {
-            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(object)));
-            InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
-            OutPortData.Add(new PortData("XYZ", "The normal.", typeof(string)));
+            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(Value.Container)));
+            InPortData.Add(new PortData("face", "The face to evaluate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("XYZ", "The normal.", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -61,10 +61,10 @@ namespace Dynamo.Nodes
     {
         public dynXYZEvaluate()
         {
-            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(object)));
-            InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
-            OutPortData.Add(new PortData("XYZ", "The location.", typeof(string)));
-            NodeUI.RegisterAllPorts();
+            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(Value.Container)));
+            InPortData.Add(new PortData("face", "The face to evaluate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("XYZ", "The location.", typeof(Value.Container)));
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

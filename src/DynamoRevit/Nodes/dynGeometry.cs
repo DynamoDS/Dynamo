@@ -15,6 +15,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
@@ -26,19 +27,72 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
+    public abstract class dynXYZBase:dynNodeWithOneOutput, IDrawable, IClearable
+    {
+        protected List<XYZ> pts = new List<XYZ>();
+
+        public RenderDescription Draw()
+        {
+            RenderDescription rd = new RenderDescription();
+            foreach (XYZ pt in pts)
+                rd.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
+            return rd;
+        }
+
+        public void ClearReferences()
+        {
+            pts.Clear();
+        }
+    }
+
+    public abstract class dynCurveBase : dynNodeWithOneOutput, IDrawable, IClearable
+    {
+        protected List<Curve> crvs = new List<Curve>();
+
+        public RenderDescription Draw()
+        {
+            RenderDescription rd = new RenderDescription();
+            foreach (Curve c in crvs)
+                DrawCurve(ref rd, c);
+            return rd;
+        }
+
+        public void ClearReferences()
+        {
+            crvs.Clear();
+        }
+
+        private void DrawCurve(ref RenderDescription description, Curve curve)
+        {
+            IList<XYZ> points = curve.Tessellate();
+
+            for (int i = 0; i < points.Count; ++i)
+            {
+                XYZ xyz = points[i];
+
+                description.lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+
+                if (i == 0 || i == (points.Count - 1))
+                    continue;
+
+                description.lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+            }
+        }
+    }
+
     [NodeName("XYZ")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates an XYZ from three numbers.")]
-    public class dynXYZ: dynNodeWithOneOutput
+    public class dynXYZ: dynXYZBase
     {
         public dynXYZ()
         {
-            InPortData.Add(new PortData("X", "X", typeof(double)));
-            InPortData.Add(new PortData("Y", "Y", typeof(double)));
-            InPortData.Add(new PortData("Z", "Z", typeof(double)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("X", "X", typeof(Value.Number)));
+            InPortData.Add(new PortData("Y", "Y", typeof(Value.Number)));
+            InPortData.Add(new PortData("Z", "Z", typeof(Value.Number)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -48,21 +102,23 @@ namespace Dynamo.Nodes
             y = ((Value.Number)args[1]).Item;
             z = ((Value.Number)args[2]).Item;
 
-            return Value.NewContainer(new XYZ(x, y, z));
+            XYZ pt = new XYZ(x, y, z);
+            pts.Add(pt);
+            return Value.NewContainer(pt);
         }
     }
 
-    [NodeName("XYZ From Ref Point")]
+    [NodeName("XYZ From Reference Point")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Extracts an XYZ from a Reference Point.")]
-    public class dynXYZFromReferencePoint: dynNodeWithOneOutput
+    public class dynXYZFromReferencePoint : dynXYZBase
     {
         public dynXYZFromReferencePoint()
         {
-            InPortData.Add(new PortData("pt", "Reference Point", typeof(object)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("pt", "Reference Point", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -70,7 +126,9 @@ namespace Dynamo.Nodes
             ReferencePoint point;
             point = (ReferencePoint)((Value.Container)args[0]).Item;
 
-            return Value.NewContainer(point.Position);
+            pts.Add(point.Position);
+
+            return Value.NewContainer(point);
         }
     }
 
@@ -81,10 +139,10 @@ namespace Dynamo.Nodes
     { 
         public dynXYZGetX()
         {
-            InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
-            OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(double)));
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(Value.Number)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -100,10 +158,10 @@ namespace Dynamo.Nodes
     {
         public dynXYZGetY()
         {
-            InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
-            OutPortData.Add(new PortData("Y", "Y value of given XYZ", typeof(double)));
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Y", "Y value of given XYZ", typeof(Value.Number)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -119,10 +177,10 @@ namespace Dynamo.Nodes
     {
         public dynXYZGetZ()
         {
-            InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
-            OutPortData.Add(new PortData("Z", "Z value of given XYZ", typeof(double)));
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Z", "Z value of given XYZ", typeof(Value.Number)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -134,91 +192,95 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Zero")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates an XYZ at the origin (0,0,0).")]
-    public class dynXYZZero: dynNodeWithOneOutput
+    public class dynXYZZero: dynXYZBase
     {
         public dynXYZZero()
         {
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-
+            pts.Add(XYZ.Zero);
             return Value.NewContainer(XYZ.Zero);
         }
     }
 
-    [NodeName("XYZ BasisX")]
+    [NodeName("X Axis")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates an XYZ representing the X basis (1,0,0).")]
-    public class dynXYZBasisX: dynNodeWithOneOutput
+    public class dynXYZBasisX : dynXYZBase
     {
         public dynXYZBasisX()
         {
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-
-            return Value.NewContainer(XYZ.BasisX);
+            XYZ pt = XYZ.BasisX;
+            pts.Add(pt);
+            return Value.NewContainer(pt);
         }
     }
 
-    [NodeName("XYZ BasisY")]
+    [NodeName("Y Axis")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates an XYZ representing the Y basis (0,1,0).")]
-    public class dynXYZBasisY: dynNodeWithOneOutput
+    public class dynXYZBasisY : dynXYZBase
     {
         public dynXYZBasisY()
         {
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-
-            return Value.NewContainer(XYZ.BasisY);
+            XYZ pt = XYZ.BasisY;
+            pts.Add(pt);
+            return Value.NewContainer(pt);
         }
     }
 
-    [NodeName("XYZ BasisZ")]
+    [NodeName("Z Axis")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates an XYZ representing the Z basis (0,0,1).")]
-    public class dynXYZBasisZ: dynNodeWithOneOutput
+    public class dynXYZBasisZ: dynXYZBase
     {
         public dynXYZBasisZ()
         {
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
 
-            return Value.NewContainer(XYZ.BasisZ);
+            XYZ pt = XYZ.BasisZ;
+            pts.Add(pt);
+            return Value.NewContainer(pt);
         }
     }
 
-    [NodeName("XYZ Scale")]
+    [NodeName("Scale XYZ")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Multiplies each component of an XYZ by a number.")]
-    public class dynXYZScale: dynNodeWithOneOutput
+    public class dynXYZScale: dynXYZBase
     {
         public dynXYZScale()
         {
-            InPortData.Add(new PortData("XYZ", "XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("n", "Scale value.", typeof(double)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("XYZ", "XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("n", "Scale value.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -226,22 +288,24 @@ namespace Dynamo.Nodes
             XYZ xyz = (XYZ)((Value.Container)args[0]).Item;
             double n = ((Value.Number)args[1]).Item;
 
-            return Value.NewContainer(xyz.Multiply(n));
+            XYZ pt = xyz.Multiply(n);
+            pts.Add(pt);
+            return Value.NewContainer(pt);
         }
     }
 
-    [NodeName("XYZ Add")]
+    [NodeName("Add XYZ")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Adds the components of two XYZs.")]
-    public class dynXYZAdd: dynNodeWithOneOutput
+    public class dynXYZAdd: dynXYZBase
     {
         public dynXYZAdd()
         {
-            InPortData.Add(new PortData("XYZa", "XYZ a", typeof(XYZ)));
-            InPortData.Add(new PortData("XYZb", "XYZ b", typeof(XYZ)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("XYZa", "XYZ a", typeof(Value.Container)));
+            InPortData.Add(new PortData("XYZb", "XYZ b", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -249,7 +313,9 @@ namespace Dynamo.Nodes
             XYZ xyza = (XYZ)((Value.Container)args[0]).Item;
             XYZ xyzb = (XYZ)((Value.Container)args[1]).Item;
 
-            return Value.NewContainer(xyza + xyzb);
+            XYZ pt = xyza + xyzb;
+            pts.Add(pt);
+            return Value.NewContainer(pt);
         }
     }
 
@@ -260,12 +326,12 @@ namespace Dynamo.Nodes
     {
         public dynUVGrid()
         {
-            InPortData.Add(new PortData("dom", "A domain.", typeof(object)));
-            InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(double)));
-            InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(double)));
-            OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(XYZ)));
+            InPortData.Add(new PortData("dom", "A domain.", typeof(Value.List)));
+            InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(Value.Number)));
+            InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(Value.List)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -301,19 +367,19 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("UV Random Distribution")]
+    [NodeName("UV Random")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates a grid of UVs froma domain.")]
     public class dynUVRandom: dynNodeWithOneOutput
     {
         public dynUVRandom()
         {
-            InPortData.Add(new PortData("dom", "A domain.", typeof(object)));
-            InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(double)));
-            InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(double)));
-            OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(XYZ)));
+            InPortData.Add(new PortData("dom", "A domain.", typeof(Value.List)));
+            InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(Value.Number)));
+            InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(Value.List)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -358,18 +424,18 @@ namespace Dynamo.Nodes
     {
         public dynReferencePtGrid()
         {
-            InPortData.Add(new PortData("x-count", "Number in the X direction.", typeof(double)));
-            InPortData.Add(new PortData("y-count", "Number in the Y direction.", typeof(double)));
-            InPortData.Add(new PortData("z-count", "Number in the Z direction.", typeof(double)));
-            InPortData.Add(new PortData("x0", "Starting X Coordinate", typeof(double)));
-            InPortData.Add(new PortData("y0", "Starting Y Coordinate", typeof(double)));
-            InPortData.Add(new PortData("z0", "Starting Z Coordinate", typeof(double)));
-            InPortData.Add(new PortData("x-space", "The X spacing.", typeof(double)));
-            InPortData.Add(new PortData("y-space", "The Y spacing.", typeof(double)));
-            InPortData.Add(new PortData("z-space", "The Z spacing.", typeof(double)));
-            OutPortData.Add(new PortData("XYZs", "List of XYZs in the grid", typeof(XYZ)));
+            InPortData.Add(new PortData("x-count", "Number in the X direction.", typeof(Value.Number)));
+            InPortData.Add(new PortData("y-count", "Number in the Y direction.", typeof(Value.Number)));
+            InPortData.Add(new PortData("z-count", "Number in the Z direction.", typeof(Value.Number)));
+            InPortData.Add(new PortData("x0", "Starting X Coordinate", typeof(Value.Number)));
+            InPortData.Add(new PortData("y0", "Starting Y Coordinate", typeof(Value.Number)));
+            InPortData.Add(new PortData("z0", "Starting Z Coordinate", typeof(Value.Number)));
+            InPortData.Add(new PortData("x-space", "The X spacing.", typeof(Value.Number)));
+            InPortData.Add(new PortData("y-space", "The Y spacing.", typeof(Value.Number)));
+            InPortData.Add(new PortData("z-space", "The Z spacing.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("XYZs", "List of XYZs in the grid", typeof(Value.List)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -414,20 +480,18 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ Array Along Curve")]
+    [NodeName("XYZ Array On Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates a list of XYZs along a curve.")]
-    public class dynXYZArrayAlongCurve: dynNodeWithOneOutput
+    public class dynXYZArrayAlongCurve : dynXYZBase
     {
         public dynXYZArrayAlongCurve()
         {
-            InPortData.Add(new PortData("curve", "Curve", typeof(CurveElement)));
-            InPortData.Add(new PortData("count", "Number", typeof(double))); // just divide equally for now, dont worry about spacing and starting point
-            //InPortData.Add(new PortData("x0", "Starting Coordinate", typeof(double)));
-            //InPortData.Add(new PortData("spacing", "The spacing.", typeof(double)));
-            OutPortData.Add(new PortData("XYZs", "List of XYZs in the array", typeof(XYZ)));
+            InPortData.Add(new PortData("curve", "Curve", typeof(Value.Container)));
+            InPortData.Add(new PortData("count", "Number", typeof(Value.Number))); // just divide equally for now, dont worry about spacing and starting point
+            OutPortData.Add(new PortData("XYZs", "List of XYZs in the array", typeof(Value.List)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -446,16 +510,20 @@ namespace Dynamo.Nodes
             Curve crvRef = c.GeometryCurve;
             double t = 0;
 
+            pts.Clear();
+
             for (int xCount = 0; xCount < xi; xCount++)
             {
                 t = xCount / xi; // create normalized curve param by dividing current number by total number
+                XYZ pt = crvRef.Evaluate(t, true);
                 result = FSharpList<Value>.Cons(
                     Value.NewContainer(
-                        crvRef.Evaluate(t, true) // pass in parameter on curve and the bool to say yes this is normalized, Curve.Evaluate passes back out an XYZ that we store in this list
+                         pt// pass in parameter on curve and the bool to say yes this is normalized, Curve.Evaluate passes back out an XYZ that we store in this list
                     ),
                     result
                 );
                 //x += xs;
+                pts.Add(pt);
             }
 
             return Value.NewList(
@@ -471,11 +539,11 @@ namespace Dynamo.Nodes
     {
         public dynPlane()
         {
-            InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(XYZ)));
-            InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
-            OutPortData.Add(new PortData("P", "Plane", typeof(Plane)));
+            InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("P", "Plane", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -498,10 +566,10 @@ namespace Dynamo.Nodes
     {
         public dynSketchPlane()
         {
-            InPortData.Add(new PortData("plane", "The plane in which to define the sketch.", typeof(object))); // SketchPlane can accept Plane, Reference or PlanarFace
-            OutPortData.Add(new PortData("sp", "SketchPlane", typeof(dynSketchPlane)));
+            InPortData.Add(new PortData("plane", "The plane in which to define the sketch.", typeof(Value.Container))); // SketchPlane can accept Plane, Reference or PlanarFace
+            OutPortData.Add(new PortData("sp", "SketchPlane", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -600,17 +668,17 @@ namespace Dynamo.Nodes
     [NodeName("Line")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Creates a geometric line.")]
-    public class dynLineBound: dynNodeWithOneOutput
+    public class dynLineBound: dynCurveBase
     {
         public dynLineBound()
         {
-            InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("end", "End XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("end", "End XYZ", typeof(Value.Container)));
             //InPortData.Add(new PortData("bound?", "Boolean: Is this line bounded?", typeof(bool)));
 
-            OutPortData.Add(new PortData("line", "Line", typeof(Line)));
+            OutPortData.Add(new PortData("line", "Line", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -637,23 +705,25 @@ namespace Dynamo.Nodes
 
             }
 
+            crvs.Add(line);
+
             return Value.NewContainer(line);
         }
     }
 
-    [NodeName("Arc by Start Middle End")]
+    [NodeName("Arc By Start Mid End")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
-    public class dynArcStartMiddleEnd: dynNodeWithOneOutput
+    public class dynArcStartMiddleEnd : dynCurveBase
     {
         public dynArcStartMiddleEnd()
         {
-            InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("mid", "XYZ on Curve", typeof(XYZ)));
-            InPortData.Add(new PortData("end", "End XYZ", typeof(XYZ)));
-            OutPortData.Add(new PortData("arc", "Arc", typeof(Arc)));
+            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("mid", "XYZ on Curve", typeof(Value.Container)));
+            InPortData.Add(new PortData("end", "End XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("arc", "Arc", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -680,24 +750,27 @@ namespace Dynamo.Nodes
                 );
 
             }
+
+            crvs.Add(a);
+
             return Value.NewContainer(a);
         }
     }
 
-    [NodeName("Arc by Center Point")]
+    [NodeName("Arc by Ctr Pt")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
-    public class dynArcCenter: dynNodeWithOneOutput
+    public class dynArcCenter : dynCurveBase
     {
         public dynArcCenter()
         {
-            InPortData.Add(new PortData("center", "Center XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("radius", "Radius", typeof(double)));
-            InPortData.Add(new PortData("start", "Start Param", typeof(double)));
-            InPortData.Add(new PortData("end", "End Param", typeof(double)));
-            OutPortData.Add(new PortData("arc", "Arc", typeof(Arc)));
+            InPortData.Add(new PortData("center", "Center XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("radius", "Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("start", "Start Param", typeof(Value.Number)));
+            InPortData.Add(new PortData("end", "End Param", typeof(Value.Number)));
+            OutPortData.Add(new PortData("arc", "Arc", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -722,22 +795,24 @@ namespace Dynamo.Nodes
                 );
             }
 
+            crvs.Add(a);
+
             return Value.NewContainer(a);
         }
     }
 
-    [NodeName("Curve Transformed")]
+    [NodeName("Transform Crv")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
-    public class dynCurveTransformed: dynNodeWithOneOutput
+    public class dynCurveTransformed: dynCurveBase
     {
         public dynCurveTransformed()
         {
-            InPortData.Add(new PortData("cv", "Curve(Curve)", typeof(object)));
-            InPortData.Add(new PortData("t", "Transform(Transform)", typeof(object)));
-            OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Curve)));
+            InPortData.Add(new PortData("cv", "Curve(Curve)", typeof(Value.Container)));
+            InPortData.Add(new PortData("t", "Transform(Transform)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
 
@@ -746,22 +821,24 @@ namespace Dynamo.Nodes
             var curve = (Curve)((Value.Container)args[0]).Item;
             var trans = (Transform)((Value.Container)args[1]).Item;
 
-            return Value.NewContainer(curve.get_Transformed(trans));
+            var crvTrans = curve.get_Transformed(trans);
+            crvs.Add(crvTrans);
+            return Value.NewContainer(crvTrans);
         }
     }
 
     [NodeName("Circle")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Creates a geometric circle.")]
-    public class dynCircle: dynNodeWithOneOutput
+    public class dynCircle: dynCurveBase
     {
         public dynCircle()
         {
-            InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("rad", "Radius", typeof(double)));
-            OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(CurveLoop)));
+            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("rad", "Radius", typeof(Value.Number)));
+            OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         const double RevitPI = 3.14159265358979;
@@ -785,6 +862,8 @@ namespace Dynamo.Nodes
                 circle = dynRevitSettings.Doc.Application.Application.Create.NewArc((XYZ)((ReferencePoint)ptA).Position, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
             }
 
+            crvs.Add(circle);
+
             return Value.NewContainer(circle);
         }
     }
@@ -792,16 +871,16 @@ namespace Dynamo.Nodes
     [NodeName("Ellipse")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Creates a geometric ellipse.")]
-    public class dynEllipse: dynNodeWithOneOutput
+    public class dynEllipse: dynCurveBase
     {
         public dynEllipse()
         {
-            InPortData.Add(new PortData("center", "Center XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("radX", "Major Radius", typeof(double)));
-            InPortData.Add(new PortData("radY", "Minor Radius", typeof(double)));
-            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Ellipse)));
+            InPortData.Add(new PortData("center", "Center XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("radX", "Major Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("radY", "Minor Radius", typeof(Value.Number)));
+            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         const double RevitPI = 3.14159265358979;
@@ -830,25 +909,27 @@ namespace Dynamo.Nodes
                 );
             }
 
+            crvs.Add(ell);
+
             return Value.NewContainer(ell);
         }
     }
 
-    [NodeName("Elliptical Arc")]
+    [NodeName("Ellipse Arc")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Creates a geometric elliptical arc. Start and End Values may be between 0 and 2*PI in Radians")]
-    public class dynEllipticalArc: dynNodeWithOneOutput
+    public class dynEllipticalArc: dynCurveBase
     {
         public dynEllipticalArc()
         {
-            InPortData.Add(new PortData("center", "Center XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("radX", "Major Radius", typeof(double)));
-            InPortData.Add(new PortData("radY", "Minor Radius", typeof(double)));
-            InPortData.Add(new PortData("start", "Start Param", typeof(double)));
-            InPortData.Add(new PortData("end", "End Param", typeof(double)));
-            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Ellipse)));
+            InPortData.Add(new PortData("center", "Center XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("radX", "Major Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("radY", "Minor Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("start", "Start Param", typeof(Value.Number)));
+            InPortData.Add(new PortData("end", "End Param", typeof(Value.Number)));
+            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -876,6 +957,9 @@ namespace Dynamo.Nodes
                (XYZ)((ReferencePoint)ptA).Position, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
                 );
             }
+
+            crvs.Add(ell);
+
             return Value.NewContainer(ell);
         }
     }
@@ -887,11 +971,11 @@ namespace Dynamo.Nodes
     {
         public dynUV()
         {
-            InPortData.Add(new PortData("U", "U", typeof(double)));
-            InPortData.Add(new PortData("V", "V", typeof(double)));
-            OutPortData.Add(new PortData("uv", "UV", typeof(UV)));
+            InPortData.Add(new PortData("U", "U", typeof(Value.Number)));
+            InPortData.Add(new PortData("V", "V", typeof(Value.Number)));
+            OutPortData.Add(new PortData("uv", "UV", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -905,18 +989,18 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Line Vector")]
+    [NodeName("Line From Vector")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates a line in the direction of an XYZ normal.")]
     public class dynLineVectorfromXYZ: dynNodeWithOneOutput
     {
         public dynLineVectorfromXYZ()
         {
-            InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(XYZ)));
-            InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
-            OutPortData.Add(new PortData("C", "Curve", typeof(CurveElement)));
+            InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("C", "Curve", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -961,16 +1045,16 @@ namespace Dynamo.Nodes
     [NodeName("Hermite Spline")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Creates a geometric hermite spline.")]
-    public class dynHermiteSpline: dynNodeWithOneOutput
+    public class dynHermiteSpline: dynCurveBase
     {
         HermiteSpline hs;
 
         public dynHermiteSpline()
         {
-            InPortData.Add(new PortData("xyzs", "List of pts.(List XYZ)", typeof(object)));
-            OutPortData.Add(new PortData("ell", "Ellipse", typeof(HermiteSpline)));
+            InPortData.Add(new PortData("xyzs", "List of pts.(List XYZ)", typeof(Value.List)));
+            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -994,6 +1078,8 @@ namespace Dynamo.Nodes
             {
                 hs = dynRevitSettings.Doc.Application.Application.Create.NewHermiteSpline(ctrlPts, false);
             }
+
+            crvs.Add(hs);
 
             return Value.NewContainer(hs);
         }
