@@ -8,26 +8,39 @@ using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.Selection;
+using HelixToolkit.Wpf;
 
 namespace Dynamo.Controls
 {
     public class Watch3DFullscreenViewModel : dynViewModelBase
     {
         dynWorkspaceViewModel _parentWorkspace;
-        WatchViewFullscreen _fullscreenView = null;
+        //WatchViewFullscreen _fullscreenView = null;
+
+        //protected PointsVisual3D _points = new PointsVisual3D();
+        //protected LinesVisual3D _lines = new LinesVisual3D();
+        protected List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
 
         public Point3DCollection _pointsCache = new Point3DCollection();
         public Point3DCollection _linesCache = new Point3DCollection();
-
-        public WatchViewFullscreen FullscreenView
+        
+        public Point3DCollection HelixPoints
         {
-            get
-            {
-                return _fullscreenView;
-            }
+            get{return _pointsCache;}
             set
             {
-                _fullscreenView = value;
+                _pointsCache = value;
+                RaisePropertyChanged("Points");
+            }
+        }
+
+        public Point3DCollection HelixLines
+        {
+            get { return _linesCache; }
+            set
+            {
+                _linesCache = value;
+                RaisePropertyChanged("Lines");
             }
         }
 
@@ -42,8 +55,8 @@ namespace Dynamo.Controls
             if (!_parentWorkspace.IsCurrentSpace)
                 return;
 
-            if (_fullscreenView == null)
-                return;
+            //if (_fullscreenView == null)
+            //    return;
 
             List<IDrawable> drawables = new List<IDrawable>();
 
@@ -89,8 +102,8 @@ namespace Dynamo.Controls
                 //}
             }
 
-            _fullscreenView.SetVisiblePoints(points);
-            _fullscreenView.SetVisibleLines(lines);
+            SetVisiblePoints(points);
+            SetVisibleLines(lines);
 
             //_pointsCache = points;
             //_linesCache = lines;
@@ -114,6 +127,24 @@ namespace Dynamo.Controls
             //}
         }
 
+        public void SetVisiblePoints(Point3DCollection pointPoints)
+        {
+            lock (_pointsCache)
+            {
+                _pointsCache = new Point3DCollection(pointPoints);
+            }
 
+            //_requiresRedraw = true;
+        }
+
+        public void SetVisibleLines(Point3DCollection linePoints)
+        {
+            lock (_linesCache)
+            {
+                _linesCache = new Point3DCollection(linePoints);
+            }
+
+            //_requiresRedraw = true;
+        }
     }
 }

@@ -39,9 +39,9 @@ namespace Dynamo.Controls
 
         System.Windows.Point _rightMousePoint;
 
-        protected PointsVisual3D _points = new PointsVisual3D();
-        protected LinesVisual3D _lines = new LinesVisual3D();
-        protected List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
+        //protected PointsVisual3D _points = new PointsVisual3D();
+        //protected LinesVisual3D _lines = new LinesVisual3D();
+        //protected List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
 
         Point3DCollection _pointsCache = new Point3DCollection();
         Point3DCollection _linesCache = new Point3DCollection();
@@ -57,60 +57,16 @@ namespace Dynamo.Controls
             return watch_view;
         }
 
-        public void SetVisiblePoints(Point3DCollection pointPoints)
-        {
-            lock (_pointsCache)
-            {
-                _pointsCache = new Point3DCollection(pointPoints);
-            }
-
-            _requiresRedraw = true;
-        }
-
-        public void SetVisibleLines(Point3DCollection linePoints)
-        {
-            lock (_linesCache)
-            {
-                _linesCache = new Point3DCollection(linePoints);
-            }
-            
-            _requiresRedraw = true;
-        }
-
-        public PointsVisual3D HelixPoints
-        {
-            get
-            {
-                return _points;
-            }
-            set
-            {
-                _points = value;
-            }
-        }
-
-        public LinesVisual3D HelixLines
-        {
-            get
-            {
-                return _lines;
-            }
-            set
-            {
-                _lines = value;
-            }
-        }
-
         void WatchViewFullscreen_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.FullscreenView = this;
+            //ViewModel.FullscreenView = this;
         }
 
         public WatchViewFullscreen()
         {
             InitializeComponent();
 
-            watch_view.DataContext = this;
+            //watch_view.DataContext = this;
 
             // The DataContext isn't set in the constructor, so set a callback
             this.Loaded += new RoutedEventHandler(WatchViewFullscreen_Loaded);
@@ -126,13 +82,13 @@ namespace Dynamo.Controls
 
             MainContextMenu.Items.Add(mi);
 
-            HelixPoints = new PointsVisual3D { Color = Colors.Red, Size = 6 };
-            HelixLines = new LinesVisual3D { Color = Colors.Blue, Thickness = 1 };
+            //HelixPoints = new PointsVisual3D { Color = Colors.Red, Size = 6 };
+            //HelixLines = new LinesVisual3D { Color = Colors.Blue, Thickness = 1 };
 
-            watch_view.Children.Add(_lines);
-            watch_view.Children.Add(_points);
+            //watch_view.Children.Add(_lines);
+            //watch_view.Children.Add(_points);
 
-            watch_view.Children.Add(new DefaultLights());
+            //watch_view.Children.Add(new DefaultLights());
 
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             Canvas.SetZIndex(backgroundRect, -10);
@@ -146,7 +102,7 @@ namespace Dynamo.Controls
 
             inputGrid.Children.Add(backgroundRect);
 
-            CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
+            //CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)
@@ -180,7 +136,6 @@ namespace Dynamo.Controls
             }
         }
 
-
         public void SetLatestDrawables(List<IDrawable> drawables)
         {
             _drawables = drawables;
@@ -188,16 +143,16 @@ namespace Dynamo.Controls
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
-            if (!_requiresRedraw)
-                return;
+            //if (!_requiresRedraw)
+            //    return;
 
-            lock (_points)
-            {
-                lock (_pointsCache)
-                {
-                    _points.Points = _pointsCache;
-                }
-            }
+            //lock (_points)
+            //{
+            //    lock (_pointsCache)
+            //    {
+            //        _points.Points = _pointsCache;
+            //    }
+            //}
 
             //lock (_lines)
             //{
