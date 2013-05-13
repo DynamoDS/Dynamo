@@ -15,7 +15,7 @@
     <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="4a65b7d1-b17a-4afc-a25c-cafa87e1422e" nickname="Number Slider" x="314" y="609.5">
       <System.Double value="40.9090909090909" min="0" max="100" />
     </Dynamo.Elements.dynDoubleSliderInput>
-    <Dynamo.Elements.dyn3DPreview type="Dynamo.Elements.dyn3DPreview" guid="35f32e64-b677-4be8-9886-f139b9c4a091" nickname="Watch 3D" x="731.923076923077" y="13.6538461538462" />
+    <Dynamo.Elements.dynWatch3D type="Dynamo.Elements.dynWatch3D" guid="35f32e64-b677-4be8-9886-f139b9c4a091" nickname="Watch 3D" x="731.923076923077" y="13.6538461538462" />
     <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="9c74f383-9e66-4599-a320-d2a095b0cebf" nickname="List" x="477.173076923077" y="148.25">
       <Input name="index0" />
       <Input name="index1" />

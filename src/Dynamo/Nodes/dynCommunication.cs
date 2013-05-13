@@ -35,8 +35,8 @@ namespace Dynamo.Nodes
     {
         public dynWebRequest()
         {
-            InPortData.Add(new PortData("url", "A URL to query.", typeof(dynString)));
-            OutPortData.Add(new PortData("str", "The string returned from the web request.", typeof(dynString)));
+            InPortData.Add(new PortData("url", "A URL to query.", typeof(Value.String)));
+            OutPortData.Add(new PortData("str", "The string returned from the web request.", typeof(Value.String)));
             RegisterAllPorts();
         }
 
@@ -76,9 +76,9 @@ namespace Dynamo.Nodes
     {
         public dynUDPListener()
         {
-            InPortData.Add(new Connectors.PortData("exec", "Execution Interval", typeof(object)));
+            InPortData.Add(new Connectors.PortData("exec", "Execution Interval", typeof(Value.Number)));
             InPortData.Add(new Connectors.PortData("udp port", "A UDP port to listen to.", typeof(object)));
-            OutPortData.Add(new Connectors.PortData("str", "The string returned from the web request.", typeof(object)));
+            OutPortData.Add(new Connectors.PortData("str", "The string returned from the web request.", typeof(Value.String)));
 
             RegisterAllPorts();
         }

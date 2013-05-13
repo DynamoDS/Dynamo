@@ -1,6 +1,6 @@
 <dynWorkspace X="0" Y="0">
   <dynElements>
-    <Dynamo.Nodes.dyn3DPreview type="Dynamo.Nodes.dyn3DPreview" guid="09119126-c8e0-4971-9178-4d872b1c0b25" nickname="Watch 3D" x="1309.93057193069" y="10.8333333333333" />
+    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="09119126-c8e0-4971-9178-4d872b1c0b25" nickname="Watch 3D" x="1309.93057193069" y="10.8333333333333" />
     <Dynamo.Nodes.dynXYZScale type="Dynamo.Nodes.dynXYZScale" guid="bb3dbb82-fe6d-454b-b962-3640df6d90c8" nickname="XYZ Scale" x="254.968587980048" y="173.651534038046" />
     <Dynamo.Nodes.dynLineBound type="Dynamo.Nodes.dynLineBound" guid="1d5dc974-1bf1-47cd-b4a0-3ff2ce803757" nickname="Line" x="851.688145542759" y="5" />
     <Dynamo.Nodes.dynXYZZero type="Dynamo.Nodes.dynXYZZero" guid="509ad021-cc1d-4146-8cfc-61fa4929be0a" nickname="XYZ Zero" x="306.935971739051" y="12.5025470609168" />

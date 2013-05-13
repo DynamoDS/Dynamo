@@ -26,8 +26,8 @@ namespace Dynamo.Nodes
     {
         public dynColorBrightness()
         {
-            InPortData.Add(new PortData("c", "The color", typeof(object)));
-            OutPortData.Add(new PortData("mag", "The magnitude of the color's vector", typeof(double)));
+            InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
+            OutPortData.Add(new PortData("mag", "The magnitude of the color's vector", typeof(Value.Number)));
 
             RegisterAllPorts();
         }

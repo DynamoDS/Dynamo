@@ -44,15 +44,15 @@ namespace Dynamo.Nodes
 
         public dynDynamicRelaxation()
         {
-            InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(object)));
-            InPortData.Add(new PortData("curves", "The curves to make into spring chains", typeof(object)));
-            InPortData.Add(new PortData("d", "Dampening.", typeof(double)));
-            InPortData.Add(new PortData("s", "Spring Constant.", typeof(double)));
-            InPortData.Add(new PortData("r", "Rest Length.", typeof(double)));
-            InPortData.Add(new PortData("m", "Nodal Mass.", typeof(double)));
-            InPortData.Add(new PortData("numX", "Number of Particles in X.", typeof(int)));
-            InPortData.Add(new PortData("numY", "Number of Particles in Y.", typeof(int)));
-            InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(double)));
+            InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(Value.List)));
+            InPortData.Add(new PortData("curves", "The curves to make into spring chains", typeof(Value.List)));
+            InPortData.Add(new PortData("d", "Dampening.", typeof(Value.Number)));
+            InPortData.Add(new PortData("s", "Spring Constant.", typeof(Value.Number)));
+            InPortData.Add(new PortData("r", "Rest Length.", typeof(Value.Number)));
+            InPortData.Add(new PortData("m", "Nodal Mass.", typeof(Value.Number)));
+            InPortData.Add(new PortData("numX", "Number of Particles in X.", typeof(Value.Number)));
+            InPortData.Add(new PortData("numY", "Number of Particles in Y.", typeof(Value.Number)));
+            InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(Value.Number)));
 
             OutPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
             
@@ -289,16 +289,16 @@ namespace Dynamo.Nodes
 
         public dynDynamicRelaxationOnFace()
         {
-            InPortData.Add(new PortData("face", "The face to use for distribution of particles.", typeof(object)));
-            InPortData.Add(new PortData("d", "Dampening.", typeof(double)));
-            InPortData.Add(new PortData("s", "Spring Constant.", typeof(double)));
-            InPortData.Add(new PortData("r", "Rest Length.", typeof(double)));
-            InPortData.Add(new PortData("m", "Nodal Mass.", typeof(double)));
-            InPortData.Add(new PortData("numU", "Number of Particles in U.", typeof(int)));
-            InPortData.Add(new PortData("numV", "Number of Particles in V.", typeof(int)));
-            InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(double)));
+            InPortData.Add(new PortData("face", "The face to use for distribution of particles.", typeof(Value.Container)));
+            InPortData.Add(new PortData("d", "Dampening.", typeof(Value.Number)));
+            InPortData.Add(new PortData("s", "Spring Constant.", typeof(Value.Number)));
+            InPortData.Add(new PortData("r", "Rest Length.", typeof(Value.Number)));
+            InPortData.Add(new PortData("m", "Nodal Mass.", typeof(Value.Number)));
+            InPortData.Add(new PortData("numU", "Number of Particles in U.", typeof(Value.Number)));
+            InPortData.Add(new PortData("numV", "Number of Particles in V.", typeof(Value.Number)));
+            InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(Value.Number)));
 
-            OutPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
+            OutPortData.Add(new PortData("ps", "Particle System", typeof(Value.Container)));
             RegisterAllPorts();
 
             particleSystem = new ParticleSystem();
@@ -375,10 +375,10 @@ namespace Dynamo.Nodes
     {
         public dynDynamicRelaxationStep()
         {
-            InPortData.Add(new PortData("ps", "Particle System to simulate", typeof(ParticleSystem)));
-            InPortData.Add(new PortData("step", "Time to step.", typeof(double)));
-            InPortData.Add(new PortData("exec", "Execution interval.", typeof(object)));
-            OutPortData.Add(new PortData("geom", "Relaxation data.", typeof(object)));
+            InPortData.Add(new PortData("ps", "Particle System to simulate", typeof(Value.Container)));
+            InPortData.Add(new PortData("step", "Time to step.", typeof(Value.Number)));
+            InPortData.Add(new PortData("exec", "Execution interval.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("geom", "Relaxation data.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -402,8 +402,8 @@ namespace Dynamo.Nodes
     {
         public dynXYZsFromPS()
         {
-            InPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
-            OutPortData.Add(new PortData("XYZs", "XYZs.", typeof(object)));
+            InPortData.Add(new PortData("ps", "Particle System", typeof(Value.Container)));
+            OutPortData.Add(new PortData("XYZs", "XYZs.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -436,8 +436,8 @@ namespace Dynamo.Nodes
     {
         public dynCurvesFromPS()
         {
-            InPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
-            OutPortData.Add(new PortData("curves", "geometry curves.", typeof(object)));
+            InPortData.Add(new PortData("ps", "Particle System", typeof(Value.Container)));
+            OutPortData.Add(new PortData("curves", "geometry curves.", typeof(Value.List)));
 
             RegisterAllPorts();
         }

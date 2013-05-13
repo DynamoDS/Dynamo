@@ -32,8 +32,8 @@ namespace Dynamo.Nodes
     {
         public dynDraftingView()
         {
-            InPortData.Add(new PortData("name", "Name", typeof(string)));
-            OutPortData.Add(new PortData("v", "Drafting View", typeof(dynDraftingView)));
+            InPortData.Add(new PortData("name", "Name", typeof(Value.String)));
+            OutPortData.Add(new PortData("v", "Drafting View", typeof(Value.Container)));
 
             RegisterAllPorts();
         }

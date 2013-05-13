@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Media.Media3D;
+using System.Collections.ObjectModel;
 
 using Dynamo.Connectors;
 using Dynamo.Nodes;
@@ -15,32 +16,27 @@ namespace Dynamo.Controls
     public class Watch3DFullscreenViewModel : dynViewModelBase
     {
         dynWorkspaceViewModel _parentWorkspace;
-        //WatchViewFullscreen _fullscreenView = null;
-
-        //protected PointsVisual3D _points = new PointsVisual3D();
-        //protected LinesVisual3D _lines = new LinesVisual3D();
         protected List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
+        public ObservableCollection<Point3D> _pointsCache = new ObservableCollection<Point3D>();
+        public ObservableCollection<Point3D> _linesCache = new ObservableCollection<Point3D>();
 
-        public Point3DCollection _pointsCache = new Point3DCollection();
-        public Point3DCollection _linesCache = new Point3DCollection();
-        
-        public Point3DCollection HelixPoints
+        public ObservableCollection<Point3D> HelixPoints
         {
             get{return _pointsCache;}
             set
             {
                 _pointsCache = value;
-                RaisePropertyChanged("Points");
+                RaisePropertyChanged("HelixPoints");
             }
         }
 
-        public Point3DCollection HelixLines
+        public ObservableCollection<Point3D> HelixLines
         {
             get { return _linesCache; }
             set
             {
                 _linesCache = value;
-                RaisePropertyChanged("Lines");
+                RaisePropertyChanged("HelixLines");
             }
         }
 
@@ -54,9 +50,6 @@ namespace Dynamo.Controls
         {
             if (!_parentWorkspace.IsCurrentSpace)
                 return;
-
-            //if (_fullscreenView == null)
-            //    return;
 
             List<IDrawable> drawables = new List<IDrawable>();
 
@@ -88,12 +81,12 @@ namespace Dynamo.Controls
 
                 foreach (Point3D p in rd.points)
                 {
-                    points.Add(p);
+                    _pointsCache.Add(p);
                 }
 
                 foreach (Point3D p in rd.lines)
                 {
-                    lines.Add(p);
+                    _linesCache.Add(p);
                 }
 
                 //foreach (Mesh3D mesh in rd.meshes)
@@ -102,14 +95,8 @@ namespace Dynamo.Controls
                 //}
             }
 
-            SetVisiblePoints(points);
-            SetVisibleLines(lines);
-
-            //_pointsCache = points;
-            //_linesCache = lines;
-
-            //_fullscreenView.HelixView().Children.Clear();
-
+            RaisePropertyChanged("HelixPoints");
+            RaisePropertyChanged("HelixLines");
 
             //// remove old meshes from the renderer
             //foreach (MeshVisual3D mesh in _meshes)
@@ -125,26 +112,6 @@ namespace Dynamo.Controls
             //    _watchView.watch_view.Children.Add(vismesh);
             //    _meshes.Add(vismesh);
             //}
-        }
-
-        public void SetVisiblePoints(Point3DCollection pointPoints)
-        {
-            lock (_pointsCache)
-            {
-                _pointsCache = new Point3DCollection(pointPoints);
-            }
-
-            //_requiresRedraw = true;
-        }
-
-        public void SetVisibleLines(Point3DCollection linePoints)
-        {
-            lock (_linesCache)
-            {
-                _linesCache = new Point3DCollection(linePoints);
-            }
-
-            //_requiresRedraw = true;
         }
     }
 }

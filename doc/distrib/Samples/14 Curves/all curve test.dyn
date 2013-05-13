@@ -23,7 +23,7 @@
     </Dynamo.Elements.dynDoubleInput>
     <Dynamo.Elements.dynPi type="Dynamo.Elements.dynPi" guid="2d88f843-0e22-4a3b-956b-9d8f479e0e42" nickname="π" x="49.5" y="691.5" />
     <Dynamo.Elements.dynWatch type="Dynamo.Elements.dynWatch" guid="33eb9c16-4712-43b3-9da9-1e052a0c4545" nickname="Watch" x="339.25" y="788.5" />
-    <Dynamo.Elements.dyn3DPreview type="Dynamo.Elements.dyn3DPreview" guid="9487cc8c-ed73-4aa6-a914-730cd8a86a0b" nickname="Watch 3D" x="980.538461538462" y="452.307692307692" />
+    <Dynamo.Elements.dynWatch3D type="Dynamo.Elements.dynWatch3D" guid="9487cc8c-ed73-4aa6-a914-730cd8a86a0b" nickname="Watch 3D" x="980.538461538462" y="452.307692307692" />
     <Dynamo.Elements.dynXYZZero type="Dynamo.Elements.dynXYZZero" guid="9ab26662-a766-4617-957a-520f3abfcfc3" nickname="XYZ Zero" x="3.75" y="927" />
     <Dynamo.Elements.dynXYZFromReferencePoint type="Dynamo.Elements.dynXYZFromReferencePoint" guid="517891e4-a934-4cdc-8154-ec63438bf901" nickname="XYZ From Ref Point" x="545" y="33.5" />
     <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="c3210f35-0371-473c-a3d4-63009d461600" nickname="Number" x="52" y="616.75">

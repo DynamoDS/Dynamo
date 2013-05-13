@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
         public dynTransaction()
         {
             InPortData.Add(new PortData("expr", "Expression to run in a transaction.", typeof(object)));
-            OutPortData.Add(new PortData("result", "Result of the expression.", typeof(object)));
+            OutPortData.Add(new PortData("result", "Result of the expression.", typeof(Value.List)));
 
             RegisterAllPorts();
         }

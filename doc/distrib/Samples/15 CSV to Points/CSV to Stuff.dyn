@@ -14,7 +14,7 @@
     <Dynamo.Nodes.dynFamilyTypeSelector type="Dynamo.Nodes.dynFamilyTypeSelector" guid="579ab4b8-6711-4cf7-8740-06f1e15864a3" nickname="Family Type Selector" x="1783.95833333333" y="263.333333333333" index="5" />
     <Dynamo.Nodes.dynFamilyInstanceCreatorXYZ type="Dynamo.Nodes.dynFamilyInstanceCreatorXYZ" guid="f72d164d-b1ea-4fe1-ae68-2b2f5dc52449" nickname="Family Instance Creator" x="1863.74999999999" y="145.625" />
     <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="96c68b05-fe68-4127-93a8-6dafc70576be" nickname="Reference Point" x="1864.46666666667" y="20.8777777777778" />
-    <Dynamo.Nodes.dyn3DPreview type="Dynamo.Nodes.dyn3DPreview" guid="ebcfc192-76df-4f33-b5a1-ea2414166fd5" nickname="Watch 3D" x="965.94814814815" y="25.7543209876548" />
+    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="ebcfc192-76df-4f33-b5a1-ea2414166fd5" nickname="Watch 3D" x="965.94814814815" y="25.7543209876548" />
     <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="5b3baf3e-1147-453b-82ee-43b156060664" nickname="Parse List of Lists" x="756.25" y="23.9583333333337">
       <ID value="1f47466b-a6c8-49d1-a54e-eb901d971738" />
       <Name value="Parse List of Lists" />

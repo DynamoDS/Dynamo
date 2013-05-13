@@ -58,8 +58,8 @@ namespace Dynamo.Nodes
         {
             handler = new FileSystemEventHandler(watcher_FileChanged);
 
-            InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
-            OutPortData.Add(new PortData("contents", "File contents", typeof(string)));
+            InPortData.Add(new PortData("path", "Path to the file", typeof(Value.String)));
+            OutPortData.Add(new PortData("contents", "File contents", typeof(Value.String)));
 
             //NodeUI.RegisterInputsAndOutput();
         }
@@ -261,9 +261,9 @@ namespace Dynamo.Nodes
     {
         public dynFileWriter()
         {
-            InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
-            InPortData.Add(new PortData("text", "Text to be written", typeof(string)));
-            OutPortData.Add(new PortData("success?", "Whether or not the operation was successful.", typeof(bool)));
+            InPortData.Add(new PortData("path", "Path to the file", typeof(Value.String)));
+            InPortData.Add(new PortData("text", "Text to be written", typeof(Value.String)));
+            OutPortData.Add(new PortData("success?", "Whether or not the operation was successful.", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -296,9 +296,9 @@ namespace Dynamo.Nodes
     {
         public dynListToCSV()
         {
-            InPortData.Add(new PortData("path", "Filename to write to", typeof(string)));
-            InPortData.Add(new PortData("data", "List of lists to write into CSV", typeof(IList<IList<string>>)));
-            OutPortData.Add(new PortData("success?", "Whether or not the file writing was successful", typeof(bool)));
+            InPortData.Add(new PortData("path", "Filename to write to", typeof(Value.String)));
+            InPortData.Add(new PortData("data", "List of lists to write into CSV", typeof(Value.List)));
+            OutPortData.Add(new PortData("success?", "Whether or not the file writing was successful", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -339,8 +339,8 @@ namespace Dynamo.Nodes
     {
         public dynFileWatcher()
         {
-            InPortData.Add(new PortData("path", "Path to the file to create a watcher for.", typeof(FileWatcher)));
-            OutPortData.Add(new PortData("fw", "Instance of a FileWatcher.", typeof(FileWatcher)));
+            InPortData.Add(new PortData("path", "Path to the file to create a watcher for.", typeof(Value.String)));
+            OutPortData.Add(new PortData("fw", "Instance of a FileWatcher.", typeof (Value.Container)));
 
             RegisterAllPorts();
         }
@@ -359,8 +359,8 @@ namespace Dynamo.Nodes
     {
         public dynFileWatcherChanged()
         {
-            InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
-            OutPortData.Add(new PortData("changed?", "Whether or not the file has been changed.", typeof(bool)));
+            InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("changed?", "Whether or not the file has been changed.", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -381,9 +381,9 @@ namespace Dynamo.Nodes
     {
         public dynFileWatcherWait()
         {
-            InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
-            InPortData.Add(new PortData("limit", "Amount of time (in milliseconds) to wait for an update before failing.", typeof(double)));
-            OutPortData.Add(new PortData("changed?", "True: File was changed. False: Timed out.", typeof(bool)));
+            InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(Value.Container)));
+            InPortData.Add(new PortData("limit", "Amount of time (in milliseconds) to wait for an update before failing.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("changed?", "True: File was changed. False: Timed out.", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -421,8 +421,8 @@ namespace Dynamo.Nodes
     {
         public dynFileWatcherReset()
         {
-            InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
-            OutPortData.Add(new PortData("fw", "Updated watcher.", typeof(FileWatcher)));
+            InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("fw", "Updated watcher.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }

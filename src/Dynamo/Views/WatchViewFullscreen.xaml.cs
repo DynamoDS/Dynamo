@@ -35,16 +35,7 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class WatchViewFullscreen : UserControl
     {
-        private Mutex drawMutex = new Mutex();
-
         System.Windows.Point _rightMousePoint;
-
-        //protected PointsVisual3D _points = new PointsVisual3D();
-        //protected LinesVisual3D _lines = new LinesVisual3D();
-        //protected List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
-
-        Point3DCollection _pointsCache = new Point3DCollection();
-        Point3DCollection _linesCache = new Point3DCollection();
 
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
 
@@ -59,14 +50,12 @@ namespace Dynamo.Controls
 
         void WatchViewFullscreen_Loaded(object sender, RoutedEventArgs e)
         {
-            //ViewModel.FullscreenView = this;
+            
         }
 
         public WatchViewFullscreen()
         {
             InitializeComponent();
-
-            //watch_view.DataContext = this;
 
             // The DataContext isn't set in the constructor, so set a callback
             this.Loaded += new RoutedEventHandler(WatchViewFullscreen_Loaded);
@@ -82,12 +71,6 @@ namespace Dynamo.Controls
 
             MainContextMenu.Items.Add(mi);
 
-            //HelixPoints = new PointsVisual3D { Color = Colors.Red, Size = 6 };
-            //HelixLines = new LinesVisual3D { Color = Colors.Blue, Thickness = 1 };
-
-            //watch_view.Children.Add(_lines);
-            //watch_view.Children.Add(_points);
-
             //watch_view.Children.Add(new DefaultLights());
 
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
@@ -101,8 +84,6 @@ namespace Dynamo.Controls
             backgroundRect.Fill = backgroundBrush;
 
             inputGrid.Children.Add(backgroundRect);
-
-            //CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)
@@ -139,47 +120,6 @@ namespace Dynamo.Controls
         public void SetLatestDrawables(List<IDrawable> drawables)
         {
             _drawables = drawables;
-        }
-
-        void CompositionTarget_Rendering(object sender, EventArgs e)
-        {
-            //if (!_requiresRedraw)
-            //    return;
-
-            //lock (_points)
-            //{
-            //    lock (_pointsCache)
-            //    {
-            //        _points.Points = _pointsCache;
-            //    }
-            //}
-
-            //lock (_lines)
-            //{
-            //    lock (_linesCache)
-            //    {
-            //        _lines.Points = _linesCache;
-            //    }
-            //}
-
-            //_points.Points = ViewModel._pointsCache;
-            //_lines.Points = ViewModel._linesCache;
-
-            //watch_view.Children.Clear();
-
-            //PointsVisual3D pts = new PointsVisual3D { Color = Colors.Red, Size = 6 };
-            //LinesVisual3D lines = new LinesVisual3D { Color = Colors.Blue, Thickness = 1 };
-
-            //Point3DCollection foo = new Point3DCollection();
-            //foo.Add(new Point3D(1, 2, 3));
-
-            //_points.Points = _pointsCache;
-            //lines.Points = _linesCache;
-
-            //watch_view.Children.Add(pts);
-            //watch_view.Children.Add(lines);
-            
-            _requiresRedraw = false;
         }
 
         public void Render() 

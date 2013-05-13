@@ -110,8 +110,6 @@ namespace Dynamo.Controls
                     e.IsEnabled = enabledDict[e];
             }
 
-            //MVVM: converted to command on view model
-            //ValidateConnections();
             ViewModel.ValidateConnectionsCommand.Execute();
         }
 
