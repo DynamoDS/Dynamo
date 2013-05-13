@@ -61,5 +61,30 @@ namespace Dynamo.Utilities
             }
             return result;
         }
+
+        public static IEnumerable<IEnumerable<T>> LongestSet<T>(this IEnumerable<IEnumerable<T>> sequences)
+        {
+            //find the longest sequences
+            int longest = sequences.Max(x => x.Count());
+
+            //the result is a an enumerable
+            List<List<T>> result = new List<List<T>>();
+
+            for (int i = 0; i < longest; i++)
+            {
+                List<T> inner = new List<T>();
+
+                foreach (var seq in sequences)
+                {
+                    if (i < seq.Count())
+                        inner.Add(seq.ElementAt(i));
+                    else
+                        inner.Add(seq.Last());
+                }
+                result.Add(inner);
+            }
+            
+            return result;
+        } 
     }
 }

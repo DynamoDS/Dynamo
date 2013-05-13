@@ -1156,19 +1156,43 @@ namespace Dynamo.Nodes
                 (this as IClearable).ClearReferences();
 
             List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
+            
+            //create a zip of the incoming args and the port data
+            //to be used for type comparison
+            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
 
-            //if any args are a list, then we will do
-            //a cartesian product and accumulate the results
-            //of the runs. do not do this behavior for the 
-            //dynWatch which expects lists and singles
-            //TODO:find a better way of specifying this
-            //that doesn't tie use to testing for dynWatch
-            if (args.Any(x => x.IsList) && !(this is dynWatch))
+            //if any value is a list whose expectation is a single
+            //do an auto map
+            if (args.Count()> 0 && 
+                portComparison.Any(x => x.Item1 == typeof (Value.List) && x.Item2 != typeof (Value.List)) && 
+                !(this is dynWatch))
             {
-                argSets.AddRange(args.Select(arg => (FSharpList<Value>) (!arg.IsList ? Utils.MakeFSharpList(arg) : ((Value.List) arg).Item)));
-                //argSets.AddRange(args.Select());
+                //if the argument is of the expected type, then
+                //leave it alone otherwise, wrap it in a list
+                int j = 0;
+                foreach (var arg in args)
+                {
+                    //incoming value is list and expecting single
+                    if (portComparison.ElementAt(j).Item1 == typeof (Value.List) && 
+                        portComparison.ElementAt(j).Item2 != typeof (Value.List))
+                    {
+                        //leave as list
+                        argSets.Add(((Value.List)arg).Item);
+                    }
+                    //incoming value is list and expecting list
+                    else
+                    {
+                        //wrap in list
+                        argSets.Add(Utils.MakeFSharpList(arg));
+                    }
+                    j++;
+                }
+
                 //compute the cartesian product of the sets
-                var cartProd = argSets.CartesianProduct();
+                //var cartProd = argSets.CartesianProduct();
+
+                //compute a "longest" set of lists
+                var longest = argSets.LongestSet();
 
                 //setup an empty list to hold results
                 FSharpList<Value> result = FSharpList<Value>.Empty;
@@ -1177,9 +1201,9 @@ namespace Dynamo.Nodes
                 //arguments in the cartesian result. do these
                 //in reverse order so our cons comes out the right
                 //way around
-                for (int i = cartProd.Count()-1; i >= 0; i-- )
+                for (int i = longest.Count() - 1; i >= 0; i--)
                 {
-                    var evalResult = Evaluate(Utils.MakeFSharpList(cartProd.ElementAt(i).ToArray()));
+                    var evalResult = Evaluate(Utils.MakeFSharpList(longest.ElementAt(i).ToArray()));
                     result = FSharpList<Value>.Cons(evalResult, result);
                 }
 
