@@ -39,10 +39,6 @@ namespace Dynamo.Controls
 
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
 
-        private bool _requiresRedraw = false;
-
-        private List<IDrawable> _drawables = new List<IDrawable>();
-
         public HelixViewport3D HelixView()
         {
             return watch_view;
@@ -115,11 +111,6 @@ namespace Dynamo.Controls
             {
                 e.Handled = true;
             }
-        }
-
-        public void SetLatestDrawables(List<IDrawable> drawables)
-        {
-            _drawables = drawables;
         }
 
         public void Render() 
