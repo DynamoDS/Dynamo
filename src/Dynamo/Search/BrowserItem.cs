@@ -21,6 +21,23 @@ namespace Dynamo.Nodes.Search
         /// </summary>
         public abstract string Name { get; }
 
+        /// <summary>
+        /// The height of the element in search
+        /// </summary>
+        private int _height = 30;
+        public int Height
+        {
+            get { return _height; }
+            set
+            {
+                _height = value;
+                RaisePropertyChanged("Height");
+            }
+        }
+
+        /// <summary>
+        /// Is the element expanded in the browser
+        /// </summary>
         private bool _isExpanded = false;
 
         public bool IsExpanded
@@ -77,7 +94,6 @@ namespace Dynamo.Nodes.Search
                     }
                 }
                 item.IsExpanded = endState;
-
             }
 
             public event EventHandler CanExecuteChanged

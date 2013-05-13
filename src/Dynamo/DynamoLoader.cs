@@ -120,17 +120,36 @@ namespace Dynamo.Utilties
 
                 foreach (Type t in loadedTypes)
                 {
+                    
+                    
                     //only load types that are in the right namespace, are not abstract
                     //and have the elementname attribute
                     object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
 
+                    
                     if (IsNodeSubType(t) && attribs.Length > 0)
                     {
                         searchViewModel.Add(t);
                         string typeName = (attribs[0] as NodeNameAttribute).Name;
                         var data = new TypeLoadData(assembly, t);
-                        controller.BuiltInTypesByNickname.Add(typeName, data);
-                        controller.BuiltInTypesByName.Add(t.FullName, data);
+
+                        if (!controller.BuiltInTypesByNickname.ContainsKey(typeName))
+                        {
+                            controller.BuiltInTypesByNickname.Add(typeName, data);
+                        }
+                        else
+                        {
+                            dynSettings.Controller.DynamoViewModel.Log("Duplicate type encountered: " + typeName );
+                        }
+
+                        if (!controller.BuiltInTypesByName.ContainsKey(t.FullName))
+                        {
+                            controller.BuiltInTypesByName.Add(t.FullName, data);
+                        }
+                        else
+                        {
+                            dynSettings.Controller.DynamoViewModel.Log("Duplicate type encountered: " + typeName);
+                        }
                     }
                 }
             }

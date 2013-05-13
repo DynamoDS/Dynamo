@@ -27,7 +27,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Surface Area")]
-    [NodeCategory(BuiltinNodeCategories.MEASUREMENT)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("An element which measures the surface area of a face (f)")]
     public class dynSurfaceArea: dynNodeWithOneOutput
     {
@@ -64,7 +64,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Surface Domain")]
-    [NodeCategory(BuiltinNodeCategories.MEASUREMENT)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("An element which measures the domain of a surface in U and V.")]
     public class dynSurfaceDomain : dynRevitTransactionNodeWithOneOutput
     {
@@ -115,7 +115,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Distance")]
-    [NodeCategory(BuiltinNodeCategories.MEASUREMENT)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Returns the distance between a(XYZ) and b(XYZ).")]
     public class dynXYZDistance: dynNodeWithOneOutput
     {
@@ -138,7 +138,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Height")]
-    [NodeCategory(BuiltinNodeCategories.MEASUREMENT)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Returns the height in z of an element.")]
     public class dynHeight: dynNodeWithOneOutput
     {

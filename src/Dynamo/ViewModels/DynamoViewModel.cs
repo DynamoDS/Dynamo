@@ -1581,7 +1581,7 @@ namespace Dynamo.Controls
                     funName,
                     category.Length > 0
                         ? category
-                        : BuiltinNodeCategories.MISC,
+                        : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES,
                     false, cx, cy
                     );
 

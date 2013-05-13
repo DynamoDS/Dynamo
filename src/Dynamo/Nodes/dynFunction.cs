@@ -273,7 +273,7 @@ namespace Dynamo
         }
 
         [NodeName("Output")]
-        [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+        [NodeCategory(BuiltinNodeCategories.BASE_PRIMITIVES)]
         [NodeDescription("A function output")]
         [IsInteractive(false)]
         public class dynOutput : dynNodeModel
@@ -362,7 +362,7 @@ namespace Dynamo
         }
 
         [NodeName("Variable")]
-        [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+        [NodeCategory(BuiltinNodeCategories.BASE_PRIMITIVES)]
         [NodeDescription("A function variable")]
         [IsInteractive(false)]
         public class dynSymbol : dynNodeModel

@@ -14,7 +14,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Delaunay")]
-    [NodeCategory(BuiltinNodeCategories.TESSELLATION)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("Create a delaunay tesselation from a number of reference points.")]
     public class dynDelaunayTessellation : dynRevitTransactionNodeWithOneOutput
     {

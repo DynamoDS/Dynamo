@@ -33,7 +33,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Select Fam")]
-    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a Family Type from a drop down list.")]
     [IsInteractive(true)]
     public class dynFamilyTypeSelector: dynNodeWithOneOutput
@@ -126,7 +126,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Fam Inst Param")]
-    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a paramter as a string.")]
     [IsInteractive(true)]
     public class dynFamilyInstanceParameterSelector: dynNodeWithOneOutput

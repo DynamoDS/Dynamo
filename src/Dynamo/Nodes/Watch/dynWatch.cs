@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Watch")]
-    [NodeCategory(BuiltinNodeCategories.DEBUG)]
+    [NodeCategory(BuiltinNodeCategories.BASE_DEBUG)]
     [NodeDescription("Visualize the output of node.")]
     [NodeSearchTags("print", "output", "display")]
     public class dynWatch: dynNodeWithOneOutput

@@ -323,6 +323,15 @@ namespace Dynamo.Search
         }
 
         /// <summary>
+        ///     Indicates whether the node browser is visible or not
+        /// </summary>
+        private Visibility _showingBrowser = Visibility.Visible;
+        public Visibility ShowingBrowser
+        { 
+            get { return _showingBrowser; } 
+            set { _showingBrowser = value; RaisePropertyChanged("ShowingBrowser");} }
+
+        /// <summary>
         ///     Performs a search using the given string as query, but does not update
         ///     the SearchResults object.
         /// </summary>
@@ -332,15 +341,19 @@ namespace Dynamo.Search
         {
             if (string.IsNullOrEmpty(search) || search == "Search...")
             {
-                if (IncludeOptionalElements)
-                    return NodeCategories.Select(kvp => (SearchElementBase) kvp.Value).OrderBy(val => val.Name).ToList();
-                else
-                    return
-                        NodeCategories.Select(kvp => (SearchElementBase) kvp.Value)
-                                      .Where((ele) => !ele.Name.StartsWith("Revit API"))
-                                      .OrderBy(val => val.Name)
-                                      .ToList();
+                this.ShowingBrowser = Visibility.Visible;
+                return new List<SearchElementBase>();
+                //if (IncludeOptionalElements)
+                //    return NodeCategories.Select(kvp => (SearchElementBase) kvp.Value).OrderBy(val => val.Name).ToList();
+                //else
+                //    return
+                //        NodeCategories.Select(kvp => (SearchElementBase) kvp.Value)
+                //                      .Where((ele) => !ele.Name.StartsWith("Revit API"))
+                //                      .OrderBy(val => val.Name)
+                //                      .ToList();
             }
+
+            this.ShowingBrowser = Visibility.Collapsed;
 
             return SearchDictionary.Search(search, MaxNumSearchResults);
         }
@@ -576,15 +589,32 @@ namespace Dynamo.Search
                 }
                 else if (items.Count() == 2) // create first, second level category and add item
                 {
-                    var parentCat = new RootBrowserCategory(items[0], BrowserItems);
-                    BrowserCategories.Add(items[0], parentCat);
+                    RootBrowserCategory parentCat;
+                    if (!BrowserCategories.ContainsKey(items[0]))
+                    {
+                        parentCat = new RootBrowserCategory(items[0], BrowserItems);
+                        BrowserItems.Add(parentCat); 
+                        BrowserCategories.Add(items[0], parentCat);
+                    }
+                    else
+                    {
+                        parentCat = (RootBrowserCategory) BrowserCategories[items[0]];
+                    }
 
-                    var browserCat = new BrowserCategory(items[1], parentCat.Items);
-                    BrowserCategories.Add(category, browserCat);
-                    parentCat.Items.Add(browserCat);
+                    BrowserCategory browserCat;
+                    if (!BrowserCategories.ContainsKey(category))
+                    {
+                        browserCat = new BrowserCategory(items[1], parentCat.Items);
+                        BrowserCategories.Add(category, browserCat);
+                        parentCat.Items.Add(browserCat);
+                    }
+                    else
+                    {
+                        browserCat = (BrowserCategory)BrowserCategories[category];
+                    }
+                    
                     browserCat.Items.Add(item);
-
-                    BrowserItems.Add(parentCat); // add the parent item to the browser items
+                    
                 }
 
             }

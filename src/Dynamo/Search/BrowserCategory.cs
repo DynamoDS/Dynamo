@@ -30,10 +30,10 @@ namespace Dynamo.Nodes.Search
 
         public RootBrowserCategory(string name, ObservableCollection<RootBrowserCategory> siblings)
         {
+            this.Height = 32;
             this.Siblings = siblings;
             this._name = name;
         }
-
 
     }
 

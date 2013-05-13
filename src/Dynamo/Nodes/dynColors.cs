@@ -20,7 +20,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [NodeName("Color Brightness")]
-    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Calculates a color's brightness.")]
     class dynColorBrightness : dynNodeWithOneOutput
     {

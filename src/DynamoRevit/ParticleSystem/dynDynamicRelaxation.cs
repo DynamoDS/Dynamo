@@ -34,7 +34,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Create Particle System")]
-    [NodeCategory(BuiltinNodeCategories.SIMULATION)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE)]
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
     class dynDynamicRelaxation : dynRevitTransactionNodeWithOneOutput
     {
@@ -281,7 +281,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Create Particle System on Face")]
-    [NodeCategory(BuiltinNodeCategories.SIMULATION)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE)]
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
     class dynDynamicRelaxationOnFace: dynNodeWithOneOutput
     {
@@ -370,7 +370,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Dynamic Relaxation Step")]
     [NodeDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
-    [NodeCategory(BuiltinNodeCategories.SIMULATION)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE)]
     public class dynDynamicRelaxationStep: dynNodeWithOneOutput
     {
         public dynDynamicRelaxationStep()
