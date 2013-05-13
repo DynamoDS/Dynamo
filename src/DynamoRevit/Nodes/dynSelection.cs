@@ -436,7 +436,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Family Instance")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a family instance from the document.")]
     public class dynFamilyInstanceCreatorSelection : dynElementSelection
     {
@@ -469,7 +469,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Divided Surface")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a divided surface from the document.")]
     public class dynDividedSurfaceBySelection : dynElementSelection
     {
@@ -640,7 +640,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Face")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a face from the document.")]
     public class dynFormElementBySelection : dynElementSelection
     {
@@ -683,7 +683,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Curve")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a curve from the document.")] //or set of curves in the future
     public class dynCurvesBySelection : dynElementSelection
     {
@@ -716,7 +716,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Curves")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a set of curves from the document.")]
     public class dynMultipleCurvesBySelection : dynMultipleElementSelection
     {
@@ -766,7 +766,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Point")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a reference point from the document.")]
     public class dynPointBySelection : dynElementSelection
     {
@@ -800,7 +800,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Level")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a level from the document.")]
     public class dynLevelBySelection : dynElementSelection
     {

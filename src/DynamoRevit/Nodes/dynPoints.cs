@@ -27,7 +27,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Ref Point")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a reference point.")]
     public class dynReferencePointByXYZ : dynRevitTransactionNodeWithOneOutput
     {
@@ -155,7 +155,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ref Point Dist")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Measures a distance between point(s).")]
     public class dynDistanceBetweenPoints: dynNodeWithOneOutput
     {
@@ -201,7 +201,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ref Point On Edge")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an element which owns a reference point on a selected edge.")]
     public class dynPointOnEdge : dynRevitTransactionNodeWithOneOutput
     {
@@ -254,82 +254,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Ref Point On Face By UV")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
-    [NodeDescription("Creates an element which owns a reference point on a selected face.")]
-    public class dynPointOnFace : dynRevitTransactionNodeWithOneOutput
-    {
-        public dynPointOnFace()
-        {
-            InPortData.Add(new PortData("face", "ModelFace", typeof(Reference)));
-            InPortData.Add(new PortData("u", "U Parameter on face.", typeof(double)));
-            InPortData.Add(new PortData("v", "V Parameter on face.", typeof(double)));
-            OutPortData.Add(new PortData("pt", "PointOnFace", typeof(ReferencePoint)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            object arg0 = ((Value.Container)args[0]).Item;
-            if (arg0 is Reference)
-            {
-                // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
-
-                //Face f = ((Face)((FScheme.Value.Container)args[0]).Item).Reference; // MDJ TODO this returns null but should not, figure out why and then change selection code to just pass back face not ref
-                Reference r = arg0 as Reference;
-
-                double u = ((Value.Number)args[1]).Item;
-                double v = ((Value.Number)args[2]).Item;
-
-                //Autodesk.Revit.DB..::.PointElementReference
-                //Autodesk.Revit.DB..::.PointOnEdge
-                //Autodesk.Revit.DB..::.PointOnEdgeEdgeIntersection
-                //Autodesk.Revit.DB..::.PointOnEdgeFaceIntersection
-                //Autodesk.Revit.DB..::.PointOnFace
-                //Autodesk.Revit.DB..::.PointOnPlane
-
-                PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, new UV(u, v));
-
-                ReferencePoint pt = null;
-
-                if (this.Elements.Any())
-                {
-                    Element e;
-                    if (dynUtils.TryGetElement(this.Elements[0], out e))
-                    {
-                        pt = e as ReferencePoint;
-                        pt.SetPointElementReference(facePoint);
-                    }
-                    else
-                    {
-                        if (this.UIDocument.Document.IsFamilyDocument)
-                        {
-                            pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
-                            this.Elements[0] = pt.Id;
-                        }
-                    }
-                }
-                else
-                {
-                    if (this.UIDocument.Document.IsFamilyDocument)
-                    {
-                        pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
-                        this.Elements.Add(pt.Id);
-                    }
-                }
-
-                return Value.NewContainer(pt);
-            }
-            else
-            {
-                throw new Exception("Cannot cast first argument to Face.");
-            }
-        }
-    }
-
     [NodeName("Ref Point On Face by UV")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an element which owns a reference point on a selected face.")]
     public class dynPointOnFaceUV : dynRevitTransactionNodeWithOneOutput
     {
@@ -392,7 +318,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ref Point By Normal")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Owns a reference point which is projected from a point by normal and distance.")]
     public class dynPointNormalDistance : dynRevitTransactionNodeWithOneOutput
     {
@@ -444,7 +370,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Plane from Ref Point")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Extracts one of the primary Reference Planes from a Reference Point.")]
     public class dynPlaneFromRefPoint : dynRevitTransactionNodeWithOneOutput
     {

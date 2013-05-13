@@ -27,7 +27,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("XYZ")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ from three numbers.")]
     public class dynXYZ: dynNodeWithOneOutput
     {
@@ -53,7 +53,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ From Reference Point")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Extracts an XYZ from a Reference Point.")]
     public class dynXYZFromReferencePoint: dynNodeWithOneOutput
     {
@@ -75,7 +75,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ -> X")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the X value of the given XYZ")]
     public class dynXYZGetX: dynNodeWithOneOutput
     { 
@@ -94,7 +94,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ -> Y")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the Y value of the given XYZ")]
     public class dynXYZGetY: dynNodeWithOneOutput
     {
@@ -113,7 +113,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ -> Z")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the Z value of the given XYZ")]
     public class dynXYZGetZ: dynNodeWithOneOutput
     {
@@ -132,7 +132,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Zero")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ at the origin (0,0,0).")]
     public class dynXYZZero: dynNodeWithOneOutput
     {
@@ -151,7 +151,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("X Axis")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the X basis (1,0,0).")]
     public class dynXYZBasisX: dynNodeWithOneOutput
     {
@@ -170,7 +170,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Y Axis")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the Y basis (0,1,0).")]
     public class dynXYZBasisY: dynNodeWithOneOutput
     {
@@ -189,7 +189,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Z Axis")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the Z basis (0,0,1).")]
     public class dynXYZBasisZ: dynNodeWithOneOutput
     {
@@ -208,7 +208,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Scale XYZ")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Multiplies each component of an XYZ by a number.")]
     public class dynXYZScale: dynNodeWithOneOutput
     {
@@ -231,7 +231,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Add XYZ")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Adds the components of two XYZs.")]
     public class dynXYZAdd: dynNodeWithOneOutput
     {
@@ -254,7 +254,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("UV Grid")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of UVs from a domain.")]
     public class dynUVGrid: dynNodeWithOneOutput
     {
@@ -302,7 +302,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("UV Random")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of UVs froma domain.")]
     public class dynUVRandom: dynNodeWithOneOutput
     {
@@ -352,7 +352,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Grid")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of XYZs.")]
     public class dynReferencePtGrid: dynNodeWithOneOutput
     {
@@ -415,7 +415,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Array On Curve")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a list of XYZs along a curve.")]
     public class dynXYZArrayAlongCurve: dynNodeWithOneOutput
     {
@@ -465,7 +465,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Plane")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates a geometric plane.")]
     public class dynPlane: dynNodeWithOneOutput
     {
@@ -492,7 +492,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Sketch Plane")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates a geometric sketch plane.")]
     public class dynSketchPlane : dynRevitTransactionNodeWithOneOutput
     {
@@ -598,7 +598,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Line")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric line.")]
     public class dynLineBound: dynNodeWithOneOutput
     {
@@ -642,7 +642,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Arc By Start Mid End")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
     public class dynArcStartMiddleEnd: dynNodeWithOneOutput
     {
@@ -685,7 +685,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Arc by Ctr Pt")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
     public class dynArcCenter: dynNodeWithOneOutput
     {
@@ -727,7 +727,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transform Crv")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
     public class dynCurveTransformed: dynNodeWithOneOutput
     {
@@ -751,7 +751,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Circle")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric circle.")]
     public class dynCircle: dynNodeWithOneOutput
     {
@@ -790,7 +790,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ellipse")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric ellipse.")]
     public class dynEllipse: dynNodeWithOneOutput
     {
@@ -835,7 +835,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ellipse Arc")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric elliptical arc. Start and End Values may be between 0 and 2*PI in Radians")]
     public class dynEllipticalArc: dynNodeWithOneOutput
     {
@@ -881,7 +881,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("UV")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a UV from two double values.")]
     public class dynUV: dynNodeWithOneOutput
     {
@@ -906,7 +906,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Line From Vector")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a line in the direction of an XYZ normal.")]
     public class dynLineVectorfromXYZ: dynNodeWithOneOutput
     {
@@ -959,7 +959,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Hermite Spline")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric hermite spline.")]
     public class dynHermiteSpline: dynNodeWithOneOutput
     {

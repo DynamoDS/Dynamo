@@ -23,7 +23,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Nodes
 {
     [NodeName("Evaluate Normal")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Evaluate a point on a face to find the normal.")]
     class dynNormalEvaluate: dynNodeWithOneOutput
     {
@@ -55,7 +55,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Evaluate UV")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Evaluate a parameter(UV) on a face to find the XYZ location.")]
     class dynXYZEvaluate: dynNodeWithOneOutput
     {

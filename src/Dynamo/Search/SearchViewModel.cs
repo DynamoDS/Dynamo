@@ -24,6 +24,27 @@ namespace Dynamo.Search
     {
         #region Properties
 
+
+        /// <summary>
+        ///     Indicates whether the node browser is visible or not
+        /// </summary>
+        private Visibility _browserVisibility = Visibility.Visible;
+        public Visibility BrowserVisibility
+        {
+            get { return _browserVisibility; }
+            set { _browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
+        }
+
+        /// <summary>
+        ///     Indicates whether the node browser is visible or not
+        /// </summary>
+        private Visibility _searchVisibility = Visibility.Collapsed;
+        public Visibility SearchVisibility
+        {
+            get { return _searchVisibility; }
+            set { _searchVisibility = value; RaisePropertyChanged("SearchVisibility"); }
+        }
+
         /// <summary>
         ///     Regions property
         /// </summary>
@@ -323,15 +344,6 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Indicates whether the node browser is visible or not
-        /// </summary>
-        private Visibility _showingBrowser = Visibility.Visible;
-        public Visibility ShowingBrowser
-        { 
-            get { return _showingBrowser; } 
-            set { _showingBrowser = value; RaisePropertyChanged("ShowingBrowser");} }
-
-        /// <summary>
         ///     Performs a search using the given string as query, but does not update
         ///     the SearchResults object.
         /// </summary>
@@ -341,19 +353,20 @@ namespace Dynamo.Search
         {
             if (string.IsNullOrEmpty(search) || search == "Search...")
             {
-                this.ShowingBrowser = Visibility.Visible;
+                if (this.BrowserVisibility == Visibility.Collapsed)
+                {
+                    this.SearchVisibility = Visibility.Collapsed;
+                    this.BrowserVisibility = Visibility.Visible;
+                }
+
                 return new List<SearchElementBase>();
-                //if (IncludeOptionalElements)
-                //    return NodeCategories.Select(kvp => (SearchElementBase) kvp.Value).OrderBy(val => val.Name).ToList();
-                //else
-                //    return
-                //        NodeCategories.Select(kvp => (SearchElementBase) kvp.Value)
-                //                      .Where((ele) => !ele.Name.StartsWith("Revit API"))
-                //                      .OrderBy(val => val.Name)
-                //                      .ToList();
             }
 
-            this.ShowingBrowser = Visibility.Collapsed;
+            if (this.SearchVisibility == Visibility.Collapsed)
+            {
+                this.SearchVisibility = Visibility.Visible;
+                this.BrowserVisibility = Visibility.Collapsed;
+            }
 
             return SearchDictionary.Search(search, MaxNumSearchResults);
         }
@@ -578,10 +591,10 @@ namespace Dynamo.Search
 
                 BrowserCategories[category].Items.Add(item); 
 
-            } else if (category.Contains("|")) // split into multiple categories 
+            } else if (category.Contains(".")) // split into multiple categories 
             {
 
-                var items = category.Split('|').ToList();
+                var items = category.Split('.').ToList();
 
                 if (items.Count() == 1) // create first level category and add item
                 {

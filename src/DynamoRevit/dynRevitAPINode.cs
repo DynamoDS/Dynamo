@@ -1,19 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using Autodesk.Revit.DB;
-using Autodesk.Revit;
-using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.Revit;
 
-using System.Windows.Media.Media3D;
-using HelixToolkit.Wpf;
 
-using Dynamo.FSchemeInterop;
-using Dynamo.FSchemeInterop.Node;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 
@@ -85,7 +76,7 @@ namespace Dynamo.Nodes
     /// </summary>
     [NodeName("Revit Document")]
     [NodeSearchTags("document", "active")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
     [NodeDescription("Gets the active Revit document.")]
     public class dynRevitDocument : dynRevitTransactionNodeWithOneOutput
     {

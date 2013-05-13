@@ -27,7 +27,7 @@ using System.Windows.Controls;
 namespace Dynamo.Nodes
 {
     [NodeName("Watch 3D")]
-    [NodeCategory(BuiltinNodeCategories.BASE_VIEW)]
+    [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
     public class dynWatch3D : dynNodeWithOneOutput
     {

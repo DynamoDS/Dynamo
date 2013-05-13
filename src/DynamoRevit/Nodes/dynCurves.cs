@@ -27,7 +27,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Model Curve")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a model curve.")]
     public class dynModelCurve : dynRevitTransactionNodeWithOneOutput
     {
@@ -96,7 +96,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve By Pts")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create a new Curve by Points by passing in a list of Reference Points")]
     public class dynCurveByPoints : dynRevitTransactionNodeWithOneOutput
     {
@@ -155,7 +155,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve By Points By Line")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create a new Curve by Points by passing in a geometry line in 3d space")]
     public class dynCurveByPointsByLine : dynRevitTransactionNodeWithOneOutput
     {
@@ -301,7 +301,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve Element Ref")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Takes in a Model Curve or Geometry Curve, returns a Curve Reference")]
     public class dynCurveRef : dynRevitTransactionNodeWithOneOutput
     {
@@ -368,7 +368,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve From Curve Ele")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Takes in a Model Curve and Extracts Geometry Curve")]
     public class dynCurveFromModelCurve : dynRevitTransactionNodeWithOneOutput
     {
@@ -433,7 +433,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Planar Nurb Spline")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Node to create a planar model curve.")]
     public class dynModelCurveNurbSpline : dynRevitTransactionNodeWithOneOutput
     {

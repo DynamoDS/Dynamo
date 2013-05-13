@@ -16,13 +16,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 using System.Xml;
 
 using Dynamo.Connectors;
 using Dynamo.Utilities;
-using DynamoPython;
-using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using IronPython.Hosting;
@@ -239,7 +236,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Python Script")]
-    [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
+    [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs an embedded IronPython script")]
     public class dynPython : dynNodeWithOneOutput
     {
@@ -407,7 +404,7 @@ namespace Dynamo.Nodes
 
 
     [NodeName("Python Script From String")]
-    [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
+    [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs a IronPython script from a string")]
     public class dynPythonString : dynNodeWithOneOutput
     {

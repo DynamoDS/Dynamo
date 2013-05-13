@@ -34,7 +34,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Create Particle System")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
     class dynDynamicRelaxation : dynRevitTransactionNodeWithOneOutput
     {
@@ -281,7 +281,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Create Particle System on Face")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
     class dynDynamicRelaxationOnFace: dynNodeWithOneOutput
     {
@@ -370,7 +370,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Dynamic Relaxation Step")]
     [NodeDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     public class dynDynamicRelaxationStep: dynNodeWithOneOutput
     {
         public dynDynamicRelaxationStep()
@@ -397,7 +397,7 @@ namespace Dynamo.Nodes
 
     [NodeName("XYZs from Particle System")]
     [NodeDescription("Creates XYZs from a Particle System.")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     public class dynXYZsFromPS: dynNodeWithOneOutput
     {
         public dynXYZsFromPS()
@@ -431,7 +431,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Curves from Particle System")]
     [NodeDescription("Creates Curves from a Particle System.")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     public class dynCurvesFromPS: dynNodeWithOneOutput
     {
         public dynCurvesFromPS()

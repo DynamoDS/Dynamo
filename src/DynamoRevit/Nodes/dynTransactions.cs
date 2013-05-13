@@ -33,7 +33,7 @@ using System.Windows.Threading;
 namespace Dynamo.Nodes
 {
     [NodeName("Transaction")]
-    [NodeCategory(BuiltinNodeCategories.BASE_TIME)]
+    [NodeCategory(BuiltinNodeCategories.CORE_TIME)]
     [NodeDescription("Executes Expression inside of a Revit API transaction")]
     public class dynTransaction: dynNodeWithOneOutput
     {
