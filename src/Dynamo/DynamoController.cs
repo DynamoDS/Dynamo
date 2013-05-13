@@ -298,6 +298,8 @@ namespace Dynamo
 
                 Run(topElements, runningExpression);
 
+                // inform any objects that a run has happened
+
                 DynamoLogger.Instance.Log(runningExpression);
             }
             catch (CancelEvaluationException ex)

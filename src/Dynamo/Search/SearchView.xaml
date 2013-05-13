@@ -4,7 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
-             Visibility="{Binding Path=Visible}" d:DesignWidth="300" d:DesignHeight="300"  x:Name="SearchControl" MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}">
+             Visibility="{Binding Path=Visible}" d:DesignWidth="300" d:DesignHeight="300"  
+             x:Name="SearchControl" 
+             MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, 
+                AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}">
   
   <Grid Background="Black" >
 

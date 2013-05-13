@@ -108,6 +108,34 @@ namespace Dynamo.Controls
             LogScroller.ScrollToEnd();
         }
 
+        // the key press event is being intercepted before it can get to
+        // the active workspace. This code simply grabs the key presses and
+        // passes it to thecurrent workspace
+        void DynamoView_KeyDown(object sender, KeyEventArgs e)
+        {
+            //if (e.Key != Key.LeftShift && e.Key != Key.RightShift)
+            if (e.Key != Key.CapsLock)
+                return;
+
+            int workspace_index = _vm.CurrentWorkspaceIndex;
+
+            dynWorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
+
+            view_model.WatchEscapeIsDown = true;
+        }
+
+        void DynamoView_KeyUp(object sender, KeyEventArgs e)
+        {
+            //if (e.Key != Key.LeftShift && e.Key != Key.RightShift)
+            if (e.Key != Key.CapsLock)
+                return;
+
+            int workspace_index = _vm.CurrentWorkspaceIndex;
+
+            dynWorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
+
+            view_model.WatchEscapeIsDown = false;
+        }
     }
 
     public class CancelEvaluationException : Exception
@@ -120,4 +148,6 @@ namespace Dynamo.Controls
             Force = force;
         }
     }
+
+
 }

@@ -131,6 +131,9 @@ namespace Dynamo.Controls
             }
         }
 
+
+
+
         public DynamoModel Model
         {
             get { return _model; }
@@ -288,6 +291,7 @@ namespace Dynamo.Controls
             //MVVM: Instantiate the model
             _model = new DynamoModel();
             _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
+
             _model.PropertyChanged += _model_PropertyChanged;
 
             dynSettings.Controller.DynamoModel = _model;
