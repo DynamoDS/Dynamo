@@ -9,6 +9,7 @@ using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
+using System.Reflection;
 
 namespace Dynamo.Nodes
 {
@@ -125,6 +126,64 @@ namespace Dynamo.Nodes
             this.Elements.Add(f.Id);
 
             return Value.NewContainer(f);
+        }
+    }
+
+    [NodeName("Free Form")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Creates a free form <FreeFormElement.Create>")]
+    public class dynFreeForm : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynFreeForm()
+        {
+            InPortData.Add(new PortData("solid", "solid to use for Freeform", typeof(Value.List)));
+
+            OutPortData.Add(new PortData("form", "Free Form", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            //If we already have a form stored...
+            if (this.Elements.Any())
+            {
+                //And register the form for deletion. Since we've already deleted it here manually, we can 
+                //pass "true" as the second argument.
+                this.DeleteElement(this.Elements[0], true);
+            }
+
+            //Surface argument
+            Solid mySolid = (Solid)((Value.Container)args[0]).Item;
+
+            GenericForm ffe = null;
+            //use reflection to check for the method
+
+            System.Reflection.Assembly revitAPIAssembly = System.Reflection.Assembly.GetAssembly(typeof(GenericForm));
+            Type FreeFormType = revitAPIAssembly.GetType("Autodesk.Revit.DB.FreeFormElement", true);
+
+
+            if (FreeFormType != null)
+            {
+                MethodInfo[] freeFormMethods = FreeFormType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+                String nameOfMethodCreate = "Create";
+                foreach (MethodInfo m in freeFormMethods)
+                {
+                    if (m.Name == nameOfMethodCreate)
+                    {
+                        object[] argsM = new object[2];
+                        argsM[0] = this.UIDocument.Document;
+                        argsM[1] = mySolid;
+
+                        ffe = (GenericForm)m.Invoke(null, argsM);
+                        break;
+                    }
+                }
+            }
+            if (ffe != null)
+                this.Elements.Add(ffe.Id);
+
+            return Value.NewContainer(ffe);
         }
     }
 }

@@ -1084,4 +1084,135 @@ namespace Dynamo.Nodes
             return Value.NewContainer(hs);
         }
     }
+
+    [NodeName("Element Geometry Objects")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeDescription("Creates list of geometry object references in the element.")]
+    public class dynElementGeometryObjects : dynNodeWithOneOutput
+    {
+        List<GeometryObject> instanceGeometryObjects;
+
+        public dynElementGeometryObjects()
+        {
+            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.List)));
+            OutPortData.Add(new PortData("Geometry objects of the element", "List", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            instanceGeometryObjects = null;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Element thisElement = (Element) ((Value.Container)args[0]).Item;
+
+            instanceGeometryObjects = new List<GeometryObject>();
+
+            var result = FSharpList<Value>.Empty;
+
+            GeometryObject geomObj = thisElement.get_Geometry(new Autodesk.Revit.DB.Options());
+            GeometryElement geomElement = geomObj as GeometryElement;
+
+            foreach (GeometryObject geob in geomElement)
+            {
+                GeometryInstance ginsta = geob as GeometryInstance;
+                if (ginsta != null)
+                {
+                    GeometryElement instanceGeom = ginsta.GetInstanceGeometry();
+                    instanceGeometryObjects.Add(instanceGeom);
+                    foreach (GeometryObject geobInst in instanceGeom)
+                    {
+                        result = FSharpList<Value>.Cons(Value.NewContainer(geobInst), result);
+                    }
+                }
+                else
+                {
+                    result = FSharpList<Value>.Cons(Value.NewContainer(geob), result);
+                }
+            }
+
+            return Value.NewList(result);
+        }
+    }
+
+    [NodeName("Extract Solid from Element")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeDescription("Creates reference to the solid in the element's geometry objects.")]
+    public class dynElementSolid : dynNodeWithOneOutput
+    {
+        List<GeometryObject> instanceSolids;
+
+        public dynElementSolid()
+        {
+            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.List)));
+            OutPortData.Add(new PortData("solid in the element's geometry objects", "Solid", typeof(object)));
+
+            RegisterAllPorts();
+
+            instanceSolids = null;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Element thisElement = (Element)((Value.Container)args[0]).Item;
+
+            instanceSolids = new List<GeometryObject>();
+
+            Solid mySolid = null;
+
+            GeometryObject geomObj = thisElement.get_Geometry(new Autodesk.Revit.DB.Options());
+            GeometryElement geomElement = geomObj as GeometryElement;
+
+            foreach (GeometryObject geob in geomElement)
+            {
+                GeometryInstance ginsta = geob as GeometryInstance;
+                if (ginsta != null)
+                {
+                    GeometryElement instanceGeom = ginsta.GetInstanceGeometry();
+                    instanceSolids.Add(instanceGeom);
+                    foreach (GeometryObject geobInst in instanceGeom)
+                    {
+                        mySolid = geobInst as Solid;
+                        if (mySolid != null)
+                        {
+                            FaceArray faceArr = mySolid.Faces;
+                            var thisEnum = faceArr.GetEnumerator();
+                            bool hasFace = false;
+                            for (; thisEnum.MoveNext(); )
+                            {
+                                hasFace = true;
+                            }
+                            if (!hasFace)
+                                mySolid = null;
+                            else
+                               break;
+                        }
+                    }
+                    if (mySolid != null)
+                        break;
+                }
+                else
+                {
+                    mySolid = geob as Solid;
+                    if (mySolid != null)
+                    {
+                        FaceArray faceArr = mySolid.Faces;
+                        var thisEnum = faceArr.GetEnumerator();
+                        bool hasFace = false;
+                        for (; thisEnum.MoveNext(); )
+                        {
+                            hasFace = true;
+                        }
+                        if (!hasFace)
+                           mySolid = null;
+                        else
+                           break;
+                    }
+
+                }
+            }
+
+            return Value.NewContainer(mySolid);
+        }
+    }
 }
