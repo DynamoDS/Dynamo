@@ -77,6 +77,9 @@ namespace Dynamo.Controls
             _requiresRedraw = true;
         }
 
+        //public PointsVisual3D HelixPoints { get; set; }
+        //public LinesVisual3D HelixLines { get; set; }
+
         public PointsVisual3D HelixPoints
         {
             get
@@ -191,13 +194,14 @@ namespace Dynamo.Controls
             if (!_requiresRedraw)
                 return;
 
-            lock (_points)
-            {
-                lock (_pointsCache)
-                {
-                    _points.Points = _pointsCache;
-                }
-            }
+            //lock (_points)
+            //{
+            //    lock (_pointsCache)
+            //    {
+            //        Point3DCollection other_points = _pointsCache;
+            //        HelixPoints.Points = new Point3DCollection(_pointsCache);
+            //    }
+            //}
 
             //lock (_lines)
             //{
@@ -215,8 +219,13 @@ namespace Dynamo.Controls
             //PointsVisual3D pts = new PointsVisual3D { Color = Colors.Red, Size = 6 };
             //LinesVisual3D lines = new LinesVisual3D { Color = Colors.Blue, Thickness = 1 };
 
-            //Point3DCollection foo = new Point3DCollection();
-            //foo.Add(new Point3D(1, 2, 3));
+            Point3DCollection foo = new Point3DCollection();
+            for (int i = 0; i < 100; i++)
+            {
+                foo.Add(new Point3D(i, 2, 3));
+            }
+            
+            HelixPoints.Points = foo;
 
             //_points.Points = _pointsCache;
             //lines.Points = _linesCache;
