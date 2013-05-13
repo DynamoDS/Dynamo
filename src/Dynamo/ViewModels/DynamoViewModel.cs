@@ -1582,6 +1582,13 @@ namespace Dynamo.Controls
                     XmlAttribute xAttrib = elNode.Attributes[3];
                     XmlAttribute yAttrib = elNode.Attributes[4];
 
+                    XmlAttribute lacingAttrib = null;
+                    if(elNode.Attributes.Count > 5)
+                    {
+                         lacingAttrib = elNode.Attributes[5];
+                    }
+
+                    
                     string typeName = typeAttrib.Value;
 
                     string oldNamespace = "Dynamo.Elements.";
@@ -1620,6 +1627,13 @@ namespace Dynamo.Controls
                         t = tData.Type;
 
                     dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws);
+
+                    if (lacingAttrib != null)
+                    {
+                        LacingStrategy lacing = LacingStrategy.First;
+                        Enum.TryParse(lacingAttrib.Value, out lacing);
+                        el.ArgumentLacing = lacing;
+                    }
 
                     if (el == null)
                         return false;
@@ -2279,6 +2293,12 @@ namespace Dynamo.Controls
                     XmlAttribute xAttrib = elNode.Attributes[3];
                     XmlAttribute yAttrib = elNode.Attributes[4];
 
+                    XmlAttribute lacingAttrib = null;
+                    if (elNode.Attributes.Count > 5)
+                    {
+                        lacingAttrib = elNode.Attributes[5];
+                    }
+
                     string typeName = typeAttrib.Value;
 
                     //test the GUID to confirm that it is non-zero
@@ -2318,6 +2338,13 @@ namespace Dynamo.Controls
                         t, nickname, guid, x, y,
                         _model.CurrentSpace
                         );
+
+                    if (lacingAttrib != null)
+                    {
+                        LacingStrategy lacing = LacingStrategy.First;
+                        Enum.TryParse(lacingAttrib.Value, out lacing);
+                        el.ArgumentLacing = lacing;
+                    }
 
                     el.DisableReporting();
 
