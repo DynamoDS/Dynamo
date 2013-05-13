@@ -308,9 +308,9 @@ namespace Dynamo.Controls
 
         void SetLacingType(string parameter)
         {
-            if (parameter == "Single")
+            if (parameter == "First")
             {
-                NodeLogic.ArgumentLacing = LacingStrategy.Single;
+                NodeLogic.ArgumentLacing = LacingStrategy.First;
             }
             else if (parameter == "Longest")
             {
@@ -320,8 +320,12 @@ namespace Dynamo.Controls
             {
                 NodeLogic.ArgumentLacing = LacingStrategy.Shortest;
             }
+            else if (parameter == "CrossProduct")
+            {
+                NodeLogic.ArgumentLacing = LacingStrategy.CrossProduct;
+            }
             else
-                NodeLogic.ArgumentLacing = LacingStrategy.Single;
+                NodeLogic.ArgumentLacing = LacingStrategy.First;
 
             RaisePropertyChanged("Lacing");
         }

@@ -409,9 +409,9 @@ namespace Dynamo.Nodes
         public dynBuildSeq()
             : base("build-list")
         {
-            InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(double)));
-            InPortData.Add(new PortData("end", "Number to end the sequence at", typeof(double)));
-            InPortData.Add(new PortData("step", "Space between numbers", typeof(double)));
+            InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(Value.Number)));
+            InPortData.Add(new PortData("end", "Number to end the sequence at", typeof(Value.Number)));
+            InPortData.Add(new PortData("step", "Space between numbers", typeof(Value.Number)));
             OutPortData.Add(new PortData("seq", "New sequence", typeof(Value.List)));
 
             RegisterAllPorts();
