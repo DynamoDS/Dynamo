@@ -21,9 +21,10 @@ namespace Dynamo.Nodes
 
     public enum LacingStrategy
     {
-        Longest,
+        First,
         Shortest,
-        Single
+        Longest,
+        CrossProduct
     };
 
     public delegate void PortsChangedHandler(object sender, EventArgs e);
@@ -78,7 +79,7 @@ namespace Dynamo.Nodes
             new Dictionary<int, HashSet<Tuple<int, dynNodeModel>>>();
         ObservableCollection<dynPortModel> inPorts = new ObservableCollection<dynPortModel>();
         ObservableCollection<dynPortModel> outPorts = new ObservableCollection<dynPortModel>();
-        private LacingStrategy _argumentLacing  = LacingStrategy.Single;
+        private LacingStrategy _argumentLacing  = LacingStrategy.First;
         private string _nickName;
         ElementState state;
         string toolTipText = "";
@@ -1164,7 +1165,8 @@ namespace Dynamo.Nodes
             //if any value is a list whose expectation is a single
             //do an auto map
             if (args.Count()> 0 && 
-                portComparison.Any(x => x.Item1 == typeof (Value.List) && x.Item2 != typeof (Value.List)) && 
+                portComparison.Any(x => x.Item1 == typeof (Value.List) && 
+                x.Item2 != typeof (Value.List)) && 
                 !(this is dynWatch))
             {
                 //if the argument is of the expected type, then
@@ -1188,11 +1190,22 @@ namespace Dynamo.Nodes
                     j++;
                 }
 
-                //compute the cartesian product of the sets
-                //var cartProd = argSets.CartesianProduct();
-
-                //compute a "longest" set of lists
-                var longest = argSets.LongestSet();
+                IEnumerable<IEnumerable<Value>> lacedArgs = null;
+                switch (this.ArgumentLacing)
+                {
+                    case LacingStrategy.First:
+                        lacedArgs = argSets.SingleSet();
+                        break;
+                    case LacingStrategy.Shortest:
+                        lacedArgs = argSets.ShortestSet();
+                        break;
+                    case LacingStrategy.Longest:
+                        lacedArgs = argSets.LongestSet();
+                        break;
+                    case LacingStrategy.CrossProduct:
+                        lacedArgs = argSets.CartesianProduct();
+                        break;
+                }
 
                 //setup an empty list to hold results
                 FSharpList<Value> result = FSharpList<Value>.Empty;
@@ -1201,9 +1214,9 @@ namespace Dynamo.Nodes
                 //arguments in the cartesian result. do these
                 //in reverse order so our cons comes out the right
                 //way around
-                for (int i = longest.Count() - 1; i >= 0; i--)
+                for (int i = lacedArgs.Count() - 1; i >= 0; i--)
                 {
-                    var evalResult = Evaluate(Utils.MakeFSharpList(longest.ElementAt(i).ToArray()));
+                    var evalResult = Evaluate(Utils.MakeFSharpList(lacedArgs.ElementAt(i).ToArray()));
                     result = FSharpList<Value>.Cons(evalResult, result);
                 }
 
