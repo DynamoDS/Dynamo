@@ -161,7 +161,7 @@ namespace Dynamo.Nodes
 
             System.Reflection.Assembly revitAPIAssembly = System.Reflection.Assembly.GetAssembly(typeof(GenericForm));
             Type FreeFormType = revitAPIAssembly.GetType("Autodesk.Revit.DB.FreeFormElement", true);
-
+            bool methodCalled = false;
 
             if (FreeFormType != null)
             {
@@ -175,6 +175,8 @@ namespace Dynamo.Nodes
                         argsM[0] = this.UIDocument.Document;
                         argsM[1] = mySolid;
 
+                        methodCalled = true;
+
                         ffe = (GenericForm)m.Invoke(null, argsM);
                         break;
                     }
@@ -182,6 +184,8 @@ namespace Dynamo.Nodes
             }
             if (ffe != null)
                 this.Elements.Add(ffe.Id);
+            else if (!methodCalled)
+                throw new Exception("This method is not available before 2014 release.");
 
             return Value.NewContainer(ffe);
         }
