@@ -61,7 +61,16 @@ namespace Dynamo.Utilities
             }
             return result;
         }
-
+        
+        /// <summary>
+        /// Get the longest list of arguments.
+        /// For a set List of Lists like {a} {b1,b2,b3} {c1,c2}
+        /// This will return a List of Lists of objects like:
+        /// {a,b1,c1} {a,b2,c2} {a,b3,c2}
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sequences"></param>
+        /// <returns></returns>
         public static IEnumerable<IEnumerable<T>> LongestSet<T>(this IEnumerable<IEnumerable<T>> sequences)
         {
             //find the longest sequences
