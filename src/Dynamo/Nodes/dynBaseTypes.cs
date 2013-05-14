@@ -282,6 +282,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("list", "A list", typeof(Value.List)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         protected override string getInputRootName()

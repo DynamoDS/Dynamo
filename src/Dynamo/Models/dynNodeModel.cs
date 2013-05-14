@@ -21,6 +21,7 @@ namespace Dynamo.Nodes
 
     public enum LacingStrategy
     {
+        Disabled,
         First,
         Shortest,
         Longest,
@@ -166,7 +167,7 @@ namespace Dynamo.Nodes
             {
                 _argumentLacing = value;
                 isDirty = true;
-                RaisePropertyChanged("LacingStrategy");
+                RaisePropertyChanged("ArgumentLacing");
             }
         }
 
@@ -202,7 +203,6 @@ namespace Dynamo.Nodes
         /// Get the last computed value from the node.
         /// </summary>
         public Value OldValue { get; protected set; }
-
 
         protected internal ExecutionEnvironment macroEnvironment = null;
 
@@ -343,8 +343,8 @@ namespace Dynamo.Nodes
                 NickName = "";
 
             this.IsSelected = false;
-
             State = ElementState.DEAD;
+            ArgumentLacing = LacingStrategy.First;
         }
 
         /// <summary>
@@ -1164,10 +1164,12 @@ namespace Dynamo.Nodes
 
             //if any value is a list whose expectation is a single
             //do an auto map
+            //TODO: figure out a better way to do this than using a lot
+            //of specific excludes
             if (args.Count()> 0 && 
                 portComparison.Any(x => x.Item1 == typeof (Value.List) && 
                 x.Item2 != typeof (Value.List)) && 
-                !(this is dynWatch))
+                !(this.ArgumentLacing == LacingStrategy.Disabled))
             {
                 //if the argument is of the expected type, then
                 //leave it alone otherwise, wrap it in a list

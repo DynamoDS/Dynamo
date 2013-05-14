@@ -2345,7 +2345,7 @@ namespace Dynamo.Controls
 
                     if (lacingAttrib != null)
                     {
-                        LacingStrategy lacing = LacingStrategy.First;
+                        LacingStrategy lacing = LacingStrategy.Disabled;
                         Enum.TryParse(lacingAttrib.Value, out lacing);
                         el.ArgumentLacing = lacing;
                     }

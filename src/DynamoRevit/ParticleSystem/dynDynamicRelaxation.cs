@@ -20,6 +20,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.FSharp.Collections;
 using System.IO.Ports;
+using System.Windows.Media.Media3D;
+
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
@@ -33,10 +35,61 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
+
+    public abstract class dynParticleSystemBase : dynRevitTransactionNodeWithOneOutput, IDrawable, IClearable
+    {
+        protected List<XYZ> pts = new List<XYZ>();
+
+        protected List<Curve> crvs = new List<Curve>();
+
+        //public RenderDescription Draw()
+        //{
+        //    RenderDescription rd = new RenderDescription();
+        //    foreach (Curve c in crvs)
+        //        DrawCurve(ref rd, c);
+        //    return rd;
+        //}
+
+        //public void ClearReferences()
+        //{
+        //    crvs.Clear();
+        //}
+
+        private void DrawCurve(ref RenderDescription description, Curve curve)
+        {
+            IList<XYZ> points = curve.Tessellate();
+
+            for (int i = 0; i < points.Count; ++i)
+            {
+                XYZ xyz = points[i];
+
+                description.lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+
+                if (i == 0 || i == (points.Count - 1))
+                    continue;
+
+                description.lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+            }
+        }
+
+        public RenderDescription Draw()
+        {
+            RenderDescription rd = new RenderDescription();
+            foreach (XYZ pt in pts)
+                rd.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
+            return rd;
+        }
+
+        public void ClearReferences()
+        {
+            pts.Clear();
+        }
+    }
+
     [NodeName("Create Particle System")]
     [NodeCategory(BuiltinNodeCategories.SIMULATION)]
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
-    class dynDynamicRelaxation : dynRevitTransactionNodeWithOneOutput
+    class dynDynamicRelaxation :  dynParticleSystemBase
     {
         ParticleSystem particleSystem;
         //private int extraParticlesCounter = 0;
@@ -64,7 +117,7 @@ namespace Dynamo.Nodes
 
         void setupLineTest(int maxPartX, int maxPartY, double springDampening, double springRestLength, double springConstant, double mass)
         {
-
+            XYZ partXYZ;
             double stepSize = 20;
 
             for (int j = 0; j < maxPartY; j++) // Y axis is outer loop
@@ -73,11 +126,16 @@ namespace Dynamo.Nodes
                 {
                     if (i == 0)
                     {
-                        Particle a = particleSystem.makeParticle(mass, new XYZ(0, j*stepSize, 0), true);
+                        partXYZ = new XYZ(0, j*stepSize, 0);
+                        Particle a = particleSystem.makeParticle(mass, partXYZ, true);
+                        pts.Add(partXYZ);
+                        
                     }
                     else
                     {
-                        Particle b = particleSystem.makeParticle(mass, new XYZ(i * stepSize, j*stepSize, 0), false);
+                        partXYZ = new XYZ(i * stepSize, j * stepSize, 0);
+                        Particle b = particleSystem.makeParticle(mass, partXYZ, false);
+                        pts.Add(partXYZ);
                         particleSystem.makeSpring(particleSystem.getParticle((i - 1)+(j*maxPartX)), b, springRestLength, springConstant, springDampening);
                     }
                     if (i == maxPartX - 1)
@@ -137,7 +195,8 @@ namespace Dynamo.Nodes
             Particle p;
             Particle p2;
             XYZ partXYZ1 = pt1.Position;
-            Particle fixedPart1 = particleSystem.makeParticleFromElementID(pt1.Id, mass, pt1.Position, true); // true means 'make fixed'
+            Particle fixedPart1 = particleSystem.makeParticleFromElementID(pt1.Id, mass, partXYZ1, true); // true means 'make fixed'
+            pts.Add(partXYZ1);
 
             XYZ partXYZ2 = pt2.Position;
             Line tempLine = this.UIDocument.Application.Application.Create.NewLineBound(partXYZ1, partXYZ2);
@@ -152,12 +211,14 @@ namespace Dynamo.Nodes
                     curveParam = (double)j / numX;
                     pointOnLine = tempLine.Evaluate(curveParam, true);
                     p = particleSystem.makeParticle(mass, pointOnLine, true); // make first particle fixed
+                    pts.Add(pointOnLine);
                 }
                 else // middle points
                 {
                     curveParam = (double)j / numX;
                     pointOnLine = tempLine.Evaluate(curveParam, true);
                     p = particleSystem.makeParticle(mass, pointOnLine, false); // make a new particle along curve at j-th point on line
+                    pts.Add(pointOnLine);
                     particleSystem.makeSpring(particleSystem.getParticle((j - 1)), p, springRestLength, springConstant, springDampening);//make a new spring and connect it to the last-made point
                 }
                 if (j == numX - 1) //last free point, connect with fixed end point
@@ -165,6 +226,7 @@ namespace Dynamo.Nodes
                     curveParam = (double)(j + 1) / numX; // last point 
                     pointOnLine = tempLine.Evaluate(curveParam, true);
                     p2 = particleSystem.makeParticle(mass, pointOnLine, true); // make last particle fixed
+                    pts.Add(pointOnLine);
                     particleSystem.makeSpring(p, p2, springRestLength, springConstant, springDampening);//make a new spring and connect the j-th point to the fixed point
 
                 }
@@ -371,7 +433,7 @@ namespace Dynamo.Nodes
     [NodeName("Dynamic Relaxation Step")]
     [NodeDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
     [NodeCategory(BuiltinNodeCategories.SIMULATION)]
-    public class dynDynamicRelaxationStep: dynNodeWithOneOutput
+    public class dynDynamicRelaxationStep : dynParticleSystemBase
     {
         public dynDynamicRelaxationStep()
         {
@@ -398,7 +460,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZs from Particle System")]
     [NodeDescription("Creates XYZs from a Particle System.")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
-    public class dynXYZsFromPS: dynNodeWithOneOutput
+    public class dynXYZsFromPS : dynParticleSystemBase
     {
         public dynXYZsFromPS()
         {
@@ -432,7 +494,7 @@ namespace Dynamo.Nodes
     [NodeName("Curves from Particle System")]
     [NodeDescription("Creates Curves from a Particle System.")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
-    public class dynCurvesFromPS: dynNodeWithOneOutput
+    public class dynCurvesFromPS : dynParticleSystemBase
     {
         public dynCurvesFromPS()
         {

@@ -82,6 +82,8 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
 
+            ArgumentLacing = LacingStrategy.Disabled;
+
             foreach (dynPortModel p in InPorts)
             {
                 p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
