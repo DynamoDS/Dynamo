@@ -105,11 +105,11 @@ namespace Dynamo.Search
             {
                 if (_selectedIndex != value)
                 {
-                    if (visibleResults.Count > _selectedIndex)
-                        visibleResults[_selectedIndex].IsSelected = false;
+                    if (_visibleSearchResults.Count > _selectedIndex)
+                        _visibleSearchResults[_selectedIndex].IsSelected = false;
                     _selectedIndex = value;
-                    if (visibleResults.Count > _selectedIndex)
-                        visibleResults[_selectedIndex].IsSelected = true;
+                    if (_visibleSearchResults.Count > _selectedIndex)
+                        _visibleSearchResults[_selectedIndex].IsSelected = true;
                     RaisePropertyChanged("SelectedIndex");
                 }
             }
@@ -185,12 +185,24 @@ namespace Dynamo.Search
         /// </value>
         public int MaxNumSearchResults { get; set; }
 
-        #endregion
+        /// <summary>
+        /// The root elements for the browser
+        /// </summary>
+        private ObservableCollection<BrowserRootElement> _browserRootCategories = new ObservableCollection<BrowserRootElement>();
+        public ObservableCollection<BrowserRootElement> BrowserRootCategories { get { return _browserRootCategories; } set { _browserRootCategories = value; } }
 
-        private ObservableCollection<BrowserRootElement> _browserItems = new ObservableCollection<BrowserRootElement>();
-        public ObservableCollection<BrowserRootElement> BrowserItems { get { return _browserItems; } set { _browserItems = value; } }
-
+        /// <summary>
+        /// A category represent the "Top Result"
+        /// </summary>
         private BrowserRootElement _topResult;
+
+        /// <summary>
+        ///     An ordered list representing all of the visible items in the browser.
+        ///     This is used to manage up-down navigation through the menu.
+        /// </summary>
+        private List<BrowserItem> _visibleSearchResults = new List<BrowserItem>();
+
+        #endregion
 
         /// <summary>
         ///     The class constructor.
@@ -203,7 +215,7 @@ namespace Dynamo.Search
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             SearchResults = new ObservableCollection<SearchElementBase>();
-            MaxNumSearchResults = 100;
+            MaxNumSearchResults = 20;
             Visible = Visibility.Collapsed;
             _SearchText = "";
             IncludeOptionalElements = false; // revit api
@@ -213,8 +225,28 @@ namespace Dynamo.Search
             AddHomeToSearch();
             AddCommandElements();
 
-            _topResult = new BrowserRootElement("Top Result", BrowserItems);
-            BrowserItems.Add(_topResult);
+            InitBuiltInNodeCategories();
+        }
+
+        private void InitBuiltInNodeCategories()
+        {
+            _topResult = this.AddRootCategory("Top Result");
+            this.AddRootCategory(BuiltinNodeCategories.CORE);
+            this.AddRootCategory(BuiltinNodeCategories.LOGIC);
+            this.AddRootCategory(BuiltinNodeCategories.CREATEGEOMETRY);
+            this.AddRootCategory(BuiltinNodeCategories.MODIFYGEOMETRY);
+            this.AddRootCategory(BuiltinNodeCategories.REVIT);
+            this.AddRootCategory(BuiltinNodeCategories.IO);
+            this.AddRootCategory(BuiltinNodeCategories.SCRIPTING);
+            this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
+        }
+
+        private BrowserRootElement AddRootCategory(string name)
+        {
+            var ele = new BrowserRootElement(name, BrowserRootCategories);
+            BrowserRootCategories.Add(ele);
+            this._browserCategoryDict.Add(name, ele);
+            return ele;
         }
 
         /// <summary>
@@ -224,9 +256,6 @@ namespace Dynamo.Search
         {
             SearchDictionary.Add(new WorkspaceSearchElement("Home", "Navigate to Home Workspace"), "Home");
         }
-
-        List<BrowserItem> visibleResults = new List<BrowserItem>();
-
 
         /// <summary>
         ///     Asynchronously performs a search and updates the observable SearchResults property.
@@ -246,7 +275,7 @@ namespace Dynamo.Search
                 }).ContinueWith((t) =>
                     {
 
-                        lock (visibleResults)
+                        lock (_visibleSearchResults)
                         {
 
                             // return old top result to original parent
@@ -256,19 +285,19 @@ namespace Dynamo.Search
                             }
 
                             // deselect the last selected item
-                            if (visibleResults.Count > SelectedIndex)
+                            if (_visibleSearchResults.Count > SelectedIndex)
                             {
-                                visibleResults[SelectedIndex].IsSelected = false;
+                                _visibleSearchResults[SelectedIndex].IsSelected = false;
                             }
 
                             // clear visible results list
-                            visibleResults.Clear();
+                            _visibleSearchResults.Clear();
 
                             // if the search query is empty, go back to the default treeview
                             if (string.IsNullOrEmpty(query) || query == "Search...")
                             {
 
-                                foreach (var ele in BrowserItems)
+                                foreach (var ele in BrowserRootCategories)
                                 {
                                     ele.CollapseToLeaves();
                                     ele.SetVisibilityToLeaves(Visibility.Visible);
@@ -281,7 +310,7 @@ namespace Dynamo.Search
                             }
                             
                             // otherwise, first collapse all
-                            foreach (var root in BrowserItems)
+                            foreach (var root in BrowserRootCategories)
                             {
                                 root.CollapseToLeaves();
                                 root.SetVisibilityToLeaves(Visibility.Collapsed);
@@ -310,18 +339,19 @@ namespace Dynamo.Search
                                 }
                             }
 
+                            // create an ordered list of visible search results
                             var baseBrowserItem = new BrowserRootElement("root");
-                            foreach (var root in BrowserItems)
+                            foreach (var root in BrowserRootCategories)
                             {
                                 baseBrowserItem.Items.Add(root);
                             }
 
-                            baseBrowserItem.GetVisibleLeaves(ref visibleResults);
+                            baseBrowserItem.GetVisibleLeaves(ref _visibleSearchResults);
 
-                            if (visibleResults.Any())
+                            if (_visibleSearchResults.Any())
                             {
                                 this.SelectedIndex = 0;
-                                visibleResults[0].IsSelected = true;
+                                _visibleSearchResults[0].IsSelected = true;
                             }
                         }
 
@@ -535,9 +565,9 @@ namespace Dynamo.Search
             if (SelectedIndex == -1)
                 return;
 
-            if (visibleResults[SelectedIndex] is SearchElementBase)
+            if (_visibleSearchResults[SelectedIndex] is SearchElementBase)
             {
-                ( (SearchElementBase) visibleResults[SelectedIndex]).Execute();
+                ( (SearchElementBase) _visibleSearchResults[SelectedIndex]).Execute();
             }
             //SearchResults[SelectedIndex].Execute();
         }
@@ -625,14 +655,23 @@ namespace Dynamo.Search
             
         }
 
-        public Dictionary<string, BrowserItem> BrowserCategories = new Dictionary<string, BrowserItem>();
+        /// <summary>
+        ///     A helper dictionary to keep track of currently added 
+        ///     categories.
+        /// </summary>
+        private Dictionary<string, BrowserItem> _browserCategoryDict = new Dictionary<string, BrowserItem>();
 
+        /// <summary>
+        ///     Attempt to add a new category to the browser and an item as one of its children
+        /// </summary>
+        /// <param name="category">The name of the category - a string possibly separated with one period </param>
+        /// <param name="item">The item to add as a child of that category</param>
         public void TryAddCategoryAndItem( string category, BrowserInternalElement item )
         {
-            if (BrowserCategories.ContainsKey(category)) // add item to existing category
+            if (_browserCategoryDict.ContainsKey(category)) // add item to existing category
             {
-                item.Parent = BrowserCategories[category];
-                BrowserCategories[category].Items.Add(item); 
+                item.Parent = _browserCategoryDict[category];
+                _browserCategoryDict[category].Items.Add(item); 
             } 
             else if (category.Contains(".")) // split into multiple categories 
             {
@@ -646,27 +685,27 @@ namespace Dynamo.Search
                 else if (items.Count() == 2) // create first, second level category and add item
                 {
                     BrowserRootElement parentCat;
-                    if (!BrowserCategories.ContainsKey(items[0]))
+                    if (!_browserCategoryDict.ContainsKey(items[0]))
                     {
-                        parentCat = new BrowserRootElement(items[0], BrowserItems);
-                        BrowserItems.Add(parentCat); 
-                        BrowserCategories.Add(items[0], parentCat);
+                        parentCat = new BrowserRootElement(items[0], BrowserRootCategories);
+                        BrowserRootCategories.Add(parentCat); 
+                        _browserCategoryDict.Add(items[0], parentCat);
                     }
                     else
                     {
-                        parentCat = (BrowserRootElement) BrowserCategories[items[0]];
+                        parentCat = (BrowserRootElement) _browserCategoryDict[items[0]];
                     }
 
                     BrowserInternalElement browserCat;
-                    if (!BrowserCategories.ContainsKey(category))
+                    if (!_browserCategoryDict.ContainsKey(category))
                     {
                         browserCat = new BrowserInternalElement(items[1], parentCat.Items, parentCat);
-                        BrowserCategories.Add(category, browserCat);
+                        _browserCategoryDict.Add(category, browserCat);
                         parentCat.AddChild(browserCat);
                     }
                     else
                     {
-                        browserCat = (BrowserInternalElement)BrowserCategories[category];
+                        browserCat = (BrowserInternalElement)_browserCategoryDict[category];
                     }
                     
                     browserCat.AddChild(item);
@@ -677,11 +716,11 @@ namespace Dynamo.Search
             else // a new category
             {
 
-                var browserCat = new BrowserRootElement(category, BrowserItems);
-                BrowserCategories.Add(category, browserCat);
+                var browserCat = new BrowserRootElement(category, BrowserRootCategories);
+                _browserCategoryDict.Add(category, browserCat);
                 browserCat.Items.Add(item);
 
-                BrowserItems.Add(browserCat);
+                BrowserRootCategories.Add(browserCat);
 
             }
 

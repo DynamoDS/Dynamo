@@ -62,6 +62,12 @@ namespace Dynamo.Nodes
         public const string CORE_EVALUATE = "Core.Evaluate";
         public const string CORE_TIME = "Core.Time";
 
+        public const string LOGIC = "Logic";
+        public const string LOGIC_MATH = "Logic.Math";
+        public const string LOGIC_COMPARISON = "Logic.Comparison";
+        public const string LOGIC_CONDITIONAL = "Logic.Conditional";
+        public const string LOGIC_LOOP = "Logic.Loop";
+
         public const string CREATEGEOMETRY = "Create Geometry";
         public const string CREATEGEOMETRY_POINT = "Create Geometry.Point";
         public const string CREATEGEOMETRY_CURVE = "Create Geometry.Curve";
@@ -81,12 +87,6 @@ namespace Dynamo.Nodes
         public const string REVIT_PARAMETERS = "Revit.Parameters";
         public const string REVIT_BAKE = "Revit.Bake";
         public const string REVIT_API = "Revit.API";
-
-        public const string LOGIC = "Logic";
-        public const string LOGIC_MATH = "Logic.Math";
-        public const string LOGIC_COMPARISON = "Logic.Comparison";
-        public const string LOGIC_CONDITIONAL = "Logic.Conditional";
-        public const string LOGIC_LOOP = "Logic.Loop";
 
         public const string IO = "Input/Output";
         public const string IO_FILE = "Input/Output.File";
@@ -108,6 +108,8 @@ namespace Dynamo.Nodes
         public const string SCRIPTING_DESIGNSCRIPT = "Scripting.DesignScript";
 
     }
+
+
 
     static class Utilities
     {
