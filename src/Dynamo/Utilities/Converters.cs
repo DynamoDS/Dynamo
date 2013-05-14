@@ -22,7 +22,7 @@ namespace Dynamo.Controls
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if (item is BrowserCategory)
+            if (item is BrowserInternalElement)
             {
                 return BrowserCategoryTemplate;
             } else

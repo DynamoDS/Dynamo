@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace Dynamo.Nodes.Search
 {
 
-    public class RootBrowserCategory : BrowserItem
+    public class BrowserRootElement : BrowserItem
     {
 
         /// <summary>
@@ -16,7 +17,7 @@ namespace Dynamo.Nodes.Search
         private ObservableCollection<BrowserItem> _items = new ObservableCollection<BrowserItem>();
         public override ObservableCollection<BrowserItem> Items { get { return _items; } set { _items = value; } }
 
-        public ObservableCollection<RootBrowserCategory> Siblings { get; set; }
+        public ObservableCollection<BrowserRootElement> Siblings { get; set; }
 
         /// <summary>
         /// Name property </summary>
@@ -28,16 +29,23 @@ namespace Dynamo.Nodes.Search
             get { return _name; }
         }
 
-        public RootBrowserCategory(string name, ObservableCollection<RootBrowserCategory> siblings)
+        public BrowserRootElement(string name, ObservableCollection<BrowserRootElement> siblings)
         {
             this.Height = 32;
             this.Siblings = siblings;
             this._name = name;
         }
 
+        public BrowserRootElement(string name)
+        {
+            this.Height = 32;
+            this.Siblings = null;
+            this._name = name;
+        }
+
     }
 
-    public class BrowserCategory : BrowserItem
+    public class BrowserInternalElement : BrowserItem
     {
 
         /// <summary>
@@ -46,7 +54,32 @@ namespace Dynamo.Nodes.Search
         private ObservableCollection<BrowserItem> _items = new ObservableCollection<BrowserItem>();
         public override ObservableCollection<BrowserItem> Items { get { return _items; } set { _items = value; } }
 
-        public ObservableCollection<BrowserItem> Siblings { get; set; }
+        public ObservableCollection<BrowserItem> Siblings { get { return this.Parent.Items; } }
+
+        public BrowserItem Parent { get; set; }
+        public BrowserItem OldParent { get; set; }
+
+        public void ReturnToOldParent()
+        {
+            if (this.OldParent == null) return;
+
+            this.OldParent.AddChild(this);
+        }
+
+        public void ExpandToRoot()
+        {
+            if (this.Parent == null)
+                return;
+
+            this.Parent.IsExpanded = true;
+            this.Parent.Visibility = Visibility.Visible;
+
+            var parent = Parent as BrowserInternalElement;
+            if (parent != null)
+            {
+                parent.ExpandToRoot();
+            }
+        }
 
         /// <summary>
         /// Name property </summary>
@@ -58,16 +91,18 @@ namespace Dynamo.Nodes.Search
             get { return _name; }
         }
 
-        public BrowserCategory()
+        public BrowserInternalElement()
         {
             this._name = "Default";
-            this.Siblings = new ObservableCollection<BrowserItem>();
+            this.Parent = null;
+            this.OldParent = null;
         }
 
-        public BrowserCategory(string name, ObservableCollection<BrowserItem> siblings)
+        public BrowserInternalElement(string name, ObservableCollection<BrowserItem> siblings, BrowserItem parent)
         {
-            this.Siblings = siblings;
             this._name = name;
+            this.Parent = parent;
+            this.OldParent = null;
         }
 
     }

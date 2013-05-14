@@ -101,7 +101,7 @@ limitations under the License.
     <Compile Include="Models\dynModelBase.cs" />
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
-    <Compile Include="Search\BrowserCategory.cs" />
+    <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />

@@ -54,168 +54,13 @@ Source="..\Images\search_24.png" Opacity="1">
 
       </StackPanel>
 
-        <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="RSearchResultsScrollView" VerticalAlignment="Stretch" Focusable="False" Visibility="{Binding SearchVisibility}"
-                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Row="1">
-
-            <ScrollViewer.Resources>
-
-                <Style x:Key="myLBStyle" TargetType="ListBoxItem">
-
-                    <Style.Resources>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFF"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FFF" />
-                    </Style.Resources>
-
-                    <Style.Setters>
-                        <Setter Property="Focusable" Value="False" />
-                        <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
-                        <EventSetter Event="MouseLeftButtonUp" Handler="ListBoxItem_Click"/>
-                    </Style.Setters>
-
-                </Style>
-
-            </ScrollViewer.Resources>
-
-            <ListBox Name="SearchResultsListBox" Focusable="False" ItemContainerStyle="{StaticResource myLBStyle}" ItemsSource="{Binding Path=SearchResults}" BorderThickness="0" Padding="0" Background="Black" SelectedIndex="{Binding Path=SelectedIndex}" >
-
-                <ListBox.ItemTemplate >
-
-                    <DataTemplate>
-
-                        <Grid Width ="279" Name="SearchEle" VerticalAlignment="Stretch" HorizontalAlignment="Left" Background="#CC000000">
-
-                            <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" MaxWidth="200" Foreground="AliceBlue" Padding="10,5,0,10"/>
-                            <TextBlock FontSize="11" Name="description" Visibility="Collapsed" HorizontalAlignment="Left" MaxWidth="260" TextWrapping ="Wrap" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 30, 0, 10" />
-                            <!--<TextBlock FontSize="10" Name="keywords" Text="{Binding Path=Keywords}" HorizontalAlignment="Right" Foreground="Gray"  Padding="10, 20, 10, 0"/>-->
-                            <TextBlock FontSize="11" Name="type" Text="{Binding Path=Type}" Foreground="Azure" HorizontalAlignment="Right" Padding="10, 5, 10, 0"/>
-
-                            <Line X1="0" X2="279" Stroke="DimGray" Y1="0" Y2="0" />
-
-                        </Grid>
-
-                        <DataTemplate.Triggers>
-
-                            <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Node">
-                                <DataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Visible" TargetName="description" />
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Workspace">
-                                <DataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Visible" TargetName="description" />
-                                    <Setter Property="Background" Value="#EE1A1600" TargetName="SearchEle" />
-                                    <Setter Property="Foreground" Value="Gold" TargetName="type" />
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Community Node">
-                                <DataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Visible" TargetName="description" />
-                                    <Setter Property="Background" Value="#EE0C1900" TargetName="SearchEle" />
-                                    <Setter Property="Foreground" Value="#FF7CFC00" TargetName="type" />
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Command">
-                                <DataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Visible" TargetName="description" />
-                                    <Setter Property="Background" Value="#DD29001F" TargetName="SearchEle" />
-                                    <Setter Property="Foreground" Value="#FFD633AD" TargetName="type" />
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Category">
-                                <DataTrigger.Setters>
-                                    <Setter Property="Padding" Value="10, 5, 75, 0" TargetName="description" />
-                                    <Setter Property="FontSize" Value="10" TargetName="description" />
-                                    <Setter Property="HorizontalAlignment" Value="Right" TargetName="description" />
-                                    <Setter Property="Visibility" Value="Visible" TargetName="description" />
-                                    <Setter Property="Background" Value="#EE111617" TargetName="SearchEle" />
-                                    <Setter Property="Foreground" Value="#FFADD8E6" TargetName="type" />
-                                </DataTrigger.Setters>
-
-                            </DataTrigger>
-
-                        </DataTemplate.Triggers>
-
-                    </DataTemplate>
-
-                </ListBox.ItemTemplate>
-
-            </ListBox>
-            
-            <ScrollViewer.RenderTransform>
-                <ScaleTransform ScaleY="0"></ScaleTransform>
-            </ScrollViewer.RenderTransform>
-            
-            <ScrollViewer.Style>
-                <Style TargetType="ScrollViewer">
-                    <Style.Triggers>
-                        
-                        <Trigger Property="Visibility" Value="Visible">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                                             To="1"
-                                                             Duration="0:0:0.1" />
-
-                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                             To="1"
-                                                             Duration="0:0:0.2" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-
-                            <Trigger.ExitActions>
-
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                                             To="0"
-                                                             Duration="0:0:0.1" />
-
-                                        <DoubleAnimation
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0"
-                                                             Duration="0:0:0.1" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-
-                            </Trigger.ExitActions>
-
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-                    
-            </ScrollViewer.Style>
-            
-                
-        </ScrollViewer>
-
         <ScrollViewer Visibility="{Binding BrowserVisibility}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
-                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Row="1">
+                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Row="1" >
 
             <ScrollViewer.Resources>
 
-                <Style x:Key="SearchListBoxStyle" TargetType="ListBoxItem">
-
-                    <Style.Resources>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFF"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FFF" />
-                    </Style.Resources>
-
-                    <Style.Setters>
-                        <Setter Property="Focusable" Value="False" />
-                        <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
-                        <EventSetter Event="MouseLeftButtonUp" Handler="ListBoxItem_Click"/>
-                    </Style.Setters>
-
-                    
-                </Style>
-                
                 <Style x:Key="SearchTreeView" TargetType="{x:Type TreeView}">
+                    <Setter Property="Focusable" Value="False"></Setter>
                     <Setter Property="Background" Value="Black"/>
                     <Setter Property="Foreground" Value="WhiteSmoke"/>
                     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
@@ -235,17 +80,7 @@ Source="..\Images\search_24.png" Opacity="1">
                     </Setter>
                     
                 </Style>
-                
-                <Style x:Key="TreeViewItemFocusVisual">
-                    <Setter Property="Control.Template">
-                        <Setter.Value>
-                            <ControlTemplate>
-                                <Rectangle/>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-                
+
                 <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
                     <Setter Property="Focusable" Value="False"/>
                     <Setter Property="Width" Value="32"/>
@@ -276,24 +111,25 @@ Source="..\Images\search_24.png" Opacity="1">
                 </Style>
                 
                 <Style TargetType="{x:Type TreeViewItem}">
-                    
-                    <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                    <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                    <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
+                    <Setter Property="Focusable" Value="False"></Setter>
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded}"></Setter>
-                    <Setter Property="Background" Value="Black"></Setter>
+                    <Setter Property="IsSelected" Value="{Binding IsSelected}"></Setter>
+                    <Setter Property="Visibility" Value="{Binding Visibility}"></Setter>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
 
-                                <Button Command="{Binding ToggleIsExpanded}" >
+                                <Button Command="{Binding ToggleIsExpanded}">
+                                    <Button.Focusable>False</Button.Focusable>
+                                    
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <ContentPresenter />
                                         </ControlTemplate>
                                     </Button.Template>
+                                    
                                     <Border Name="ContainerLight" BorderThickness="3,0,0,0" BorderBrush="#222">
-                                        <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222">
+                                        <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" >
                                             <Grid MinHeight="{Binding Height}">
 
                                                 <Grid.ColumnDefinitions>
@@ -307,7 +143,7 @@ Source="..\Images\search_24.png" Opacity="1">
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
 
-                                                <ToggleButton VerticalAlignment="Center" x:Name="Expander" Background="{TemplateBinding Foreground}" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
+                                                <ToggleButton VerticalAlignment="Center" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
 
                                                 <Rectangle Width="7" Height="7" x:Name="whiteRect" Margin="3,0" VerticalAlignment="Center" Fill="#FFFFFF" HorizontalAlignment="Center" Visibility="Collapsed" />
 
@@ -315,64 +151,16 @@ Source="..\Images\search_24.png" Opacity="1">
                                                     <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" x:Name="PART_Header" ContentSource="Header"/>
                                                 </Border>
 
-                                                <Border Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" ClipToBounds="True">
-                                                    
-                                                    <!--<Border.LayoutTransform>
-                                                        <ScaleTransform ScaleY="1"/>
-                                                    </Border.LayoutTransform>-->
-                                                    
-                                                    <ItemsPresenter x:Name="ItemsHost" Opacity="0">
-                                                        <ItemsPresenter.RenderTransform>
-                                                            <ScaleTransform ScaleY="0"/>
-                                                        </ItemsPresenter.RenderTransform>
-                                                    </ItemsPresenter>
-
-                                                </Border>
+                                                <ItemsPresenter Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"  x:Name="ItemsHost" />
                                                 
                                             </Grid>
+
                                         </Border>
+                                        
                                     </Border>
                                 </Button>
 
                                 <ControlTemplate.Triggers>
-
-                                    <Trigger Property="IsExpanded" Value="true">
-                                        <Trigger.EnterActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <DoubleAnimation Storyboard.TargetName="ItemsHost"
-                                                         Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                                         To="1"
-                                                         Duration="0:0:0.2" />
-                                                    
-                                                    <DoubleAnimation Storyboard.TargetName="ItemsHost"
-                                                         Storyboard.TargetProperty="Opacity"
-                                                         To="1"
-                                                         Duration="0:0:0.32" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </Trigger.EnterActions>
-
-                                        <Trigger.ExitActions>
-                                            
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <DoubleAnimation Storyboard.TargetName="ItemsHost"
-                                                         Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                                         To="0"
-                                                         Duration="0:0:0.0" />
-
-                                                    <DoubleAnimation Storyboard.TargetName="ItemsHost"
-                                                         Storyboard.TargetProperty="Opacity"
-                                                         To="0"
-                                                         Duration="0:0:0.0" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                            
-                                        </Trigger.ExitActions>
-
-                                    </Trigger>
-
 
                                     <Trigger Property="IsExpanded" Value="false">
                                         <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
@@ -383,32 +171,44 @@ Source="..\Images\search_24.png" Opacity="1">
                                         <Setter Property="BorderBrush" TargetName="ContainerLight" Value="White"/>
                                     </Trigger>
                                     
-                                    <Trigger Property="IsMouseOver" Value="true">
-                                        <Setter Property="Background" Value="Red"/>
-                                    </Trigger>
-                                    
                                     <Trigger Property="HasItems" Value="false">
                                         <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
                                         <Setter Property="Visibility" TargetName="whiteRect" Value="Visible"/>
                                     </Trigger>
-                                    
+
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter Property="Background" TargetName="Bd" Value="#555"/>
+                                    </Trigger>
+
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="true"/>
+                                            <Condition Property="IsExpanded" Value="false"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" TargetName="Bd" Value="#333"/>
+                                    </MultiTrigger>
+
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
                                             <Condition Property="IsMouseOver" Value="true"/>
                                             <Condition Property="HasItems" Value="false"/>
                                         </MultiTrigger.Conditions>
+                                        <Setter Property="Background" TargetName="Bd" Value="#444"/>
                                     </MultiTrigger>
-                                    <MultiTrigger>
+
+                                    <!--<MultiTrigger>
                                         <MultiTrigger.Conditions>
                                             <Condition Property="IsSelected" Value="true"/>
                                             <Condition Property="IsSelectionActive" Value="false"/>
                                         </MultiTrigger.Conditions>
                                         <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
                                         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-                                    </MultiTrigger>
+                                    </MultiTrigger>-->
+                                    
                                     <Trigger Property="IsEnabled" Value="false">
                                         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                                     </Trigger>
+                                    
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
@@ -418,22 +218,27 @@ Source="..\Images\search_24.png" Opacity="1">
 
             <!--CATEGORIES-->
 
+
             <TreeView ItemsSource="{Binding Path=BrowserItems}" Style="{StaticResource SearchTreeView}" BorderThickness="0">
                 
                 <TreeView.Resources>
 
-                    <HierarchicalDataTemplate DataType = "{x:Type search:RootBrowserCategory}" ItemsSource="{Binding Path=Items}" >
+                    <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
                         
                         <TextBlock Foreground="WhiteSmoke" FontSize="14" Text="{Binding Path=Name}"/>
                         
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType = "{x:Type search:BrowserCategory}" ItemsSource="{Binding Path=Items}">
+                    <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
+                        
                         <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
+                        
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type searchElements:LocalSearchElement}">
+                        
                         <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
+                        
                     </HierarchicalDataTemplate>
 
                 </TreeView.Resources>
@@ -441,6 +246,7 @@ Source="..\Images\search_24.png" Opacity="1">
             </TreeView>
             
         </ScrollViewer>
+
 
     </Grid>
 

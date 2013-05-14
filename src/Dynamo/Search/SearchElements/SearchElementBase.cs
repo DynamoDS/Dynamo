@@ -18,7 +18,7 @@ namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A base class for elements found in search </summary>
-    public abstract class SearchElementBase : BrowserCategory
+    public abstract class SearchElementBase : BrowserInternalElement
     {
 
         /// <summary>
