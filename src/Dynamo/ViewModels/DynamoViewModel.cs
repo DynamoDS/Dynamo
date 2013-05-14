@@ -66,6 +66,7 @@ namespace Dynamo.Controls
 
         private Point transformOrigin;
         private bool consoleShowing;
+        private bool fullscreenWatchShowing;
         private DynamoController controller;
         public StringWriter sw;
         private bool runEnabled = true;
@@ -174,6 +175,16 @@ namespace Dynamo.Controls
             {
                 consoleShowing = value;
                 RaisePropertyChanged("ConsoleShowing");
+            }
+        }
+
+        public bool FullscreenWatchShowing
+        {
+            get { return fullscreenWatchShowing; }
+            set
+            {
+                fullscreenWatchShowing = value;
+                RaisePropertyChanged("FullscreenWatchShowing");
             }
         }
 
