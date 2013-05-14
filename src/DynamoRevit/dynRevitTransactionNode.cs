@@ -211,12 +211,21 @@ namespace Dynamo.Revit
 
         public static void DrawGeometryElement(RenderDescription description, object obj)
         {
-            GeometryElement gelem = obj as GeometryElement;
-
-            foreach (GeometryObject go in gelem)
+            try
             {
-                DrawGeometryObject(description, go);
+                GeometryElement gelem = obj as GeometryElement;
+
+                foreach (GeometryObject go in gelem)
+                {
+                    DrawGeometryObject(description, go);
+                }
             }
+            catch (Exception ex)
+            {
+                dynSettings.Controller.DynamoViewModel.Log(ex.Message);
+                dynSettings.Controller.DynamoViewModel.Log(ex.StackTrace);
+            }
+
         }
 
         // Why the if/else statements? Most dynRevitTransactionNode are created
@@ -228,6 +237,10 @@ namespace Dynamo.Revit
             //string path = @"C:\Temp\" + System.Guid.NewGuid().ToString() + ".txt";
             //System.IO.File.WriteAllText(path, obj.GetType().Name);
 
+            if (typeof(Autodesk.Revit.DB.XYZ).IsAssignableFrom(obj.GetType()))
+            {
+                DrawXYZ(description, obj);
+            }
             if (typeof(Autodesk.Revit.DB.Curve).IsAssignableFrom(obj.GetType()))
             {
                 DrawCurve(description, obj);
