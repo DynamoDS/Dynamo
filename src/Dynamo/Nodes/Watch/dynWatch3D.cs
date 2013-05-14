@@ -34,30 +34,44 @@ using System.Windows.Controls;
 
 namespace Dynamo.Nodes
 {
-    public abstract class dynWatch3D : dynNodeWithOneOutput
+    [NodeName("Watch 3D")]
+    [NodeCategory(BuiltinNodeCategories.DEBUG)]
+    [NodeDescription("Shows a dynamic preview of geometry.")]
+    public class dynWatch3D : dynNodeWithOneOutput
     {
-        protected WatchView _watchView;
+        WatchView _watchView;
 
-        protected PointsVisual3D _points;
-        protected LinesVisual3D _lines;
-        protected List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
+        private PointsVisual3D _points;
+        private LinesVisual3D _lines;
+        private List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
 
-        protected Point3DCollection Points { get; set; }
-        protected Point3DCollection Lines { get; set; }
-        protected List<Mesh3D> Meshes { get; set; }
+        public Point3DCollection Points { get; set; }
+        public Point3DCollection Lines { get; set; }
+        public List<Mesh3D> Meshes { get; set; }
 
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
         
-        protected bool _requiresRedraw = false;
-        protected bool _isRendering = false;
+        private bool _requiresRedraw = false;
+        private bool _isRendering = false;
 
         public dynWatch3D()
         {
+            InPortData.Add(new PortData("IN", "Incoming geometry objects.", typeof(object)));
+            OutPortData.Add(new PortData("OUT", "Watch contents, passed through", typeof(object)));
 
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
         {
+            MenuItem mi = new MenuItem();
+            mi.Header = "Zoom to Fit";
+            mi.Click += new RoutedEventHandler(mi_Click);
+
+            NodeUI.MainContextMenu.Items.Add(mi);
+
             //take out the left and right margins and make this so it's not so wide
             //NodeUI.inputGrid.Margin = new Thickness(10, 10, 10, 10);
 
@@ -82,6 +96,9 @@ namespace Dynamo.Nodes
 
             _watchView.watch_view.Children.Add(new DefaultLights());
 
+            _watchView.Width = 400;
+            _watchView.Height = 300;
+
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             backgroundRect.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
@@ -100,12 +117,10 @@ namespace Dynamo.Nodes
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
         }
 
-        protected void mi_Click(object sender, RoutedEventArgs e)
+        void mi_Click(object sender, RoutedEventArgs e)
         {
             _watchView.watch_view.ZoomExtents();
         }
-
-        protected abstract void GetIDrawablesForRendering(List<IDrawable> drawables);
 
         private void GetUpstreamIDrawable(List<IDrawable> drawables, Dictionary<int, Tuple<int, dynNodeModel>> inputs)
         {
@@ -146,7 +161,7 @@ namespace Dynamo.Nodes
             // a list of all the upstream IDrawable nodes
             List<IDrawable> drawables = new List<IDrawable>();
 
-            GetIDrawablesForRendering(drawables);
+            GetUpstreamIDrawable(drawables, Inputs);
 
             foreach (IDrawable d in drawables)
             {
@@ -196,56 +211,6 @@ namespace Dynamo.Nodes
             return vismesh;
         }
 
-
-    }
-
-    [NodeName("Watch 3D")]
-    [NodeCategory(BuiltinNodeCategories.DEBUG)]
-    [NodeDescription("Shows a dynamic preview of geometry.")]
-    public class dynWatch3DNode : dynWatch3D
-    {
-        public dynWatch3DNode()
-        {
-            InPortData.Add(new PortData("IN", "Incoming geometry objects.", typeof(object)));
-            OutPortData.Add(new PortData("OUT", "Watch contents, passed through", typeof(object)));
-
-            RegisterAllPorts();
-        }
-
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
-        {
-            MenuItem mi = new MenuItem();
-            mi.Header = "Zoom to Fit";
-            mi.Click += new RoutedEventHandler(mi_Click);
-
-            NodeUI.MainContextMenu.Items.Add(mi);
-
-            base.SetupCustomUIElements(NodeUI);
-
-            // this should be set to automatically resize into the Bench
-            _watchView.Width = 400;
-            _watchView.Height = 300;
-        }
-
-        private void GetUpstreamIDrawable(List<IDrawable> drawables, Dictionary<int, Tuple<int, dynNodeModel>> inputs)
-        {
-            foreach (KeyValuePair<int, Tuple<int, dynNodeModel>> pair in inputs)
-            {
-                dynNodeModel node = pair.Value.Item2;
-                IDrawable drawable = node as IDrawable;
-
-                if (drawable != null)
-                    drawables.Add(drawable);
-
-                GetUpstreamIDrawable(drawables, node.Inputs);
-            }
-        }
-
-        protected override void GetIDrawablesForRendering(List<IDrawable> drawables)
-        {
-            GetUpstreamIDrawable(drawables, Inputs);
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
@@ -254,49 +219,5 @@ namespace Dynamo.Nodes
 
             return input;
         }
-    }
-
-    [NodeName("Watch 3D Fullscreen")]
-    [NodeCategory(BuiltinNodeCategories.DEBUG)]
-    [NodeDescription("Shows a dynamic preview of geometry.")]
-    public class dynWatch3DFullscreen : dynWatch3D
-    {
-        public dynWatch3DFullscreen()
-        {
-        }
-
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
-        {
-            MenuItem mi = new MenuItem();
-            mi.Header = "Zoom to Fit";
-            mi.Click += new RoutedEventHandler(mi_Click);
-
-            NodeUI.MainContextMenu.Items.Clear();
-            NodeUI.MainContextMenu.Items.Add(mi);
-
-            base.SetupCustomUIElements(NodeUI);
-
-            // TODO: automatically resize the elements to the bench size
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var input = args[0];
-
-            _requiresRedraw = true;
-
-            return input;
-        }
-
-        protected override void GetIDrawablesForRendering(List<IDrawable> drawables)
-        {
-            // TODO: get all the nodes in the graph
-        }
-
-        public WatchView FullscreenWatchView()
-        {
-            return _watchView;
-        }
-
     }
 }
