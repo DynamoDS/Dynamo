@@ -510,8 +510,6 @@ namespace Dynamo.Nodes
             Curve crvRef = c.GeometryCurve;
             double t = 0;
 
-            pts.Clear();
-
             for (int xCount = 0; xCount < xi; xCount++)
             {
                 t = xCount / xi; // create normalized curve param by dividing current number by total number

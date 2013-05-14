@@ -116,7 +116,9 @@ namespace Dynamo.Nodes
 
                 double a2bDistance = Math.Abs(Math.Sqrt(a2b.X * a2b.X + a2b.Y * a2b.Y + a2b.Z * a2b.Z)); // MDJ vector norm http://mathworld.wolfram.com/VectorNorm.html != a2b.Normalize();
 
-                if (a2bDistance == 0)
+                if (a2bDistance == 0 || 
+                    double.IsInfinity(a2bDistance) || 
+                    double.IsNaN(a2bDistance))
                 {
                     a2b = new XYZ(0, 0, 0);
                 }

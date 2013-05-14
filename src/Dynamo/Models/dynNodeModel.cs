@@ -1236,7 +1236,6 @@ namespace Dynamo.Nodes
         {
             throw new NotImplementedException();
         }
-
     }
 
     #region class attributes
