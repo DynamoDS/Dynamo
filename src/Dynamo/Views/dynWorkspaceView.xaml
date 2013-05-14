@@ -18,7 +18,8 @@
 
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
         <ItemsControl ItemsSource="{Binding Watch3DViewModels}"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      Visibility="{Binding FullscreenWatchShowing, Converter={StaticResource BoolToFullscreenWatchVisibilityConverter}}">
             <ItemsControl.Resources>
 
                 <DataTemplate DataType="{x:Type controls:Watch3DFullscreenViewModel}">

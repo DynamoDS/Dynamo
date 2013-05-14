@@ -28,6 +28,7 @@
     <controls:PathToFileNameConverter x:Key="PathToFileNameConverter"/>
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
+    <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter"/>
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
     <controls:ShowHideClassicNavigatorMenuItemConverter x:Key="ShowHideClassicNavigatorMenuItemConverter"/>
     <controls:PortTypeToMarginConverter x:Key="PortTypeToMarginConverter"/>
@@ -35,4 +36,5 @@
     <controls:PortTypeToGridColumnConverter x:Key="PortTypeToGridColumnConverter"/>
     <controls:PortTypeToClipConverter x:Key="PortTypeToClipConverter"/>
     <controls:BoolToConsoleHeightConverter x:Key="BoolToConsoleHeightConverter"/>
+    <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter"/>
 </ResourceDictionary>

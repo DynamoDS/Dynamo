@@ -264,6 +264,10 @@ namespace Dynamo.Search
                                                     new List<string> {"console", "view"},
                                                     dynSettings.Controller.DynamoViewModel.ToggleConsoleShowingCommand),
                                  "ToggleConsoleVisibility");
+            SearchDictionary.Add(new CommandElement("ToggleFullscreenWatchVisibility", "Toggle the background fullscreen geometry preview",
+                                                    new List<string> { "fullscreenWatch", "view" },
+                                                    dynSettings.Controller.DynamoViewModel.ToggleFullscreenWatchShowingCommand),
+                                 "ToggleFullscreenWatchVisibility");
             SearchDictionary.Add(new CommandElement("Open", "Open a document...", new List<string>(),
                                                     dynSettings.Controller.DynamoViewModel
                                                                .ShowOpenDialogAndOpenResultCommand), "Open");

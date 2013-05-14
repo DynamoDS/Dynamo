@@ -156,8 +156,8 @@
 
             <MenuItem Header="_View" Name="viewMenu">
                 
-                <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                          Command="{Binding Path=ToggleConsoleShowingCommand}" />
+                <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
+                          Command="{Binding Path=ToggleFullscreenWatchShowingCommand}" />
                 
                 <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
                           Command="{Binding Path=ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>

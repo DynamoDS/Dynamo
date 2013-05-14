@@ -231,6 +231,32 @@ namespace Dynamo.Controls
         #endregion
     }
 
+    public class ShowHideFullscreenWatchMenuItemConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value == true)
+            {
+                return "Show grey background";
+            }
+            else
+            {
+                return "Show background geometry";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
     public class ShowHideClassicNavigatorMenuItemConverter : IValueConverter
     {
         #region IValueConverter Members
@@ -438,6 +464,22 @@ namespace Dynamo.Controls
             if (consoleShowing)
                 return 100.0;
             return 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class BoolToFullscreenWatchVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            bool fullscreenWatchShowing = (bool)value;
+            if (fullscreenWatchShowing)
+                return Visibility.Visible;
+            return Visibility.Hidden;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
