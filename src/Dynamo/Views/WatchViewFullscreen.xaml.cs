@@ -39,76 +39,9 @@ namespace Dynamo.Controls
 
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
 
-        private bool _requiresRedraw = false;
-
-        private List<IDrawable> _drawables = new List<IDrawable>();
-
-        public HelixViewport3D HelixView()
-        {
-            return watch_view;
-        }
-
-//<<<<<<< HEAD
-//        public void SetVisiblePoints(Point3DCollection pointPoints)
-//        {
-//            lock (_pointsCache)
-//            {
-//                _pointsCache = new Point3DCollection(pointPoints);
-//            }
-
-//            _requiresRedraw = true;
-//        }
-
-//        public void SetVisibleLines(Point3DCollection linePoints)
-//        {
-//            lock (_linesCache)
-//            {
-//                _linesCache = new Point3DCollection(linePoints);
-//            }
-            
-//            _requiresRedraw = true;
-//        }
-
-//        //public PointsVisual3D HelixPoints { get; set; }
-//        //public LinesVisual3D HelixLines { get; set; }
-
-//        public PointsVisual3D HelixPoints
-//        {
-//            get
-//            {
-//                return _points;
-//            }
-//            set
-//            {
-//                _points = value;
-//            }
-//        }
-
-//        public LinesVisual3D HelixLines
-//        {
-//            get
-//            {
-//                return _lines;
-//            }
-//            set
-//            {
-//                _lines = value;
-//            }
-//        }
-
-//=======
-//>>>>>>> 59083eed51eeb754ddea3315b2e17560b9b53d8a
-        void WatchViewFullscreen_Loaded(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
         public WatchViewFullscreen()
         {
             InitializeComponent();
-
-            // The DataContext isn't set in the constructor, so set a callback
-            this.Loaded += new RoutedEventHandler(WatchViewFullscreen_Loaded);
 
             MouseLeftButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_MouseButtonIgnore);
             MouseLeftButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseButtonIgnore);
@@ -120,8 +53,6 @@ namespace Dynamo.Controls
             mi.Click += new RoutedEventHandler(mi_Click);
 
             MainContextMenu.Items.Add(mi);
-
-            //watch_view.Children.Add(new DefaultLights());
 
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             Canvas.SetZIndex(backgroundRect, -10);
@@ -166,133 +97,6 @@ namespace Dynamo.Controls
                 e.Handled = true;
             }
         }
-
-        public void SetLatestDrawables(List<IDrawable> drawables)
-        {
-            _drawables = drawables;
-        }
-
-//<<<<<<< HEAD
-//        void CompositionTarget_Rendering(object sender, EventArgs e)
-//        {
-//            if (!_requiresRedraw)
-//                return;
-
-//            //lock (_points)
-//            //{
-//            //    lock (_pointsCache)
-//            //    {
-//            //        Point3DCollection other_points = _pointsCache;
-//            //        HelixPoints.Points = new Point3DCollection(_pointsCache);
-//            //    }
-//            //}
-
-//            //lock (_lines)
-//            //{
-//            //    lock (_linesCache)
-//            //    {
-//            //        _lines.Points = _linesCache;
-//            //    }
-//            //}
-
-//            //_points.Points = ViewModel._pointsCache;
-//            //_lines.Points = ViewModel._linesCache;
-
-//            //watch_view.Children.Clear();
-
-//            //PointsVisual3D pts = new PointsVisual3D { Color = Colors.Red, Size = 6 };
-//            //LinesVisual3D lines = new LinesVisual3D { Color = Colors.Blue, Thickness = 1 };
-
-//            Point3DCollection foo = new Point3DCollection();
-//            for (int i = 0; i < 100; i++)
-//            {
-//                foo.Add(new Point3D(i, 2, 3));
-//            }
-            
-//            HelixPoints.Points = foo;
-
-//            //_points.Points = _pointsCache;
-//            //lines.Points = _linesCache;
-
-//            //watch_view.Children.Add(pts);
-//            //watch_view.Children.Add(lines);
-            
-//            _requiresRedraw = false;
-//        }
-
-//=======
-//>>>>>>> 59083eed51eeb754ddea3315b2e17560b9b53d8a
-        public void Render() 
-        {
-            ////if (_isRendering)
-            ////    return;
-
-            ////if (!_requiresRedraw)
-            ////    return;
-
-            //_isRendering = true;
-
-            //Points = null;
-            //Lines = null;
-            //_lines.Points = null;
-            //_points.Points = null;
-
-            //Points = new Point3DCollection();
-            //Lines = new Point3DCollection();
-            //Meshes = new List<Mesh3D>();
-
-            //// a list of all the upstream IDrawable nodes
-            //List<IDrawable> drawables = _drawables;
-
-            //foreach (IDrawable d in drawables)
-            //{
-            //    RenderDescription rd = d.Draw/clear();
-
-            //    foreach (Point3D p in rd.points)
-            //    {
-            //        Points.Add(p);
-            //    }
-
-            //    foreach (Point3D p in rd.lines)
-            //    {
-            //        Lines.Add(p);
-            //    }
-
-            //    foreach (Mesh3D mesh in rd.meshes)
-            //    {
-            //        Meshes.Add(mesh);
-            //    }
-            //}
-
-            //_lines.Points = Lines;
-            //_points.Points = Points;
-
-            //// remove old meshes from the renderer
-            //foreach (MeshVisual3D mesh in _meshes)
-            //{
-            //    watch_view.Children.Remove(mesh);
-            //}
-
-            //_meshes.Clear();
-
-            //foreach (Mesh3D mesh in Meshes)
-            //{
-            //    MeshVisual3D vismesh = MakeMeshVisual3D(mesh);
-            //    watch_view.Children.Add(vismesh);
-            //    _meshes.Add(vismesh);
-            //}
-
-            //_requiresRedraw = false;
-            //_isRendering = false;
-        }
-
-        //MeshVisual3D MakeMeshVisual3D(Mesh3D mesh)
-        //{
-        //    MeshVisual3D vismesh = new MeshVisual3D { 
-        //        Content = new GeometryModel3D { Geometry = 
-        //            mesh.ToMeshGeometry3D(), Material = Materials.White } };
-        //    return vismesh;
-        //}
 
         public Watch3DFullscreenViewModel ViewModel
         {

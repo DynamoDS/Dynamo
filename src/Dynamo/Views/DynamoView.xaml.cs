@@ -113,8 +113,7 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
-            //if (e.Key != Key.LeftShift && e.Key != Key.RightShift)
-            if (e.Key != Key.CapsLock)
+            if (e.Key != Key.Escape)
                 return;
 
             int workspace_index = _vm.CurrentWorkspaceIndex;
@@ -126,8 +125,7 @@ namespace Dynamo.Controls
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
-            //if (e.Key != Key.LeftShift && e.Key != Key.RightShift)
-            if (e.Key != Key.CapsLock)
+            if (e.Key != Key.Escape)
                 return;
 
             int workspace_index = _vm.CurrentWorkspaceIndex;
