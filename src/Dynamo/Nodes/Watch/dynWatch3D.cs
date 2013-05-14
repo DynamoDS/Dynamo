@@ -60,6 +60,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("OUT", "Watch contents, passed through", typeof(object)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
