@@ -2039,7 +2039,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(tb_slider, 1);
             System.Windows.Controls.Grid.SetRow(tb_slider, 0);
 
-            tb_slider.Width = 200;
+            tb_slider.Width = 100;
 
             tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
