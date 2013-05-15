@@ -67,7 +67,7 @@ namespace Dynamo.Controls
 
         private Point transformOrigin;
         private bool consoleShowing;
-        private bool fullscreenWatchShowing = true;
+        private bool fullscreenWatchShowing = false;
         private DynamoController controller;
         public StringWriter sw;
         private bool runEnabled = true;
