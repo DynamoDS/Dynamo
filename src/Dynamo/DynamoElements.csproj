@@ -103,6 +103,7 @@ limitations under the License.
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Search\BrowserItem.cs" />
+    <Compile Include="Search\SearchElements\TopSearchElement.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\WPF.cs" />
@@ -138,7 +139,7 @@ limitations under the License.
     <Compile Include="Search\Regions\RevitAPIRegion.cs" />
     <Compile Include="Search\SearchCommands.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
-    <Compile Include="Search\SearchElements\LocalSearchElement.cs" />
+    <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\PackageManagerSearchElement.cs" />
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Search\SearchElements\WorkspaceSearchElement.cs" />

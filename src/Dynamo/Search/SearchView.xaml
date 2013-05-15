@@ -121,7 +121,7 @@ Source="..\Images\search_24.png" Opacity="1">
 
                                 <Button Command="{Binding ToggleIsExpanded}">
                                     <Button.Focusable>False</Button.Focusable>
-                                    
+
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <ContentPresenter />
@@ -235,7 +235,7 @@ Source="..\Images\search_24.png" Opacity="1">
                         
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type searchElements:LocalSearchElement}">
+                    <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
                         
                         <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
                         

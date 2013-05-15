@@ -245,14 +245,6 @@ namespace Dynamo.Controls
             get { return _model.Workspaces.IndexOf(_model.CurrentSpace); }
             set
             {
-                //before you set the value, save and compile the workspace
-
-                //if (_model.CurrentSpace != _model.HomeSpace)
-                //{
-                //    var def = Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace);
-                //    SaveFunction(def, true, false);
-                //}
-                    
                 _model.CurrentSpace = _model.Workspaces[value];
             }
         }
@@ -1946,7 +1938,7 @@ namespace Dynamo.Controls
         /// <param name="definition">The definition to saveo</param>
         /// <param name="bool">Whether to write the function to file.</param>
         /// <returns>Whether the operation was successful</returns>
-        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = true)
+        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = false)
         {
             if (definition == null)
                 return;
@@ -1967,8 +1959,12 @@ namespace Dynamo.Controls
 
                     string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
                     dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
-                    if (addToSearch) 
-                        Controller.SearchViewModel.Add(definition.Workspace);
+                    
+                    if (addToSearch)
+                    {
+                        Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId);
+                    }
+
                     Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId, path);
                 }
                 catch (Exception e)
@@ -2183,9 +2179,7 @@ namespace Dynamo.Controls
             try
             {
                 var node = CreateNodeInstance(elementType, nickName, guid);
-                //var nodeUI = node.NodeUI;
 
-                //store the element in the elements list
                 ws.Nodes.Add(node);
                 node.WorkSpace = ws;
 
@@ -2213,8 +2207,6 @@ namespace Dynamo.Controls
         {
             var node = (dynNodeModel)Activator.CreateInstance(elementType);
 
-            //dynNodeView nodeUI = node.NodeUI;
-
             if (!string.IsNullOrEmpty(nickName))
             {
                 node.NickName = nickName;
@@ -2241,14 +2233,8 @@ namespace Dynamo.Controls
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
         internal void ViewHomeWorkspace()
         {
-
-// AUTOSAVE: This is manually performed now, replace this with a non-overwriting autosave
-            //SaveFunctionOnly( Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace) );
-
-            //Step 4: Make home workspace visible
             _model.CurrentSpace = _model.HomeSpace;
             _model.CurrentSpace.OnDisplayed();
-
         }
 
         /// <summary>
@@ -2264,12 +2250,6 @@ namespace Dynamo.Controls
             this._model.Workspaces.Add(newWs);
 
             CurrentSpaceViewModel.OnStopDragging(this, EventArgs.Empty);
-
-// AUTOSAVE: This is manually performed now, replace this with a non-overwriting autosave
-            //if (!ViewingHomespace)
-            //{
-            //    SaveFunctionOnly(Controller.CustomNodeLoader.GetDefinitionFromWorkspace(newWs));
-            //}
 
             _model.CurrentSpace = newWs;
             _model.CurrentSpace.OnDisplayed();
@@ -2573,7 +2553,7 @@ namespace Dynamo.Controls
             Controller.CustomNodeLoader.AddFunctionDefinition(functionDefinition.FunctionId, functionDefinition);
 
             // add the element to search
-            Controller.SearchViewModel.Add(workSpace);
+            Controller.SearchViewModel.Add(name, category, id);
 
             if (display)
             {

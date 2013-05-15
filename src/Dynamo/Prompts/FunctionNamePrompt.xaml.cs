@@ -41,7 +41,10 @@ namespace Dynamo.Nodes
 
          this.nameBox.Focus();
 
-         foreach (var item in categories)
+         var sortedCats = categories.ToList();
+         sortedCats.Sort();
+
+         foreach (var item in sortedCats)
          {
             this.categoryBox.Items.Add(item);
          }

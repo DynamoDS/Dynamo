@@ -98,7 +98,7 @@ namespace Dynamo.Nodes.Search
             this.OldParent = null;
         }
 
-        public BrowserInternalElement(string name, ObservableCollection<BrowserItem> siblings, BrowserItem parent)
+        public BrowserInternalElement(string name, BrowserItem parent)
         {
             this._name = name;
             this.Parent = parent;

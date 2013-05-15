@@ -50,7 +50,7 @@
 
         <Label Content="Category:" Foreground="WhiteSmoke" HorizontalAlignment="Stretch" Name="label2" Margin="11,1,12,0" />
         
-        <ComboBox FontSize="14" Style="{DynamicResource ResourceKey=SComboBox}" Foreground="White" HorizontalAlignment="Stretch" Name="categoryBox" VerticalAlignment="Top" Margin="15,5,15,15" IsEditable="True" TabIndex="1" />
+        <ComboBox FontSize="14" Style="{DynamicResource ResourceKey=SComboBox}" Background="Black" Foreground="White" HorizontalAlignment="Stretch" Name="categoryBox" VerticalAlignment="Top" Margin="15,5,15,15" IsEditable="True" TabIndex="1" />
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,15,5">
             
@@ -64,7 +64,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Themes\DynamoModern.xaml" />
+                <ResourceDictionary Source="..\Themes\DynamoModern.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
