@@ -1282,6 +1282,41 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Create Blend Geometry")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates a solid by blending two closed curve loops lying in non-coincident planes.")]
+    public class CreateBlendGeometry : dynSolidBase
+    {
+        public CreateBlendGeometry()
+        {
+            InPortData.Add(new PortData("first loop", "The first curve loop. The loop must be a closed planar loop.", typeof(Value.Container)));
+            InPortData.Add(new PortData("second loop", "The second curve loop, which also must be a closed planar loop.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("geometry", "The blend geometry.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            CurveLoop firstLoop = (CurveLoop)((Value.Container)args[0]).Item;
+            CurveLoop secondLoop = (CurveLoop)((Value.Container)args[1]).Item;
+            
+            List<VertexPair> vertPairs = new List<VertexPair>();
+            int i=0;
+            foreach(Curve c in firstLoop)
+            {
+                vertPairs.Add(new VertexPair(i,i));
+                i++;
+            }
+
+            var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop,secondLoop,vertPairs);
+
+            solids.Add(result);
+
+            return Value.NewContainer(result);
+        }
+    }
+
     [NodeName("Rectangle")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.")]
@@ -1289,10 +1324,9 @@ namespace Dynamo.Nodes
     {
         public Rectangle()
         {
-            InPortData.Add(new PortData("center", "The center of the rectangle.", typeof(Value.Container)));
+            InPortData.Add(new PortData("transform", "The a transform for the rectangle.", typeof(Value.Container)));
             InPortData.Add(new PortData("width", "The width of the rectangle.", typeof(Value.Number)));
             InPortData.Add(new PortData("height", "The height of the rectangle.", typeof(Value.Number)));
-            InPortData.Add(new PortData("normal", "The normal of the plane on which to create the rectangle.", typeof(Value.Container)));
             OutPortData.Add(new PortData("geometry", "The curve loop representing the rectangle.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -1300,22 +1334,15 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            XYZ center = (XYZ)((Value.Container)args[0]).Item;
+            Transform t = (Transform)((Value.Container)args[0]).Item;
             double width = ((Value.Number)args[1]).Item;
             double height = ((Value.Number)args[2]).Item;
-            XYZ normal = (XYZ)((Value.Container)args[3]).Item;
-
-            Transform t = Transform.Identity; 
-            t.Origin = center;
-            t.BasisZ = normal;
-            t.BasisY = normal.CrossProduct(XYZ.BasisX);
-            t.BasisX = t.BasisY.CrossProduct(t.BasisZ);
 
             //ccw from upper right
-            XYZ p0 = new XYZ(center.X + width/2, center.Y + width/2, center.Z);
-            XYZ p1 = new XYZ(center.X - width/2, center.Y + width/2, center.Z);
-            XYZ p2 = new XYZ(center.X - width/2, center.Y - width/2, center.Z);
-            XYZ p3 = new XYZ(center.X + width/2, center.Y - width/2, center.Z);
+            XYZ p0 = new XYZ(width/2, width/2, 0);
+            XYZ p1 = new XYZ(-width/2, width/2, 0);
+            XYZ p2 = new XYZ(-width/2, -width/2, 0);
+            XYZ p3 = new XYZ(width/2, -width/2, 0);
 
             p0 = t.OfPoint(p0);
             p1 = t.OfPoint(p1);
