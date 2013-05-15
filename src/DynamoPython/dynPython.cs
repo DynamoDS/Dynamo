@@ -258,6 +258,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
@@ -425,6 +427,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         private List<Binding> makeBindings(IEnumerable<Value> args)

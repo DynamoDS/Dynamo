@@ -1,21 +1,6 @@
-<!--
-Copyright Autodesk, Inc. 2012. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
-<dynWorkspace X="10" Y="55">
+<dynWorkspace X="76.6309523809526" Y="104.952380952381">
   <dynElements>
-    <Dynamo.Elements.dynPython type="Dynamo.Elements.dynPython" guid="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" nickname="Python Script" x="284.901162790698" y="59.6">
+    <Dynamo.Nodes.dynPython type="Dynamo.Nodes.dynPython" guid="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" nickname="Python Script" x="212.901162790698" y="38.6" lacing="Disabled">
       <Script>#derived from Nathan Miller's example http://theprovingground.wikidot.com/revit-api-py-curves
 
 import math
@@ -39,10 +24,15 @@ for i in range(0,steps+1):
     refptarr.Append(refPt)
 crv2 = doc.FamilyCreate.NewCurveByPoints(refptarr)
 </Script>
-    </Dynamo.Elements.dynPython>
-    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="052930f8-51c7-4db1-ae80-5e2b20cbf752" nickname="Curve by Selection" x="0" y="0" />
+    </Dynamo.Nodes.dynPython>
+    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="052930f8-51c7-4db1-ae80-5e2b20cbf752" nickname="Curve by Selection" x="0" y="0" lacing="First">
+      <instance id="30729" />
+    </Dynamo.Nodes.dynCurvesBySelection>
+    <Dynamo.Nodes.dynTransaction type="Dynamo.Nodes.dynTransaction" guid="b11ed0cc-5e1c-4b17-a921-602a9b30ca1f" nickname="Transaction" x="390.40026896506" y="54.3213830149307" lacing="First" />
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="052930f8-51c7-4db1-ae80-5e2b20cbf752" start_index="0" end="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" start_index="0" end="b11ed0cc-5e1c-4b17-a921-602a9b30ca1f" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="052930f8-51c7-4db1-ae80-5e2b20cbf752" start_index="0" end="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" end_index="0" portType="0" />
   </dynConnectors>
+  <dynNotes />
 </dynWorkspace>
