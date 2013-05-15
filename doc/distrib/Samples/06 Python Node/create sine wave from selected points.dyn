@@ -1,27 +1,16 @@
-<!--
-Copyright Autodesk, Inc. 2012. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
-<dynWorkspace X="10" Y="55">
+<dynWorkspace X="-273.369047619047" Y="57.9523809523811">
   <dynElements>
-    <Dynamo.Elements.dynPointBySelection type="Dynamo.Elements.dynPointBySelection" guid="6adae558-1d83-4903-a231-a2cf88d4567c" nickname="Point by Selection" x="0" y="0" />
-    <Dynamo.Elements.dynPointBySelection type="Dynamo.Elements.dynPointBySelection" guid="7ce00e02-b10b-4b31-b93c-bad204a56499" nickname="Point by Selection" x="0" y="83.95" />
-    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="8fb17c16-f942-4e1f-b7d2-e69935c70da6" nickname="list" x="257.95" y="47.35">
-      <Input name="index0" />
+    <Dynamo.Nodes.dynPointBySelection type="Dynamo.Nodes.dynPointBySelection" guid="6adae558-1d83-4903-a231-a2cf88d4567c" nickname="Point by Selection" x="81" y="14" lacing="First">
+      <instance id="30665" />
+    </Dynamo.Nodes.dynPointBySelection>
+    <Dynamo.Nodes.dynPointBySelection type="Dynamo.Nodes.dynPointBySelection" guid="7ce00e02-b10b-4b31-b93c-bad204a56499" nickname="Point by Selection" x="82.75" y="107.95" lacing="First">
+      <instance id="30855" />
+    </Dynamo.Nodes.dynPointBySelection>
+    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="8fb17c16-f942-4e1f-b7d2-e69935c70da6" nickname="list" x="257.95" y="47.35" lacing="Disabled">
+      <Input name="item(s)" />
       <Input name="index1" />
-    </Dynamo.Elements.dynNewList>
-    <Dynamo.Elements.dynPython type="Dynamo.Elements.dynPython" guid="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" nickname="Python Script" x="366.501162790698" y="145.2">
+    </Dynamo.Nodes.dynNewList>
+    <Dynamo.Nodes.dynPython type="Dynamo.Nodes.dynPython" guid="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" nickname="Python Script" x="471.501162790698" y="66.2" lacing="Disabled">
       <Script>#derived from Nathan Miller's example http://theprovingground.wikidot.com/revit-api-py-curves
 
 import math
@@ -49,11 +38,19 @@ for i in range(0,steps+1):
     refPt = doc.FamilyCreate.NewReferencePoint(myXYZ)
     refptarr.Append(refPt)
 crv2 = doc.FamilyCreate.NewCurveByPoints(refptarr)</Script>
-    </Dynamo.Elements.dynPython>
+    </Dynamo.Nodes.dynPython>
+    <Dynamo.Nodes.dynTransaction type="Dynamo.Nodes.dynTransaction" guid="265d3748-0dce-4abb-8564-a281c8eba453" nickname="Transaction" x="641.826176494656" y="72.9722865974853" lacing="First" />
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="6adae558-1d83-4903-a231-a2cf88d4567c" start_index="0" end="8fb17c16-f942-4e1f-b7d2-e69935c70da6" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="7ce00e02-b10b-4b31-b93c-bad204a56499" start_index="0" end="8fb17c16-f942-4e1f-b7d2-e69935c70da6" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="8fb17c16-f942-4e1f-b7d2-e69935c70da6" start_index="0" end="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="6adae558-1d83-4903-a231-a2cf88d4567c" start_index="0" end="8fb17c16-f942-4e1f-b7d2-e69935c70da6" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="7ce00e02-b10b-4b31-b93c-bad204a56499" start_index="0" end="8fb17c16-f942-4e1f-b7d2-e69935c70da6" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="8fb17c16-f942-4e1f-b7d2-e69935c70da6" start_index="0" end="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" start_index="0" end="265d3748-0dce-4abb-8564-a281c8eba453" end_index="0" portType="0" />
   </dynConnectors>
+  <dynNotes>
+    <Dynamo.Nodes.dynNoteModel text="Create a transaction to wrap the python script." x="558.833333333333" y="36.4166666666666" />
+    <Dynamo.Nodes.dynNoteModel text="Select two points." x="84" y="200" />
+    <Dynamo.Nodes.dynNoteModel text="Create a list." x="282" y="147" />
+    <Dynamo.Nodes.dynNoteModel text="Make a python script." x="456" y="139" />
+  </dynNotes>
 </dynWorkspace>

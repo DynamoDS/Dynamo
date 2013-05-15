@@ -441,7 +441,7 @@ namespace Dynamo.Nodes
     public class dynFamilyInstanceCreatorSelection : dynElementSelection
     {
         public dynFamilyInstanceCreatorSelection()
-            : base(new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance)))
+            : base(new PortData("fi", "Family instances created by this operation.", typeof(Value.Container)))
         { }
 
         protected override void OnSelectClick()
@@ -476,7 +476,7 @@ namespace Dynamo.Nodes
         Value data;
 
         public dynDividedSurfaceBySelection()
-            : base(new PortData("srf", "The divided surface family instance(s)", typeof(object)))
+            : base(new PortData("srf", "The divided surface family instance(s)", typeof(Value.Container)))
         { }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -647,7 +647,7 @@ namespace Dynamo.Nodes
         Reference f;
 
         public dynFormElementBySelection()
-            : base(new PortData("face", "The face", typeof(object)))
+            : base(new PortData("face", "The face", typeof(Value.Container)))
         { }
 
         protected override void OnSelectClick()
@@ -688,7 +688,7 @@ namespace Dynamo.Nodes
     public class dynCurvesBySelection : dynElementSelection
     {
         public dynCurvesBySelection()
-            : base(new PortData("curve", "The curve", typeof(CurveElement)))
+            : base(new PortData("curve", "The curve", typeof(Value.Container)))
         { }
 
         protected override void OnSelectClick()
@@ -721,7 +721,7 @@ namespace Dynamo.Nodes
     public class dynMultipleCurvesBySelection : dynMultipleElementSelection
     {
         public dynMultipleCurvesBySelection()
-            : base(new PortData("curves", "The curves", typeof(CurveElement)))
+            : base(new PortData("curves", "The curves", typeof(Value.Container)))
         { }
 
         protected override void OnSelectClick()
@@ -771,7 +771,7 @@ namespace Dynamo.Nodes
     public class dynPointBySelection : dynElementSelection
     {
         public dynPointBySelection() :
-            base(new PortData("pt", "The point", typeof(ReferencePoint)))
+            base(new PortData("pt", "The point", typeof(Value.Container)))
         { }
 
         protected override void OnSelectClick()
@@ -805,7 +805,7 @@ namespace Dynamo.Nodes
     public class dynLevelBySelection : dynElementSelection
     {
         public dynLevelBySelection() :
-            base(new PortData("lvl", "The selected level", typeof(Level)))
+            base(new PortData("lvl", "The selected level", typeof(Value.Container)))
         { }
 
         protected override void OnSelectClick()

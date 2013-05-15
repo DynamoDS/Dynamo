@@ -106,7 +106,7 @@ namespace Dynamo.Utilities
 
             switch (node.ArgumentLacing)
             {
-                case LacingStrategy.Single:
+                case LacingStrategy.First:
                     parameters = GetSingleArguments(args, pi);
                     break;
                 case LacingStrategy.Shortest:

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using System.Windows.Media;
+﻿using System.Collections.Generic;
 using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
 
@@ -26,5 +21,16 @@ namespace Dynamo.Nodes
     public interface IDrawable
     {
         RenderDescription Draw();
+    }
+
+    /// <summary>
+    /// An interface for nodes which maintain references to elements
+    /// </summary>
+    public interface IClearable
+    {
+        /// <summary>
+        /// Clear whatever references this element contains
+        /// </summary>
+        void ClearReferences();
     }
 }

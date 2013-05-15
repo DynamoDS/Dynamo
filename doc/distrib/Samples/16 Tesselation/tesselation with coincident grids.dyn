@@ -3,7 +3,7 @@
     <Dynamo.Nodes.dynFormElementBySelection type="Dynamo.Nodes.dynFormElementBySelection" guid="1b658007-53a4-4184-820d-0fb980acf0f9" nickname="Face by Selection" x="0" y="344.166666666667">
       <instance id="59717" />
     </Dynamo.Nodes.dynFormElementBySelection>
-    <Dynamo.Nodes.dyn3DPreview type="Dynamo.Nodes.dyn3DPreview" guid="5ba5f337-8023-4899-8238-472c1209998d" nickname="Watch 3D" x="1390.8364260009" y="0" />
+    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="5ba5f337-8023-4899-8238-472c1209998d" nickname="Watch 3D" x="1390.8364260009" y="0" />
     <Dynamo.Nodes.dynSurfaceDomain type="Dynamo.Nodes.dynSurfaceDomain" guid="b27d55ce-5a00-49ba-baf2-a95612fdcdbb" nickname="Surface Domain" x="96.833333333333" y="234.333333333333" />
     <Dynamo.Nodes.dynDelaunayTessellation type="Dynamo.Nodes.dynDelaunayTessellation" guid="5a05788b-d828-464d-826b-a6cff001974f" nickname="Delaunay Tessellation" x="913.888888888888" y="177.666666666666" />
     <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="e1be789b-d7ee-497b-91f8-3a989ef77b14" nickname="Number Slider" x="0" y="0">

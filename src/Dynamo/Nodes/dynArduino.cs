@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
         public dynArduino()
         {
             InPortData.Add(new PortData("exec", "Execution Interval", typeof(object)));
-            OutPortData.Add(new PortData("arduino", "Serial port for later read/write", typeof(object)));
+            OutPortData.Add(new PortData("arduino", "Serial port for later read/write", typeof(Value.Container)));
 
             RegisterAllPorts();
 
@@ -173,7 +173,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
             InPortData.Add(new PortData("range", "Number of lines to read", typeof(double)));
-            OutPortData.Add(new PortData("output", "Serial output line", typeof(string)));
+            OutPortData.Add(new PortData("output", "Serial output line", typeof(Value.List)));
 
             RegisterAllPorts();
         }
@@ -258,7 +258,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
             InPortData.Add(new PortData("text", "Text to be written", typeof(string)));
-            OutPortData.Add(new PortData("success?", "Whether or not the operation was successful.", typeof(bool)));
+            OutPortData.Add(new PortData("success?", "Whether or not the operation was successful.", typeof(Value.Number)));
 
             RegisterAllPorts();
         }

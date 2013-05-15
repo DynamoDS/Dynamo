@@ -32,8 +32,8 @@ namespace Dynamo.Nodes
     {
         public dynPause()
         {
-            InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(double)));
-            OutPortData.Add(new PortData("", "Success", typeof(bool)));
+            InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(Value.Number)));
+            OutPortData.Add(new PortData("", "Success", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -55,8 +55,8 @@ namespace Dynamo.Nodes
     {
         public dynExecuteInterval()
         {
-            InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(double)));
-            OutPortData.Add(new PortData("", "Success?", typeof(bool)));
+            InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(Value.Number)));
+            OutPortData.Add(new PortData("", "Success?", typeof(Value.Number)));
 
             RegisterAllPorts();
         }

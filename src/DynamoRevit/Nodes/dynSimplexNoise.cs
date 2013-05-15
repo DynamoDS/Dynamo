@@ -83,9 +83,9 @@ namespace Dynamo.Nodes
     {
         public dynSimplex1D()
         {
-            InPortData.Add(new PortData("x", "X", typeof(double)));
+            InPortData.Add(new PortData("x", "X", typeof(FScheme.Value.Number)));
 
-            OutPortData.Add(new PortData("o", "Out", typeof(double)));
+            OutPortData.Add(new PortData("o", "Out", typeof(FScheme.Value.Number)));
 
             RegisterAllPorts();
         }
@@ -136,10 +136,10 @@ namespace Dynamo.Nodes
     {
         public dynSimplex2D()
         {
-            InPortData.Add(new PortData("x", "X", typeof(double)));
-            InPortData.Add(new PortData("y", "Y", typeof(double)));
+            InPortData.Add(new PortData("x", "X", typeof(FScheme.Value.Number)));
+            InPortData.Add(new PortData("y", "Y", typeof(FScheme.Value.Number)));
 
-            OutPortData.Add(new PortData("o", "Out", typeof(double)));
+            OutPortData.Add(new PortData("o", "Out", typeof(FScheme.Value.Number)));
 
             RegisterAllPorts();
         }
@@ -243,11 +243,11 @@ namespace Dynamo.Nodes
     {
         public dynSimplex3D()
         {
-            InPortData.Add(new PortData("x", "X", typeof(double)));
-            InPortData.Add(new PortData("y", "Y", typeof(double)));
-            InPortData.Add(new PortData("z", "Z", typeof(double)));
+            InPortData.Add(new PortData("x", "X", typeof(FScheme.Value.Number)));
+            InPortData.Add(new PortData("y", "Y", typeof(FScheme.Value.Number)));
+            InPortData.Add(new PortData("z", "Z", typeof(FScheme.Value.Number)));
 
-            OutPortData.Add(new PortData("o", "Out", typeof(double)));
+            OutPortData.Add(new PortData("o", "Out", typeof(FScheme.Value.Number)));
 
             RegisterAllPorts();
         }

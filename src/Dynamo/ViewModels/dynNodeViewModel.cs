@@ -118,19 +118,6 @@ namespace Dynamo.Controls
         {
             get { return nodeLogic.State; }
         }
-
-        //public int PreferredHeight
-        //{
-        //    get
-        //    {
-        //        return preferredHeight;
-        //    }
-        //    set
-        //    {
-        //        preferredHeight = value;
-        //        RaisePropertyChanged("PreferredHeight");
-        //    }
-        //}
         
         public double DropShadowOpacity
         {
@@ -216,7 +203,7 @@ namespace Dynamo.Controls
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
             SetupCustomUIElementsCommand = new DelegateCommand<dynNodeView>(SetupCustomUIElements, CanSetupCustomUIElements);
             ValidateConnectionsCommand = new DelegateCommand(ValidateConnections, CanValidateConnections);
-            
+
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -263,6 +250,7 @@ namespace Dynamo.Controls
                 case "CurrentSpace":
                     RaisePropertyChanged("NodeVisibility");
                     break;
+                    
             }
         }
 
@@ -293,6 +281,9 @@ namespace Dynamo.Controls
                 case "State":
                     RaisePropertyChanged("State");
                     break;
+                case "ArgumentLacing":
+                    SetLacingTypeCommand.RaiseCanExecuteChanged();
+                    break;
             }
         }
 
@@ -308,9 +299,9 @@ namespace Dynamo.Controls
 
         void SetLacingType(string parameter)
         {
-            if (parameter == "Single")
+            if (parameter == "First")
             {
-                NodeLogic.ArgumentLacing = LacingStrategy.Single;
+                NodeLogic.ArgumentLacing = LacingStrategy.First;
             }
             else if (parameter == "Longest")
             {
@@ -320,14 +311,21 @@ namespace Dynamo.Controls
             {
                 NodeLogic.ArgumentLacing = LacingStrategy.Shortest;
             }
+            else if (parameter == "CrossProduct")
+            {
+                NodeLogic.ArgumentLacing = LacingStrategy.CrossProduct;
+            }
             else
-                NodeLogic.ArgumentLacing = LacingStrategy.Single;
+                NodeLogic.ArgumentLacing = LacingStrategy.Disabled;
 
             RaisePropertyChanged("Lacing");
         }
 
         bool CanSetLacingType(string parameter)
         {
+            if (this.ArgumentLacing == LacingStrategy.Disabled)
+                return false;
+
             return true;
         }
 

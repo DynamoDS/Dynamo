@@ -39,7 +39,7 @@ OUT = crv;</Script>
     </Dynamo.Elements.dynPython>
     <Dynamo.Elements.dynCurveFromModelCurve type="Dynamo.Elements.dynCurveFromModelCurve" guid="f7501af7-44fe-4428-a5e8-543252a87ada" nickname="Curve From Curve Element" x="253.5" y="249.75" />
     <Dynamo.Elements.dynWatch type="Dynamo.Elements.dynWatch" guid="05b85230-5cc4-45b9-82fe-8e95284d342d" nickname="Watch" x="437.75" y="0" />
-    <Dynamo.Elements.dyn3DPreview type="Dynamo.Elements.dyn3DPreview" guid="ada46d91-3dfa-4a65-bcaa-d1ea39312c41" nickname="Watch 3D" x="437.758741258741" y="251.552447552448" />
+    <Dynamo.Elements.dynWatch3D type="Dynamo.Elements.dynWatch3D" guid="ada46d91-3dfa-4a65-bcaa-d1ea39312c41" nickname="Watch 3D" x="437.758741258741" y="251.552447552448" />
     <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="99c31498-e06e-4b95-8000-beaf61dde392" nickname="Number Slider" x="0" y="0">
       <System.Double value="100" min="0" max="100" />
     </Dynamo.Elements.dynDoubleSliderInput>

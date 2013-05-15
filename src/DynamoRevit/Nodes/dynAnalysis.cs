@@ -23,8 +23,8 @@ namespace Dynamo.Nodes
 
         public dynSpatialFieldManager()
         {
-            InPortData.Add(new PortData("n", "Number of samples at a location.", typeof(int)));
-            OutPortData.Add(new PortData("sfm", "Spatial field manager for the active view", typeof(object)));
+            InPortData.Add(new PortData("n", "Number of samples at a location.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("sfm", "Spatial field manager for the active view", typeof(Value.Container)));
 
             RegisterAllPorts();
 
@@ -59,7 +59,7 @@ namespace Dynamo.Nodes
 
         public dynAnalysisResultsDisplayStyleColor()
         {
-            OutPortData.Add(new PortData("ads", "Colored surface Analysis Display Style", typeof(object)));
+            OutPortData.Add(new PortData("ads", "Colored surface Analysis Display Style", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -245,11 +245,11 @@ namespace Dynamo.Nodes
 
         public dynAnalysisResults()
         {
-            InPortData.Add(new PortData("vals", "List of values.", typeof(object)));
-            InPortData.Add(new PortData("pts", "Sample locations as a list of UVs.", typeof(object)));
-            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
-            InPortData.Add(new PortData("face", "Face", typeof(Reference)));
-            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(object)));
+            InPortData.Add(new PortData("vals", "List of values.", typeof(Value.List)));
+            InPortData.Add(new PortData("pts", "Sample locations as a list of UVs.", typeof(Value.List)));
+            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Value.Container)));
+            InPortData.Add(new PortData("face", "Face", typeof(Value.Container)));
+            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -328,11 +328,11 @@ namespace Dynamo.Nodes
 
         public dynAnalysisResultsCurve()
         {
-            InPortData.Add(new PortData("vals", "List of values.", typeof(object)));
-            InPortData.Add(new PortData("pts", "Sample locations as a list of UVs.", typeof(object)));
-            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
-            InPortData.Add(new PortData("face", "Curve", typeof(Curve)));
-            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(object)));
+            InPortData.Add(new PortData("vals", "List of values.", typeof(Value.List)));
+            InPortData.Add(new PortData("pts", "Sample locations as a list of UVs.", typeof(Value.List)));
+            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Value.Container)));
+            InPortData.Add(new PortData("face", "Curve", typeof(Value.Container)));
+            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -438,9 +438,9 @@ namespace Dynamo.Nodes
 
         public dynTemporaryCurves()
         {
-            InPortData.Add(new PortData("lst", "List of sets of xys that will define line segments.", typeof(object)));
-            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
-            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(object)));
+            InPortData.Add(new PortData("lst", "List of sets of xys that will define line segments.", typeof(Value.List)));
+            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Value.Container)));
+            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(Value.Container)));
 
             RegisterAllPorts();
         }

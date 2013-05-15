@@ -268,6 +268,7 @@ namespace Dynamo
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
             /* Execution Thread */
+            DynamoLogger.Instance.Log("******EVALUATION THREAD START*******");
 
             //Get our entry points (elements with nothing connected to output)
             IEnumerable<dynNodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes();
@@ -289,12 +290,15 @@ namespace Dynamo
                     topNode.ConnectInput(inputName, topMost.BuildExpression(buildDict));
 
                     i++;
+
+                    DynamoLogger.Instance.Log(topMost);
                 }
-                
 
                 FScheme.Expression runningExpression = topNode.Compile();
 
                 Run(topElements, runningExpression);
+
+                DynamoLogger.Instance.Log(runningExpression);
             }
             catch (CancelEvaluationException ex)
             {
@@ -368,6 +372,8 @@ namespace Dynamo
                     OnRunCompleted(this, true);
                 }
             }
+
+            DynamoLogger.Instance.Log("******EVALUATION THREAD END*******");
         }
 
         protected internal virtual void Run(IEnumerable<dynNodeModel> topElements, FScheme.Expression runningExpression)
@@ -393,6 +399,8 @@ namespace Dynamo
 
             try
             {
+                DynamoLogger.Instance.Log("Evaluating the expression...");
+
                 //Evaluate the expression
                 FScheme.Value expr = FSchemeEnvironment.Evaluate(runningExpression);
 

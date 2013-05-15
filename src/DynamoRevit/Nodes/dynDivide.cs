@@ -34,12 +34,12 @@ namespace Dynamo.Nodes
     {
         public dynDividedPath()
         {
-            InPortData.Add(new PortData("refs", "Ref", typeof(CurveElement)));//TODO make this a ref, but how to handle tracking persistance
-            InPortData.Add(new PortData("count", "Number", typeof(double))); // just divide equally for now, dont worry about spacing and starting point
+            InPortData.Add(new PortData("refs", "Ref", typeof(Value.Container)));//TODO make this a ref, but how to handle tracking persistance
+            InPortData.Add(new PortData("count", "Number", typeof(Value.Number))); // just divide equally for now, dont worry about spacing and starting point
             //InPortData.Add(new PortData("x0", "Starting Coordinate", typeof(double)));
             //InPortData.Add(new PortData("spacing", "The spacing.", typeof(double)));
 
-            OutPortData.Add(new PortData("dc ", "the divided path element", typeof(DividedPath)));
+            OutPortData.Add(new PortData("dc ", "the divided path element", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -236,11 +236,11 @@ namespace Dynamo.Nodes
     {
         public dynDividedSurface()
         {
-            InPortData.Add(new PortData("face", "Ref", typeof(Reference)));//Ref to a face of a form
-            InPortData.Add(new PortData("U", "Spacing on face in U direction.", typeof(double)));
-            InPortData.Add(new PortData("V", "Spacing on face in U direction", typeof(double)));
+            InPortData.Add(new PortData("face", "Ref", typeof(Value.Container)));//Ref to a face of a form
+            InPortData.Add(new PortData("U", "Spacing on face in U direction.", typeof(Value.Number)));
+            InPortData.Add(new PortData("V", "Spacing on face in U direction", typeof(Value.Number)));
 
-            OutPortData.Add(new PortData("ds ", "the divided surface element", typeof(DividedPath)));
+            OutPortData.Add(new PortData("ds ", "the divided surface element", typeof(Value.Container)));
 
             RegisterAllPorts();
         }

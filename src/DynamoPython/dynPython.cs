@@ -173,7 +173,11 @@ namespace Dynamo.Nodes
             }
             catch(Exception e)
             {
-                throw new Exception(e.Message + ":" + e.StackTrace);
+                dynSettings.Controller.DynamoViewModel.Log("Unable to execute python script:");
+                dynSettings.Controller.DynamoViewModel.Log(e.Message);
+                dynSettings.Controller.DynamoViewModel.Log(e.StackTrace);
+
+                return Value.NewNumber(0);
             }
 
             Value result = Value.NewNumber(1);
@@ -251,6 +255,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
@@ -413,11 +419,13 @@ namespace Dynamo.Nodes
 
         public dynPythonString()
         {
-            InPortData.Add(new PortData("script", "Script to run", typeof(string)));
+            InPortData.Add(new PortData("script", "Script to run", typeof(Value.String)));
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
             OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         private List<Binding> makeBindings(IEnumerable<Value> args)

@@ -33,8 +33,8 @@ namespace Dynamo.Nodes
     {
         public dynSurfaceArea()
         {
-            InPortData.Add(new PortData("f", "The face whose surface area you wish to calculate (Reference).", typeof(Reference)));//Ref to a face of a form
-            OutPortData.Add(new PortData("a", "The surface area of the face (Number).", typeof(object)));
+            InPortData.Add(new PortData("f", "The face whose surface area you wish to calculate (Reference).", typeof(Value.Container)));//Ref to a face of a form
+            OutPortData.Add(new PortData("a", "The surface area of the face (Number).", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -70,8 +70,8 @@ namespace Dynamo.Nodes
     {
         public dynSurfaceDomain()
         {
-            InPortData.Add(new PortData("f", "The surface whose domain you wish to calculate (Reference).", typeof(Reference)));//Ref to a face of a form
-            OutPortData.Add(new PortData("d", "The min, max, and dimensions of the surface domain. (List)", typeof(object)));
+            InPortData.Add(new PortData("f", "The surface whose domain you wish to calculate (Reference).", typeof(Value.Container)));//Ref to a face of a form
+            OutPortData.Add(new PortData("d", "The min, max, and dimensions of the surface domain. (List)", typeof(Value.List)));
 
             RegisterAllPorts();
         }
@@ -121,9 +121,9 @@ namespace Dynamo.Nodes
     {
         public dynXYZDistance()
         {
-            InPortData.Add(new PortData("a", "Start (XYZ).", typeof(object)));//Ref to a face of a form
-            InPortData.Add(new PortData("b", "End (XYZ)", typeof(object)));//Ref to a face of a form
-            OutPortData.Add(new PortData("d", "The distance between the two XYZs (Number).", typeof(object)));
+            InPortData.Add(new PortData("a", "Start (XYZ).", typeof(Value.Container)));//Ref to a face of a form
+            InPortData.Add(new PortData("b", "End (XYZ)", typeof(Value.Container)));//Ref to a face of a form
+            OutPortData.Add(new PortData("d", "The distance between the two XYZs (Number).", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -144,8 +144,8 @@ namespace Dynamo.Nodes
     {
         public dynHeight()
         {
-            InPortData.Add(new PortData("elem", "Level, Family Instance, RefPoint, XYZ", typeof(object)));//add elements here when adding switch statements 
-            OutPortData.Add(new PortData("h", "The height of an element in z relative to project 0.", typeof(object)));
+            InPortData.Add(new PortData("elem", "Level, Family Instance, RefPoint, XYZ", typeof(Value.Container)));//add elements here when adding switch statements 
+            OutPortData.Add(new PortData("h", "The height of an element in z relative to project 0.", typeof(Value.Number)));
 
             RegisterAllPorts();
         }

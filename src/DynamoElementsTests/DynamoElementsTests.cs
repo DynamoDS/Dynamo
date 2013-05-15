@@ -85,7 +85,6 @@ namespace Dynamo.Tests
         }
 
         // OpenCommand
-
         [Test]
         public void CanOpenGoodFile()
         {

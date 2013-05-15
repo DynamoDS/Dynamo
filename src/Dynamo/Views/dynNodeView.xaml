@@ -63,14 +63,17 @@
                 <MenuItem Name="deleteElem_cm" Header="Delete" Command="{Binding Path=DeleteCommand}"/>
                 <MenuItem Header="Lacing" Name="lacingStrategy">
                   <MenuItem Name="lacing_strategy_single" IsCheckable="True" 
-                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Single,Mode=TwoWay}" 
-                              Command="{Binding Path=SetLacingTypeCmd}" CommandParameter="Single" Header="Single"/>
+                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=First,Mode=TwoWay}" 
+                              Command="{Binding Path=SetLacingTypeCommand}" CommandParameter="First" Header="First"/>
                     <MenuItem Name="lacing_strategy_shortest" IsCheckable="True" 
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Shortest, Mode=TwoWay}" 
-                              Command="{Binding Path=SetLacingTypeCmd}" CommandParameter="Shortest" Header="Shortest"/>
+                              Command="{Binding Path=SetLacingTypeCommand}" CommandParameter="Shortest" Header="Shortest"/>
                     <MenuItem Name="lacing_strategy_longest" IsCheckable="True" 
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Longest,Mode=TwoWay}" 
-                              Command="{Binding Path=SetLacingTypeCmd}" CommandParameter="Longest" Header="Longest"/>
+                              Command="{Binding Path=SetLacingTypeCommand}" CommandParameter="Longest" Header="Longest"/>
+                    <MenuItem Name="lacing_strategy_cross" IsCheckable="True" 
+                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CrossProduct,Mode=TwoWay}" 
+                              Command="{Binding Path=SetLacingTypeCommand}" CommandParameter="CrossProduct" Header="Cross Product"/>
                 </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
@@ -142,8 +145,7 @@
                          Text="{Binding NickName, UpdateSourceTrigger=PropertyChanged}"
                             Margin="2,2,2,0"
                          Padding="5"
-                         FontSize="11" 
-                            
+                         FontSize="11"
                          FontWeight="Bold" 
                          TextAlignment="Center" 
                          IsHitTestVisible="False" 
@@ -164,7 +166,7 @@
                        Name="elementRectangle" 
                        Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}" 
                        StrokeThickness="2"
-                       Fill="{Binding Path=State, Converter={StaticResource StateToColorConverter}}">
+                       Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" RadiusX="2" RadiusY="2">
                 <Rectangle.Effect>
                     <DropShadowEffect Opacity="{Binding Path=DropShadowOpacity}" />
                 </Rectangle.Effect>

@@ -21,9 +21,11 @@ namespace Dynamo.Nodes
 
     public enum LacingStrategy
     {
-        Longest,
+        Disabled,
+        First,
         Shortest,
-        Single
+        Longest,
+        CrossProduct
     };
 
     public delegate void PortsChangedHandler(object sender, EventArgs e);
@@ -78,7 +80,7 @@ namespace Dynamo.Nodes
             new Dictionary<int, HashSet<Tuple<int, dynNodeModel>>>();
         ObservableCollection<dynPortModel> inPorts = new ObservableCollection<dynPortModel>();
         ObservableCollection<dynPortModel> outPorts = new ObservableCollection<dynPortModel>();
-        private LacingStrategy _argumentLacing  = LacingStrategy.Single;
+        private LacingStrategy _argumentLacing  = LacingStrategy.First;
         private string _nickName;
         ElementState state;
         string toolTipText = "";
@@ -96,7 +98,10 @@ namespace Dynamo.Nodes
 
         public ElementState State
         {
-            get { return state; }
+            get
+            {
+                return state;
+            }
             set
             {
                 if (value != ElementState.ERROR)
@@ -162,7 +167,7 @@ namespace Dynamo.Nodes
             {
                 _argumentLacing = value;
                 isDirty = true;
-                RaisePropertyChanged("LacingStrategy");
+                RaisePropertyChanged("ArgumentLacing");
             }
         }
 
@@ -198,7 +203,6 @@ namespace Dynamo.Nodes
         /// Get the last computed value from the node.
         /// </summary>
         public Value OldValue { get; protected set; }
-
 
         protected internal ExecutionEnvironment macroEnvironment = null;
 
@@ -339,8 +343,8 @@ namespace Dynamo.Nodes
                 NickName = "";
 
             this.IsSelected = false;
-
             State = ElementState.DEAD;
+            ArgumentLacing = LacingStrategy.First;
         }
 
         /// <summary>
@@ -649,14 +653,7 @@ namespace Dynamo.Nodes
                                 .Select(
                                     pair => pair.Value)));
 
-//MVVM : don't use the dispatcher to invoke here
-                    //NodeUI.Dispatcher.BeginInvoke(new Action(
-                    //    delegate
-                    //    {
-                    //        NodeUI.UpdateLayout();
-                    //        NodeUI.ValidateConnections();
-                    //    }
-                    //));
+                    ValidateConnections();
                 }
                 catch (CancelEvaluationException ex)
                 {
@@ -859,9 +856,6 @@ namespace Dynamo.Nodes
         {
             RegisterInputs();
             RegisterOutputs();
-
-            //UpdateLayout();
-
             ValidateConnections();
         }
 
@@ -954,6 +948,8 @@ namespace Dynamo.Nodes
 
         void p_PortDisconnected(object sender, EventArgs e)
         {
+            ValidateConnections();
+
             var port = (dynPortModel)sender;
             if (port.PortType == PortType.INPUT)
             {
@@ -1083,11 +1079,6 @@ namespace Dynamo.Nodes
             State = inPorts.Select(x => x).Any(x => x.Connectors.Count == 0) ? ElementState.DEAD : ElementState.ACTIVE;
         }
 
-        private void SetState(dynNodeView el, ElementState state)
-        {
-            State = state;
-        }
-
         public void Error(string p)
         {
             State = ElementState.ERROR;
@@ -1117,26 +1108,12 @@ namespace Dynamo.Nodes
 
         internal void DisableInteraction()
         {
-//MVVM : IsEnabled on input grid elements is now bount to InteractionEnabled property
-            //enabledDict.Clear();
-
-            //foreach (UIElement e in inputGrid.Children)
-            //{
-            //    enabledDict[e] = e.IsEnabled;
-
-            //    e.IsEnabled = false;
-            //}
             State = ElementState.DEAD;
             InteractionEnabled = false;
         }
 
         internal void EnableInteraction()
         {
-            //foreach (UIElement e in inputGrid.Children)
-            //{
-            //    if (enabledDict.ContainsKey(e))
-            //        e.IsEnabled = enabledDict[e];
-            //}
             ValidateConnections();
             InteractionEnabled = true;
         }
@@ -1174,7 +1151,85 @@ namespace Dynamo.Nodes
     {
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            outPuts[OutPortData[0]] = Evaluate(args);
+            //if this element maintains a collcection of references
+            //then clear the collection
+            if(this is IClearable)
+                (this as IClearable).ClearReferences();
+
+            List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
+            
+            //create a zip of the incoming args and the port data
+            //to be used for type comparison
+            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
+
+            //if any value is a list whose expectation is a single
+            //do an auto map
+            //TODO: figure out a better way to do this than using a lot
+            //of specific excludes
+            if (args.Count()> 0 && 
+                portComparison.Any(x => x.Item1 == typeof (Value.List) && 
+                x.Item2 != typeof (Value.List)) && 
+                !(this.ArgumentLacing == LacingStrategy.Disabled))
+            {
+                //if the argument is of the expected type, then
+                //leave it alone otherwise, wrap it in a list
+                int j = 0;
+                foreach (var arg in args)
+                {
+                    //incoming value is list and expecting single
+                    if (portComparison.ElementAt(j).Item1 == typeof (Value.List) && 
+                        portComparison.ElementAt(j).Item2 != typeof (Value.List))
+                    {
+                        //leave as list
+                        argSets.Add(((Value.List)arg).Item);
+                    }
+                    //incoming value is list and expecting list
+                    else
+                    {
+                        //wrap in list
+                        argSets.Add(Utils.MakeFSharpList(arg));
+                    }
+                    j++;
+                }
+
+                IEnumerable<IEnumerable<Value>> lacedArgs = null;
+                switch (this.ArgumentLacing)
+                {
+                    case LacingStrategy.First:
+                        lacedArgs = argSets.SingleSet();
+                        break;
+                    case LacingStrategy.Shortest:
+                        lacedArgs = argSets.ShortestSet();
+                        break;
+                    case LacingStrategy.Longest:
+                        lacedArgs = argSets.LongestSet();
+                        break;
+                    case LacingStrategy.CrossProduct:
+                        lacedArgs = argSets.CartesianProduct();
+                        break;
+                }
+
+                //setup an empty list to hold results
+                FSharpList<Value> result = FSharpList<Value>.Empty;
+
+                //run the evaluate method for each set of 
+                //arguments in the cartesian result. do these
+                //in reverse order so our cons comes out the right
+                //way around
+                for (int i = lacedArgs.Count() - 1; i >= 0; i--)
+                {
+                    var evalResult = Evaluate(Utils.MakeFSharpList(lacedArgs.ElementAt(i).ToArray()));
+                    result = FSharpList<Value>.Cons(evalResult, result);
+                }
+
+                outPuts[OutPortData[0]] = Value.NewList(result);
+            }
+            else
+            {
+                outPuts[OutPortData[0]] = Evaluate(args);  
+            }
+            
+            ValidateConnections();
         }
 
         public virtual Value Evaluate(FSharpList<Value> args)

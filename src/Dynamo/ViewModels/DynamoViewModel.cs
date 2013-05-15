@@ -22,6 +22,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Utilties;
 using Microsoft.Practices.Prism.Commands;
+using NUnit.Core;
 
 namespace Dynamo.Controls
 {
@@ -113,13 +114,11 @@ namespace Dynamo.Controls
         public DelegateCommand<object> CreateConnectionCommand { get; set; }
         public DelegateCommand<object> AddNoteCommand { get; set; }
         public DelegateCommand<object> DeleteCommand { get; set; }
-        public DelegateCommand NodeFromSelectionCommand { get; set; }
-
         public DelegateCommand<object> SelectNeighborsCommand { get; set; }
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand RefactorCustomNodeCommand { get; set; }
-        
+        public DelegateCommand RunUITestsCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -249,8 +248,6 @@ namespace Dynamo.Controls
             }
         }
 
-
-
         /// <summary>
         /// Get the workspace view model whose workspace model is the model's current workspace
         /// </summary>
@@ -273,6 +270,20 @@ namespace Dynamo.Controls
 
         }
 
+        public Visibility DebugMenuVisibility
+        {
+            get 
+            {
+                bool showDebugMenu = false;
+#if DEBUG
+                showDebugMenu = true;
+#endif
+                if (showDebugMenu)
+                    return Visibility.Visible;
+
+                return Visibility.Hidden;
+            }
+        }
         #endregion
 
         public DynamoViewModel(DynamoController controller)
@@ -322,14 +333,11 @@ namespace Dynamo.Controls
             CreateConnectionCommand = new DelegateCommand<object>(CreateConnection, CanCreateConnection);
             AddNoteCommand = new DelegateCommand<object>(AddNote, CanAddNote);
             DeleteCommand = new DelegateCommand<object>(Delete, CanDelete);
-            NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
-            DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
-
-
             SelectNeighborsCommand = new DelegateCommand<object>(SelectNeighbors, CanSelectNeighbors);
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
             RefactorCustomNodeCommand = new DelegateCommand(RefactorCustomNode, CanRefactorCustomNode);
+            RunUITestsCommand = new DelegateCommand(RunUITests, CanRunUITests);
             #endregion
         }
 
@@ -1169,27 +1177,6 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void CreateNodeFromSelection()
-        {
-            CollapseNodes(
-                DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel)
-                    .Select(x => (x as dynNodeModel)));
-        }
-
-        private void NodeFromSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            NodeFromSelectionCommand.RaiseCanExecuteChanged();
-        }
-
-        private bool CanCreateNodeFromSelection()
-        {
-            if ( DynamoSelection.Instance.Selection.Count(x => x is dynNodeModel) > 1)
-            {
-                return true;
-            }
-            return false;
-        }
-
         void CreateNode(object parameters)
         {
             var data = parameters as Dictionary<string, object>;
@@ -1601,6 +1588,13 @@ namespace Dynamo.Controls
                     XmlAttribute xAttrib = elNode.Attributes[3];
                     XmlAttribute yAttrib = elNode.Attributes[4];
 
+                    XmlAttribute lacingAttrib = null;
+                    if(elNode.Attributes.Count > 5)
+                    {
+                         lacingAttrib = elNode.Attributes[5];
+                    }
+
+                    
                     string typeName = typeAttrib.Value;
 
                     string oldNamespace = "Dynamo.Elements.";
@@ -1639,6 +1633,13 @@ namespace Dynamo.Controls
                         t = tData.Type;
 
                     dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws);
+
+                    if (lacingAttrib != null)
+                    {
+                        LacingStrategy lacing = LacingStrategy.First;
+                        Enum.TryParse(lacingAttrib.Value, out lacing);
+                        el.ArgumentLacing = lacing;
+                    }
 
                     if (el == null)
                         return false;
@@ -1843,18 +1844,6 @@ namespace Dynamo.Controls
         {
             if (!String.IsNullOrEmpty(_model.CurrentSpace.FilePath))
                 SaveAs(_model.CurrentSpace.FilePath);
-        }
-
-        /// <summary>
-        ///     Collapse a set of nodes in the current workspace.  Has the side effects of prompting the user
-        ///     first in order to obtain the name and category for the new node, 
-        ///     writes the function to a dyf file, adds it to the FunctionDict, adds it to search, and compiles and 
-        ///     places the newly created symbol (defining a lambda) in the Controller's FScheme Environment.  
-        /// </summary>
-        /// <param name="selectedNodes"> The function definition for the user-defined node </param>
-        internal void CollapseNodes(IEnumerable<dynNodeModel> selectedNodes)
-        {
-            Dynamo.Utilities.NodeCollapser.Collapse(selectedNodes, _model.CurrentSpace);
         }
 
         /// <summary>
@@ -2243,7 +2232,12 @@ namespace Dynamo.Controls
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
         internal void ViewCustomNodeWorkspace(FunctionDefinition symbol)
         {
-            if (symbol == null || _model.CurrentSpace.Name.Equals(symbol.Workspace.Name))
+            if (symbol == null)
+            {
+                throw new Exception("There is a null function definition for this node.");
+            }
+
+            if (_model.CurrentSpace.Name.Equals(symbol.Workspace.Name))
                 return;
 
             dynWorkspaceModel newWs = symbol.Workspace;
@@ -2298,6 +2292,12 @@ namespace Dynamo.Controls
                     XmlAttribute xAttrib = elNode.Attributes[3];
                     XmlAttribute yAttrib = elNode.Attributes[4];
 
+                    XmlAttribute lacingAttrib = null;
+                    if (elNode.Attributes.Count > 5)
+                    {
+                        lacingAttrib = elNode.Attributes[5];
+                    }
+
                     string typeName = typeAttrib.Value;
 
                     //test the GUID to confirm that it is non-zero
@@ -2337,6 +2337,13 @@ namespace Dynamo.Controls
                         t, nickname, guid, x, y,
                         _model.CurrentSpace
                         );
+
+                    if (lacingAttrib != null)
+                    {
+                        LacingStrategy lacing = LacingStrategy.Disabled;
+                        Enum.TryParse(lacingAttrib.Value, out lacing);
+                        el.ArgumentLacing = lacing;
+                    }
 
                     el.DisableReporting();
 
@@ -2663,8 +2670,63 @@ namespace Dynamo.Controls
             
         }
 
+        private void RunUITests()
+        {
+            string assLoc = Assembly.GetExecutingAssembly().Location;
+            string testsLoc = Path.Combine(Path.GetDirectoryName(assLoc), "DynamoElementsTests.dll");
+            TestPackage testPackage = new TestPackage(testsLoc);
+            RemoteTestRunner remoteTestRunner = new RemoteTestRunner();
+            remoteTestRunner.Load(testPackage);
+
+            TestResult testResult = remoteTestRunner.Run(new NullListener(), new DynamoUITestFilter(), false, LoggingThreshold.All);
+            OutputResult(testResult);
+        }
+
+        private bool CanRunUITests()
+        {
+            return true;
+        }
+
+        static void OutputResult(TestResult result)
+        {
+            if (result.HasResults)
+            {
+                foreach (var childResult in result.Results)
+                {
+                    OutputResult((TestResult)childResult);
+                }
+                return;
+            }
+
+            dynSettings.Controller.DynamoViewModel.Log(string.Format("{0}:{1}", result.FullName, result.ResultState));
+        }
     }
 
+    public class DynamoUITestFilter : ITestFilter
+    {
+        public bool IsEmpty
+        {
+            get;
+            set;
+        }
+
+        public bool Pass(ITest test)
+        {
+            foreach (var cat in test.Categories)
+            {
+                if (cat == "DynamoUI")
+                    return true;
+            }
+
+            return false;
+        }
+
+        public bool Match (ITest test)
+        {
+            return true;
+        }
+    }
+    
     public class TypeLoadData
     {
         public Assembly Assembly;

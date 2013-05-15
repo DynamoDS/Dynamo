@@ -52,6 +52,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("OUT", "Watch contents, passed through", typeof(object)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
@@ -116,6 +118,9 @@ namespace Dynamo.Nodes
         {
             foreach (KeyValuePair<int, Tuple<int, dynNodeModel>> pair in inputs)
             {
+                if (pair.Value == null)
+                    continue;
+
                 dynNodeModel node = pair.Value.Item2;
                 IDrawable drawable = node as IDrawable;
 

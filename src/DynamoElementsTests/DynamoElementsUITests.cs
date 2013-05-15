@@ -1,145 +1,180 @@
-﻿//using System;
-//using System.IO;
-//using System.Reflection;
-//using System.Windows.Threading;
-//using Dynamo.Commands;
-//using Dynamo.Utilities;
-//using NUnit.Framework;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Windows.Threading;
+using Dynamo.Controls;
+using Dynamo.Commands;
+using Dynamo.Utilities;
+using NUnit.Framework;
 
-//namespace Dynamo.Tests
-//{
-//    [TestFixture]
-//    internal class DynamoElementsUiTests
-//    {
-//        [SetUp]
-//        public void Init()
-//        {
-//            StartDynamo();
-//        }
+namespace Dynamo.Tests
+{
+    [TestFixture]
+    internal class DynamoElementsUiTests
+    {
+        private DynamoViewModel _vm;
 
-//        [TearDown]
-//        public void Cleanup()
-//        {
-//            dynSettings.Writer.Close();
-//            dynSettings.Controller.Bench.Close();
-//            EmptyTempFolder();
-//        }
+        [SetUp]
+        [Category("DynamoUI")]
+        public void Init()
+        {
+            StartDynamo();
+            _vm = dynSettings.Controller.DynamoViewModel;
 
-//        private static string TempFolder;
+        }
 
-//        private static void StartDynamo()
-//        {
-//            string tempPath = Path.GetTempPath();
-//            var random = new Random();
-//            string logPath = Path.Combine(tempPath, "dynamoLog" + random.Next() + ".txt");
+        [TearDown]
+        [Category("DynamoUI")]
+        public void Cleanup()
+        {
+            //dynSettings.Writer.Close();
+            //dynSettings.Controller.Bench.Close();
+            EmptyTempFolder();
+        }
 
-//            TempFolder = Path.Combine(tempPath, "dynamoTmp");
+        private static string TempFolder;
 
-//            if (!Directory.Exists(TempFolder))
-//            {
-//                Directory.CreateDirectory(TempFolder);
-//            }
-//            else
-//            {
-//                EmptyTempFolder();
-//            }
+        private static void StartDynamo()
+        {
+            string tempPath = Path.GetTempPath();
+            var random = new Random();
+            string logPath = Path.Combine(tempPath, "dynamoLog" + random.Next() + ".txt");
 
-//            TextWriter tw = new StreamWriter(logPath);
-//            tw.WriteLine("Dynamo log started " + DateTime.Now.ToString());
-//            dynSettings.Writer = tw;
+            TempFolder = Path.Combine(tempPath, "dynamoTmp");
 
-//            //create a new instance of the ViewModel
-//            var controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment());
-//            controller.Bench.Show();
-//        }
+            if (!Directory.Exists(TempFolder))
+            {
+                Directory.CreateDirectory(TempFolder);
+            }
+            else
+            {
+                EmptyTempFolder();
+            }
 
-//        public static void EmptyTempFolder()
-//        {
-//            var directory = new DirectoryInfo(TempFolder);
-//            foreach (FileInfo file in directory.GetFiles()) file.Delete();
-//            foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
-//        }
+            //create a new instance of the ViewModel
+            //var controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment());
+            //controller.Bench.Show();
+        }
 
-//        [TestFixtureTearDown]
-//        public void FinalTearDown()
-//        {
-//            // Fix for COM exception on close
-//            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
-//            Dispatcher.CurrentDispatcher.InvokeShutdown();
-//        }
+        public static void EmptyTempFolder()
+        {
+            var directory = new DirectoryInfo(TempFolder);
+            foreach (FileInfo file in directory.GetFiles()) file.Delete();
+            foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
+        }
 
-//        // OpenCommand
+        [TestFixtureTearDown]
+        public void FinalTearDown()
+        {
+            // Fix for COM exception on close
+            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
+        }
 
-//        [Test]
-//        public void CanOpenGoodFile()
-//        {
-//            // NOTE rom PB: this test fails due to the fact that Bench is locked as it was never shown in these tests
-//            //              The same test is present in DynamoElementsUITests.cs, where it succeeds
-//            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-//            string openPath = Path.Combine(directory, @"..\..\test\good_dyns\multiplicationAndAdd.dyn");
-//            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.OpenCmd, openPath));
-//            dynSettings.Controller.ProcessCommandQueue();
+        // OpenCommand
 
-//            Assert.AreEqual(5, dynSettings.Controller.CurrentSpace.Nodes.Count);
-//        }
+        [Test]
+        [Category("DynamoUI")]
+        public void CanOpenGoodFile()
+        {
+            // NOTE rom PB: this test fails due to the fact that Bench is locked as it was never shown in these tests
+            //              The same test is present in DynamoElementsUITests.cs, where it succeeds
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string openPath = Path.Combine(directory, @"..\..\test\good_dyns\multiplicationAndAdd.dyn");
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(_vm.OpenCommand, openPath));
+            dynSettings.Controller.ProcessCommandQueue();
 
-//        // SaveImageCommand
+            Assert.AreEqual(5, dynSettings.Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+        }
 
-//        [Test]
-//        public void CanSaveImage()
-//        {
-//            string path = Path.Combine(TempFolder, "output.png");
+        // SaveImageCommand
 
-//            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveImageCmd, path));
-//            dynSettings.Controller.ProcessCommandQueue();
+        [Test]
+        [Category("DynamoUI")]
+        public void CanSaveImage()
+        {
+            string path = Path.Combine(TempFolder, "output.png");
 
-//            Assert.True(File.Exists(path));
-//            File.Delete(path);
-//            Assert.False(File.Exists(path));
-//        }
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(_vm.SaveImageCommand, path));
+            dynSettings.Controller.ProcessCommandQueue();
 
-
-//        [Test]
-//        public void CannotSaveImageWithBadPath()
-//        {
-//            string path = "W;\aelout put.png";
-
-//            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveImageCmd, path));
-
-//            var tempFldrInfo = new DirectoryInfo(TempFolder);
-//            Assert.AreEqual(0, tempFldrInfo.GetFiles().Length);
-//        }
+            Assert.True(File.Exists(path));
+            File.Delete(path);
+            Assert.False(File.Exists(path));
+        }
 
 
+        [Test]
+        [Category("DynamoUI")]
+        public void CannotSaveImageWithBadPath()
+        {
+            string path = "W;\aelout put.png";
 
-//        // ToggleConsoleShowingCommand
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(_vm.SaveImageCommand, path));
 
-//        [Test]
-//        public void CanShowConsoleWhenHidden()
-//        {
-//            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(
-//                DynamoCommands.ToggleConsoleShowingCmd, null));
-//            dynSettings.Controller.ProcessCommandQueue();
-//            Assert.True(dynSettings.Bench.ConsoleShowing);
-//        }
+            var tempFldrInfo = new DirectoryInfo(TempFolder);
+            Assert.AreEqual(0, tempFldrInfo.GetFiles().Length);
+        }
+
+        // ToggleConsoleShowingCommand
+        [Test]
+        [Category("DynamoUI")]
+        public void CanShowConsoleWhenHidden()
+        {
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(
+                _vm.ToggleConsoleShowingCommand, null));
+            dynSettings.Controller.ProcessCommandQueue();
+            Assert.True(dynSettings.Bench.ConsoleShowing);
+        }
 
 
-//        [Test]
-//        public void ConsoleIsHiddenOnOpen()
-//        {
-//            Assert.False(dynSettings.Bench.ConsoleShowing);
-//        }
+        [Test]
+        [Category("DynamoUI")]
+        public void ConsoleIsHiddenOnOpen()
+        {
+            Assert.False(dynSettings.Bench.ConsoleShowing);
+        }
 
 
-//        [Test]
-//        public void CanHideConsoleWhenShown()
-//        {
-//            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(
-//                DynamoCommands.ToggleConsoleShowingCmd, null));
-//            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(
-//                DynamoCommands.ToggleConsoleShowingCmd, null));
-//            dynSettings.Controller.ProcessCommandQueue();
-//            Assert.False(dynSettings.Bench.ConsoleShowing);
-//        }
-//    }
-//}
+        [Test]
+        [Category("DynamoUI")]
+        public void CanHideConsoleWhenShown()
+        {
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(
+               _vm.ToggleConsoleShowingCommand, null));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(
+                _vm.ToggleConsoleShowingCommand, null));
+            dynSettings.Controller.ProcessCommandQueue();
+            Assert.False(dynSettings.Bench.ConsoleShowing);
+        }
+
+
+        [Test]
+        [Category("DynamoUI")]
+        public void CanOpenAllSampleFilesWithoutError()
+        {
+            var di = new DirectoryInfo(@"..\..\doc\Distrib\Samples\");
+            int failCount = 0;
+
+            foreach (DirectoryInfo d in di.GetDirectories())
+            {
+
+                foreach (FileInfo fi in d.GetFiles())
+                {
+                    try
+                    {
+                        dynSettings.Controller.CommandQueue.Enqueue(
+                            Tuple.Create<object, object>(_vm.OpenCommand, fi.FullName));
+                        dynSettings.Controller.ProcessCommandQueue();
+                    }
+                    catch
+                    {
+                        failCount++;
+                        Console.WriteLine(string.Format("Could not open {0}", fi.FullName));
+                    }
+                }
+            }
+            Assert.AreEqual(failCount, 0);
+        }
+    }
+}
