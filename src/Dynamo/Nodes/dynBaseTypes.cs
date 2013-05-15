@@ -2023,7 +2023,7 @@ namespace Dynamo.Nodes
                     return;
 
                 base.Value = value;
-                RaisePropertyChanged("Value");
+                //RaisePropertyChanged("Value");
             }
         }
 

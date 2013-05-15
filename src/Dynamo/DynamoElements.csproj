@@ -72,6 +72,8 @@ limitations under the License.
     </Reference>
     <Reference Include="nunit.core.interfaces">
       <HintPath>..\..\extern\NUnit\nunit.core.interfaces.dll</HintPath>
+    <Reference Include="NCalc">
+      <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -111,6 +113,7 @@ limitations under the License.
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Search\SearchElements\TopSearchElement.cs" />
+    <Compile Include="Nodes\dynEquation.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\WPF.cs" />
