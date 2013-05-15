@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Commands;
 using Dynamo.Nodes;
+using Dynamo.Nodes.Search;
 using Dynamo.Search.Regions;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
@@ -24,6 +25,32 @@ namespace Dynamo.Search
         #region Properties
 
         /// <summary>
+        ///     A helper dictionary to keep track of currently added 
+        ///     categories.
+        /// </summary>
+        private Dictionary<string, BrowserItem> _browserCategoryDict = new Dictionary<string, BrowserItem>();
+
+        /// <summary>
+        ///     Indicates whether the node browser is visible or not
+        /// </summary>
+        private Visibility _browserVisibility = Visibility.Visible;
+        public Visibility BrowserVisibility
+        {
+            get { return _browserVisibility; }
+            set { _browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
+        }
+
+        /// <summary>
+        ///     Indicates whether the node browser is visible or not
+        /// </summary>
+        private Visibility _searchVisibility = Visibility.Collapsed;
+        public Visibility SearchVisibility
+        {
+            get { return _searchVisibility; }
+            set { _searchVisibility = value; RaisePropertyChanged("SearchVisibility"); }
+        }
+
+        /// <summary>
         ///     Regions property
         /// </summary>
         /// <value>
@@ -33,23 +60,28 @@ namespace Dynamo.Search
         public ObservableDictionary<string, RegionBase> Regions { get; set; }
 
         /// <summary>
-        ///     IncludeOptionalElements property
+        ///     IncludeRevitAPIElements property
         /// </summary>
         /// <value>
         ///     Specifies whether we are including Revit API elements in search.
         /// </value>
-        public bool _IncludeOptionalElements;
+        public bool IncludeRevitApiElements;
 
-        public bool IncludeOptionalElements
+        public bool IncludeRevitAPIElements
         {
-            get { return _IncludeOptionalElements; }
+            get { return IncludeRevitApiElements; }
             set
             {
-                _IncludeOptionalElements = value;
-                RaisePropertyChanged("IncludeOptionalElements");
+                IncludeRevitApiElements = value;
+                RaisePropertyChanged("IncludeRevitAPIElements");
                 ToggleIncludingRevitAPIElements();
             }
         }
+
+        /// <summary>
+        /// Leaves of the browser - used for navigation
+        /// </summary>
+        private List<SearchElementBase> _browserLeaves = new List<SearchElementBase>(); 
 
         /// <summary>
         ///     SearchText property
@@ -77,7 +109,6 @@ namespace Dynamo.Search
         ///     This is the currently selected element in the UI.
         /// </value>
         private int _selectedIndex;
-
         public int SelectedIndex
         {
             get { return _selectedIndex; }
@@ -85,8 +116,11 @@ namespace Dynamo.Search
             {
                 if (_selectedIndex != value)
                 {
+                    if (_visibleSearchResults.Count > _selectedIndex)
+                        _visibleSearchResults[_selectedIndex].IsSelected = false;
                     _selectedIndex = value;
-
+                    if (_visibleSearchResults.Count > _selectedIndex)
+                        _visibleSearchResults[_selectedIndex].IsSelected = true;
                     RaisePropertyChanged("SelectedIndex");
                 }
             }
@@ -162,6 +196,23 @@ namespace Dynamo.Search
         /// </value>
         public int MaxNumSearchResults { get; set; }
 
+        /// <summary>
+        /// The root elements for the browser
+        /// </summary>
+        private ObservableCollection<BrowserRootElement> _browserRootCategories = new ObservableCollection<BrowserRootElement>();
+        public ObservableCollection<BrowserRootElement> BrowserRootCategories { get { return _browserRootCategories; } set { _browserRootCategories = value; } }
+
+        /// <summary>
+        /// A category represent the "Top Result"
+        /// </summary>
+        private BrowserRootElement _topResult;
+
+        /// <summary>
+        ///     An ordered list representing all of the visible items in the browser.
+        ///     This is used to manage up-down navigation through the menu.
+        /// </summary>
+        private List<BrowserItem> _visibleSearchResults = new List<BrowserItem>();
+
         #endregion
 
         /// <summary>
@@ -175,15 +226,32 @@ namespace Dynamo.Search
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             SearchResults = new ObservableCollection<SearchElementBase>();
-            MaxNumSearchResults = 100;
+            MaxNumSearchResults = 20;
             Visible = Visibility.Collapsed;
             _SearchText = "";
-            IncludeOptionalElements = false; // revit api
+            IncludeRevitAPIElements = false; // revit api
             Regions = new ObservableDictionary<string, RegionBase>();
             //Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
             Regions.Add("Include Experimental Revit API Nodes", new RevitAPIRegion());
-            AddHomeToSearch();
-            AddCommandElements();
+
+            _topResult = this.AddRootCategory("Top Result");
+            this.AddRootCategory(BuiltinNodeCategories.CORE);
+            this.AddRootCategory(BuiltinNodeCategories.LOGIC);
+            this.AddRootCategory(BuiltinNodeCategories.CREATEGEOMETRY);
+            this.AddRootCategory(BuiltinNodeCategories.MODIFYGEOMETRY);
+            this.AddRootCategory(BuiltinNodeCategories.REVIT);
+            this.AddRootCategory(BuiltinNodeCategories.IO);
+            this.AddRootCategory(BuiltinNodeCategories.SCRIPTING);
+            this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
+        }
+
+
+        public BrowserRootElement AddRootCategory(string name)
+        {
+            var ele = new BrowserRootElement(name, BrowserRootCategories);
+            BrowserRootCategories.Add(ele);
+            this._browserCategoryDict.Add(name, ele);
+            return ele;
         }
 
         /// <summary>
@@ -195,7 +263,179 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Asyncrhonously erforms a search and updates the observable SearchResults property.
+        ///     If Revit API elements are shown, hides them.  Otherwise,
+        ///     shows them.  Update search when done with either.
+        /// </summary>
+        public void ToggleIncludingRevitAPIElements()
+        {
+            if (!IncludeRevitAPIElements)
+            {
+                this.RemoveCategory(BuiltinNodeCategories.REVIT_API);
+
+                foreach (var ele in RevitApiSearchElements)
+                {
+                    SearchDictionary.Remove(ele, ele.Name);
+                    if (!(ele is CategorySearchElement))
+                        SearchDictionary.Remove(ele, BuiltinNodeCategories.REVIT_API + "." + ele.Name);
+                }
+            }
+            else
+            {
+                var revitCat = this.AddCategory(BuiltinNodeCategories.REVIT_API);
+                bool addToCat = !revitCat.Items.Any();
+
+                // add elements to search
+                foreach (var ele in RevitApiSearchElements)
+                {
+                    if (addToCat)
+                        revitCat.Items.Add(ele);
+                    SearchDictionary.Add(ele, ele.Name);
+                    if (!(ele is CategorySearchElement))
+                        SearchDictionary.Add(ele, BuiltinNodeCategories.REVIT_API + "." + ele.Name);
+                }
+            }
+
+        }
+
+        private const char CATEGORY_DELIMITER = '.';
+
+        /// <summary>
+        ///     Remove a specific category from browser and search
+        /// </summary>
+        /// <param name="categoryName">The category name, including delimiters</param>
+        public void RemoveCategory( string categoryName )
+        {
+            var splitCat = new List<string>();
+
+            if (categoryName.Contains(CATEGORY_DELIMITER))
+            {
+                splitCat = categoryName.Split(CATEGORY_DELIMITER).ToList();
+            }
+            else
+            {
+                splitCat.Add(categoryName);
+            }
+
+            var currentCat = (BrowserItem)BrowserRootCategories.FirstOrDefault((x) => x.Name == splitCat[0]);
+
+            if (currentCat == null)
+            {
+                return;
+            }
+
+            // if were looking to remove a root element, simply do that
+            if (splitCat.Count == 1)
+            {
+                BrowserRootCategories.Remove( (BrowserRootElement) currentCat);
+                return;
+            }
+
+            for (var i = 1; i < splitCat.Count; i++ ){
+                
+                var matchingCat = currentCat.Items.FirstOrDefault((x) => x.Name == splitCat[i]);
+
+                if (matchingCat == null || i == splitCat.Count-1)
+                {
+                    if (i == splitCat.Count - 1 && matchingCat == null)
+                    {
+                        break;
+                    }
+
+                    if (i == splitCat.Count - 1 && matchingCat != null)
+                    {
+                        currentCat = matchingCat;
+                    }
+
+                    // remove current cat from its siblings list
+                    if (currentCat is BrowserRootElement)
+                    {
+                        (currentCat as BrowserRootElement).Siblings.Remove((currentCat as BrowserRootElement));
+                    }
+                    else if (currentCat is BrowserInternalElement)
+                    {
+                        (currentCat as BrowserInternalElement).Siblings.Remove(currentCat);
+                    }
+                    break;
+                }
+
+                currentCat = matchingCat;
+
+            }
+
+            if (_browserCategoryDict.ContainsKey(categoryName))
+            {
+                _browserCategoryDict.Remove(categoryName);
+            }
+
+        }
+
+        /// <summary>
+        ///     Add a category, given a delimited name
+        /// </summary>
+        /// <param name="categoryName">The comma delimited name </param>
+        /// <returns>The newly created item</returns>
+        public BrowserItem AddCategory(string categoryName)
+        {
+            // if already added, return immediately
+            if (_browserCategoryDict.ContainsKey(categoryName) )
+            {
+                return _browserCategoryDict[categoryName];
+            }
+
+            // otherwise split the categoryname
+            var splitCat = new List<string>();
+            if (categoryName.Contains(CATEGORY_DELIMITER))
+            {
+                splitCat = categoryName.Split(CATEGORY_DELIMITER).ToList();
+            }
+            else
+            {
+                splitCat.Add(categoryName);
+            }
+
+            // attempt to add root element
+            if (splitCat.Count == 1)
+            {
+                return this.AddRootCategory(categoryName);
+            }
+
+            var currentCatName = splitCat[0];
+
+            // attempt to add all other categoires
+            var currentCat = (BrowserItem) BrowserRootCategories.FirstOrDefault((x) => x.Name == splitCat[0]);
+            if (currentCat == null)
+            {
+                currentCat = AddRootCategory(splitCat[0]);
+            }            
+
+            for (var i = 1; i < splitCat.Count; i++)
+            {
+                currentCatName = currentCatName + CATEGORY_DELIMITER + splitCat[i];
+
+                var tempCat = currentCat.Items.FirstOrDefault((x) => x.Name == splitCat[i]);
+                if (tempCat == null)
+                {
+                    tempCat = new BrowserInternalElement(splitCat[i], currentCat);
+                    currentCat.AddChild( (BrowserInternalElement) tempCat);
+                    _browserCategoryDict.Add(currentCatName, tempCat);
+                }
+
+                currentCat = tempCat;
+
+            }
+
+            return currentCat;
+
+        }
+
+        public bool ContainsCategory(string categoryName)
+        {
+            return _browserCategoryDict.ContainsKey(categoryName);
+        }
+
+
+        /// <summary>
+        ///     Asynchronously performs a search and updates the observable SearchResults property.
         /// </summary>
         /// <param name="query"> The search query </param>
         internal void SearchAndUpdateResults(string query)
@@ -211,19 +451,81 @@ namespace Dynamo.Search
                     }
                 }).ContinueWith((t) =>
                     {
-                        lock (SearchResults)
-                        {
-                            SearchResults.Clear();
-                            foreach (var node in t.Result)
-                            {
-                                SearchResults.Add(node);
-                            }
-                            SelectedIndex = 0;
-                        }
-                    }
-                                , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
-        }
 
+                        lock (_visibleSearchResults)
+                        {
+
+                            // deselect the last selected item
+                            if (_visibleSearchResults.Count > SelectedIndex)
+                            {
+                                _visibleSearchResults[SelectedIndex].IsSelected = false;
+                            }
+
+                            // clear visible results list
+                            _visibleSearchResults.Clear();
+
+                            // if the search query is empty, go back to the default treeview
+                            if (string.IsNullOrEmpty(query) || query == "Search...")
+                            {
+
+                                foreach (var ele in BrowserRootCategories)
+                                {
+                                    ele.CollapseToLeaves();
+                                    ele.SetVisibilityToLeaves(Visibility.Visible);
+                                }
+
+                                // hide the top result
+                                _topResult.Visibility = Visibility.Collapsed;
+
+                                return;
+                            }
+                            
+                            // otherwise, first collapse all
+                            foreach (var root in BrowserRootCategories)
+                            {
+                                root.CollapseToLeaves();
+                                root.SetVisibilityToLeaves(Visibility.Collapsed);
+                            }
+
+                            //// if there are any results, add the top result 
+                            if (t.Result.Any() && t.Result.ElementAt(0) is NodeSearchElement)
+                            {
+                                _topResult.Items.Clear();
+                                _topResult.AddChild( new TopSearchElement( t.Result.ElementAt(0) ) );
+
+                                _topResult.SetVisibilityToLeaves(Visibility.Visible);
+                                _topResult.IsExpanded = true;
+                            }
+                            
+                            // for all of the other results, show them in their category
+                            foreach (var ele in _browserLeaves)
+                            {
+                                if (t.Result.Contains(ele))
+                                {
+                                    ele.Visibility = Visibility.Visible;
+                                    ele.ExpandToRoot();
+                                }
+                            }
+
+                            // create an ordered list of visible search results
+                            var baseBrowserItem = new BrowserRootElement("root");
+                            foreach (var root in BrowserRootCategories)
+                            {
+                                baseBrowserItem.Items.Add(root);
+                            }
+
+                            baseBrowserItem.GetVisibleLeaves(ref _visibleSearchResults);
+
+                            if (_visibleSearchResults.Any())
+                            {
+                                this.SelectedIndex = 0;
+                                _visibleSearchResults[0].IsSelected = true;
+                            }
+                        }
+
+                    }
+                    , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
+        }
 
         /// <summary>
         ///     Synchronously performs a search using the current SearchText
@@ -245,49 +547,13 @@ namespace Dynamo.Search
                 return;
 
             var result = Search(query);
+
             SearchResults.Clear();
             foreach (var node in result)
             {
                 SearchResults.Add(node);
             }
             SelectedIndex = 0;
-        }
-
-        /// <summary>
-        ///     Add command elements to search
-        /// </summary>
-        internal void AddCommandElements()
-        {
-            SearchDictionary.Add(new CommandElement("Note", "Add a note to the canvas", new List<string> {"doc"},
-                                                    dynSettings.Controller.DynamoViewModel.AddNoteCommand), "Note");
-            SearchDictionary.Add(new CommandElement("ToggleConsoleVisibility", "Toggle the visibility of the console",
-                                                    new List<string> {"console", "view"},
-                                                    dynSettings.Controller.DynamoViewModel.ToggleConsoleShowingCommand),
-                                 "ToggleConsoleVisibility");
-            SearchDictionary.Add(new CommandElement("ToggleFullscreenWatchVisibility", "Toggle the background fullscreen geometry preview",
-                                                    new List<string> { "fullscreenWatch", "view" },
-                                                    dynSettings.Controller.DynamoViewModel.ToggleFullscreenWatchShowingCommand),
-                                 "ToggleFullscreenWatchVisibility");
-            SearchDictionary.Add(new CommandElement("Open", "Open a document...", new List<string>(),
-                                                    dynSettings.Controller.DynamoViewModel
-                                                               .ShowOpenDialogAndOpenResultCommand), "Open");
-            SearchDictionary.Add(
-                new CommandElement("Save", "Save the current document", new List<string>(),
-                                   dynSettings.Controller.DynamoViewModel.ShowSaveDialogIfNeededAndSaveResultCommand),
-                "Save");
-            SearchDictionary.Add(
-                new CommandElement("SaveAs", "Save the current document as...", new List<string>(),
-                                   dynSettings.Controller.DynamoViewModel.ShowSaveDialogAndSaveResultCommand), "SaveAs");
-            SearchDictionary.Add(
-                new CommandElement("SaveImage", "Save the current workspace as an image...", new List<string>(),
-                                   dynSettings.Controller.DynamoViewModel.ShowSaveImageDialogAndSaveResultCommand),
-                "SaveImage");
-            SearchDictionary.Add(
-                new CommandElement("ClearWorkspace", "Clear the current workspace", new List<string>(),
-                                   dynSettings.Controller.DynamoViewModel.ClearCommand), "ClearWorkspace");
-            SearchDictionary.Add(
-                new CommandElement("Exit", "Exit the application", new List<string>(),
-                                   dynSettings.Controller.DynamoViewModel.ExitCommand), "Exit");
         }
 
         /// <summary>
@@ -332,17 +598,11 @@ namespace Dynamo.Search
         {
             if (string.IsNullOrEmpty(search) || search == "Search...")
             {
-                if (IncludeOptionalElements)
-                    return NodeCategories.Select(kvp => (SearchElementBase) kvp.Value).OrderBy(val => val.Name).ToList();
-                else
-                    return
-                        NodeCategories.Select(kvp => (SearchElementBase) kvp.Value)
-                                      .Where((ele) => !ele.Name.StartsWith("Revit API"))
-                                      .OrderBy(val => val.Name)
-                                      .ToList();
+                return _browserLeaves;
             }
 
             return SearchDictionary.Search(search, MaxNumSearchResults);
+
         }
 
         /// <summary>
@@ -360,10 +620,6 @@ namespace Dynamo.Search
             {
                 PopulateSearchTextWithSelectedResult();
             }
-                //else if (e.Key == Key.Back)
-                //{
-                //    RemoveLastPartOfSearchText();
-                //}
             else if (e.Key == Key.Down)
             {
                 SelectNext();
@@ -372,34 +628,6 @@ namespace Dynamo.Search
             {
                 SelectPrevious();
             }
-        }
-
-        /// <summary>
-        ///     If Revit API elements are shown, hides them.  Otherwise,
-        ///     shows them.  Update search when done with either.
-        /// </summary>
-        public void ToggleIncludingRevitAPIElements()
-        {
-            if (!IncludeOptionalElements)
-            {
-                foreach (var ele in RevitApiSearchElements)
-                {
-                    SearchDictionary.Remove(ele, ele.Name);
-                    if (!(ele is CategorySearchElement))
-                        SearchDictionary.Remove(ele, "Revit API." + ele.Name);
-                }
-            }
-            else
-            {
-                // add elements to search
-                foreach (var ele in RevitApiSearchElements)
-                {
-                    SearchDictionary.Add(ele, ele.Name);
-                    if (!(ele is CategorySearchElement))
-                        SearchDictionary.Add(ele, "Revit API." + ele.Name);
-                }
-            }
-            SearchAndUpdateResults();
         }
 
         /// <summary>
@@ -464,13 +692,17 @@ namespace Dynamo.Search
         /// </summary>
         public void ExecuteSelected()
         {
-            if (SearchResults.Count == 0) return;
+            //if (SearchResults.Count == 0) return;
 
             // none of the elems are selected, return 
             if (SelectedIndex == -1)
                 return;
 
-            SearchResults[SelectedIndex].Execute();
+            if (_visibleSearchResults[SelectedIndex] is SearchElementBase)
+            {
+                ( (SearchElementBase) _visibleSearchResults[SelectedIndex]).Execute();
+            }
+            //SearchResults[SelectedIndex].Execute();
         }
 
         /// <summary>
@@ -488,43 +720,6 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Adds a Workspace object to the search dictionary using it's Name property for a name
-        /// </summary>
-        /// <param name="workspace">A dynWorkspace to add</param>
-        public void Add(dynWorkspaceModel workspace)
-        {
-            Add(workspace, workspace.Name);
-        }
-
-        /// <summary>
-        ///     Adds a Workspace object with a given Name
-        /// </summary>
-        /// <param name="workspace">A dynWorkspace to add</param>
-        /// <param name="name">The name to use</param>
-        public void Add(dynWorkspaceModel workspace, string name)
-        {
-            if (name == "Home")
-                return;
-
-            // create the workspace in search
-            var searchEle = new WorkspaceSearchElement(name, "Go to " + name);
-            var funcDef = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(workspace);
-            searchEle.Guid = funcDef.FunctionId;
-
-            if (searchEle.Guid == Guid.Empty)
-                return;
-
-            SearchDictionary.Add(searchEle, searchEle.Name);
-
-            // create the node in search
-            var nodeEle = new LocalSearchElement(funcDef);
-            SearchDictionary.Add(nodeEle, name);
-
-            // update search
-            SearchAndUpdateResultsSync(SearchText);
-        }
-
-        /// <summary>
         ///     Add a custom node to search.
         /// </summary>
         /// <param name="workspace">A dynWorkspace to add</param>
@@ -534,23 +729,37 @@ namespace Dynamo.Search
             if (name == "Home")
                 return;
 
-            // create the workspace in search
-            var workspaceEle = new WorkspaceSearchElement(name, "Navigate to workspace called " + name);
-            workspaceEle.Guid = functionId;
+            // create the node in search
+            var nodeEle = new NodeSearchElement(name, functionId);
+            SearchDictionary.Add(nodeEle, nodeEle.Name);
+            SearchDictionary.Add(nodeEle, category + "." + nodeEle.Name);
+
+            TryAddCategoryAndItem(category, nodeEle);
+
+            NodeCategories[category].NumElements++;
+
+        }
+
+        /// <summary>
+        ///     Attempt to add a new category to the browser and an item as one of its children
+        /// </summary>
+        /// <param name="category">The name of the category - a string possibly separated with one period </param>
+        /// <param name="item">The item to add as a child of that category</param>
+        public void TryAddCategoryAndItem( string category, BrowserInternalElement item )
+        {
 
             if (!NodeCategories.ContainsKey(category))
             {
                 NodeCategories.Add(category, new CategorySearchElement(category));
             }
 
-            NodeCategories[category].NumElements++;
+            var cat = this.AddCategory(category);
+            cat.AddChild(item);
 
-            SearchDictionary.Add(workspaceEle, workspaceEle.Name);
+            var searchEleItem = item as SearchElementBase;
+            if (searchEleItem != null)
+                _browserLeaves.Add(searchEleItem);
 
-            // create the node in search
-            var nodeEle = new LocalSearchElement(name, functionId);
-            SearchDictionary.Add(nodeEle, nodeEle.Name);
-            SearchDictionary.Add(nodeEle, category + "." + nodeEle.Name);
         }
 
         /// <summary>
@@ -559,7 +768,7 @@ namespace Dynamo.Search
         /// <param name="dynNode">A Dynamo node object</param>
         public void Add(Type t)
         {
-            // get name, category, attributes 
+            // get name, category, attributes (this is terribly ugly...)
             var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
             var name = "";
             if (attribs.Length > 0)
@@ -588,101 +797,34 @@ namespace Dynamo.Search
                 description = (attribs[0] as NodeDescriptionAttribute).ElementDescription;
             }
 
-            var searchEle = new LocalSearchElement(name, description, tags);
+            var searchEle = new NodeSearchElement(name, description, tags);
+
+            // if it's a revit search element, keep track of it
+            if ( cat.Equals(BuiltinNodeCategories.REVIT_API) )
+            {
+                this.RevitApiSearchElements.Add(searchEle);
+                if (!IncludeRevitAPIElements)
+                {
+                    return;
+                }
+            }
 
             if (!string.IsNullOrEmpty(cat))
             {
-                if (!cat.StartsWith("Revit API"))
-                {
-                    SearchDictionary.Add(searchEle, cat + "." + searchEle.Name);
-
-                    if (!NodeCategories.ContainsKey(cat))
-                    {
-                        var nameEle = new CategorySearchElement(cat);
-                        NodeCategories.Add(cat, nameEle);
-                        SearchDictionary.Add(nameEle, cat);
-                    }
-                }
-                else
-                {
-                    if (!NodeCategories.ContainsKey(cat))
-                    {
-                        var nameEle = new CategorySearchElement(cat);
-                        NodeCategories.Add(cat, nameEle);
-                        RevitApiSearchElements.Add(nameEle);
-                    }
-                }
+                SearchDictionary.Add(searchEle, cat + "." + searchEle.Name);
             }
 
-            NodeCategories[cat].NumElements++;
+            TryAddCategoryAndItem(cat, searchEle);
 
-            // add node to search
-            if ((searchEle.Name.StartsWith("API_")))
+            SearchDictionary.Add(searchEle, searchEle.Name);
+            if (tags.Count > 0)
             {
-                RevitApiSearchElements.Add(searchEle);
+                SearchDictionary.Add(searchEle, tags);
             }
-            else
-            {
-                SearchDictionary.Add(searchEle, searchEle.Name);
-                if (tags.Count > 0)
-                {
-                    SearchDictionary.Add(searchEle, tags);
-                }
-                SearchDictionary.Add(searchEle, description);
-            }
+            SearchDictionary.Add(searchEle, description);
+
         }
 
-        /// <summary>
-        ///     Adds a local DynNode to search
-        /// </summary>
-        /// <param name="dynNode">A Dynamo node object</param>
-        public void Add(dynNodeModel dynNode)
-        {
-            var searchEle = new LocalSearchElement(dynNode);
-
-            // add category to search
-            var cat = dynNode.Category;
-            if (!string.IsNullOrEmpty(cat))
-            {
-                if (!cat.StartsWith("Revit API"))
-                {
-                    SearchDictionary.Add(searchEle, cat + "." + searchEle.Name);
-
-                    if (!NodeCategories.ContainsKey(cat))
-                    {
-                        var nameEle = new CategorySearchElement(cat);
-                        NodeCategories.Add(cat, nameEle);
-                        SearchDictionary.Add(nameEle, cat);
-                    }
-                }
-                else
-                {
-                    if (!NodeCategories.ContainsKey(cat))
-                    {
-                        var nameEle = new CategorySearchElement(cat);
-                        NodeCategories.Add(cat, nameEle);
-                        RevitApiSearchElements.Add(nameEle);
-                    }
-                }
-            }
-
-            NodeCategories[cat].NumElements++;
-
-            // add node to search
-            if ((searchEle.Name.StartsWith("API_")))
-            {
-                RevitApiSearchElements.Add(searchEle);
-            }
-            else
-            {
-                SearchDictionary.Add(searchEle, searchEle.Name);
-                if (dynNode.Tags.Count > 0)
-                {
-                    SearchDictionary.Add(searchEle, dynNode.Tags);
-                }
-                SearchDictionary.Add(searchEle, dynNode.Description);
-            }
-        }
 
         /// <summary>
         ///     Rename a workspace that is currently part of the SearchDictionary
@@ -692,7 +834,6 @@ namespace Dynamo.Search
         public void Refactor(FunctionDefinition def, string oldName, string newName)
         {
             SearchDictionary.Remove((ele) => (ele).Name == oldName);
-            Add(def.Workspace, newName);
         }
     }
 }
