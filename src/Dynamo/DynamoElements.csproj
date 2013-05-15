@@ -72,6 +72,7 @@ limitations under the License.
     </Reference>
     <Reference Include="nunit.core.interfaces">
       <HintPath>..\..\extern\NUnit\nunit.core.interfaces.dll</HintPath>
+    </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>
     </Reference>
