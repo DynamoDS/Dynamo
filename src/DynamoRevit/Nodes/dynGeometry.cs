@@ -16,14 +16,18 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Media.Media3D;
+
+using Autodesk.Revit;
 using Autodesk.Revit.DB;
-using Dynamo.Connectors;
-using Dynamo.Utilities;
+using Revit.SDK.Samples.GeometryCreation_BooleanOperation.CS;
+
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
+using Dynamo.Connectors;
+using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
@@ -1309,7 +1313,7 @@ namespace Dynamo.Nodes
                 i++;
             }
 
-            var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop,secondLoop,vertPairs);
+            var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop,secondLoop,System.Nullable<List<VertexPair>>);
 
             solids.Add(result);
 

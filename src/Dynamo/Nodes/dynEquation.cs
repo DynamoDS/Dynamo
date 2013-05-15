@@ -19,7 +19,7 @@ using NCalc;
 namespace Dynamo.Nodes
 {
     [NodeName("Formula")]
-    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Design and compute mathematical expressions.")]
     [NodeSearchTags("Equation", "Arithmetic")]
     [IsInteractive(true)]

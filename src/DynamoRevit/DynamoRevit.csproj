@@ -74,6 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalysisVisualizationFramework .cs" />
     <Compile Include="DynamoController_Revit.cs" />
     <Compile Include="dynFunctionWithRevit.cs" />
     <Compile Include="dynRevitAPINode.cs" />
