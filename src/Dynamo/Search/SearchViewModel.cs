@@ -377,7 +377,7 @@ namespace Dynamo.Search
         public BrowserItem AddCategory(string categoryName)
         {
             // if already added, return immediately
-            if (_browserCategoryDict.ContainsKey(categoryName))
+            if (_browserCategoryDict.ContainsKey(categoryName) )
             {
                 return _browserCategoryDict[categoryName];
             }
@@ -396,9 +396,7 @@ namespace Dynamo.Search
             // attempt to add root element
             if (splitCat.Count == 1)
             {
-                var cat = new BrowserRootElement(categoryName, BrowserRootCategories);
-                BrowserRootCategories.Add(cat);
-                return cat;
+                return this.AddRootCategory(categoryName);
             }
 
             var currentCatName = splitCat[0];
