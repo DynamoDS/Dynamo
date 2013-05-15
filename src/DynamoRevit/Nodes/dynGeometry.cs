@@ -80,6 +80,24 @@ namespace Dynamo.Nodes
         }
     }
 
+    public abstract class dynSolidBase: dynNodeWithOneOutput, IDrawable, IClearable
+    {
+        protected List<Solid> solids = new List<Solid>();
+
+        public RenderDescription Draw()
+        {
+            RenderDescription rd = new RenderDescription();
+            foreach (Solid s in solids)
+                dynRevitTransactionNode.DrawSolid(rd, s);
+            return rd;
+        }
+
+        public void ClearReferences()
+        {
+            solids.Clear();
+        }
+    }
+
     [NodeName("XYZ")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates an XYZ from three numbers.")]
@@ -1211,6 +1229,116 @@ namespace Dynamo.Nodes
             }
 
             return Value.NewContainer(mySolid);
+        }
+    }
+
+    [NodeName("Create Extrusion Geometry")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeDescription("Creates a solid by linearly extruding one or more closed coplanar curve loops.")]
+    public class CreateExtrusionGeometry : dynSolidBase
+    {
+        public CreateExtrusionGeometry()
+        {
+            InPortData.Add(new PortData("profiles", "A list of curve loops to be extruded.", typeof(Value.List)));
+            InPortData.Add(new PortData("direction", "The direction in which to extrude the profile.", typeof(Value.Container)));
+            InPortData.Add(new PortData("distance", "The positive distance by which the loops are to be extruded.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("geometry", "The extrusion.", typeof(Value.Container)));
+            
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ direction = (XYZ)((Value.Container)args[1]).Item;
+            double distance = ((Value.Number)args[2]).Item;
+
+            //incoming list will have two lists in it
+            //each list will contain curves. convert the curves
+            //into curve loops
+            FSharpList<Value> profileList = ((Value.List)args[0]).Item;
+            List<CurveLoop> loops = new List<CurveLoop>();
+            foreach (var item in profileList)
+            {
+                if (item.IsList)
+                {
+                    var innerList = ((Value.List)item).Item;
+                    foreach (var innerItem in innerList)
+                    {
+                        loops.Add((CurveLoop)((Value.Container)item).Item);
+                    }
+                }
+                else
+                {
+                    //we'll assume a container
+                    loops.Add((CurveLoop)((Value.Container)item).Item);
+                }
+            }
+
+            var result = GeometryCreationUtilities.CreateExtrusionGeometry(loops, direction, distance);
+
+            solids.Add(result);
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Rectangle")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeDescription("Creates a solid by linearly extruding one or more closed coplanar curve loops.")]
+    public class Rectangle : dynCurveBase
+    {
+        public Rectangle()
+        {
+            InPortData.Add(new PortData("center", "The center of the rectangle.", typeof(Value.Container)));
+            InPortData.Add(new PortData("width", "The width of the rectangle.", typeof(Value.Number)));
+            InPortData.Add(new PortData("height", "The height of the rectangle.", typeof(Value.Number)));
+            InPortData.Add(new PortData("normal", "The normal of the plane on which to create the rectangle.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("geometry", "The curve loop representing the rectangle.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ center = (XYZ)((Value.Container)args[0]).Item;
+            double width = ((Value.Number)args[1]).Item;
+            double height = ((Value.Number)args[2]).Item;
+            XYZ normal = (XYZ)((Value.Container)args[3]).Item;
+
+            Transform t = Transform.Identity; 
+            t.Origin = center;
+            t.BasisZ = normal;
+            t.BasisY = normal.CrossProduct(XYZ.BasisX);
+            t.BasisX = t.BasisY.CrossProduct(t.BasisZ);
+
+            //ccw from upper right
+            XYZ p0 = new XYZ(center.X + width/2, center.Y + width/2, center.Z);
+            XYZ p1 = new XYZ(center.X - width/2, center.Y + width/2, center.Z);
+            XYZ p2 = new XYZ(center.X - width/2, center.Y - width/2, center.Z);
+            XYZ p3 = new XYZ(center.X + width/2, center.Y - width/2, center.Z);
+
+            p0 = t.OfPoint(p0);
+            p1 = t.OfPoint(p1);
+            p2 = t.OfPoint(p2);
+            p3 = t.OfPoint(p3);
+
+            Line l1 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p0,p1);
+            Line l2 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p1,p2);
+            Line l3 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p2,p3);
+            Line l4 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p3,p0);
+
+            CurveLoop cl = new CurveLoop();
+            cl.Append(l1);
+            cl.Append(l2);
+            cl.Append(l3);
+            cl.Append(l4);
+
+            crvs.Add(l1);
+            crvs.Add(l2);
+            crvs.Add(l3);
+            crvs.Add(l4);
+
+            return Value.NewContainer(cl);
         }
     }
 }
