@@ -240,11 +240,11 @@ namespace Dynamo.Controls
         {
             if ((bool)value == true)
             {
-                return "Show grey background";
+                return "Disable preview geometry";
             }
             else
             {
-                return "Show background geometry";
+                return "Enable preview geometry";
             }
         }
 

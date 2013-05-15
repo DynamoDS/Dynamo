@@ -68,6 +68,9 @@ namespace Dynamo.Controls
             if (!_parentWorkspace.IsCurrentSpace)
                 return;
 
+            if (!dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing)
+                return;
+
             List<IDrawable> drawables = new List<IDrawable>();
 
             foreach (dynNodeViewModel nodeViewModel in _parentWorkspace.Nodes)

@@ -182,6 +182,13 @@ namespace Dynamo.Controls
             {
                 fullscreenWatchShowing = value;
                 RaisePropertyChanged("FullscreenWatchShowing");
+
+                // NOTE: I couldn't get the binding to work in the XAML so
+                //       this is a temporary hack
+                foreach (dynWorkspaceViewModel workspace in Workspaces)
+                {
+                    workspace.FullscreenChanged();
+                }
             }
         }
 

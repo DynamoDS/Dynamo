@@ -14,18 +14,32 @@
              MouseMove="DynWorkspaceView_OnMouseMove" 
              KeyDown="dynWorkspaceView_KeyDown" KeyUp="dynWorkspaceView_KeyUp" 
              IsHitTestVisible="{Binding IsCurrentSpace}">
+    
+    <UserControl.Resources>
+        <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter"/>
+    </UserControl.Resources>
         
-
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-        <ItemsControl ItemsSource="{Binding Watch3DViewModels}"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                      Visibility="{Binding FullscreenWatchShowing, Converter={StaticResource BoolToFullscreenWatchVisibilityConverter}}">
-            <ItemsControl.Resources>
+        <Canvas Name="backgroundCanvas" 
+                 Margin="0,0,0,0" 
+                 ClipToBounds="True" 
+                 Grid.Row="0" 
+                 Grid.Column="2"
+                 IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
+            <Canvas.Background>
+                <SolidColorBrush Color="{Binding BackgroundColor}" />
+            </Canvas.Background>
+        </Canvas>
 
+        <ItemsControl ItemsSource="{Binding Watch3DViewModels}"
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            Visibility="{Binding FullscreenWatchVisible, 
+            Converter={StaticResource BoolToFullscreenWatchVisibilityConverter}}">
+                      
+            <ItemsControl.Resources>
                 <DataTemplate DataType="{x:Type controls:Watch3DFullscreenViewModel}">
                     <controls:WatchViewFullscreen></controls:WatchViewFullscreen>
                 </DataTemplate>
-
             </ItemsControl.Resources>
         </ItemsControl>
         
@@ -99,9 +113,7 @@
                         HorizontalContentAlignment="Right" Visibility ="Collapsed" FontSize="14"
                         FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
 
-            <!--<Canvas.Background>
-                <SolidColorBrush Color="{Binding BackgroundColor}" />
-            </Canvas.Background>-->
+
             <Canvas.ContextMenu>
                 <ContextMenu>
                     <MenuItem  Header="_New Node From Selection"  Name="NodeFromSelection" Command="{Binding NodeFromSelectionCommand}"/>
@@ -109,10 +121,6 @@
             </Canvas.ContextMenu>
 
         </Canvas>
-        
-        
-        
-
         
     </Grid>
 </UserControl>

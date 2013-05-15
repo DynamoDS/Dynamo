@@ -140,6 +140,16 @@ namespace Dynamo
             get { return _model.FilePath; }
         }
 
+        public void FullscreenChanged()
+        {
+            RaisePropertyChanged("FullscreenWatchVisible");
+        }
+
+        public bool FullscreenWatchVisible
+        {
+            get { return dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing; }
+        }
+
         private dynConnectorViewModel activeConnector;
         public dynConnectorViewModel ActiveConnector
         {
