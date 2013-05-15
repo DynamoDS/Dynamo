@@ -11,7 +11,7 @@ using Dynamo.FSchemeInterop;
 namespace Dynamo.Nodes
 {
     [NodeName("Identity Transf")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the identity transformation.")]
     public class dynTransformIdentity: dynNodeWithOneOutput
     {
@@ -31,7 +31,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transf From Origin and Vecs")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns a transformation with origin (o), up vector (u), and forward (f).")]
     public class dynTransformOriginAndVectors: dynNodeWithOneOutput
     {
@@ -64,7 +64,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Scale Transf")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the identity transformation.")]
     public class dynTransformScaleBasis: dynNodeWithOneOutput
     {
@@ -89,7 +89,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Rotate Transf")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns a transform that rotates by the specified angle about the specified axis and point.")]
     public class dynTransformRotation: dynNodeWithOneOutput
     {
@@ -116,7 +116,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Translate Transf")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns he transformation that translates by the specified vector.")]
     public class dynTransformTranslation: dynNodeWithOneOutput
     {
@@ -139,7 +139,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Reflect Transf")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the transformation that reflects about the specified plane.")]
     public class dynTransformReflection: dynNodeWithOneOutput
     {
@@ -162,7 +162,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transf Point")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Transform a point with a transform.")]
     public class dynTransformPoint: dynNodeWithOneOutput
     {
@@ -208,12 +208,37 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Compute Face Derivs")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
-    [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
-    public class dynFaceComputerDerivative: dynNodeWithOneOutput
+    [NodeName("Multiply Transf")]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
+    [NodeDescription("Multiply two transforms.")]
+    public class Multiplytransform : dynNodeWithOneOutput
     {
-        public dynFaceComputerDerivative()
+        public Multiplytransform()
+        {
+            InPortData.Add(new PortData("t1", "The first transform", typeof(Value.Container)));
+            InPortData.Add(new PortData("t2", "The second transform", typeof(Value.Container)));
+            OutPortData.Add(new PortData("transform", "The transform which is the result of multiplication.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var t1 = (Transform)((Value.Container)args[0]).Item;
+            var t2 = (Transform)((Value.Container)args[1]).Item;
+
+            return Value.NewContainer(
+               t1.Multiply(t2));
+        }
+
+    }
+
+    [NodeName("Compute Face Derivs")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
+    [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
+    public class dynComputeFaceDerivatives: dynNodeWithOneOutput
+    {
+        public dynComputeFaceDerivatives()
         {
             InPortData.Add(new PortData("f", "The face to evaluate(Face)", typeof(Value.Container)));
             InPortData.Add(new PortData("uv", "The parameter to evaluate(UV)", typeof(Value.Container)));

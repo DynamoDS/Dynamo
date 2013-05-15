@@ -1,4 +1,4 @@
-<dynWorkspace X="10" Y="55" Name="Solar Radiation Optimizer" Category="Revit" ID="c5e9ebfb-236f-43c0-93c3-f05a8f667ac6">
+<dynWorkspace X="10" Y="55" Name="Solar Radiation Optimizer" Category="Analyze.Solar" ID="c5e9ebfb-236f-43c0-93c3-f05a8f667ac6">
   <dynElements>
     <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="4afe98cb-f3f3-405c-b42d-183ac3f100ad" nickname="Variable" x="0" y="0">
       <Symbol value="famInst" />

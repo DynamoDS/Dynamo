@@ -494,7 +494,7 @@ namespace Dynamo.Utilities
                 var workSpace = new FuncWorkspace(
                     funName, category.Length > 0
                     ? category
-                    : BuiltinNodeCategories.MISC, cx, cy);
+                    : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES, cx, cy);
 
                 def = new FunctionDefinition(Guid.Parse(id))
                     {

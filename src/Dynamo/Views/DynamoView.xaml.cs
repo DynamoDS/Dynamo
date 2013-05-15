@@ -32,6 +32,11 @@ namespace Dynamo.Controls
         private dynNodeView draggedNode;
         private DynamoViewModel _vm;
 
+        public bool ConsoleShowing
+        {
+            get { return LogScroller.Height > 0; }
+        }
+
         public bool UILocked { get; private set; }
 
         public DynamoView()

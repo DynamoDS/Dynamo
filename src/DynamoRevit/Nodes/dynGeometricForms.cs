@@ -14,7 +14,7 @@ using System.Reflection;
 namespace Dynamo.Nodes
 {
     [NodeName("Loft Form")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
     public class dynLoftForm : dynRevitTransactionNodeWithOneOutput
     {

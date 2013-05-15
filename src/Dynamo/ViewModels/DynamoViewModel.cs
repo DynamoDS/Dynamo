@@ -22,6 +22,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Utilties;
 using Microsoft.Practices.Prism.Commands;
+using NUnit.Core;
 
 namespace Dynamo.Controls
 {
@@ -119,7 +120,8 @@ namespace Dynamo.Controls
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand RefactorCustomNodeCommand { get; set; }
-        
+        public DelegateCommand RunUITestsCommand { get; set; }
+
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
             get { return _workspaces; }
@@ -261,19 +263,9 @@ namespace Dynamo.Controls
             get { return _model.Workspaces.IndexOf(_model.CurrentSpace); }
             set
             {
-                //before you set the value, save and compile the workspace
-
-                //if (_model.CurrentSpace != _model.HomeSpace)
-                //{
-                //    var def = Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace);
-                //    SaveFunction(def, true, false);
-                //}
-                    
                 _model.CurrentSpace = _model.Workspaces[value];
             }
         }
-
-
 
         /// <summary>
         /// Get the workspace view model whose workspace model is the model's current workspace
@@ -297,6 +289,20 @@ namespace Dynamo.Controls
 
         }
 
+        public Visibility DebugMenuVisibility
+        {
+            get 
+            {
+                bool showDebugMenu = false;
+#if DEBUG
+                showDebugMenu = true;
+#endif
+                if (showDebugMenu)
+                    return Visibility.Visible;
+
+                return Visibility.Hidden;
+            }
+        }
         #endregion
 
         public DynamoViewModel(DynamoController controller)
@@ -352,6 +358,7 @@ namespace Dynamo.Controls
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
             RefactorCustomNodeCommand = new DelegateCommand(RefactorCustomNode, CanRefactorCustomNode);
+            RunUITestsCommand = new DelegateCommand(RunUITests, CanRunUITests);
             #endregion
         }
 
@@ -1591,7 +1598,7 @@ namespace Dynamo.Controls
                     funName,
                     category.Length > 0
                         ? category
-                        : BuiltinNodeCategories.MISC,
+                        : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES,
                     false, cx, cy
                     );
 
@@ -1958,7 +1965,7 @@ namespace Dynamo.Controls
         /// <param name="definition">The definition to saveo</param>
         /// <param name="bool">Whether to write the function to file.</param>
         /// <returns>Whether the operation was successful</returns>
-        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = true)
+        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = false)
         {
             if (definition == null)
                 return;
@@ -1979,8 +1986,12 @@ namespace Dynamo.Controls
 
                     string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
                     dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
-                    if (addToSearch) 
-                        Controller.SearchViewModel.Add(definition.Workspace);
+                    
+                    if (addToSearch)
+                    {
+                        Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId);
+                    }
+
                     Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId, path);
                 }
                 catch (Exception e)
@@ -2195,9 +2206,7 @@ namespace Dynamo.Controls
             try
             {
                 var node = CreateNodeInstance(elementType, nickName, guid);
-                //var nodeUI = node.NodeUI;
 
-                //store the element in the elements list
                 ws.Nodes.Add(node);
                 node.WorkSpace = ws;
 
@@ -2225,8 +2234,6 @@ namespace Dynamo.Controls
         {
             var node = (dynNodeModel)Activator.CreateInstance(elementType);
 
-            //dynNodeView nodeUI = node.NodeUI;
-
             if (!string.IsNullOrEmpty(nickName))
             {
                 node.NickName = nickName;
@@ -2253,14 +2260,8 @@ namespace Dynamo.Controls
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
         internal void ViewHomeWorkspace()
         {
-
-// AUTOSAVE: This is manually performed now, replace this with a non-overwriting autosave
-            //SaveFunctionOnly( Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace) );
-
-            //Step 4: Make home workspace visible
             _model.CurrentSpace = _model.HomeSpace;
             _model.CurrentSpace.OnDisplayed();
-
         }
 
         /// <summary>
@@ -2269,19 +2270,18 @@ namespace Dynamo.Controls
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
         internal void ViewCustomNodeWorkspace(FunctionDefinition symbol)
         {
-            if (symbol == null || _model.CurrentSpace.Name.Equals(symbol.Workspace.Name))
+            if (symbol == null)
+            {
+                throw new Exception("There is a null function definition for this node.");
+            }
+
+            if (_model.CurrentSpace.Name.Equals(symbol.Workspace.Name))
                 return;
 
             dynWorkspaceModel newWs = symbol.Workspace;
             this._model.Workspaces.Add(newWs);
 
             CurrentSpaceViewModel.OnStopDragging(this, EventArgs.Empty);
-
-// AUTOSAVE: This is manually performed now, replace this with a non-overwriting autosave
-            //if (!ViewingHomespace)
-            //{
-            //    SaveFunctionOnly(Controller.CustomNodeLoader.GetDefinitionFromWorkspace(newWs));
-            //}
 
             _model.CurrentSpace = newWs;
             _model.CurrentSpace.OnDisplayed();
@@ -2598,7 +2598,7 @@ namespace Dynamo.Controls
             Controller.CustomNodeLoader.AddFunctionDefinition(functionDefinition.FunctionId, functionDefinition);
 
             // add the element to search
-            Controller.SearchViewModel.Add(workSpace);
+            Controller.SearchViewModel.Add(name, category, id);
 
             if (display)
             {
@@ -2708,8 +2708,63 @@ namespace Dynamo.Controls
             
         }
 
+        private void RunUITests()
+        {
+            string assLoc = Assembly.GetExecutingAssembly().Location;
+            string testsLoc = Path.Combine(Path.GetDirectoryName(assLoc), "DynamoElementsTests.dll");
+            TestPackage testPackage = new TestPackage(testsLoc);
+            RemoteTestRunner remoteTestRunner = new RemoteTestRunner();
+            remoteTestRunner.Load(testPackage);
+
+            TestResult testResult = remoteTestRunner.Run(new NullListener(), new DynamoUITestFilter(), false, LoggingThreshold.All);
+            OutputResult(testResult);
+        }
+
+        private bool CanRunUITests()
+        {
+            return true;
+        }
+
+        static void OutputResult(TestResult result)
+        {
+            if (result.HasResults)
+            {
+                foreach (var childResult in result.Results)
+                {
+                    OutputResult((TestResult)childResult);
+                }
+                return;
+            }
+
+            dynSettings.Controller.DynamoViewModel.Log(string.Format("{0}:{1}", result.FullName, result.ResultState));
+        }
     }
 
+    public class DynamoUITestFilter : ITestFilter
+    {
+        public bool IsEmpty
+        {
+            get;
+            set;
+        }
+
+        public bool Pass(ITest test)
+        {
+            foreach (var cat in test.Categories)
+            {
+                if (cat == "DynamoUI")
+                    return true;
+            }
+
+            return false;
+        }
+
+        public bool Match (ITest test)
+        {
+            return true;
+        }
+    }
+    
     public class TypeLoadData
     {
         public Assembly Assembly;

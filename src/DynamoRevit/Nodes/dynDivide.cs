@@ -28,7 +28,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Divided Path")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("Divides curves or edges and makes a DividedPath.")]
     public class dynDividedPath : dynRevitTransactionNodeWithOneOutput
     {
@@ -230,7 +230,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Divided Surface")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("An element which divides surfaces into patterns and faces")]
     public class dynDividedSurface : dynRevitTransactionNodeWithOneOutput
     {

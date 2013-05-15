@@ -15,7 +15,7 @@ namespace Dynamo.Nodes
 {
      
     [NodeName("Spatial Field Manager")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Gets or creates the spatial field manager on the view.")]
     class dynSpatialFieldManager : dynNodeWithOneOutput
     {
@@ -51,7 +51,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Analysis Display Style")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Create an analysis display style for displaying results color-mapped on a surface.")]
     class dynAnalysisResultsDisplayStyleColor : dynNodeWithOneOutput
     {
@@ -131,7 +131,7 @@ namespace Dynamo.Nodes
     }
 
     /*[NodeName("Vector Spatial Field")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE)]
     [NodeDescription("Gets or creates the spatial field manager on the view.")]
     [RequiresTransaction(true)]
     class dynVectorSpatialField : dynNode
@@ -235,7 +235,7 @@ namespace Dynamo.Nodes
     }*/
 
     [NodeName("Spatial Field Face")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("An analysis results object to be used with a spatial field manager.")]
     class dynAnalysisResults : dynNodeWithOneOutput
     {
@@ -318,7 +318,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Spatial Field Curve")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("An analysis results curve to be used with a spatial field manager.")]
     class dynAnalysisResultsCurve : dynNodeWithOneOutput
     {
@@ -427,7 +427,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Temp Curves")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Draw temporary curves in the family.")]
     class dynTemporaryCurves : dynNodeWithOneOutput
     {

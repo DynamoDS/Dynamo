@@ -5,7 +5,7 @@ The intent of this project is to provide a visual interface for building interes
 
 ## Contributors ##
 
-This project was started by Ian Keough. A complete rewrite of the underlying Dynamo engine was done by Stephen Elliot and Matt Jezyk contributed a ton of nodes as well as a wealth of input on pretty much all other aspects of Dynamo's design. Prior to Ian's joining Autodesk, others on the Autodesk team including Zach Kron, Tom Vollaro, and Lillian Smith provided a lot of very useful feedback.
+This project was started by Ian Keough. A complete rewrite of the underlying Dynamo engine was done by Stephen Elliott. Matt Jezyk contributed a ton of nodes as well as a wealth of input on pretty much all other aspects of Dynamo's design. Prior to Ian's joining Autodesk, others on the Autodesk team including Zach Kron, Tom Vollaro, and Lillian Smith provided a lot of very useful feedback.
 
 
 Dynamo has been developed based on feedback from several parties inlcuding Buro Happold Engineers, Autodesk, and students and faculty at the USC School of Architecture.

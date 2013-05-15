@@ -1,68 +1,74 @@
-<dynWorkspace X="2" Y="-148">
+<dynWorkspace X="-770.506493506493" Y="-128.87518037518">
   <dynElements>
-    <Dynamo.Elements.dynDynamicRelaxation type="Dynamo.Elements.dynDynamicRelaxation" guid="e6ea04c8-12bd-420e-a246-be9cc476c7cd" nickname="Create Particle System" x="348.5" y="253.25" />
-    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="f0c19b83-e739-4c2a-b18f-8783a97b84e0" nickname="Number" x="38.25" y="176.75">
+    <Dynamo.Nodes.dynDynamicRelaxation type="Dynamo.Nodes.dynDynamicRelaxation" guid="874d7d08-83d8-4d6e-ba96-b427e0c73e91" nickname="Create Particle System" x="314.545739724089" y="125.725683485933" lacing="First" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="15e52aa3-0f58-4b54-9f0a-4b679097d3a5" nickname="Number" x="55.65502510791" y="328.892848199906" lacing="First">
+      <System.Double value="1" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="664c3623-da4e-472f-962c-9d87b7d76278" nickname="Number" x="63.7105806634657" y="519.781737088795" lacing="First">
+      <System.Double value="10" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="4c4a2962-aa40-4bac-904e-1a65abfa1a0c" nickname="Number" x="60.4605806634657" y="598.531737088795" lacing="First">
+      <System.Double value="-9.8" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynExecuteInterval type="Dynamo.Nodes.dynExecuteInterval" guid="7c9331a6-b926-4bfc-ab47-1116e01ea00c" nickname="Execution Interval" x="342.690240369811" y="384.620170438845" lacing="First" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="126b0e74-d856-4f5f-83f7-217effc9be08" nickname="Number" x="291.172834040949" y="476.052100534818" lacing="First">
+      <System.Double value="1" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDynamicRelaxationStep type="Dynamo.Nodes.dynDynamicRelaxationStep" guid="1a3bc282-9df4-4b7c-8c24-c2864e5928a1" nickname="Dynamic Relaxation Step" x="574.394561250878" y="134.360612888495" lacing="First" />
+    <Dynamo.Nodes.dynGetFromList type="Dynamo.Nodes.dynGetFromList" guid="0bd61f8b-ddcf-4380-a68d-d3019cb1024f" nickname="Get From List" x="814.908651232211" y="163.183137703744" lacing="First" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="7b819060-978f-4c31-ab84-7bd7d1214782" nickname="Number" x="624.294708932887" y="257.987511330716" lacing="First">
+      <System.Double value="1" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynGetFromList type="Dynamo.Nodes.dynGetFromList" guid="b0b4a728-b374-4324-a801-4633a87e0423" nickname="Get From List" x="827.408651232211" y="284.433137703744" lacing="First" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="fcba9430-736b-48ed-86c4-feb06d135eb5" nickname="Number" x="628.822537839912" y="344.650282081142" lacing="First">
       <System.Double value="0" />
-    </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="c88dcb11-cef9-4c5f-b93e-14fcf502f95a" nickname="Number" x="1046" y="553.25">
-      <System.Double value="0.1" />
-    </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynExecuteInterval type="Dynamo.Elements.dynExecuteInterval" guid="6d3d933d-2b3f-4e70-9c4f-8844b9c85779" nickname="Execution Interval" x="489" y="407.75" />
-    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="e4fa769b-96fc-4681-9ca7-79ec1adf3250" nickname="Number" x="370.75" y="488.25">
-      <System.Double value="0.1" />
-    </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="7eccdfa1-c1f2-460b-a09d-c4bffe2c0456" nickname="Number Slider" x="40.75" y="605.75">
-      <System.Double value="20" min="0" max="30" />
-    </Dynamo.Elements.dynDoubleSliderInput>
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="6a1a35fa-b6cd-448a-9d5c-fd37c0b0cc65" nickname="Number Slider" x="39.75" y="696.5">
-      <System.Double value="1" min="1" max="30" />
-    </Dynamo.Elements.dynDoubleSliderInput>
-    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="ae1d1ebf-708b-4e09-b690-8600548c52d5" nickname="Dynamic Relaxation Loop" x="609" y="331.25">
-      <ID value="7f6594ea-2171-4b21-b17d-3da4e0caf03e" />
-      <Output value="out" />
-      <Inputs>
-        <Input value="ps" />
-        <Input value="exec" />
-      </Inputs>
-    </Dynamo.Elements.dynFunction>
-    <Dynamo.Elements.dynDynamicRelaxationStep type="Dynamo.Elements.dynDynamicRelaxationStep" guid="15101276-b2ef-47e3-8b70-6069f14f4cca" nickname="Dynamic Relaxation Step" x="1177.75" y="449.5" />
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="ed5b311d-665a-4be9-b9ee-05ff19f0c3be" nickname="Number Slider" x="36.75" y="426.25">
-      <System.Double value="20.7272727272727" min="0" max="40" />
-    </Dynamo.Elements.dynDoubleSliderInput>
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="271e76eb-d8c9-4eb9-8fe7-2f81265da0e1" nickname="Number Slider" x="38.25" y="269.75">
-      <System.Double value="0.636363636363636" min="0" max="5" />
-    </Dynamo.Elements.dynDoubleSliderInput>
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="b889e94e-6122-44ac-8473-7c7fd4434433" nickname="Number Slider" x="37.75" y="348.5">
-      <System.Double value="10" min="0" max="10" />
-    </Dynamo.Elements.dynDoubleSliderInput>
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="36c70f3a-b5c9-470e-ac97-0613b4d17cc1" nickname="Number Slider" x="42.5" y="509.75">
-      <System.Double value="10" min="0" max="10" />
-    </Dynamo.Elements.dynDoubleSliderInput>
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="e278a78d-1229-4a78-b4ad-16084d0b9c87" nickname="Number Slider" x="42" y="768.25">
-      <System.Double value="-10" min="-10" max="10" />
-    </Dynamo.Elements.dynDoubleSliderInput>
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="f2907f99-244a-4da7-91e4-fac110702974" nickname="Watch 3D" x="1046.62715381681" y="203.602863731615" lacing="Disabled" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="2f9f0fb0-6141-44f9-aee8-4c5e7bdc7fda" nickname="Number" x="54.270305242362" y="258.541774736953" lacing="First">
+      <System.Double value="1" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="60df8660-9343-41e6-85ea-a11a4ae61792" nickname="Number" x="459.497841340721" y="49.692057097625" lacing="First">
+      <System.Double value="0.5" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="bfc677f2-95c5-4fe9-88f2-b2bbc0162752" nickname="Number" x="56.9369719090287" y="404.70844140362" lacing="First">
+      <System.Double value="10" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="11ba4843-e427-462e-ba99-3faac0551930" nickname="Watch" x="494.512289026525" y="432.226001427121" lacing="Disabled" />
+    <Dynamo.Nodes.dynPointBySelection type="Dynamo.Nodes.dynPointBySelection" guid="447452ea-9ce1-4d49-8d75-f6b6d32af4a9" nickname="Select Point" x="0" y="3.46382131958558" lacing="First">
+      <instance id="30665" />
+    </Dynamo.Nodes.dynPointBySelection>
+    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="442ed8bf-ce7c-42e5-b633-69d33593c863" nickname="List" x="162.236827575712" y="100.493151253291" lacing="Disabled">
+      <Input name="item(s)" />
+      <Input name="index1" />
+    </Dynamo.Nodes.dynNewList>
+    <Dynamo.Nodes.dynPointBySelection type="Dynamo.Nodes.dynPointBySelection" guid="1927a56d-8c75-49e5-aade-2a1686c3c513" nickname="Select Point" x="0" y="115.463821319586" lacing="First">
+      <instance id="30855" />
+    </Dynamo.Nodes.dynPointBySelection>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="be6a4a6c-6740-46e6-a347-8f1d0e72466a" nickname="Number" x="54.770305242362" y="195.70844140362" lacing="First">
+      <System.Double value="10" />
+    </Dynamo.Nodes.dynDoubleInput>
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="e6ea04c8-12bd-420e-a246-be9cc476c7cd" start_index="0" end="ae1d1ebf-708b-4e09-b690-8600548c52d5" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="f0c19b83-e739-4c2a-b18f-8783a97b84e0" start_index="0" end="e6ea04c8-12bd-420e-a246-be9cc476c7cd" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="f0c19b83-e739-4c2a-b18f-8783a97b84e0" start_index="0" end="e6ea04c8-12bd-420e-a246-be9cc476c7cd" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="6d3d933d-2b3f-4e70-9c4f-8844b9c85779" start_index="0" end="ae1d1ebf-708b-4e09-b690-8600548c52d5" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="e4fa769b-96fc-4681-9ca7-79ec1adf3250" start_index="0" end="6d3d933d-2b3f-4e70-9c4f-8844b9c85779" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="7eccdfa1-c1f2-460b-a09d-c4bffe2c0456" start_index="0" end="e6ea04c8-12bd-420e-a246-be9cc476c7cd" end_index="6" portType="0" />
-    <Dynamo.Connectors.dynConnector start="6a1a35fa-b6cd-448a-9d5c-fd37c0b0cc65" start_index="0" end="e6ea04c8-12bd-420e-a246-be9cc476c7cd" end_index="7" portType="0" />
-    <Dynamo.Connectors.dynConnector start="ed5b311d-665a-4be9-b9ee-05ff19f0c3be" start_index="0" end="e6ea04c8-12bd-420e-a246-be9cc476c7cd" end_index="4" portType="0" />
-    <Dynamo.Connectors.dynConnector start="271e76eb-d8c9-4eb9-8fe7-2f81265da0e1" start_index="0" end="e6ea04c8-12bd-420e-a246-be9cc476c7cd" end_index="2" portType="0" />
-    <Dynamo.Connectors.dynConnector start="b889e94e-6122-44ac-8473-7c7fd4434433" start_index="0" end="e6ea04c8-12bd-420e-a246-be9cc476c7cd" end_index="3" portType="0" />
-    <Dynamo.Connectors.dynConnector start="36c70f3a-b5c9-470e-ac97-0613b4d17cc1" start_index="0" end="e6ea04c8-12bd-420e-a246-be9cc476c7cd" end_index="5" portType="0" />
-    <Dynamo.Connectors.dynConnector start="e278a78d-1229-4a78-b4ad-16084d0b9c87" start_index="0" end="e6ea04c8-12bd-420e-a246-be9cc476c7cd" end_index="8" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="874d7d08-83d8-4d6e-ba96-b427e0c73e91" start_index="0" end="1a3bc282-9df4-4b7c-8c24-c2864e5928a1" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="874d7d08-83d8-4d6e-ba96-b427e0c73e91" start_index="0" end="11ba4843-e427-462e-ba99-3faac0551930" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="15e52aa3-0f58-4b54-9f0a-4b679097d3a5" start_index="0" end="874d7d08-83d8-4d6e-ba96-b427e0c73e91" end_index="3" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="664c3623-da4e-472f-962c-9d87b7d76278" start_index="0" end="874d7d08-83d8-4d6e-ba96-b427e0c73e91" end_index="5" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="664c3623-da4e-472f-962c-9d87b7d76278" start_index="0" end="874d7d08-83d8-4d6e-ba96-b427e0c73e91" end_index="6" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="4c4a2962-aa40-4bac-904e-1a65abfa1a0c" start_index="0" end="874d7d08-83d8-4d6e-ba96-b427e0c73e91" end_index="7" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="7c9331a6-b926-4bfc-ab47-1116e01ea00c" start_index="0" end="1a3bc282-9df4-4b7c-8c24-c2864e5928a1" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="126b0e74-d856-4f5f-83f7-217effc9be08" start_index="0" end="7c9331a6-b926-4bfc-ab47-1116e01ea00c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="1a3bc282-9df4-4b7c-8c24-c2864e5928a1" start_index="0" end="0bd61f8b-ddcf-4380-a68d-d3019cb1024f" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="1a3bc282-9df4-4b7c-8c24-c2864e5928a1" start_index="0" end="b0b4a728-b374-4324-a801-4633a87e0423" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="7b819060-978f-4c31-ab84-7bd7d1214782" start_index="0" end="0bd61f8b-ddcf-4380-a68d-d3019cb1024f" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="b0b4a728-b374-4324-a801-4633a87e0423" start_index="0" end="f2907f99-244a-4da7-91e4-fac110702974" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="fcba9430-736b-48ed-86c4-feb06d135eb5" start_index="0" end="b0b4a728-b374-4324-a801-4633a87e0423" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="2f9f0fb0-6141-44f9-aee8-4c5e7bdc7fda" start_index="0" end="874d7d08-83d8-4d6e-ba96-b427e0c73e91" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="60df8660-9343-41e6-85ea-a11a4ae61792" start_index="0" end="1a3bc282-9df4-4b7c-8c24-c2864e5928a1" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="bfc677f2-95c5-4fe9-88f2-b2bbc0162752" start_index="0" end="874d7d08-83d8-4d6e-ba96-b427e0c73e91" end_index="4" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="447452ea-9ce1-4d49-8d75-f6b6d32af4a9" start_index="0" end="442ed8bf-ce7c-42e5-b633-69d33593c863" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="442ed8bf-ce7c-42e5-b633-69d33593c863" start_index="0" end="874d7d08-83d8-4d6e-ba96-b427e0c73e91" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="1927a56d-8c75-49e5-aade-2a1686c3c513" start_index="0" end="442ed8bf-ce7c-42e5-b633-69d33593c863" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="be6a4a6c-6740-46e6-a347-8f1d0e72466a" start_index="0" end="874d7d08-83d8-4d6e-ba96-b427e0c73e91" end_index="1" portType="0" />
   </dynConnectors>
-  <dynNotes>
-    <Dynamo.Elements.dynNote text="Rest Length" x="6" y="397.25" />
-    <Dynamo.Elements.dynNote text="Mass of Node" x="8" y="476.25" />
-    <Dynamo.Elements.dynNote text="Spring Constant" x="5" y="315.25" />
-    <Dynamo.Elements.dynNote text="Dampening" x="8" y="245.25" />
-    <Dynamo.Elements.dynNote text="Number of Nodes in X" x="6" y="568.25" />
-    <Dynamo.Elements.dynNote text="Number of Nodes in Y" x="7.0454545454545" y="656.386363636364" />
-    <Dynamo.Elements.dynNote text="Gravity" x="11.3181818181819" y="736.25" />
-  </dynNotes>
+  <dynNotes />
 </dynWorkspace>

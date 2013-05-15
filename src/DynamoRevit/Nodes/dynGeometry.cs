@@ -80,8 +80,26 @@ namespace Dynamo.Nodes
         }
     }
 
+    public abstract class dynSolidBase: dynNodeWithOneOutput, IDrawable, IClearable
+    {
+        protected List<Solid> solids = new List<Solid>();
+
+        public RenderDescription Draw()
+        {
+            RenderDescription rd = new RenderDescription();
+            foreach (Solid s in solids)
+                dynRevitTransactionNode.DrawSolid(rd, s);
+            return rd;
+        }
+
+        public void ClearReferences()
+        {
+            solids.Clear();
+        }
+    }
+
     [NodeName("XYZ")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ from three numbers.")]
     public class dynXYZ: dynXYZBase
     {
@@ -109,7 +127,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ From Reference Point")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Extracts an XYZ from a Reference Point.")]
     public class dynXYZFromReferencePoint : dynXYZBase
     {
@@ -133,7 +151,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ -> X")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the X value of the given XYZ")]
     public class dynXYZGetX: dynNodeWithOneOutput
     { 
@@ -152,7 +170,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ -> Y")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the Y value of the given XYZ")]
     public class dynXYZGetY: dynNodeWithOneOutput
     {
@@ -171,7 +189,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ -> Z")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the Z value of the given XYZ")]
     public class dynXYZGetZ: dynNodeWithOneOutput
     {
@@ -190,7 +208,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Zero")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ at the origin (0,0,0).")]
     public class dynXYZZero: dynXYZBase
     {
@@ -209,7 +227,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("X Axis")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the X basis (1,0,0).")]
     public class dynXYZBasisX : dynXYZBase
     {
@@ -229,7 +247,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Y Axis")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the Y basis (0,1,0).")]
     public class dynXYZBasisY : dynXYZBase
     {
@@ -249,7 +267,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Z Axis")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the Z basis (0,0,1).")]
     public class dynXYZBasisZ: dynXYZBase
     {
@@ -270,7 +288,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Scale XYZ")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Multiplies each component of an XYZ by a number.")]
     public class dynXYZScale: dynXYZBase
     {
@@ -295,7 +313,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Add XYZ")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Adds the components of two XYZs.")]
     public class dynXYZAdd: dynXYZBase
     {
@@ -320,7 +338,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("UV Grid")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of UVs from a domain.")]
     public class dynUVGrid: dynNodeWithOneOutput
     {
@@ -368,7 +386,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("UV Random")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of UVs froma domain.")]
     public class dynUVRandom: dynNodeWithOneOutput
     {
@@ -418,7 +436,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Grid")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of XYZs.")]
     public class dynReferencePtGrid: dynNodeWithOneOutput
     {
@@ -481,7 +499,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Array On Curve")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a list of XYZs along a curve.")]
     public class dynXYZArrayAlongCurve : dynXYZBase
     {
@@ -510,8 +528,6 @@ namespace Dynamo.Nodes
             Curve crvRef = c.GeometryCurve;
             double t = 0;
 
-            pts.Clear();
-
             for (int xCount = 0; xCount < xi; xCount++)
             {
                 t = xCount / xi; // create normalized curve param by dividing current number by total number
@@ -533,7 +549,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Plane")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates a geometric plane.")]
     public class dynPlane: dynNodeWithOneOutput
     {
@@ -560,7 +576,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Sketch Plane")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates a geometric sketch plane.")]
     public class dynSketchPlane : dynRevitTransactionNodeWithOneOutput
     {
@@ -666,7 +682,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Line")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric line.")]
     public class dynLineBound: dynCurveBase
     {
@@ -712,7 +728,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Arc By Start Mid End")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
     public class dynArcStartMiddleEnd : dynCurveBase
     {
@@ -758,7 +774,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Arc by Ctr Pt")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
     public class dynArcCenter : dynCurveBase
     {
@@ -802,7 +818,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transform Crv")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
     public class dynCurveTransformed: dynCurveBase
     {
@@ -828,7 +844,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Circle")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric circle.")]
     public class dynCircle: dynCurveBase
     {
@@ -869,7 +885,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ellipse")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric ellipse.")]
     public class dynEllipse: dynCurveBase
     {
@@ -916,7 +932,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ellipse Arc")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric elliptical arc. Start and End Values may be between 0 and 2*PI in Radians")]
     public class dynEllipticalArc: dynCurveBase
     {
@@ -965,7 +981,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("UV")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a UV from two double values.")]
     public class dynUV: dynNodeWithOneOutput
     {
@@ -990,7 +1006,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Line From Vector")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a line in the direction of an XYZ normal.")]
     public class dynLineVectorfromXYZ: dynNodeWithOneOutput
     {
@@ -1043,7 +1059,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Hermite Spline")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric hermite spline.")]
     public class dynHermiteSpline: dynCurveBase
     {
@@ -1086,7 +1102,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Element Geometry Objects")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
     [NodeDescription("Creates list of geometry object references in the element.")]
     public class dynElementGeometryObjects : dynNodeWithOneOutput
     {
@@ -1136,7 +1152,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Extract Solid from Element")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates reference to the solid in the element's geometry objects.")]
     public class dynElementSolid : dynNodeWithOneOutput
     {
@@ -1213,6 +1229,143 @@ namespace Dynamo.Nodes
             }
 
             return Value.NewContainer(mySolid);
+        }
+    }
+
+    [NodeName("Create Extrusion Geometry")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates a solid by linearly extruding one or more closed coplanar curve loops.")]
+    public class CreateExtrusionGeometry : dynSolidBase
+    {
+        public CreateExtrusionGeometry()
+        {
+            InPortData.Add(new PortData("profiles", "A list of curve loops to be extruded.", typeof(Value.List)));
+            InPortData.Add(new PortData("direction", "The direction in which to extrude the profile.", typeof(Value.Container)));
+            InPortData.Add(new PortData("distance", "The positive distance by which the loops are to be extruded.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("geometry", "The extrusion.", typeof(Value.Container)));
+            
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ direction = (XYZ)((Value.Container)args[1]).Item;
+            double distance = ((Value.Number)args[2]).Item;
+
+            //incoming list will have two lists in it
+            //each list will contain curves. convert the curves
+            //into curve loops
+            FSharpList<Value> profileList = ((Value.List)args[0]).Item;
+            List<CurveLoop> loops = new List<CurveLoop>();
+            foreach (var item in profileList)
+            {
+                if (item.IsList)
+                {
+                    var innerList = ((Value.List)item).Item;
+                    foreach (var innerItem in innerList)
+                    {
+                        loops.Add((CurveLoop)((Value.Container)item).Item);
+                    }
+                }
+                else
+                {
+                    //we'll assume a container
+                    loops.Add((CurveLoop)((Value.Container)item).Item);
+                }
+            }
+
+            var result = GeometryCreationUtilities.CreateExtrusionGeometry(loops, direction, distance);
+
+            solids.Add(result);
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Create Blend Geometry")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates a solid by blending two closed curve loops lying in non-coincident planes.")]
+    public class CreateBlendGeometry : dynSolidBase
+    {
+        public CreateBlendGeometry()
+        {
+            InPortData.Add(new PortData("first loop", "The first curve loop. The loop must be a closed planar loop.", typeof(Value.Container)));
+            InPortData.Add(new PortData("second loop", "The second curve loop, which also must be a closed planar loop.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("geometry", "The blend geometry.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            CurveLoop firstLoop = (CurveLoop)((Value.Container)args[0]).Item;
+            CurveLoop secondLoop = (CurveLoop)((Value.Container)args[1]).Item;
+            
+            List<VertexPair> vertPairs = new List<VertexPair>();
+            int i=0;
+            foreach(Curve c in firstLoop)
+            {
+                vertPairs.Add(new VertexPair(i,i));
+                i++;
+            }
+
+            var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop,secondLoop,vertPairs);
+
+            solids.Add(result);
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Rectangle")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.")]
+    public class Rectangle : dynCurveBase
+    {
+        public Rectangle()
+        {
+            InPortData.Add(new PortData("transform", "The a transform for the rectangle.", typeof(Value.Container)));
+            InPortData.Add(new PortData("width", "The width of the rectangle.", typeof(Value.Number)));
+            InPortData.Add(new PortData("height", "The height of the rectangle.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("geometry", "The curve loop representing the rectangle.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Transform t = (Transform)((Value.Container)args[0]).Item;
+            double width = ((Value.Number)args[1]).Item;
+            double height = ((Value.Number)args[2]).Item;
+
+            //ccw from upper right
+            XYZ p0 = new XYZ(width/2, width/2, 0);
+            XYZ p1 = new XYZ(-width/2, width/2, 0);
+            XYZ p2 = new XYZ(-width/2, -width/2, 0);
+            XYZ p3 = new XYZ(width/2, -width/2, 0);
+
+            p0 = t.OfPoint(p0);
+            p1 = t.OfPoint(p1);
+            p2 = t.OfPoint(p2);
+            p3 = t.OfPoint(p3);
+
+            Line l1 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p0,p1);
+            Line l2 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p1,p2);
+            Line l3 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p2,p3);
+            Line l4 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p3,p0);
+
+            CurveLoop cl = new CurveLoop();
+            cl.Append(l1);
+            cl.Append(l2);
+            cl.Append(l3);
+            cl.Append(l4);
+
+            crvs.Add(l1);
+            crvs.Add(l2);
+            crvs.Add(l3);
+            crvs.Add(l4);
+
+            return Value.NewContainer(cl);
         }
     }
 }

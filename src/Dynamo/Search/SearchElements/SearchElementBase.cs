@@ -12,11 +12,13 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+using Dynamo.Nodes.Search;
+
 namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A base class for elements found in search </summary>
-    public abstract class SearchElementBase
+    public abstract class SearchElementBase : BrowserInternalElement
     {
 
         /// <summary>
@@ -24,12 +26,6 @@ namespace Dynamo.Search.SearchElements
         /// <value>
         /// A string describing the type of object </value>
         public abstract string Type { get; }
-
-        /// <summary>
-        /// Name property </summary>
-        /// <value>
-        /// The name of the node </value>
-        public abstract string Name { get; }
 
         /// <summary>
         /// Description property </summary>

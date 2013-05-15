@@ -79,7 +79,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Read File")]
-    [NodeCategory(BuiltinNodeCategories.FILES)]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Reads data from a file.")]
     public class dynFileReader : dynNodeWithOneOutput
     {
@@ -154,7 +154,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Read Image File")]
-    [NodeCategory(BuiltinNodeCategories.FILES)]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Reads data from an image file.")]
     public class dynImageFileReader : dynFileReaderBase
     {
@@ -255,7 +255,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Write File")]
-    [NodeCategory(BuiltinNodeCategories.FILES)]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Writes the given string to the given file. Creates the file if it doesn't exist.")]
     public class dynFileWriter : dynNodeWithOneOutput
     {
@@ -290,7 +290,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Write CSV File")]
-    [NodeCategory(BuiltinNodeCategories.FILES)]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Writes a list of lists into a file using a comma-separated values format. Outer list represents rows, inner lists represent column.")]
     public class dynListToCSV : dynNodeWithOneOutput
     {
@@ -333,7 +333,7 @@ namespace Dynamo.Nodes
     #region File Watcher
 
     [NodeName("Watch File")]
-    [NodeCategory(BuiltinNodeCategories.FILES)]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Creates a FileWatcher for watching changes in a file.")]
     public class dynFileWatcher : dynNodeWithOneOutput
     {
@@ -353,7 +353,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Watched File Changed?")]
-    [NodeCategory(BuiltinNodeCategories.FILES)]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Checks if the file watched by the given FileWatcher has changed.")]
     public class dynFileWatcherChanged : dynNodeWithOneOutput
     {
@@ -375,7 +375,7 @@ namespace Dynamo.Nodes
 
     //TODO: Add UI for specifying whether should error or continue (checkbox?)
     [NodeName("Watched File Wait")]
-    [NodeCategory(BuiltinNodeCategories.FILES)]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Waits for the specified watched file to change.")]
     public class dynFileWatcherWait : dynNodeWithOneOutput
     {
@@ -415,7 +415,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Reset File Watch")]
-    [NodeCategory(BuiltinNodeCategories.FILES)]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Resets state of FileWatcher so that it watches again.")]
     public class dynFileWatcherReset : dynNodeWithOneOutput
     {

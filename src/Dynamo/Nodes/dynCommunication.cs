@@ -29,7 +29,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [NodeName("Web Request")]
-    [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
+    [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Fetches data from the web using a URL.")]
     public class dynWebRequest : dynNodeWithOneOutput
     {
@@ -70,7 +70,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("UDP Listener")]
-    [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
+    [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Listens for data from the web using a UDP port")]
     public class dynUDPListener : dynNodeWithOneOutput
     {

@@ -24,7 +24,7 @@ namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A search element representing a local node </summary>
-    public class LocalSearchElement : SearchElementBase
+    public class NodeSearchElement : SearchElementBase
     {
 
         #region Properties
@@ -79,7 +79,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// The class constructor for a built-in type that is already loaded. </summary>
         /// <param name="node">The local node</param>
-        public LocalSearchElement(dynNodeModel node)
+        public NodeSearchElement(dynNodeModel node)
         {
             this.Node = node;
             this._name = Node.NickName;
@@ -96,7 +96,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="name"></param>
         /// <param name="description"></param>
         /// <param name="tags"></param>
-        public LocalSearchElement(string name, string description, List<string> tags)
+        public NodeSearchElement(string name, string description, List<string> tags)
         {
             this.Node = null;
             this._name = name;
@@ -112,7 +112,7 @@ namespace Dynamo.Search.SearchElements
         /// </summary>
         /// <param name="name">The name of the custom node</param>
         /// <param name="guid">The unique id for the custom node</param>
-        public LocalSearchElement(string name, Guid guid)
+        public NodeSearchElement(string name, Guid guid)
         {
             this.Node = null;
             this._name = name;
@@ -128,7 +128,7 @@ namespace Dynamo.Search.SearchElements
         ///     custom nodes
         /// </summary>
         /// <param name="funcDef">The FunctionDefinition for a custom node</param>
-        public LocalSearchElement(FunctionDefinition funcDef)
+        public NodeSearchElement(FunctionDefinition funcDef)
         {
             this.Node = dynSettings.Controller.DynamoViewModel.CreateNode(funcDef.FunctionId.ToString());
             this._name = funcDef.Workspace.Name;

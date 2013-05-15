@@ -13,29 +13,21 @@
 //limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.FSharp.Collections;
-using System.IO.Ports;
 using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
 using HelixToolkit.Wpf;
-using Dynamo.Utilities;
-using Dynamo.FSchemeInterop;
 using Dynamo.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using System.Windows.Data;
-using System.ComponentModel;
 using System.Windows.Controls;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Watch 3D")]
-    [NodeCategory(BuiltinNodeCategories.DEBUG)]
+    [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
     public class dynWatch3D : dynNodeWithOneOutput
     {

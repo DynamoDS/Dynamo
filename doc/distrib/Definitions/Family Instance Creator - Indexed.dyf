@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<dynWorkspace X="-86" Y="0.746383363472006" Name="Family Instance Creator - Indexed" Category="Revit" ID="21db5e9b-68cb-431c-925b-9a947b5dc494">
+<dynWorkspace X="-86" Y="0.746383363472006" Name="Family Instance Creator - Indexed" Category="Revit.Family Creation" ID="21db5e9b-68cb-431c-925b-9a947b5dc494">
   <dynElements>
     <Dynamo.Elements.dynFamilyInstanceCreatorXYZ type="Dynamo.Elements.dynFamilyInstanceCreatorXYZ" guid="c29d387a-0c14-4b9c-95c1-1e3439bebaef" nickname="Family Instance Creator" x="384.25" y="163.53743315508" />
     <Dynamo.Elements.dynFamilyInstanceParameterSetter type="Dynamo.Elements.dynFamilyInstanceParameterSetter" guid="2742db67-638a-438c-a472-19bc11607ba6" nickname="Set Instance Parameter" x="571.977272727273" y="217.258467023173" />

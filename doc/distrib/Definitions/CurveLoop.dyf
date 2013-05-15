@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="-330.620824053452" Y="55" Name="CurveLoop" Category="Revit" ID="6f06cff7-8c2b-4a74-9ef7-66ae0b176c06">
+<dynWorkspace X="-330.620824053452" Y="55" Name="CurveLoop" Category="Create Geometry.Curve" ID="6f06cff7-8c2b-4a74-9ef7-66ae0b176c06">
   <dynElements>
     <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="91273b7c-ced2-447a-b2d2-30d5d6e30248" nickname="Number" x="164.148106904232" y="137.536191536748">
       <System.Double value="0" />

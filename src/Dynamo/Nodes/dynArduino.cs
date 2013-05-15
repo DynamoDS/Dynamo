@@ -27,11 +27,10 @@ using Dynamo.FSchemeInterop;
 using Value = Dynamo.FScheme.Value;
 
 
-
 namespace Dynamo.Nodes
 {
     [NodeName("Arduino")]
-    [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
+    [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Manages connection to an Arduino microcontroller.")]
     public class dynArduino : dynNodeWithOneOutput
     {
@@ -161,7 +160,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Read Arduino")]
-    [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
+    [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Reads values from an Arduino microcontroller.")]
     public class dynArduinoRead : dynNodeWithOneOutput
     {
@@ -249,7 +248,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Write Arduino")]
-    [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
+    [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Writes values to an Arduino microcontroller.")]
     public class dynArduinoWrite : dynNodeWithOneOutput
     {

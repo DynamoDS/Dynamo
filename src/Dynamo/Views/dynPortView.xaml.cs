@@ -97,7 +97,7 @@ namespace Dynamo.Connectors
 
         private void DynPort_OnMouseEnter(object sender, MouseEventArgs e)
         {
-            if(ViewModel != null)
+            if (ViewModel != null)
                 ViewModel.HighlightCommand.Execute();
         }
 

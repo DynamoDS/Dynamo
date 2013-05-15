@@ -112,34 +112,42 @@ namespace Dynamo.Nodes
             if (m_particleA.isFree() || m_particleB.isFree())
             {
 
-                XYZ a2b = m_particleA.getPosition().Subtract(m_particleB.getPosition());
-
-                double a2bDistance = Math.Abs(Math.Sqrt(a2b.X * a2b.X + a2b.Y * a2b.Y + a2b.Z * a2b.Z)); // MDJ vector norm http://mathworld.wolfram.com/VectorNorm.html != a2b.Normalize();
-
-                if (a2bDistance == 0)
+                try
                 {
-                    a2b = new XYZ(0, 0, 0);
+                    XYZ a2b = m_particleA.getPosition().Subtract(m_particleB.getPosition());
+
+                    double a2bDistance = Math.Abs(Math.Sqrt(a2b.X * a2b.X + a2b.Y * a2b.Y + a2b.Z * a2b.Z)); // MDJ vector norm http://mathworld.wolfram.com/VectorNorm.html != a2b.Normalize();
+
+                    if (a2bDistance == 0 )
+                    {
+                        a2b = new XYZ(0, 0, 0);
+                    }
+                    else
+                    {
+                        a2b = a2b / a2bDistance;
+                    }
+
+                    double springForce = -(a2bDistance - m_restLength) * m_springConstant;
+
+                    XYZ Va2b = m_particleA.getVelocity() - m_particleB.getVelocity();
+
+                    double dampingForce = -m_Damping * (a2b.DotProduct(Va2b));
+
+                    // forceB is same as forceA in opposite direction
+                    double r = springForce + dampingForce;
+
+                    a2b = a2b * r;
+
+                    if (m_particleA.isFree())
+                        m_particleA.addForce(a2b);
+                    if (m_particleB.isFree())
+                        m_particleB.addForce(-a2b);
                 }
-                else
+                catch (Exception e)
                 {
-                    a2b = a2b / a2bDistance;
+                    DynamoLogger.Instance.Log(e.Message);
+                    DynamoLogger.Instance.Log(e.StackTrace);
                 }
-
-                double springForce = -(a2bDistance - m_restLength) * m_springConstant;
-
-                XYZ Va2b = m_particleA.getVelocity() - m_particleB.getVelocity();
-
-                double dampingForce = -m_Damping * (a2b.DotProduct(Va2b));
-
-                // forceB is same as forceA in opposite direction
-                double r = springForce + dampingForce;
-
-                a2b = a2b * r;
-
-                if (m_particleA.isFree())
-                    m_particleA.addForce(a2b);
-                if (m_particleB.isFree())
-                    m_particleB.addForce(-a2b);
             }
 
         }

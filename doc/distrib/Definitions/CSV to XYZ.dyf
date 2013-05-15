@@ -1,4 +1,4 @@
-<dynWorkspace X="0" Y="0" Name="CSV to XYZ" Category="Files" ID="e7fc0854-482e-4f60-9a09-2bb527cf2c16">
+<dynWorkspace X="0" Y="0" Name="CSV to XYZ" Category="Input/Output.File" ID="e7fc0854-482e-4f60-9a09-2bb527cf2c16">
   <dynElements>
     <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="13468dab-9934-4501-8bfa-f206ed95a92c" nickname="Read File" x="228.591097960211" y="28.3456675480573" />
     <Dynamo.Nodes.dynSplitString type="Dynamo.Nodes.dynSplitString" guid="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" nickname="Split String" x="351.112230336607" y="78.2439929069093" />

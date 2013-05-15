@@ -30,7 +30,7 @@ using Dynamo.Revit.SyncedNodeExtensions;
 namespace Dynamo.Nodes
 {
     [NodeName("Extract Solar Radiation Value")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_SOLAR)]
     [NodeDescription("Extracts and computes the average solar radiation value based on a CSV file.")]
     public class dynComputeSolarRadiationValue: dynNodeWithOneOutput
     {
@@ -68,7 +68,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Analysis Results by Selection")]
-    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select an analysis result object from the document.")]
     public class dynAnalysisResultsBySelection: dynNodeWithOneOutput
     {
@@ -154,7 +154,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("SunPath Direction")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_SOLAR)]
     [NodeDescription("Returns the current Sun Path direction.")]
     public class dynSunPathDirection: dynNodeWithOneOutput
     {

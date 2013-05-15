@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="DynamoElementsTests.cs" />
     <Compile Include="DynamoElementsUITests.cs" />
+    <Compile Include="SearchTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

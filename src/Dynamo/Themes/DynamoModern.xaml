@@ -2,7 +2,63 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:Dynamo.Controls"
                     xmlns:clr="clr-namespace:System;assembly=mscorlib">
-    
+
+    <!--Control colors.-->
+    <Color x:Key="WindowColor">#FFE8EDF9</Color>
+    <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
+    <Color x:Key="ContentAreaColorDark">#FF7381F9</Color>
+
+    <Color x:Key="DisabledControlLightColor">#FFE8EDF9</Color>
+    <Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
+    <Color x:Key="DisabledForegroundColor">#FF888888</Color>
+
+    <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
+    <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
+
+    <Color x:Key="ControlLightColor">White</Color>
+    <Color x:Key="ControlMediumColor">#FF7381F9</Color>
+    <Color x:Key="ControlDarkColor">#FF211AA9</Color>
+
+    <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
+    <Color x:Key="ControlPressedColor">#FF211AA9</Color>
+
+
+    <Color x:Key="GlyphColor">#FF444444</Color>
+    <Color x:Key="GlyphMouseOver">sc#1, 0.004391443, 0.002428215, 0.242281124</Color>
+
+    <!--Border colors-->
+    <Color x:Key="BorderLightColor">#FFCCCCCC</Color>
+    <Color x:Key="BorderMediumColor">#FF888888</Color>
+    <Color x:Key="BorderDarkColor">#FF444444</Color>
+
+    <Color x:Key="PressedBorderLightColor">#FF888888</Color>
+    <Color x:Key="PressedBorderDarkColor">#FF444444</Color>
+
+    <Color x:Key="DisabledBorderLightColor">#FFAAAAAA</Color>
+    <Color x:Key="DisabledBorderDarkColor">#FF888888</Color>
+
+    <Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
+
+    <!--Control-specific resources.-->
+    <Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
+    <Color x:Key="DatagridCurrentCellBorderColor">Black</Color>
+    <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
+
+    <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
+
+   
+    <LinearGradientBrush x:Key="MenuPopupBrush"
+                     EndPoint="0.5,1"
+                     StartPoint="0.5,0">
+        <GradientStop Color="{DynamicResource ControlLightColor}"
+                Offset="0" />
+        <GradientStop Color="{DynamicResource ControlMediumColor}"
+                Offset="0.5" />
+        <GradientStop Color="{DynamicResource ControlLightColor}"
+                Offset="1" />
+    </LinearGradientBrush>
+
+
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
         
         <Grid>
@@ -88,9 +144,10 @@
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center" 
                             Margin="3,3,23,3"
+                            Padding="10"
                             Focusable="True" 
                             Foreground="White"
-                            Background="Transparent"
+                            Background="#222"
                             Visibility="Hidden"
                             IsReadOnly="{TemplateBinding IsReadOnly}"/>
                         <Popup 
@@ -174,20 +231,23 @@
         </Setter>
     </Style>
 
+    <LinearGradientBrush x:Key="ButtonGradientBackground" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Color="#444" Offset="0.0" />
+        <GradientStop Color="#2E2E2E" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="DarkButtonGradientBackground" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Color="#111" Offset="0.0" />
+        <GradientStop Color="#000" Offset="1.0" />
+    </LinearGradientBrush>
+
     <Style x:Key="SImageButton" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
 
                     <Grid x:Name="container" Background="Transparent">
-                        <Grid x:Name="inner">
-                            
-                            <Grid.Background>
-                                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                                    <GradientStop Color="#444" Offset="0.0" />
-                                    <GradientStop Color="#2E2E2E" Offset="1.0" />
-                                </LinearGradientBrush>
-                            </Grid.Background>
+                        <Grid x:Name="inner" Background="{StaticResource ButtonGradientBackground}">
                             
                             <Image Width="24" Height="24" x:Name="display" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}"></Image>
 

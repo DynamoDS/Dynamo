@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
@@ -9,9 +10,27 @@ using System.Windows;
 
 using Dynamo.Connectors;
 using Dynamo.Nodes;
+using Dynamo.Nodes.Search;
 
 namespace Dynamo.Controls
 {
+
+    public class SearchTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate NodeTemplate { get; set; }
+        public DataTemplate BrowserCategoryTemplate { get; set; }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            if (item is BrowserInternalElement)
+            {
+                return BrowserCategoryTemplate;
+            } else
+            {
+                return NodeTemplate;
+            }
+        }
+    }
 
     public class MarginConverter : IValueConverter
     {

@@ -26,7 +26,7 @@ using Dynamo.FSchemeInterop;
 namespace Dynamo.Nodes
 {
     [NodeName("Drafting View")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
     [NodeDescription("Creates a drafting view.")]
     public class dynDraftingView: dynNodeWithOneOutput
     {
