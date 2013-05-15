@@ -1233,7 +1233,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Create Extrusion Geometry")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates a solid by linearly extruding one or more closed coplanar curve loops.")]
     public class CreateExtrusionGeometry : dynSolidBase
     {
@@ -1283,8 +1283,8 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Rectangle")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
-    [NodeDescription("Creates a solid by linearly extruding one or more closed coplanar curve loops.")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.")]
     public class Rectangle : dynCurveBase
     {
         public Rectangle()
