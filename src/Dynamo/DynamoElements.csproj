@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
 Copyright © Autodesk, Inc. 2012. All rights reserved.
 
@@ -72,6 +72,7 @@ limitations under the License.
     </Reference>
     <Reference Include="nunit.core.interfaces">
       <HintPath>..\..\extern\NUnit\nunit.core.interfaces.dll</HintPath>
+    </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>
     </Reference>
