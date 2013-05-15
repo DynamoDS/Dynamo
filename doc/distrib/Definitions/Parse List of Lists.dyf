@@ -1,4 +1,4 @@
-<dynWorkspace X="0" Y="0" Name="Parse List of Lists" Category="Scripting.Custom Nodes" ID="1f47466b-a6c8-49d1-a54e-eb901d971738">
+<dynWorkspace X="0" Y="0" Name="Parse List of Lists" Category="Core.Lists" ID="1f47466b-a6c8-49d1-a54e-eb901d971738">
   <dynElements>
     <Dynamo.Nodes.dynLength type="Dynamo.Nodes.dynLength" guid="9dfc22b4-0b1e-4476-accd-283ae2902a1a" nickname="Length" x="695.333333333333" y="4.1666666666668" />
     <Dynamo.Nodes.dynLessThan type="Dynamo.Nodes.dynLessThan" guid="c4606f05-f7cd-4817-b86b-3e4d06a30cae" nickname="&lt;" x="860.666666666667" y="0" />

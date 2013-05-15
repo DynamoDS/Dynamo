@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
         public const string ANALYZE_STRUCTURE = "Analyze.Structure";
         public const string ANALYZE_CLIMATE = "Analyze.Climate";
         public const string ANALYZE_ACOUSTIC = "Analyze.Acoustic";
-        public const string ANALYZE_SOLAR = "Analyze.Daylighting";
+        public const string ANALYZE_SOLAR = "Analyze.Solar";
 
         public const string SCRIPTING = "Scripting";
         public const string SCRIPTING_CUSTOMNODES = "Scripting.Custom Nodes";

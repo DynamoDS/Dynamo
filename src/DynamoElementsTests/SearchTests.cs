@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Nodes.Search;
+﻿using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using NUnit.Framework;
 
