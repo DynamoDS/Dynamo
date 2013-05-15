@@ -19,7 +19,6 @@ using System.Windows.Media.Media3D;
 
 using Autodesk.Revit;
 using Autodesk.Revit.DB;
-using Revit.SDK.Samples.GeometryCreation_BooleanOperation.CS;
 
 using Microsoft.FSharp.Collections;
 
@@ -1306,14 +1305,16 @@ namespace Dynamo.Nodes
             CurveLoop secondLoop = (CurveLoop)((Value.Container)args[1]).Item;
             
             List<VertexPair> vertPairs = new List<VertexPair>();
-            int i=0;
-            foreach(Curve c in firstLoop)
-            {
-                vertPairs.Add(new VertexPair(i,i));
-                i++;
-            }
+            //int i=0;
+            //foreach(Curve c in firstLoop)
+            //{
+            //    vertPairs.Add(new VertexPair(i,i));
+            //    i++;
+            //}
 
-            var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop,secondLoop,System.Nullable<List<VertexPair>>);
+            vertPairs.Add(new VertexPair(0, 0));
+
+            var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop,secondLoop,vertPairs);
 
             solids.Add(result);
 
