@@ -20,6 +20,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.FSharp.Collections;
 using System.IO.Ports;
+using System.Windows.Media.Media3D;
+
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
@@ -33,15 +35,44 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
+
+    public abstract class dynParticleSystemBase : dynRevitTransactionNodeWithOneOutput, IDrawable
+    {
+        internal ParticleSystem particleSystem;
+
+        public RenderDescription Draw()
+        {
+            RenderDescription rd = new RenderDescription();
+
+            if (particleSystem == null)
+                return rd;
+
+            for(int i=0; i<particleSystem.numberOfParticles(); i++) 
+            {
+                Particle p = particleSystem.getParticle(i);
+                XYZ pos = p.getPosition();
+                rd.points.Add(new System.Windows.Media.Media3D.Point3D(pos.X, pos.Y, pos.Z));
+            }
+
+            for (int i = 0; i < particleSystem.numberOfSprings(); i++) 
+            {
+                ParticleSpring ps = particleSystem.getSpring(i);
+                XYZ pos1 = ps.getOneEnd().getPosition();
+                XYZ pos2 = ps.getTheOtherEnd().getPosition();
+
+                rd.lines.Add(new System.Windows.Media.Media3D.Point3D(pos1.X, pos1.Y, pos1.Z));
+                rd.lines.Add(new System.Windows.Media.Media3D.Point3D(pos2.X, pos2.Y, pos2.Z));
+            }
+            return rd;
+        }
+    }
+
     [NodeName("Create Particle System")]
     [NodeCategory(BuiltinNodeCategories.SIMULATION)]
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
-    class dynDynamicRelaxation : dynRevitTransactionNodeWithOneOutput
+    class dynDynamicRelaxation :  dynParticleSystemBase
     {
-        ParticleSystem particleSystem;
-        //private int extraParticlesCounter = 0;
-        //private int extraSpringCounter = 0;
-
+ 
         public dynDynamicRelaxation()
         {
             InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(Value.List)));
@@ -63,7 +94,7 @@ namespace Dynamo.Nodes
 
         void setupLineTest(int maxPartX, int maxPartY, double springDampening, double springRestLength, double springConstant, double mass)
         {
-
+            XYZ partXYZ;
             double stepSize = 20;
 
             for (int j = 0; j < maxPartY; j++) // Y axis is outer loop
@@ -72,11 +103,13 @@ namespace Dynamo.Nodes
                 {
                     if (i == 0)
                     {
-                        Particle a = particleSystem.makeParticle(mass, new XYZ(0, j*stepSize, 0), true);
+                        partXYZ = new XYZ(0, j*stepSize, 0);
+                        Particle a = particleSystem.makeParticle(mass, partXYZ, true);
                     }
                     else
                     {
-                        Particle b = particleSystem.makeParticle(mass, new XYZ(i * stepSize, j*stepSize, 0), false);
+                        partXYZ = new XYZ(i * stepSize, j * stepSize, 0);
+                        Particle b = particleSystem.makeParticle(mass, partXYZ, false);
                         particleSystem.makeSpring(particleSystem.getParticle((i - 1)+(j*maxPartX)), b, springRestLength, springConstant, springDampening);
                     }
                     if (i == maxPartX - 1)
@@ -136,7 +169,6 @@ namespace Dynamo.Nodes
             Particle p;
             Particle p2;
             XYZ partXYZ1 = pt1.Position;
-
             XYZ partXYZ2 = pt2.Position;
             XYZ lineVec = partXYZ2 - partXYZ1;
 
@@ -276,10 +308,8 @@ namespace Dynamo.Nodes
     [NodeName("Create Particle System on Face")]
     [NodeCategory(BuiltinNodeCategories.SIMULATION)]
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
-    class dynDynamicRelaxationOnFace: dynNodeWithOneOutput
+    class dynDynamicRelaxationOnFace : dynParticleSystemBase
     {
-        ParticleSystem particleSystem;
-
         public dynDynamicRelaxationOnFace()
         {
             InPortData.Add(new PortData("face", "The face to use for distribution of particles.", typeof(Value.Container)));
@@ -365,10 +395,8 @@ namespace Dynamo.Nodes
     [NodeDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
     [NodeCategory(BuiltinNodeCategories.SIMULATION)]
     [IsInteractive(true)]
-    public class dynDynamicRelaxationStep: dynNodeWithOneOutput, IDrawable
+    public class dynDynamicRelaxationStep : dynParticleSystemBase
     {
-        ParticleSystem particleSystem;
-
         public dynDynamicRelaxationStep()
         {
             InPortData.Add(new PortData("ps", "Particle System to simulate", typeof(Value.Container)));
@@ -389,38 +417,12 @@ namespace Dynamo.Nodes
                 new Value[]{Value.NewContainer(particleSystem),Value.NewNumber(particleSystem.getMaxResidualForce())})
                 );
         }
-
-        public RenderDescription Draw()
-        {
-            RenderDescription rd = new RenderDescription();
-
-            if (particleSystem == null)
-                return rd;
-
-            for(int i=0; i<particleSystem.numberOfParticles(); i++) 
-            {
-                Particle p = particleSystem.getParticle(i);
-                XYZ pos = p.getPosition();
-                rd.points.Add(new System.Windows.Media.Media3D.Point3D(pos.X, pos.Y, pos.Z));
-            }
-
-            for (int i = 0; i < particleSystem.numberOfSprings(); i++) 
-            {
-                ParticleSpring ps = particleSystem.getSpring(i);
-                XYZ pos1 = ps.getOneEnd().getPosition();
-                XYZ pos2 = ps.getTheOtherEnd().getPosition();
-
-                rd.lines.Add(new System.Windows.Media.Media3D.Point3D(pos1.X, pos1.Y, pos1.Z));
-                rd.lines.Add(new System.Windows.Media.Media3D.Point3D(pos2.X, pos2.Y, pos2.Z));
-            }
-            return rd;
-        }
     }
 
     [NodeName("XYZs from Particle System")]
     [NodeDescription("Creates XYZs from a Particle System.")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
-    public class dynXYZsFromPS: dynNodeWithOneOutput
+    public class dynXYZsFromPS : dynParticleSystemBase
     {
         public dynXYZsFromPS()
         {
@@ -454,7 +456,7 @@ namespace Dynamo.Nodes
     [NodeName("Curves from Particle System")]
     [NodeDescription("Creates Curves from a Particle System.")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
-    public class dynCurvesFromPS: dynNodeWithOneOutput
+    public class dynCurvesFromPS : dynParticleSystemBase
     {
         public dynCurvesFromPS()
         {
