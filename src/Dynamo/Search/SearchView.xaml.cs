@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
@@ -31,7 +32,7 @@ namespace Dynamo.Search
     /// </summary>
     public partial class SearchView : UserControl
     {
-        public SearchView( SearchViewModel viewModel)
+        public SearchView(SearchViewModel viewModel)
         {
             DataContext = viewModel;
             InitializeComponent();
@@ -46,19 +47,19 @@ namespace Dynamo.Search
                 };
 
             SearchTextBox.GotKeyboardFocus += delegate
-            {
-                if (SearchTextBox.Text == "Search...")
                 {
-                    SearchTextBox.Text = "";
-                }
+                    if (SearchTextBox.Text == "Search...")
+                    {
+                        SearchTextBox.Text = "";
+                    }
 
-                SearchTextBox.Foreground = Brushes.White;
-            };
+                    SearchTextBox.Foreground = Brushes.White;
+                };
 
             SearchTextBox.LostKeyboardFocus += delegate
-            {
-                SearchTextBox.Foreground = Brushes.Gray;
-            };
+                {
+                    SearchTextBox.Foreground = Brushes.Gray;
+                };
         }
 
         public void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -71,12 +72,12 @@ namespace Dynamo.Search
 
         public void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-           ((SearchViewModel) DataContext).ExecuteSelected();
+            ((SearchViewModel) DataContext).ExecuteSelected();
         }
 
         public void ListBoxItem_Click(object sender, RoutedEventArgs e)
         {
-            ((ListBoxItem)sender).IsSelected = true;
+            ((ListBoxItem) sender).IsSelected = true;
             Keyboard.Focus(this.SearchTextBox);
         }
 
@@ -88,10 +89,14 @@ namespace Dynamo.Search
 
         public void ibtnServiceController_MouseLeftButtonUp(object sender, RoutedEventArgs e)
         {
-
-            RegionMenu.PlacementTarget = (UIElement)sender;
+            RegionMenu.PlacementTarget = (UIElement) sender;
             RegionMenu.IsOpen = true;
         }
 
+        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Console.WriteLine(sender);
+        }
+
     }
-}
+} ;
