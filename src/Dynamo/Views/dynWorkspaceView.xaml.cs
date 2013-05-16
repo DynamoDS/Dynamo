@@ -50,8 +50,8 @@ namespace Dynamo.Views
             vm.StopDragging += new EventHandler(vm_StopDragging);
             vm.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             vm.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
-            vm.UILocked += new EventHandler(LockUI);
-            vm.UIUnlocked += new EventHandler(UnlockUI);
+            //vm.UILocked += new EventHandler(LockUI);
+            //vm.UIUnlocked += new EventHandler(UnlockUI);
             vm.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
         }
 
@@ -376,19 +376,6 @@ namespace Dynamo.Views
             //MVVM : replaced direct set with command call on view model
             //CurrentOffset = new Point(-x, -y);
             vm.SetCurrentOffsetCommand.Execute(new Point(-x, -y));
-        }
-
-        private void LockUI(object sender, EventArgs e)
-        {
-            //MVVM:this was pulled from the bench when we separated the workspaces
-            //but I don't think it's necessary any more with the tabs. Visibility
-            //of the canvas is now set to visible by default
-            //WorkBench.Visibility = System.Windows.Visibility.Hidden;
-        }
-
-        private void UnlockUI(object sender, EventArgs e)
-        {
-            //WorkBench.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void DrawGrid()

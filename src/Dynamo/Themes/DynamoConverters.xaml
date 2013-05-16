@@ -38,4 +38,5 @@
     <controls:PortTypeToClipConverter x:Key="PortTypeToClipConverter"/>
     <controls:BoolToConsoleHeightConverter x:Key="BoolToConsoleHeightConverter"/>
     <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter"/>
+    <controls:BoolToCanvasCursorConverter x:Key="BoolToCanvasCursorConverter"/>
 </ResourceDictionary>

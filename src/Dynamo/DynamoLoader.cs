@@ -245,7 +245,7 @@ namespace Dynamo.Utilties
         {
             var path = (string)((MenuItem)sender).Tag;
 
-            if (dynSettings.Bench.UILocked)
+            if (dynSettings.Controller.DynamoViewModel.IsUILocked)
                 dynSettings.Controller.DynamoViewModel.QueueLoad(path);
             else
             {

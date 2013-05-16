@@ -224,6 +224,26 @@ namespace Dynamo.Controls
         #endregion
     }
 
+    public class BoolToCanvasCursorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value == true)
+            {
+                return System.Windows.Input.Cursors.AppStarting;
+            }
+
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class ShowHideConsoleMenuItemConverter : IValueConverter
     {
         #region IValueConverter Members

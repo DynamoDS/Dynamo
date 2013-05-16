@@ -31,8 +31,8 @@ namespace Dynamo
         public event EventHandler StopDragging;
         public event PointEventHandler CurrentOffsetChanged;
         public event NodeEventHandler RequestCenterViewOnElement;
-        public event EventHandler UILocked;
-        public event EventHandler UIUnlocked;
+        //public event EventHandler UILocked;
+        //public event EventHandler UIUnlocked;
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
 
@@ -53,16 +53,16 @@ namespace Dynamo
             if (RequestCenterViewOnElement != null)
                 RequestCenterViewOnElement(this, e);
         }
-        public virtual void OnUILocked(object sender, EventArgs e)
-        {
-            if (UILocked != null)
-                UILocked(this, e);
-        }
-        public virtual void OnUIUnlocked(object sender, EventArgs e)
-        {
-            if (UIUnlocked != null)
-                UIUnlocked(this, e);
-        }
+        //public virtual void OnUILocked(object sender, EventArgs e)
+        //{
+        //    if (UILocked != null)
+        //        UILocked(this, e);
+        //}
+        //public virtual void OnUIUnlocked(object sender, EventArgs e)
+        //{
+        //    if (UIUnlocked != null)
+        //        UIUnlocked(this, e);
+        //}
         public virtual void OnRequestNodeCentered(object sender, NodeEventArgs e)
         {
             if (RequestNodeCentered != null)
@@ -297,23 +297,10 @@ namespace Dynamo
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
 
-            vm.UILocked += new EventHandler(DynamoViewModel_UILocked);
-            vm.UIUnlocked += new EventHandler(DynamoViewModel_UIUnlocked);
-
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Notes));
-        }
-
-        void DynamoViewModel_UIUnlocked(object sender, EventArgs e)
-        {
-            OnUIUnlocked(this, EventArgs.Empty);
-        }
-
-        void DynamoViewModel_UILocked(object sender, EventArgs e)
-        {
-            OnUILocked(this, EventArgs.Empty);
         }
 
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

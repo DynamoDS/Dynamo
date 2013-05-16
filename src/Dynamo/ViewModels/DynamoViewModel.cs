@@ -32,21 +32,9 @@ namespace Dynamo.Controls
 
         #region properties
 
-        public event EventHandler UILocked;
-        public event EventHandler UIUnlocked;
         public event EventHandler RequestLayoutUpdate;
         public event EventHandler WorkspaceChanged;
 
-        public virtual void OnUILocked(object sender, EventArgs e)
-        {
-            if (UILocked != null)
-                UILocked(this, e);
-        }
-        public virtual void OnUIUnlocked(object sender, EventArgs e)
-        {
-            if (UIUnlocked != null)
-                UIUnlocked(this, e);
-        }
         public virtual void OnRequestLayoutUpdate(object sender, EventArgs e)
         {
             if (RequestLayoutUpdate != null)
@@ -303,6 +291,16 @@ namespace Dynamo.Controls
                 return Visibility.Hidden;
             }
         }
+
+        public bool IsUILocked
+        {
+            get { return uiLocked; }
+            set
+            {
+                uiLocked = value;
+                RaisePropertyChanged("IsUILocked");
+            }
+        }
         #endregion
 
         public DynamoViewModel(DynamoController controller)
@@ -405,8 +403,7 @@ namespace Dynamo.Controls
 
             if (!string.IsNullOrEmpty(xmlPath))
             {
-
-                OnUILocked(this, EventArgs.Empty);
+                IsUILocked = true;
 
                 if (!OpenDefinition(xmlPath))
                 {
@@ -420,7 +417,7 @@ namespace Dynamo.Controls
                     }
                 }
 
-                OnUIUnlocked(this, EventArgs.Empty);
+                IsUILocked = false;
             }
 
             //clear the clipboard to avoid copying between dyns
@@ -734,16 +731,14 @@ namespace Dynamo.Controls
 
         private void Clear()
         {
-            //dynSettings.Bench.LockUI();
-            OnUILocked(this, EventArgs.Empty);
+            IsUILocked = true;
 
             CleanWorkbench();
 
             //don't save the file path
             _model.CurrentSpace.FilePath = "";
 
-            //dynSettings.Bench.UnlockUI();
-            OnUIUnlocked(this, EventArgs.Empty);
+            IsUILocked = false;
         }
 
         private bool CanClear()
@@ -763,8 +758,7 @@ namespace Dynamo.Controls
 
         private void LayoutAll()
         {
-            //dynSettings.Bench.LockUI();
-            OnUILocked(this, EventArgs.Empty);
+            IsUILocked = true;
 
             CleanWorkbench();
 
@@ -859,8 +853,7 @@ namespace Dynamo.Controls
 
             }
 
-            //dynSettings.Bench.UnlockUI();
-            OnUIUnlocked(this, EventArgs.Empty);
+            IsUILocked = false;
         }
 
         private bool CanLayoutAll()
@@ -1497,7 +1490,8 @@ namespace Dynamo.Controls
 
             UnlockLoadPath = null;
 
-            OnUIUnlocked(this, EventArgs.Empty);
+            //OnUIUnlocked(this, EventArgs.Empty);
+            IsUILocked = false;
 
             DynamoCommands.ShowSearch.Execute(null);
 
@@ -2746,13 +2740,18 @@ namespace Dynamo.Controls
 
         private void RunUITests()
         {
+            dynSettings.Bench.Dispatcher.Invoke(new Action(RunTests), new object[] { });
+        }
+
+        private void RunTests()
+        {
             string assLoc = Assembly.GetExecutingAssembly().Location;
             string testsLoc = Path.Combine(Path.GetDirectoryName(assLoc), "DynamoElementsTests.dll");
             TestPackage testPackage = new TestPackage(testsLoc);
             RemoteTestRunner remoteTestRunner = new RemoteTestRunner();
             remoteTestRunner.Load(testPackage);
-
-            TestResult testResult = remoteTestRunner.Run(new NullListener(), new DynamoUITestFilter(), false, LoggingThreshold.All);
+            NUnit.Core.Filters.CategoryFilter catFilter = new NUnit.Core.Filters.CategoryFilter("DynamoUI");
+            TestResult testResult = remoteTestRunner.Run(new NullListener(), catFilter, false, LoggingThreshold.All);
             OutputResult(testResult);
         }
 
