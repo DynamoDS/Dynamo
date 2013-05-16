@@ -43,7 +43,7 @@ namespace Dynamo.Utilties
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 allLoadedAssemblies[assembly.FullName] = assembly;
 
-            string path = Path.Combine(location, "Packages");
+            string path = Path.Combine(location, "packages");
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -68,14 +68,13 @@ namespace Dynamo.Utilties
             {
                 if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
                     LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath], searchViewModel, controller);
-                        //, bench);
                 else
                 {
                     try
                     {
                         Assembly assembly = Assembly.LoadFrom(assemblyPath);
                         allLoadedAssemblies[assembly.GetName().Name] = assembly;
-                        LoadNodesFromAssembly(assembly, searchViewModel, controller);//, bench);
+                        LoadNodesFromAssembly(assembly, searchViewModel, controller);
                     }
                     catch
                     {
@@ -84,8 +83,6 @@ namespace Dynamo.Utilties
             }
 
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
-
-            //AppDomain.Unload(tempDomain);
 
             #endregion
 
@@ -112,7 +109,7 @@ namespace Dynamo.Utilties
         /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
         /// <param name="bench">The bench where logging errors will be sent</param>
-        private static void LoadNodesFromAssembly(Assembly assembly, SearchViewModel searchViewModel, DynamoController controller)//, dynBench bench )
+        private static void LoadNodesFromAssembly(Assembly assembly, SearchViewModel searchViewModel, DynamoController controller)
         {
             try
             {
@@ -120,7 +117,6 @@ namespace Dynamo.Utilties
 
                 foreach (Type t in loadedTypes)
                 {
-                    
                     try
                     {
                         //only load types that are in the right namespace, are not abstract
