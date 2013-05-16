@@ -11,7 +11,6 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Utilities;
-using Dynamo.Utilties;
 
 namespace Dynamo
 {

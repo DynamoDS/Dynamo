@@ -73,46 +73,46 @@ namespace Dynamo.Tests
 
         // OpenCommand
 
-        [Test, RequiresSTA]
-        [Category("DynamoUI")]
-        public void CanOpenGoodFile()
-        {
-            // NOTE rom PB: this test fails due to the fact that Bench is locked as it was never shown in these tests
-            //              The same test is present in DynamoElementsUITests.cs, where it succeeds
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string openPath = Path.Combine(directory, @"..\..\test\good_dyns\multiplicationAndAdd.dyn");
-            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(_vm.OpenCommand, openPath));
-            dynSettings.Controller.ProcessCommandQueue();
+        //[Test, RequiresSTA]
+        //[Category("DynamoUI")]
+        //public void CanOpenGoodFile()
+        //{
+        //    // NOTE rom PB: this test fails due to the fact that Bench is locked as it was never shown in these tests
+        //    //              The same test is present in DynamoElementsUITests.cs, where it succeeds
+        //    string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        //    string openPath = Path.Combine(directory, @"..\..\test\good_dyns\multiplicationAndAdd.dyn");
+        //    dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(_vm.OpenCommand, openPath));
+        //    dynSettings.Controller.ProcessCommandQueue();
 
-            Assert.AreEqual(5, dynSettings.Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-        }
+        //    Assert.AreEqual(5, dynSettings.Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+        //}
 
-        // SaveImageCommand
-        [Test, RequiresSTA]
-        [Category("DynamoUI")]
-        public void CanSaveImage()
-        {
-            string path = Path.Combine(TempFolder, "output.png");
+        //// SaveImageCommand
+        //[Test, RequiresSTA]
+        //[Category("DynamoUI")]
+        //public void CanSaveImage()
+        //{
+        //    string path = Path.Combine(TempFolder, "output.png");
 
-            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(_vm.SaveImageCommand, path));
-            dynSettings.Controller.ProcessCommandQueue();
+        //    dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(_vm.SaveImageCommand, path));
+        //    dynSettings.Controller.ProcessCommandQueue();
 
-            Assert.True(File.Exists(path));
-            File.Delete(path);
-            Assert.False(File.Exists(path));
-        }
+        //    Assert.True(File.Exists(path));
+        //    File.Delete(path);
+        //    Assert.False(File.Exists(path));
+        //}
 
-        [Test, RequiresSTA]
-        [Category("DynamoUI")]
-        public void CannotSaveImageWithBadPath()
-        {
-            string path = "W;\aelout put.png";
+        //[Test, RequiresSTA]
+        //[Category("DynamoUI")]
+        //public void CannotSaveImageWithBadPath()
+        //{
+        //    string path = "W;\aelout put.png";
 
-            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(_vm.SaveImageCommand, path));
+        //    dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(_vm.SaveImageCommand, path));
 
-            var tempFldrInfo = new DirectoryInfo(TempFolder);
-            Assert.AreEqual(0, tempFldrInfo.GetFiles().Length);
-        }
+        //    var tempFldrInfo = new DirectoryInfo(TempFolder);
+        //    Assert.AreEqual(0, tempFldrInfo.GetFiles().Length);
+        //}
 
         // ToggleConsoleShowingCommand
         //[Test, RequiresSTA]
@@ -164,9 +164,14 @@ namespace Dynamo.Tests
                 {
                     try
                     {
-                        dynSettings.Controller.CommandQueue.Enqueue(
-                            Tuple.Create<object, object>(_vm.OpenCommand, fi.FullName));
-                        dynSettings.Controller.ProcessCommandQueue();
+                        //dynSettings.Bench.Dispatcher.Invoke(OpenSample(), new object[] { fi.FullName });
+
+                        dynSettings.Bench.Dispatcher.Invoke(new Action(delegate
+                        {
+                            dynSettings.Controller.CommandQueue.Enqueue(
+                                Tuple.Create<object, object>(_vm.OpenCommand, fi.FullName));
+                            dynSettings.Controller.ProcessCommandQueue();
+                        }));
                     }
                     catch(Exception e)
                     {
@@ -178,6 +183,13 @@ namespace Dynamo.Tests
                 }
             }
             Assert.AreEqual(failCount, 0);
+        }
+
+        private void OpenSample(string name)
+        {
+            dynSettings.Controller.CommandQueue.Enqueue(
+                            Tuple.Create<object, object>(_vm.OpenCommand, name));
+            dynSettings.Controller.ProcessCommandQueue();
         }
     }
 }

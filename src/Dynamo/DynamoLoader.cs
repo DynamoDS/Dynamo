@@ -13,7 +13,7 @@ using Dynamo.Utilities;
 using System.Windows;
 using System.Diagnostics;
 
-namespace Dynamo.Utilties
+namespace Dynamo.Utilities
 {
     /// <summary>
     ///     Handles loading various types of elements into Dynamo at startup
