@@ -212,9 +212,9 @@
 
             </MenuItem>
 
-            <MenuItem Header="Debug" Visibility="{Binding DebugMenuVisibility}">
+            <!--<MenuItem Header="Debug" Visibility="{Binding DebugMenuVisibility}">
                 <MenuItem Header="Run Tests" Command="{Binding Path=RunUITestsCommand}"/>
-            </MenuItem>
+            </MenuItem>-->
         </Menu>
 
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 

@@ -22,7 +22,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Utilties;
 using Microsoft.Practices.Prism.Commands;
-using NUnit.Core;
 
 namespace Dynamo.Controls
 {
@@ -108,7 +107,6 @@ namespace Dynamo.Controls
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand RefactorCustomNodeCommand { get; set; }
-        public DelegateCommand RunUITestsCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -356,7 +354,6 @@ namespace Dynamo.Controls
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
             RefactorCustomNodeCommand = new DelegateCommand(RefactorCustomNode, CanRefactorCustomNode);
-            RunUITestsCommand = new DelegateCommand(RunUITests, CanRunUITests);
             #endregion
         }
 
@@ -2737,69 +2734,8 @@ namespace Dynamo.Controls
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new NodeEventArgs(e,null));
             
         }
-
-        private void RunUITests()
-        {
-            dynSettings.Bench.Dispatcher.Invoke(new Action(RunTests), new object[] { });
-        }
-
-        private void RunTests()
-        {
-            string assLoc = Assembly.GetExecutingAssembly().Location;
-            string testsLoc = Path.Combine(Path.GetDirectoryName(assLoc), "DynamoElementsTests.dll");
-            TestPackage testPackage = new TestPackage(testsLoc);
-            RemoteTestRunner remoteTestRunner = new RemoteTestRunner();
-            remoteTestRunner.Load(testPackage);
-            NUnit.Core.Filters.CategoryFilter catFilter = new NUnit.Core.Filters.CategoryFilter("DynamoUI");
-            TestResult testResult = remoteTestRunner.Run(new NullListener(), catFilter, false, LoggingThreshold.All);
-            OutputResult(testResult);
-        }
-
-        private bool CanRunUITests()
-        {
-            return true;
-        }
-
-        static void OutputResult(TestResult result)
-        {
-            if (result.HasResults)
-            {
-                foreach (var childResult in result.Results)
-                {
-                    OutputResult((TestResult)childResult);
-                }
-                return;
-            }
-
-            dynSettings.Controller.DynamoViewModel.Log(string.Format("{0}:{1}", result.FullName, result.ResultState));
-        }
     }
 
-    public class DynamoUITestFilter : ITestFilter
-    {
-        public bool IsEmpty
-        {
-            get;
-            set;
-        }
-
-        public bool Pass(ITest test)
-        {
-            foreach (var cat in test.Categories)
-            {
-                if (cat == "DynamoUI")
-                    return true;
-            }
-
-            return false;
-        }
-
-        public bool Match (ITest test)
-        {
-            return true;
-        }
-    }
-    
     public class TypeLoadData
     {
         public Assembly Assembly;
