@@ -135,7 +135,11 @@ namespace Dynamo.Nodes
                 }
             };
 
-            e.Evaluate();
+            try
+            {
+                e.Evaluate();
+            }
+            catch { }
 
             InPortData.Clear();
 
@@ -151,22 +155,20 @@ namespace Dynamo.Nodes
         {
             var e = new Expression(Formula);
 
-            var parameterLookup = new Dictionary<string, Value>();
+            var functionLookup = new Dictionary<string, Value>();
 
             foreach (var arg in args.Select((arg, i) => new { Value = arg, Index = i }))
             {
                 var parameter = InPortData[arg.Index].NickName;
-                parameterLookup[parameter] = arg.Value;
+                if (arg.Value.IsFunction)
+                    functionLookup[parameter] = arg.Value;
+                else
+                    e.Parameters[parameter] = ((Value.Number)arg.Value).Item;
             }
-
-            e.EvaluateParameter += delegate(string name, ParameterArgs pArgs)
-            {
-                pArgs.Result = ((Value.Number)parameterLookup[name]).Item;
-            };
 
             e.EvaluateFunction += delegate(string name, FunctionArgs fArgs)
             {
-                var func = ((Value.Function)parameterLookup[name]).Item;
+                var func = ((Value.Function)functionLookup[name]).Item;
                 fArgs.Result = ((Value.Number)func.Invoke(
                     Utils.SequenceToFSharpList(
                         fArgs.Parameters.Select(
