@@ -396,8 +396,7 @@ namespace Dynamo
                 tb.DataContext = this;
                 var bindingSymbol = new System.Windows.Data.Binding("Symbol")
                 {
-                    Mode = BindingMode.TwoWay,
-                    Converter = new StringDisplay()
+                    Mode = BindingMode.TwoWay
                 };
                 tb.SetBinding(TextBox.TextProperty, bindingSymbol);
 

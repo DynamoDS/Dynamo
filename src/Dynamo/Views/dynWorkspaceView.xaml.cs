@@ -246,35 +246,6 @@ namespace Dynamo.Views
                     // Hide the drag selection box.
                     selectionBox.Visibility = Visibility.Collapsed;
 
-                    //Point mouseUpPos = e.GetPosition(WorkBench);
-
-                    //clear the selected elements
-                    //DynamoSelection.Instance.ClearSelection();
-
-                    //var rect =
-                    //    new Rect(
-                    //        Canvas.GetLeft(selectionBox),
-                    //        Canvas.GetTop(selectionBox),
-                    //        selectionBox.Width,
-                    //        selectionBox.Height);
-
-                    //if (mouseUpPos.X > mouseDownPos.X)
-                    //{
-                    //    #region contain select
-
-                    //    vm.ContainSelectCommand.Execute(rect);
-
-                    //    #endregion
-                    //}
-                    //else if (mouseUpPos.X < mouseDownPos.X)
-                    //{
-                    //    #region crossing select
-
-                    //    vm.CrossSelectCommand.Execute(rect);
-
-                    //    #endregion
-                    //}
-
                     #endregion
                 }
             }

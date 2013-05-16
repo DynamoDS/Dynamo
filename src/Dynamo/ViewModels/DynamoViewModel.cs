@@ -20,7 +20,6 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.Utilties;
 using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Controls
