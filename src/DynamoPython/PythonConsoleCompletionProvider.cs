@@ -1,14 +1,8 @@
-﻿﻿// Copyright (c) 2010 Joe Moorhouse
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Dynamo;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Editing;
-using ICSharpCode.AvalonEdit.Document;
-using Microsoft.Scripting.Hosting.Shell;
+using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
 using Microsoft.Scripting;
 using System.Threading;
@@ -21,34 +15,47 @@ namespace DynamoPython
     /// </summary>
     public class PythonConsoleCompletionDataProvider
     {
-        CommandLine commandLine;
+        private ScriptEngine engine;
+        private ScriptScope scope;
+
         internal volatile bool AutocompletionInProgress = false;
 
-        public PythonConsoleCompletionDataProvider(CommandLine commandLine)//IMemberProvider memberProvider)
+        public PythonConsoleCompletionDataProvider()
         {
-            this.commandLine = commandLine;
+            engine = Python.CreateEngine();
+            scope = engine.CreateScope();
+
+            var defaultImports =
+                "import clr\nimport System\n";
+
+            scope.Engine.CreateScriptSourceFromString(defaultImports, SourceCodeKind.Statements).Execute(scope);
+
+            try
+            {
+                var revitImports =
+                    "clr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
+
+                scope.Engine.CreateScriptSourceFromString(defaultImports, SourceCodeKind.Statements).Execute(scope);
+            }
+            catch
+            {
+                DynamoLogger.Instance.Log("Failed to load Revit types for Autocomplete.  Autocomplete will not see Autodesk namespace types.");
+            }
         }
 
         /// <summary>
-        /// Generates completion data for the specified text. The text should be everything before
-        /// the dot character that triggered the completion. The text can contain the command line prompt
-        /// '>>>' as this will be ignored.
+        /// Generates completion data for the specified text. 
         /// </summary>
         public ICompletionData[] GenerateCompletionData(string line)
         {
-            var items = new List<DynamoCompletionData>(); //DefaultCompletionData
+            var items = new List<DynamoCompletionData>();
 
             string name = GetName(line);
             if (!String.IsNullOrEmpty(name))
             {
-                System.IO.Stream stream = commandLine.ScriptScope.Engine.Runtime.IO.OutputStream;
                 try
                 {
                     AutocompletionInProgress = true;
-                    // Another possibility:
-                    //commandLine.ScriptScope.Engine.Runtime.IO.SetOutput(new System.IO.MemoryStream(), Encoding.UTF8);
-                    //object value = commandLine.ScriptScope.Engine.CreateScriptSourceFromString(name, SourceCodeKind.Expression).Execute(commandLine.ScriptScope);
-                    //IList<string> members = commandLine.ScriptScope.Engine.Operations.GetMemberNames(value);
 
                     Type type = TryGetType(name);
                     if (type != null && type.Namespace != "IronPython.Runtime")
@@ -58,35 +65,35 @@ namespace DynamoPython
                     else
                     {
                         string dirCommand = "dir(" + name + ")";
-                        object value = commandLine.ScriptScope.Engine.CreateScriptSourceFromString(dirCommand, SourceCodeKind.Expression).Execute(commandLine.ScriptScope);
-                        AutocompletionInProgress = false;
+                        object value = scope.Engine.CreateScriptSourceFromString(dirCommand, SourceCodeKind.Expression).Execute(scope);
+
                         foreach (object member in (value as IronPython.Runtime.List))
                         {
-                            items.Add(new DynamoCompletionData((string)member, name, commandLine, false));
+                            items.Add(new DynamoCompletionData((string)member, name, false));
                         }
                     }
-                }
-                catch (ThreadAbortException tae)
-                {
-                    if (tae.ExceptionState is Microsoft.Scripting.KeyboardInterruptException) Thread.ResetAbort();
                 }
                 catch
                 {
                     // Do nothing.
                 }
-                commandLine.ScriptScope.Engine.Runtime.IO.SetOutput(stream, Encoding.UTF8);
                 AutocompletionInProgress = false;
             }
             return items.ToArray();
         }
 
+        /// <summary>
+        ///     Get a type from a name.  For example: System.Collections or System.Collections.ArrayList
+        /// </summary>
+        /// <param name="name">The name</param>
+        /// <returns>The type or null if its not a valid type</returns>
         protected Type TryGetType(string name)
         {
             string tryGetType = name + ".GetType()";
-            object type = null;
+            dynamic type = null;
             try
             {
-                type = commandLine.ScriptScope.Engine.CreateScriptSourceFromString(tryGetType, SourceCodeKind.Expression).Execute(commandLine.ScriptScope);
+                type = scope.Engine.CreateScriptSourceFromString(tryGetType, SourceCodeKind.Expression).Execute(scope);
             }
             catch (ThreadAbortException tae)
             {
@@ -94,13 +101,17 @@ namespace DynamoPython
             }
             catch
             {
-                // Do nothing.
+                Console.WriteLine();
             }
             return type as Type;
         }
 
+
         protected void PopulateFromCLRType(List<DynamoCompletionData> items, Type type, string name)
         {
+            DynamoLogger.Instance.Log(type.ToString());
+            DynamoLogger.Instance.Log(name);
+
             List<string> completionsList = new List<string>();
             MethodInfo[] methodInfo = type.GetMethods();
             PropertyInfo[] propertyInfo = type.GetProperties();
@@ -130,57 +141,21 @@ namespace DynamoPython
             }
             foreach (string completion in completionsList)
             {
-                items.Add(new DynamoCompletionData(completion, name, commandLine, true));
+                items.Add(new DynamoCompletionData(completion, name, true));
             }
         }
-
-        ///// <summary>
-        ///// Generates completion data for the specified text. The text should be everything before
-        ///// the dot character that triggered the completion. The text can contain the command line prompt
-        ///// '>>>' as this will be ignored.
-        ///// </summary>
-        //public void GenerateDescription(string stub, string item, DescriptionUpdateDelegate updateDescription, bool isInstance)
-        //{
-        //    System.IO.Stream stream = commandLine.ScriptScope.Engine.Runtime.IO.OutputStream;
-        //    string description = "";
-        //    if (!String.IsNullOrEmpty(item))
-        //    {
-        //        try
-        //        {
-        //            AutocompletionInProgress = true;
-        //            // Another possibility:
-        //            //commandLine.ScriptScope.Engine.Runtime.IO.SetOutput(new System.IO.MemoryStream(), Encoding.UTF8);
-        //            //object value = commandLine.ScriptScope.Engine.CreateScriptSourceFromString(item, SourceCodeKind.Expression).Execute(commandLine.ScriptScope);
-        //            //description = commandLine.ScriptScope.Engine.Operations.GetDocumentation(value);
-        //            string docCommand = "";
-        //            if (isInstance) docCommand = "type(" + stub + ")" + "." + item + ".__doc__";
-        //            else docCommand = stub + "." + item + ".__doc__";
-        //            object value = commandLine.ScriptScope.Engine.CreateScriptSourceFromString(docCommand, SourceCodeKind.Expression).Execute(commandLine.ScriptScope);
-        //            description = (string)value;
-        //            AutocompletionInProgress = false;
-        //        }
-        //        catch (ThreadAbortException tae)
-        //        {
-        //            if (tae.ExceptionState is Microsoft.Scripting.KeyboardInterruptException) Thread.ResetAbort();
-        //            AutocompletionInProgress = false;
-        //        }
-        //        catch
-        //        {
-        //            AutocompletionInProgress = false;
-        //            // Do nothing.
-        //        }
-        //        commandLine.ScriptScope.Engine.Runtime.IO.SetOutput(stream, Encoding.UTF8);
-        //        updateDescription(description);
-        //    }
-        //}
-
 
         string GetName(string text)
         {
             text = text.Replace("\t", "   ");
+            text = text.Replace("\n", " ");
+            text = text.Replace("\r", " ");
             int startIndex = text.LastIndexOf(' ');
             return text.Substring(startIndex + 1).Trim('.');
         }
+
+        // TODO: traverse source and process import statements
+        // TODO: variable autocompletion?  we want to get types without executing!
 
     }
 }
