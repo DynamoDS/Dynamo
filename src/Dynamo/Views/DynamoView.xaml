@@ -13,7 +13,9 @@
         MinHeight="600" 
         MinWidth="800" 
         Title="Dynamo"
-        AllowsTransparency="False">
+        AllowsTransparency="False" 
+        KeyDown="DynamoView_KeyDown"
+        KeyUp="DynamoView_KeyUp">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -26,7 +28,7 @@
     </Window.Resources>
 
     <Window.InputBindings>
-
+        
         <KeyBinding Key="Tab"
                                 Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
@@ -153,6 +155,9 @@
             </MenuItem>
 
             <MenuItem Header="_View" Name="viewMenu">
+                
+                <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
+                          Command="{Binding Path=ToggleFullscreenWatchShowingCommand}" />
                 
                 <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
                           Command="{Binding Path=ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>

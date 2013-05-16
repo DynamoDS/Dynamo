@@ -208,6 +208,31 @@ namespace Dynamo.Nodes
 
     }
 
+    [NodeName("Multiply Transf")]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
+    [NodeDescription("Multiply two transforms.")]
+    public class Multiplytransform : dynNodeWithOneOutput
+    {
+        public Multiplytransform()
+        {
+            InPortData.Add(new PortData("t1", "The first transform", typeof(Value.Container)));
+            InPortData.Add(new PortData("t2", "The second transform", typeof(Value.Container)));
+            OutPortData.Add(new PortData("transform", "The transform which is the result of multiplication.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var t1 = (Transform)((Value.Container)args[0]).Item;
+            var t2 = (Transform)((Value.Container)args[1]).Item;
+
+            return Value.NewContainer(
+               t1.Multiply(t2));
+        }
+
+    }
+
     [NodeName("Compute Face Derivs")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]

@@ -36,6 +36,8 @@ namespace Dynamo
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
 
+        private bool _watchEscapeIsDown = false;
+
         public virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
         {
             if (CurrentOffsetChanged != null)
@@ -73,6 +75,7 @@ namespace Dynamo
         }
 
         ObservableCollection<dynConnectorViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
+        private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();
         ObservableCollection<dynNodeViewModel> _nodes = new ObservableCollection<dynNodeViewModel>();
         ObservableCollection<dynNoteViewModel> _notes = new ObservableCollection<dynNoteViewModel>();
         
@@ -137,6 +140,16 @@ namespace Dynamo
             get { return _model.FilePath; }
         }
 
+        public void FullscreenChanged()
+        {
+            RaisePropertyChanged("FullscreenWatchVisible");
+        }
+
+        public bool FullscreenWatchVisible
+        {
+            get { return dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing; }
+        }
+
         private dynConnectorViewModel activeConnector;
         public dynConnectorViewModel ActiveConnector
         {
@@ -193,6 +206,22 @@ namespace Dynamo
             get { return _model.IsCurrentSpace; }
         }
 
+        public bool WatchEscapeIsDown
+        {
+            get { return _watchEscapeIsDown; }
+            set 
+            { 
+                _watchEscapeIsDown = value;
+                RaisePropertyChanged("WatchEscapeIsDown");
+                RaisePropertyChanged("ShouldBeHitTestVisible");
+            }
+        }
+
+        public bool ShouldBeHitTestVisible
+        {
+            get { return !WatchEscapeIsDown; }
+        }
+
         public bool HasUnsavedChanges
         {
             get { return _model.HasUnsavedChanges; }
@@ -218,12 +247,22 @@ namespace Dynamo
             get { return _model; }
         }
 
+        public ObservableCollection<Watch3DFullscreenViewModel> Watch3DViewModels
+        {
+            get { return _watches; }
+            set
+            {
+                _watches = value;
+                RaisePropertyChanged("Watch3DViewModels");
+            }
+        }
+
         #endregion
 
         public dynWorkspaceViewModel(dynWorkspaceModel model, DynamoViewModel vm)
         {
             _model = model;
-           
+
             var nodesColl = new CollectionContainer();
             nodesColl.Collection = Nodes;
             WorkspaceElements.Add(nodesColl);
@@ -235,6 +274,12 @@ namespace Dynamo
             var notesColl = new CollectionContainer();
             notesColl.Collection = Notes;
             WorkspaceElements.Add(notesColl);
+
+            //var watch3DColl = new CollectionContainer();
+            //watch3DColl.Collection = Watch3DViewModels;
+            //WorkspaceElements.Add(watch3DColl);
+            
+            Watch3DViewModels.Add(new Watch3DFullscreenViewModel(this));
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
@@ -256,7 +301,7 @@ namespace Dynamo
             vm.UIUnlocked += new EventHandler(DynamoViewModel_UIUnlocked);
 
             // sync collections
-            Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes ));
+            Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Notes));
         }

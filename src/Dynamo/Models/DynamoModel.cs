@@ -17,6 +17,7 @@ namespace Dynamo
     {
         private ObservableCollection<dynWorkspaceModel> _workSpaces = new ObservableCollection<dynWorkspaceModel>();
         private ObservableCollection<dynWorkspaceModel> _hiddenWorkspaces = new ObservableCollection<dynWorkspaceModel>();
+
         private dynWorkspaceModel _cspace;
 
         public dynWorkspaceModel CurrentSpace

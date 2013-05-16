@@ -67,6 +67,7 @@ namespace Dynamo.Controls
 
         private Point transformOrigin;
         private bool consoleShowing;
+        private bool fullscreenWatchShowing = false;
         private DynamoController controller;
         public StringWriter sw;
         private bool runEnabled = true;
@@ -102,6 +103,7 @@ namespace Dynamo.Controls
         public DelegateCommand<object> CopyCommand { get; set; }
         public DelegateCommand<object> PasteCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
+        public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand CancelRunCommand { get; set; }
         public DelegateCommand<object> SaveImageCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
@@ -172,6 +174,23 @@ namespace Dynamo.Controls
             {
                 consoleShowing = value;
                 RaisePropertyChanged("ConsoleShowing");
+            }
+        }
+
+        public bool FullscreenWatchShowing
+        {
+            get { return fullscreenWatchShowing; }
+            set
+            {
+                fullscreenWatchShowing = value;
+                RaisePropertyChanged("FullscreenWatchShowing");
+
+                // NOTE: I couldn't get the binding to work in the XAML so
+                //       this is a temporary hack
+                foreach (dynWorkspaceViewModel workspace in Workspaces)
+                {
+                    workspace.FullscreenChanged();
+                }
             }
         }
 
@@ -291,6 +310,7 @@ namespace Dynamo.Controls
             //MVVM: Instantiate the model
             _model = new DynamoModel();
             _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
+
             _model.PropertyChanged += _model_PropertyChanged;
 
             dynSettings.Controller.DynamoModel = _model;
@@ -321,6 +341,7 @@ namespace Dynamo.Controls
             CopyCommand = new DelegateCommand<object>(Copy, CanCopy);
             PasteCommand = new DelegateCommand<object>(Paste, CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
+            ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             SaveImageCommand = new DelegateCommand<object>(SaveImage, CanSaveImage);
             ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
@@ -1021,6 +1042,23 @@ namespace Dynamo.Controls
         }
 
         private bool CanToggleConsoleShowing()
+        {
+            return true;
+        }
+
+        private void ToggleFullscreenWatchShowing()
+        {
+            if (FullscreenWatchShowing)
+            {
+                FullscreenWatchShowing = false;
+            }
+            else
+            {
+                FullscreenWatchShowing = true;
+            }
+        }
+
+        private bool CanToggleFullscreenWatchShowing()
         {
             return true;
         }

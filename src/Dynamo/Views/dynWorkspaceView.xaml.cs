@@ -8,6 +8,7 @@ using System.Windows.Shapes;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using DragCanvas = Dynamo.Controls.DragCanvas;
 
 namespace Dynamo.Views
@@ -27,6 +28,14 @@ namespace Dynamo.Views
 
             selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
             DataContextChanged += new DependencyPropertyChangedEventHandler(dynWorkspaceView_DataContextChanged);
+
+            // Make new Watch3DFullscreenViewModel
+            // Make new Watch3DFullscreenView(input: viewmodel)
+            // attach to bench through mainGrid
+
+            
+
+            // dynSettings.Bench.sidebarGrid.Children.Add(search);
         }
 
         /// <summary>
@@ -49,6 +58,18 @@ namespace Dynamo.Views
         void selectionCanvas_Loaded(object sender, RoutedEventArgs e)
         {
             DrawGrid();
+
+            //Watch3DFullscreenViewModel watchFullscreenViewModel = new Watch3DFullscreenViewModel();
+            //WatchViewFullscreen fullscreen_view = new WatchViewFullscreen();
+
+            //outerCanvas.Children.Add(fullscreen_view);
+
+            //dynSettings.Bench.overlayCanvas.Children.Add(fullscreen_view);
+
+          
+            //dynWatch3DFullscreen fullscreen_watch3D = new dynWatch3DFullscreen();
+            //fullscreen_watch3D.SetupCustomUIElements(selectionCanvas);
+            //selectionCanvas.Children.Add(fullscreen_watch3D.FullscreenWatchView());
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)
@@ -132,6 +153,26 @@ namespace Dynamo.Views
         void vm_CurrentOffsetChanged(object sender, EventArgs e)
         {
             zoomBorder.SetTranslateTransformOrigin((e as PointEventArgs).Point);
+        }
+
+        private void dynWorkspaceView_KeyDown(object sender, KeyEventArgs e)
+        {
+            Button source = e.Source as Button;
+
+            if (source == null)
+                return;
+
+            if (e.Key != Key.LeftCtrl && e.Key != Key.RightCtrl)
+                return;
+
+
+            System.Console.WriteLine("Hello World");
+
+        }
+
+        private void dynWorkspaceView_KeyUp(object sender, KeyEventArgs e)
+        {
+
         }
 
         private void DynWorkspaceView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -345,7 +386,7 @@ namespace Dynamo.Views
             for (double i = 0.0; i < selectionCanvas.ActualWidth; i += gridSpacing)
             {
                 var xLine = new Line();
-                xLine.Stroke = new SolidColorBrush(Color.FromRgb(100, 100, 100));
+                xLine.Stroke = new SolidColorBrush(Color.FromArgb(50, 100, 100, 100));
                 xLine.X1 = i;
                 xLine.Y1 = 0;
                 xLine.X2 = i;
@@ -361,7 +402,7 @@ namespace Dynamo.Views
             for (double i = 0.0; i < selectionCanvas.ActualHeight; i += gridSpacing)
             {
                 var yLine = new Line();
-                yLine.Stroke = new SolidColorBrush(Color.FromRgb(100, 100, 100));
+                yLine.Stroke = new SolidColorBrush(Color.FromArgb(50, 100, 100, 100));
                 yLine.X1 = 0;
                 yLine.Y1 = i;
                 yLine.X2 = selectionCanvas.ActualWidth;
@@ -371,6 +412,7 @@ namespace Dynamo.Views
                 yLine.StrokeThickness = 1;
                 selectionCanvas.Children.Add(yLine);
                 //Dynamo.Controls.DragCanvas.SetCanBeDragged(yLine, false);
+                
                 yLine.IsHitTestVisible = false;
             }
         }

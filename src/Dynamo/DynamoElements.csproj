@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
 Copyright © Autodesk, Inc. 2012. All rights reserved.
 
@@ -73,6 +73,9 @@ limitations under the License.
     <Reference Include="nunit.core.interfaces">
       <HintPath>..\..\extern\NUnit\nunit.core.interfaces.dll</HintPath>
     </Reference>
+    <Reference Include="NCalc">
+      <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
@@ -108,9 +111,11 @@ limitations under the License.
     <Compile Include="Models\dynModelBase.cs" />
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
+    <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Search\SearchElements\TopSearchElement.cs" />
+    <Compile Include="Nodes\dynEquation.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\WPF.cs" />
@@ -161,6 +166,9 @@ limitations under the License.
     <Compile Include="Nodes\dynTimer.cs" />
     <Compile Include="Nodes\dynArduino.cs" />
     <Compile Include="Nodes\dynBaseTypes.cs" />
+    <Compile Include="Views\WatchViewFullscreen.xaml.cs">
+      <DependentUpon>WatchViewFullscreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DynamoView.xaml.cs">
       <DependentUpon>DynamoView.xaml</DependentUpon>
     </Compile>
@@ -226,6 +234,10 @@ limitations under the License.
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\WatchViewFullscreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\DynamoView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

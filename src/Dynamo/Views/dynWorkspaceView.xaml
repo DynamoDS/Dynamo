@@ -11,18 +11,47 @@
              d:DesignHeight="300" d:DesignWidth="300"
              MouseLeftButtonDown="DynWorkspaceView_OnMouseLeftButtonDown"
              MouseUp="DynWorkspaceView_OnMouseUp"
-             MouseMove="DynWorkspaceView_OnMouseMove" IsHitTestVisible="{Binding IsCurrentSpace}">
+             MouseMove="DynWorkspaceView_OnMouseMove" 
+             KeyDown="dynWorkspaceView_KeyDown" KeyUp="dynWorkspaceView_KeyUp" 
+             IsHitTestVisible="{Binding IsCurrentSpace}">
     
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+    <UserControl.Resources>
+        <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter"/>
+    </UserControl.Resources>
+        
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+        <Canvas Name="backgroundCanvas" 
+                 Margin="0,0,0,0" 
+                 ClipToBounds="True" 
+                 Grid.Row="0" 
+                 Grid.Column="2"
+                 IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
+            <Canvas.Background>
+                <SolidColorBrush Color="{Binding BackgroundColor}" />
+            </Canvas.Background>
+        </Canvas>
+
+        <ItemsControl ItemsSource="{Binding Watch3DViewModels}"
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            Visibility="{Binding FullscreenWatchVisible, 
+            Converter={StaticResource BoolToFullscreenWatchVisibilityConverter}}">
+                      
+            <ItemsControl.Resources>
+                <DataTemplate DataType="{x:Type controls:Watch3DFullscreenViewModel}">
+                    <controls:WatchViewFullscreen></controls:WatchViewFullscreen>
+                </DataTemplate>
+            </ItemsControl.Resources>
+        </ItemsControl>
         
         <Canvas Name="outerCanvas" 
                  Margin="0,0,0,0" 
                  ClipToBounds="True" 
                  Grid.Row="0" 
-                 Grid.Column="2">
+                 Grid.Column="2"
+                 IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
             
             <controls:ZoomBorder ClipToBounds="True" MouseWheel="zoomBorder_MouseWheel" BorderThickness="0"
-                                             MouseMove="zoomBorder_MouseMove" x:Name="zoomBorder">
+                  MouseMove="zoomBorder_MouseMove" x:Name="zoomBorder">
                 <Grid>
                     <Canvas Name="selectionCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <Rectangle
@@ -49,8 +78,6 @@
                             <DataTemplate DataType="{x:Type connectors:dynConnectorViewModel}">
                                 <views:dynConnectorView></views:dynConnectorView>
                             </DataTemplate>
-                            
-                            
                         </ItemsControl.Resources>
                         
                         <ItemsControl.ItemsPanel>
@@ -86,9 +113,7 @@
                         HorizontalContentAlignment="Right" Visibility ="Collapsed" FontSize="14"
                         FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
 
-            <Canvas.Background>
-                <SolidColorBrush Color="{Binding BackgroundColor}" />
-            </Canvas.Background>
+
             <Canvas.ContextMenu>
                 <ContextMenu>
                     <MenuItem  Header="_New Node From Selection"  Name="NodeFromSelection" Command="{Binding NodeFromSelectionCommand}"/>
@@ -96,5 +121,6 @@
             </Canvas.ContextMenu>
 
         </Canvas>
+        
     </Grid>
 </UserControl>
