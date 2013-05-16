@@ -150,10 +150,10 @@ limitations under the License.
     <Compile Include="Search\SearchElements\PackageManagerSearchElement.cs" />
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Search\SearchElements\WorkspaceSearchElement.cs" />
-    <Compile Include="Search\SearchView.xaml.cs">
+    <Compile Include="Views\SearchView.xaml.cs">
       <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Search\SearchViewModel.cs" />
+    <Compile Include="ViewModels\SearchViewModel.cs" />
     <Compile Include="Nodes\dynColors.cs" />
     <Compile Include="Prompts\dynEditWindow.xaml.cs">
       <DependentUpon>dynEditWindow.xaml</DependentUpon>
@@ -254,7 +254,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Search\SearchView.xaml">
+    <Page Include="Views\SearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
