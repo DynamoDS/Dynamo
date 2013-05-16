@@ -28,11 +28,6 @@ using Value = Dynamo.FScheme.Value;
 
 using Microsoft.FSharp.Collections;
 
-using IronPython;
-using IronPython.Hosting;
-using IronPython.Runtime;
-using Microsoft.Scripting;
-using Microsoft.Scripting.Hosting;
 using System.Windows;
 using System.Xml;
 using Microsoft.FSharp.Core;
