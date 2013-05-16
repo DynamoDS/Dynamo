@@ -219,6 +219,8 @@ namespace Dynamo.Views
             //{
             //    DisableEditNameBox();
             //}
+
+            dynSettings.ReturnFocusToSearch();
         }
 
         private void DynWorkspaceView_OnMouseUp(object sender, MouseButtonEventArgs e)
