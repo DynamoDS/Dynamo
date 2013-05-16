@@ -1165,8 +1165,6 @@ namespace Dynamo.Controls
 
         private void GoToWorkspace(object parameter)
         {
-            //if this method is being called from search, the parameter will be
-            //a guid.
             if (parameter is Guid && dynSettings.Controller.CustomNodeLoader.Contains((Guid)parameter))
             {
                 ViewCustomNodeWorkspace(dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameter));
@@ -2279,7 +2277,9 @@ namespace Dynamo.Controls
                 return;
 
             dynWorkspaceModel newWs = symbol.Workspace;
-            this._model.Workspaces.Add(newWs);
+
+            if ( !this._model.Workspaces.Contains(newWs) )
+                this._model.Workspaces.Add(newWs);
 
             CurrentSpaceViewModel.OnStopDragging(this, EventArgs.Empty);
 
