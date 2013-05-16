@@ -1309,6 +1309,22 @@ namespace Dynamo.Nodes
         }
     }
 
+    /// <summary>
+    /// The AlsoKnownAs attribute allows the node implementor to
+    /// define an array of names that this node might have had
+    /// in the past.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All)]
+    public class AlsoKnownAsAttribute : Attribute
+    {
+        public string[] Values { get; set; }
+
+        public AlsoKnownAsAttribute(params string[] values)
+        {
+            this.Values = values;
+        }
+    }
+
     #endregion
 
     public class PredicateTraverser

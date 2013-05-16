@@ -2260,7 +2260,27 @@ namespace Dynamo.Controls
 
                     if (!Controller.BuiltInTypesByName.TryGetValue(typeName, out tData))
                     {
+                        //try and get a system type by this name
                         t = Type.GetType(typeName);
+
+                        //if we still can't find the type, try the also known as attributes
+                        if(t == null)
+                        {
+                            //try to get the also known as values
+                            foreach (KeyValuePair<string, TypeLoadData> kvp in Controller.BuiltInTypesByName)
+                            {
+                                var akaAttribs = kvp.Value.Type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), false);
+                                if (akaAttribs.Count() > 0)
+                                {
+                                    if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
+                                    {
+                                        Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key , typeName));
+                                        t = kvp.Value.Type;
+                                    }
+                                }
+                            }
+                        }
+
                         if (t == null)
                         {
                             Log("Error loading workspace. Could not load node of type: " + typeName);
