@@ -413,8 +413,10 @@ namespace Dynamo.Utilities
                 return true;
 
             }
-            catch
+            catch (Exception e)
             {
+                DynamoLogger.Instance.Log("ERROR: The header for the custom node at " + path + " failed to load.  It will be left out of search." );
+                DynamoLogger.Instance.Log(e.ToString());
                 category = "";
                 guid = Guid.Empty;
                 name = "";
@@ -503,7 +505,7 @@ namespace Dynamo.Utilities
 
                 // load a dummy version, so any nodes depending on this node
                 // will find an (empty) identifier on compilation
-                FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(5);
+                FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
                 this.loadedNodes.Add(def.FunctionId, def);
 
@@ -725,8 +727,8 @@ namespace Dynamo.Utilities
 
         public static FScheme.Expression CompileFunction( FunctionDefinition definition )
         {
-            IEnumerable<string> ins = null;
-            IEnumerable<string> outs = null;
+            IEnumerable<string> ins = new List<string>();
+            IEnumerable<string> outs = new List<string>();
 
             return CompileFunction(definition, ref ins, ref outs);
         }

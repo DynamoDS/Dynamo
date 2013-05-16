@@ -637,11 +637,11 @@ namespace Dynamo.Nodes
             {
                 Value expr = null;
 
-                if (Controller.RunCancelled)
-                    throw new CancelEvaluationException(false);
-
                 try
                 {
+                    if (Controller.RunCancelled)
+                        throw new CancelEvaluationException(false);
+
                     __eval_internal(args, evaluationDict);
 
                     expr = OutPortData.Count == 1

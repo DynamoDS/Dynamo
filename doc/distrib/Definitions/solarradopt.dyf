@@ -12,6 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+-->
 
 <dynWorkspace X="10" Y="55" Name="solarradopt" Category="Analyze.Solar" ID="d9380158-c69d-4ea8-b6eb-ae495afb90d0">
   <dynElements>

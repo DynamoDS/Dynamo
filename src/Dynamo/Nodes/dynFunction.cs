@@ -66,7 +66,7 @@ namespace Dynamo
 
             void ui_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
             {
-                Controller.DynamoViewModel.ViewCustomNodeWorkspace(_def);
+                Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(_def.FunctionId);
                 e.Handled = true;
             }
 
@@ -396,8 +396,7 @@ namespace Dynamo
                 tb.DataContext = this;
                 var bindingSymbol = new System.Windows.Data.Binding("Symbol")
                 {
-                    Mode = BindingMode.TwoWay,
-                    Converter = new StringDisplay()
+                    Mode = BindingMode.TwoWay
                 };
                 tb.SetBinding(TextBox.TextProperty, bindingSymbol);
 
