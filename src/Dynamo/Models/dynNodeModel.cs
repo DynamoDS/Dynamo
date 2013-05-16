@@ -1292,6 +1292,23 @@ namespace Dynamo.Nodes
             ElementDescription = description;
         }
     }
+
+    /// <summary>
+    /// The DoNotLoadOnPlatforms attribute allows the node implementor
+    /// to define an array of contexts in which the node will not
+    /// be loaded.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All)]
+    public class DoNotLoadOnPlatformsAttribute : Attribute
+    {
+        public string[] Values { get; set; }
+
+        public DoNotLoadOnPlatformsAttribute(params string[] values)
+        {
+            this.Values = values;
+        }
+    }
+
     #endregion
 
     public class PredicateTraverser

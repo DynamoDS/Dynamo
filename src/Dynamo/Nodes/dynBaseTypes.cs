@@ -109,8 +109,6 @@ namespace Dynamo.Nodes
 
     }
 
-
-
     static class Utilities
     {
         public static string Ellipsis(string value, int desiredLength)
