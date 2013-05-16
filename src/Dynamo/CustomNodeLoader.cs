@@ -803,9 +803,16 @@ namespace Dynamo.Utilities
 
                 top = node;
             }
-            else
+            else if (topMost.Count == 1)
+            {
                 top = topMost[0].Item2.BuildExpression(buildDict);
-
+            }
+            else
+            {
+                // if the custom node is empty, it will initially be a number node
+                top = new NumberNode(0);
+            }
+                
             // if the node has any outputs, we create a BeginNode in order to evaluate all of them
             // sequentially (begin evaluates a list of expressions)
             if (outputs.Any())
