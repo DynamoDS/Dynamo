@@ -1,4 +1,4 @@
-##Concatenate Strings
+##Concat Strings
 ###Description
 Concatenates two or more strings
 
@@ -21,7 +21,7 @@ Joins the given list of strings around the given delimiter.
   * None
 
 
-##Number -> String
+##Number to String
 ###Description
 Converts a number to a string
 
@@ -44,23 +44,23 @@ Splits given string around given delimiter into a list of sub strings.
   * None
 
 
-##String -> Number
-###Description
-Converts a string to a number
-
-###Inputs
-  * **s** *(string)* - A string
-
-###Output
-  * None
-
-
 ##String Case
 ###Description
 Converts a string to uppercase or lowercase
 
 ###Inputs
   * **str** *(string)* - String to convert
+
+###Output
+  * None
+
+
+##String to Number
+###Description
+Converts a string to a number
+
+###Inputs
+  * **s** *(string)* - A string
 
 ###Output
   * None

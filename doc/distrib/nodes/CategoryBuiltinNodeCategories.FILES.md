@@ -1,13 +1,3 @@
-##File Watcher Wait for Change
-###Description
-Waits for the specified watched file to change.
-
-
-
-###Output
-  * None
-
-
 ##Read File
 ###Description
 Reads data from a file.
@@ -29,7 +19,7 @@ Reads data from an image file.
   * None
 
 
-##Reset File Watcher
+##Reset File Watch
 ###Description
 Resets state of FileWatcher so that it watches again.
 
@@ -52,6 +42,16 @@ Creates a FileWatcher for watching changes in a file.
 ##Watched File Changed?
 ###Description
 Checks if the file watched by the given FileWatcher has changed.
+
+
+
+###Output
+  * None
+
+
+##Watched File Wait
+###Description
+Waits for the specified watched file to change.
 
 
 

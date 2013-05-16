@@ -48,7 +48,8 @@ def main():
 	'Autodesk.Revit.DB.UV.Zero',
 	'Autodesk.Revit.DB.Form.GetProfileAndCurveLoopIndexFromReference',
 	'Autodesk.Revit.Creation.Document.NewFootPrintRoof',
-	'Autodesk.Revit.DB.Solid.getGeometry'
+	'Autodesk.Revit.DB.Solid.getGeometry',
+	'Autodesk.Revit.DB.Profile.transformGPolyCurve'
 	]
 
 	valid_namespaces = {
@@ -251,11 +252,17 @@ class RevitMethod:
 		'\t///</summary>\n']
 		f.writelines(class_notes)
 
+		class_declaration = '\tpublic class API_' + self.nickName + ' : dynRevitAPINode\n'
+
 		self.write_attributes(f, valid_namespaces)
-		f.write('\tpublic class API_' + self.nickName + ' : dynRevitAPINode\n')
+
+		f.write(class_declaration)
+
 		f.write('\t{\n')
 
 		self.write_constructor(f)
+		#self.write_draw(f);
+
 		f.write('\t}\n')
 		f.write('\n')
 
@@ -324,6 +331,9 @@ class RevitMethod:
 
 		f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 		f.write('\t\t}\n')
+	
+	def write_draw(self, f):
+		f.write('\t\tDraw(){return dynRevitUtils.Draw(Elements);}\n')
 
 	def match_method_call(self):
 
@@ -375,10 +385,10 @@ class RevitProperty:
 
 	def write(self, f, valid_namespaces):
 		self.write_attributes(f, valid_namespaces)
-		f.write('\tpublic class API_' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
+		f.write('\tpublic class API_' + self.nickName + ' : dynAPIPropertyNode\n')
 		f.write('\t{\n')
 		self.write_constructor(f)
-		self.write_evaluate(f)
+		#self.write_evaluate(f)
 		f.write('\t}\n')
 		f.write('\n')
 
@@ -568,20 +578,26 @@ def read_method(member_data, revit_types, node_names, skip_list):
 
 	#the Revit API xml has methods where there are
 	#more parameter descriptions than there are parameters
-	#in this case, just return
+	#in this case, just fill in the params with the input types
 	if len(param_types) != len(params):
-		return
-	
-	paramCount = 0
-	for param in params:
-		param_name = param.get('name').replace('\n','')
-		if param.text is None:
-			param_description = ''
-		else:
-			param_description = param.text
-		newParameter = RevitParameter(param_name, param_types[paramCount],param_description)
-		newMethod.parameters.append(newParameter)
-		paramCount += 1
+		# return
+		# print method_name + ':' + str(len(param_types)) + ':' + str(len(params))
+		for param_type in param_types:
+			param_name = param_type
+			param_description = param_type
+			newParameter = RevitParameter(param_name, param_type,param_description)
+			newMethod.parameters.append(newParameter)
+	else:
+		paramCount = 0
+		for param in params:
+			param_name = param.get('name').replace('\n','')
+			if param.text is None:
+				param_description = ''
+			else:
+				param_description = param.text
+			newParameter = RevitParameter(param_name, param_types[paramCount],param_description)
+			newMethod.parameters.append(newParameter)
+			paramCount += 1
 
 
 

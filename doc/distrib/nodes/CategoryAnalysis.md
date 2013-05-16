@@ -1,16 +1,6 @@
-##Colored Surface Analysis Display Style
+##Analysis Display Style
 ###Description
 Create an analysis display style for displaying results color-mapped on a surface.
-
-
-
-###Output
-  * None
-
-
-##Colored Surface Spatial Field
-###Description
-Gets or creates the spatial field manager on the view.
 
 
 
@@ -29,13 +19,23 @@ Extracts and computes the average solar radiation value based on a CSV file.
   * None
 
 
-##Spatial Field Primitive Curve
+##Spatial Field Curve
 ###Description
 An analysis results curve to be used with a spatial field manager.
 
 ###Inputs
   * **sfm** *(Element)* - Spatial Field Manager
   * **face** *(Curve)* - Curve
+
+###Output
+  * None
+
+
+##Spatial Field Manager
+###Description
+Gets or creates the spatial field manager on the view.
+
+
 
 ###Output
   * None
@@ -51,7 +51,7 @@ Returns the current Sun Path direction.
   * None
 
 
-##Temporary Curves
+##Temp Curves
 ###Description
 Draw temporary curves in the family.
 

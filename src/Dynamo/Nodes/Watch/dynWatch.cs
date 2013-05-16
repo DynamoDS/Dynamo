@@ -33,14 +33,13 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Watch")]
-    [NodeCategory(BuiltinNodeCategories.DEBUG)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("Visualize the output of node.")]
     [NodeSearchTags("print", "output", "display")]
     public class dynWatch: dynNodeWithOneOutput
     {
-        //System.Windows.Controls.TextBlock watchBlock;
-        WatchTree wt;
-        WatchTreeBranch wtb;
+        public WatchTree watchTree;
+        public WatchTreeBranch watchTreeBranch;
 
         private class WatchHandlers
         {
@@ -79,29 +78,30 @@ namespace Dynamo.Nodes
         public dynWatch()
         {
             InPortData.Add(new PortData("", "Node to evaluate.", typeof(object)));
-            OutPortData.Add(new PortData("", "Watch contents.", typeof(string)));
+            OutPortData.Add(new PortData("", "Watch contents.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
-            //take out the left and right margins
-            //and make this so it's not so wide
-            NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
-            NodeUI.topControl.Width = 300;
-            NodeUI.topControl.Height = 200;
+            ArgumentLacing = LacingStrategy.Disabled;
 
-            wt = new WatchTree();
-            NodeUI.inputGrid.Children.Add(wt);
-            wtb = wt.FindResource("Tree") as WatchTreeBranch;
-
-            foreach (dynPort p in NodeUI.InPorts)
+            foreach (dynPortModel p in InPorts)
             {
                 p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
             }
         }
 
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        {
+            watchTree = new WatchTree();
+
+            NodeUI.inputGrid.Children.Add(watchTree);
+
+            watchTreeBranch = watchTree.FindResource("Tree") as WatchTreeBranch;
+        }
+
         void p_PortDisconnected(object sender, EventArgs e)
         {
-            wtb.Clear();
+            watchTreeBranch.Clear();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -111,18 +111,18 @@ namespace Dynamo.Nodes
 
             int count = 0;
 
-            NodeUI.Dispatcher.Invoke(new Action(
+            DispatchOnUIThread(
                 delegate
                 {
-                    wtb.Clear();
+                    watchTreeBranch.Clear();
 
                     foreach (Value e in args)
                     {
-                        wtb.Add(Process(e, ref content, prefix, count));
+                        watchTreeBranch.Add(Process(e, ref content, prefix, count));
                         count++;
                     }
                 }
-            ));
+            );
 
             //return the content that has been gathered
             return args[0]; //watch should be a 'pass through' node
@@ -145,13 +145,6 @@ namespace Dynamo.Nodes
                 {
                     //TODO: make clickable hyperlinks to show the element in Revit
                     //http://stackoverflow.com/questions/7890159/programmatically-make-textblock-with-hyperlink-in-between-text
-
-                    //string id = "";
-                    //Element revitEl = (eIn as Value.Container).Item as Autodesk.Revit.DB.Element;
-                    //if (revitEl != null)
-                    //{
-                    //    id = revitEl.Id.ToString();
-                    //}
 
                     content += (eIn as Value.Container).Item.ToString();
 

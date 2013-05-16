@@ -166,10 +166,18 @@ namespace Dynamo.Nodes
             catch (SyntaxErrorException ex)
             {
                 throw new Exception(
-                   ex.Message
-                   + " at Line " + (ex.Line - 4)
-                   + ", Column " + ex.Column
-                );
+                    ex.Message
+                    + " at Line " + (ex.Line - 4)
+                    + ", Column " + ex.Column
+                    );
+            }
+            catch(Exception e)
+            {
+                dynSettings.Controller.DynamoViewModel.Log("Unable to execute python script:");
+                dynSettings.Controller.DynamoViewModel.Log(e.Message);
+                dynSettings.Controller.DynamoViewModel.Log(e.StackTrace);
+
+                return Value.NewNumber(0);
             }
 
             Value result = Value.NewNumber(1);
@@ -232,7 +240,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Python Script")]
-    [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
+    [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs an embedded IronPython script")]
     public class dynPython : dynNodeWithOneOutput
     {
@@ -243,6 +251,19 @@ namespace Dynamo.Nodes
 
         public dynPython()
         {
+            InPortData.Add(new PortData("IN", "Input", typeof(object)));
+            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
+            //topControl.Height = 200;
+            //topControl.Width = 300;
+
             //add an edit window option to the 
             //main context window
             var editWindowItem = new System.Windows.Controls.MenuItem();
@@ -250,15 +271,6 @@ namespace Dynamo.Nodes
             editWindowItem.IsCheckable = false;
             NodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
-
-            InPortData.Add(new PortData("IN", "Input", typeof(object)));
-            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
-
-            NodeUI.RegisterAllPorts();
-
-            //topControl.Height = 200;
-            //topControl.Width = 300;
-
             NodeUI.UpdateLayout();
         }
 
@@ -318,8 +330,8 @@ namespace Dynamo.Nodes
             {
                 editWindow = new dynScriptEditWindow();
                 // callbacks for autocompletion
-                // editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
-                // editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
+                //editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
+                //editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
 
                 var pythonHighlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
                 var elem = GetType().Assembly.GetManifestResourceStream("DynamoPython.Resources." + pythonHighlighting);
@@ -343,51 +355,62 @@ namespace Dynamo.Nodes
             this.dirty = true;
         }
 
-    //    CompletionWindow completionWindow;
+        //CompletionWindow completionWindow;
+        //private PythonConsoleCompletionDataProvider completionProvider;
 
-    //    void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
-    //    {
-    //        if (e.Text == ".")
-    //        {
+        //void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+        //{
+        //    if (e.Text == ".")
+        //    {
 
-    //            // Open code completion after the user has pressed dot:
-    //            completionWindow = new CompletionWindow( editWindow.editText.TextArea );
-    //            IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
+        //        // Open code completion after the user has pressed dot:
+        //        completionWindow = new CompletionWindow(editWindow.editText.TextArea);
+        //        IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
 
-    //            data.Add( new DynamoCompletionData("Item1") );
-    //            data.Add( new DynamoCompletionData("Item2") );
-    //            data.Add( new DynamoCompletionData("Item3") );
+        //        object value = .CreateScriptSourceFromString(dirCommand, SourceCodeKind.Expression).Execute(commandLine.ScriptScope);
+        //        AutocompletionInProgress = false;
+        //        foreach (object member in (value as IronPython.Runtime.List))
+        //        {
+        //            items.Add(new DynamoCompletionData((string)member, name, commandLine, false));
+        //        }
 
 
-    //            completionWindow.Show();
+        //        // get text before 
 
-    //            completionWindow.Closed += delegate
-    //            {
-    //                completionWindow = null;
-    //            };
-    //        }
-    //    }
+        //        foreach (var ele in completionProvider.GenerateCompletionData("Revit"))
+        //        {
+        //            data.Add(ele);
+        //        }
 
-    //    void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
-    //    {
-    //        if (e.Text.Length > 0 && completionWindow != null)
-    //        {
-    //            if (!char.IsLetterOrDigit(e.Text[0]))
-    //            {
-    //                // Whenever a non-letter is typed while the completion window is open,
-    //                // insert the currently selected element.
-    //                completionWindow.CompletionList.RequestInsertion(e);
-    //            }
-    //        }
-    //        // Do not set e.Handled=true.
-    //        // We still want to insert the character that was typed.
-    //    }
+        //        completionWindow.Show();
+
+        //        completionWindow.Closed += delegate
+        //        {
+        //            completionWindow = null;
+        //        };
+        //    }
+        //}
+
+        //void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+        //{
+        //    if (e.Text.Length > 0 && completionWindow != null)
+        //    {
+        //        if (!char.IsLetterOrDigit(e.Text[0]))
+        //        {
+        //            // Whenever a non-letter is typed while the completion window is open,
+        //            // insert the currently selected element.
+        //            completionWindow.CompletionList.RequestInsertion(e);
+        //        }
+        //    }
+        //    // Do not set e.Handled=true.
+        //    // We still want to insert the character that was typed.
+        //}
 
     }
 
 
     [NodeName("Python Script From String")]
-    [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
+    [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs a IronPython script from a string")]
     public class dynPythonString : dynNodeWithOneOutput
     {
@@ -396,11 +419,13 @@ namespace Dynamo.Nodes
 
         public dynPythonString()
         {
-            InPortData.Add(new PortData("script", "Script to run", typeof(string)));
+            InPortData.Add(new PortData("script", "Script to run", typeof(Value.String)));
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
             OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         private List<Binding> makeBindings(IEnumerable<Value> args)

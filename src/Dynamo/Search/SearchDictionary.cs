@@ -29,6 +29,28 @@ namespace Dynamo.Search
         private readonly Dictionary<string, HashSet<V>> _tagDictionary = new Dictionary<string, HashSet<V>>();
 
         /// <summary>
+        ///     The number of tags in the dicitionary
+        /// </summary>
+        public int NumTags
+        {
+            get
+            {
+                return _tagDictionary.Count;
+            }
+        }
+
+        /// <summary>
+        ///     The number of elements in the dicitionary
+        /// </summary>
+        public int NumElements
+        {
+            get
+            {
+                return _symbolDictionary.Count;
+            }
+        }
+
+        /// <summary>
         ///     Add a single element with a single tag
         /// </summary>
         /// <param name="value"> The object to add  </param>
@@ -166,6 +188,16 @@ namespace Dynamo.Search
         }
 
         /// <summary>
+        ///     Get the elements with a given tag
+        /// </summary>
+        /// <param name="tag"> The tag to match </param>
+        /// <returns> The elements with the given tag </returns>
+        public HashSet<V> ByTag(string tag)
+        {
+            return _tagDictionary[tag];
+        }
+
+        /// <summary>
         ///     Filter the elements in the SearchDictionary, based on whether there is a string
         ///     in the tag matching the query
         /// </summary>
@@ -184,7 +216,7 @@ namespace Dynamo.Search
                     result.UnionWith(pair.Value);
                 }
             }
-            
+
             return result;
         }
 

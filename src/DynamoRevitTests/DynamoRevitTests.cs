@@ -14,66 +14,58 @@
 
 using System;
 using System.Reflection;
-using System.Windows;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Dynamo.Utilities;
 using NUnit.Core;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Dynamo.Tests
 {
-    //[Transaction(TransactionMode.Automatic)]
-    //[Regeneration(RegenerationOption.Manual)]
-    //public class DynamoRevitApp : IExternalApplication
-    //{
-    //    public Result OnStartup(UIControlledApplication application)
-    //    {
-    //        return Result.Succeeded;
-    //    }
-
-    //    public Result OnShutdown(UIControlledApplication application)
-    //    {
-    //        return Result.Succeeded;
-    //    }
-    //}
-
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     internal class DynamoRevitTestsLoader : IExternalCommand
     {
-        private UIDocument m_doc;
-        private UIApplication m_revit;
+        public static ExternalCommandData RevitCommandData;
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
+            RevitCommandData = revit;
+
+            // Run tests
             try
             {
-                
                 CoreExtensions.Host.InitializeService();
                 var runner = new SimpleTestRunner();
                 var package = new TestPackage("Test");
                 string loc = Assembly.GetExecutingAssembly().Location;
                 package.Assemblies.Add(loc);
+
+                TestResult result;
                 if (runner.Load(package))
                 {
-                    TestResult result = runner.Run(new NullListener(), TestFilter.Empty, true, LoggingThreshold.All);
-                }
+                    result = runner.Run(new NullListener(), TestFilter.Empty, true, LoggingThreshold.All);
 
-                MessageBox.Show("Bla diddy bla bla");
+                    MessageBox.Show(result.FullName);
+                    MessageBox.Show(result.IsSuccess.ToString());
+                    MessageBox.Show(result.Message);
+                    MessageBox.Show(result.Results.Count.ToString());
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                if (Dynamo.Utilities.dynSettings.Writer != null)
+                if (dynSettings.Writer != null)
                 {
-                    Dynamo.Utilities.dynSettings.Writer.WriteLine(ex.Message);
-                    Dynamo.Utilities.dynSettings.Writer.WriteLine(ex.StackTrace);
-                    Dynamo.Utilities.dynSettings.Writer.WriteLine("Dynamo log ended " + DateTime.Now.ToString());
+                    dynSettings.Writer.WriteLine(ex.Message);
+                    dynSettings.Writer.WriteLine(ex.StackTrace);
+                    dynSettings.Writer.WriteLine("Dynamo log ended " + DateTime.Now.ToString());
                 }
-                return Result.Failed;
             }
-
+        
             return Result.Succeeded;
+
         }
     }
 }

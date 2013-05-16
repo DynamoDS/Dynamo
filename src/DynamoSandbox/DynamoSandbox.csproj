@@ -39,6 +39,11 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -55,9 +60,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dynSandbox.xaml.cs">
-      <DependentUpon>dynSandbox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -67,19 +69,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="dynSandbox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
-      <Project>{F9B766BE-A5A3-4680-840F-649462340EE7}</Project>
-      <Name>DragCanvas</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoElements</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
+      <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
+      <Name>FSchemeInterop</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="-529" Y="46" Name="laceForward" Category="Miscellaneous" ID="18b529a5-12ed-4e8e-8156-793d33a7ad7b">
+<dynWorkspace X="-529" Y="46" Name="laceForward" Category="Core.Lists" ID="18b529a5-12ed-4e8e-8156-793d33a7ad7b">
   <dynElements>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="270625cb-cd86-4c6a-a79c-81c5fe2e7940" nickname="Variable" x="347.25" y="210">
       <Symbol value="lst" />

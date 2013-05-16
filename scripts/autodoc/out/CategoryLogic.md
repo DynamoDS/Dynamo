@@ -1,4 +1,4 @@
-##<
+##Less Than
 ###Description
 Compares two numbers.
 

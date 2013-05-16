@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="-82" Y="55" Name="Dice" Category="Lists" ID="3df7a151-5ec3-44c8-a2ea-c3151b06e99d">
+<dynWorkspace X="-82" Y="55" Name="Dice" Category="Logic.Conditional" ID="3df7a151-5ec3-44c8-a2ea-c3151b06e99d">
   <dynElements>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="8199ef18-b7b8-4b1b-b133-7d7dc1ab1b5a" nickname="Variable" x="199.75" y="14">
       <Symbol value="lst" />

@@ -40,15 +40,13 @@
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="HelixToolkit.Wpf">
-      <HintPath>..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="HelixToolkit.Wpf.Input">
-      <HintPath>..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll</HintPath>
+      <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="MIConvexHullPlugin">
-      <HintPath>..\..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
+      <HintPath>..\..\extern\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -67,29 +65,13 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Presentation">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UIAutomationProvider">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\scripts\NodeGenerator\DynamoRevitNodes.cs">
-      <Link>DynamoRevitNodes.cs</Link>
-    </Compile>
     <Compile Include="DynamoController_Revit.cs" />
     <Compile Include="dynFunctionWithRevit.cs" />
     <Compile Include="dynRevitAPINode.cs" />
@@ -97,7 +79,6 @@
     <Compile Include="dynRevitTransactionNode.cs" />
     <Compile Include="dynRevitUtils.cs" />
     <Compile Include="ElementsContainer.cs" />
-    <Compile Include="Nodes\dyn3D.cs" />
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Nodes\dynAnalysis.cs" />
     <Compile Include="Nodes\dynCurves.cs" />
@@ -134,6 +115,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource_en_us.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Nodes_32_32.png" />
@@ -153,11 +135,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
-      <Project>{F9B766BE-A5A3-4680-840F-649462340EE7}</Project>
-      <Name>DragCanvas</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoElements</Name>
@@ -175,10 +152,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DynamoForRevit.addin">
+    <Content Include="addins\DynamoForRevit.addin">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="DynamoForVasari.addin" />
+    <Content Include="addins\DynamoForVasari.addin" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

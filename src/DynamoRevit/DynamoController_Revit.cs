@@ -6,7 +6,7 @@ using System.Windows;
 using System.Reflection;
 using System.IO;
 using System.Diagnostics;
-
+using Autodesk.Revit.Attributes;
 using Dynamo.Nodes;
 using Dynamo.Revit;
 using Dynamo.Controls;
@@ -23,35 +23,21 @@ namespace Dynamo
     {
         public DynamoUpdater Updater { get; private set; }
 
-        PredicateTraverser checkManualTransaction;
-        PredicateTraverser checkRequiresTransaction;
-
         dynamic oldPyEval;
 
-        public DynamoController_Revit(DynamoUpdater updater)
-            : base()
+        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, bool withUI, Type viewModelType)
+            : base(env, withUI, viewModelType)
         {
             Updater = updater;
             
             dynRevitSettings.Controller = this;
-
-            Predicate<dynNode> manualTransactionPredicate = delegate(dynNode node)
-            {
-                return node is dynTransaction;
-            };
-            checkManualTransaction = new PredicateTraverser(manualTransactionPredicate);
-
-            Predicate<dynNode> requiresTransactionPredicate = delegate(dynNode node)
-            {
-                return node is dynRevitTransactionNode;
-            };
-            checkRequiresTransaction = new PredicateTraverser(requiresTransactionPredicate);
 
             AddPythonBindings();
             AddWatchNodeHandler();
 
             dynRevitSettings.Revit.Application.DocumentClosed += new EventHandler<Autodesk.Revit.DB.Events.DocumentClosedEventArgs>(Application_DocumentClosed);
             dynRevitSettings.Revit.Application.DocumentOpened += new EventHandler<Autodesk.Revit.DB.Events.DocumentOpenedEventArgs>(Application_DocumentOpened);
+            
         }
 
         void Application_DocumentOpened(object sender, Autodesk.Revit.DB.Events.DocumentOpenedEventArgs e)
@@ -60,7 +46,8 @@ namespace Dynamo
             if (dynRevitSettings.Doc == null)
             {
                 dynRevitSettings.Doc = dynRevitSettings.Revit.ActiveUIDocument;
-                Bench.Controller.RunEnabled = true;
+                
+                this.DynamoViewModel.RunEnabled = true;
             }
         }
 
@@ -68,7 +55,7 @@ namespace Dynamo
         {
             //Disable running against revit without a document
             dynRevitSettings.Doc = null;
-            Bench.Controller.RunEnabled = false;
+            DynamoViewModel.RunEnabled = false;
         }
 
         #region Python Nodes Revit Hooks
@@ -114,7 +101,7 @@ namespace Dynamo
                     pyBindings.GetType().InvokeMember("Add", BindingFlags.InvokeMethod, null, pyBindings, new object[] { CreateBinding(name, boundObject) });
                 };
 
-                AddToBindings("DynLog", new LogDelegate(Bench.Log)); //Logging
+                AddToBindings("DynLog", new LogDelegate(dynSettings.Controller.DynamoViewModel.Log)); //Logging
 
                 AddToBindings(
                    "DynTransaction",
@@ -194,7 +181,7 @@ namespace Dynamo
                     }
                 }
             }
-            else if (RunInDebug)
+            else if (DynamoViewModel.RunInDebug)
             {
                 if (IsTransactionActive())
                     EndTransaction();
@@ -236,102 +223,7 @@ namespace Dynamo
         }
         #endregion
 
-        protected override dynFunction CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition functionDefinition)
-        {
-            if (functionDefinition.Workspace.Nodes.Any(x => x is dynRevitTransactionNode)
-                || functionDefinition.Dependencies.Any(d => d.Workspace.Nodes.Any(x => x is dynRevitTransactionNode)))
-            {
-                return new dynFunctionWithRevit(inputs, outputs, functionDefinition);
-            }
-            return base.CreateFunction(inputs, outputs, functionDefinition);
-        }
-
         public bool InIdleThread;
-
-        public enum TransactionMode
-        {
-            Automatic,
-            Manual,
-            Debug
-        }
-
-        private TransactionMode transMode;
-        public TransactionMode TransMode
-        {
-            get { return transMode; }
-            set
-            {
-                transMode = value;
-                if (transMode == TransactionMode.Debug)
-                {
-                    this.RunInDebug = true;
-                }
-
-                NotifyPropertyChanged("TransMode");
-            }
-        }
-
-        public override bool CanRunDynamically
-        {
-            get
-            {
-                //we don't want to be able to run
-                //dynamically if we're in debug mode
-                bool manTran = ExecutionRequiresManualTransaction();
-                return !manTran && !debug;
-            }
-            set
-            {
-                canRunDynamically = value;
-                NotifyPropertyChanged("CanRunDynamically");
-            }
-        }
-
-        public override bool DynamicRunEnabled
-        {
-            get
-            {
-                return dynamicRun;
-            }
-            set
-            {
-                dynamicRun = value;
-                NotifyPropertyChanged("DynamicRunEnabled");
-            }
-        }
-
-        public override bool RunInDebug
-        {
-            get { return debug; }
-            set
-            {
-                debug = value;
-
-                //toggle off dynamic run
-                CanRunDynamically = !debug;
-
-                if(debug == true)
-                    DynamicRunEnabled = false;
-
-                NotifyPropertyChanged("RunInDebug");
-            }
-        }
-
-        bool ExecutionRequiresManualTransaction()
-        {
-            //if there are no topmost nodes, just return false
-            //this will avoid a binding error during bench initialization
-            if (HomeSpace.GetTopMostNodes().Count() > 0)
-            {
-                return HomeSpace.GetTopMostNodes().Any(
-                    checkManualTransaction.TraverseUntilAny
-                );
-            }
-            else
-            {
-                return false;
-            }
-        }
 
         private List<Autodesk.Revit.DB.ElementId> _transElements = new List<Autodesk.Revit.DB.ElementId>();
 
@@ -427,7 +319,7 @@ namespace Dynamo
                 _trans.Start();
 
                 FailureHandlingOptions failOpt = _trans.GetFailureHandlingOptions();
-                failOpt.SetFailuresPreprocessor(new DynamoWarningPrinter(this.Bench));
+                failOpt.SetFailuresPreprocessor(new DynamoWarningPrinter());
                 _trans.SetFailureHandlingOptions(failOpt);
             }
         }
@@ -483,7 +375,7 @@ namespace Dynamo
                 this.InitTransaction(); //Initialize a transaction (if one hasn't been aleady)
 
                 //Reset all elements
-                foreach (var element in this.AllNodes)
+                foreach (var element in dynSettings.Controller.DynamoViewModel.AllNodes)
                 {
                     if (element is dynRevitTransactionNode)
                         (element as dynRevitTransactionNode).ResetRuns();
@@ -498,34 +390,36 @@ namespace Dynamo
 
             //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
             //from the idle thread. Otherwise, just run it in this thread.
-            if (RunInDebug || !InIdleThread)
+            if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread)
                 IdlePromise.ExecuteOnIdle(cleanup, false);
             else
                 cleanup();
         }
 
-        protected override void Run(IEnumerable<dynNode> topElements, FScheme.Expression runningExpression)
+        protected override void Run(IEnumerable<dynNodeModel> topElements, FScheme.Expression runningExpression)
         {
 
             //If we are not running in debug...
-            if (!this.RunInDebug)
+            if (!this.DynamoViewModel.RunInDebug)
             {
                 //Do we need manual transaction control?
-                bool manualTrans = topElements.Any(checkManualTransaction.TraverseUntilAny);
+                bool manualTrans = topElements.Any((DynamoViewModel as DynamoRevitViewModel).CheckManualTransaction.TraverseUntilAny);
 
                 //Can we avoid running everything in the Revit Idle thread?
-                bool noIdleThread = manualTrans || !topElements.Any(checkRequiresTransaction.TraverseUntilAny);
+                bool noIdleThread = manualTrans || !topElements.Any((DynamoViewModel as DynamoRevitViewModel).CheckRequiresTransaction.TraverseUntilAny);
 
                 //If we don't need to be in the idle thread...
                 if (noIdleThread)
                 {
-                    this.TransMode = TransactionMode.Manual; //Manual transaction control
+                    DynamoLogger.Instance.Log("Running expression in evaluation thread...");
+                    (DynamoViewModel as DynamoRevitViewModel).TransMode = DynamoRevitViewModel.TransactionMode.Manual; //Manual transaction control
                     this.InIdleThread = false; //Not in idle thread at the moment
                     base.Run(topElements, runningExpression); //Just run the Run Delegate
                 }
                 else //otherwise...
                 {
-                    this.TransMode = TransactionMode.Automatic; //Automatic transaction control
+                    DynamoLogger.Instance.Log("Running expression in Revit's Idle thread...");
+                    (DynamoViewModel as DynamoRevitViewModel).TransMode = DynamoRevitViewModel.TransactionMode.Automatic; //Automatic transaction control
                     this.InIdleThread = true; //Now in the idle thread.
                     IdlePromise.ExecuteOnIdle(new Action(
                         () => base.Run(topElements, runningExpression)),
@@ -534,12 +428,16 @@ namespace Dynamo
             }
             else //If we are in debug mode...
             {
-                this.TransMode = TransactionMode.Debug; //Debug transaction control
+                (DynamoViewModel as DynamoRevitViewModel).TransMode = DynamoRevitViewModel.TransactionMode.Debug; //Debug transaction control
                 this.InIdleThread = true; //Everything will be evaluated in the idle thread.
 
-                Bench.Dispatcher.Invoke(new Action(
-                   () => Bench.Log("Running expression in debug.")
-                ));
+                //MVVM: no need to invoke through UI
+                //Bench.Dispatcher.Invoke(new Action(
+                //   () => dynSettings.Controller.DynamoViewModel.Log("Running expression in debug.")
+                //));
+
+                dynSettings.Controller.DynamoViewModel.Log("Running expression in debug.");
+                
 
                 //Execute the Run Delegate.
                 base.Run(topElements, runningExpression);
@@ -549,11 +447,10 @@ namespace Dynamo
 
     public class DynamoWarningPrinter : Autodesk.Revit.DB.IFailuresPreprocessor
     {
-        dynBench bench;
 
-        public DynamoWarningPrinter(dynBench b)
+        public DynamoWarningPrinter()
         {
-            this.bench = b;
+
         }
 
         public Autodesk.Revit.DB.FailureProcessingResult PreprocessFailures(Autodesk.Revit.DB.FailuresAccessor failuresAccessor)
@@ -564,7 +461,7 @@ namespace Dynamo
                 var severity = fail.GetSeverity();
                 if (severity == Autodesk.Revit.DB.FailureSeverity.Warning)
                 {
-                    bench.Log(
+                    dynSettings.Controller.DynamoViewModel.Log(
                        "!! Warning: " + fail.GetDescriptionText()
                     );
                     failuresAccessor.DeleteWarning(fail);

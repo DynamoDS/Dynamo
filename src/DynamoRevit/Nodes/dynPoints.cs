@@ -26,17 +26,17 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Reference Point")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
+    [NodeName("Ref Point")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a reference point.")]
     public class dynReferencePointByXYZ : dynRevitTransactionNodeWithOneOutput
     {
         public dynReferencePointByXYZ()
         {
-            InPortData.Add(new PortData("xyz", "The point(s) from which to create reference points.", typeof(XYZ)));
-            OutPortData.Add(new PortData("pt", "The Reference Point(s) created from this operation.", typeof(ReferencePoint)));
+            InPortData.Add(new PortData("xyz", "The point(s) from which to create reference points.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("pt", "The Reference Point(s) created from this operation.", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -154,19 +154,19 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reference Point Distance")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
+    [NodeName("Ref Point Dist")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Measures a distance between point(s).")]
     public class dynDistanceBetweenPoints: dynNodeWithOneOutput
     {
         public dynDistanceBetweenPoints()
         {
-            InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(object)));
-            InPortData.Add(new PortData("ptB", "A Reference point.", typeof(object)));
+            InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(Value.Container)));
+            InPortData.Add(new PortData("ptB", "A Reference point.", typeof(Value.Container)));
 
-            OutPortData.Add(new PortData("dist", "Distance between points.", typeof(double)));
+            OutPortData.Add(new PortData("dist", "Distance between points.", typeof(Value.Number)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private XYZ getXYZ(object arg)
@@ -200,18 +200,18 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reference Point On Edge")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
+    [NodeName("Ref Point On Edge")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an element which owns a reference point on a selected edge.")]
     public class dynPointOnEdge : dynRevitTransactionNodeWithOneOutput
     {
         public dynPointOnEdge()
         {
-            InPortData.Add(new PortData("curve", "ModelCurve", typeof(Element)));
-            InPortData.Add(new PortData("t", "Parameter on edge.", typeof(double)));
-            OutPortData.Add(new PortData("pt", "PointOnEdge", typeof(ReferencePoint)));
+            InPortData.Add(new PortData("curve", "ModelCurve", typeof(Value.Container)));
+            InPortData.Add(new PortData("t", "Parameter on edge.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("pt", "PointOnEdge", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -249,97 +249,23 @@ namespace Dynamo.Nodes
                 p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint);
                 this.Elements.Add(p.Id);
             }
-
+            
             return Value.NewContainer(p);
         }
     }
 
-    [NodeName("Reference Point On Face by UV components")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
-    [NodeDescription("Creates an element which owns a reference point on a selected face.")]
-    public class dynPointOnFace : dynRevitTransactionNodeWithOneOutput
-    {
-        public dynPointOnFace()
-        {
-            InPortData.Add(new PortData("face", "ModelFace", typeof(Reference)));
-            InPortData.Add(new PortData("u", "U Parameter on face.", typeof(double)));
-            InPortData.Add(new PortData("v", "V Parameter on face.", typeof(double)));
-            OutPortData.Add(new PortData("pt", "PointOnFace", typeof(ReferencePoint)));
-
-            NodeUI.RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            object arg0 = ((Value.Container)args[0]).Item;
-            if (arg0 is Reference)
-            {
-                // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
-
-                //Face f = ((Face)((FScheme.Value.Container)args[0]).Item).Reference; // MDJ TODO this returns null but should not, figure out why and then change selection code to just pass back face not ref
-                Reference r = arg0 as Reference;
-
-                double u = ((Value.Number)args[1]).Item;
-                double v = ((Value.Number)args[2]).Item;
-
-                //Autodesk.Revit.DB..::.PointElementReference
-                //Autodesk.Revit.DB..::.PointOnEdge
-                //Autodesk.Revit.DB..::.PointOnEdgeEdgeIntersection
-                //Autodesk.Revit.DB..::.PointOnEdgeFaceIntersection
-                //Autodesk.Revit.DB..::.PointOnFace
-                //Autodesk.Revit.DB..::.PointOnPlane
-
-                PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, new UV(u, v));
-
-                ReferencePoint pt = null;
-
-                if (this.Elements.Any())
-                {
-                    Element e;
-                    if (dynUtils.TryGetElement(this.Elements[0], out e))
-                    {
-                        pt = e as ReferencePoint;
-                        pt.SetPointElementReference(facePoint);
-                    }
-                    else
-                    {
-                        if (this.UIDocument.Document.IsFamilyDocument)
-                        {
-                            pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
-                            this.Elements[0] = pt.Id;
-                        }
-                    }
-                }
-                else
-                {
-                    if (this.UIDocument.Document.IsFamilyDocument)
-                    {
-                        pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
-                        this.Elements.Add(pt.Id);
-                    }
-                }
-
-                return Value.NewContainer(pt);
-            }
-            else
-            {
-                throw new Exception("Cannot cast first argument to Face.");
-            }
-        }
-    }
-
-    [NodeName("Reference Point On Face by UV")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
+    [NodeName("Ref Point On Face by UV")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an element which owns a reference point on a selected face.")]
     public class dynPointOnFaceUV : dynRevitTransactionNodeWithOneOutput
     {
         public dynPointOnFaceUV()
         {
-            InPortData.Add(new PortData("face", "ModelFace", typeof(Reference)));
-            InPortData.Add(new PortData("UV", "U Parameter on face.", typeof(object)));
-            OutPortData.Add(new PortData("pt", "PointOnFace", typeof(ReferencePoint)));
+            InPortData.Add(new PortData("face", "ModelFace", typeof(Value.Container)));
+            InPortData.Add(new PortData("UV", "UV Parameter on face.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("pt", "PointOnFace", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -391,19 +317,19 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reference Point By Normal")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
+    [NodeName("Ref Point By Normal")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Owns a reference point which is projected from a point by normal and distance.")]
     public class dynPointNormalDistance : dynRevitTransactionNodeWithOneOutput
     {
         public dynPointNormalDistance()
         {
-            InPortData.Add(new PortData("pt", "The point to reference", typeof(object)));
-            InPortData.Add(new PortData("norm", "The normal", typeof(object)));
-            InPortData.Add(new PortData("d", "The offset distance", typeof(object)));
-            OutPortData.Add(new PortData("pt", "Point", typeof(ReferencePoint)));
+            InPortData.Add(new PortData("pt", "The point to reference", typeof(Value.Container)));
+            InPortData.Add(new PortData("norm", "The normal", typeof(Value.Container)));
+            InPortData.Add(new PortData("d", "The offset distance", typeof(Value.Number)));
+            OutPortData.Add(new PortData("pt", "Point", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -443,8 +369,8 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Plane from Reference Point")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
+    [NodeName("Plane from Ref Point")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Extracts one of the primary Reference Planes from a Reference Point.")]
     public class dynPlaneFromRefPoint : dynRevitTransactionNodeWithOneOutput
     {
@@ -452,10 +378,13 @@ namespace Dynamo.Nodes
 
         public dynPlaneFromRefPoint()
         {
+            InPortData.Add(new PortData("pt", "The point to extract the plane from", typeof(Value.Container)));
+            OutPortData.Add(new PortData("r", "Reference", typeof(Value.Container)));
+            RegisterAllPorts();
+        }
 
-            InPortData.Add(new PortData("pt", "The point to extract the plane from", typeof(object)));
-            OutPortData.Add(new PortData("r", "Reference", typeof(Reference)));
-
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             //add a drop down list to the window
             combo = new ComboBox();
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -472,8 +401,6 @@ namespace Dynamo.Nodes
             };
 
             PopulateComboBox();
-
-            NodeUI.RegisterAllPorts();
         }
 
         void combo_DropDownOpened(object sender, EventArgs e)

@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using Autodesk.Revit.DB;
-using Autodesk.Revit;
-using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.Revit;
-using Dynamo.FSchemeInterop;
-using Dynamo.FSchemeInterop.Node;
+
+
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 
@@ -18,7 +13,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Base class for all auto-generated Revit API nodes.
     /// </summary>
-    public abstract class dynRevitAPINode : dynRevitTransactionNodeWithOneOutput
+    public abstract class dynAPIMethodNode : dynRevitTransactionNodeWithOneOutput
     {
         protected Type base_type;
         protected Type return_type;
@@ -28,7 +23,7 @@ namespace Dynamo.Nodes
         ///<summary>
         ///Default constructor
         ///</summary>
-        public dynRevitAPINode()
+        public dynAPIMethodNode()
         {
 
         }
@@ -38,23 +33,41 @@ namespace Dynamo.Nodes
         ///</summary>
         public override Value Evaluate(FSharpList<Value> args)
         {
-            //Elements.ForEach(
-            //delegate(ElementId el)
-            //{
-            //    Element e;
-            //    if (dynUtils.TryGetElement(el, out e))
-            //    {
-            //        DeleteElement(e.Id);
-            //    }
-            //});
-            //Elements.Clear();
-
             foreach (var e in this.Elements)
             {
                 this.DeleteElement(e);
             }
 
-            return dynRevitUtils.InvokeAPIMethod(this, args, base_type, pi, mi, return_type);
+            Value result = dynRevitUtils.InvokeAPIMethod(this, args, base_type, pi, mi, return_type);
+
+            return result;
+        }
+
+    }
+
+    /// <summary>
+    /// Base class for wrapped properties. Does not create a transaction.
+    /// </summary>
+    public abstract class dynAPIPropertyNode : dynNodeWithOneOutput
+    {
+        protected Type base_type;
+        protected Type return_type;
+        protected PropertyInfo pi;
+
+        ///<summary>
+        ///Default constructor
+        ///</summary>
+        public dynAPIPropertyNode()
+        {
+
+        }
+
+        ///<summary>
+        ///Auto-generated evaulate method for Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewRadialDimension
+        ///</summary>
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return dynRevitUtils.GetAPIPropertyValue(args, base_type, pi, return_type);
         }
     }
 
@@ -63,14 +76,14 @@ namespace Dynamo.Nodes
     /// </summary>
     [NodeName("Revit Document")]
     [NodeSearchTags("document", "active")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
     [NodeDescription("Gets the active Revit document.")]
     public class dynRevitDocument : dynRevitTransactionNodeWithOneOutput
     {
         public dynRevitDocument()
         {
-            OutPortData.Add(new PortData("doc", "The active Revit doc.", typeof(Autodesk.Revit.DB.Document)));
-            NodeUI.RegisterAllPorts();
+            OutPortData.Add(new PortData("doc", "The active Revit doc.", typeof(Value.Container)));
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

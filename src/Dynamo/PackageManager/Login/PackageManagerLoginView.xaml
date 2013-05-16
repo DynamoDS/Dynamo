@@ -6,17 +6,17 @@
              xmlns:ns="clr-namespace:Dynamo.PackageManager"
              mc:Ignorable="d" 
              d:DesignWidth="350" Visibility="{Binding Path=Visible}">
-             
-    <Grid Background="Black">
+
+  <Grid Background="Black">
 
     <StackPanel Name="BrowserContainer" Orientation="Vertical">
 
-      <StackPanel  Name="LoginContainerStackPanel" Orientation="Horizontal" VerticalAlignment="Top" Height="48">
-        <TextBlock Padding="10,15,10,10"  Width ="350" Foreground="DarkGray" FontSize="18">Login...</TextBlock>
-       </StackPanel>
-
       <WebBrowser ns:WebBrowserUtility.BindableSource="{Binding BrowserUri}" Visibility="{Binding Path=BrowserVisible}" Name="webBrowser" Height="340" Width="350" />
-      
+
+      <StackPanel  Name="LoginContainerStackPanel" Orientation="Horizontal" Visibility="Visible" VerticalAlignment="Top" Height="48" Background="Black">
+        <TextBlock Padding="10,15,10,10"  Width ="350" Foreground="DarkGray" FontSize="18">Login...</TextBlock>
+      </StackPanel>
+
     </StackPanel>
 
   </Grid>

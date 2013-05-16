@@ -13,6 +13,7 @@ namespace Dynamo.Utilities
 {
     class dynUtils
     {
+        
         private static ElementId _testid;
         /// <summary>
         /// Utility function to determine if an Element of the given ID exists in the document.
@@ -122,12 +123,12 @@ namespace Dynamo.Utilities
     {
         static HashSet<ElementId> userSelectedElements = new HashSet<ElementId>();
 
-        public static Element SpatialFieldManagerUpdated { get; internal set; }
-        public static UIApplication Revit { get; internal set; }
-        public static UIDocument Doc { get; internal set; }
-        public static Level DefaultLevel { get; internal set; }
-        public static DynamoWarningSwallower WarningSwallower { get; internal set; }
-        public static Transaction MainTransaction { get; internal set; }
+        public static Element SpatialFieldManagerUpdated { get; set; }
+        public static UIApplication Revit { get; set; }
+        public static UIDocument Doc { get; set; }
+        public static Level DefaultLevel { get; set; }
+        public static DynamoWarningSwallower WarningSwallower { get; set; }
+        public static Transaction MainTransaction { get; set; }
 
         private static Autodesk.Revit.DB.Options geometryOptions;
         public static Autodesk.Revit.DB.Options GeometryOptions
@@ -193,12 +194,12 @@ namespace Dynamo.Utilities
                 {
                     ReferencePoint rp = null;
 
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     //create some geometry options so that we computer references
                     Autodesk.Revit.DB.Options opts = new Options();
@@ -220,7 +221,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
 
@@ -231,66 +232,45 @@ namespace Dynamo.Utilities
                 try
                 {
                     CurveElement c = null;
-                    Curve cv = null;
 
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
 
-                    //c = curveRef.Element as ModelCurve;
                     c = dynRevitSettings.Revit.ActiveUIDocument.Document.GetElement(curveRef) as CurveElement;
 
-                    if (c != null)
-                    {
-                        cv = c.GeometryCurve;
-                    }
                     return c;
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
 
-            public static CurveArray RequestMultipleCurveElementsSelection(UIDocument doc, string message)
+            public static IList<Element> RequestMultipleCurveElementsSelection(UIDocument doc, string message)
             {
                 try
                 {
-                    //CurveElement c = null;
-                    //Curve cv = null;
-
-                    Selection choices = doc.Selection;
-
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
                     choices.Elements.Clear();
 
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
-                    //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
-
-                    CurveArray ca = new CurveArray();
+                    var ca = new ElementArray();
                     ISelectionFilter selFilter = new CurveSelectionFilter();
-                    IList<Element> eList = doc.Selection.PickElementsByRectangle(//selFilter,
-                        "Select multiple curves") as IList<Element>;
+                    return doc.Selection.PickElementsByRectangle(//selFilter,
+                        "Window select multiple curves.") as IList<Element>;
 
-
-                    foreach (CurveElement c in eList)
-                    {
-                        if (c != null)
-                        {
-                            ca.Append(c.GeometryCurve as Curve);
-                        }
-                    }
-                    return ca;
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -318,12 +298,12 @@ namespace Dynamo.Utilities
                 {
                     Face f = null;
 
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     //create some geometry options so that we computer references
                     Autodesk.Revit.DB.Options opts = new Options();
@@ -344,7 +324,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
 
@@ -356,11 +336,11 @@ namespace Dynamo.Utilities
             {
                 try
                 {
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     //create some geometry options so that we compute references
                     //Autodesk.Revit.DB.Options opts = new Options();
@@ -379,7 +359,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -390,12 +370,12 @@ namespace Dynamo.Utilities
                 {
                     Form f = null;
 
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     //create some geometry options so that we computer references
                     Autodesk.Revit.DB.Options opts = new Options();
@@ -414,7 +394,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -425,12 +405,12 @@ namespace Dynamo.Utilities
                 {
                     //FamilySymbol fs = null;
 
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -448,7 +428,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -457,12 +437,12 @@ namespace Dynamo.Utilities
             {
                 try
                 {
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -475,7 +455,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -484,12 +464,12 @@ namespace Dynamo.Utilities
             {
                 try
                 {
-                    Selection choices = doc.Selection;
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -502,7 +482,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -521,12 +501,12 @@ namespace Dynamo.Utilities
                     {
                         sfm.GetRegisteredResults();
 
-                        Selection choices = doc.Selection;
+                        Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
                         choices.Elements.Clear();
 
                         //MessageBox.Show(message);
-                        dynSettings.Bench.Log(message);
+                        dynSettings.Controller.DynamoViewModel.Log(message);
 
                         Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -546,7 +526,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }

@@ -14,8 +14,8 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
      
-    [NodeName("Colored Surface Spatial Field")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeName("Spatial Field Manager")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Gets or creates the spatial field manager on the view.")]
     class dynSpatialFieldManager : dynNodeWithOneOutput
     {
@@ -23,10 +23,10 @@ namespace Dynamo.Nodes
 
         public dynSpatialFieldManager()
         {
-            InPortData.Add(new PortData("n", "Number of samples at a location.", typeof(int)));
-            OutPortData.Add(new PortData("sfm", "Spatial field manager for the active view", typeof(object)));
+            InPortData.Add(new PortData("n", "Number of samples at a location.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("sfm", "Spatial field manager for the active view", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
         }
 
@@ -50,8 +50,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Colored Surface Analysis Display Style")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeName("Analysis Display Style")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Create an analysis display style for displaying results color-mapped on a surface.")]
     class dynAnalysisResultsDisplayStyleColor : dynNodeWithOneOutput
     {
@@ -59,9 +59,9 @@ namespace Dynamo.Nodes
 
         public dynAnalysisResultsDisplayStyleColor()
         {
-            OutPortData.Add(new PortData("ads", "Colored surface Analysis Display Style", typeof(object)));
+            OutPortData.Add(new PortData("ads", "Colored surface Analysis Display Style", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -131,7 +131,7 @@ namespace Dynamo.Nodes
     }
 
     /*[NodeName("Vector Spatial Field")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE)]
     [NodeDescription("Gets or creates the spatial field manager on the view.")]
     [RequiresTransaction(true)]
     class dynVectorSpatialField : dynNode
@@ -234,8 +234,8 @@ namespace Dynamo.Nodes
         }
     }*/
 
-    [NodeName("Spatial Field Primitive Face")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeName("Spatial Field Face")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("An analysis results object to be used with a spatial field manager.")]
     class dynAnalysisResults : dynNodeWithOneOutput
     {
@@ -245,13 +245,13 @@ namespace Dynamo.Nodes
 
         public dynAnalysisResults()
         {
-            InPortData.Add(new PortData("vals", "List of values.", typeof(object)));
-            InPortData.Add(new PortData("pts", "Sample locations as a list of UVs.", typeof(object)));
-            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
-            InPortData.Add(new PortData("face", "Face", typeof(Reference)));
-            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(object)));
+            InPortData.Add(new PortData("vals", "List of values.", typeof(Value.List)));
+            InPortData.Add(new PortData("pts", "Sample locations as a list of UVs.", typeof(Value.List)));
+            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Value.Container)));
+            InPortData.Add(new PortData("face", "Face", typeof(Value.Container)));
+            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -317,8 +317,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Spatial Field Primitive Curve")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeName("Spatial Field Curve")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("An analysis results curve to be used with a spatial field manager.")]
     class dynAnalysisResultsCurve : dynNodeWithOneOutput
     {
@@ -328,13 +328,13 @@ namespace Dynamo.Nodes
 
         public dynAnalysisResultsCurve()
         {
-            InPortData.Add(new PortData("vals", "List of values.", typeof(object)));
-            InPortData.Add(new PortData("pts", "Sample locations as a list of UVs.", typeof(object)));
-            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
-            InPortData.Add(new PortData("face", "Curve", typeof(Curve)));
-            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(object)));
+            InPortData.Add(new PortData("vals", "List of values.", typeof(Value.List)));
+            InPortData.Add(new PortData("pts", "Sample locations as a list of UVs.", typeof(Value.List)));
+            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Value.Container)));
+            InPortData.Add(new PortData("face", "Curve", typeof(Value.Container)));
+            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -426,8 +426,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Temporary Curves")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeName("Temp Curves")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Draw temporary curves in the family.")]
     class dynTemporaryCurves : dynNodeWithOneOutput
     {
@@ -438,11 +438,11 @@ namespace Dynamo.Nodes
 
         public dynTemporaryCurves()
         {
-            InPortData.Add(new PortData("lst", "List of sets of xys that will define line segments.", typeof(object)));
-            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
-            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(object)));
+            InPortData.Add(new PortData("lst", "List of sets of xys that will define line segments.", typeof(Value.List)));
+            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Value.Container)));
+            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

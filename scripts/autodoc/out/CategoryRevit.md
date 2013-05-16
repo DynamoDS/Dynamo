@@ -1,4 +1,15 @@
-##Curves from Family
+##Create Fam Inst By Level
+###Description
+Creates family instances in the given level.
+
+###Inputs
+  * **xyz** *(object)* - xyz
+
+###Output
+  * None
+
+
+##Curves from Fam
 ###Description
 Extracts curves from family instances.
 
@@ -56,18 +67,7 @@ Creates a drafting view.
   * None
 
 
-##Family Instance By Level Creator
-###Description
-Creates family instances in the given level.
-
-###Inputs
-  * **xyz** *(object)* - xyz
-
-###Output
-  * None
-
-
-##Get Instance Parameter
+##Get Fam Inst Param
 ###Description
 Fetches the value of a parameter of a Family Instance.
 
@@ -77,7 +77,7 @@ Fetches the value of a parameter of a Family Instance.
   * None
 
 
-##Get Type Parameter
+##Get Fam Type Param
 ###Description
 Fetches the value of a parameter of a Family Type.
 
@@ -110,7 +110,17 @@ Creates a new loft form <doc.FamilyCreate.NewLoftForm>
   * None
 
 
-##Set Instance Parameter
+##Revit Document
+###Description
+Gets the active Revit document.
+
+
+
+###Output
+  * None
+
+
+##Set Fam Inst Param
 ###Description
 Modifies a parameter on a family instance.
 
@@ -120,7 +130,7 @@ Modifies a parameter on a family instance.
   * None
 
 
-##Set Type Parameter
+##Set Fam Type Param
 ###Description
 Modifies a parameter on a family type.
 

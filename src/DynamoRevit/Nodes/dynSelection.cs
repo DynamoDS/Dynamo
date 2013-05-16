@@ -16,14 +16,16 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Linq;
 using System.Text;
 using System.Xml;
 using Autodesk.Revit.DB;
+
 using Dynamo.Utilities;
 using Dynamo.Connectors;
-
+using Dynamo.Revit;
 using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
 
 using Microsoft.FSharp.Collections;
@@ -39,22 +41,48 @@ namespace Dynamo.Nodes
         TextBox tb;
         System.Windows.Controls.Button selectButton;
 
+        protected string _selectButtonContent;
+        public string SelectButtonContent 
+        {
+            get { return _selectButtonContent; }
+            set
+            {
+                _selectButtonContent = value;
+                RaisePropertyChanged("SelectButtonContent");
+            }
+        }
+
+        /// <summary>
+        /// Determines what the text should read on the node when the selection has been changed.
+        /// Is ignored in the case where nothing is selected.
+        /// </summary>
+        //protected abstract string SelectionText { get; }
+        protected string _selectionText;
+
+        public abstract string SelectionText { get; set; }
+
         protected dynElementSelection(PortData outPortData)
         {
             OutPortData.Add(outPortData);
+            RegisterAllPorts();
+        }
 
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             //add a button to the inputGrid on the dynElement
             selectButton = new System.Windows.Controls.Button();
-            selectButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
             selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             selectButton.Click += new System.Windows.RoutedEventHandler(selectButton_Click);
-            selectButton.Content = "Select Instance";
+            //selectButton.Content = "Select Instance";
             selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
             tb = new TextBox();
-            tb.Text = "Nothing Selected";
+            //tb.Text = "Nothing Selected";
+            SelectionText = "Nothing Selected";
+            SelectButtonContent = "Select Instance";
+
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
@@ -63,7 +91,9 @@ namespace Dynamo.Nodes
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
 
-            NodeUI.SetRowAmount(2);
+            //NodeUI.SetRowAmount(2);
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
             NodeUI.inputGrid.Children.Add(tb);
             NodeUI.inputGrid.Children.Add(selectButton);
@@ -71,11 +101,20 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(selectButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            NodeUI.RegisterAllPorts();
+            tb.DataContext = this;
+            selectButton.DataContext = this;
 
-            NodeUI.topControl.Height = 60;
-            NodeUI.topControl.Width = 200;
-            NodeUI.UpdateLayout();
+            var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            tb.SetBinding(TextBox.TextProperty, selectTextBinding);
+
+            var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            selectButton.SetBinding(Button.ContentProperty, buttonTextBinding);
         }
 
         private void selectButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -129,25 +168,22 @@ namespace Dynamo.Nodes
                        delAction: delegate { this.selected = null; this.SelectedElement = null; }
                     );
 
-                    this.tb.Text = this.SelectionText;
-                    this.selectButton.Content = "Change";
+                    //this.tb.Text = this.SelectionText;
+                    //this.selectButton.Content = "Change";
+                    SelectButtonContent = "Change";
                 }
                 else
                 {
-                    this.tb.Text = "Nothing Selected.";
-                    this.selectButton.Content = "Select";
+                    //this.tb.Text = "Nothing Selected.";
+                    //this.selectButton.Content = "Select";
+                    SelectionText = "Nothing Selected";
+                    SelectButtonContent = "Select";
                 }
 
                 if (dirty)
                     this.RequiresRecalc = true;
             }
         }
-
-        /// <summary>
-        /// Determines what the text should read on the node when the selection has been changed.
-        /// Is ignored in the case where nothing is selected.
-        /// </summary>
-        protected abstract string SelectionText { get; }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -182,7 +218,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        this.Bench.Log("Unable to find element with ID: " + id.IntegerValue);
+                        dynSettings.Controller.DynamoViewModel.Log("Unable to find element with ID: " + id.IntegerValue);
                     }
                     this.SelectedElement = saved;
                 }
@@ -196,22 +232,48 @@ namespace Dynamo.Nodes
         TextBox tb;
         System.Windows.Controls.Button selectButton;
 
+        protected string _selectButtonContent;
+        public string SelectButtonContent
+        {
+            get { return _selectButtonContent; }
+            set
+            {
+                _selectButtonContent = value;
+                RaisePropertyChanged("SelectButtonContent");
+            }
+        }
+
+        /// <summary>
+        /// Determines what the text should read on the node when the selection has been changed.
+        /// Is ignored in the case where nothing is selected.
+        /// </summary>
+        //protected abstract string SelectionText { get; }
+        protected string _selectionText;
+        public abstract string SelectionText { get; set; }
+
         protected dynMultipleElementSelection(PortData outData)
         {
             OutPortData.Add(outData);
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
 
             //add a button to the inputGrid on the dynElement
             selectButton = new System.Windows.Controls.Button();
-            selectButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
             selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             selectButton.Click += new System.Windows.RoutedEventHandler(selectButton_Click);
-            selectButton.Content = "Select Instances";
+            //selectButton.Content = "Select Instances";
             selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
             tb = new TextBox();
-            tb.Text = "Nothing Selected";
+            //tb.Text = "Nothing Selected";
+            SelectionText = "Nothing Selected";
+            SelectButtonContent = "Select Instances";
+
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
@@ -220,7 +282,8 @@ namespace Dynamo.Nodes
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
 
-            NodeUI.SetRowAmount(2);
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
             NodeUI.inputGrid.Children.Add(tb);
             NodeUI.inputGrid.Children.Add(selectButton);
@@ -228,10 +291,20 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(selectButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            NodeUI.RegisterAllPorts();
+            tb.DataContext = this;
+            selectButton.DataContext = this;
 
-            NodeUI.topControl.Height = 60;
-            NodeUI.UpdateLayout();
+            var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            tb.SetBinding(TextBox.TextProperty, selectTextBinding);
+
+            var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            selectButton.SetBinding(Button.ContentProperty, buttonTextBinding);
         }
 
         private void selectButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -295,13 +368,15 @@ namespace Dynamo.Nodes
                         );
                     }
 
-                    this.tb.Text = this.SelectionText;
-                    this.selectButton.Content = "Change";
+                    //this.tb.Text = this.SelectionText;
+                    //this.selectButton.Content = "Change";
+                    SelectButtonContent = "Change";
                 }
                 else
                 {
-                    this.tb.Text = "Nothing Selected.";
-                    this.selectButton.Content = "Select";
+                    //this.tb.Text = "Nothing Selected.";
+                    //this.selectButton.Content = "Select";
+                    SelectButtonContent = "Select";
                 }
 
                 if (dirty)
@@ -309,18 +384,20 @@ namespace Dynamo.Nodes
             }
         }
 
-        /// <summary>
-        /// Determines what the text should read on the node when the selection has been changed.
-        /// Is ignored in the case where nothing is selected.
-        /// </summary>
-        protected abstract string SelectionText { get; }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
             if (this.SelectedElements == null)
                 throw new Exception("Nothing selected.");
 
-            return Value.NewContainer(this.SelectedElements);
+            FSharpList<Value> result = FSharpList<Value>.Empty;
+
+            var els = new List<Value>();
+            foreach (Element el in this.SelectedElements)
+            {
+                els.Add(Value.NewContainer(el));
+            }
+
+            return Value.NewList(Utils.SequenceToFSharpList(els));
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -351,7 +428,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        this.Bench.Log("Unable to find element with ID: " + id.IntegerValue);
+                        dynSettings.Controller.DynamoViewModel.Log("Unable to find element with ID: " + id.IntegerValue);
                     }
                     this.SelectedElements.Add(saved);
                 }
@@ -359,13 +436,13 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Family Instance by Selection")]
-    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeName("Select Family Instance")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a family instance from the document.")]
     public class dynFamilyInstanceCreatorSelection : dynElementSelection
     {
         public dynFamilyInstanceCreatorSelection()
-            : base(new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance)))
+            : base(new PortData("fi", "Family instances created by this operation.", typeof(Value.Container)))
         { }
 
         protected override void OnSelectClick()
@@ -373,23 +450,34 @@ namespace Dynamo.Nodes
             this.SelectedElement = dynRevitSettings.SelectionHelper.RequestFamilyInstanceSelection(
                dynRevitSettings.Doc, "Select Massing Family Instance"
             );
+            RaisePropertyChanged("SelectionText");
         }
 
-        protected override string SelectionText
+        public override string SelectionText
         {
-            get { return this.SelectedElement.Name; }
+            get
+            {
+                return _selectionText = this.SelectedElement == null ?
+                    "Nothing Selected" :
+                    this.SelectedElement.Name;
+            }
+            set
+            {
+                _selectionText = value;
+                RaisePropertyChanged("SelectionText");
+            }
         }
     }
 
-    [NodeName("Divided Surface by Selection")]
-    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeName("Select Divided Surface")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a divided surface from the document.")]
     public class dynDividedSurfaceBySelection : dynElementSelection
     {
         Value data;
 
         public dynDividedSurfaceBySelection()
-            : base(new PortData("srf", "The divided surface family instance(s)", typeof(object)))
+            : base(new PortData("srf", "The divided surface family instance(s)", typeof(Value.Container)))
         { }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -458,9 +546,19 @@ namespace Dynamo.Nodes
             return data;
         }
 
-        protected override string SelectionText
+        public override string SelectionText
         {
-            get { return "Element ID: " + this.SelectedElement.Id; }
+            get
+            {
+                return _selectionText = this.SelectedElement == null ?
+                    "Nothing Selected" :
+                    "Element ID: " + this.SelectedElement.Id;
+            }
+            set
+            {
+                _selectionText = value;
+                RaisePropertyChanged("SelectionText");
+            }
         }
 
         /*
@@ -538,18 +636,19 @@ namespace Dynamo.Nodes
             this.SelectedElement = dynRevitSettings.SelectionHelper.RequestFormSelection(
                dynRevitSettings.Doc, "Select a form element."
             );
+            RaisePropertyChanged("SelectionText");
         }
     }
 
-    [NodeName("Face by Selection")]
-    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeName("Select Face")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a face from the document.")]
-    public class dynFormElementBySelection : dynElementSelection
+    public class dynFormElementBySelection : dynElementSelection, IDrawable
     {
         Reference f;
 
         public dynFormElementBySelection()
-            : base(new PortData("face", "The face", typeof(object)))
+            : base(new PortData("face", "The face", typeof(Value.Container)))
         { }
 
         protected override void OnSelectClick()
@@ -560,6 +659,7 @@ namespace Dynamo.Nodes
                doc, "Select a face."
             );
             this.SelectedElement = doc.Document.GetElement(f);
+            RaisePropertyChanged("SelectionText");
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -567,19 +667,41 @@ namespace Dynamo.Nodes
             return Value.NewContainer(f);
         }
 
-        protected override string SelectionText
+        public override string SelectionText
         {
-            get { return "Face ID: " + this.SelectedElement.Id; }
+            get
+            {
+                return _selectionText = this.SelectedElement == null ?
+                    "Nothing Selected" :
+                    "Face ID: " + this.SelectedElement.Id;
+            }
+            set
+            {
+                _selectionText = value;
+                RaisePropertyChanged("SelectionText");
+            }
         }
+
+        public RenderDescription Draw()
+        {
+            RenderDescription rd = new RenderDescription();
+
+            Face face = (Face)dynRevitSettings.Doc.Document.GetElement(f).GetGeometryObjectFromReference(f);
+
+            dynRevitTransactionNode.DrawFace(rd, face);
+
+            return rd;
+        }
+
     }
 
-    [NodeName("Curve by Selection")]
-    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeName("Select Curve")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a curve from the document.")] //or set of curves in the future
     public class dynCurvesBySelection : dynElementSelection
     {
         public dynCurvesBySelection()
-            : base(new PortData("curve", "The curve", typeof(CurveElement)))
+            : base(new PortData("curve", "The curve", typeof(Value.Container)))
         { }
 
         protected override void OnSelectClick()
@@ -587,42 +709,47 @@ namespace Dynamo.Nodes
             this.SelectedElement = dynRevitSettings.SelectionHelper.RequestCurveElementSelection(
                dynRevitSettings.Doc, "Select a curve."
             );
-
+            RaisePropertyChanged("SelectionText");
         }
 
-        protected override string SelectionText
+        public override string SelectionText
         {
-            get { return "Curve ID: " + this.SelectedElement.Id; }
+            get
+            {
+                return _selectionText = this.SelectedElement == null ?
+                    "Nothing Selected" :
+                    "Curve ID: " + this.SelectedElement.Id;
+            }
+            set
+            {
+                _selectionText = value;   
+                RaisePropertyChanged("SelectionText");
+            }
         }
     }
 
-    [NodeName("Curves by Selection")]
-    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeName("Select Curves")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a set of curves from the document.")]
     public class dynMultipleCurvesBySelection : dynMultipleElementSelection
     {
-        CurveArray curves;
-
         public dynMultipleCurvesBySelection()
-            : base(new PortData("curves", "The curves", typeof(CurveElement)))
+            : base(new PortData("curves", "The curves", typeof(Value.Container)))
         { }
 
         protected override void OnSelectClick()
         {
-            curves = dynRevitSettings.SelectionHelper.RequestMultipleCurveElementsSelection(
+            if (this.SelectedElements != null)
+            {
+                SelectedElements.Clear();
+                SelectedElements = null;
+            }
+
+            SelectedElements = dynRevitSettings.SelectionHelper.RequestMultipleCurveElementsSelection(
                dynRevitSettings.Doc, "Select a set of curves."
             );
-            this.SelectedElements.Clear();
-            try
-            {
-                foreach (Element e in curves)
-                {
-                    this.SelectedElements.Add(e);
-                }
-            }
-            catch (Exception)
-            {
-            }
+
+            RaisePropertyChanged("SelectionText");
         }
 
         string formatSelectionText(IList<Element> elements)
@@ -635,22 +762,29 @@ namespace Dynamo.Nodes
             return selectionText;
         }
 
-        protected override string SelectionText
+        public override string SelectionText
         {
             get
             {
-                return "Curve IDs:" + formatSelectionText(this.SelectedElements);
+                return _selectionText = (this.SelectedElements != null && this.SelectedElements.Count > 0) ?
+                      "Curve IDs:" + formatSelectionText(this.SelectedElements) :
+                      "Nothing Selected";
+            }
+            set
+            {
+                _selectionText = value;
+                RaisePropertyChanged("SelectionText");
             }
         }
     }
 
-    [NodeName("Point by Selection")]
-    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeName("Select Point")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a reference point from the document.")]
     public class dynPointBySelection : dynElementSelection
     {
         public dynPointBySelection() :
-            base(new PortData("pt", "The point", typeof(ReferencePoint)))
+            base(new PortData("pt", "The point", typeof(Value.Container)))
         { }
 
         protected override void OnSelectClick()
@@ -658,21 +792,33 @@ namespace Dynamo.Nodes
             this.SelectedElement = dynRevitSettings.SelectionHelper.RequestReferencePointSelection(
                dynRevitSettings.Doc, "Select a reference point."
             );
+
+            RaisePropertyChanged("SelectionText");
         }
 
-        protected override string SelectionText
+        public override string SelectionText
         {
-            get { return this.SelectedElement.Name + " (" + this.SelectedElement.Id + ")"; }
+            get
+            {
+                return _selectionText = this.SelectedElement == null ?
+                    "Nothing Selected" :
+                    this.SelectedElement.Name + " (" + this.SelectedElement.Id + ")";
+            }
+            set
+            {
+                _selectionText = value;
+                RaisePropertyChanged("SelectionText");
+            }
         }
     }
 
-    [NodeName("Level by Selection")]
-    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeName("Select Level")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a level from the document.")]
     public class dynLevelBySelection : dynElementSelection
     {
         public dynLevelBySelection() :
-            base(new PortData("lvl", "The selected level", typeof(Level)))
+            base(new PortData("lvl", "The selected level", typeof(Value.Container)))
         { }
 
         protected override void OnSelectClick()
@@ -680,11 +826,22 @@ namespace Dynamo.Nodes
             this.SelectedElement = dynRevitSettings.SelectionHelper.RequestLevelSelection(
                dynRevitSettings.Doc, "Select a level."
             );
+            RaisePropertyChanged("SelectionText");
         }
 
-        protected override string SelectionText
+        public override string SelectionText
         {
-            get { return this.SelectedElement.Name + " (" + this.SelectedElement.Id + ")"; }
+            get
+            {
+                return _selectionText = this.SelectedElement == null ?
+                    "Nothing Selected" :
+                    this.SelectedElement.Name + " (" + this.SelectedElement.Id + ")";
+            }
+            set
+            {
+                _selectionText = value;
+                RaisePropertyChanged("SelectionText");
+            }
         }
     }
 }

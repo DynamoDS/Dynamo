@@ -27,17 +27,17 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Model Curve")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a model curve.")]
     public class dynModelCurve : dynRevitTransactionNodeWithOneOutput
     {
         public dynModelCurve()
         {
-            InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Curve)));
-            InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(SketchPlane)));
-            OutPortData.Add(new PortData("mc", "Model Curve", typeof(ModelCurve)));
+            InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Value.Container)));
+            InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("mc", "Model Curve", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -95,24 +95,25 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve By Points")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeName("Curve By Pts")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create a new Curve by Points by passing in a list of Reference Points")]
     public class dynCurveByPoints : dynRevitTransactionNodeWithOneOutput
     {
+        //Our eventual output.
+        CurveByPoints c;
+
         public dynCurveByPoints()
         {
-            InPortData.Add(new PortData("refPts", "List of reference points", typeof(object)));
-            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(object)));
+            InPortData.Add(new PortData("refPts", "List of reference points", typeof(Value.List)));
+            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            //Our eventual output.
-            CurveByPoints c;
-
+            
             //Build a sequence that unwraps the input list from it's Value form.
             IEnumerable<ReferencePoint> refPts = ((Value.List)args[0]).Item.Select(
                x => (ReferencePoint)((Value.Container)x).Item
@@ -154,16 +155,16 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve By Points By Line")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create a new Curve by Points by passing in a geometry line in 3d space")]
     public class dynCurveByPointsByLine : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurveByPointsByLine()
         {
-            InPortData.Add(new PortData("curve", "geometry curve", typeof(object)));
-            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(object)));
+            InPortData.Add(new PortData("curve", "geometry curve", typeof(Value.Container)));
+            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -299,17 +300,17 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve Element Reference")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeName("Curve Element Ref")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Takes in a Model Curve or Geometry Curve, returns a Curve Reference")]
     public class dynCurveRef : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurveRef()
         {
-            InPortData.Add(new PortData("curve", "Model Curve Element or Geometry Curve", typeof(object)));
-            OutPortData.Add(new PortData("curveRef", "Curve Reference", typeof(object)));
+            InPortData.Add(new PortData("curve", "Model Curve Element or Geometry Curve", typeof(Value.Container)));
+            OutPortData.Add(new PortData("curveRef", "Curve Reference", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private Value makeCurveRef(object c, int count)
@@ -366,17 +367,17 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Curve From Curve Element")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeName("Curve From Curve Ele")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Takes in a Model Curve and Extracts Geometry Curve")]
     public class dynCurveFromModelCurve : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurveFromModelCurve()
         {
-            InPortData.Add(new PortData("mc", "Model Curve Element", typeof(object)));
-            OutPortData.Add(new PortData("curve", "Curve", typeof(object)));
+            InPortData.Add(new PortData("mc", "Model Curve Element", typeof(Value.Container)));
+            OutPortData.Add(new PortData("curve", "Curve", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private Value extractCurve(object c, int count)
@@ -432,16 +433,19 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Planar Nurb Spline")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Node to create a planar model curve.")]
     public class dynModelCurveNurbSpline : dynRevitTransactionNodeWithOneOutput
     {
+        private NurbSpline ns;
+        private ModelNurbSpline c;
+
         public dynModelCurveNurbSpline()
         {
-            InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(object)));
-            OutPortData.Add(new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(ModelNurbSpline)));
+            InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(Value.List)));
+            OutPortData.Add(new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -450,42 +454,68 @@ namespace Dynamo.Nodes
                e => ((ReferencePoint)((Value.Container)e).Item).Position
             ).ToList();
 
-
             foreach (ElementId el in this.Elements)
             {
                 Element e;
                 if (dynUtils.TryGetElement(el, out e))
                 {
-                    this.UIDocument.Document.Delete(el);
+                    DeleteElement(el);
+                    ns = null;
+                    c = null;
                 }
+                    
             }
+
             if (pts.Count <= 1)
             {
                 throw new Exception("Not enough reference points to make a curve.");
             }
 
-            //make a curve
-            NurbSpline ns = this.UIDocument.Application.Application.Create.NewNurbSpline(
-               pts, Enumerable.Repeat(1.0, pts.Count).ToList()
-            );
-
-            double rawParam = ns.ComputeRawParameter(.5);
-            Transform t = ns.ComputeDerivatives(rawParam, false);
-
-            XYZ norm = t.BasisZ;
-
-            if (norm.GetLength() == 0)
+            if (ns == null)
             {
-                norm = XYZ.BasisZ;
+                //make a curve
+                ns = this.UIDocument.Application.Application.Create.NewNurbSpline(
+                    pts, Enumerable.Repeat(1.0, pts.Count).ToList());
+            }
+            else
+            {
+                DoubleArray arr = new DoubleArray();
+                
+                var weights = Enumerable.Repeat(1.0, pts.Count).ToList();
+                foreach (double weight in weights)
+                {
+                    double d = weight;
+                    arr.Append(ref d);
+                }
+                    
+                //update the existing curve
+                ns.SetControlPointsAndWeights(pts, arr);
             }
 
-            Plane p = new Plane(norm, t.Origin);
-            SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
-            //sps.Add(sp);
+            if (c == null)
+            {
+                double rawParam = ns.ComputeRawParameter(.5);
+                Transform t = ns.ComputeDerivatives(rawParam, false);
 
-            ModelNurbSpline c = (ModelNurbSpline)this.UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp);
+                XYZ norm = t.BasisZ;
 
-            this.Elements.Add(c.Id);
+                if (norm.GetLength() == 0)
+                {
+                    norm = XYZ.BasisZ;
+                }
+
+                Plane p = new Plane(norm, t.Origin);
+                SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
+                //sps.Add(sp);
+
+                c = (ModelNurbSpline) this.UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp);
+
+                this.Elements.Add(c.Id);
+            }
+            else
+            {
+                c.GeometryCurve = ns;
+            }
 
             return Value.NewContainer(c);
         }

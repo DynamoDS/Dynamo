@@ -3,20 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoElements", "Dynamo\DynamoElements.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
-		{F9B766BE-A5A3-4680-840F-649462340EE7} = {F9B766BE-A5A3-4680-840F-649462340EE7}
 		{F25808D6-DF62-4732-9453-D4978079864C} = {F25808D6-DF62-4732-9453-D4978079864C}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevit", "DynamoRevit\DynamoRevit.csproj", "{FD56AE51-739E-4893-8DE4-925D60C7097C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2B0F2800-6F62-4869-9074-088C5F6DCCA2} = {2B0F2800-6F62-4869-9074-088C5F6DCCA2}
-		{7C61601E-BD56-4731-A491-416AFCB10525} = {7C61601E-BD56-4731-A491-416AFCB10525}
 		{7858FA8C-475F-4B8E-B468-1F8200778CF8} = {7858FA8C-475F-4B8E-B468-1F8200778CF8}
-		{861DA6B9-9483-4F27-B47D-007BD9A428AA} = {861DA6B9-9483-4F27-B47D-007BD9A428AA}
-		{F9B766BE-A5A3-4680-840F-649462340EE7} = {F9B766BE-A5A3-4680-840F-649462340EE7}
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragCanvas", "DragCanvas\DragCanvas.csproj", "{F9B766BE-A5A3-4680-840F-649462340EE7}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FScheme", "FScheme\FScheme.fsproj", "{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}"
 EndProject
@@ -28,10 +22,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoSandbox", "DynamoSand
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPython", "DynamoPython\DynamoPython.csproj", "{2B0F2800-6F62-4869-9074-088C5F6DCCA2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoLeapMotion", "DynamoLeapMotion\DynamoLeapMotion.csproj", "{7C61601E-BD56-4731-A491-416AFCB10525}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoKinect", "DynamoKinect\DynamoKinect.csproj", "{861DA6B9-9483-4F27-B47D-007BD9A428AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoElementsTests", "DynamoElementsTests\DynamoElementsTests.csproj", "{472084ED-1067-4B2C-8737-3839A6143EB2}"
 EndProject
@@ -71,16 +61,6 @@ Global
 		{FD56AE51-739E-4893-8DE4-925D60C7097C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{FD56AE51-739E-4893-8DE4-925D60C7097C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FD56AE51-739E-4893-8DE4-925D60C7097C}.Release|x86.ActiveCfg = Release|Any CPU
-		{F9B766BE-A5A3-4680-840F-649462340EE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9B766BE-A5A3-4680-840F-649462340EE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9B766BE-A5A3-4680-840F-649462340EE7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{F9B766BE-A5A3-4680-840F-649462340EE7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{F9B766BE-A5A3-4680-840F-649462340EE7}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F9B766BE-A5A3-4680-840F-649462340EE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9B766BE-A5A3-4680-840F-649462340EE7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9B766BE-A5A3-4680-840F-649462340EE7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{F9B766BE-A5A3-4680-840F-649462340EE7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{F9B766BE-A5A3-4680-840F-649462340EE7}.Release|x86.ActiveCfg = Release|Any CPU
 		{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -121,26 +101,6 @@ Global
 		{2B0F2800-6F62-4869-9074-088C5F6DCCA2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2B0F2800-6F62-4869-9074-088C5F6DCCA2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2B0F2800-6F62-4869-9074-088C5F6DCCA2}.Release|x86.ActiveCfg = Release|Any CPU
-		{7C61601E-BD56-4731-A491-416AFCB10525}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C61601E-BD56-4731-A491-416AFCB10525}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C61601E-BD56-4731-A491-416AFCB10525}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{7C61601E-BD56-4731-A491-416AFCB10525}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{7C61601E-BD56-4731-A491-416AFCB10525}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7C61601E-BD56-4731-A491-416AFCB10525}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C61601E-BD56-4731-A491-416AFCB10525}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C61601E-BD56-4731-A491-416AFCB10525}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{7C61601E-BD56-4731-A491-416AFCB10525}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{7C61601E-BD56-4731-A491-416AFCB10525}.Release|x86.ActiveCfg = Release|Any CPU
-		{861DA6B9-9483-4F27-B47D-007BD9A428AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{861DA6B9-9483-4F27-B47D-007BD9A428AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{861DA6B9-9483-4F27-B47D-007BD9A428AA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{861DA6B9-9483-4F27-B47D-007BD9A428AA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{861DA6B9-9483-4F27-B47D-007BD9A428AA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{861DA6B9-9483-4F27-B47D-007BD9A428AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{861DA6B9-9483-4F27-B47D-007BD9A428AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{861DA6B9-9483-4F27-B47D-007BD9A428AA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{861DA6B9-9483-4F27-B47D-007BD9A428AA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{861DA6B9-9483-4F27-B47D-007BD9A428AA}.Release|x86.ActiveCfg = Release|Any CPU
 		{472084ED-1067-4B2C-8737-3839A6143EB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{472084ED-1067-4B2C-8737-3839A6143EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{472084ED-1067-4B2C-8737-3839A6143EB2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

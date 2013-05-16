@@ -1,14 +1,3 @@
-##Curve By Points
-###Description
-Create a new Curve by Points by passing in a list of Reference Points
-
-###Inputs
-  * **refPts** *(object)* - List of reference points
-
-###Output
-  * None
-
-
 ##Curve By Points By Line
 ###Description
 Create a new Curve by Points by passing in a geometry line in 3d space
@@ -20,7 +9,18 @@ Create a new Curve by Points by passing in a geometry line in 3d space
   * None
 
 
-##Curve Element Reference
+##Curve By Pts
+###Description
+Create a new Curve by Points by passing in a list of Reference Points
+
+###Inputs
+  * **refPts** *(object)* - List of reference points
+
+###Output
+  * None
+
+
+##Curve Element Ref
 ###Description
 Takes in a Model Curve or Geometry Curve, returns a Curve Reference
 

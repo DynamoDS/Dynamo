@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="10" Y="55" Name="y=Mx+b" Category="Math" ID="12edd839-1e3e-4815-97da-6554221a6f6f">
+<dynWorkspace X="10" Y="55" Name="y=Mx+b" Category="Logic.Math" ID="12edd839-1e3e-4815-97da-6554221a6f6f">
   <dynElements>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="757f7554-a772-43a9-8acb-49af18255237" nickname="Variable" x="75.5" y="75.75">
       <Symbol value="M" />

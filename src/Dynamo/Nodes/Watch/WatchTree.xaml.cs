@@ -54,14 +54,6 @@ namespace Dynamo.Controls
             WatchNode node = (WatchNode)fe.DataContext;
 
             node.Click();
-
-            //var elId = (ElementId)((WatchNode)fe.DataContext).Data;  
-            
-            //Element el = dynRevitSettings.Doc.Document.GetElement(elId);
-            //if (el != null)
-            //{
-            //    dynRevitSettings.Doc.ShowElements(el);
-            //}
         }
     }
 
@@ -135,7 +127,7 @@ namespace Dynamo.Controls
     public sealed class NullToVisibiltyConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
+        { 
             return value == null ? System.Windows.Visibility.Hidden : System.Windows.Visibility.Visible;
         }
 

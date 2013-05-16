@@ -26,16 +26,16 @@ using Dynamo.FSchemeInterop;
 namespace Dynamo.Nodes
 {
     [NodeName("Drafting View")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
     [NodeDescription("Creates a drafting view.")]
     public class dynDraftingView: dynNodeWithOneOutput
     {
         public dynDraftingView()
         {
-            InPortData.Add(new PortData("name", "Name", typeof(string)));
-            OutPortData.Add(new PortData("v", "Drafting View", typeof(dynDraftingView)));
+            InPortData.Add(new PortData("name", "Name", typeof(Value.String)));
+            OutPortData.Add(new PortData("v", "Drafting View", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -75,7 +75,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        this.Bench.Log(string.Format("Could not create view: {0}", viewName));
+                        dynSettings.Controller.DynamoViewModel.Log(string.Format("Could not create view: {0}", viewName));
                     }
                 }
                 else

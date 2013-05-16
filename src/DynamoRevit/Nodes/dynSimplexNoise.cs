@@ -76,18 +76,18 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("1DSimplex")]
-    [NodeCategory(BuiltinNodeCategories.MISC)]
-    [NodeDescription("Creates a 1D Field.")]
+    [NodeName("1D Noise Field")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Creates a randomly varying 1 field generated using simplex noise.")]
     public class dynSimplex1D: dynNodeWithOneOutput
     {
         public dynSimplex1D()
         {
-            InPortData.Add(new PortData("x", "X", typeof(double)));
+            InPortData.Add(new PortData("x", "X", typeof(FScheme.Value.Number)));
 
-            OutPortData.Add(new PortData("o", "Out", typeof(double)));
+            OutPortData.Add(new PortData("o", "Out", typeof(FScheme.Value.Number)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
@@ -129,20 +129,19 @@ namespace Dynamo.Nodes
        
     }
 
-
-    [NodeName("2DSimplex")]
-    [NodeCategory(BuiltinNodeCategories.MISC)]
-    [NodeDescription("Creates a 2D Field.")]
+    [NodeName("2D Noise Field")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Creates a randomly varying 2D field generated using simplex noise.")]
     public class dynSimplex2D: dynNodeWithOneOutput
     {
         public dynSimplex2D()
         {
-            InPortData.Add(new PortData("x", "X", typeof(double)));
-            InPortData.Add(new PortData("y", "Y", typeof(double)));
+            InPortData.Add(new PortData("x", "X", typeof(FScheme.Value.Number)));
+            InPortData.Add(new PortData("y", "Y", typeof(FScheme.Value.Number)));
 
-            OutPortData.Add(new PortData("o", "Out", typeof(double)));
+            OutPortData.Add(new PortData("o", "Out", typeof(FScheme.Value.Number)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
@@ -237,20 +236,20 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("3DSimplex")]
-    [NodeCategory(BuiltinNodeCategories.MISC)]
-    [NodeDescription("Creates a 3D Field.")]
+    [NodeName("3D Noise Field")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Creates a randomly varying 3D Field generated using simplex noise.")]
     public class dynSimplex3D: dynNodeWithOneOutput
     {
         public dynSimplex3D()
         {
-            InPortData.Add(new PortData("x", "X", typeof(double)));
-            InPortData.Add(new PortData("y", "Y", typeof(double)));
-            InPortData.Add(new PortData("z", "Z", typeof(double)));
+            InPortData.Add(new PortData("x", "X", typeof(FScheme.Value.Number)));
+            InPortData.Add(new PortData("y", "Y", typeof(FScheme.Value.Number)));
+            InPortData.Add(new PortData("z", "Z", typeof(FScheme.Value.Number)));
 
-            OutPortData.Add(new PortData("o", "Out", typeof(double)));
+            OutPortData.Add(new PortData("o", "Out", typeof(FScheme.Value.Number)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
@@ -381,7 +380,5 @@ namespace Dynamo.Nodes
 
 
     }
-
-
 
 }

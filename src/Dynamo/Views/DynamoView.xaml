@@ -1,0 +1,559 @@
+﻿<Window x:Class="Dynamo.Controls.DynamoView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dynamo="clr-namespace:Dynamo"
+        xmlns:controls="clr-namespace:Dynamo.Controls"
+        xmlns:commands="clr-namespace:Dynamo.Commands"
+        xmlns:views="clr-namespace:Dynamo.Views"
+        xmlns:utilities="clr-namespace:Dynamo.Utilities" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        x:Name="_this"
+        Height="768" Width="1024"
+        Closing="WindowClosing" 
+        Closed="WindowClosed" 
+        MinHeight="600" 
+        MinWidth="800" 
+        Title="Dynamo"
+        AllowsTransparency="False" 
+        KeyDown="DynamoView_KeyDown"
+        KeyUp="DynamoView_KeyUp">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Themes\DynamoModern.xaml" />
+                <ResourceDictionary Source="..\Themes\DynamoConverters.xaml"/>
+                <ResourceDictionary Source="..\Themes\DynamoColorsAndBrushes.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.InputBindings>
+        
+        <KeyBinding Key="Tab"
+                                Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+
+        <KeyBinding Key="Delete"
+                                Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="N"
+                                Modifiers="Control+Shift"
+                                Command="{Binding Path=DataContext.ShowNewFunctionDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="Tab"
+                                Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+
+        <KeyBinding Key="Delete"
+                                Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="C"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.CopyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="D"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.CurrentSpaceViewModel.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="V"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+
+        <KeyBinding Key="W"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.AddNoteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="V"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="S"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.ShowSaveDialogIfNeededAndSaveResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="S"
+                                Modifiers="Control+Shift"
+                                Command="{Binding Path=DataContext.ShowSaveDialogAndSaveResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="O"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="H"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.HomeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="Up"
+                                Modifiers="Control+Shift"
+                                Command="{Binding Path=DataContext.ToggleConsoleShowingCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="F4"
+                Modifiers="Alt"
+                                Command="{Binding Path=DataContext.ExitCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="C"
+                                Modifiers="Control+Shift"
+                                Command="{Binding Path=DataContext.ClearCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+
+        <KeyBinding Key="R"
+                Modifiers="Ctrl"
+                    Command="{Binding Path=DataContext.ShowPackageManagerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+
+    </Window.InputBindings>
+
+    <Grid Name="mainGrid" FocusManager.IsFocusScope="True">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Name="consoleRow" Height="{Binding ConsoleShowing, Converter={StaticResource BoolToConsoleHeightConverter}}"/>
+            <RowDefinition Height="48"/>
+
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MaxWidth="300"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" 
+              VerticalAlignment="Center" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  Padding="3">
+
+            <MenuItem Header="_File" Name="fileMenu" Focusable="False">
+
+                <MenuItem Header="_New Custom Node..." Command="{Binding Path=ShowNewFunctionDialogCommand}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
+                </MenuItem>
+
+                <MenuItem Header="_Open..." Command="{Binding Path=ShowOpenDialogAndOpenResultCommand}" Name="openButton" InputGestureText="Ctrl+O">
+
+                    <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/openHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+
+                <MenuItem Header="_Save" Command="{Binding Path=ShowSaveDialogIfNeededAndSaveResultCommand}" 
+                          Name="saveThisButton" InputGestureText="Ctrl+S">
+
+                    <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Focusable="False" Header="_Save As..." Command="{Binding Path=ShowSaveDialogAndSaveResultCommand}" Name="saveButton" InputGestureText="Ctrl+Shift+S">
+
+                    <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem Focusable="False" Header="_Save Image..." Command="{Binding Path=ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage"/>
+                <Separator />
+                <MenuItem Focusable="False" Header="_Clear" Command="{Binding Path=ClearCommand}" Name="clearButton" 
+                          InputGestureText="Ctrl+Shift+C">
+
+                    <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="_Exit" Command="{Binding Path=ExitCommand}"  Name="exit" InputGestureText="Alt+F4"/>
+            </MenuItem>
+
+            <MenuItem Header="_Edit" Name="editMenu">
+                <MenuItem Focusable="False" Header="_Copy" Command="{Binding Path=CopyCommand}" Name="copy" InputGestureText="Ctrl+C"/>
+                <MenuItem Focusable="False" Header="_Paste" Command="{Binding Path=PasteCommand}"  Name="paste" InputGestureText="Ctrl+V"/>
+                <Separator/>
+                <MenuItem Focusable="False" Header="_Create Note" Command="{Binding Path=AddNoteCommand}"  Name="noteMenuItem" InputGestureText="Ctrl+W" />
+                <MenuItem Focusable="False" Header="_Create Node From Selection" Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
+            </MenuItem>
+
+            <MenuItem Header="_View" Name="viewMenu">
+                
+                <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
+                          Command="{Binding Path=ToggleFullscreenWatchShowingCommand}" />
+                
+                <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                          Command="{Binding Path=ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
+
+                <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
+                    <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" 
+                              IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
+                              Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="BEZIER" Header="Curves"/>
+
+                    <MenuItem Name="settings_plines" IsCheckable="True" 
+
+                              IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
+                              Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
+                </MenuItem>
+
+                <MenuItem Focusable="False" Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >
+                    <MenuItem Focusable="False" Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
+                    <MenuItem Focusable="False" Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
+                    <MenuItem Focusable="False" Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
+
+                    <MenuItem Focusable="False" Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
+                </MenuItem>
+                
+            </MenuItem>
+
+            <MenuItem Header="_Workspaces" Name="workspacesMenu">
+                <MenuItem Header="_Home" Command="{Binding Path=HomeCommand}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
+                    <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Focusable="False" Header="_Custom Nodes" Name="userFunctions" 
+                  ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path= DataContext.DisplayFunctionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                </MenuItem>
+            </MenuItem>
+
+            <MenuItem Header="Help" Focusable="False">
+                <!--<MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>-->
+                <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
+                    <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="_Go To Project Website" Command="{Binding Path=GoToSourceCodeCommand}"  Name="sourceCode"/>
+                <MenuItem Header="_Go To Project Wiki" Command="{Binding Path=GoToWikiCommand}"  Name="wiki"/>
+
+            </MenuItem>
+
+            <MenuItem Header="Debug" Visibility="{Binding DebugMenuVisibility}">
+                <MenuItem Header="Open All Samples" Command="{Binding Path=RunUITestsCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
+                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="Black">
+            
+            <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs" 
+                        SelectedIndex="{Binding CurrentWorkspaceIndex}" Background="#222" Padding ="0">
+                
+                <TabControl.Resources>
+
+                    <Style  TargetType="{x:Type TabControl}">
+                        <Setter Property="OverridesDefaultStyle"
+          Value="True" />
+                        <Setter Property="SnapsToDevicePixels"
+          Value="True" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabControl}">
+                                    <Grid KeyboardNavigation.TabNavigation="Local">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <TabPanel x:Name="HeaderPanel"
+                                            Grid.Row="0" 
+                                            Margin="0,4,0,0"
+                                            Panel.ZIndex="1"
+                                            IsItemsHost="True"
+                                            KeyboardNavigation.TabIndex="1"
+                                            Background="Transparent" />
+                                        <Border x:Name="Border"
+                                          Grid.Row="1" 
+                                          BorderBrush="#4B4B4B"
+                                          BorderThickness="0,4,0,0">
+                                            <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
+                                        </Border>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabItem}">
+                                    <Grid>
+                                        <Border 
+                                          Name="Border"
+                                          BorderBrush="Black" 
+                                          CornerRadius="4,4,0,0"
+                                          BorderThickness="2,1,1,0" >
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                                                                        <GradientStop Color="#555" Offset="0.0" />
+                                                                        <GradientStop Color="#4B4B4B" Offset="1.0" />
+                                                                    </LinearGradientBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                                                                        <GradientStop Color="#333" Offset="0.0" />
+                                                                        <GradientStop Color="#111" Offset="1.0" />
+                                                                    </LinearGradientBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <ContentPresenter x:Name="ContentSite"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                ContentSource="Header" />
+                                        </Border>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                    <Style TargetType="{x:Type Button}" x:Key="CloseButtonStyle">
+                        <Style.Resources>
+                            <sys:Double x:Key="CloseButtonWidth">6</sys:Double>
+                            <sys:Double x:Key="CloseCircleWidth">12</sys:Double>
+                            <sys:Double x:Key="CloseButtonOffset">3</sys:Double>
+                        </Style.Resources>
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Foreground" Value="DarkGray" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    
+                                    <Canvas Background="Transparent" x:Name="CloseButton" Margin="0" Width="{StaticResource CloseCircleWidth}" Height="{StaticResource CloseCircleWidth}">
+                                        
+                                        <Ellipse Width="{StaticResource CloseCircleWidth}" Fill="{TemplateBinding Background}" Height="{StaticResource CloseCircleWidth}" />
+                                        <Canvas Canvas.Left="{StaticResource CloseButtonOffset}" Canvas.Top="{StaticResource CloseButtonOffset}" Background="Transparent" Width="{StaticResource CloseButtonWidth}" Height="{StaticResource CloseButtonWidth}">
+                                            
+                                            <Line X1="0" Y1="0" X2="{StaticResource CloseButtonWidth}" Y2="{StaticResource CloseButtonWidth}" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                                            <Line X1="0" Y1="{StaticResource CloseButtonWidth}" X2="{StaticResource CloseButtonWidth}" Y2="0" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                                        
+                                        </Canvas>
+
+                                        <Canvas.Style>
+                                            <Style TargetType="Canvas">
+                                                <Style.Triggers>
+
+                                                    <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type dynamo:HomeWorkspace}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Canvas.Style>
+                                        
+                                    </Canvas>
+                                    
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="DarkGray" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    
+                </TabControl.Resources>
+                
+                <TabControl.ItemTemplate>
+                    
+                    <DataTemplate>
+                        
+                        <StackPanel Orientation="Horizontal" Margin="10,5,10,5">
+
+                            <TextBlock Name="WorkspaceName" Margin="0,2,0,0" >
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                <Setter Property="Foreground" Value="GhostWhite"></Setter>
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
+                                                <Setter Property="Foreground" Value="#999"></Setter>
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type dynamo:HomeWorkspace}">
+                                                <Setter Property="Text" Value="Home"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type dynamo:FuncWorkspace}">
+                                                <Setter Property="Text" Value="{Binding Name}"/>
+                                            </DataTrigger>
+                                            
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <TextBlock Name="Spacer" Text=" -" Margin="0,2,0,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                <Setter Property="Foreground" Value="GhostWhite"></Setter>
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
+                                                <Setter Property="Foreground" Value="#999"></Setter>
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+
+                            </TextBlock>
+
+                            <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                <Setter Property="Foreground" Value="GhostWhite"></Setter>
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
+                                                <Setter Property="Foreground" Value="#999"></Setter>
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="True">
+                                                <Setter Property="FontStyle" Value="Italic"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="False">
+                                                <Setter Property="FontStyle" Value="Normal"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>                                
+                                
+                            </TextBlock> 
+                            
+                            <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
+
+                        </StackPanel>
+                        
+                    </DataTemplate>
+                    
+                </TabControl.ItemTemplate>
+                
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <views:dynWorkspaceView></views:dynWorkspaceView>
+                    </DataTemplate>
+                 </TabControl.ContentTemplate>
+                
+            </TabControl>
+       
+        </Border>
+        
+        <ScrollViewer Name="LogScroller" 
+                    VerticalAlignment="Stretch"
+                    VerticalScrollBarVisibility="Auto" 
+                    HorizontalAlignment="Stretch"
+                    HorizontalScrollBarVisibility="Hidden"
+                    Background="Black" 
+                    Opacity="1" 
+                    Visibility="Visible"
+                    Grid.Row="3"
+                    Grid.Column="0" 
+                    Grid.ColumnSpan="3" SourceUpdated="LogScroller_OnSourceUpdated">
+            <ScrollViewer.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Clear" Command="{Binding ClearLogCommand}"/>
+                </ContextMenu>
+            </ScrollViewer.ContextMenu>
+
+            <TextBox Text="{Binding Path=LogText}" 
+                    Foreground="#FF888888" BorderThickness="0" BorderBrush="#00000000" Background="Black"
+                    Margin="0" TextWrapping="Wrap"
+                    IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
+                    IsTabStop="False" FontFamily="Consolas" />
+        </ScrollViewer>
+
+        <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
+              Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black">
+            
+        </Grid>
+
+        <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+
+                   Grid.ColumnSpan="3">
+
+            <WrapPanel.Background>
+                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#222" Offset="0.0" />
+                    <GradientStop Color="#111" Offset="1.0" />
+                </LinearGradientBrush>
+            </WrapPanel.Background>
+
+            <Button Name="RunButton" Width="100" Content="Run" 
+                    Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
+                    Command="{Binding Path=RunExpressionCommand}"
+                    CommandParameter="{Binding Path=RunInDebug}"
+                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
+
+            <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+                      Command="{Binding Path=CancelRunCommand}" Margin="5"/>
+            
+            <CheckBox Margin="10"
+                      Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"
+                      Content="Run Automatically" FontSize="11" IsChecked="{Binding Path=DynamicRunEnabled, Mode=TwoWay}"
+                      IsEnabled="{Binding Path=CanRunDynamically, Mode=OneWay}"
+                      VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+            
+            <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
+                      FontSize="11" VerticalAlignment="Center" Foreground="Gray"
+                      IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
+                      Content="Debug" VerticalContentAlignment="Center"/>
+            
+        </WrapPanel>
+        
+        <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" Visibility ="Hidden" HorizontalAlignment="Right">
+
+            <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
+            <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>
+            
+        </DockPanel>
+
+        <Canvas HorizontalAlignment="Stretch"
+              Margin="0,20,0,0"
+              Grid.Row="1"
+              Grid.Column="0"
+              Grid.RowSpan="3"
+              Grid.ColumnSpan="3"
+              Name="overlayCanvas" 
+              VerticalAlignment="Stretch" 
+              Width="Auto" 
+              IsHitTestVisible="False" 
+              PreviewMouseMove="OverlayCanvas_OnMouseMove"
+              Visibility="Visible">
+        </Canvas>
+
+        <GridSplitter ResizeDirection="Rows" 
+                        Grid.Column="2" 
+                        Grid.ColumnSpan="1"
+                        Grid.Row="2" 
+                        Grid.RowSpan="1"
+                        Width="Auto" 
+                        Height="2" 
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Stretch" 
+                        Margin="0" Background="#FF646464"/>
+
+        <GridSplitter ResizeDirection="Auto" 
+                          Grid.Column="1" 
+                          Grid.Row="1" 
+                          Grid.RowSpan="2"
+                          Height="Auto"
+                          Width="2"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch" 
+                          Margin="0" Background="#FF646464"/>
+
+    </Grid>
+    
+    
+</Window>

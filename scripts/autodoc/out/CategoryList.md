@@ -1,4 +1,4 @@
-##Append
+##Append to List
 ###Description
 Appends two list
 
@@ -36,30 +36,7 @@ Applies a combinator to each element in two sequences
   * None
 
 
-##Cons
-###Description
-Constructs a list pair.
-
-###Inputs
-  * **first** *(object)* - The new Head of the list
-  * **rest** *(object)* - The new Tail of the list
-
-###Output
-  * None
-
-
-##De-Cons
-###Description
-Deconstructs a list pair.
-
-###Inputs
-  * **list** *(object)* - 
-
-###Output
-  * None
-
-
-##Drop
+##Drop From List
 ###Description
 Drops elements from a list
 
@@ -71,7 +48,7 @@ Drops elements from a list
   * None
 
 
-##Empty
+##Empty List
 ###Description
 An empty list
 
@@ -93,7 +70,7 @@ Filters a sequence by a given predicate
   * None
 
 
-##First
+##First in List
 ###Description
 Gets the first element of a list
 
@@ -104,7 +81,7 @@ Gets the first element of a list
   * None
 
 
-##Get
+##Get From List
 ###Description
 Gets an element from a list at a specified index.
 
@@ -116,20 +93,9 @@ Gets an element from a list at a specified index.
   * None
 
 
-##Is Empty?
+##Is Empty List?
 ###Description
 Checks to see if the given list is empty.
-
-###Inputs
-  * **list** *(object)* - A list
-
-###Output
-  * None
-
-
-##Length
-###Description
-Gets the length of a list
 
 ###Inputs
   * **list** *(object)* - A list
@@ -143,6 +109,40 @@ Gets the length of a list
 Makes a new list out of the given inputs
 
 
+
+###Output
+  * None
+
+
+##List Length
+###Description
+Gets the length of a list
+
+###Inputs
+  * **list** *(object)* - A list
+
+###Output
+  * None
+
+
+##List Rest
+###Description
+Gets the list with the first element removed.
+
+###Inputs
+  * **list** *(object)* - A list
+
+###Output
+  * None
+
+
+##Make Pair
+###Description
+Constructs a list pair.
+
+###Inputs
+  * **first** *(object)* - The new Head of the list
+  * **rest** *(object)* - The new Tail of the list
 
 ###Output
   * None
@@ -180,17 +180,6 @@ Reduces a sequence.
   * **f(x, a)** *(object)* - Reductor Funtion
   * **a** *(object)* - Seed
   * **seq** *(object)* - Sequence
-
-###Output
-  * None
-
-
-##Rest
-###Description
-Gets the list with the first element removed.
-
-###Inputs
-  * **list** *(object)* - A list
 
 ###Output
   * None
@@ -242,7 +231,18 @@ Returns a sorted list, using the given comparitor.
   * None
 
 
-##Take
+##Split Pair
+###Description
+Deconstructs a list pair.
+
+###Inputs
+  * **list** *(object)* - 
+
+###Output
+  * None
+
+
+##Take From List
 ###Description
 Takes elements from a list
 

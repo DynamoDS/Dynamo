@@ -125,7 +125,7 @@ namespace Dynamo.PackageManager
                     catch
                     {
                         dynSettings.Bench.Dispatcher.BeginInvoke(
-                            (Action) (() => dynSettings.Bench.Log("Failed to refresh available nodes from server.")));
+                            (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to refresh available nodes from server.")));
                     }
                 };
             new Thread(start).Start();
@@ -146,7 +146,7 @@ namespace Dynamo.PackageManager
         {
             // var group = ((FuncWorkspace) funDef.Workspace).Category;
             string name = funDef.Workspace.Name;
-            var xml = Controller.GetXmlDocFromWorkspace(funDef.Workspace);
+            var xml = dynWorkspaceModel.GetXmlDocFromWorkspace(funDef.Workspace, false);
             if (xml == null) return null;
             var contents = xml.OuterXml;
             string engineVersion = "0.1.0"; //nope
@@ -176,7 +176,7 @@ namespace Dynamo.PackageManager
         {
             // var group = ((FuncWorkspace) funDef.Workspace).Category;
             string name = funDef.Workspace.Name;
-            var xml = Controller.GetXmlDocFromWorkspace(funDef.Workspace);
+            var xml = dynWorkspaceModel.GetXmlDocFromWorkspace(funDef.Workspace, false);
             if (xml == null) return null;
             var contents = xml.OuterXml;
             string engineVersion = "0.1.0"; //nope
@@ -206,7 +206,7 @@ namespace Dynamo.PackageManager
                             Client.ExecuteAndDeserializeWithContent<PackageHeader>(packageUpload);
                         dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
                             {
-                                dynSettings.Bench.Log("Message form server: " + ret.message);
+                                dynSettings.Controller.DynamoViewModel.Log("Message form server: " + ret.message);
                                 LoadedPackageHeaders.Add(funDef, ret.content);
                                 SavePackageHeader(ret.content);
                             }));
@@ -214,7 +214,7 @@ namespace Dynamo.PackageManager
                     catch
                     {
                         dynSettings.Bench.Dispatcher.BeginInvoke(
-                            (Action) (() => dynSettings.Bench.Log("Failed to publish package.")));
+                            (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
                     }
                 };
             new Thread(start).Start();
@@ -234,14 +234,14 @@ namespace Dynamo.PackageManager
                             Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgVersUpload);
                         dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
                             {
-                                dynSettings.Bench.Log(ret.message);
+                                dynSettings.Controller.DynamoViewModel.Log(ret.message);
                                 SavePackageHeader(ret.content);
                             }));
                     }
                     catch
                     {
                         dynSettings.Bench.Dispatcher.BeginInvoke(
-                            (Action) (() => dynSettings.Bench.Log("Failed to publish package.")));
+                            (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
                     }
                 };
             new Thread(start).Start();
@@ -272,7 +272,7 @@ namespace Dynamo.PackageManager
             {
                 dynSettings.Bench.Dispatcher.BeginInvoke(
                     (Action)
-                    (() => dynSettings.Bench.Log(
+                    (() => dynSettings.Controller.DynamoViewModel.Log(
                         "Failed to write package header information, won't be under source control.")));
             }
         }
@@ -286,7 +286,7 @@ namespace Dynamo.PackageManager
         public void Download(string id, string version, Action<Guid> callback)
         {
             ThreadStart start = () =>
-                {
+                {   
                     // download the package
                     var m = new HeaderDownload(id);
                     ResponseWithContentBody<PackageHeader> p = Client.ExecuteAndDeserializeWithContent<PackageHeader>(m);
@@ -324,15 +324,15 @@ namespace Dynamo.PackageManager
 
                         dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
                             {
-                                Controller.OpenDefinition(path);
-                                dynSettings.Bench.Log("Successfully imported package " + p.content.name);
+                                Controller.DynamoViewModel.OpenDefinition(path);
+                                dynSettings.Controller.DynamoViewModel.Log("Successfully imported package " + p.content.name);
                                 callback(funcDefGuid);
                             }));
                     }
                     catch
                     {
                         dynSettings.Bench.Dispatcher.BeginInvoke(
-                            (Action) (() => dynSettings.Bench.Log("Failed to load package " + p.content.name)));
+                            (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to load package " + p.content.name)));
                     }
                 };
             new Thread(start).Start();
@@ -356,15 +356,15 @@ namespace Dynamo.PackageManager
                                         if (auth)
                                         {
                                             // TODO: these elements should observe the package manager state
-                                            //dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
-                                            //dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
+                                            dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
+                                            dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
                                             IsLoggedIn = true;
                                         }
                                     }))));
                     }
                     catch
                     {
-                        dynSettings.Bench.Log("Failed to login. Are you connected to the internet?");
+                        dynSettings.Controller.DynamoViewModel.Log("Failed to login. Are you connected to the internet?");
                     }
                 };
             new Thread(start).Start();
@@ -427,14 +427,14 @@ namespace Dynamo.PackageManager
                     proxyResponse.Content = File.ReadAllText(files[0]);
                     var jsonDes = new JsonDeserializer();
                     var packageHeader = jsonDes.Deserialize<PackageHeader>(proxyResponse);
-                    dynSettings.Bench.Log("Loading package control information for " + name + " from packages");
+                    dynSettings.Controller.DynamoViewModel.Log("Loading package control information for " + name + " from packages");
                     LoadedPackageHeaders.Add(funcDef, packageHeader);
                 }
             }
             catch (Exception ex)
             {
-                dynSettings.Bench.Log("Failed to open the package header information.");
-                dynSettings.Bench.Log(ex);
+                dynSettings.Controller.DynamoViewModel.Log("Failed to open the package header information.");
+                dynSettings.Controller.DynamoViewModel.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
             }
         } 
@@ -444,8 +444,8 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void ShowPackageControlInformation()
         {
-            //FunctionDefinition f =
-            //    dynSettings.FunctionDict.First(x => x.Value.Workspace == Controller.CurrentSpace).Value;
+
+            //FunctionDefinition f = Controller.CustomNodeLoader.GetDefinitionFromWorkspace(Controller.CurrentSpace);
 
             //if (f != null)
             //{

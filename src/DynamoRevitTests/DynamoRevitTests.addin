@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+  
+  <AddIn Type="Command">
+    <Assembly>C:\Users\boyerp\Dropbox\Github\Autodesk\Dynamo\bin\Debug\DynamoRevitTests.dll</Assembly>
+    <AddInId>0748FB6D-E245-495E-82AC-A567B0CA2545</AddInId>
+    <FullClassName>Dynamo.Tests.DynamoRevitTestsLoader</FullClassName>
+  <VendorId>ADSK</VendorId>
+  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>
+    <Text>Tests for Dynamo</Text>
+    <Description>Tests for Dynamo</Description>      
+  </AddIn>
+  
+</RevitAddIns>

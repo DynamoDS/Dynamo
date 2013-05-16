@@ -1,4 +1,17 @@
-##Arc by Center Point
+##Arc By Start Mid End
+###Description
+Creates a geometric arc given start, middle and end points in XYZ.
+
+###Inputs
+  * **start** *(XYZ)* - Start XYZ
+  * **mid** *(XYZ)* - XYZ on Curve
+  * **end** *(XYZ)* - End XYZ
+
+###Output
+  * None
+
+
+##Arc by Ctr Pt
 ###Description
 Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians
 
@@ -7,19 +20,6 @@ Creates a geometric arc given a center point and two end parameters. Start and E
   * **radius** *(double)* - Radius
   * **start** *(double)* - Start Param
   * **end** *(double)* - End Param
-
-###Output
-  * None
-
-
-##Arc by Start Middle End
-###Description
-Creates a geometric arc given start, middle and end points in XYZ.
-
-###Inputs
-  * **start** *(XYZ)* - Start XYZ
-  * **mid** *(XYZ)* - XYZ on Curve
-  * **end** *(XYZ)* - End XYZ
 
 ###Output
   * None
@@ -37,22 +37,12 @@ Creates a geometric circle.
   * None
 
 
-##Curve From Curve Element
+##Curve From Curve Ele
 ###Description
 Takes in a Model Curve and Extracts Geometry Curve
 
 ###Inputs
   * **mc** *(object)* - Model Curve Element
-
-###Output
-  * None
-
-
-##Curve Transformed
-###Description
-Returns the curve (c) transformed by the transform (t).
-
-
 
 ###Output
   * None
@@ -71,7 +61,7 @@ Creates a geometric ellipse.
   * None
 
 
-##Elliptical Arc
+##Ellipse Arc
 ###Description
 Creates a geometric elliptical arc. Start and End Values may be between 0 and 2*PI in Radians
 
@@ -121,6 +111,16 @@ Creates a geometric plane.
 ##Sketch Plane
 ###Description
 Creates a geometric sketch plane.
+
+
+
+###Output
+  * None
+
+
+##Transform Crv
+###Description
+Returns the curve (c) transformed by the transform (t).
 
 
 

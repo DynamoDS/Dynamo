@@ -23,17 +23,17 @@ using Dynamo.Utilities;
 namespace Dynamo.Nodes
 {
     [NodeName("Evaluate Normal")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Evaluate a point on a face to find the normal.")]
-    class dynNormalEvaluate: dynNodeWithOneOutput
+    class dynNormalEvaluate: dynXYZBase
     {
         public dynNormalEvaluate()
         {
-            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(object)));
-            InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
-            OutPortData.Add(new PortData("XYZ", "The normal.", typeof(string)));
+            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(Value.Container)));
+            InPortData.Add(new PortData("face", "The face to evaluate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("XYZ", "The normal.", typeof(Value.Container)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -50,21 +50,23 @@ namespace Dynamo.Nodes
                 norm = f.ComputeNormal(uv);
             }
 
+            pts.Add(norm);
+
             return Value.NewContainer(norm);
         }
     }
 
     [NodeName("Evaluate UV")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Evaluate a parameter(UV) on a face to find the XYZ location.")]
-    class dynXYZEvaluate: dynNodeWithOneOutput
+    class dynXYZEvaluate : dynXYZBase
     {
         public dynXYZEvaluate()
         {
-            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(object)));
-            InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
-            OutPortData.Add(new PortData("XYZ", "The location.", typeof(string)));
-            NodeUI.RegisterAllPorts();
+            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(Value.Container)));
+            InPortData.Add(new PortData("face", "The face to evaluate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("XYZ", "The location.", typeof(Value.Container)));
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -80,6 +82,9 @@ namespace Dynamo.Nodes
                 UV param = (UV)(args[0] as Value.Container).Item;
                 face_point = f.Evaluate(param);
             }
+
+            pts.Add(face_point);
+
             return Value.NewContainer(face_point);
         }
     }

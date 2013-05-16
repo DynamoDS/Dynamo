@@ -30,16 +30,16 @@ using Dynamo.Revit.SyncedNodeExtensions;
 namespace Dynamo.Nodes
 {
     [NodeName("Extract Solar Radiation Value")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_SOLAR)]
     [NodeDescription("Extracts and computes the average solar radiation value based on a CSV file.")]
     public class dynComputeSolarRadiationValue: dynNodeWithOneOutput
     {
         public dynComputeSolarRadiationValue()
         {
-            InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(string)));
-            OutPortData.Add(new PortData("data", "The solar radiation computed data", typeof(double)));
+            InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(Value.String)));
+            OutPortData.Add(new PortData("data", "The solar radiation computed data", typeof(Value.Number)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -68,14 +68,19 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Analysis Results by Selection")]
-    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select an analysis result object from the document.")]
     public class dynAnalysisResultsBySelection: dynNodeWithOneOutput
     {
         public dynAnalysisResultsBySelection()
         {
-            OutPortData.Add(new PortData("ar", "Analysis Results referenced by this operation.", typeof(Element)));
+            OutPortData.Add(new PortData("ar", "Analysis Results referenced by this operation.", typeof(Value.Container)));
+            RegisterAllPorts();
 
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             //add a button to the inputGrid on the dynElement
             Button analysisResultButt = new Button();
             NodeUI.inputGrid.Children.Add(analysisResultButt);
@@ -86,9 +91,6 @@ namespace Dynamo.Nodes
             analysisResultButt.Content = "Select AR";
             analysisResultButt.HorizontalAlignment = HorizontalAlignment.Stretch;
             analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
-
-            NodeUI.RegisterAllPorts();
-
         }
 
         public Element pickedAnalysisResult;
@@ -152,7 +154,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("SunPath Direction")]
-    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_SOLAR)]
     [NodeDescription("Returns the current Sun Path direction.")]
     public class dynSunPathDirection: dynNodeWithOneOutput
     {
@@ -162,12 +164,15 @@ namespace Dynamo.Nodes
 
         public dynSunPathDirection()
         {
-            OutPortData.Add(new PortData("XYZ", "XYZ", typeof(XYZ)));
+            OutPortData.Add(new PortData("XYZ", "XYZ", typeof(Value.Container)));
+            RegisterAllPorts();  
+        }
 
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             //add a button to the inputGrid on the dynElement
             sunPathButt = new System.Windows.Controls.Button();
-            //this.inputGrid.Children.Add(sunPathButt);
-            sunPathButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+
             sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             sunPathButt.Click += new System.Windows.RoutedEventHandler(registerButt_Click);
@@ -194,12 +199,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(sunPathButt, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            NodeUI.RegisterAllPorts();
-
-            NodeUI.topControl.Height = 60;
-            NodeUI.UpdateLayout();
         }
-
 
         /// <summary>
         /// Description of ShadowCalculatorUtils.

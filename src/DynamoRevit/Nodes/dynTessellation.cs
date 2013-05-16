@@ -13,18 +13,18 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Delaunay Tessellation")]
-    [NodeCategory(BuiltinNodeCategories.TESSELLATION)]
+    [NodeName("Delaunay")]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("Create a delaunay tesselation from a number of reference points.")]
     public class dynDelaunayTessellation : dynRevitTransactionNodeWithOneOutput
     {
         public dynDelaunayTessellation()
         {
-            InPortData.Add(new PortData("pts", "List of reference points.", typeof(object)));
-            InPortData.Add(new PortData("face", "The face on which to tessellate.", typeof(object)));
-            OutPortData.Add(new PortData("out", "Tessellation data.", typeof(object)));
+            InPortData.Add(new PortData("pts", "List of reference points.", typeof(Value.List)));
+            InPortData.Add(new PortData("face", "The face on which to tessellate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("out", "Tessellation data.", typeof(Value.List)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

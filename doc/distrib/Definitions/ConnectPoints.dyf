@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="10" Y="55" Name="ConnectPoints" Category="Revit" ID="fbdfbd95-f779-49ae-869f-227f4a3fdb1e">
+<dynWorkspace X="10" Y="55" Name="ConnectPoints" Category="Create Geometry.Curve" ID="fbdfbd95-f779-49ae-869f-227f4a3fdb1e">
   <dynElements>
     <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="05aa4619-8fc1-489f-9e6f-f4c3f5163f17" nickname="Variable" x="0" y="0">
       <Symbol value="refPts" />

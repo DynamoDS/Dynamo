@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System.Windows;
+using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
@@ -24,6 +25,8 @@ namespace Dynamo.Nodes
         public dynScriptEditWindow()
         {
             InitializeComponent();
+            this.Owner = dynSettings.Bench;
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)

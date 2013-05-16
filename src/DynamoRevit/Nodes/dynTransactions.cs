@@ -33,16 +33,16 @@ using System.Windows.Threading;
 namespace Dynamo.Nodes
 {
     [NodeName("Transaction")]
-    [NodeCategory(BuiltinNodeCategories.EXECUTION)]
+    [NodeCategory(BuiltinNodeCategories.CORE_TIME)]
     [NodeDescription("Executes Expression inside of a Revit API transaction")]
     public class dynTransaction: dynNodeWithOneOutput
     {
         public dynTransaction()
         {
             InPortData.Add(new PortData("expr", "Expression to run in a transaction.", typeof(object)));
-            OutPortData.Add(new PortData("result", "Result of the expression.", typeof(object)));
+            OutPortData.Add(new PortData("result", "Result of the expression.", typeof(Value.List)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         void setDirty(bool val)
@@ -57,11 +57,11 @@ namespace Dynamo.Nodes
                 this.RequiresRecalc = val;
         }
 
-        protected override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+        protected override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
-                NodeUI.Error("Input must be connected.");
+                Error("Input must be connected.");
                 throw new Exception("Transaction Node requires all inputs to be connected.");
             }
             return base.Build(preBuilt, outPort);
@@ -87,7 +87,7 @@ namespace Dynamo.Nodes
                 Dictionary<INode, List<INode>> letEntries,
                 HashSet<string> initializedIds)
             {
-                var arg =  arguments["expr"].compile(symbols, letEntries, initializedIds);
+                var arg =  arguments["expr0"].compile(symbols, letEntries, initializedIds);
                 
                 //idle :: (() -> A) -> A
                 //Evaluates the given function in the Revit Idle thread.
@@ -97,7 +97,7 @@ namespace Dynamo.Nodes
                         {
                             var f = (args[0] as Value.Function).Item;
 
-                            if (node.Controller.RunInDebug)
+                            if (dynSettings.Controller.DynamoViewModel.RunInDebug)
                                 return f.Invoke(FSharpList<Value>.Empty);
                             else
                             {
@@ -115,7 +115,7 @@ namespace Dynamo.Nodes
                             if (node.Controller.RunCancelled)
                                 throw new CancelEvaluationException(false);
 
-                            if (!node.Controller.RunInDebug)
+                            if (!dynSettings.Controller.DynamoViewModel.RunInDebug)
                             {
                                 dynRevitSettings.Controller.InIdleThread = true;
                                 dynRevitSettings.Controller.InitTransaction();
@@ -130,14 +130,17 @@ namespace Dynamo.Nodes
                     FSharpFunc<FSharpList<Value>, Value>.FromConverter(
                         _ =>
                         {
-                            if (!dynRevitSettings.Controller.RunInDebug)
+                            if (!dynRevitSettings.Controller.DynamoViewModel.RunInDebug)
                             {
                                 dynRevitSettings.Controller.EndTransaction();
                                 dynRevitSettings.Controller.InIdleThread = false;
 
-                                dynNodeUI.UpdateLayoutDelegate uld = new dynNodeUI.UpdateLayoutDelegate(node.NodeUI.CallUpdateLayout);
-                                node.NodeUI.Dispatcher.Invoke(uld, DispatcherPriority.Background, new object[] { node.NodeUI });
-                                node.NodeUI.ValidateConnections();
+                                //MVVM: use our event on the view model to request layout update
+                                //dynNodeView.UpdateLayoutDelegate uld = new dynNodeView.UpdateLayoutDelegate(node.NodeUI.CallUpdateLayout);
+                                //node.NodeUI.Dispatcher.Invoke(uld, DispatcherPriority.Background, new object[] { node.NodeUI });
+                                dynSettings.Controller.DynamoViewModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
+                                
+                                node.ValidateConnections();
                             }
                             else
                                 node.setDirty(false);

@@ -33,6 +33,8 @@ using Dynamo.Utilities;
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
+using Dynamo.FSchemeInterop;
+using Dynamo.Commands;
 //MDJ needed for spatialfeildmanager
 //TAF added to get strings from resource files
 
@@ -47,6 +49,7 @@ namespace Dynamo.Applications
         private static string m_AssemblyDirectory = Path.GetDirectoryName(m_AssemblyName);
         public static DynamoUpdater updater;
         private static ResourceManager res;
+        public static ExecutionEnvironment env;
 
         public Result OnStartup(UIControlledApplication application)
         {
@@ -103,6 +106,8 @@ namespace Dynamo.Applications
                 UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
                 UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
 
+                env = new ExecutionEnvironment();
+
                 return Result.Succeeded;
             }
             catch (Exception ex)
@@ -124,7 +129,7 @@ namespace Dynamo.Applications
     [Regeneration(RegenerationOption.Manual)]
     internal class DynamoRevit : IExternalCommand
     {
-        private static dynBench dynamoBench;
+        private static DynamoView dynamoBench;
         private UIDocument m_doc;
         private UIApplication m_revit;
 
@@ -137,10 +142,8 @@ namespace Dynamo.Applications
                 return Result.Succeeded;
             }
 
-            //SplashScreen splashScreen = null
-            Window splashScreen = null;
-
-            dynSettings.StartLogging();
+            //MVVM : don't start logging here.
+            DynamoLogger.Instance.StartLogging();
 
             try
             {
@@ -165,12 +168,9 @@ namespace Dynamo.Applications
                         //get window handle
                         IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-                        //prepare and show splash
-                        splashScreen = new DynamoSplash();
-
                         //show the window
-                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.updater);
-                        dynamoBench = dynamoController.Bench;
+                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, true, typeof(DynamoRevitViewModel));
+                        dynamoBench = dynSettings.Bench;
 
                         //set window handle and show dynamo
                         new WindowInteropHelper(dynamoBench).Owner = mwHandle;
@@ -190,12 +190,11 @@ namespace Dynamo.Applications
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                if (dynSettings.Writer != null)
-                {
-                    dynSettings.Writer.WriteLine(ex.Message);
-                    dynSettings.Writer.WriteLine(ex.StackTrace);
-                    dynSettings.Writer.WriteLine("Dynamo log ended " + DateTime.Now.ToString());
-                }
+
+                DynamoLogger.Instance.Log(ex.Message);
+                DynamoLogger.Instance.Log(ex.StackTrace);
+                DynamoLogger.Instance.Log("Dynamo log ended " + DateTime.Now.ToString());
+
                 return Result.Failed;
             }
 
@@ -204,12 +203,13 @@ namespace Dynamo.Applications
 
         private void dynamoForm_Closed(object sender, EventArgs e)
         {
+            IdlePromise.ClearPromises();
             dynamoBench = null;
         }
 
         private void dynamoForm_Loaded(object sender, RoutedEventArgs e)
         {
-            ((dynBench) sender).WindowState = WindowState.Maximized;
+            ((DynamoView) sender).WindowState = WindowState.Maximized;
         }
     }
 

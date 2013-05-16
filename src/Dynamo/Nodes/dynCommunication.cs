@@ -21,6 +21,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Windows.Threading;
 using System.Security.Cryptography;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
@@ -28,15 +29,15 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [NodeName("Web Request")]
-    [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
+    [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Fetches data from the web using a URL.")]
     public class dynWebRequest : dynNodeWithOneOutput
     {
         public dynWebRequest()
         {
-            InPortData.Add(new PortData("url", "A URL to query.", typeof(dynString)));
-            OutPortData.Add(new PortData("str", "The string returned from the web request.", typeof(dynString)));
-            NodeUI.RegisterAllPorts();
+            InPortData.Add(new PortData("url", "A URL to query.", typeof(Value.String)));
+            OutPortData.Add(new PortData("str", "The string returned from the web request.", typeof(Value.String)));
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -69,17 +70,17 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("UDP Listener")]
-    [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
+    [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Listens for data from the web using a UDP port")]
     public class dynUDPListener : dynNodeWithOneOutput
     {
         public dynUDPListener()
         {
-            InPortData.Add(new Connectors.PortData("exec", "Execution Interval", typeof(object)));
+            InPortData.Add(new Connectors.PortData("exec", "Execution Interval", typeof(Value.Number)));
             InPortData.Add(new Connectors.PortData("udp port", "A UDP port to listen to.", typeof(object)));
-            OutPortData.Add(new Connectors.PortData("str", "The string returned from the web request.", typeof(object)));
+            OutPortData.Add(new Connectors.PortData("str", "The string returned from the web request.", typeof(Value.String)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private delegate void LogDelegate(string msg);
@@ -100,7 +101,7 @@ namespace Dynamo.Nodes
 
         public void ReceiveCallback(IAsyncResult ar)
         {
-            LogDelegate log = new LogDelegate(this.Bench.Log);
+            LogDelegate log = new LogDelegate(dynSettings.Controller.DynamoViewModel.Log);
 
             try
             {
@@ -127,7 +128,7 @@ namespace Dynamo.Nodes
         private void ListenOnUDP()
         {
 
-            LogDelegate log = new LogDelegate(this.Bench.Log);
+            LogDelegate log = new LogDelegate(dynSettings.Controller.DynamoViewModel.Log);
 
             // UDP sample from http://stackoverflow.com/questions/8274247/udp-listener-respond-to-client
             UdpClient listener;
@@ -174,7 +175,9 @@ namespace Dynamo.Nodes
 
             if (((Value.Number)args[0]).Item == 1) // if exec node has pumped
             {
-                NodeUI.Dispatcher.BeginInvoke(new UDPListening(ListenOnUDP));
+                //MVVM: now using node's dispatch on UI thread method
+                //NodeUI.Dispatcher.BeginInvoke(new UDPListening(ListenOnUDP));
+                DispatchOnUIThread(ListenOnUDP);
             }
 
 

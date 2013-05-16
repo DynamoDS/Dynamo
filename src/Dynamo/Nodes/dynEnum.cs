@@ -23,6 +23,13 @@ namespace Dynamo.Nodes
 
         public dynEnum()
         {
+            OutPortData.Add(new PortData("", "Enum", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        {
             //widen the control
             NodeUI.topControl.Width = 300;
 
@@ -41,10 +48,6 @@ namespace Dynamo.Nodes
                 if (combo.SelectedIndex != -1)
                     this.RequiresRecalc = true;
             };
-            
-            OutPortData.Add(new PortData("", "Enum", typeof(object)));
-
-            NodeUI.RegisterAllPorts();
         }
 
         public void WireToEnum(Array arr)
@@ -79,17 +82,4 @@ namespace Dynamo.Nodes
         }
     }
 
-    [IsInteractive(true)]
-    [NodeName("Enum")]
-    [NodeCategory(BuiltinNodeCategories.MISC)]
-    [NodeDescription("Represent an enum in a drop-down list.")]
-    public class dynEnum1 : dynEnum
-    {
-        enum test { TOM, DICK, LARRY };
-
-        public dynEnum1()
-        {
-            WireToEnum(Enum.GetValues(typeof(test)));
-        }
-    }
 }

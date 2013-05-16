@@ -1,4 +1,4 @@
-<dynWorkspace X="10" Y="55" Name="New Sketch Plane" Category="Revit" ID="d9bd10fc-a0ed-4c3b-be5a-4f4ba0f37979">
+<dynWorkspace X="10" Y="55" Name="New Sketch Plane" Category="Create Geometry.Surface" ID="d9bd10fc-a0ed-4c3b-be5a-4f4ba0f37979">
   <dynElements>
     <Dynamo.Elements.dynXYZZero type="Dynamo.Elements.dynXYZZero" guid="59981965-f45e-4635-a835-ee13aaf61b5e" nickname="XYZ Zero" x="111.25" y="344.75" />
     <Dynamo.Elements.dynXYZBasisZ type="Dynamo.Elements.dynXYZBasisZ" guid="e318da92-ddd9-48d3-84f6-0ff9dd1e432a" nickname="XYZ BasisZ" x="102.5" y="263.25" />

@@ -1,0 +1,263 @@
+﻿<UserControl x:Class="Dynamo.Search.SearchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:search="clr-namespace:Dynamo.Nodes.Search"
+             xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements"
+             xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:clr="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             Visibility="{Binding Path=Visible}" 
+             d:DesignWidth="300" 
+             d:DesignHeight="300"  
+             x:Name="SearchControl" 
+             MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}">
+  
+  <Grid Background="Black" >
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+ 
+    <StackPanel Name="RSearchBoxStackPanel" Orientation="Horizontal" Grid.Row="0">
+
+        <Image  Margin="7,0,7,0"
+Source="..\Images\search_24.png" Opacity="1">
+        </Image>
+
+            <TextBox Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,15,5,10" Margin ="0"
+                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Width="188" Text="{Binding Path=SearchText,Mode=TwoWay}">
+            </TextBox>
+
+            <Button Name="BackButton" Margin="1, 0, 1, 0" Width="42" FontSize="24" Foreground="White" ToolTip="Go Back" 
+                      Style="{DynamicResource ResourceKey=SImageButton}" Click="Back_Click" Tag="..\Images\back_24.png"/>
+
+        <Button Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include extended Revit API" 
+                      Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\add_32_white.png" Click="ibtnServiceController_MouseLeftButtonUp">
+
+          <Button.ContextMenu>
+
+            <ContextMenu Name="RegionMenu" ItemsSource="{Binding Path=Regions}">
+
+              <ContextMenu.ItemTemplate>
+                <DataTemplate>
+                  <MenuItem Header="{Binding Key}" Command="{Binding Value}" IsChecked="{Binding Value.Loaded}" IsCheckable="True"/>
+                </DataTemplate>
+              </ContextMenu.ItemTemplate>
+
+            </ContextMenu>
+
+          </Button.ContextMenu>
+
+        </Button>
+
+      </StackPanel>
+
+        <ScrollViewer Visibility="{Binding BrowserVisibility}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
+                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Row="1" >
+
+            <ScrollViewer.Resources>
+
+                <Style x:Key="SearchTreeView" TargetType="{x:Type TreeView}">
+                    <Setter Property="Focusable" Value="False"></Setter>
+                    <Setter Property="Background" Value="Black"/>
+                    <Setter Property="Foreground" Value="WhiteSmoke"/>
+                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+                    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TreeView}">
+                                <Border SnapsToDevicePixels="True" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                    <ScrollViewer Focusable="false" Background="Transparent" Padding="{TemplateBinding Padding}" CanContentScroll="false" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    
+                </Style>
+
+                <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
+                    <Setter Property="Focusable" Value="False"/>
+                    <Setter Property="Width" Value="32"/>
+                    <Setter Property="Foreground" Value="#888"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ToggleButton}">
+
+                                <Border Width="32" Background="Transparent">
+                                    <Border SnapsToDevicePixels="true" Width="24" Height="8" Background="{TemplateBinding Background}" x:Name="border">
+                                        <Path HorizontalAlignment="Center" 
+                                              Margin="1,1,1,1" x:Name="ExpandPath" Fill="{TemplateBinding Foreground}" 
+                                              Data="M 0 8 L 4 4 L 0 0 Z"/>
+                                    </Border>
+                                </Border> 
+                                
+                                <ControlTemplate.Triggers>
+                                    
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Data" TargetName="ExpandPath" Value="M 0 0 L 4 4 L 8 0 Z"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                    
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="Focusable" Value="False"></Setter>
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded}"></Setter>
+                    <Setter Property="IsSelected" Value="{Binding IsSelected}"></Setter>
+                    <Setter Property="Visibility" Value="{Binding Visibility}"></Setter>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TreeViewItem}">
+
+                                <Button Command="{Binding ToggleIsExpanded}">
+                                    <Button.Focusable>False</Button.Focusable>
+
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    
+                                    <Border Name="ContainerLight" BorderThickness="3,0,0,0" BorderBrush="#222">
+                                        <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" >
+                                            <Grid MinHeight="{Binding Height}">
+
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition MinWidth="19" Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="{Binding Height}"/>
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+
+                                                <ToggleButton VerticalAlignment="Center" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
+
+                                                <Rectangle Width="7" Height="7" x:Name="whiteRect" Margin="3,0" VerticalAlignment="Center" Fill="#FFFFFF" HorizontalAlignment="Center" Visibility="Collapsed" />
+
+                                                <Border Name="C" VerticalAlignment="Center" SnapsToDevicePixels="true" Grid.Column="1" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" x:Name="PART_Header" ContentSource="Header"/>
+                                                </Border>
+
+                                                <ItemsPresenter Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"  x:Name="ItemsHost" />
+                                                
+                                            </Grid>
+
+                                        </Border>
+                                        
+                                    </Border>
+                                </Button>
+
+                                <ControlTemplate.Triggers>
+
+                                    <Trigger Property="IsExpanded" Value="false">
+                                        <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
+                                    </Trigger>
+                                    
+                                    <Trigger Property="IsExpanded" Value="true">
+                                        
+                                        <Setter Property="BorderBrush" TargetName="ContainerLight" Value="White"/>
+                                    </Trigger>
+                                    
+                                    <Trigger Property="HasItems" Value="false">
+                                        <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
+                                        <Setter Property="Visibility" TargetName="whiteRect" Value="Visible"/>
+                                    </Trigger>
+
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter Property="Background" TargetName="Bd" Value="#555"/>
+                                    </Trigger>
+
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="true"/>
+                                            <Condition Property="IsExpanded" Value="false"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" TargetName="Bd" Value="#333"/>
+                                    </MultiTrigger>
+
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="true"/>
+                                            <Condition Property="HasItems" Value="false"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" TargetName="Bd" Value="#444"/>
+                                    </MultiTrigger>
+
+                                    <!--<MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="true"/>
+                                            <Condition Property="IsSelectionActive" Value="false"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                                    </MultiTrigger>-->
+                                    
+                                    <Trigger Property="IsEnabled" Value="false">
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                    </Trigger>
+                                    
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ScrollViewer.Resources>
+
+            <!--CATEGORIES-->
+
+
+            <TreeView ItemsSource="{Binding Path=BrowserRootCategories}" Style="{StaticResource SearchTreeView}" BorderThickness="0">
+                
+                <TreeView.Resources>
+
+                    <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
+                        
+                        <TextBlock Foreground="WhiteSmoke" FontSize="14" Text="{Binding Path=Name}"/>
+                        
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
+                        
+                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
+                        
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
+                        
+                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
+                        
+                    </HierarchicalDataTemplate>
+
+                </TreeView.Resources>
+                
+            </TreeView>
+            
+        </ScrollViewer>
+
+
+    </Grid>
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="..\Themes\DynamoModern.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+</UserControl>
+  
+  

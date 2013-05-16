@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<dynWorkspace X="-69" Y="55" Name="chomp" Category="Miscellaneous" ID="8506a91f-e6e2-4155-9431-4cb1be829967">
+<dynWorkspace X="-69" Y="55" Name="chomp" Category="Core.Lists" ID="8506a91f-e6e2-4155-9431-4cb1be829967">
   <dynElements>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="3107a28e-f51d-42af-b0ea-36e9b8003915" nickname="Variable" x="163.5" y="92">
       <Symbol value="lst" />

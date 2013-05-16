@@ -1,0 +1,31 @@
+<dynWorkspace X="0" Y="0">
+  <dynElements>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="3d81add3-b63e-4cec-b9eb-36a89e6be95c" nickname="CSV to XYZ" x="265.416666666667" y="0">
+      <ID value="e7fc0854-482e-4f60-9a09-2bb527cf2c16" />
+      <Name value="CSV to XYZ" />
+      <Inputs>
+        <Input value="path" />
+        <Input value="multiplier" />
+      </Inputs>
+      <Outputs>
+        <Output value="xyz" />
+      </Outputs>
+    </Dynamo.Nodes.dynFunction>
+    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="11e0457c-b12f-4e3f-8268-0553f31e830d" nickname="Filename" x="0" y="0">
+      <System.String value="C:\Autodesk\16 CSV to Points\helix_smaller.csv" />
+    </Dynamo.Nodes.dynStringFilename>
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="70978814-ebe4-434e-9472-c6726c79eefa" nickname="Number Slider" x="0" y="127.041666666667">
+      <System.Double value="10.1010101010101" min="0" max="20" />
+    </Dynamo.Nodes.dynDoubleSliderInput>
+    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="105caa93-3ef6-48a9-aa3a-335f2019eda9" nickname="Watch 3D" x="489.583333333333" y="0" />
+    <Dynamo.Nodes.dynFamilyInstanceCreatorXYZ type="Dynamo.Nodes.dynFamilyInstanceCreatorXYZ" guid="ad71374e-173d-44fe-8e66-19779c332614" nickname="Family Instance Creator" x="1518.5" y="10.6666666666667" />
+    <Dynamo.Nodes.dynFamilyTypeSelector type="Dynamo.Nodes.dynFamilyTypeSelector" guid="7fba2cec-3cca-40f0-9c31-76fade7663ec" nickname="Family Type Selector" x="1309.83333333333" y="150.666666666667" index="-1" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="3d81add3-b63e-4cec-b9eb-36a89e6be95c" start_index="0" end="105caa93-3ef6-48a9-aa3a-335f2019eda9" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="11e0457c-b12f-4e3f-8268-0553f31e830d" start_index="0" end="3d81add3-b63e-4cec-b9eb-36a89e6be95c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="70978814-ebe4-434e-9472-c6726c79eefa" start_index="0" end="3d81add3-b63e-4cec-b9eb-36a89e6be95c" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="7fba2cec-3cca-40f0-9c31-76fade7663ec" start_index="0" end="ad71374e-173d-44fe-8e66-19779c332614" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>
