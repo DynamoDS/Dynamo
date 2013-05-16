@@ -819,13 +819,16 @@ namespace Dynamo.Utilities
             {
                 var beginNode = new BeginNode();
                 List<dynNodeModel> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
+
                 foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
                 {
                     beginNode.AddInput(tNode.Index.ToString());
                     beginNode.ConnectInput(tNode.Index.ToString(), tNode.Node.Build(buildDict, 0));
                 }
+
                 beginNode.AddInput(hangingNodes.Count.ToString());
                 beginNode.ConnectInput(hangingNodes.Count.ToString(), top);
+
 
                 top = beginNode;
             }

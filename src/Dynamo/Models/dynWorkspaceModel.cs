@@ -13,18 +13,17 @@
 //limitations under the License.
 
 using System;
-using System.Collections.Specialized;
-using System.Windows;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Xml;
 using Dynamo.Connectors;
-using Dynamo.Selection;
-using Dynamo.Utilities;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -346,8 +345,6 @@ namespace Dynamo
                     XmlElement note = xmlDoc.CreateElement(n.GetType().ToString());
                     noteList.AppendChild(note);
                     note.SetAttribute("text", n.Text);
-                    //note.SetAttribute("x", Canvas.GetLeft(n).ToString());
-                    //note.SetAttribute("y", Canvas.GetTop(n).ToString());
                     note.SetAttribute("x", n.X.ToString());
                     note.SetAttribute("y", n.Y.ToString());
                 }

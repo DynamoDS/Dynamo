@@ -1854,14 +1854,27 @@ namespace Dynamo.Controls
         {
             if (!String.IsNullOrEmpty(path))
             {
+                // if it's a custom node
+                if (workspace is FuncWorkspace)
+                {
+                    var def = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(workspace);
+                    def.Workspace.FilePath = path;
+                    if (def != null)
+                    {
+                        this.SaveFunction(def, true);
+                    }
+                    return;
+                }
+
                 if (!dynWorkspaceModel.SaveWorkspace(path, workspace))
                 {
                     Log("Workbench could not be saved.");
                 }
                 else
                 {
-                    _model.CurrentSpace.FilePath = path;
+                    workspace.FilePath = path;
                 }
+                
             }
         }
 
@@ -1956,7 +1969,7 @@ namespace Dynamo.Controls
         /// <param name="definition">The definition to saveo</param>
         /// <param name="bool">Whether to write the function to file.</param>
         /// <returns>Whether the operation was successful</returns>
-        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = false)
+        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = false, bool compileFunction = true)
         {
             if (definition == null)
                 return;
@@ -1977,10 +1990,15 @@ namespace Dynamo.Controls
 
                     string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
                     dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
-                    
+
                     if (addToSearch)
                     {
                         Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId);
+                    }
+
+                    if (compileFunction)
+                    {
+                        dynSettings.Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), CustomNodeLoader.CompileFunction(definition));
                     }
 
                     Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId, path);
