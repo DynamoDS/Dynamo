@@ -25,6 +25,7 @@
                                         DeadBrush="{StaticResource nodeDeadBrush}"
                                         ErrorBrush="{StaticResource nodeErrorBrush}">
     </controls:StateToColorConverter>
+    <controls:PortNameConverter x:Key="PortNameConverter"/>
     <controls:PathToFileNameConverter x:Key="PathToFileNameConverter"/>
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>

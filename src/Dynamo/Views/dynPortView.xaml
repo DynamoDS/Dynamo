@@ -48,7 +48,7 @@
             </Canvas>
             
             <TextBlock Name="portNameTb" Width="Auto"
-                   Text="{Binding Path=PortName,Mode=TwoWay}"
+                   Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter} }"
                    VerticalAlignment="Center"
                    FontSize="12" FontFamily="Trebuchet"
                        Padding="6,7,6,7"
