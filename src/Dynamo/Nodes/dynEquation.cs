@@ -39,8 +39,12 @@ namespace Dynamo.Nodes
                 if (_formula == null || !_formula.Equals(value))
                 {
                     _formula = value;
-                    RequiresRecalc = value != null;
-                    RaisePropertyChanged("Formula");
+                    if (value != null)
+                    {
+                        processFormula();
+                        RequiresRecalc = true;
+                        RaisePropertyChanged("Formula");
+                    }
                 }
             }
         }
@@ -61,11 +65,6 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = false;
             tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            tb.OnChangeCommitted += delegate
-            {
-                processFormula();
-                dynSettings.ReturnFocusToSearch();
-            };
 
             tb.DataContext = this;
             var bindingVal = new Binding("Formula")

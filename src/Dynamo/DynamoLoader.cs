@@ -125,6 +125,21 @@ namespace Dynamo.Utilities
 
                         if (IsNodeSubType(t) && attribs.Length > 0)
                         {
+                            //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
+                            //if available, to discern whether we should load this type
+                            if (!controller.Context.Equals(Context.NONE))
+                            {
+                                object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
+                                if (platformExclusionAttribs.Length > 0)
+                                {
+                                    string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
+                                    if (exclusions.Contains(controller.Context))
+                                        //if the attribute's values contain the context stored on the controller
+                                        //then skip loading this type.
+                                        continue;
+                                }
+                            }
+
                             searchViewModel.Add(t);
                             string typeName = (attribs[0] as NodeNameAttribute).Name;
                             var data = new TypeLoadData(assembly, t);

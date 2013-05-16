@@ -25,8 +25,8 @@ namespace Dynamo
 
         dynamic oldPyEval;
 
-        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, bool withUI, Type viewModelType)
-            : base(env, withUI, viewModelType)
+        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, bool withUI, Type viewModelType, string context)
+            : base(env, withUI, viewModelType, context)
         {
             Updater = updater;
             
@@ -37,7 +37,7 @@ namespace Dynamo
 
             dynRevitSettings.Revit.Application.DocumentClosed += new EventHandler<Autodesk.Revit.DB.Events.DocumentClosedEventArgs>(Application_DocumentClosed);
             dynRevitSettings.Revit.Application.DocumentOpened += new EventHandler<Autodesk.Revit.DB.Events.DocumentOpenedEventArgs>(Application_DocumentOpened);
-            
+
         }
 
         void Application_DocumentOpened(object sender, Autodesk.Revit.DB.Events.DocumentOpenedEventArgs e)

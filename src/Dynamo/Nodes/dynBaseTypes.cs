@@ -109,8 +109,6 @@ namespace Dynamo.Nodes
 
     }
 
-
-
     static class Utilities
     {
         public static string Ellipsis(string value, int desiredLength)
@@ -1993,10 +1991,6 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = true;
             tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            tb.OnChangeCommitted += delegate
-            {
-                dynSettings.ReturnFocusToSearch();
-            };
 
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
@@ -2117,7 +2111,6 @@ namespace Dynamo.Nodes
                 {
                     Min = 0;
                 }
-                dynSettings.ReturnFocusToSearch();
             };
             //mintb.Pending = false;
 
@@ -2138,7 +2131,6 @@ namespace Dynamo.Nodes
                 {
                     Max = 100;
                 }
-                dynSettings.ReturnFocusToSearch();
             };
 
             NodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -2401,11 +2393,6 @@ namespace Dynamo.Nodes
             NodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
-
-            tb.OnChangeCommitted += delegate
-                {
-                    dynSettings.ReturnFocusToSearch();
-                };
 
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
