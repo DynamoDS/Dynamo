@@ -361,9 +361,10 @@ namespace Dynamo
             }
         }
 
-        [NodeName("Variable")]
+        [NodeName("Input")]
         [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
-        [NodeDescription("A function variable")]
+        [NodeDescription("A function parameter")]
+        [NodeSearchTags("variable", "argument", "parameter")]
         [IsInteractive(false)]
         public class dynSymbol : dynNodeModel
         {
