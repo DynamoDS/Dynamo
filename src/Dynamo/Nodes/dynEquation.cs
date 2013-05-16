@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
@@ -74,7 +75,7 @@ namespace Dynamo.Nodes
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            tb.SetBinding(dynTextBox.TextProperty, bindingVal);
+            tb.SetBinding(TextBox.TextProperty, bindingVal);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -90,7 +91,16 @@ namespace Dynamo.Nodes
 
         private void processFormula()
         {
-            var e = new Expression(Formula);
+            Expression e;
+            try
+            {
+                e = new Expression(Formula);
+            }
+            catch (Exception ex)
+            {
+                Error(ex.Message);
+                return;
+            }
 
             if (e.HasErrors())
             {
@@ -163,7 +173,9 @@ namespace Dynamo.Nodes
                             p => Value.NewNumber((double)p.Evaluate()))))).Item;
             };
 
-            return Value.NewNumber((double)e.Evaluate());
+            dynamic result = e.Evaluate();
+
+            return Value.NewNumber(result);
         }
     }
 }

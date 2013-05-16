@@ -964,16 +964,11 @@ namespace Dynamo.Nodes
 
         private void RemovePort(dynPortModel inport)
         {
-            if (inport.PortType == PortType.INPUT)
+            while (inport.Connectors.Any())
             {
-                //int index = inPorts.FindIndex(x => x == inport);
-                int index = inPorts.IndexOf(inport);
-                //gridLeft.Children.Remove(inport);
-
-                while (inport.Connectors.Any())
-                {
-                    inport.Connectors[0].NotifyConnectedPortsOfDeletion();
-                }
+                var connector = inport.Connectors[0];
+                dynSettings.Controller.DynamoModel.CurrentSpace.Connectors.Remove(connector);
+                connector.NotifyConnectedPortsOfDeletion();
             }
         }
 
