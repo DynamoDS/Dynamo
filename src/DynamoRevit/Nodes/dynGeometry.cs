@@ -1303,18 +1303,16 @@ namespace Dynamo.Nodes
         {
             CurveLoop firstLoop = (CurveLoop)((Value.Container)args[0]).Item;
             CurveLoop secondLoop = (CurveLoop)((Value.Container)args[1]).Item;
-            
+
             List<VertexPair> vertPairs = new List<VertexPair>();
-            //int i=0;
-            //foreach(Curve c in firstLoop)
-            //{
-            //    vertPairs.Add(new VertexPair(i,i));
-            //    i++;
-            //}
+            int i = 0;
+            foreach (Curve c in firstLoop)
+            {
+                vertPairs.Add(new VertexPair(i, i));
+                i++;
+            }
 
-            vertPairs.Add(new VertexPair(0, 0));
-
-            var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop,secondLoop,vertPairs);
+            var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop, secondLoop, vertPairs);
 
             solids.Add(result);
 

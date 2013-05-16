@@ -22,9 +22,10 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Autodesk.Revit.DB;
+
 using Dynamo.Utilities;
 using Dynamo.Connectors;
-
+using Dynamo.Revit;
 using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
 
 using Microsoft.FSharp.Collections;
@@ -642,7 +643,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Face")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a face from the document.")]
-    public class dynFormElementBySelection : dynElementSelection
+    public class dynFormElementBySelection : dynElementSelection, IDrawable
     {
         Reference f;
 
@@ -680,6 +681,18 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
             }
         }
+
+        public RenderDescription Draw()
+        {
+            RenderDescription rd = new RenderDescription();
+
+            Face face = (Face)dynRevitSettings.Doc.Document.GetElement(f).GetGeometryObjectFromReference(f);
+
+            dynRevitTransactionNode.DrawFace(rd, face);
+
+            return rd;
+        }
+
     }
 
     [NodeName("Select Curve")]

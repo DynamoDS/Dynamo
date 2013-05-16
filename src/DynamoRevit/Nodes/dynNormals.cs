@@ -25,7 +25,7 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate Normal")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Evaluate a point on a face to find the normal.")]
-    class dynNormalEvaluate: dynNodeWithOneOutput
+    class dynNormalEvaluate: dynXYZBase
     {
         public dynNormalEvaluate()
         {
@@ -50,6 +50,8 @@ namespace Dynamo.Nodes
                 norm = f.ComputeNormal(uv);
             }
 
+            pts.Add(norm);
+
             return Value.NewContainer(norm);
         }
     }
@@ -57,7 +59,7 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate UV")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Evaluate a parameter(UV) on a face to find the XYZ location.")]
-    class dynXYZEvaluate: dynNodeWithOneOutput
+    class dynXYZEvaluate : dynXYZBase
     {
         public dynXYZEvaluate()
         {
@@ -80,6 +82,9 @@ namespace Dynamo.Nodes
                 UV param = (UV)(args[0] as Value.Container).Item;
                 face_point = f.Evaluate(param);
             }
+
+            pts.Add(face_point);
+
             return Value.NewContainer(face_point);
         }
     }
