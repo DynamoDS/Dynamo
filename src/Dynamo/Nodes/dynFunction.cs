@@ -66,7 +66,7 @@ namespace Dynamo
 
             void ui_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
             {
-                Controller.DynamoViewModel.ViewCustomNodeWorkspace(_def);
+                Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(_def.FunctionId);
                 e.Handled = true;
             }
 
