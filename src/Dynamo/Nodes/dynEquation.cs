@@ -89,6 +89,13 @@ namespace Dynamo.Nodes
             processFormula();
         }
 
+        private static HashSet<string> RESERVED_NAMES = new HashSet<string>() { 
+            "Abs", "Acos", "Asin", "Atan", "Ceiling", "Cos",
+            "Exp", "Floor", "IEEERemainder", "Log", "Log10",
+            "Max", "Min", "Pow", "Round", "Sign", "Sin", "Sqrt",
+            "Tan", "Truncate", "in", "if"
+        };
+
         private void processFormula()
         {
             Expression e;
@@ -113,7 +120,7 @@ namespace Dynamo.Nodes
 
             e.EvaluateFunction += delegate(string name, FunctionArgs args)
             {
-                if (!paramSet.Contains(name))
+                if (!paramSet.Contains(name) && !RESERVED_NAMES.Contains(name))
                 {
                     paramSet.Add(name);
                     parameters.Add(Formula.IndexOf(name), Tuple.Create(name, typeof(Value.Function)));
@@ -168,16 +175,17 @@ namespace Dynamo.Nodes
 
             e.EvaluateFunction += delegate(string name, FunctionArgs fArgs)
             {
-                var func = ((Value.Function)functionLookup[name]).Item;
-                fArgs.Result = ((Value.Number)func.Invoke(
-                    Utils.SequenceToFSharpList(
-                        fArgs.Parameters.Select(
-                            p => Value.NewNumber((double)p.Evaluate()))))).Item;
+                if (functionLookup.ContainsKey(name))
+                {
+                    var func = ((Value.Function)functionLookup[name]).Item;
+                    fArgs.Result = ((Value.Number)func.Invoke(
+                        Utils.SequenceToFSharpList(
+                            fArgs.Parameters.Select<Expression, Value>(
+                                p => Value.NewNumber(Convert.ToDouble(p.Evaluate())))))).Item;
+                }
             };
 
-            dynamic result = e.Evaluate();
-
-            return Value.NewNumber(result);
+            return Value.NewNumber(Convert.ToDouble(e.Evaluate()));
         }
     }
 }
