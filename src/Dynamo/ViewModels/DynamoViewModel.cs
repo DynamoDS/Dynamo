@@ -1090,13 +1090,6 @@ namespace Dynamo.Controls
                 double height = 0;
                 foreach (dynNodeModel n in _model.Nodes)
                 {
-                    /*Point relativePoint = n.TransformToAncestor(dynSettings.Workbench)
-                          .Transform(new Point(0, 0));
-
-                    width = Math.Max(relativePoint.X + n.Width, width);
-                    height = Math.Max(relativePoint.Y + n.Height, height);*/
-
-                    //MVVM: nodes should store the X and Y coordinates in canvas space
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
                 }
@@ -1167,7 +1160,7 @@ namespace Dynamo.Controls
         {
             if (parameter is Guid && dynSettings.Controller.CustomNodeLoader.Contains((Guid)parameter))
             {
-                ViewCustomNodeWorkspace(dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameter));
+                ViewCustomNodeWorkspace( dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameter) );
             }
         }
 

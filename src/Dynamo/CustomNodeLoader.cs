@@ -711,8 +711,6 @@ namespace Dynamo.Utilities
                 var expression = CompileFunction(def);
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), expression);
 
-                
-
             }
             catch (Exception ex)
             {
