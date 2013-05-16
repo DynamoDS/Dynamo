@@ -121,36 +121,44 @@ namespace Dynamo.Utilties
                 foreach (Type t in loadedTypes)
                 {
                     
-                    
-                    //only load types that are in the right namespace, are not abstract
-                    //and have the elementname attribute
-                    object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
-
-                    
-                    if (IsNodeSubType(t) && attribs.Length > 0)
+                    try
                     {
-                        searchViewModel.Add(t);
-                        string typeName = (attribs[0] as NodeNameAttribute).Name;
-                        var data = new TypeLoadData(assembly, t);
+                        //only load types that are in the right namespace, are not abstract
+                        //and have the elementname attribute
+                        object[] attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
 
-                        if (!controller.BuiltInTypesByNickname.ContainsKey(typeName))
+                        if (IsNodeSubType(t) && attribs.Length > 0)
                         {
-                            controller.BuiltInTypesByNickname.Add(typeName, data);
-                        }
-                        else
-                        {
-                            dynSettings.Controller.DynamoViewModel.Log("Duplicate type encountered: " + typeName );
-                        }
+                            searchViewModel.Add(t);
+                            string typeName = (attribs[0] as NodeNameAttribute).Name;
+                            var data = new TypeLoadData(assembly, t);
 
-                        if (!controller.BuiltInTypesByName.ContainsKey(t.FullName))
-                        {
-                            controller.BuiltInTypesByName.Add(t.FullName, data);
-                        }
-                        else
-                        {
-                            dynSettings.Controller.DynamoViewModel.Log("Duplicate type encountered: " + typeName);
+                            if (!controller.BuiltInTypesByNickname.ContainsKey(typeName))
+                            {
+                                controller.BuiltInTypesByNickname.Add(typeName, data);
+                            }
+                            else
+                            {
+                                dynSettings.Controller.DynamoViewModel.Log("Duplicate type encountered: " + typeName);
+                            }
+
+                            if (!controller.BuiltInTypesByName.ContainsKey(t.FullName))
+                            {
+                                controller.BuiltInTypesByName.Add(t.FullName, data);
+                            }
+                            else
+                            {
+                                dynSettings.Controller.DynamoViewModel.Log("Duplicate type encountered: " + typeName);
+                            }
                         }
                     }
+                    catch (Exception e)
+                    {
+                        dynSettings.Controller.DynamoViewModel.Log("Failed to load type from " + assembly.FullName);
+                        dynSettings.Controller.DynamoViewModel.Log("The type was " + t.FullName);
+                        dynSettings.Controller.DynamoViewModel.Log(e);
+                    }
+                    
                 }
             }
             catch (Exception e)

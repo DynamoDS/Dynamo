@@ -692,17 +692,19 @@ namespace Dynamo.Search
         /// </summary>
         public void ExecuteSelected()
         {
-            //if (SearchResults.Count == 0) return;
 
             // none of the elems are selected, return 
             if (SelectedIndex == -1)
+                return;
+
+            if (_visibleSearchResults.Count <= SelectedIndex)
                 return;
 
             if (_visibleSearchResults[SelectedIndex] is SearchElementBase)
             {
                 ( (SearchElementBase) _visibleSearchResults[SelectedIndex]).Execute();
             }
-            //SearchResults[SelectedIndex].Execute();
+
         }
 
         /// <summary>
