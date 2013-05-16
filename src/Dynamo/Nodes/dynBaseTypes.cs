@@ -1718,6 +1718,10 @@ namespace Dynamo.Nodes
 
         private void commit()
         {
+            var expr = GetBindingExpression(TextBox.TextProperty);
+            if (expr != null)
+                expr.UpdateSource();
+
             if (OnChangeCommitted != null)
             {
                 OnChangeCommitted();
@@ -1759,10 +1763,6 @@ namespace Dynamo.Nodes
 
                 CaretIndex = p;
             }
-
-            var expr = this.GetBindingExpression(TextBox.TextProperty);
-            if (expr != null)
-                expr.UpdateSource();
         }
 
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
@@ -1770,6 +1770,7 @@ namespace Dynamo.Nodes
             if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
             {
                 commit();
+                dynSettings.ReturnFocusToSearch();
             }
         }
 
@@ -1777,7 +1778,6 @@ namespace Dynamo.Nodes
         {
             commit();
         }
-
     }
 
     [IsInteractive(true)]

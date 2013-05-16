@@ -1848,14 +1848,27 @@ namespace Dynamo.Controls
         {
             if (!String.IsNullOrEmpty(path))
             {
+                // if it's a custom node
+                if (workspace is FuncWorkspace)
+                {
+                    var def = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(workspace);
+                    def.Workspace.FilePath = path;
+                    if (def != null)
+                    {
+                        this.SaveFunction(def, true);
+                    }
+                    return;
+                }
+
                 if (!dynWorkspaceModel.SaveWorkspace(path, workspace))
                 {
                     Log("Workbench could not be saved.");
                 }
                 else
                 {
-                    _model.CurrentSpace.FilePath = path;
+                    workspace.FilePath = path;
                 }
+                
             }
         }
 
@@ -1934,8 +1947,8 @@ namespace Dynamo.Controls
         {
             get
             {
-                return _model.HomeSpace.Nodes.Concat(
-                    Controller.CustomNodeLoader.GetLoadedDefinitions().Aggregate(
+                return _model.Workspaces.Aggregate((IEnumerable<dynNodeModel>)new List<dynNodeModel>(), (a, x) => a.Concat(x.Nodes))
+                    .Concat(Controller.CustomNodeLoader.GetLoadedDefinitions().Aggregate(
                         (IEnumerable<dynNodeModel>)new List<dynNodeModel>(),
                         (a, x) => a.Concat(x.Workspace.Nodes)
                         )
@@ -1950,7 +1963,7 @@ namespace Dynamo.Controls
         /// <param name="definition">The definition to saveo</param>
         /// <param name="bool">Whether to write the function to file.</param>
         /// <returns>Whether the operation was successful</returns>
-        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = false)
+        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = false, bool compileFunction = true)
         {
             if (definition == null)
                 return;
@@ -1971,13 +1984,43 @@ namespace Dynamo.Controls
 
                     string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
                     dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
-                    
+
                     if (addToSearch)
                     {
                         Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId);
                     }
 
                     Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId, path);
+
+                    #region Compile Function and update all nodes
+
+                    IEnumerable<string> inputNames = new List<string>();
+                    IEnumerable<string> outputNames = new List<string>();
+                    dynSettings.Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), CustomNodeLoader.CompileFunction(definition, ref inputNames, ref outputNames));
+
+                    //Update existing function nodes which point to this function to match its changes
+                    foreach (dynNodeModel el in AllNodes)
+                    {
+                        if (el is dynFunction)
+                        {
+                            var node = (dynFunction)el;
+
+                            if (node.Definition != definition)
+                                continue;
+
+                            node.SetInputs(inputNames);
+                            node.SetOutputs(outputNames);
+                            el.RegisterAllPorts();
+                        }
+                    }
+
+                    //Call OnSave for all saved elements
+                    foreach (dynNodeModel el in functionWorkspace.Nodes)
+                        el.onSave();
+
+                    #endregion
+
+
                 }
                 catch (Exception e)
                 {
@@ -1986,132 +2029,132 @@ namespace Dynamo.Controls
                 }
             }
 
-            try
-            {
-                #region Find outputs
+            //try
+            //{
+            //    #region Find outputs
 
-                // Find output elements for the node
-                IEnumerable<dynNodeModel> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
+            //    // Find output elements for the node
+            //    IEnumerable<dynNodeModel> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
 
-                var topMost = new List<Tuple<int, dynNodeModel>>();
+            //    var topMost = new List<Tuple<int, dynNodeModel>>();
 
-                IEnumerable<string> outputNames;
+            //    IEnumerable<string> outputNames;
 
-                // if we found output nodes, add select their inputs
-                // these will serve as the function output
-                if (outputs.Any())
-                {
-                    topMost.AddRange(
-                        outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
+            //    // if we found output nodes, add select their inputs
+            //    // these will serve as the function output
+            //    if (outputs.Any())
+            //    {
+            //        topMost.AddRange(
+            //            outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
 
-                    outputNames = outputs.Select(x => (x as dynOutput).Symbol);
-                }
-                else
-                {
-                    // if there are no explicitly defined output nodes
-                    // get the top most nodes and set THEM as tht output
-                    IEnumerable<dynNodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
+            //        outputNames = outputs.Select(x => (x as dynOutput).Symbol);
+            //    }
+            //    else
+            //    {
+            //        // if there are no explicitly defined output nodes
+            //        // get the top most nodes and set THEM as tht output
+            //        IEnumerable<dynNodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
 
-                    var outNames = new List<string>();
+            //        var outNames = new List<string>();
 
-                    foreach (dynNodeModel topNode in topMostNodes)
-                    {
-                        foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
-                        {
-                            if (!topNode.HasOutput(output))
-                            {
-                                topMost.Add(Tuple.Create(output, topNode));
-                                outNames.Add(topNode.OutPortData[output].NickName);
-                            }
-                        }
-                    }
+            //        foreach (dynNodeModel topNode in topMostNodes)
+            //        {
+            //            foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
+            //            {
+            //                if (!topNode.HasOutput(output))
+            //                {
+            //                    topMost.Add(Tuple.Create(output, topNode));
+            //                    outNames.Add(topNode.OutPortData[output].NickName);
+            //                }
+            //            }
+            //        }
 
-                    outputNames = outNames;
-                }
+            //        outputNames = outNames;
+            //    }
 
-                #endregion
+            //    #endregion
 
-                // color the node to define its connectivity
-                foreach (var ele in topMost)
-                {
-                    ele.Item2.ValidateConnections();
-                }
+            //    // color the node to define its connectivity
+            //    foreach (var ele in topMost)
+            //    {
+            //        ele.Item2.ValidateConnections();
+            //    }
 
-                //Find function entry point, and then compile the function and add it to our environment
-                IEnumerable<dynNodeModel> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
-                IEnumerable<string> inputNames = variables.Select(x => (x as dynSymbol).Symbol);
+            //    //Find function entry point, and then compile the function and add it to our environment
+            //    IEnumerable<dynNodeModel> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
+            //    IEnumerable<string> inputNames = variables.Select(x => (x as dynSymbol).Symbol);
 
-                INode top;
-                var buildDict = new Dictionary<dynNodeModel, Dictionary<int, INode>>();
+            //    INode top;
+            //    var buildDict = new Dictionary<dynNodeModel, Dictionary<int, INode>>();
 
-                if (topMost.Count > 1)
-                {
-                    InputNode node = new ExternalFunctionNode(
-                        FScheme.Value.NewList,
-                        Enumerable.Range(0, topMost.Count).Select(x => x.ToString()));
+            //    if (topMost.Count > 1)
+            //    {
+            //        InputNode node = new ExternalFunctionNode(
+            //            FScheme.Value.NewList,
+            //            Enumerable.Range(0, topMost.Count).Select(x => x.ToString()));
 
-                    int i = 0;
-                    foreach (var topNode in topMost)
-                    {
-                        string inputName = i.ToString();
-                        node.ConnectInput(inputName, topNode.Item2.Build(buildDict, topNode.Item1));
-                        i++;
-                    }
+            //        int i = 0;
+            //        foreach (var topNode in topMost)
+            //        {
+            //            string inputName = i.ToString();
+            //            node.ConnectInput(inputName, topNode.Item2.Build(buildDict, topNode.Item1));
+            //            i++;
+            //        }
 
-                    top = node;
-                }
-                else
-                    top = topMost[0].Item2.BuildExpression(buildDict);
+            //        top = node;
+            //    }
+            //    else
+            //        top = topMost[0].Item2.BuildExpression(buildDict);
 
-                // if the node has any outputs, we create a BeginNode in order to evaluate all of them
-                // sequentially (begin evaluates a list of expressions)
-                if (outputs.Any())
-                {
-                    var beginNode = new BeginNode();
-                    List<dynNodeModel> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
-                    foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
-                    {
-                        beginNode.AddInput(tNode.Index.ToString());
-                        beginNode.ConnectInput(tNode.Index.ToString(), tNode.Node.Build(buildDict, 0));
-                    }
-                    beginNode.AddInput(hangingNodes.Count.ToString());
-                    beginNode.ConnectInput(hangingNodes.Count.ToString(), top);
+            //    // if the node has any outputs, we create a BeginNode in order to evaluate all of them
+            //    // sequentially (begin evaluates a list of expressions)
+            //    if (outputs.Any())
+            //    {
+            //        var beginNode = new BeginNode();
+            //        List<dynNodeModel> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
+            //        foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
+            //        {
+            //            beginNode.AddInput(tNode.Index.ToString());
+            //            beginNode.ConnectInput(tNode.Index.ToString(), tNode.Node.Build(buildDict, 0));
+            //        }
+            //        beginNode.AddInput(hangingNodes.Count.ToString());
+            //        beginNode.ConnectInput(hangingNodes.Count.ToString(), top);
 
-                    top = beginNode;
-                }
+            //        top = beginNode;
+            //    }
 
-                // make the anonymous function
-                FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.GUID.ToString()),
-                                                               top.Compile());
+            //    // make the anonymous function
+            //    FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.GUID.ToString()),
+            //                                                   top.Compile());
 
-                // make it accessible in the FScheme environment
-                Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), expression);
+            //    // make it accessible in the FScheme environment
+            //    Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), expression);
 
-                //Update existing function nodes which point to this function to match its changes
-                foreach (dynNodeModel el in AllNodes)
-                {
-                    if (el is dynFunction)
-                    {
-                        var node = (dynFunction)el;
+            //    //Update existing function nodes which point to this function to match its changes
+            //    foreach (dynNodeModel el in AllNodes)
+            //    {
+            //        if (el is dynFunction)
+            //        {
+            //            var node = (dynFunction)el;
 
-                        if (node.Definition != definition)
-                            continue;
+            //            if (node.Definition != definition)
+            //                continue;
 
-                        node.SetInputs(inputNames);
-                        node.SetOutputs(outputNames);
-                        el.RegisterAllPorts();
-                    }
-                }
+            //            node.SetInputs(inputNames);
+            //            node.SetOutputs(outputNames);
+            //            el.RegisterAllPorts();
+            //        }
+            //    }
 
-                //Call OnSave for all saved elements
-                foreach (dynNodeModel el in functionWorkspace.Nodes)
-                    el.onSave();
+            //    //Call OnSave for all saved elements
+            //    foreach (dynNodeModel el in functionWorkspace.Nodes)
+            //        el.onSave();
 
-            }
-            catch (Exception ex)
-            {
-                Log(ex.GetType() + ": " + ex.Message);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log(ex.GetType() + ": " + ex.Message);
+            //}
 
         }
 

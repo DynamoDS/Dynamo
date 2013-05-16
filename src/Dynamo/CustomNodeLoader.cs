@@ -723,8 +723,17 @@ namespace Dynamo.Utilities
             return true;
         }
 
-        public static FScheme.Expression CompileFunction( FunctionDefinition definition ) {
+        public static FScheme.Expression CompileFunction( FunctionDefinition definition )
+        {
+            IEnumerable<string> ins = null;
+            IEnumerable<string> outs = null;
 
+            return CompileFunction(definition, ref ins, ref outs);
+        }
+
+        public static FScheme.Expression CompileFunction( FunctionDefinition definition, ref IEnumerable<string> inputNames, ref IEnumerable<string> outputNames )
+        {
+       
             if (definition == null)
                 return null;
 
@@ -737,8 +746,6 @@ namespace Dynamo.Utilities
             IEnumerable<dynNodeModel> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
 
             var topMost = new List<Tuple<int, dynNodeModel>>();
-
-            IEnumerable<string> outputNames;
 
             // if we found output nodes, add select their inputs
             // these will serve as the function output
@@ -782,7 +789,7 @@ namespace Dynamo.Utilities
 
             //Find function entry point, and then compile the function and add it to our environment
             IEnumerable<dynNodeModel> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
-            IEnumerable<string> inputNames = variables.Select(x => (x as dynSymbol).Symbol);
+            inputNames = variables.Select(x => (x as dynSymbol).Symbol);
 
             INode top;
             var buildDict = new Dictionary<dynNodeModel, Dictionary<int, INode>>();
@@ -819,13 +826,16 @@ namespace Dynamo.Utilities
             {
                 var beginNode = new BeginNode();
                 List<dynNodeModel> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
+
                 foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
                 {
                     beginNode.AddInput(tNode.Index.ToString());
                     beginNode.ConnectInput(tNode.Index.ToString(), tNode.Node.Build(buildDict, 0));
                 }
+
                 beginNode.AddInput(hangingNodes.Count.ToString());
                 beginNode.ConnectInput(hangingNodes.Count.ToString(), top);
+
 
                 top = beginNode;
             }

@@ -219,6 +219,8 @@ namespace Dynamo.Views
             //{
             //    DisableEditNameBox();
             //}
+
+            dynSettings.ReturnFocusToSearch();
         }
 
         private void DynWorkspaceView_OnMouseUp(object sender, MouseButtonEventArgs e)
@@ -244,34 +246,34 @@ namespace Dynamo.Views
                     // Hide the drag selection box.
                     selectionBox.Visibility = Visibility.Collapsed;
 
-                    Point mouseUpPos = e.GetPosition(WorkBench);
+                    //Point mouseUpPos = e.GetPosition(WorkBench);
 
                     //clear the selected elements
-                    DynamoSelection.Instance.ClearSelection();
+                    //DynamoSelection.Instance.ClearSelection();
 
-                    var rect =
-                        new Rect(
-                            Canvas.GetLeft(selectionBox),
-                            Canvas.GetTop(selectionBox),
-                            selectionBox.Width,
-                            selectionBox.Height);
+                    //var rect =
+                    //    new Rect(
+                    //        Canvas.GetLeft(selectionBox),
+                    //        Canvas.GetTop(selectionBox),
+                    //        selectionBox.Width,
+                    //        selectionBox.Height);
 
-                    if (mouseUpPos.X > mouseDownPos.X)
-                    {
-                        #region contain select
+                    //if (mouseUpPos.X > mouseDownPos.X)
+                    //{
+                    //    #region contain select
 
-                        vm.ContainSelectCommand.Execute(rect);
+                    //    vm.ContainSelectCommand.Execute(rect);
 
-                        #endregion
-                    }
-                    else if (mouseUpPos.X < mouseDownPos.X)
-                    {
-                        #region crossing select
+                    //    #endregion
+                    //}
+                    //else if (mouseUpPos.X < mouseDownPos.X)
+                    //{
+                    //    #region crossing select
 
-                        vm.CrossSelectCommand.Execute(rect);
+                    //    vm.CrossSelectCommand.Execute(rect);
 
-                        #endregion
-                    }
+                    //    #endregion
+                    //}
 
                     #endregion
                 }
@@ -321,11 +323,22 @@ namespace Dynamo.Views
                     selectionBox.Height = mouseDownPos.Y - mousePos.Y;
                 }
 
+                //clear the selected elements
+                DynamoSelection.Instance.ClearSelection();
+
+                var rect =
+                    new Rect(
+                        Canvas.GetLeft(selectionBox),
+                        Canvas.GetTop(selectionBox),
+                        selectionBox.Width,
+                        selectionBox.Height);
+
                 if (mousePos.X > mouseDownPos.X)
                 {
                     #region contain select
 
                     selectionBox.StrokeDashArray = null;
+                    vm.ContainSelectCommand.Execute(rect);
 
                     #endregion
                 }
@@ -334,6 +347,7 @@ namespace Dynamo.Views
                     #region crossing select
 
                     selectionBox.StrokeDashArray = new DoubleCollection { 4 };
+                    vm.CrossSelectCommand.Execute(rect);
 
                     #endregion
                 }
