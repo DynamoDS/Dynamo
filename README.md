@@ -22,7 +22,7 @@ The current version will run on top of Revit 2013 and Project Vasari Beta 2 and 
 April 2013
 
 Known Issues
-- Dynamo cannot start with Revit Python Shell Installed.  
+- Dynamo cannot start with Revit Python Shell Installed.
 - Dynamo continues regenerating revit elements after closing when "Run Automatically" is checked
 - Face selection of loaded families move origin to Revit 0,0,0
 - Solar Radiation Optimization Sample may lock CSV file and stop running

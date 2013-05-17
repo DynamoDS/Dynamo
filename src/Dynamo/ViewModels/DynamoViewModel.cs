@@ -1618,7 +1618,6 @@ namespace Dynamo.Controls
                          lacingAttrib = elNode.Attributes[5];
                     }
 
-                    
                     string typeName = typeAttrib.Value;
 
                     string oldNamespace = "Dynamo.Elements.";
@@ -2353,6 +2352,11 @@ namespace Dynamo.Controls
                     if (el is dynFunction)
                     {
                         var fun = el as dynFunction;
+
+                        //argument lacing on functions should be set to disabled
+                        //by default in the constructor, but for any workflow saved
+                        //before this was the case, we need to ensure it here.
+                        el.ArgumentLacing = LacingStrategy.Disabled;
 
                         // we've found a custom node, we need to attempt to load its guid.  
                         // if it doesn't exist (i.e. its a legacy node), we need to assign it one,

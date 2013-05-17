@@ -521,6 +521,8 @@ namespace Dynamo.Utilities
 
                 #region instantiate nodes
 
+                List<Guid> badNodes = new List<Guid>();
+
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
                     XmlAttribute typeAttrib = elNode.Attributes[0];
@@ -528,6 +530,12 @@ namespace Dynamo.Utilities
                     XmlAttribute nicknameAttrib = elNode.Attributes[2];
                     XmlAttribute xAttrib = elNode.Attributes[3];
                     XmlAttribute yAttrib = elNode.Attributes[4];
+
+                    XmlAttribute lacingAttrib = null;
+                    if (elNode.Attributes.Count > 5)
+                    {
+                        lacingAttrib = elNode.Attributes[5];
+                    }
 
                     string typeName = typeAttrib.Value;
 
@@ -556,17 +564,48 @@ namespace Dynamo.Utilities
 
                     if (!controller.BuiltInTypesByName.TryGetValue(typeName, out tData))
                     {
+                        //try and get a system type by this name
                         t = Type.GetType(typeName);
+
+                        //if we still can't find the type, try the also known as attributes
                         if (t == null)
                         {
-                            DynamoCommands.WriteToLogCmd.Execute("Error loading definition. Could not load node of type: " + typeName);
-                            return false;
+                            //try to get the also known as values
+                            foreach (KeyValuePair<string, TypeLoadData> kvp in controller.BuiltInTypesByName)
+                            {
+                                var akaAttribs = kvp.Value.Type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), false);
+                                if (akaAttribs.Count() > 0)
+                                {
+                                    if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
+                                    {
+                                        controller.DynamoViewModel.Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key, typeName));
+                                        t = kvp.Value.Type;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (t == null)
+                        {
+                            controller.DynamoViewModel.Log("Could not load node of type: " + typeName);
+                            controller.DynamoViewModel.Log("Loading will continue but nodes might be missing from your workflow.");
+
+                            //return false;
+                            badNodes.Add(guid);
+                            continue;
                         }
                     }
                     else
                         t = tData.Type;
 
                     dynNodeModel el = dynSettings.Controller.DynamoViewModel.CreateNodeInstance(t, nickname, guid);
+
+                    if (lacingAttrib != null)
+                    {
+                        LacingStrategy lacing = LacingStrategy.First;
+                        Enum.TryParse(lacingAttrib.Value, out lacing);
+                        el.ArgumentLacing = lacing;
+                    }
 
                     // note - this is because the connectors fail to be created if there's not added
                     // to the canvas
@@ -637,6 +676,9 @@ namespace Dynamo.Utilities
                     //find the elements to connect
                     dynNodeModel start = null;
                     dynNodeModel end = null;
+
+                    if (badNodes.Contains(guidStart) || badNodes.Contains(guidEnd))
+                        continue;
 
                     foreach (dynNodeModel e in ws.Nodes)
                     {

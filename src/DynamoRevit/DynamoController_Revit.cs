@@ -14,6 +14,9 @@ using Dynamo.Utilities;
 
 using Autodesk.Revit.DB;
 
+using Microsoft.FSharp.Core;
+using Microsoft.FSharp.Collections;
+
 using Value = Dynamo.FScheme.Value;
 
 
@@ -139,6 +142,16 @@ namespace Dynamo
                     null,
                     d);
 
+                var drawingField = PythonEngine.GetField("Drawing");
+                var drawDelegateType = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine+DrawDelegate");
+                Delegate draw = Delegate.CreateDelegate(
+                    drawDelegateType,
+                    this,
+                    typeof(DynamoController_Revit)
+                        .GetMethod("DrawPython", BindingFlags.NonPublic | BindingFlags.Instance));
+
+                drawingField.SetValue(null, draw);
+
                 // use this to pass into the python script a list of previously created elements from dynamo
                 //TODO: ADD BACK IN
                 //bindings.Add(new Binding("DynStoredElements", this.Elements));
@@ -147,6 +160,38 @@ namespace Dynamo
             {
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
+            }
+        }
+
+        RenderDescription DrawPython(Value val)
+        {
+            RenderDescription rd = new RenderDescription();
+
+            DrawContainers(val, rd);
+
+            return rd;
+        }
+
+        private void DrawContainers(Value val, RenderDescription rd)
+        {
+            if (val.IsList)
+            {
+                foreach (Value v in ((Value.List)val).Item)
+                {
+                    DrawContainers(v, rd);
+                }
+            }
+            if (val.IsContainer)
+            {
+                var drawable = ((Value.Container)val).Item;
+                if(drawable is XYZ)
+                {
+                    dynRevitTransactionNode.DrawXYZ(rd, (XYZ)drawable);
+                }
+                else
+                {
+                    dynRevitTransactionNode.DrawGeometryObject(rd, (GeometryObject)drawable);
+                }
             }
         }
 

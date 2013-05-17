@@ -41,9 +41,12 @@ namespace Dynamo.Nodes
                     _formula = value;
                     if (value != null)
                     {
+                        DisableReporting();
                         processFormula();
-                        RequiresRecalc = true;
                         RaisePropertyChanged("Formula");
+                        RequiresRecalc = true;
+                        EnableReporting();
+                        WorkSpace.Modified();
                     }
                 }
             }

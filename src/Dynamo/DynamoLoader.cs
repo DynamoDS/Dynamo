@@ -26,8 +26,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
-        /// <param name="bench">The bench where logging errors will be sent</param>
-        internal static void LoadBuiltinTypes(SearchViewModel searchViewModel, DynamoController controller)//, dynBench bench)
+        internal static void LoadBuiltinTypes(SearchViewModel searchViewModel, DynamoController controller)
         {
             Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
 
@@ -35,13 +34,14 @@ namespace Dynamo.Utilities
 
             #region determine assemblies to load
 
-            var allLoadedAssembliesByPath = new Dictionary<string, Assembly>(
-                AppDomain.CurrentDomain.GetAssemblies().ToDictionary(x => x.Location));
-
+            var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
             var allLoadedAssemblies = new Dictionary<string, Assembly>();
 
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                allLoadedAssembliesByPath[assembly.Location] = assembly;
                 allLoadedAssemblies[assembly.FullName] = assembly;
+            }
 
             string path = Path.Combine(location, "packages");
 
