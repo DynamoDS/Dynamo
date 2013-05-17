@@ -49,6 +49,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoCore.Lang;
 using ProtoFFI;
 
+using Microsoft.Practices.Prism.ViewModel;
+
 namespace Dynamo.Applications
 {
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
@@ -82,7 +84,7 @@ namespace Dynamo.Nodes
     [NodeName("DesignScript Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs an embedded DesignScript script")]
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
     public class dynDesignScript : dynRevitTransactionNodeWithOneOutput
     {
         bool dirty = false;
@@ -98,20 +100,21 @@ namespace Dynamo.Nodes
 
         public dynDesignScript()
         {
+            InPortData.Add(new PortData("IN", "A list of objects", typeof(object)));
+            OutPortData.Add(new PortData("OUT", "Result of the DesignScript script", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
             //add an edit window option to the 
             //main context window
             System.Windows.Controls.MenuItem editWindowItem = new System.Windows.Controls.MenuItem();
             editWindowItem.Header = "Edit...";
             editWindowItem.IsCheckable = false;
-            MainContextMenu.Items.Add(editWindowItem);
+            NodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
-
-            InPortData.Add(new PortData("IN", "A list of objects", typeof(object)));
-            OutPortData.Add(new PortData("OUT", "Result of the DesignScript script", typeof(object)));
-
-            RegisterAllPorts();
-
-            UpdateLayout();
         }
 
         public override bool RequiresRecalc
@@ -165,10 +168,12 @@ namespace Dynamo.Nodes
 
         public override void Cleanup()
         {
-            if (coreSet)
-                core.Cleanup();
+            if (!coreSet)
+                return;
+                
+            core.Cleanup();
 
-            Autodesk.ASM.State.ClearPersistedObjects();
+            //Autodesk.ASM.State.ClearPersistedObjects();
             Autodesk.ASM.OUT.Reset();
         }
 
