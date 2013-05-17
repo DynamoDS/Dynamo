@@ -29,6 +29,7 @@ namespace Dynamo.Nodes
     [NodeName("Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
+    [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview")]
     public class dynWatch3D : dynNodeWithOneOutput
     {
         WatchView _watchView;

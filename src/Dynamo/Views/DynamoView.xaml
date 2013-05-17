@@ -126,7 +126,8 @@
                         <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Focusable="False" Header="_Save As..." Command="{Binding Path=ShowSaveDialogAndSaveResultCommand}" Name="saveButton" InputGestureText="Ctrl+Shift+S">
+                <MenuItem Focusable="False" Header="_Save As..." Command="{Binding Path=ShowSaveDialogAndSaveResultCommand}" 
+                          Name="saveButton" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
 
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
@@ -136,7 +137,7 @@
                 <MenuItem Focusable="False" Header="_Save Image..." Command="{Binding Path=ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage"/>
                 <Separator />
                 <MenuItem Focusable="False" Header="_Clear" Command="{Binding Path=ClearCommand}" Name="clearButton" 
-                          InputGestureText="Ctrl+Shift+C">
+                          InputGestureText="Ctrl+Shift+C" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
 
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
@@ -211,9 +212,9 @@
 
             </MenuItem>
 
-            <MenuItem Header="Debug" Visibility="{Binding DebugMenuVisibility}">
-                <MenuItem Header="Open All Samples" Command="{Binding Path=RunUITestsCommand}"/>
-            </MenuItem>
+            <!--<MenuItem Header="Debug" Visibility="{Binding DebugMenuVisibility}">
+                <MenuItem Header="Run Tests" Command="{Binding Path=RunUITestsCommand}"/>
+            </MenuItem>-->
         </Menu>
 
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
@@ -527,9 +528,11 @@
               Name="overlayCanvas" 
               VerticalAlignment="Stretch" 
               Width="Auto" 
-              IsHitTestVisible="False" 
+              IsHitTestVisible="{Binding IsUILocked}" 
               PreviewMouseMove="OverlayCanvas_OnMouseMove"
-              Visibility="Visible">
+              Visibility="Visible" 
+                Cursor="{Binding IsUILocked, Converter={StaticResource BoolToCanvasCursorConverter}}"
+              ForceCursor="{Binding IsUILocked}">
         </Canvas>
 
         <GridSplitter ResizeDirection="Rows" 

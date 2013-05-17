@@ -37,8 +37,6 @@ namespace Dynamo.Controls
             get { return LogScroller.Height > 0; }
         }
 
-        public bool UILocked { get; private set; }
-
         public DynamoView()
         {
             InitializeComponent();
@@ -56,31 +54,8 @@ namespace Dynamo.Controls
 
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
-            _vm.UILocked += LockUI;
-            _vm.UIUnlocked += UnlockUI;
-
             _vm.RequestLayoutUpdate += vm_RequestLayoutUpdate;
             _vm.PostUIActivationCommand.Execute();
-        }
-
-        private void LockUI(object sender, EventArgs e)
-        {
-            saveButton.IsEnabled = false;
-            clearButton.IsEnabled = false;
-
-            overlayCanvas.IsHitTestVisible = true;
-            overlayCanvas.Cursor = Cursors.AppStarting;
-            overlayCanvas.ForceCursor = true;
-        }
-
-        private void UnlockUI(object sender, EventArgs e)
-        {
-            saveButton.IsEnabled = true;
-            clearButton.IsEnabled = true;
-
-            overlayCanvas.IsHitTestVisible = false;
-            overlayCanvas.Cursor = null;
-            overlayCanvas.ForceCursor = false;
         }
 
         private void WindowClosing(object sender, CancelEventArgs  e)
@@ -97,7 +72,7 @@ namespace Dynamo.Controls
 
         private void OverlayCanvas_OnMouseMove(object sender, MouseEventArgs e)
         {
-            if (UILocked)
+            if (_vm.IsUILocked)
                 return;
 
             dynNodeView el = draggedNode;

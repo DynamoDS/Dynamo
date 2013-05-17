@@ -13,7 +13,7 @@ using Dynamo.Utilities;
 using System.Windows;
 using System.Diagnostics;
 
-namespace Dynamo.Utilties
+namespace Dynamo.Utilities
 {
     /// <summary>
     ///     Handles loading various types of elements into Dynamo at startup
@@ -43,7 +43,7 @@ namespace Dynamo.Utilties
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 allLoadedAssemblies[assembly.FullName] = assembly;
 
-            string path = Path.Combine(location, "Packages");
+            string path = Path.Combine(location, "packages");
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -68,14 +68,13 @@ namespace Dynamo.Utilties
             {
                 if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
                     LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath], searchViewModel, controller);
-                        //, bench);
                 else
                 {
                     try
                     {
                         Assembly assembly = Assembly.LoadFrom(assemblyPath);
                         allLoadedAssemblies[assembly.GetName().Name] = assembly;
-                        LoadNodesFromAssembly(assembly, searchViewModel, controller);//, bench);
+                        LoadNodesFromAssembly(assembly, searchViewModel, controller);
                     }
                     catch
                     {
@@ -84,8 +83,6 @@ namespace Dynamo.Utilties
             }
 
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
-
-            //AppDomain.Unload(tempDomain);
 
             #endregion
 
@@ -112,7 +109,7 @@ namespace Dynamo.Utilties
         /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
         /// <param name="bench">The bench where logging errors will be sent</param>
-        private static void LoadNodesFromAssembly(Assembly assembly, SearchViewModel searchViewModel, DynamoController controller)//, dynBench bench )
+        private static void LoadNodesFromAssembly(Assembly assembly, SearchViewModel searchViewModel, DynamoController controller)
         {
             try
             {
@@ -120,7 +117,6 @@ namespace Dynamo.Utilties
 
                 foreach (Type t in loadedTypes)
                 {
-                    
                     try
                     {
                         //only load types that are in the right namespace, are not abstract
@@ -129,6 +125,21 @@ namespace Dynamo.Utilties
 
                         if (IsNodeSubType(t) && attribs.Length > 0)
                         {
+                            //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
+                            //if available, to discern whether we should load this type
+                            if (!controller.Context.Equals(Context.NONE))
+                            {
+                                object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
+                                if (platformExclusionAttribs.Length > 0)
+                                {
+                                    string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
+                                    if (exclusions.Contains(controller.Context))
+                                        //if the attribute's values contain the context stored on the controller
+                                        //then skip loading this type.
+                                        continue;
+                                }
+                            }
+
                             searchViewModel.Add(t);
                             string typeName = (attribs[0] as NodeNameAttribute).Name;
                             var data = new TypeLoadData(assembly, t);
@@ -249,7 +260,7 @@ namespace Dynamo.Utilties
         {
             var path = (string)((MenuItem)sender).Tag;
 
-            if (dynSettings.Bench.UILocked)
+            if (dynSettings.Controller.DynamoViewModel.IsUILocked)
                 dynSettings.Controller.DynamoViewModel.QueueLoad(path);
             else
             {

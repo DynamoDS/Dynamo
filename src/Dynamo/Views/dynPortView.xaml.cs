@@ -16,7 +16,6 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 
@@ -63,11 +62,12 @@ namespace Dynamo.Connectors
 
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            dynSettings.ReturnFocusToSearch();
+
             ViewModel.ConnectCommand.Execute();
     
             //set the handled flag so that the element doesn't get dragged
             e.Handled = true;
-
         }
 
         private void Ellipse1Dot_OnLayoutUpdated(object sender, EventArgs e)

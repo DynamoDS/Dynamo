@@ -637,11 +637,11 @@ namespace Dynamo.Nodes
             {
                 Value expr = null;
 
-                if (Controller.RunCancelled)
-                    throw new CancelEvaluationException(false);
-
                 try
                 {
+                    if (Controller.RunCancelled)
+                        throw new CancelEvaluationException(false);
+
                     __eval_internal(args, evaluationDict);
 
                     expr = OutPortData.Count == 1
@@ -1292,6 +1292,39 @@ namespace Dynamo.Nodes
             ElementDescription = description;
         }
     }
+
+    /// <summary>
+    /// The DoNotLoadOnPlatforms attribute allows the node implementor
+    /// to define an array of contexts in which the node will not
+    /// be loaded.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All)]
+    public class DoNotLoadOnPlatformsAttribute : Attribute
+    {
+        public string[] Values { get; set; }
+
+        public DoNotLoadOnPlatformsAttribute(params string[] values)
+        {
+            this.Values = values;
+        }
+    }
+
+    /// <summary>
+    /// The AlsoKnownAs attribute allows the node implementor to
+    /// define an array of names that this node might have had
+    /// in the past.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All)]
+    public class AlsoKnownAsAttribute : Attribute
+    {
+        public string[] Values { get; set; }
+
+        public AlsoKnownAsAttribute(params string[] values)
+        {
+            this.Values = values;
+        }
+    }
+
     #endregion
 
     public class PredicateTraverser

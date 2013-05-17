@@ -11,13 +11,26 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Utilities;
-using Dynamo.Utilties;
 
 namespace Dynamo
 {
+
+    /// <summary>
+    /// Context values are required during controller instantiation to flag
+    /// what application Dynamo is running within. Use NONE for the sandbox and
+    /// other applications where context-sensitive loading are not required.
+    /// </summary>
+    public static partial class Context
+    {
+        public const string NONE = "None";
+        public const string REVIT_2013 = "Autodesk Revit 2013";
+        public const string REVIT_2014 = "Autodesk Revit 2014";
+        public const string VASARI_2013 = "Autodesk Vasari 2013";
+        public const string VASARI_2014 = "Autodesk Vasari 2014";
+    }
+
     public class DynamoController
     {
-
         #region properties
 
         private readonly SortedDictionary<string, TypeLoadData> builtinTypesByNickname =
@@ -38,7 +51,7 @@ namespace Dynamo
         public PackageManagerClient PackageManagerClient { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
-
+        
         List<dynModelBase> clipBoard = new List<dynModelBase>();
         public List<dynModelBase> ClipBoard
         {
@@ -68,6 +81,13 @@ namespace Dynamo
 
         public ExecutionEnvironment FSchemeEnvironment { get; private set; }
 
+        private string context;
+        public string Context
+        {
+            get { return context; }
+            set { context = value; }
+        }
+
         #endregion
 
         #region events
@@ -89,9 +109,11 @@ namespace Dynamo
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(ExecutionEnvironment env, bool withUI, Type viewModelType)
+        public DynamoController(ExecutionEnvironment env, bool withUI, Type viewModelType, string context)
         {
             dynSettings.Controller = this;
+
+            this.Context = context;
 
             //MVVM: don't construct the main window with a reference to the controller
             //dynSettings.Bench = new dyndynSettings.Bench(this);

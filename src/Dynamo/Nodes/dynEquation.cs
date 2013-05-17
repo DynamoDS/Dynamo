@@ -39,8 +39,12 @@ namespace Dynamo.Nodes
                 if (_formula == null || !_formula.Equals(value))
                 {
                     _formula = value;
-                    RequiresRecalc = value != null;
-                    RaisePropertyChanged("Formula");
+                    if (value != null)
+                    {
+                        processFormula();
+                        RequiresRecalc = true;
+                        RaisePropertyChanged("Formula");
+                    }
                 }
             }
         }
@@ -61,11 +65,6 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = false;
             tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            tb.OnChangeCommitted += delegate
-            {
-                processFormula();
-                dynSettings.ReturnFocusToSearch();
-            };
 
             tb.DataContext = this;
             var bindingVal = new Binding("Formula")
@@ -88,6 +87,13 @@ namespace Dynamo.Nodes
             Formula = elNode.Attributes["formula"].Value;
             processFormula();
         }
+
+        private static HashSet<string> RESERVED_NAMES = new HashSet<string>() { 
+            "Abs", "Acos", "Asin", "Atan", "Ceiling", "Cos",
+            "Exp", "Floor", "IEEERemainder", "Log", "Log10",
+            "Max", "Min", "Pow", "Round", "Sign", "Sin", "Sqrt",
+            "Tan", "Truncate", "in", "if"
+        };
 
         private void processFormula()
         {
@@ -113,7 +119,7 @@ namespace Dynamo.Nodes
 
             e.EvaluateFunction += delegate(string name, FunctionArgs args)
             {
-                if (!paramSet.Contains(name))
+                if (!paramSet.Contains(name) && !RESERVED_NAMES.Contains(name))
                 {
                     paramSet.Add(name);
                     parameters.Add(Formula.IndexOf(name), Tuple.Create(name, typeof(Value.Function)));
@@ -135,7 +141,11 @@ namespace Dynamo.Nodes
                 }
             };
 
-            e.Evaluate();
+            try
+            {
+                e.Evaluate();
+            }
+            catch { }
 
             InPortData.Clear();
 
@@ -151,31 +161,30 @@ namespace Dynamo.Nodes
         {
             var e = new Expression(Formula);
 
-            var parameterLookup = new Dictionary<string, Value>();
+            var functionLookup = new Dictionary<string, Value>();
 
             foreach (var arg in args.Select((arg, i) => new { Value = arg, Index = i }))
             {
                 var parameter = InPortData[arg.Index].NickName;
-                parameterLookup[parameter] = arg.Value;
+                if (arg.Value.IsFunction)
+                    functionLookup[parameter] = arg.Value;
+                else
+                    e.Parameters[parameter] = ((Value.Number)arg.Value).Item;
             }
-
-            e.EvaluateParameter += delegate(string name, ParameterArgs pArgs)
-            {
-                pArgs.Result = ((Value.Number)parameterLookup[name]).Item;
-            };
 
             e.EvaluateFunction += delegate(string name, FunctionArgs fArgs)
             {
-                var func = ((Value.Function)parameterLookup[name]).Item;
-                fArgs.Result = ((Value.Number)func.Invoke(
-                    Utils.SequenceToFSharpList(
-                        fArgs.Parameters.Select(
-                            p => Value.NewNumber((double)p.Evaluate()))))).Item;
+                if (functionLookup.ContainsKey(name))
+                {
+                    var func = ((Value.Function)functionLookup[name]).Item;
+                    fArgs.Result = ((Value.Number)func.Invoke(
+                        Utils.SequenceToFSharpList(
+                            fArgs.Parameters.Select<Expression, Value>(
+                                p => Value.NewNumber(Convert.ToDouble(p.Evaluate())))))).Item;
+                }
             };
 
-            dynamic result = e.Evaluate();
-
-            return Value.NewNumber(result);
+            return Value.NewNumber(Convert.ToDouble(e.Evaluate()));
         }
     }
 }

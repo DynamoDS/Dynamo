@@ -2,10 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using Dynamo.Controls;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Connectors
 {
@@ -203,10 +200,7 @@ namespace Dynamo.Connectors
 
         public PortData(string nickName, string tip, Type portType)
         {
-            if (string.IsNullOrEmpty(nickName))
-                NickName = ">";
-            else
-                NickName = nickName;
+            NickName = nickName;
             ToolTipString = tip;
             PortType = portType;
         }

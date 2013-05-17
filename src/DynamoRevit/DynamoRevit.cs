@@ -169,7 +169,9 @@ namespace Dynamo.Applications
                         IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
                         //show the window
-                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, true, typeof(DynamoRevitViewModel));
+
+                        string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
+                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, true, typeof(DynamoRevitViewModel), context);
                         dynamoBench = dynSettings.Bench;
 
                         //set window handle and show dynamo

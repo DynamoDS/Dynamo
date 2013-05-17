@@ -20,9 +20,7 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.Utilties;
 using Microsoft.Practices.Prism.Commands;
-using NUnit.Core;
 
 namespace Dynamo.Controls
 {
@@ -32,21 +30,9 @@ namespace Dynamo.Controls
 
         #region properties
 
-        public event EventHandler UILocked;
-        public event EventHandler UIUnlocked;
         public event EventHandler RequestLayoutUpdate;
         public event EventHandler WorkspaceChanged;
 
-        public virtual void OnUILocked(object sender, EventArgs e)
-        {
-            if (UILocked != null)
-                UILocked(this, e);
-        }
-        public virtual void OnUIUnlocked(object sender, EventArgs e)
-        {
-            if (UIUnlocked != null)
-                UIUnlocked(this, e);
-        }
         public virtual void OnRequestLayoutUpdate(object sender, EventArgs e)
         {
             if (RequestLayoutUpdate != null)
@@ -120,7 +106,6 @@ namespace Dynamo.Controls
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand RefactorCustomNodeCommand { get; set; }
-        public DelegateCommand RunUITestsCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -303,6 +288,16 @@ namespace Dynamo.Controls
                 return Visibility.Hidden;
             }
         }
+
+        public bool IsUILocked
+        {
+            get { return uiLocked; }
+            set
+            {
+                uiLocked = value;
+                RaisePropertyChanged("IsUILocked");
+            }
+        }
         #endregion
 
         public DynamoViewModel(DynamoController controller)
@@ -358,7 +353,6 @@ namespace Dynamo.Controls
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
             RefactorCustomNodeCommand = new DelegateCommand(RefactorCustomNode, CanRefactorCustomNode);
-            RunUITestsCommand = new DelegateCommand(RunUITests, CanRunUITests);
             #endregion
         }
 
@@ -405,8 +399,7 @@ namespace Dynamo.Controls
 
             if (!string.IsNullOrEmpty(xmlPath))
             {
-
-                OnUILocked(this, EventArgs.Empty);
+                IsUILocked = true;
 
                 if (!OpenDefinition(xmlPath))
                 {
@@ -420,7 +413,7 @@ namespace Dynamo.Controls
                     }
                 }
 
-                OnUIUnlocked(this, EventArgs.Empty);
+                IsUILocked = false;
             }
 
             //clear the clipboard to avoid copying between dyns
@@ -734,16 +727,14 @@ namespace Dynamo.Controls
 
         private void Clear()
         {
-            //dynSettings.Bench.LockUI();
-            OnUILocked(this, EventArgs.Empty);
+            IsUILocked = true;
 
             CleanWorkbench();
 
             //don't save the file path
             _model.CurrentSpace.FilePath = "";
 
-            //dynSettings.Bench.UnlockUI();
-            OnUIUnlocked(this, EventArgs.Empty);
+            IsUILocked = false;
         }
 
         private bool CanClear()
@@ -763,8 +754,7 @@ namespace Dynamo.Controls
 
         private void LayoutAll()
         {
-            //dynSettings.Bench.LockUI();
-            OnUILocked(this, EventArgs.Empty);
+            IsUILocked = true;
 
             CleanWorkbench();
 
@@ -859,8 +849,7 @@ namespace Dynamo.Controls
 
             }
 
-            //dynSettings.Bench.UnlockUI();
-            OnUIUnlocked(this, EventArgs.Empty);
+            IsUILocked = false;
         }
 
         private bool CanLayoutAll()
@@ -1497,7 +1486,8 @@ namespace Dynamo.Controls
 
             UnlockLoadPath = null;
 
-            OnUIUnlocked(this, EventArgs.Empty);
+            //OnUIUnlocked(this, EventArgs.Empty);
+            IsUILocked = false;
 
             DynamoCommands.ShowSearch.Execute(null);
 
@@ -1609,6 +1599,11 @@ namespace Dynamo.Controls
 
                 #region instantiate nodes
 
+                //if there is any problem loading a node, then
+                //add the node's guid to the bad nodes collection
+                //so we can avoid attempting to make connections to it
+                List<Guid> badNodes = new List<Guid>();
+
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
                     XmlAttribute typeAttrib = elNode.Attributes[0];
@@ -1651,11 +1646,35 @@ namespace Dynamo.Controls
                     
                     if (!Controller.BuiltInTypesByName.TryGetValue(typeName, out tData))
                     {
+                        //try and get a system type by this name
                         t = Type.GetType(typeName);
+
+                        //if we still can't find the type, try the also known as attributes
                         if (t == null)
                         {
-                            Log("Error loading definition. Could not load node of type: " + typeName);
-                            return false;
+                            //try to get the also known as values
+                            foreach (KeyValuePair<string, TypeLoadData> kvp in Controller.BuiltInTypesByName)
+                            {
+                                var akaAttribs = kvp.Value.Type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), false);
+                                if (akaAttribs.Count() > 0)
+                                {
+                                    if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
+                                    {
+                                        Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key, typeName));
+                                        t = kvp.Value.Type;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (t == null)
+                        {
+                            Log("Could not load node of type: " + typeName);
+                            Log("Loading will continue but nodes might be missing from your workflow.");
+
+                            //return false;
+                            badNodes.Add(guid);
+                            continue;
                         }
                     }
                     else
@@ -1725,6 +1744,9 @@ namespace Dynamo.Controls
                     //find the elements to connect
                     dynNodeModel start = null;
                     dynNodeModel end = null;
+
+                    if (badNodes.Contains(guidStart) || badNodes.Contains(guidEnd))
+                        continue;
 
                     foreach (dynNodeModel e in ws.Nodes)
                     {
@@ -1953,8 +1975,8 @@ namespace Dynamo.Controls
         {
             get
             {
-                return _model.HomeSpace.Nodes.Concat(
-                    Controller.CustomNodeLoader.GetLoadedDefinitions().Aggregate(
+                return _model.Workspaces.Aggregate((IEnumerable<dynNodeModel>)new List<dynNodeModel>(), (a, x) => a.Concat(x.Nodes))
+                    .Concat(Controller.CustomNodeLoader.GetLoadedDefinitions().Aggregate(
                         (IEnumerable<dynNodeModel>)new List<dynNodeModel>(),
                         (a, x) => a.Concat(x.Workspace.Nodes)
                         )
@@ -1996,145 +2018,43 @@ namespace Dynamo.Controls
                         Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId);
                     }
 
-                    if (compileFunction)
+                    Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId, path);
+
+                    #region Compile Function and update all nodes
+
+                    IEnumerable<string> inputNames = new List<string>();
+                    IEnumerable<string> outputNames = new List<string>();
+                    dynSettings.Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), CustomNodeLoader.CompileFunction(definition, ref inputNames, ref outputNames));
+
+                    //Update existing function nodes which point to this function to match its changes
+                    foreach (dynNodeModel el in AllNodes)
                     {
-                        dynSettings.Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), CustomNodeLoader.CompileFunction(definition));
+                        if (el is dynFunction)
+                        {
+                            var node = (dynFunction)el;
+
+                            if (node.Definition != definition)
+                                continue;
+
+                            node.SetInputs(inputNames);
+                            node.SetOutputs(outputNames);
+                            el.RegisterAllPorts();
+                        }
                     }
 
-                    Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId, path);
+                    //Call OnSave for all saved elements
+                    foreach (dynNodeModel el in functionWorkspace.Nodes)
+                        el.onSave();
+
+                    #endregion
+
+
                 }
                 catch (Exception e)
                 {
                     Log("Error saving:" + e.GetType());
                     Log(e);
                 }
-            }
-
-            try
-            {
-                #region Find outputs
-
-                // Find output elements for the node
-                IEnumerable<dynNodeModel> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
-
-                var topMost = new List<Tuple<int, dynNodeModel>>();
-
-                IEnumerable<string> outputNames;
-
-                // if we found output nodes, add select their inputs
-                // these will serve as the function output
-                if (outputs.Any())
-                {
-                    topMost.AddRange(
-                        outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
-
-                    outputNames = outputs.Select(x => (x as dynOutput).Symbol);
-                }
-                else
-                {
-                    // if there are no explicitly defined output nodes
-                    // get the top most nodes and set THEM as tht output
-                    IEnumerable<dynNodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
-
-                    var outNames = new List<string>();
-
-                    foreach (dynNodeModel topNode in topMostNodes)
-                    {
-                        foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
-                        {
-                            if (!topNode.HasOutput(output))
-                            {
-                                topMost.Add(Tuple.Create(output, topNode));
-                                outNames.Add(topNode.OutPortData[output].NickName);
-                            }
-                        }
-                    }
-
-                    outputNames = outNames;
-                }
-
-                #endregion
-
-                // color the node to define its connectivity
-                foreach (var ele in topMost)
-                {
-                    ele.Item2.ValidateConnections();
-                }
-
-                //Find function entry point, and then compile the function and add it to our environment
-                IEnumerable<dynNodeModel> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
-                IEnumerable<string> inputNames = variables.Select(x => (x as dynSymbol).Symbol);
-
-                INode top;
-                var buildDict = new Dictionary<dynNodeModel, Dictionary<int, INode>>();
-
-                if (topMost.Count > 1)
-                {
-                    InputNode node = new ExternalFunctionNode(
-                        FScheme.Value.NewList,
-                        Enumerable.Range(0, topMost.Count).Select(x => x.ToString()));
-
-                    int i = 0;
-                    foreach (var topNode in topMost)
-                    {
-                        string inputName = i.ToString();
-                        node.ConnectInput(inputName, topNode.Item2.Build(buildDict, topNode.Item1));
-                        i++;
-                    }
-
-                    top = node;
-                }
-                else
-                    top = topMost[0].Item2.BuildExpression(buildDict);
-
-                // if the node has any outputs, we create a BeginNode in order to evaluate all of them
-                // sequentially (begin evaluates a list of expressions)
-                if (outputs.Any())
-                {
-                    var beginNode = new BeginNode();
-                    List<dynNodeModel> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
-                    foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
-                    {
-                        beginNode.AddInput(tNode.Index.ToString());
-                        beginNode.ConnectInput(tNode.Index.ToString(), tNode.Node.Build(buildDict, 0));
-                    }
-                    beginNode.AddInput(hangingNodes.Count.ToString());
-                    beginNode.ConnectInput(hangingNodes.Count.ToString(), top);
-
-                    top = beginNode;
-                }
-
-                // make the anonymous function
-                FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.GUID.ToString()),
-                                                               top.Compile());
-
-                // make it accessible in the FScheme environment
-                Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), expression);
-
-                //Update existing function nodes which point to this function to match its changes
-                foreach (dynNodeModel el in AllNodes)
-                {
-                    if (el is dynFunction)
-                    {
-                        var node = (dynFunction)el;
-
-                        if (node.Definition != definition)
-                            continue;
-
-                        node.SetInputs(inputNames);
-                        node.SetOutputs(outputNames);
-                        el.RegisterAllPorts();
-                    }
-                }
-
-                //Call OnSave for all saved elements
-                foreach (dynNodeModel el in functionWorkspace.Nodes)
-                    el.onSave();
-
-            }
-            catch (Exception ex)
-            {
-                Log(ex.GetType() + ": " + ex.Message);
             }
 
         }
@@ -2333,6 +2253,11 @@ namespace Dynamo.Controls
                 XmlNode cNodesList = cNodes[0];
                 XmlNode nNodesList = nNodes[0];
 
+                //if there is any problem loading a node, then
+                //add the node's guid to the bad nodes collection
+                //so we can avoid attempting to make connections to it
+                List<Guid> badNodes = new List<Guid>();
+
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
                     XmlAttribute typeAttrib = elNode.Attributes[0];
@@ -2372,11 +2297,35 @@ namespace Dynamo.Controls
 
                     if (!Controller.BuiltInTypesByName.TryGetValue(typeName, out tData))
                     {
+                        //try and get a system type by this name
                         t = Type.GetType(typeName);
+
+                        //if we still can't find the type, try the also known as attributes
+                        if(t == null)
+                        {
+                            //try to get the also known as values
+                            foreach (KeyValuePair<string, TypeLoadData> kvp in Controller.BuiltInTypesByName)
+                            {
+                                var akaAttribs = kvp.Value.Type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), false);
+                                if (akaAttribs.Count() > 0)
+                                {
+                                    if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
+                                    {
+                                        Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key , typeName));
+                                        t = kvp.Value.Type;
+                                    }
+                                }
+                            }
+                        }
+
                         if (t == null)
                         {
-                            Log("Error loading workspace. Could not load node of type: " + typeName);
-                            return false;
+                            Log("Could not load node of type: " + typeName);
+                            Log("Loading will continue but nodes might be missing from your workflow.");
+
+                            //return false;
+                            badNodes.Add(guid);
+                            continue;
                         }
                     }
                     else
@@ -2422,27 +2371,8 @@ namespace Dynamo.Controls
                         fun.Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
 
                     }
-
-                    //read the sub elements
-                    //set any numeric values 
-                    //foreach (XmlNode subNode in elNode.ChildNodes)
-                    //{
-                    //   if (subNode.Name == "System.Double")
-                    //   {
-                    //      double val = Convert.ToDouble(subNode.Attributes[0].Value);
-                    //      el.OutPortData[0].Object = val;
-                    //      el.Update();
-                    //   }
-                    //   else if (subNode.Name == "System.Int32")
-                    //   {
-                    //      int val = Convert.ToInt32(subNode.Attributes[0].Value);
-                    //      el.OutPortData[0].Object = val;
-                    //      el.Update();
-                    //   }
-                    //}
                 }
 
-                //dynSettings.Workbench.UpdateLayout();
                 OnRequestLayoutUpdate(this, EventArgs.Empty);
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
@@ -2463,6 +2393,9 @@ namespace Dynamo.Controls
                     dynNodeModel start = null;
                     dynNodeModel end = null;
 
+                    if (badNodes.Contains(guidStart) || badNodes.Contains(guidEnd))
+                        continue;
+
                     foreach (dynNodeModel e in _model.Nodes)
                     {
                         if (e.GUID == guidStart)
@@ -2479,15 +2412,6 @@ namespace Dynamo.Controls
                         }
                     }
 
-                    //don't connect if the end element is an instance map
-                    //those have a morphing set of inputs
-                    //dynInstanceParameterMap endTest = end as dynInstanceParameterMap;
-
-                    //if (endTest != null)
-                    //{
-                    //    continue;
-                    //}
-
                     if (start != null && end != null && start != end)
                     {
                         var newConnector = new dynConnectorModel(start, end,
@@ -2496,9 +2420,6 @@ namespace Dynamo.Controls
                         _model.CurrentSpace.Connectors.Add(newConnector);
                     }
                 }
-
-                //MVVM: redraw should be automatic with connector bindings
-                //_model.CurrentSpace.Connectors.ForEach(x => x.Redraw());
 
                 #region instantiate notes
 
@@ -2718,64 +2639,8 @@ namespace Dynamo.Controls
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new NodeEventArgs(e,null));
             
         }
-
-        private void RunUITests()
-        {
-            string assLoc = Assembly.GetExecutingAssembly().Location;
-            string testsLoc = Path.Combine(Path.GetDirectoryName(assLoc), "DynamoElementsTests.dll");
-            TestPackage testPackage = new TestPackage(testsLoc);
-            RemoteTestRunner remoteTestRunner = new RemoteTestRunner();
-            remoteTestRunner.Load(testPackage);
-
-            TestResult testResult = remoteTestRunner.Run(new NullListener(), new DynamoUITestFilter(), false, LoggingThreshold.All);
-            OutputResult(testResult);
-        }
-
-        private bool CanRunUITests()
-        {
-            return true;
-        }
-
-        static void OutputResult(TestResult result)
-        {
-            if (result.HasResults)
-            {
-                foreach (var childResult in result.Results)
-                {
-                    OutputResult((TestResult)childResult);
-                }
-                return;
-            }
-
-            dynSettings.Controller.DynamoViewModel.Log(string.Format("{0}:{1}", result.FullName, result.ResultState));
-        }
     }
 
-    public class DynamoUITestFilter : ITestFilter
-    {
-        public bool IsEmpty
-        {
-            get;
-            set;
-        }
-
-        public bool Pass(ITest test)
-        {
-            foreach (var cat in test.Categories)
-            {
-                if (cat == "DynamoUI")
-                    return true;
-            }
-
-            return false;
-        }
-
-        public bool Match (ITest test)
-        {
-            return true;
-        }
-    }
-    
     public class TypeLoadData
     {
         public Assembly Assembly;

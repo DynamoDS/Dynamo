@@ -1,34 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Windows.Controls;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
-using System.Windows;
-
 using Dynamo.Connectors;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Search;
 
 namespace Dynamo.Controls
 {
 
-    public class SearchTemplateSelector : DataTemplateSelector
+    public class PortNameConverter : IValueConverter
     {
-        public DataTemplate NodeTemplate { get; set; }
-        public DataTemplate BrowserCategoryTemplate { get; set; }
-
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
         {
-            if (item is BrowserInternalElement)
+            if (value is string && !string.IsNullOrEmpty(value as string))
             {
-                return BrowserCategoryTemplate;
-            } else
-            {
-                return NodeTemplate;
+                    return value as string;   
             }
+
+            return ">";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
         }
     }
 
@@ -222,6 +222,26 @@ namespace Dynamo.Controls
         }
 
         #endregion
+    }
+
+    public class BoolToCanvasCursorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value == true)
+            {
+                return System.Windows.Input.Cursors.AppStarting;
+            }
+
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
     }
 
     public class ShowHideConsoleMenuItemConverter : IValueConverter

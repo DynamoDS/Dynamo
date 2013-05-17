@@ -50,8 +50,8 @@ namespace Dynamo.Views
             vm.StopDragging += new EventHandler(vm_StopDragging);
             vm.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             vm.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
-            vm.UILocked += new EventHandler(LockUI);
-            vm.UIUnlocked += new EventHandler(UnlockUI);
+            //vm.UILocked += new EventHandler(LockUI);
+            //vm.UIUnlocked += new EventHandler(UnlockUI);
             vm.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
         }
 
@@ -246,35 +246,6 @@ namespace Dynamo.Views
                     // Hide the drag selection box.
                     selectionBox.Visibility = Visibility.Collapsed;
 
-                    Point mouseUpPos = e.GetPosition(WorkBench);
-
-                    //clear the selected elements
-                    DynamoSelection.Instance.ClearSelection();
-
-                    var rect =
-                        new Rect(
-                            Canvas.GetLeft(selectionBox),
-                            Canvas.GetTop(selectionBox),
-                            selectionBox.Width,
-                            selectionBox.Height);
-
-                    if (mouseUpPos.X > mouseDownPos.X)
-                    {
-                        #region contain select
-
-                        vm.ContainSelectCommand.Execute(rect);
-
-                        #endregion
-                    }
-                    else if (mouseUpPos.X < mouseDownPos.X)
-                    {
-                        #region crossing select
-
-                        vm.CrossSelectCommand.Execute(rect);
-
-                        #endregion
-                    }
-
                     #endregion
                 }
             }
@@ -323,11 +294,22 @@ namespace Dynamo.Views
                     selectionBox.Height = mouseDownPos.Y - mousePos.Y;
                 }
 
+                //clear the selected elements
+                DynamoSelection.Instance.ClearSelection();
+
+                var rect =
+                    new Rect(
+                        Canvas.GetLeft(selectionBox),
+                        Canvas.GetTop(selectionBox),
+                        selectionBox.Width,
+                        selectionBox.Height);
+
                 if (mousePos.X > mouseDownPos.X)
                 {
                     #region contain select
 
                     selectionBox.StrokeDashArray = null;
+                    vm.ContainSelectCommand.Execute(rect);
 
                     #endregion
                 }
@@ -336,6 +318,7 @@ namespace Dynamo.Views
                     #region crossing select
 
                     selectionBox.StrokeDashArray = new DoubleCollection { 4 };
+                    vm.CrossSelectCommand.Execute(rect);
 
                     #endregion
                 }
@@ -364,19 +347,6 @@ namespace Dynamo.Views
             //MVVM : replaced direct set with command call on view model
             //CurrentOffset = new Point(-x, -y);
             vm.SetCurrentOffsetCommand.Execute(new Point(-x, -y));
-        }
-
-        private void LockUI(object sender, EventArgs e)
-        {
-            //MVVM:this was pulled from the bench when we separated the workspaces
-            //but I don't think it's necessary any more with the tabs. Visibility
-            //of the canvas is now set to visible by default
-            //WorkBench.Visibility = System.Windows.Visibility.Hidden;
-        }
-
-        private void UnlockUI(object sender, EventArgs e)
-        {
-            //WorkBench.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void DrawGrid()

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
-using Microsoft.Scripting.Hosting.Shell;
 
 namespace DynamoPython
 {
@@ -13,7 +9,7 @@ namespace DynamoPython
     /// completion drop down.
     public class DynamoCompletionData : ICompletionData
     {
-        public DynamoCompletionData(string text, string stub, CommandLine cl, bool isInstance)
+        public DynamoCompletionData(string text, string stub, bool isInstance)
         {
             this.Text = text;
             this.Stub = stub;
@@ -39,10 +35,8 @@ namespace DynamoPython
 
         public object Description
         {
-            get
-            {
-                // Do nothing: description now updated externally and asynchronously.
-                return "Not available";
+            get {
+                return "Description not available";
             }
         }
 
