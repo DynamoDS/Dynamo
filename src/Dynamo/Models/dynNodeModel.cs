@@ -13,6 +13,7 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 using Dynamo.Commands;
 using Value = Dynamo.FScheme.Value;
+using Microsoft.FSharp.Core;
 
 
 namespace Dynamo.Nodes
@@ -610,7 +611,11 @@ namespace Dynamo.Nodes
             return OldValue;
         }
 
-        private delegate Value innerEvaluationDelegate();
+        /// <summary>
+        /// Wraps node evaluation logic so that it can be called in different threads.
+        /// </summary>
+        /// <returns>Some(Value) -> Result | None -> Run was cancelled</returns>
+        private delegate FSharpOption<Value> innerEvaluationDelegate();
 
         public Dictionary<PortData, Value> evaluationDict = new Dictionary<PortData, Value>();
 
@@ -658,7 +663,7 @@ namespace Dynamo.Nodes
                 catch (CancelEvaluationException ex)
                 {
                     OnRunCancelled();
-                    throw ex;
+                    return FSharpOption<Value>.None;
                 }
                 catch (Exception ex)
                 {
@@ -685,18 +690,26 @@ namespace Dynamo.Nodes
 
                 RequiresRecalc = false;
 
-                return expr;
+                return FSharpOption<Value>.Some(expr);
             };
 
 //MVVM : Switched from nodeUI dispatcher to bench dispatcher 
-            Value result = isInteractive && dynSettings.Bench != null
-                ? (Value)dynSettings.Bench.Dispatcher.Invoke(evaluation)
+            //C# doesn't have a Option type, so we'll just borrow F#'s instead.
+            FSharpOption<Value> result = isInteractive && dynSettings.Bench != null
+                ? (FSharpOption<Value>)dynSettings.Bench.Dispatcher.Invoke(evaluation)
                 : evaluation();
 
-            if (result != null)
-                return result;
+            if (result == FSharpOption<Value>.None)
+            {
+                throw new CancelEvaluationException(false);
+            }
             else
-                throw new Exception("");
+            {
+                if (result.Value != null)
+                    return result.Value;
+                else
+                    throw new Exception("");
+            }
         }
 
         protected virtual void OnRunCancelled()
