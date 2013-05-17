@@ -427,6 +427,14 @@ namespace Dynamo.Revit
         }
 
         private List<ElementId> deletedIds = new List<ElementId>();
+
+        /// <summary>
+        /// Deletes an Element from the Document and removes all Dynamo regen hooks. If the second
+        /// argument is true, then it will not delete from the Document, but will still remove all
+        /// regen hooks.
+        /// </summary>
+        /// <param name="id">ID belonging to the element to be deleted.</param>
+        /// <param name="hookOnly">Whether or not to only remove the regen hooks.</param>
         protected void DeleteElement(ElementId id, bool hookOnly = false)
         {
             if (!hookOnly)
