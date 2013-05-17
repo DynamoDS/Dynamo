@@ -143,34 +143,34 @@ limitations under the License.
 
 ## Third Party Licenses ##
 
-#Avalon Edit#
+###Avalon Edit###
 http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
 http://opensource.org/licenses/lgpl-3.0.html
 
-#Kinect for Windows#
+###Kinect for Windows###
 http://www.microsoft.com/en-us/kinectforwindows/
 http://www.microsoft.com/en-us/kinectforwindows/develop/sdk-eula.aspx
 
-#Helix3D#
+###Helix3D###
 https://helixtoolkit.codeplex.com/
 https://helixtoolkit.codeplex.com/license
 
-#Iron Python#
+###Iron Python###
 http://ironpython.net/
 http://opensource.org/licenses/apache2.0.php
 
-#MiConvexHull#
+###MiConvexHull###
 http://miconvexhull.codeplex.com/
 http://miconvexhull.codeplex.com/license
 
-#NCalc#
+###NCalc###
 http://ncalc.codeplex.com/
 http://ncalc.codeplex.com/license
 
-#NUnit#
+###NUnit####
 http://www.nunit.org/
 http://www.nunit.org/index.php?p=license&r=2.6.2
 
-#Prism#
+###Prism###
 http://msdn.microsoft.com/en-us/library/gg406140.aspx
 http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx
