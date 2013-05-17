@@ -48,6 +48,7 @@ namespace Dynamo.Nodes
                 if (dynUtils.TryGetElement(this.Elements[0], out e))
                 {
                     ac = e as FamilyInstance;
+                    ac.Symbol = fs;
                 }
             }
             else
