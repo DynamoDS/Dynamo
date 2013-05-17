@@ -300,7 +300,9 @@ namespace Dynamo
 
                 foreach (dynNodeModel el in workSpace.Nodes)
                 {
-                    XmlElement dynEl = xmlDoc.CreateElement(el.GetType().ToString());
+                    string typeName = el.GetType().ToString();
+
+                    XmlElement dynEl = xmlDoc.CreateElement(typeName);
                     elementList.AppendChild(dynEl);
 
                     //set the type attribute
