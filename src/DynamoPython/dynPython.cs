@@ -222,9 +222,12 @@ namespace Dynamo.Nodes
     public static class PythonEngine
     {
         public delegate Value EvaluationDelegate(bool dirty, string script, IEnumerable<Binding> bindings);
+        public delegate RenderDescription DrawDelegate(Value val);
 
         public static EvaluationDelegate Evaluator;
-        
+
+        public static DrawDelegate Drawing;
+
         private static DynPythonEngine engine = new DynPythonEngine();
 
         static PythonEngine()
@@ -239,15 +242,19 @@ namespace Dynamo.Nodes
 
                 return engine.Evaluate(PythonBindings.Bindings.Concat(bindings));
             };
+
+            Drawing = delegate(Value val) { return new RenderDescription(); };
         }
     }
 
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs an embedded IronPython script")]
-    public class dynPython : dynNodeWithOneOutput
+    public class dynPython : dynNodeWithOneOutput, IDrawable
     {
         private bool dirty = true;
+        private Value lastEvalValue;
+
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
         private string script = "# Write your script here.";
@@ -321,7 +328,9 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return PythonEngine.Evaluator(dirty, script, makeBindings(args));
+            Value result = PythonEngine.Evaluator(dirty, script, makeBindings(args));
+            lastEvalValue = result;
+            return result;
         }
 
         private dynScriptEditWindow editWindow;
@@ -395,6 +404,10 @@ namespace Dynamo.Nodes
             }
         }
 
+        public RenderDescription Draw()
+        {
+            return PythonEngine.Drawing(lastEvalValue);
+        }
     }
 
 
