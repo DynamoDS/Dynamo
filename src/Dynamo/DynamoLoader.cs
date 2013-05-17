@@ -35,13 +35,14 @@ namespace Dynamo.Utilities
 
             #region determine assemblies to load
 
-            var allLoadedAssembliesByPath = new Dictionary<string, Assembly>(
-                AppDomain.CurrentDomain.GetAssemblies().ToDictionary(x => x.Location));
-
+            var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
             var allLoadedAssemblies = new Dictionary<string, Assembly>();
 
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                allLoadedAssembliesByPath[assembly.Location] = assembly;
                 allLoadedAssemblies[assembly.FullName] = assembly;
+            }
 
             string path = Path.Combine(location, "packages");
 
