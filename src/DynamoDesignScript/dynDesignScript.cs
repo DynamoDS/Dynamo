@@ -82,6 +82,7 @@ namespace Dynamo.Nodes
     [NodeName("DesignScript Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs an embedded DesignScript script")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     public class dynDesignScript : dynRevitTransactionNodeWithOneOutput
     {
         bool dirty = false;
@@ -102,15 +103,15 @@ namespace Dynamo.Nodes
             System.Windows.Controls.MenuItem editWindowItem = new System.Windows.Controls.MenuItem();
             editWindowItem.Header = "Edit...";
             editWindowItem.IsCheckable = false;
-            NodeUI.MainContextMenu.Items.Add(editWindowItem);
+            MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
 
             InPortData.Add(new PortData("IN", "A list of objects", typeof(object)));
             OutPortData.Add(new PortData("OUT", "Result of the DesignScript script", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
-            NodeUI.UpdateLayout();
+            UpdateLayout();
         }
 
         public override bool RequiresRecalc

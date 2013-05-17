@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DesignScript.Editor.Core">
-      <HintPath>..\..\extern\DesignScript\Release\DesignScript.Editor.Core.dll</HintPath>
-    </Reference>
     <Reference Include="DynamoOutput">
       <HintPath>..\..\extern\DesignScript\Release\DynamoOutput.dll</HintPath>
     </Reference>
@@ -47,11 +44,33 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="ProtoAssociative, Version=0.4.90.7939, Culture=neutral, PublicKeyToken=033bb90092e920f1, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ds_dlls\ProtoAssociative.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoCore, Version=0.4.90.7939, Culture=neutral, PublicKeyToken=3dcef168889f4ae5, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ds_dlls\ProtoCore.dll</HintPath>
+    </Reference>
     <Reference Include="ProtoGeometry">
-      <HintPath>..\..\..\..\ProgramData\Autodesk\ApplicationPlugins\DesignScript.bundle\Contents\Win64\ProtoGeometry.dll</HintPath>
+      <HintPath>..\..\..\ds_dlls\ProtoGeometry.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoImperative, Version=0.4.90.7939, Culture=neutral, PublicKeyToken=c105c91cdd939850, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ds_dlls\ProtoImperative.dll</HintPath>
     </Reference>
     <Reference Include="ProtoInterface">
-      <HintPath>..\..\..\..\ProgramData\Autodesk\ApplicationPlugins\DesignScript.bundle\Contents\Win64\ProtoInterface.dll</HintPath>
+      <HintPath>..\..\..\ds_dlls\ProtoInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoOptions">
+      <HintPath>..\..\..\ds_dlls\ProtoOptions.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoPrint">
+      <HintPath>..\..\..\ds_dlls\ProtoPrint.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoScript, Version=0.4.90.7939, Culture=neutral, PublicKeyToken=59290779bfb1c866, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ds_dlls\ProtoScript.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI, Version=2014.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
