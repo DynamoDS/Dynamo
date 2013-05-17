@@ -39,8 +39,12 @@ namespace Dynamo.Utilities
 
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                allLoadedAssembliesByPath[assembly.Location] = assembly;
-                allLoadedAssemblies[assembly.FullName] = assembly;
+                try
+                {
+                    allLoadedAssembliesByPath[assembly.Location] = assembly;
+                    allLoadedAssemblies[assembly.FullName] = assembly;
+                }
+                catch { }
             }
 
             string path = Path.Combine(location, "packages");
