@@ -26,8 +26,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
-        /// <param name="bench">The bench where logging errors will be sent</param>
-        internal static void LoadBuiltinTypes(SearchViewModel searchViewModel, DynamoController controller)//, dynBench bench)
+        internal static void LoadBuiltinTypes(SearchViewModel searchViewModel, DynamoController controller)
         {
             Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
 
