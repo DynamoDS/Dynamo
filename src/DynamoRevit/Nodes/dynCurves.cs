@@ -437,9 +437,6 @@ namespace Dynamo.Nodes
     [NodeDescription("Node to create a planar model curve.")]
     public class dynModelCurveNurbSpline : dynRevitTransactionNodeWithOneOutput
     {
-        private NurbSpline ns;
-        private ModelNurbSpline c;
-
         public dynModelCurveNurbSpline()
         {
             InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(Value.List)));
@@ -451,49 +448,30 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var pts = ((Value.List)args[0]).Item.Select(
-               e => ((ReferencePoint)((Value.Container)e).Item).Position
+               x => ((ReferencePoint)((Value.Container)x).Item).Position
             ).ToList();
-
-            foreach (ElementId el in this.Elements)
-            {
-                Element e;
-                if (dynUtils.TryGetElement(el, out e))
-                {
-                    DeleteElement(el);
-                    ns = null;
-                    c = null;
-                }
-                    
-            }
 
             if (pts.Count <= 1)
             {
                 throw new Exception("Not enough reference points to make a curve.");
             }
 
-            if (ns == null)
-            {
-                //make a curve
-                ns = this.UIDocument.Application.Application.Create.NewNurbSpline(
+            var ns = UIDocument.Application.Application.Create.NewNurbSpline(
                     pts, Enumerable.Repeat(1.0, pts.Count).ToList());
+
+            ModelNurbSpline c;
+            Element e;
+
+            if (Elements.Any() && dynUtils.TryGetElement(Elements[0], out e))
+            {
+                c = e as ModelNurbSpline;
+
+                c.GeometryCurve = ns;
             }
             else
             {
-                DoubleArray arr = new DoubleArray();
-                
-                var weights = Enumerable.Repeat(1.0, pts.Count).ToList();
-                foreach (double weight in weights)
-                {
-                    double d = weight;
-                    arr.Append(ref d);
-                }
-                    
-                //update the existing curve
-                ns.SetControlPointsAndWeights(pts, arr);
-            }
+                Elements.Clear();
 
-            if (c == null)
-            {
                 double rawParam = ns.ComputeRawParameter(.5);
                 Transform t = ns.ComputeDerivatives(rawParam, false);
 
@@ -508,13 +486,9 @@ namespace Dynamo.Nodes
                 SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
                 //sps.Add(sp);
 
-                c = (ModelNurbSpline) this.UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp);
+                c = UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp) as ModelNurbSpline;
 
-                this.Elements.Add(c.Id);
-            }
-            else
-            {
-                c.GeometryCurve = ns;
+                Elements.Add(c.Id);
             }
 
             return Value.NewContainer(c);

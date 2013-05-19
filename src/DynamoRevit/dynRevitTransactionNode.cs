@@ -11,7 +11,7 @@ using Autodesk.Revit.DB;
 using Value = Dynamo.FScheme.Value;
 using Microsoft.FSharp.Collections;
 using Dynamo.Connectors;
-
+using Dynamo.FSchemeInterop;
 using HelixToolkit.Wpf;
 
 using System.Windows.Media;
@@ -301,7 +301,7 @@ namespace Dynamo.Revit
         /// <summary>
         /// Implementation detail, records how many times this Element has been executed during this run.
         /// </summary>
-        private int runCount;
+        protected int runCount;
 
         internal void ResetRuns()
         {
@@ -427,6 +427,14 @@ namespace Dynamo.Revit
         }
 
         private List<ElementId> deletedIds = new List<ElementId>();
+
+        /// <summary>
+        /// Deletes an Element from the Document and removes all Dynamo regen hooks. If the second
+        /// argument is true, then it will not delete from the Document, but will still remove all
+        /// regen hooks.
+        /// </summary>
+        /// <param name="id">ID belonging to the element to be deleted.</param>
+        /// <param name="hookOnly">Whether or not to only remove the regen hooks.</param>
         protected void DeleteElement(ElementId id, bool hookOnly = false)
         {
             if (!hookOnly)
@@ -509,7 +517,88 @@ namespace Dynamo.Revit
     {
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            outPuts[OutPortData[0]] = Evaluate(args);
+            //THE OLD WAY
+            //outPuts[OutPortData[0]] = Evaluate(args);
+
+            //THE NEW WAY
+            //if this element maintains a collcection of references
+            //then clear the collection
+            if (this is IClearable)
+                (this as IClearable).ClearReferences();
+
+            List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
+
+            //create a zip of the incoming args and the port data
+            //to be used for type comparison
+            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
+
+            //if any value is a list whose expectation is a single
+            //do an auto map
+            //TODO: figure out a better way to do this than using a lot
+            //of specific excludes
+            if (args.Count() > 0 &&
+                portComparison.Any(x => x.Item1 == typeof(Value.List) &&
+                x.Item2 != typeof(Value.List)) &&
+                !(this.ArgumentLacing == LacingStrategy.Disabled))
+            {
+                //if the argument is of the expected type, then
+                //leave it alone otherwise, wrap it in a list
+                int j = 0;
+                foreach (var arg in args)
+                {
+                    //incoming value is list and expecting single
+                    if (portComparison.ElementAt(j).Item1 == typeof(Value.List) &&
+                        portComparison.ElementAt(j).Item2 != typeof(Value.List))
+                    {
+                        //leave as list
+                        argSets.Add(((Value.List)arg).Item);
+                    }
+                    //incoming value is list and expecting list
+                    else
+                    {
+                        //wrap in list
+                        argSets.Add(Utils.MakeFSharpList(arg));
+                    }
+                    j++;
+                }
+
+                IEnumerable<IEnumerable<Value>> lacedArgs = null;
+                switch (this.ArgumentLacing)
+                {
+                    case LacingStrategy.First:
+                        lacedArgs = argSets.SingleSet();
+                        break;
+                    case LacingStrategy.Shortest:
+                        lacedArgs = argSets.ShortestSet();
+                        break;
+                    case LacingStrategy.Longest:
+                        lacedArgs = argSets.LongestSet();
+                        break;
+                    case LacingStrategy.CrossProduct:
+                        lacedArgs = argSets.CartesianProduct();
+                        break;
+                }
+
+                //setup an empty list to hold results
+                FSharpList<Value> result = FSharpList<Value>.Empty;
+
+                //run the evaluate method for each set of 
+                //arguments in the cartesian result. do these
+                //in reverse order so our cons comes out the right
+                //way around
+                for (int i = lacedArgs.Count() - 1; i >= 0; i--)
+                {
+                    var evalResult = Evaluate(Utils.MakeFSharpList(lacedArgs.ElementAt(i).ToArray()));
+                    result = FSharpList<Value>.Cons(evalResult, result);
+                    runCount++;
+                }
+
+                outPuts[OutPortData[0]] = Value.NewList(result);
+            }
+            else
+            {
+                outPuts[OutPortData[0]] = Evaluate(args);
+            }
         }
 
         public virtual Value Evaluate(FSharpList<Value> args)

@@ -158,21 +158,21 @@ namespace Dynamo.Nodes
             else if (eIn.IsFunction)
             {
                 content += eIn.ToString() + "\n";
-                node = new WatchNode(eIn.ToString());
+                node = new WatchNode("<function>");
             }
             else if (eIn.IsList)
             {
-                content += eIn.GetType().ToString() + "\n";
+                content += "List\n";
 
                 string newPrefix = prefix + "\t";
-                int innerCount = 0;
 
-                node = new WatchNode(eIn.GetType().ToString());
+                var list = (eIn as Value.List).Item;
 
-                foreach(Value eIn2 in (eIn as Value.List).Item)
+                node = new WatchNode(list.IsEmpty ? "Empty List" : "List");
+
+                foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
-                    node.Children.Add(Process(eIn2, ref content, newPrefix, innerCount));
-                    innerCount++;
+                    node.Children.Add(Process(e.Element, ref content, newPrefix, e.Index));
                 }
             }
             else if (eIn.IsNumber)
