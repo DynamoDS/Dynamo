@@ -19,6 +19,8 @@ using System.Text;
 
 using System.Windows.Controls;
 
+using System.Runtime.InteropServices;
+
 using Dynamo;
 using Dynamo.Nodes;
 using Dynamo.Connectors;
@@ -27,6 +29,10 @@ using Dynamo.Utilities;
 using Value = Dynamo.FScheme.Value;
 
 using Microsoft.FSharp.Collections;
+
+using Microsoft.Practices.Prism.ViewModel;
+
+using System.Windows.Media.Media3D;
 
 using System.Windows;
 using System.Xml;
@@ -40,6 +46,10 @@ using Autodesk.Revit.UI.Events;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.DB.Analysis;//MDJ needed for spatialfeildmanager
 
+using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+
 using Dynamo.Revit;
 
 using Autodesk.ASM;
@@ -48,8 +58,6 @@ using Autodesk.ASM;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Lang;
 using ProtoFFI;
-
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Applications
 {
@@ -87,16 +95,21 @@ namespace Dynamo.Nodes
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
     public class dynDesignScript : dynRevitTransactionNodeWithOneOutput
     {
-        bool dirty = false;
-
         string temp_dir = "C:\\Temp\\";
-
         string script;
 
         ProtoCore.Core core;
         bool coreSet = false;
+        bool dirty = false;
+        
+        List<Autodesk.Revit.DB.Element> _createdElements = new List<Element>();
 
-        List<Autodesk.Revit.DB.Element> created_elements = new List<Element>();
+        private bool initWindow = false;
+
+        private dynScriptEditWindow editWindow;
+
+        private List<object> _scriptRunObjects = new List<object>();
+        private List<GraphicObject> _nodeSpecificGraphicObjects = new List<GraphicObject>();
 
         public dynDesignScript()
         {
@@ -146,7 +159,7 @@ namespace Dynamo.Nodes
 
         private void ClearCreatedElements()
         {
-            foreach (Autodesk.Revit.DB.Element elem in created_elements)
+            foreach (Autodesk.Revit.DB.Element elem in _createdElements)
             {
                 // sometimes the Revit element gets lost or doesn't import
                 // correctly, so DeleteElement throws an exception
@@ -159,7 +172,7 @@ namespace Dynamo.Nodes
                 }
             }
 
-            created_elements.Clear();
+            _createdElements.Clear();
         }
 
         ~dynDesignScript()
@@ -173,7 +186,14 @@ namespace Dynamo.Nodes
                 
             core.Cleanup();
 
-            //Autodesk.ASM.State.ClearPersistedObjects();
+            try
+            {
+                Autodesk.ASM.State.ClearPersistedObjects();
+            }
+            catch (Exception)
+            {
+            }
+
             Autodesk.ASM.OUT.Reset();
         }
 
@@ -233,12 +253,12 @@ namespace Dynamo.Nodes
 
             ExecutionMirror mirror = fsr.Execute(script, core, context);
 
-            FSharpList<Value> created_objects = FSharpList<Value>.Empty;
-
             // These are the objects added in the DesignScript script
-            List<object> output_objects = Autodesk.ASM.OUT.Objects();
+            _scriptRunObjects = Autodesk.ASM.OUT.Objects();
 
-            foreach (object o in output_objects)
+            _nodeSpecificGraphicObjects.Clear();
+
+            foreach (object o in _scriptRunObjects)
             {
                 Autodesk.DesignScript.Geometry.Point p = o as Autodesk.DesignScript.Geometry.Point;
 
@@ -246,7 +266,7 @@ namespace Dynamo.Nodes
                 {
                     Autodesk.Revit.DB.XYZ xyz = new Autodesk.Revit.DB.XYZ(p.X, p.Y, p.Z);
                     ReferencePoint elem = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(xyz);
-                    created_elements.Add(elem);
+                    _createdElements.Add(elem);
 
                     continue;
                 }
@@ -269,7 +289,7 @@ namespace Dynamo.Nodes
                     CurveByPoints curve_elem = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(
                         point_array);
 
-                    created_elements.Add(curve_elem);
+                    _createdElements.Add(curve_elem);
 
                     continue;
                 }
@@ -279,46 +299,94 @@ namespace Dynamo.Nodes
                 if (g == null)
                     continue;
 
-                System.Guid guid = System.Guid.NewGuid();
+                Autodesk.DesignScript.Interfaces.IDesignScriptEntity ent = Autodesk.DesignScript.Geometry.GeometryExtension.ToEntity(g);
 
-                string temp_file_name = temp_dir + guid.ToString() + ".sat";
+                GraphicObject graphicObject = ent as GraphicObject;
 
-                try
-                {
-                    g.ExportToSAT(temp_file_name);
-
-                    Autodesk.Revit.DB.SATImportOptions options = new
-                        Autodesk.Revit.DB.SATImportOptions();
-
-                    // TODO: get this from the current document. This should be 
-                    //       synced with the "default" unit used for ReferencePoints
-                    options.Unit = ImportUnit.Foot;
-
-                    Autodesk.Revit.DB.ElementId new_id =
-                        Dynamo.Utilities.dynRevitSettings.Doc.Document.Import(
-                        temp_file_name, options,
-                        Dynamo.Utilities.dynRevitSettings.Doc.ActiveView);
-
-                    created_elements.Add(Dynamo.Utilities.dynRevitSettings.Doc.Document.GetElement(new_id));
-                }
-                catch (System.Exception)
-                {
+                if (graphicObject == null)
                     continue;
-                }
+
+                _nodeSpecificGraphicObjects.Add(graphicObject);
+
+                //System.Guid guid = System.Guid.NewGuid();
+
+                //string temp_file_name = temp_dir + guid.ToString() + ".sat";
+
+                //try
+                //{
+                //    g.ExportToSAT(temp_file_name);
+
+                //    Autodesk.Revit.DB.SATImportOptions options = new
+                //        Autodesk.Revit.DB.SATImportOptions();
+
+                //    // TODO: get this from the current document. This should be 
+                //    //       synced with the "default" unit used for ReferencePoints
+                //    options.Unit = ImportUnit.Foot;
+
+                //    Autodesk.Revit.DB.ElementId new_id =
+                //        Dynamo.Utilities.dynRevitSettings.Doc.Document.Import(
+                //        temp_file_name, options,
+                //        Dynamo.Utilities.dynRevitSettings.Doc.ActiveView);
+
+                //    _createdElements.Add(Dynamo.Utilities.dynRevitSettings.Doc.Document.GetElement(new_id));
+                //}
+                //catch (System.Exception)
+                //{
+                //    continue;
+                //}
             }
 
-            foreach (Autodesk.Revit.DB.Element elem in created_elements)
+            this.Elements.Clear();
+            FSharpList<Value> nodeOutputObjects = FSharpList<Value>.Empty;
+
+            foreach (Autodesk.Revit.DB.Element elem in _createdElements)
             {
+                this.Elements.Add(elem.Id);
+
                 Value element = Value.NewContainer(elem);
-                created_objects = FSharpList<Value>.Cons(element, created_objects);
+                nodeOutputObjects = FSharpList<Value>.Cons(element, nodeOutputObjects);
             }
 
-            return Value.NewList(created_objects);
+            return Value.NewList(nodeOutputObjects);
+        }
+
+        public override RenderDescription Draw()
+        {
+            // get the revit objects which can be drawn
+            RenderDescription revitDescription = base.Draw();
+
+            // generate the node-specific representations
+            //foreach (GraphicObject g in _nodeSpecificGraphicObjects)
+            //{
+            //    ulong[] linesCount = g.LineStripVerticesCount();
+            //    float[] linesVertices = g.LineStripVertices();
+
+            //    ulong offset = 0;
+            //    foreach (ulong lineLen in linesCount)
+            //    {
+            //        for (ulong i = 0; i < lineLen; ++i)
+            //        {
+            //            revitDescription.lines.Add(new Point3D(linesVertices[offset],
+            //                linesVertices[offset + 1], linesVertices[offset + 2]));
+
+            //            if (i != 0 && i != (lineLen - 1))
+            //                revitDescription.lines.Add(new Point3D(linesVertices[offset],
+            //                    linesVertices[offset + 1], linesVertices[offset + 2]));
+
+            //            offset += 3;
+            //        }
+            //    }
+            //}
+
+            return revitDescription;
         }
 
         void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            dynEditWindow editWindow = new dynEditWindow();
+            if (!initWindow)
+            {
+                editWindow = new dynScriptEditWindow();
+            }
 
             //set the text of the edit window to begin
             editWindow.editText.Text = script;

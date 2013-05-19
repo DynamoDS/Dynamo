@@ -59,7 +59,7 @@ namespace Dynamo.Revit
             }
         }
 
-        public RenderDescription Draw()
+        public virtual RenderDescription Draw()
         {
             RenderDescription description = new RenderDescription();
 
