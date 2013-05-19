@@ -59,6 +59,9 @@ using ProtoCore.DSASM.Mirror;
 using ProtoCore.Lang;
 using ProtoFFI;
 
+using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf;
+
 namespace Dynamo.Applications
 {
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
@@ -243,10 +246,13 @@ namespace Dynamo.Nodes
             }
 
             core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Executives.Add(ProtoCore.Language.kAssociative, new 
+                ProtoAssociative.Executive(core));
+            core.Executives.Add(ProtoCore.Language.kImperative, new 
+                ProtoImperative.Executive(core));
 
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptTestRunner fsr = new 
+                ProtoScript.Runners.ProtoScriptTestRunner();
 
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, 
                 new ProtoFFI.CSModuleHelper());
@@ -265,20 +271,25 @@ namespace Dynamo.Nodes
                 if (p != null)
                 {
                     Autodesk.Revit.DB.XYZ xyz = new Autodesk.Revit.DB.XYZ(p.X, p.Y, p.Z);
-                    ReferencePoint elem = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(xyz);
+                    ReferencePoint elem = 
+                        Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(
+                        xyz);
                     _createdElements.Add(elem);
 
                     continue;
                 }
 
-                Autodesk.DesignScript.Geometry.Line l = o as Autodesk.DesignScript.Geometry.Line;
+                Autodesk.DesignScript.Geometry.Line l = o as 
+                    Autodesk.DesignScript.Geometry.Line;
 
                 if (l != null)
                 {
-                    ReferencePoint start_point = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(
+                    ReferencePoint start_point = 
+                        Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(
                         new Autodesk.Revit.DB.XYZ(l.StartPoint.X, l.StartPoint.Y, 
                             l.StartPoint.Z));
-                    ReferencePoint end_point = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(
+                    ReferencePoint end_point = 
+                        Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(
                         new Autodesk.Revit.DB.XYZ(
                         l.EndPoint.X, l.EndPoint.Y, l.EndPoint.Z));
 
@@ -286,7 +297,8 @@ namespace Dynamo.Nodes
                     point_array.Append(start_point);
                     point_array.Append(end_point);
 
-                    CurveByPoints curve_elem = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(
+                    CurveByPoints curve_elem = 
+                        Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(
                         point_array);
 
                     _createdElements.Add(curve_elem);
@@ -294,12 +306,14 @@ namespace Dynamo.Nodes
                     continue;
                 }
 
-                Autodesk.DesignScript.Geometry.Geometry g = o as Autodesk.DesignScript.Geometry.Geometry;
+                Autodesk.DesignScript.Geometry.Geometry g = o as 
+                    Autodesk.DesignScript.Geometry.Geometry;
 
                 if (g == null)
                     continue;
 
-                Autodesk.DesignScript.Interfaces.IDesignScriptEntity ent = Autodesk.DesignScript.Geometry.GeometryExtension.ToEntity(g);
+                Autodesk.DesignScript.Interfaces.IDesignScriptEntity ent = 
+                    Autodesk.DesignScript.Geometry.GeometryExtension.ToEntity(g);
 
                 GraphicObject graphicObject = ent as GraphicObject;
 
@@ -307,33 +321,6 @@ namespace Dynamo.Nodes
                     continue;
 
                 _nodeSpecificGraphicObjects.Add(graphicObject);
-
-                //System.Guid guid = System.Guid.NewGuid();
-
-                //string temp_file_name = temp_dir + guid.ToString() + ".sat";
-
-                //try
-                //{
-                //    g.ExportToSAT(temp_file_name);
-
-                //    Autodesk.Revit.DB.SATImportOptions options = new
-                //        Autodesk.Revit.DB.SATImportOptions();
-
-                //    // TODO: get this from the current document. This should be 
-                //    //       synced with the "default" unit used for ReferencePoints
-                //    options.Unit = ImportUnit.Foot;
-
-                //    Autodesk.Revit.DB.ElementId new_id =
-                //        Dynamo.Utilities.dynRevitSettings.Doc.Document.Import(
-                //        temp_file_name, options,
-                //        Dynamo.Utilities.dynRevitSettings.Doc.ActiveView);
-
-                //    _createdElements.Add(Dynamo.Utilities.dynRevitSettings.Doc.Document.GetElement(new_id));
-                //}
-                //catch (System.Exception)
-                //{
-                //    continue;
-                //}
             }
 
             this.Elements.Clear();
@@ -355,28 +342,73 @@ namespace Dynamo.Nodes
             // get the revit objects which can be drawn
             RenderDescription revitDescription = base.Draw();
 
-            // generate the node-specific representations
-            //foreach (GraphicObject g in _nodeSpecificGraphicObjects)
-            //{
-            //    ulong[] linesCount = g.LineStripVerticesCount();
-            //    float[] linesVertices = g.LineStripVertices();
+            //generate the node-specific representations
+            foreach (GraphicObject g in _nodeSpecificGraphicObjects)
+            {
+                ulong[] linesCount = g.LineStripVerticesCount();
+                float[] linesVertices = g.LineStripVertices();
 
-            //    ulong offset = 0;
-            //    foreach (ulong lineLen in linesCount)
-            //    {
-            //        for (ulong i = 0; i < lineLen; ++i)
-            //        {
-            //            revitDescription.lines.Add(new Point3D(linesVertices[offset],
-            //                linesVertices[offset + 1], linesVertices[offset + 2]));
+                ulong offset = 0;
+                foreach (ulong lineLen in linesCount)
+                {
+                    for (ulong i = 0; i < lineLen; ++i)
+                    {
+                        revitDescription.lines.Add(new Point3D(linesVertices[offset],
+                            linesVertices[offset + 1], linesVertices[offset + 2]));
 
-            //            if (i != 0 && i != (lineLen - 1))
-            //                revitDescription.lines.Add(new Point3D(linesVertices[offset],
-            //                    linesVertices[offset + 1], linesVertices[offset + 2]));
+                        if (i != 0 && i != (lineLen - 1))
+                            revitDescription.lines.Add(new Point3D(linesVertices[offset],
+                                linesVertices[offset + 1], linesVertices[offset + 2]));
 
-            //            offset += 3;
-            //        }
-            //    }
-            //}
+                        offset += 3;
+                    }
+                }
+
+                int triangleVerticesCount = g.TriangleVerticesCount();
+                float[] triangleVertices = g.TriangleVertices();
+                List<Point3D> points = new List<Point3D>();
+                List<int> indicesFront = new List<int>();
+                List<int> indicesBack = new List<int>();
+
+                for (int i = 0; i < triangleVerticesCount * 3; i += 3)
+                {
+                    bool newPointExists = false;
+                    float x = triangleVertices[i];
+                    float y = triangleVertices[i + 1];
+                    float z = triangleVertices[i + 2];
+
+                    for (int j = 0; j < points.Count; ++j)
+                    {
+                        Point3D p = points[j];
+                        if (p.X == x && p.Y == y && p.Z == z)
+                        {
+                            indicesFront.Add(j);
+                            newPointExists = true;
+                            break;
+                        }
+                    }
+
+                    if (!newPointExists)
+                    {
+                        indicesFront.Add(points.Count);
+                        points.Add(new Point3D(x, y, z));
+                    }
+
+                    if (indicesFront.Count % 3 != 0)
+                        continue;
+
+                    int a = indicesFront[indicesFront.Count - 3];
+                    int b = indicesFront[indicesFront.Count - 2];
+                    int c = indicesFront[indicesFront.Count - 1];
+
+                    indicesBack.Add(c);
+                    indicesBack.Add(b);
+                    indicesBack.Add(a);
+                }
+                
+                revitDescription.meshes.Add(new Mesh3D(points, indicesFront));
+                revitDescription.meshes.Add(new Mesh3D(points, indicesBack)); 
+            }
 
             return revitDescription;
         }
