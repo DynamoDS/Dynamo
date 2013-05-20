@@ -45,6 +45,8 @@ namespace Dynamo
                     OutPortData.Add(new PortData(output, "function output", typeof (object)));
 
                 RegisterAllPorts();
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
 
             public dynFunction()

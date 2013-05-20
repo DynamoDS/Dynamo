@@ -1,6 +1,6 @@
-<dynWorkspace X="10" Y="55">
+<dynWorkspace X="0" Y="0">
   <dynElements>
-    <Dynamo.Elements.dynPython type="Dynamo.Elements.dynPython" guid="b1d208e9-ff8d-4586-8ada-6e8d9ccfcf6d" nickname="Python Script" x="156.5" y="139.5">
+    <Dynamo.Nodes.dynPython type="Dynamo.Nodes.dynPython" guid="b1d208e9-ff8d-4586-8ada-6e8d9ccfcf6d" nickname="Python Script" x="267.25" y="89" lacing="First">
       <Script># adapted from Nathan Miller's Proving Ground Blog
 # http://wiki.theprovingground.org/revit-api-py-curves
 
@@ -10,17 +10,11 @@ import math
 doc = __revit__.ActiveUIDocument.Document
 app = __revit__.Application
 
-#deal with older elements
-if DynStoredElements.Count&gt;0:
-     count = 0
-     for eID in DynStoredElements:
-          e = doc.get_Element(DynStoredElements[count])
-          doc.Delete(e)
-
 scale = IN
 
-refptarr = ReferencePointArray()
- 
+xyzs = []
+output = []
+
 #use for loop to create a series of points
 for i in range(0,20):
     x = math.sin(i)*scale
@@ -28,27 +22,25 @@ for i in range(0,20):
     z = i*scale/2
  
     myXYZ = XYZ(x,y,z)
-    refPt = doc.FamilyCreate.NewReferencePoint(myXYZ)
-    refptarr.Append(refPt)
-    #DynStoredElements.Add(refPt.Id)
- 
-#create curve
-crv = doc.FamilyCreate.NewCurveByPoints(refptarr)
-DynStoredElements.Add(crv.Id)
-OUT = crv;</Script>
-    </Dynamo.Elements.dynPython>
-    <Dynamo.Elements.dynCurveFromModelCurve type="Dynamo.Elements.dynCurveFromModelCurve" guid="f7501af7-44fe-4428-a5e8-543252a87ada" nickname="Curve From Curve Element" x="253.5" y="249.75" />
-    <Dynamo.Elements.dynWatch type="Dynamo.Elements.dynWatch" guid="05b85230-5cc4-45b9-82fe-8e95284d342d" nickname="Watch" x="437.75" y="0" />
-    <Dynamo.Elements.dynWatch3D type="Dynamo.Elements.dynWatch3D" guid="ada46d91-3dfa-4a65-bcaa-d1ea39312c41" nickname="Watch 3D" x="437.758741258741" y="251.552447552448" />
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="99c31498-e06e-4b95-8000-beaf61dde392" nickname="Number Slider" x="0" y="0">
-      <System.Double value="100" min="0" max="100" />
-    </Dynamo.Elements.dynDoubleSliderInput>
+    xyzs.append(myXYZ)
+
+#create hermite spline
+hs = app.Create.NewHermiteSpline(xyzs, False)
+output.append(hs)
+output.append(xyzs)
+
+OUT = output;</Script>
+    </Dynamo.Nodes.dynPython>
+    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="ada46d91-3dfa-4a65-bcaa-d1ea39312c41" nickname="Watch 3D" x="631.758741258741" y="275.552447552448" lacing="Disabled" />
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="99c31498-e06e-4b95-8000-beaf61dde392" nickname="Number Slider" x="0" y="0" lacing="First">
+      <System.Double value="26.1235955056179" min="0" max="100" />
+    </Dynamo.Nodes.dynDoubleSliderInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="9ebd471e-ea8a-4e90-9235-e15b7d06b992" nickname="Watch" x="459.268159601846" y="60.267535090427" lacing="Disabled" />
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="b1d208e9-ff8d-4586-8ada-6e8d9ccfcf6d" start_index="0" end="f7501af7-44fe-4428-a5e8-543252a87ada" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="f7501af7-44fe-4428-a5e8-543252a87ada" start_index="0" end="05b85230-5cc4-45b9-82fe-8e95284d342d" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="f7501af7-44fe-4428-a5e8-543252a87ada" start_index="0" end="ada46d91-3dfa-4a65-bcaa-d1ea39312c41" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="99c31498-e06e-4b95-8000-beaf61dde392" start_index="0" end="b1d208e9-ff8d-4586-8ada-6e8d9ccfcf6d" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="b1d208e9-ff8d-4586-8ada-6e8d9ccfcf6d" start_index="0" end="9ebd471e-ea8a-4e90-9235-e15b7d06b992" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="b1d208e9-ff8d-4586-8ada-6e8d9ccfcf6d" start_index="0" end="ada46d91-3dfa-4a65-bcaa-d1ea39312c41" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="99c31498-e06e-4b95-8000-beaf61dde392" start_index="0" end="b1d208e9-ff8d-4586-8ada-6e8d9ccfcf6d" end_index="0" portType="0" />
   </dynConnectors>
   <dynNotes />
 </dynWorkspace>

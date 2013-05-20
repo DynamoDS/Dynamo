@@ -22,7 +22,7 @@ The current version will run on top of Revit 2013 and Project Vasari Beta 2 and 
 April 2013
 
 Known Issues
-- Dynamo cannot start with Revit Python Shell Installed.  
+- Dynamo cannot start with Revit Python Shell Installed.
 - Dynamo continues regenerating revit elements after closing when "Run Automatically" is checked
 - Face selection of loaded families move origin to Revit 0,0,0
 - Solar Radiation Optimization Sample may lock CSV file and stop running
@@ -123,7 +123,7 @@ June 2012
 Dynamo For Vasari Beta 2 WIP: Integrating Dynamo into Project Vasari and extending Dynamo to support integrated analysis and performance-based design.
 
 
-## License ##
+## Dynamo License ##
 
 Those portions created by Ian are provided with the following copyright:
 
@@ -140,3 +140,37 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+## Third Party Licenses ##
+
+###Avalon Edit###
+http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor  
+http://opensource.org/licenses/lgpl-3.0.html  
+
+###Kinect for Windows###
+http://www.microsoft.com/en-us/kinectforwindows/  
+http://www.microsoft.com/en-us/kinectforwindows/develop/sdk-eula.aspx  
+
+###Helix3D###
+https://helixtoolkit.codeplex.com/  
+https://helixtoolkit.codeplex.com/license  
+
+###Iron Python###
+http://ironpython.net/  
+http://opensource.org/licenses/apache2.0.php  
+
+###MiConvexHull###
+http://miconvexhull.codeplex.com/  
+http://miconvexhull.codeplex.com/license  
+
+###NCalc###
+http://ncalc.codeplex.com/  
+http://ncalc.codeplex.com/license  
+
+###NUnit####
+http://www.nunit.org/  
+http://www.nunit.org/index.php?p=license&r=2.6.2  
+
+###Prism###
+http://msdn.microsoft.com/en-us/library/gg406140.aspx  
+http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx  

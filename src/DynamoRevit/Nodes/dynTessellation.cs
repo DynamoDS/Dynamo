@@ -86,11 +86,23 @@ namespace Dynamo.Nodes
                         //pts = FSharpList<Value>.Cons(Value.NewContainer(start), pts);
                         //pts = FSharpList<Value>.Cons(Value.NewContainer(end), pts);
 
-                        Line l = this.UIDocument.Application.Application.Create.NewLineBound(start, end);
+                        //Line l = this.UIDocument.Application.Application.Create.NewLineBound(start, end);
+
+                        ReferencePoint startRefPoint = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
+                        ReferencePoint endRefPoint = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
+
+                        ReferencePointArray refPointArray = new ReferencePointArray();
+                        refPointArray.Append(startRefPoint);
+                        refPointArray.Append(endRefPoint);
+
+                        CurveElement lineElement = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPointArray);
+
+                        this.Elements.Add(startRefPoint.Id);
+                        this.Elements.Add(endRefPoint.Id);
+                        this.Elements.Add(lineElement.Id);
 
                         //result = FSharpList<Value>.Cons(Value.NewList(pts), result);
-                        result = FSharpList<Value>.Cons(Value.NewContainer(l), result);
-
+                        result = FSharpList<Value>.Cons(Value.NewContainer(lineElement), result);
                     }
                 }
                 return Value.NewList(result);

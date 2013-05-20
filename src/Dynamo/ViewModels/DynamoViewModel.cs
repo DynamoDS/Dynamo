@@ -1599,6 +1599,11 @@ namespace Dynamo.Controls
 
                 #region instantiate nodes
 
+                //if there is any problem loading a node, then
+                //add the node's guid to the bad nodes collection
+                //so we can avoid attempting to make connections to it
+                List<Guid> badNodes = new List<Guid>();
+
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
                     XmlAttribute typeAttrib = elNode.Attributes[0];
@@ -1613,7 +1618,6 @@ namespace Dynamo.Controls
                          lacingAttrib = elNode.Attributes[5];
                     }
 
-                    
                     string typeName = typeAttrib.Value;
 
                     string oldNamespace = "Dynamo.Elements.";
@@ -1641,11 +1645,35 @@ namespace Dynamo.Controls
                     
                     if (!Controller.BuiltInTypesByName.TryGetValue(typeName, out tData))
                     {
+                        //try and get a system type by this name
                         t = Type.GetType(typeName);
+
+                        //if we still can't find the type, try the also known as attributes
                         if (t == null)
                         {
-                            Log("Error loading definition. Could not load node of type: " + typeName);
-                            return false;
+                            //try to get the also known as values
+                            foreach (KeyValuePair<string, TypeLoadData> kvp in Controller.BuiltInTypesByName)
+                            {
+                                var akaAttribs = kvp.Value.Type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), false);
+                                if (akaAttribs.Count() > 0)
+                                {
+                                    if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
+                                    {
+                                        Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key, typeName));
+                                        t = kvp.Value.Type;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (t == null)
+                        {
+                            Log("Could not load node of type: " + typeName);
+                            Log("Loading will continue but nodes might be missing from your workflow.");
+
+                            //return false;
+                            badNodes.Add(guid);
+                            continue;
                         }
                     }
                     else
@@ -1715,6 +1743,9 @@ namespace Dynamo.Controls
                     //find the elements to connect
                     dynNodeModel start = null;
                     dynNodeModel end = null;
+
+                    if (badNodes.Contains(guidStart) || badNodes.Contains(guidEnd))
+                        continue;
 
                     foreach (dynNodeModel e in ws.Nodes)
                     {
@@ -2221,6 +2252,11 @@ namespace Dynamo.Controls
                 XmlNode cNodesList = cNodes[0];
                 XmlNode nNodesList = nNodes[0];
 
+                //if there is any problem loading a node, then
+                //add the node's guid to the bad nodes collection
+                //so we can avoid attempting to make connections to it
+                List<Guid> badNodes = new List<Guid>();
+
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
                     XmlAttribute typeAttrib = elNode.Attributes[0];
@@ -2260,11 +2296,35 @@ namespace Dynamo.Controls
 
                     if (!Controller.BuiltInTypesByName.TryGetValue(typeName, out tData))
                     {
+                        //try and get a system type by this name
                         t = Type.GetType(typeName);
+
+                        //if we still can't find the type, try the also known as attributes
+                        if(t == null)
+                        {
+                            //try to get the also known as values
+                            foreach (KeyValuePair<string, TypeLoadData> kvp in Controller.BuiltInTypesByName)
+                            {
+                                var akaAttribs = kvp.Value.Type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), false);
+                                if (akaAttribs.Count() > 0)
+                                {
+                                    if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
+                                    {
+                                        Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key , typeName));
+                                        t = kvp.Value.Type;
+                                    }
+                                }
+                            }
+                        }
+
                         if (t == null)
                         {
-                            Log("Error loading workspace. Could not load node of type: " + typeName);
-                            return false;
+                            Log("Could not load node of type: " + typeName);
+                            Log("Loading will continue but nodes might be missing from your workflow.");
+
+                            //return false;
+                            badNodes.Add(guid);
+                            continue;
                         }
                     }
                     else
@@ -2293,6 +2353,11 @@ namespace Dynamo.Controls
                     {
                         var fun = el as dynFunction;
 
+                        //argument lacing on functions should be set to disabled
+                        //by default in the constructor, but for any workflow saved
+                        //before this was the case, we need to ensure it here.
+                        el.ArgumentLacing = LacingStrategy.Disabled;
+
                         // we've found a custom node, we need to attempt to load its guid.  
                         // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
                         // deterministically
@@ -2310,27 +2375,8 @@ namespace Dynamo.Controls
                         fun.Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
 
                     }
-
-                    //read the sub elements
-                    //set any numeric values 
-                    //foreach (XmlNode subNode in elNode.ChildNodes)
-                    //{
-                    //   if (subNode.Name == "System.Double")
-                    //   {
-                    //      double val = Convert.ToDouble(subNode.Attributes[0].Value);
-                    //      el.OutPortData[0].Object = val;
-                    //      el.Update();
-                    //   }
-                    //   else if (subNode.Name == "System.Int32")
-                    //   {
-                    //      int val = Convert.ToInt32(subNode.Attributes[0].Value);
-                    //      el.OutPortData[0].Object = val;
-                    //      el.Update();
-                    //   }
-                    //}
                 }
 
-                //dynSettings.Workbench.UpdateLayout();
                 OnRequestLayoutUpdate(this, EventArgs.Empty);
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
@@ -2351,6 +2397,9 @@ namespace Dynamo.Controls
                     dynNodeModel start = null;
                     dynNodeModel end = null;
 
+                    if (badNodes.Contains(guidStart) || badNodes.Contains(guidEnd))
+                        continue;
+
                     foreach (dynNodeModel e in _model.Nodes)
                     {
                         if (e.GUID == guidStart)
@@ -2367,15 +2416,6 @@ namespace Dynamo.Controls
                         }
                     }
 
-                    //don't connect if the end element is an instance map
-                    //those have a morphing set of inputs
-                    //dynInstanceParameterMap endTest = end as dynInstanceParameterMap;
-
-                    //if (endTest != null)
-                    //{
-                    //    continue;
-                    //}
-
                     if (start != null && end != null && start != end)
                     {
                         var newConnector = new dynConnectorModel(start, end,
@@ -2384,9 +2424,6 @@ namespace Dynamo.Controls
                         _model.CurrentSpace.Connectors.Add(newConnector);
                     }
                 }
-
-                //MVVM: redraw should be automatic with connector bindings
-                //_model.CurrentSpace.Connectors.ForEach(x => x.Redraw());
 
                 #region instantiate notes
 
