@@ -70,8 +70,9 @@ namespace Dynamo.Applications
     {
         public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
         {
-            Autodesk.ASM.State.Start();
-            Autodesk.ASM.State.StartViewer();
+            bool headless = true;
+            Autodesk.ASM.State.Start(headless);
+            //Autodesk.ASM.State.StartViewer();
 
             return Result.Succeeded;
         }
@@ -81,7 +82,7 @@ namespace Dynamo.Applications
             Autodesk.ASM.State.ClearPersistedObjects();
             Autodesk.ASM.OUT.Reset();
 
-            Autodesk.ASM.State.StopViewer();
+            //Autodesk.ASM.State.StopViewer();
             bool is_plugin = true;
             Autodesk.ASM.State.Stop(is_plugin);
 
