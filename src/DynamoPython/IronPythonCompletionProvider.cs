@@ -22,6 +22,8 @@ namespace DynamoPython
     /// </summary>
     public class IronPythonCompletionProvider
     {
+        #region Properties and fields
+
         /// <summary>
         /// The engine used for autocompletion.  This essentially keeps
         /// track of the state of the editor, allowing access to variable types and 
@@ -83,6 +85,11 @@ namespace DynamoPython
         public static string basicImportRegex = @"(import)";
         public static string fromImportRegex = @"^(from)";
 
+#endregion
+
+        /// <summary>
+        /// Class constructor
+        /// </summary>
         public IronPythonCompletionProvider()
         {
             _engine = Python.CreateEngine();
@@ -94,7 +101,7 @@ namespace DynamoPython
             this.InitRegexTypes();
 
             var defaultImports =
-                "import clr\nfrom itertools import *\n"; 
+                "import clr\n"; 
 
             _scope.Engine.CreateScriptSourceFromString(defaultImports, SourceCodeKind.Statements).Execute(_scope);
 
@@ -107,14 +114,17 @@ namespace DynamoPython
             }
             catch
             {
-                DynamoLogger.Instance.Log("Failed to load Revit types for Autocomplete.  Autocomplete will not see Autodesk namespace types.");
+                DynamoLogger.Instance.Log("Failed to load Revit types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
             }
 
         }
 
         /// <summary>
-        /// Generates completion data for the specified text. 
+        /// Generates completion data for the specified text, while import the given types into the 
+        /// scope and discovering variable assignments.
         /// </summary>
+        /// <param name="line">The code to parse</param>
+        /// <returns>Return a list of DynamoCompletionData </returns>
         public ICompletionData[] GetCompletionData(string line)
         {
             var items = new List<DynamoCompletionData>();
@@ -142,21 +152,21 @@ namespace DynamoPython
                     else
                     {
                         // look up a namespace 
-                        var mem = this.LookupMember(name);
+                        var mem = LookupMember(name);
                         if (mem != null)
                         {
                             if (mem is NamespaceTracker)
                             {
-                                items = this.EnumerateMembers(mem as NamespaceTracker, name);
+                                items = EnumerateMembers(mem as NamespaceTracker, name);
                             } 
                             else if (mem is PythonModule)
                             {
-                                items = this.EnumerateMembers(mem as PythonModule, name);
+                                items = EnumerateMembers(mem as PythonModule, name);
                             } 
                             else if (mem is PythonType)
                             {
                                 // shows static and instance methods in just the same way :(
-                                Type value = ClrModule.GetClrType(mem as PythonType);
+                                var value = ClrModule.GetClrType(mem as PythonType);
                                 if (value != null)
                                 {
                                     items = EnumerateMembers( value, name);
@@ -173,13 +183,6 @@ namespace DynamoPython
             }
 
             return items.ToArray();
-        }
-
-        public Type GetClrTypeFromPythonScope(string name)
-        {
-            string dirCommand = "clr.GetClrType(" + name + ")";
-            object value = _scope.Engine.CreateScriptSourceFromString(dirCommand, SourceCodeKind.Expression).Execute(_scope);
-            return value as Type;
         }
 
         /// <summary>
@@ -454,6 +457,12 @@ namespace DynamoPython
             return type as Type;
         }
 
+        /// <summary>
+        /// Attempts to find import statements that look like 
+        ///     from lib import *
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
         public static Dictionary<string, string> FindAllTypeImportStatements(string code)
         {
             // matches the following types:
@@ -478,12 +487,15 @@ namespace DynamoPython
             return importMatches;
         }
 
+        /// <summary>
+        /// Attempts to find import statements that look like 
+        ///     from lib import type1, type2
+        /// Doesn't currently match types with namespace qualifiers like Collections.ArrayList
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
         public static Dictionary<string, string> FindTypeSpecificImportStatements(string code)
         {
-            // matches the following types:
-
-                // from lib import type, type1
-                // from lib import *
 
             var matches = Regex.Matches(code, fromImportRegex + atLeastOneSpaceRegex + variableName + 
                             atLeastOneSpaceRegex + basicImportRegex + atLeastOneSpaceRegex + commaDelimitedVariableNamesRegex + "$", RegexOptions.Multiline);
@@ -509,12 +521,15 @@ namespace DynamoPython
             return importMatches;
         }
 
+
+        /// <summary>
+        /// Attempts to find import statements that look like 
+        ///     import lib
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
         public static Dictionary<string, string> FindBasicImportStatements(string code)
         {
-            // matches the following types:
-
-                // import bla
-
             var matches = Regex.Matches(code, "^" + basicImportRegex + spacesOrNone + variableName, RegexOptions.Multiline);
 
             var importMatches = new Dictionary<string, string>();
@@ -533,6 +548,13 @@ namespace DynamoPython
             return importMatches;
         }
 
+        /// <summary>
+        /// Find a variable assignment of the form "varName = bla" where bla is matched by 
+        /// the given regex
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <param name="valueRegex">Your regex to match the type</param>
+        /// <returns>A dictionary of name to assignment line pairs/returns>
         public static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
         {
             var matches = Regex.Matches(code, variableName + spacesOrNone + equals + spacesOrNone + valueRegex);
@@ -549,6 +571,11 @@ namespace DynamoPython
 
         }
 
+        /// <summary>
+        /// Find all import statements and import into scope.  If the type is already in the scope, this will be skipped.  
+        /// The ImportedTypes dictionary is 
+        /// </summary>
+        /// <param name="code">The code to discover the import statements.</param>
         public void UpdateImportedTypes(string code)
         {
             // look all import statements
@@ -653,40 +680,16 @@ namespace DynamoPython
                     }
                 }
             }
-            
-            
-            //foreach (var pair in RegexToType)
-            //{
-            //    var matches = Regex.Matches(code, variableName + spacesOrNone + equals + spacesOrNone + pair.Key, RegexOptions.Multiline);
-
-            //    // for all of the matches
-            //    for (var i = 0; i < matches.Count; i++)
-            //    {
-            //        var name = matches[i].Groups[1].Value.Trim();
-            //        var val = matches[i].Groups[6].Value.Trim();
-            //        var currentIndex = matches[i].Index;
-
-            //        // if we already saw this var
-            //        if (variables.ContainsKey(name))
-            //        {
-            //            var varInfo = variables[name];
-            //            if (currentIndex > varInfo.Item2)
-            //            {
-            //                variables[name] = new Tuple<string, int, Type>(val, currentIndex, pair.Value);
-            //            }
-            //        }
-            //        else // we've never seen it, add the type
-            //        {
-            //            variables.Add( name, new Tuple<string, int, Type>(val, currentIndex, pair.Value));
-            //        }
-            //    }
-            //}
-
-
 
             return variables;
         }
 
+        /// <summary>
+        /// Get the name from the end of a string.  Matches back to the first space and trims off spaces or ('s
+        /// from the end of the line
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         string GetName(string text)
         {
             text = text.Replace("\t", "   ");
