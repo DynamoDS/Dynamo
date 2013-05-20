@@ -46,14 +46,30 @@ namespace DynamoPython
         }
 
         /// <summary>
+        /// Already discovered variable types
+        /// </summary>
+        public Dictionary<string, Type> VariableTypes { get; set; }
+
+        /// <summary>
         /// This will eventually be used for multi-threading.
         /// </summary>
         internal volatile bool AutocompletionInProgress = false;
 
-        public Dictionary<string, string> LoadedVariables { get; set; }
-        public Dictionary<string, Type> LoadedTypes { get; set; }
+        /// <summary>
+        /// Types that have already been imported into the scope
+        /// </summary>
+        public Dictionary<string, Type> ImportedTypes { get; set; }
+
+        /// <summary>
+        /// Maps a regex to a particular python type.  Useful for matching things like dicts,
+        /// floats, strings, etc.  Initialized by 
+        /// </summary>
         public Dictionary<string, Type> RegexToType = new Dictionary<string, Type>();
 
+        /// <summary>
+        /// A bunch of regexes for use in introspaction
+        /// </summary>
+        public static string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s*)+)";
         public static string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";   
         public static string doubleQuoteStringRegex = "(\"[^\"]*\")";
         public static string singleQuoteStringRegex = "(\'[^\']*\')";
@@ -72,12 +88,13 @@ namespace DynamoPython
             _engine = Python.CreateEngine();
             _scope = _engine.CreateScope();
 
-            LoadedTypes = new Dictionary<string, Type>();
-            LoadedVariables = new Dictionary<string, string>();
+            VariableTypes = new Dictionary<string, Type>();
+            ImportedTypes = new Dictionary<string, Type>();
+
             this.InitRegexTypes();
 
             var defaultImports =
-                "import clr\n"; 
+                "import clr\nfrom itertools import *\n"; 
 
             _scope.Engine.CreateScriptSourceFromString(defaultImports, SourceCodeKind.Statements).Execute(_scope);
 
@@ -92,18 +109,18 @@ namespace DynamoPython
             {
                 DynamoLogger.Instance.Log("Failed to load Revit types for Autocomplete.  Autocomplete will not see Autodesk namespace types.");
             }
-        }
 
+        }
 
         /// <summary>
         /// Generates completion data for the specified text. 
         /// </summary>
-        public ICompletionData[] GenerateCompletionData(string line)
+        public ICompletionData[] GetCompletionData(string line)
         {
             var items = new List<DynamoCompletionData>();
 
-            this.FindImportStatementsAndTryLoad(line);
-            this.FindVariableStatementsAndGetType(line);
+            this.UpdateImportedTypes(line);
+            this.UpdateVariableTypes(line);
 
             string name = GetName(line);
 
@@ -118,15 +135,9 @@ namespace DynamoPython
                     {
                         items = EnumerateMembers(type, name);
                     }
-                    else if (this.LoadedVariables.ContainsKey(name))
+                    else if (this.VariableTypes.ContainsKey(name) ) // it's a clr type
                     {
-                        string dirCommand = "dir(" + LoadedVariables[name] + ")";
-                        object value = _scope.Engine.CreateScriptSourceFromString(dirCommand, SourceCodeKind.Expression).Execute(_scope);
-                        if (value != null)
-                        {
-                            items.AddRange((value as IronPython.Runtime.List)
-                                 .Select(member => new DynamoCompletionData((string) member, LoadedVariables[name], false, DynamoCompletionData.CompletionType.METHOD, this)));
-                        }
+                        items = EnumerateMembers(this.VariableTypes[name], name);
                     } 
                     else
                     {
@@ -145,11 +156,10 @@ namespace DynamoPython
                             else if (mem is PythonType)
                             {
                                 // shows static and instance methods in just the same way :(
-                                string dirCommand = "clr.GetClrType(" + name + ")";
-                                object value = _scope.Engine.CreateScriptSourceFromString(dirCommand, SourceCodeKind.Expression).Execute(_scope);
-                                if (value is Type)
+                                Type value = ClrModule.GetClrType(mem as PythonType);
+                                if (value != null)
                                 {
-                                    items = EnumerateMembers( value as Type, name);
+                                    items = EnumerateMembers( value, name);
                                 }
                             }
                         }
@@ -163,6 +173,13 @@ namespace DynamoPython
             }
 
             return items.ToArray();
+        }
+
+        public Type GetClrTypeFromPythonScope(string name)
+        {
+            string dirCommand = "clr.GetClrType(" + name + ")";
+            object value = _scope.Engine.CreateScriptSourceFromString(dirCommand, SourceCodeKind.Expression).Execute(_scope);
+            return value as Type;
         }
 
         /// <summary>
@@ -244,17 +261,23 @@ namespace DynamoPython
                     && (methodInfoItem.Name.IndexOf("get_") != 0) && (methodInfoItem.Name.IndexOf("set_") != 0)
                     && (methodInfoItem.Name.IndexOf("add_") != 0) && (methodInfoItem.Name.IndexOf("remove_") != 0)
                     && (methodInfoItem.Name.IndexOf("__") != 0))
-                    completionsList.Add(methodInfoItem.Name, DynamoCompletionData.CompletionType.METHOD);
+                {
+                    if (!completionsList.ContainsKey(methodInfoItem.Name))
+                        completionsList.Add(methodInfoItem.Name, DynamoCompletionData.CompletionType.METHOD);
+                }
+                    
             }
 
             foreach (PropertyInfo propertyInfoItem in propertyInfo)
             {
-                completionsList.Add(propertyInfoItem.Name, DynamoCompletionData.CompletionType.PROPERTY);
+                if (!completionsList.ContainsKey(propertyInfoItem.Name))
+                    completionsList.Add(propertyInfoItem.Name, DynamoCompletionData.CompletionType.PROPERTY);
             }
 
             foreach (FieldInfo fieldInfoItem in fieldInfo)
             {
-                completionsList.Add(fieldInfoItem.Name, DynamoCompletionData.CompletionType.FIELD);
+                if (!completionsList.ContainsKey(fieldInfoItem.Name))
+                    completionsList.Add(fieldInfoItem.Name, DynamoCompletionData.CompletionType.FIELD);
             }
 
             foreach (var completionPair in completionsList)
@@ -336,9 +359,9 @@ namespace DynamoPython
         /// the dot character that triggered the completion. The text can contain the command line prompt
         /// '>>>' as this will be ignored.
         /// </summary>
-        public void GenerateDescription(string stub, string item, DescriptionUpdateDelegate updateDescription, bool isInstance)
+        public void GetDescription(string stub, string item, DescriptionUpdateDelegate updateDescription, bool isInstance)
         {
-            string description = this.GenerateDescription(stub, item, isInstance);
+            string description = this.GetDescription(stub, item, isInstance);
             updateDescription(description);
         }
 
@@ -348,7 +371,7 @@ namespace DynamoPython
         /// <param name="stub">Everything before the last namespace or type name e.g. System.Collections in System.Collections.ArrayList</param>
         /// <param name="item">Everything after the stub</param>
         /// <param name="isInstance">Whether it's an instance or not</param>
-        public string GenerateDescription(string stub, string item, bool isInstance)
+        public string GetDescription(string stub, string item, bool isInstance)
         {
             string description = "No description available"; // the default
             if (!String.IsNullOrEmpty(item))
@@ -379,23 +402,24 @@ namespace DynamoPython
         public delegate void DescriptionUpdateDelegate(string description);
 
         /// <summary>
-        ///     Traverse the given source code and 
+        ///     Traverse the given source code and define variable types based on
+        ///     the current scope
         /// </summary>
-        /// <param name="line"></param>
-        private void FindVariableStatementsAndGetType(string line)
+        /// <param name="line">The source code to look through</param>
+        public void UpdateVariableTypes(string line)
         {
-            this.LoadedVariables.Clear();
+            this.VariableTypes.Clear(); // for now...
 
-            Dictionary<string, Tuple<string, int, Type>> vars = this.FindAllVariables(line);
+            var vars = this.FindAllVariables(line);
             foreach (var varData in vars)
             {
-                if (this.LoadedVariables.ContainsKey(varData.Key))
+                if (this.VariableTypes.ContainsKey(varData.Key))
                 {
-                    LoadedVariables[varData.Key] = TypeToPythonType[varData.Value.Item3];
+                    VariableTypes[varData.Key] = varData.Value.Item3;
                 }
                 else
                 {
-                    LoadedVariables.Add(varData.Key, TypeToPythonType[varData.Value.Item3]);
+                    VariableTypes.Add(varData.Key, varData.Value.Item3);
                 }
             }
         }
@@ -408,9 +432,9 @@ namespace DynamoPython
         protected Type TryGetType(string name)
         {
 
-            if (LoadedTypes.ContainsKey(name))
+            if (ImportedTypes.ContainsKey(name))
             {
-                return LoadedTypes[name];
+                return ImportedTypes[name];
             }
 
             string tryGetType = name + ".GetType()";
@@ -429,8 +453,6 @@ namespace DynamoPython
             }
             return type as Type;
         }
-
-        public static string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s*)+)";
 
         public static Dictionary<string, string> FindAllTypeImportStatements(string code)
         {
@@ -527,14 +549,14 @@ namespace DynamoPython
 
         }
 
-        public void FindImportStatementsAndTryLoad(string code)
+        public void UpdateImportedTypes(string code)
         {
             // look all import statements
             var imports = FindBasicImportStatements(code)
                 .Union(FindTypeSpecificImportStatements(code))
                 .Union(FindAllTypeImportStatements(code));
 
-            // try and load modules into python _scope
+            // try and load modules into python scope
             foreach (var import in imports)
             {
                 if (_scope.ContainsVariable(import.Key))
@@ -545,16 +567,16 @@ namespace DynamoPython
                 {
                     _scope.Engine.CreateScriptSourceFromString(import.Value, SourceCodeKind.SingleStatement)
                          .Execute(this._scope);
-                    this.LoadedTypes.Add(import.Key, Type.GetType(import.Key));
+                    var type = Type.GetType(import.Key);
+                    this.ImportedTypes.Add(import.Key, type);
                 }
                 catch
                 {
                     Console.WriteLine();
                 }
             }
-        }
 
-        Dictionary<Type, string> TypeToPythonType = new Dictionary<Type, string>();
+        }
 
         public void InitRegexTypes()
         {
@@ -562,14 +584,8 @@ namespace DynamoPython
             RegexToType.Add(doubleQuoteStringRegex, typeof( string ));
             RegexToType.Add(doubleRegex, typeof( double ));
             RegexToType.Add(intRegex, typeof( int ));
-            RegexToType.Add(arrayRegex, typeof(IronPython.Runtime.List));
-            RegexToType.Add(dictRegex, typeof(IronPython.Runtime.PythonDictionary));
-
-            TypeToPythonType.Add(typeof(string), "str");
-            TypeToPythonType.Add(typeof(double), "float");
-            TypeToPythonType.Add(typeof(int), "int");
-            TypeToPythonType.Add(typeof(IronPython.Runtime.List), "[]");
-            TypeToPythonType.Add(typeof(IronPython.Runtime.PythonDictionary), "{}");
+            RegexToType.Add(arrayRegex, typeof(List));
+            RegexToType.Add(dictRegex, typeof(PythonDictionary));
         }
 
         public Dictionary<string, Tuple<string, int, Type> > FindAllVariables(string code)
@@ -577,33 +593,97 @@ namespace DynamoPython
             // regex to collection
             var variables = new Dictionary<string, Tuple<string, int, Type>>();
 
-            // for each regex
-            foreach (var pair in RegexToType)
+            var variableStatements = Regex.Matches(code, variableName + spacesOrNone + equals + spacesOrNone + @"(.*)", RegexOptions.Multiline);
+
+            for (var i = 0; i < variableStatements.Count; i++)
             {
-                var matches = Regex.Matches(code, variableName + spacesOrNone + equals + spacesOrNone + pair.Key, RegexOptions.Multiline);
+                var name = variableStatements[i].Groups[1].Value.Trim();
+                var typeString = variableStatements[i].Groups[6].Value.Trim(); // type
+                var currentIndex = variableStatements[i].Index;
 
-                // for all of the matches
-                for (var i = 0; i < matches.Count; i++)
+                // check if matches typename(blabla) - in this case its a type we need to look up
+                var typeStringMatches = Regex.Matches(typeString, @"^(.*)\(.*\)$", RegexOptions.Singleline);
+                if (typeStringMatches.Count > 0)
                 {
-                    var name = matches[i].Groups[1].Value.Trim();
-                    var val = matches[i].Groups[6].Value.Trim();
-                    var currentIndex = matches[i].Index;
+                    typeString = typeStringMatches[0].Groups[1].Value.Trim();
+                    var typeInScope = this.LookupMember(typeString);
 
-                    // if we already saw this var
-                    if (variables.ContainsKey(name))
+                    if (typeInScope is PythonType) // dictionary, enum, etc
                     {
-                        var varInfo = variables[name];
-                        if (currentIndex > varInfo.Item2)
+                        var type = ClrModule.GetClrType(typeInScope as PythonType);
+
+                        //// if we already saw this var
+                        if (variables.ContainsKey(name))
                         {
-                            variables[name] = new Tuple<string, int, Type>(val, currentIndex, pair.Value);
+                            var varInfo = variables[name];
+                            if (currentIndex > varInfo.Item2)
+                            {
+                                variables[name] = new Tuple<string, int, Type>(typeString, currentIndex, type);
+                            }
+                        }
+                        else // we've never seen it, add the type
+                        {
+                            variables.Add(name, new Tuple<string, int, Type>(typeString, currentIndex, type));
                         }
                     }
-                    else // we've never seen it, add the type
+
+                }
+                else // match default types (numbers, dicts, arrays, strings)
+                {
+                    foreach (var pair in RegexToType)
                     {
-                        variables.Add( name, new Tuple<string, int, Type>(val, currentIndex, pair.Value));
+                        var matches = Regex.Matches(typeString, "^" + pair.Key + "$", RegexOptions.Singleline);
+                        if (matches.Count > 0)
+                        {
+                            // if we already saw this var
+                            if (variables.ContainsKey(name))
+                            {
+                                var varInfo = variables[name];
+                                if (currentIndex > varInfo.Item2)
+                                {
+                                    variables[name] = new Tuple<string, int, Type>(typeString, currentIndex, pair.Value);
+                                }
+                            }
+                            else // we've never seen it, add the type
+                            {
+                                variables.Add(name, new Tuple<string, int, Type>(typeString, currentIndex, pair.Value));
+                            }
+                            break;
+                        }
                     }
                 }
             }
+            
+            
+            //foreach (var pair in RegexToType)
+            //{
+            //    var matches = Regex.Matches(code, variableName + spacesOrNone + equals + spacesOrNone + pair.Key, RegexOptions.Multiline);
+
+            //    // for all of the matches
+            //    for (var i = 0; i < matches.Count; i++)
+            //    {
+            //        var name = matches[i].Groups[1].Value.Trim();
+            //        var val = matches[i].Groups[6].Value.Trim();
+            //        var currentIndex = matches[i].Index;
+
+            //        // if we already saw this var
+            //        if (variables.ContainsKey(name))
+            //        {
+            //            var varInfo = variables[name];
+            //            if (currentIndex > varInfo.Item2)
+            //            {
+            //                variables[name] = new Tuple<string, int, Type>(val, currentIndex, pair.Value);
+            //            }
+            //        }
+            //        else // we've never seen it, add the type
+            //        {
+            //            variables.Add( name, new Tuple<string, int, Type>(val, currentIndex, pair.Value));
+            //        }
+            //    }
+            //}
+
+
+
             return variables;
         }
 
@@ -613,12 +693,8 @@ namespace DynamoPython
             text = text.Replace("\n", " ");
             text = text.Replace("\r", " ");
             int startIndex = text.LastIndexOf(' ');
-            return text.Substring(startIndex + 1).Trim('.');
+            return text.Substring(startIndex + 1).Trim('.').Trim('(');
         }
-
-        // TODO: traverse source and process import statements
-        // TODO: variable autocompletion?  we want to get types without executing!
-
 
     }
 }

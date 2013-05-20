@@ -380,7 +380,7 @@ namespace Dynamo.Nodes
                 completionWindow = new CompletionWindow(editWindow.editText.TextArea);
                 var data = completionWindow.CompletionList.CompletionData;
 
-                var completions = completionProvider.GenerateCompletionData(editWindow.editText.Text);
+                var completions = completionProvider.GetCompletionData(editWindow.editText.Text.Substring(0, editWindow.editText.CaretOffset));
 
                 if (completions.Length == 0)
                     return;

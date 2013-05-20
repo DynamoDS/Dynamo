@@ -131,10 +131,10 @@ namespace DynamoPythonTests
         {
             var str = "\nimport System\n";
             var completionProvider = new IronPythonCompletionProvider();
-            completionProvider.FindImportStatementsAndTryLoad(str);
+            completionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(1, completionProvider.LoadedTypes.Count);
-            Assert.IsTrue(completionProvider.LoadedTypes.ContainsKey("System"));
+            Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
+            Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
         }
 
         [Test]
@@ -142,10 +142,10 @@ namespace DynamoPythonTests
         {
             var str = "\nimport System\nimport System";
             var completionProvider = new IronPythonCompletionProvider();
-            completionProvider.FindImportStatementsAndTryLoad(str);
+            completionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(1, completionProvider.LoadedTypes.Count);
-            Assert.IsTrue(completionProvider.LoadedTypes.ContainsKey("System"));
+            Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
+            Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
         }
 
         [Test]
@@ -154,11 +154,11 @@ namespace DynamoPythonTests
             var str = "\nimport System\nSystem.";
             var completionProvider = new IronPythonCompletionProvider();
 
-            var completionData = completionProvider.GenerateCompletionData(str);
+            var completionData = completionProvider.GetCompletionData(str);
 
             Assert.AreEqual(221, completionData.Length);
-            Assert.AreEqual(1, completionProvider.LoadedTypes.Count);
-            Assert.IsTrue(completionProvider.LoadedTypes.ContainsKey("System"));
+            Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
+            Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
 
         }
 
@@ -168,7 +168,7 @@ namespace DynamoPythonTests
             var str = "\nimport System.Collections\nSystem.Collections.";
             var completionProvider = new IronPythonCompletionProvider();
 
-            var completionData = completionProvider.GenerateCompletionData(str);
+            var completionData = completionProvider.GetCompletionData(str);
 
             Assert.AreEqual(29, completionData.Length);
         }
@@ -187,10 +187,10 @@ namespace DynamoPythonTests
         {
             var str = "# Write your script here.\r\nimport System.";
             var completionProvider = new IronPythonCompletionProvider();
-            completionProvider.FindImportStatementsAndTryLoad(str);
+            completionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(1, completionProvider.LoadedTypes.Count);
-            Assert.IsTrue(completionProvider.LoadedTypes.ContainsKey("System"));
+            Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
+            Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
         }
 
         [Test]
@@ -199,7 +199,7 @@ namespace DynamoPythonTests
             var str = "a = 5.0\na.";
 
             var completionProvider = new IronPythonCompletionProvider();
-            var completionData = completionProvider.GenerateCompletionData(str);
+            var completionData = completionProvider.GetCompletionData(str);
 
             Assert.AreNotEqual(0, completionData.Length);
 
@@ -257,13 +257,36 @@ namespace DynamoPythonTests
             var str = "from itertools import *\nimport math\nfrom sys import callstats\n";
 
             var completionProvider = new IronPythonCompletionProvider();
-            completionProvider.FindImportStatementsAndTryLoad(str);
+            completionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(3, completionProvider.LoadedTypes.Count);
+            Assert.AreEqual(3, completionProvider.ImportedTypes.Count);
             Assert.IsTrue(completionProvider.Scope.ContainsVariable("repeat"));
             Assert.IsTrue(completionProvider.Scope.ContainsVariable("izip"));
             Assert.IsTrue(completionProvider.Scope.ContainsVariable("math"));
             Assert.IsTrue(completionProvider.Scope.ContainsVariable("callstats"));
+        }
+
+        [Test]
+        public void CanFindSystemCollectionsAssignmentAndType()
+        {
+            var str = "from System.Collections import ArrayList\na = ArrayList()\n";
+            var completionProvider = new IronPythonCompletionProvider();
+            completionProvider.UpdateImportedTypes(str);
+            completionProvider.UpdateVariableTypes(str);
+
+            Assert.IsTrue(completionProvider.VariableTypes.ContainsKey("a"));
+            Assert.AreEqual(typeof(System.Collections.ArrayList), completionProvider.VariableTypes["a"]);
+        }
+
+        [Test]
+        public void CanGetCompletionDataForArrayListVariable()
+        {
+            var str = "from System.Collections import ArrayList\na = ArrayList()\na.";
+            var completionProvider = new IronPythonCompletionProvider();
+            var matches = completionProvider.GetCompletionData(str);
+
+            Assert.AreNotEqual(0, matches.Length);
+            //Assert.AreEqual(typeof(IronPython.Runtime.PythonDictionary), matches["a"].Item3);
         }
     }
 }
