@@ -15,6 +15,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Windows.Controls; //for boolean option
 using System.Windows.Media.Media3D;
 
 using Autodesk.Revit;
@@ -1159,75 +1160,95 @@ namespace Dynamo.Nodes
     [NodeDescription("Creates reference to the solid in the element's geometry objects.")]
     public class dynElementSolid : dynNodeWithOneOutput
     {
-        List<GeometryObject> instanceSolids;
+        Dictionary <ElementId, List<GeometryObject> > instanceSolids;
 
         public dynElementSolid()
         {
             InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.List)));
-            OutPortData.Add(new PortData("solid in the element's geometry objects", "Solid", typeof(object)));
+            OutPortData.Add(new PortData("solid", "solid in the element's geometry objects", typeof(object)));
 
             RegisterAllPorts();
 
-            instanceSolids = null;
+            instanceSolids = new Dictionary <ElementId, List<GeometryObject> >();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             Element thisElement = (Element)((Value.Container)args[0]).Item;
 
-            instanceSolids = new List<GeometryObject>();
+            ElementId thisId = ElementId.InvalidElementId;
+
+            if (thisElement != null)
+            {
+                thisId = thisElement.Id;
+                instanceSolids[thisId] = new List<GeometryObject>();
+            }
 
             Solid mySolid = null;
 
-            GeometryObject geomObj = thisElement.get_Geometry(new Autodesk.Revit.DB.Options());
-            GeometryElement geomElement = geomObj as GeometryElement;
-
-            foreach (GeometryObject geob in geomElement)
+            //because of r2013 used GenericForm  which is superclass of FreeFromElement
+            if (thisElement is GenericForm && dynFreeForm.freeFormSolids.ContainsKey(thisElement.Id))
             {
-                GeometryInstance ginsta = geob as GeometryInstance;
-                if (ginsta != null)
-                {
-                    GeometryElement instanceGeom = ginsta.GetInstanceGeometry();
-                    instanceSolids.Add(instanceGeom);
-                    foreach (GeometryObject geobInst in instanceGeom)
-                    {
-                        mySolid = geobInst as Solid;
-                        if (mySolid != null)
-                        {
-                            FaceArray faceArr = mySolid.Faces;
-                            var thisEnum = faceArr.GetEnumerator();
-                            bool hasFace = false;
-                            for (; thisEnum.MoveNext(); )
-                            {
-                                hasFace = true;
-                            }
-                            if (!hasFace)
-                                mySolid = null;
-                            else
-                               break;
-                        }
-                    }
-                    if (mySolid != null)
-                        break;
-                }
-                else
-                {
-                    mySolid = geob as Solid;
-                    if (mySolid != null)
-                    {
-                        FaceArray faceArr = mySolid.Faces;
-                        var thisEnum = faceArr.GetEnumerator();
-                        bool hasFace = false;
-                        for (; thisEnum.MoveNext(); )
-                        {
-                            hasFace = true;
-                        }
-                        if (!hasFace)
-                           mySolid = null;
-                        else
-                           break;
-                    }
+                mySolid = dynFreeForm.freeFormSolids[thisElement.Id];
+            }
+            else
+            {
 
+                GeometryObject geomObj = thisElement.get_Geometry(new Autodesk.Revit.DB.Options());
+                GeometryElement geomElement = geomObj as GeometryElement;
+
+                if (geomElement != null)
+                {
+                    foreach (GeometryObject geob in geomElement)
+                    {
+                        GeometryInstance ginsta = geob as GeometryInstance;
+                        if (ginsta != null && thisId != ElementId.InvalidElementId)
+                        {
+                            GeometryElement instanceGeom = ginsta.GetInstanceGeometry();
+
+                            instanceSolids[thisId].Add(instanceGeom);
+
+                            foreach (GeometryObject geobInst in instanceGeom)
+                            {
+                                mySolid = geobInst as Solid;
+                                if (mySolid != null)
+                                {
+                                    FaceArray faceArr = mySolid.Faces;
+                                    var thisEnum = faceArr.GetEnumerator();
+                                    bool hasFace = false;
+                                    for (; thisEnum.MoveNext(); )
+                                    {
+                                        hasFace = true;
+                                    }
+                                    if (!hasFace)
+                                        mySolid = null;
+                                    else
+                                        break;
+                                }
+                            }
+                            if (mySolid != null)
+                                break;
+                        }
+                        else
+                        {
+                            mySolid = geob as Solid;
+                            if (mySolid != null)
+                            {
+                                FaceArray faceArr = mySolid.Faces;
+                                var thisEnum = faceArr.GetEnumerator();
+                                bool hasFace = false;
+                                for (; thisEnum.MoveNext(); )
+                                {
+                                    hasFace = true;
+                                }
+                                if (!hasFace)
+                                    mySolid = null;
+                                else
+                                    break;
+                            }
+
+                        }
+                    }
                 }
             }
 
@@ -1371,4 +1392,203 @@ namespace Dynamo.Nodes
             return Value.NewContainer(cl);
         }
     }
+
+
+    [NodeName("Faces of Solid Along Line")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
+    [NodeDescription("Creates list of faces of the solid intersecting given line.")]
+    public class dynFacesByLine : dynNodeWithOneOutput
+    {
+        public dynFacesByLine()
+        {
+            InPortData.Add(new PortData("solid", "solid to extract faces from", typeof(Value.Container)));
+            InPortData.Add(new PortData("line", "line to extract faces from", typeof(Value.Container)));
+            OutPortData.Add(new PortData("faces of solid along the line", "extracted list of faces", typeof(object)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Solid thisSolid = (Solid)((Value.Container)args[0]).Item;
+            Line selectLine = (Line)((Value.Container)args[1]).Item;
+
+            FaceArray faceArr = thisSolid.Faces;
+            var thisEnum = faceArr.GetEnumerator();
+
+            SortedList<double, Face> intersectingFaces = new SortedList<double, Face>();
+
+            for (; thisEnum.MoveNext(); )
+            {
+                Face thisFace = (Face) thisEnum.Current;
+                IntersectionResultArray resultArray = null;
+
+                SetComparisonResult resultIntersect = thisFace.Intersect(selectLine, out resultArray);
+                if (resultIntersect != SetComparisonResult.Overlap)
+                    continue;
+                bool first = true;
+                double linePar = -1.0;
+                foreach (IntersectionResult ir in resultArray)
+                {
+                    double irPar = ir.Parameter;
+                    if (first == true)
+                    {
+                        linePar = irPar;
+                        first = false;
+                    }
+                    else if (irPar < linePar)
+                        linePar = irPar;
+                }
+                intersectingFaces.Add(linePar, thisFace);
+            }
+
+            var result = FSharpList<Value>.Empty;
+
+            var intersectingFacesEnum = intersectingFaces.Reverse().GetEnumerator();
+            for (; intersectingFacesEnum.MoveNext(); )
+            {
+                Face faceObj = intersectingFacesEnum.Current.Value;
+                result = FSharpList<Value>.Cons(Value.NewContainer(faceObj), result);      
+            }
+
+            return Value.NewList(result);
+        }
+    }
+
+    [NodeName("Explode Geometry Object")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
+    [NodeDescription("Creates list of faces of solid or edges of face")]
+    public class dynGeometryObjectsFromRoot : dynNodeWithOneOutput
+    {
+
+        public dynGeometryObjectsFromRoot()
+        {
+            InPortData.Add(new PortData("Explode Geometry Object", "Solid to extract faces or face to extract edges", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Exploded Geometry objects", "List", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Solid thisSolid = null;
+            if (((Value.Container)args[0]).Item is Solid)
+                thisSolid = (Solid)((Value.Container)args[0]).Item;
+
+            Face thisFace = thisSolid == null ? (Face)(((Value.Container)args[0]).Item) : null;
+
+            var result = FSharpList<Value>.Empty;
+
+            if (thisSolid != null)
+            {
+                FaceArray faceArr = thisSolid.Faces;
+                var thisEnum = faceArr.GetEnumerator();
+                for (; thisEnum.MoveNext(); )
+                {
+                    Face curFace = (Face) thisEnum.Current;
+                    if (curFace != null)
+                        result = FSharpList<Value>.Cons(Value.NewContainer(curFace), result);   
+                 }
+            }
+            else if (thisFace != null)
+            {
+                EdgeArrayArray loops = thisFace.EdgeLoops;
+                var loopsEnum = loops.GetEnumerator();
+                for (; loopsEnum.MoveNext(); )
+                {
+                    EdgeArray thisArr = (EdgeArray) loopsEnum.Current;
+                    if (thisArr == null)
+                        continue;
+                    var oneLoopEnum = thisArr.GetEnumerator();
+                    for (; oneLoopEnum.MoveNext(); )
+                    {
+                        Edge curEdge = (Edge) oneLoopEnum.Current;
+                        if (curEdge != null)
+                            result = FSharpList<Value>.Cons(Value.NewContainer(curEdge), result);   
+                    }
+                }
+            }
+            
+            return Value.NewList(result);
+        }
+    }
+
+    [NodeName("Boolean Geometric Operation")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates solid by union, intersection or difference of two solids.")]
+    public class dynBooleanOperation : dynNodeWithOneOutput
+    {
+        ComboBox combo;
+
+        public dynBooleanOperation()
+        {
+            InPortData.Add(new PortData("First Solid", "First solid input for boolean geometrical operation", typeof(object)));
+            InPortData.Add(new PortData("Second Solid", "Second solid input for boolean geometrical operation", typeof(object)));
+         
+            OutPortData.Add(new PortData("solid in the element's geometry objects", "Solid", typeof(object)));
+            RegisterAllPorts();
+
+        }
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
+            //add a drop down list to the window
+            combo = new ComboBox();
+            combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            NodeUI.inputGrid.Children.Add(combo);
+            System.Windows.Controls.Grid.SetColumn(combo, 0);
+            System.Windows.Controls.Grid.SetRow(combo, 0);
+
+            combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
+            combo.SelectionChanged += delegate
+            {
+                if (combo.SelectedIndex != -1)
+                    this.RequiresRecalc = true;
+            };
+        }
+        void combo_DropDownOpened(object sender, EventArgs e)
+        {
+            PopulateComboBox();
+        }
+
+        public enum BooleanOperationOptions {Union, Intersect, Difference};
+
+        private void PopulateComboBox()
+        {
+
+            combo.Items.Clear();
+            ComboBoxItem cbiUnion = new ComboBoxItem();
+            cbiUnion.Content = "Union";
+            combo.Items.Add(cbiUnion);
+
+            ComboBoxItem cbiIntersect = new ComboBoxItem();
+            cbiIntersect.Content = "Intersect";
+            combo.Items.Add(cbiIntersect);
+
+            ComboBoxItem cbiDifference = new ComboBoxItem();
+            cbiDifference.Content = "Difference";
+            combo.Items.Add(cbiDifference);
+        }
+
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Solid firstSolid = (Solid)((Value.Container)args[0]).Item;
+            Solid secondSolid = (Solid)((Value.Container)args[1]).Item;
+
+            int n = combo.SelectedIndex;
+
+
+            BooleanOperationsType opType = (n == 0) ? BooleanOperationsType.Union :
+                ((n == 2)  ? BooleanOperationsType.Difference : BooleanOperationsType.Intersect);
+
+            Solid result = BooleanOperationsUtils.ExecuteBooleanOperation(firstSolid, secondSolid, opType);
+
+
+            return Value.NewContainer(result);
+        }
+    }
+
 }

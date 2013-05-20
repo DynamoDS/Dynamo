@@ -24,7 +24,7 @@ namespace Dynamo.Revit
         protected object drawableObject = null;
         protected Func<object, RenderDescription> drawMethod = null;
 
-        private Type base_type = null;
+        //private Type base_type = null;
 
         //TODO: Move from dynElementSettings to another static area in DynamoRevit
         protected Autodesk.Revit.UI.UIDocument UIDocument
