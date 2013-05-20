@@ -43,11 +43,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
-    <Reference Include="ManagedAsmGeometry, Version=1.0.4885.28296, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ManagedAsmGeometry, Version=1.0.4888.22111, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\Release\ManagedAsmGeometry.dll</HintPath>
     </Reference>
-    <Reference Include="ManagedAsmPersistentManager, Version=1.0.4885.28298, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ManagedAsmPersistentManager, Version=1.0.4886.30800, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\Release\ManagedAsmPersistentManager.dll</HintPath>
     </Reference>

@@ -45,7 +45,6 @@ namespace Dynamo.Nodes
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
         
         private bool _requiresRedraw = false;
-        private bool _isRendering = false;
 
         public dynWatch3D()
         {
@@ -134,13 +133,8 @@ namespace Dynamo.Nodes
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
-            if (_isRendering)
-                return;
-
             if (!_requiresRedraw)
                 return;
-
-            _isRendering = true;
 
             Points = null;
             Lines = null;
@@ -195,7 +189,9 @@ namespace Dynamo.Nodes
             }
 
             _requiresRedraw = false;
-            _isRendering = false;
+
+            _watchView.InvalidateVisual();
+            _watchView.watch_view.InvalidateVisual();
         }
 
         MeshVisual3D MakeMeshVisual3D(Mesh3D mesh)

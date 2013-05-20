@@ -122,6 +122,8 @@ namespace Dynamo.Controls
             RaisePropertyChanged("HelixPoints");
             RaisePropertyChanged("HelixLines");
             RaisePropertyChanged("HelixMesh");
+
+            
         }
 
         Mesh3D MergeMeshes(List<Mesh3D> meshes)

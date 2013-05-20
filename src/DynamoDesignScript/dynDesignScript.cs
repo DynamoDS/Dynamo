@@ -120,6 +120,9 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("OUT", "Result of the DesignScript script", typeof(object)));
 
             RegisterAllPorts();
+
+            Autodesk.ASM.State.ClearPersistedObjects();
+            Autodesk.ASM.OUT.Reset();
         }
 
         public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
@@ -218,8 +221,8 @@ namespace Dynamo.Nodes
         {
             if (coreSet)
             {
-                Cleanup();
                 ClearCreatedElements();
+                Cleanup();                
             } 
             else
                 coreSet = true;
@@ -364,13 +367,12 @@ namespace Dynamo.Nodes
                     }
                 }
 
-                int triangleVerticesCount = g.TriangleVerticesCount();
                 float[] triangleVertices = g.TriangleVertices();
                 List<Point3D> points = new List<Point3D>();
                 List<int> indicesFront = new List<int>();
                 List<int> indicesBack = new List<int>();
 
-                for (int i = 0; i < triangleVerticesCount * 3; i += 3)
+                for (int i = 0; i < triangleVertices.Length; i += 3)
                 {
                     bool newPointExists = false;
                     float x = triangleVertices[i];
