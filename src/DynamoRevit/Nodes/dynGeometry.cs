@@ -16,6 +16,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Controls; //for boolean option
+using System.Xml;              //for boolean option  
 using System.Windows.Media.Media3D;
 
 using Autodesk.Revit;
@@ -1521,6 +1522,7 @@ namespace Dynamo.Nodes
     public class dynBooleanOperation : dynNodeWithOneOutput
     {
         ComboBox combo;
+        int selectedItem = -1;
 
         public dynBooleanOperation()
         {
@@ -1528,6 +1530,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Second Solid", "Second solid input for boolean geometrical operation", typeof(object)));
          
             OutPortData.Add(new PortData("solid in the element's geometry objects", "Solid", typeof(object)));
+            selectedItem = 2;
             RegisterAllPorts();
 
         }
@@ -1547,6 +1550,14 @@ namespace Dynamo.Nodes
                 if (combo.SelectedIndex != -1)
                     this.RequiresRecalc = true;
             };
+            if (selectedItem >= 0 && selectedItem <= 2)
+            {
+                PopulateComboBox();
+                combo.SelectedIndex = selectedItem;
+                selectedItem = -1;
+            }
+            if (combo.SelectedIndex < 0 || combo.SelectedIndex > 2)
+                combo.SelectedIndex = 2;
         }
         void combo_DropDownOpened(object sender, EventArgs e)
         {
@@ -1554,6 +1565,22 @@ namespace Dynamo.Nodes
         }
 
         public enum BooleanOperationOptions {Union, Intersect, Difference};
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            dynEl.SetAttribute("index", this.combo.SelectedIndex.ToString());
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            try
+            {
+                selectedItem = Convert.ToInt32(elNode.Attributes["index"].Value);
+                if (combo != null)
+                    combo.SelectedIndex = selectedItem;
+            }
+            catch { }
+        }
 
         private void PopulateComboBox()
         {
