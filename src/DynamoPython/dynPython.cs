@@ -358,17 +358,23 @@ namespace Dynamo.Nodes
             this.dirty = true;
         }
 
+
+        #region Autocomplete
+
         CompletionWindow completionWindow;
-        private PythonConsoleCompletionDataProvider completionProvider = new PythonConsoleCompletionDataProvider();
+        private IronPythonCompletionProvider completionProvider = new IronPythonCompletionProvider();
 
         void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
             if (e.Text == ".")
             {
                 completionWindow = new CompletionWindow(editWindow.editText.TextArea);
-                IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
+                var data = completionWindow.CompletionList.CompletionData;
 
                 var completions = completionProvider.GenerateCompletionData(editWindow.editText.Text);
+
+                if (completions.Length == 0)
+                    return;
 
                 foreach (var ele in completions)
                 {
@@ -394,6 +400,8 @@ namespace Dynamo.Nodes
                 }
             }
         }
+
+        #endregion
 
     }
 
