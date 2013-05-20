@@ -15,8 +15,7 @@
 
         <Grid Name="inputGrid"
             x:FieldModifier="public"
-            Canvas.ZIndex="0"  
-            IsEnabled="{Binding Path=IsInteractionEnabled}">
+            Canvas.ZIndex="0" >
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">

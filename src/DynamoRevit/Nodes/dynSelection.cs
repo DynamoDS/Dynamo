@@ -695,6 +695,61 @@ namespace Dynamo.Nodes
 
     }
 
+    [NodeName("Select Edge")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeDescription("Select an edge from the document.")]
+    public class dynEdgeOnElementBySelection : dynElementSelection, IDrawable
+    {
+        Reference f;
+
+        public dynEdgeOnElementBySelection()
+            : base(new PortData("edge", "The edge", typeof(Value.Container)))
+        { }
+
+        protected override void OnSelectClick()
+        {
+            var doc = dynRevitSettings.Doc;
+
+            f = dynRevitSettings.SelectionHelper.RequestEdgeReferenceSelection(
+               doc, "Select an edge."
+            );
+            this.SelectedElement = doc.Document.GetElement(f);
+            RaisePropertyChanged("SelectionText");
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewContainer(f);
+        }
+
+        public override string SelectionText
+        {
+            get
+            {
+                return _selectionText = this.SelectedElement == null ?
+                    "Nothing Selected" :
+                    "Element of Edge  ID: " + this.SelectedElement.Id;
+            }
+            set
+            {
+                _selectionText = value;
+                RaisePropertyChanged("SelectionText");
+            }
+        }
+
+        public RenderDescription Draw()
+        {
+            RenderDescription rd = new RenderDescription();
+
+            Edge edge = (Edge)dynRevitSettings.Doc.Document.GetElement(f).GetGeometryObjectFromReference(f);
+
+            dynRevitTransactionNode.DrawGeometryElement(rd, edge);
+
+            return rd;
+        }
+
+    }
+
     [NodeName("Select Curve")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a curve from the document.")] //or set of curves in the future
@@ -836,6 +891,39 @@ namespace Dynamo.Nodes
                 return _selectionText = this.SelectedElement == null ?
                     "Nothing Selected" :
                     this.SelectedElement.Name + " (" + this.SelectedElement.Id + ")";
+            }
+            set
+            {
+                _selectionText = value;
+                RaisePropertyChanged("SelectionText");
+            }
+        }
+    }
+
+    [NodeName("Select Model Element")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeDescription("Select a model element from the document.")]
+    public class dynModelElementSelection : dynElementSelection
+    {
+        public dynModelElementSelection()
+            : base(new PortData("me", "Model element reference created by this operation.", typeof(Value.Container)))
+        { }
+
+        protected override void OnSelectClick()
+        {
+            this.SelectedElement = dynRevitSettings.SelectionHelper.RequestModelElementSelection(
+               dynRevitSettings.Doc, "Select Model Element"
+            );
+            RaisePropertyChanged("SelectionText");
+        }
+
+        public override string SelectionText
+        {
+            get
+            {
+                return _selectionText = this.SelectedElement == null ?
+                    "Nothing Selected" :
+                    this.SelectedElement.Name;
             }
             set
             {

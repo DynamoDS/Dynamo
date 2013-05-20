@@ -166,7 +166,7 @@ namespace Dynamo.Nodes
 
             for (int j = 0; j < numX; j++)//step along curve and evaluate at each step, making sure to thread in the existing fixed parts
             {
-                double curveParam = 0;
+                //double curveParam = 0;
                 XYZ pointOnLine;
 
                 if (j == 0) // starting point
@@ -271,7 +271,7 @@ namespace Dynamo.Nodes
                 throw new Exception("You must pass in a list of reference points.");
             }
 
-            return Value.NewContainer(particleSystem);
+            //return Value.NewContainer(particleSystem);
         }
 
         public void UpdateStart(List<ElementId> updated)
