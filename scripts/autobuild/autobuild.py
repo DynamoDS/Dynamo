@@ -136,7 +136,7 @@ def interpret_unit_tests( result ):
 def run_unit_tests(path, build_config = "Debug"):
 
 	print 'running unit tests....'
-	return run_cmd( ['nunit-console', 'DynamoElementsTests.dll DynamoPythonTests.dll'], cwd= form_path( [path, "bin", build_config ]) )
+	return run_cmd( ['nunit-console', 'DynamoElementsTests.dll DynamoPythonTests.dll /noshadow'], cwd= form_path( [path, "bin", build_config ]) )
 
 def mkdir(path):
 
