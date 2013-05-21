@@ -494,5 +494,43 @@ namespace Dynamo.Nodes
             return Value.NewContainer(c);
         }
     }
+
+    [NodeName("Project Point On Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Project a point onto a curve.")]
+    public class dynProjectPointOnCurve : dynRevitTransactionNode
+    {
+        public dynProjectPointOnCurve()
+        {
+            InPortData.Add(new PortData("xyz", "The point to be projected.", typeof(Value.Container)));
+            InPortData.Add(new PortData("crv", "The curve on which to project the point.", typeof(Value.Container)));
+
+            OutPortData.Add(new PortData("xyz", "The nearest point on the curve.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("t", "The unnormalized parameter on the curve.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("d", "The distance from the point to the curve .", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var xyz = (XYZ)((Value.Container)args[0]).Item;
+            var crv = (Curve)((Value.Container)args[1]).Item;
+
+            IntersectionResult ir = crv.Project(xyz);
+            XYZ pt = ir.XYZPoint;
+            double t = ir.Parameter;
+            double d = ir.Distance;
+
+            var results = FSharpList<Value>.Empty;
+            results = FSharpList<Value>.Cons(Value.NewNumber(d), results);
+            results = FSharpList<Value>.Cons(Value.NewNumber(t), results);
+            results = FSharpList<Value>.Cons(Value.NewContainer(pt), results);
+            
+            drawableObject = pt;
+
+            return Value.NewList(results);
+        }
+    }
 }
 

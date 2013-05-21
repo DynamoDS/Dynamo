@@ -254,7 +254,8 @@ namespace Dynamo.Nodes
 
             Transform t = Transform.Identity;
 
-            Face f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+            Face f = (faceRef == null) ? ((Face)((Value.Container)args[0]).Item) : (dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face);
+  
             if (f != null)
             {
                 t = f.ComputeDerivatives(uv);

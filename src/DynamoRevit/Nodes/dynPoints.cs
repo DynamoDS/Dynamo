@@ -482,4 +482,92 @@ namespace Dynamo.Nodes
 
     }
 
+    [NodeName("Evaluate curve or edge")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Evaluates curve or edge at parameter.")]
+    public class dynXYZOnCurveOrEdge : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynXYZOnCurveOrEdge()
+        {
+            InPortData.Add(new PortData("normalized parameter", "The normalized parameter to evaluate at within 0..1 range.", typeof(Value.Number)));
+            InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("XYZ", "XYZ at parameter.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            double parameter = ((Value.Number)args[0]).Item;
+
+            Curve thisCurve = ((Value.Container)args[1]).Item as Curve;
+            Edge thisEdge = (thisCurve != null) ? null : (((Value.Container)args[1]).Item as Edge);
+            if (thisCurve == null && thisEdge == null && (((Value.Container)args[1]).Item is Reference))
+            {
+                Reference r = (Reference)((Value.Container)args[1]).Item;
+                if (r != null)
+                {
+                    Element refElem = this.UIDocument.Document.GetElement(r.ElementId);
+                    if (refElem != null)
+                    {
+                        GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
+                        thisEdge = geob as Edge;
+                        if (thisEdge == null)
+                            thisCurve = geob as Curve;
+                    }
+                }
+            }
+
+            XYZ result = (thisCurve != null) ? thisCurve.Evaluate(parameter, true) :  
+                (thisEdge == null ? null : thisEdge.Evaluate(parameter));
+
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Evaluate tangent transform of curve or edge")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
+    public class dynTangentTransformOnCurveOrEdge : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynTangentTransformOnCurveOrEdge()
+        {
+            InPortData.Add(new PortData("normalized parameter", "The normalized parameter to evaluate at within 0..1 range.", typeof(Value.Number)));
+            InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("tangent transform", "tangent transform at parameter.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            double parameter = ((Value.Number)args[0]).Item;
+
+            Curve thisCurve = ((Value.Container)args[1]).Item as Curve;
+            Edge thisEdge = (thisCurve != null) ? null : (((Value.Container)args[1]).Item as Edge);
+
+            if (thisCurve == null && thisEdge == null && ((Value.Container)args[1]).Item is Reference)
+            {
+                Reference r = (Reference)((Value.Container)args[1]).Item;
+                if (r != null)
+                {
+                    Element refElem = this.UIDocument.Document.GetElement(r.ElementId);
+                    if (refElem != null)
+                    {
+                        GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
+                        thisEdge = geob as Edge;
+                        if (thisEdge == null)
+                            thisCurve = geob as Curve;
+                    }
+                }
+            }
+
+            Transform result = (thisCurve != null) ? thisCurve.ComputeDerivatives(parameter, true) : 
+                (thisEdge == null ? null : thisEdge.ComputeDerivatives(parameter));
+
+
+            return Value.NewContainer(result);
+        }
+    }
 }

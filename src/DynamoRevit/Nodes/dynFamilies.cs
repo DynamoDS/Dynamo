@@ -126,7 +126,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Select Fam Inst Param")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
-    [NodeDescription("Given a Family Instance or Symbol, allows the user to select a paramter as a string.")]
+    [NodeDescription("Given a Family Instance or Symbol, allows the user to select a parameter as a string.")]
     [IsInteractive(true)]
     public class dynFamilyInstanceParameterSelector: dynNodeWithOneOutput
     {
