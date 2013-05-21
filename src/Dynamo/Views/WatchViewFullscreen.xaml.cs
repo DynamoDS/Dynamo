@@ -54,17 +54,17 @@ namespace Dynamo.Controls
 
             MainContextMenu.Items.Add(mi);
 
-            System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
-            Canvas.SetZIndex(backgroundRect, -10);
-            backgroundRect.IsHitTestVisible = false;
-            BrushConverter bc = new BrushConverter();
-            Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
-            backgroundRect.Stroke = strokeBrush;
-            backgroundRect.StrokeThickness = 1;
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
-            backgroundRect.Fill = backgroundBrush;
+            //System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
+            //Canvas.SetZIndex(backgroundRect, -10);
+            //backgroundRect.IsHitTestVisible = false;
+            //BrushConverter bc = new BrushConverter();
+            //Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
+            //backgroundRect.Stroke = strokeBrush;
+            //backgroundRect.StrokeThickness = 1;
+            //SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
+            //backgroundRect.Fill = backgroundBrush;
 
-            inputGrid.Children.Add(backgroundRect);
+            //inputGrid.Children.Add(backgroundRect);
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)
