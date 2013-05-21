@@ -274,9 +274,13 @@ namespace Dynamo.Nodes
 
             tb = new TextBox();
             //tb.Text = "Nothing Selected";
-            
-            SelectionText = "Nothing Selected";
-            SelectButtonContent = "Select Instances";
+
+            if (this.SelectedElements == null || this.SelectedElements.Count() < 1 ||
+                SelectionText.Count() < 1 || SelectButtonContent.Count() < 1)
+            {
+                SelectionText = "Nothing Selected";
+                SelectButtonContent = "Select Instances";
+            }
 
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
@@ -434,6 +438,8 @@ namespace Dynamo.Nodes
                     {
                         dynSettings.Controller.DynamoViewModel.Log("Unable to find element with ID: " + id.IntegerValue);
                     }
+                    if (this.SelectedElements == null)
+                        this.SelectedElements = new List<Element>();
                     this.SelectedElements.Add(saved);
                 }
             }
