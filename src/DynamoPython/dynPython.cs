@@ -149,7 +149,7 @@ namespace Dynamo.Nodes
 
         public void ProcessCode(string code)
         {
-            code = "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\n" + code;
+            code = "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n" + code;
             this.source = engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
         }
 
@@ -257,7 +257,7 @@ namespace Dynamo.Nodes
 
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
-        private string script = "# Write your script here.";
+        private string script = "#The input to this node will be stored in the IN variable.\ndataEnteringNode = IN\n\n#Assign your output to the OUT variable\nOUT = 0";
 
         public dynPython()
         {

@@ -15,8 +15,7 @@
 
         <Grid Name="inputGrid"
             x:FieldModifier="public"
-            Canvas.ZIndex="0"  
-            IsEnabled="{Binding Path=IsInteractionEnabled}">
+            Canvas.ZIndex="0" >
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
@@ -42,6 +41,9 @@
                                            SharedVertices="True"
                                            Mesh="{Binding HelixMesh}">
                 </HelixToolkit:MeshVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="4" Color="Red" Points="{Binding HelixXAxes}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="4" Color="Green" Points="{Binding HelixYAxes}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="4" Color="Blue" Points="{Binding HelixZAxes}"></HelixToolkit:LinesVisual3D>
             </ModelVisual3D>
         </HelixToolkit:HelixViewport3D>
     </Grid>

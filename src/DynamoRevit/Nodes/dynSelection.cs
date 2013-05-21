@@ -668,7 +668,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewContainer(f);
+            Face face = (Face)dynRevitSettings.Doc.Document.GetElement(f).GetGeometryObjectFromReference(f);
+            return Value.NewContainer(face);
         }
 
         public override string SelectionText

@@ -103,6 +103,43 @@ namespace Dynamo.Nodes
         }
     }
 
+    public abstract class dynTransformBase : dynNodeWithOneOutput, IDrawable, IClearable
+    {
+        protected List<Transform> transforms = new List<Transform>();
+
+        public RenderDescription Draw()
+        {
+            RenderDescription rd = new RenderDescription();
+
+            foreach (Transform t in transforms)
+            {
+                Point3D origin = new Point3D(t.Origin.X, t.Origin.Y, t.Origin.Z);
+                XYZ x1 = t.Origin + t.BasisX.Multiply(3);
+                XYZ y1 = t.Origin + t.BasisY.Multiply(3);
+                XYZ z1 = t.Origin + t.BasisZ.Multiply(3);
+                Point3D xEnd = new Point3D(x1.X, x1.Y, x1.Z);
+                Point3D yEnd = new Point3D(y1.X, y1.Y, y1.Z);
+                Point3D zEnd = new Point3D(z1.X, z1.Y, z1.Z);
+
+                rd.xAxisPoints.Add(origin);
+                rd.xAxisPoints.Add(xEnd);
+
+                rd.yAxisPoints.Add(origin);
+                rd.yAxisPoints.Add(yEnd);
+
+                rd.zAxisPoints.Add(origin);
+                rd.zAxisPoints.Add(zEnd);
+            }
+
+            return rd;
+        }
+
+        public void ClearReferences()
+        {
+            transforms.Clear();
+        }
+    }
+
     [NodeName("XYZ")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ from three numbers.")]

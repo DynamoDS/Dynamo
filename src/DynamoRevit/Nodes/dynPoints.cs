@@ -270,50 +270,51 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            UV uv = ((Value.Container)args[1]).Item as UV;
+
             object arg0 = ((Value.Container)args[0]).Item;
-            if (arg0 is Reference)
+
+            Face f;
+            Reference r = arg0 as Reference;
+            if (r != null)
+                f = dynRevitSettings.Doc.Document.GetElement(r.ElementId).GetGeometryObjectFromReference(r) as Face;
+            else
+                f = arg0 as Face;
+
+            //PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, uv);
+            XYZ facePoint = f.Evaluate(uv);
+
+            ReferencePoint pt = null;
+
+            if (this.Elements.Any())
             {
-
-                Reference r = arg0 as Reference;
-
-                UV uv = ((Value.Container)args[1]).Item as UV;
-
-                PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, uv);
-
-                ReferencePoint pt = null;
-
-                if (this.Elements.Any())
+                Element e;
+                if (dynUtils.TryGetElement(this.Elements[0], out e))
                 {
-                    Element e;
-                    if (dynUtils.TryGetElement(this.Elements[0], out e))
-                    {
-                        pt = e as ReferencePoint;
-                        pt.SetPointElementReference(facePoint);
-                    }
-                    else
-                    {
-                        if (this.UIDocument.Document.IsFamilyDocument)
-                        {
-                            pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
-                            this.Elements[0] = pt.Id;
-                        }
-                    }
+                    pt = e as ReferencePoint;
+                    //pt.SetPointElementReference(facePoint);
+                    pt.Position = facePoint;
                 }
                 else
                 {
                     if (this.UIDocument.Document.IsFamilyDocument)
                     {
                         pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
-                        this.Elements.Add(pt.Id);
+                        this.Elements[0] = pt.Id;
                     }
                 }
-
-                return Value.NewContainer(pt);
             }
             else
             {
-                throw new Exception("Cannot cast first argument to Face.");
+                if (this.UIDocument.Document.IsFamilyDocument)
+                {
+                    pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
+                    this.Elements.Add(pt.Id);
+                }
             }
+
+            return Value.NewContainer(pt);
+
         }
     }
 

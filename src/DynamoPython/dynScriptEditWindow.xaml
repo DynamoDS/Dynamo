@@ -10,7 +10,7 @@
         </Border>
 
         <Button Content="Cancel" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="10,10,10,10" Name="button1" VerticalAlignment="Bottom" Width="75" Click="button1_Click" />
-        <Button Content="OK" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="10,10,100,10" Name="button2" VerticalAlignment="Bottom" Width="75" Click="button2_Click" />
+        <Button Content="Accept Changes" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="10,10,100,10" Name="button2" VerticalAlignment="Bottom" Width="130" Click="button2_Click" />
       
     </Grid>
 

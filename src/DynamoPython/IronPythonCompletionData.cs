@@ -10,7 +10,7 @@ namespace DynamoPython
 {
     /// Implements AvalonEdit ICompletionData interface to provide the entries in the
     /// completion drop down.
-    public class DynamoCompletionData : ICompletionData
+    public class IronPythonCompletionData : ICompletionData
     {
         
         private static Dictionary<CompletionType, BitmapImage> TypeToIcon;
@@ -26,14 +26,14 @@ namespace DynamoPython
             ENUM
         };
 
-        public DynamoCompletionData(string text, string stub, bool isInstance, CompletionType type, IronPythonCompletionProvider provider)
+        public IronPythonCompletionData(string text, string stub, bool isInstance, CompletionType type, IronPythonCompletionProvider provider)
         {
             this.Text = text;
             this.Stub = stub;
             this.IsInstance = isInstance;
             this.provider = provider;
 
-            if (DynamoCompletionData.TypeToIcon == null)
+            if (IronPythonCompletionData.TypeToIcon == null)
             {
                 TypeToIcon = new Dictionary<CompletionType, BitmapImage>();
                 var assembly = Assembly.GetExecutingAssembly();
