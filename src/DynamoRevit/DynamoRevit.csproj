@@ -93,7 +93,7 @@
     <Compile Include="Nodes\dynIntersection.cs" />
     <Compile Include="Nodes\dynMeasurement.cs" />
     <Compile Include="Nodes\dynModelUpdater.cs" />
-    <Compile Include="Nodes\dynNormals.cs" />
+    <Compile Include="Nodes\dynAnalyze.cs" />
     <Compile Include="Nodes\dynPoints.cs" />
     <Compile Include="Nodes\dynProjection.cs" />
     <Compile Include="Nodes\dynSelection.cs" />
