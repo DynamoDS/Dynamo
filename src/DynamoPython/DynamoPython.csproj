@@ -71,7 +71,7 @@
       <DependentUpon>dynScriptEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DynamoCompletionData.cs" />
+    <Compile Include="IronPythonCompletionData.cs" />
     <Compile Include="IronPythonCompletionProvider.cs" />
   </ItemGroup>
   <ItemGroup>

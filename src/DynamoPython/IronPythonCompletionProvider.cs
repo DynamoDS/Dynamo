@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Dynamo;
 using ICSharpCode.AvalonEdit.CodeCompletion;
@@ -98,17 +96,19 @@ namespace DynamoPython
             VariableTypes = new Dictionary<string, Type>();
             ImportedTypes = new Dictionary<string, Type>();
 
-            this.InitRegexTypes();
-
-            var defaultImports =
-                "import clr\n"; 
-
-            _scope.Engine.CreateScriptSourceFromString(defaultImports, SourceCodeKind.Statements).Execute(_scope);
+            RegexToType.Add(singleQuoteStringRegex, typeof(string));
+            RegexToType.Add(doubleQuoteStringRegex, typeof(string));
+            RegexToType.Add(doubleRegex, typeof(double));
+            RegexToType.Add(intRegex, typeof(int));
+            RegexToType.Add(arrayRegex, typeof(List));
+            RegexToType.Add(dictRegex, typeof(PythonDictionary));
 
             try
             {
+                _scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.Statements).Execute(_scope);
+
                 var revitImports =
-                    "clr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\n";
+                    "clr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
 
                 _scope.Engine.CreateScriptSourceFromString(revitImports, SourceCodeKind.Statements).Execute(_scope);
             }
@@ -124,60 +124,90 @@ namespace DynamoPython
         /// scope and discovering variable assignments.
         /// </summary>
         /// <param name="line">The code to parse</param>
-        /// <returns>Return a list of DynamoCompletionData </returns>
+        /// <returns>Return a list of IronPythonCompletionData </returns>
         public ICompletionData[] GetCompletionData(string line)
         {
-            var items = new List<DynamoCompletionData>();
+            var items = new List<IronPythonCompletionData>();
 
             this.UpdateImportedTypes(line);
-            this.UpdateVariableTypes(line);
+            this.UpdateVariableTypes(line); // this is where hindley-milner could come into play
 
             string name = GetName(line);
-
             if (!String.IsNullOrEmpty(name))
             {
                 try
                 {
                     AutocompletionInProgress = true;
 
-                    Type type = TryGetType(name);
-                    if (type != null && type.Namespace != "IronPython.Runtime")
+                    Dynamo.DynamoLogger.Instance.Log("GETTING COMPLETION DATA");
+
+                    // is it a CLR type?
+                    var type = TryGetType(name); 
+                    if (type != null)
                     {
+                        Dynamo.DynamoLogger.Instance.Log("ENUMERATING TYPE");
+
                         items = EnumerateMembers(type, name);
                     }
-                    else if (this.VariableTypes.ContainsKey(name) ) // it's a clr type
+                    // it's a variable?
+                    else if (this.VariableTypes.ContainsKey(name) ) 
                     {
                         items = EnumerateMembers(this.VariableTypes[name], name);
-                    } 
-                    else
+                    }
+                    // is it a namespace or python type?
+                    else 
                     {
-                        // look up a namespace 
                         var mem = LookupMember(name);
-                        if (mem != null)
+
+                        if (mem is NamespaceTracker)
                         {
-                            if (mem is NamespaceTracker)
+                            items = EnumerateMembers(mem as NamespaceTracker, name);
+                        } 
+                        else if (mem is PythonModule)
+                        {
+                            items = EnumerateMembers(mem as PythonModule, name);
+                        }
+                        else if (mem is PythonType)
+                        {
+                            // shows static and instance methods in just the same way :(
+                            var value = ClrModule.GetClrType(mem as PythonType);
+                            if (value != null)
                             {
-                                items = EnumerateMembers(mem as NamespaceTracker, name);
-                            } 
-                            else if (mem is PythonModule)
+                                items = EnumerateMembers(value, name);
+                            }
+                        }
+
+                        if (mem != null) 
+                        {
+                            if (mem is PythonModule) 
                             {
-                                items = EnumerateMembers(mem as PythonModule, name);
-                            } 
-                            else if (mem is PythonType)
+                                Dynamo.DynamoLogger.Instance.Log("Got PythonModule with is");
+                            }
+                            else if (mem.GetType() == typeof(PythonModule))
                             {
-                                // shows static and instance methods in just the same way :(
-                                var value = ClrModule.GetClrType(mem as PythonType);
-                                if (value != null)
+                                Dynamo.DynamoLogger.Instance.Log("Got PythonModule with GetType and typeof");
+                            }
+                            else
+                            {
+                                Dynamo.DynamoLogger.Instance.Log("Not a PythonModule");
+                                Dynamo.DynamoLogger.Instance.Log(mem.GetType().ToString());
+
+                                try
                                 {
-                                    items = EnumerateMembers( value, name);
+                                    var pm = (PythonModule) mem;
+                                }
+                                catch (Exception e)
+                                {
+                                    Dynamo.DynamoLogger.Instance.Log(e.ToString());
                                 }
                             }
+
                         }
                     }
                 }
                 catch
                 {
-                    // Do nothing.
+                    Dynamo.DynamoLogger.Instance.Log("EXCEPTION: GETTING COMPLETION DATA");
                 }
                 AutocompletionInProgress = false;
             }
@@ -191,20 +221,20 @@ namespace DynamoPython
         /// <param name="module">A reference to the module</param>
         /// <param name="name">The name of the module</param>
         /// <returns>A list of completion data for the module</returns>
-        public List<DynamoCompletionData> EnumerateMembers(PythonModule module, string name)
+        public List<IronPythonCompletionData> EnumerateMembers(PythonModule module, string name)
         {
-            var items = new List<DynamoCompletionData>();
+            var items = new List<IronPythonCompletionData>();
             var d = module.Get__dict__();
 
             foreach (var member in d)
             {
                 if ( member.Value is BuiltinFunction )
                 {
-                    items.Add(new DynamoCompletionData( (string) member.Key, name, false, DynamoCompletionData.CompletionType.METHOD, this));
+                    items.Add(new IronPythonCompletionData( (string) member.Key, name, false, IronPythonCompletionData.CompletionType.METHOD, this));
                 }
                 else
                 {
-                    items.Add(new DynamoCompletionData((string)member.Key, name, false, DynamoCompletionData.CompletionType.FIELD, this));
+                    items.Add(new IronPythonCompletionData((string)member.Key, name, false, IronPythonCompletionData.CompletionType.FIELD, this));
                 }
             }
             return items;
@@ -216,27 +246,27 @@ namespace DynamoPython
         /// <param name="ns">A reference to the module</param>
         /// <param name="name">The name of the module</param>
         /// <returns>A list of completion data for the namespace</returns>
-        public List<DynamoCompletionData> EnumerateMembers(NamespaceTracker ns, string name)
+        public List<IronPythonCompletionData> EnumerateMembers(NamespaceTracker ns, string name)
         {
-            var items = new List<DynamoCompletionData>();
+            var items = new List<IronPythonCompletionData>();
 
             foreach (var member in ns)
             {
                 if (member.Value is NamespaceTracker)
                 {
-                    items.Add(new DynamoCompletionData(member.Key, name, false, DynamoCompletionData.CompletionType.NAMESPACE, this));
+                    items.Add(new IronPythonCompletionData(member.Key, name, false, IronPythonCompletionData.CompletionType.NAMESPACE, this));
                 }
                 else if (member.Value is FieldTracker)
                 {
-                    items.Add(new DynamoCompletionData(member.Key, name, false, DynamoCompletionData.CompletionType.FIELD, this));
+                    items.Add(new IronPythonCompletionData(member.Key, name, false, IronPythonCompletionData.CompletionType.FIELD, this));
                 }
                 else if (member.Value is Microsoft.Scripting.Actions.PropertyTracker)
                 {
-                    items.Add(new DynamoCompletionData(member.Key, name, false, DynamoCompletionData.CompletionType.PROPERTY, this));
+                    items.Add(new IronPythonCompletionData(member.Key, name, false, IronPythonCompletionData.CompletionType.PROPERTY, this));
                 }
                 else if (member.Value is Microsoft.Scripting.Actions.TypeTracker)
                 {
-                    items.Add(new DynamoCompletionData(member.Key, name, false, DynamoCompletionData.CompletionType.CLASS, this));
+                    items.Add(new IronPythonCompletionData(member.Key, name, false, IronPythonCompletionData.CompletionType.CLASS, this));
                 }
             }
             return items;
@@ -245,14 +275,14 @@ namespace DynamoPython
         /// <summary>
         /// List all of the members in a CLR type
         /// </summary>
-        /// <param name="ns">The type</param>
+        /// <param name="type">The type</param>
         /// <param name="name">The name for the type</param>
         /// <returns>A list of completion data for the type</returns>
-        protected List<DynamoCompletionData> EnumerateMembers(Type type, string name)
+        protected List<IronPythonCompletionData> EnumerateMembers(Type type, string name)
         {
-            var items = new List<DynamoCompletionData>();
+            var items = new List<IronPythonCompletionData>();
 
-            var completionsList = new SortedList<string, DynamoCompletionData.CompletionType>();
+            var completionsList = new SortedList<string, IronPythonCompletionData.CompletionType>();
 
             var methodInfo = type.GetMethods();
             var propertyInfo = type.GetProperties();
@@ -266,7 +296,7 @@ namespace DynamoPython
                     && (methodInfoItem.Name.IndexOf("__") != 0))
                 {
                     if (!completionsList.ContainsKey(methodInfoItem.Name))
-                        completionsList.Add(methodInfoItem.Name, DynamoCompletionData.CompletionType.METHOD);
+                        completionsList.Add(methodInfoItem.Name, IronPythonCompletionData.CompletionType.METHOD);
                 }
                     
             }
@@ -274,18 +304,18 @@ namespace DynamoPython
             foreach (PropertyInfo propertyInfoItem in propertyInfo)
             {
                 if (!completionsList.ContainsKey(propertyInfoItem.Name))
-                    completionsList.Add(propertyInfoItem.Name, DynamoCompletionData.CompletionType.PROPERTY);
+                    completionsList.Add(propertyInfoItem.Name, IronPythonCompletionData.CompletionType.PROPERTY);
             }
 
             foreach (FieldInfo fieldInfoItem in fieldInfo)
             {
                 if (!completionsList.ContainsKey(fieldInfoItem.Name))
-                    completionsList.Add(fieldInfoItem.Name, DynamoCompletionData.CompletionType.FIELD);
+                    completionsList.Add(fieldInfoItem.Name, IronPythonCompletionData.CompletionType.FIELD);
             }
 
             foreach (var completionPair in completionsList)
             {
-                items.Add(new DynamoCompletionData(completionPair.Key, name, true, completionPair.Value, this));
+                items.Add(new IronPythonCompletionData(completionPair.Key, name, true, completionPair.Value, this));
             }
 
             return items;
@@ -402,6 +432,10 @@ namespace DynamoPython
             return description;
         }
 
+        /// <summary>
+        /// A delegate used to update the description - useful for multi-threading
+        /// </summary>
+        /// <param name="description"></param>
         public delegate void DescriptionUpdateDelegate(string description);
 
         /// <summary>
@@ -434,7 +468,6 @@ namespace DynamoPython
         /// <returns>The type or null if its not a valid type</returns>
         protected Type TryGetType(string name)
         {
-
             if (ImportedTypes.ContainsKey(name))
             {
                 return ImportedTypes[name];
@@ -446,13 +479,10 @@ namespace DynamoPython
             {
                 type = _scope.Engine.CreateScriptSourceFromString(tryGetType, SourceCodeKind.Expression).Execute(_scope);
             }
-            catch (ThreadAbortException tae)
+            catch (Exception e)
             {
-                if (tae.ExceptionState is Microsoft.Scripting.KeyboardInterruptException) Thread.ResetAbort();
-            }
-            catch
-            {
-                Console.WriteLine();
+                Dynamo.DynamoLogger.Instance.Log(e.ToString());
+                Dynamo.DynamoLogger.Instance.Log("Failed to look up type");
             }
             return type as Type;
         }
@@ -520,7 +550,6 @@ namespace DynamoPython
 
             return importMatches;
         }
-
 
         /// <summary>
         /// Attempts to find import statements that look like 
@@ -605,16 +634,11 @@ namespace DynamoPython
 
         }
 
-        public void InitRegexTypes()
-        {
-            RegexToType.Add(singleQuoteStringRegex, typeof( string ));
-            RegexToType.Add(doubleQuoteStringRegex, typeof( string ));
-            RegexToType.Add(doubleRegex, typeof( double ));
-            RegexToType.Add(intRegex, typeof( int ));
-            RegexToType.Add(arrayRegex, typeof(List));
-            RegexToType.Add(dictRegex, typeof(PythonDictionary));
-        }
-
+        /// <summary>
+        /// Find all variable assignments in the source code and attempt to discover their type
+        /// </summary>
+        /// <param name="code">The code from whih to get the assignments</param>
+        /// <returns>A dictionary matching the name of the variable to a tuple of typeName, character at which the assignment was found, and the CLR type</returns>
         public Dictionary<string, Tuple<string, int, Type> > FindAllVariables(string code)
         {
             // regex to collection
