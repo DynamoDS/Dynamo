@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Data;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -370,6 +371,14 @@ namespace Dynamo.Views
                 selectionCanvas.Children.Add(xLine);
                 //Dynamo.Controls.DragCanvas.SetCanBeDragged(xLine, false);
                 xLine.IsHitTestVisible = false;
+
+                Binding binding = new Binding() 
+                { 
+                    Path = new PropertyPath("FullscreenWatchVisible"), 
+                    Converter = new InverseBoolToVisibilityConverter(),
+                    Mode = BindingMode.OneWay,
+                };
+                xLine.SetBinding(UIElement.VisibilityProperty, binding);
             }
             for (double i = 0.0; i < selectionCanvas.ActualHeight; i += gridSpacing)
             {
@@ -386,6 +395,14 @@ namespace Dynamo.Views
                 //Dynamo.Controls.DragCanvas.SetCanBeDragged(yLine, false);
                 
                 yLine.IsHitTestVisible = false;
+
+                Binding binding = new Binding()
+                {
+                    Path = new PropertyPath("FullscreenWatchVisible"),
+                    Converter = new InverseBoolToVisibilityConverter(),
+                    Mode = BindingMode.OneWay,
+                };
+                yLine.SetBinding(UIElement.VisibilityProperty, binding);
             }
         }
 
