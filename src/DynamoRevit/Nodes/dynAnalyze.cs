@@ -111,7 +111,9 @@ namespace Dynamo.Nodes
 
             Transform t = Transform.Identity;
 
-            Face f = (faceRef == null) ? ((Face)((Value.Container)args[0]).Item) : (dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face);
+            Face f = (faceRef == null) ? 
+                ((Face)((Value.Container)args[0]).Item) : 
+                (dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face);
 
             if (f != null)
             {
@@ -120,9 +122,8 @@ namespace Dynamo.Nodes
                 t.BasisZ = t.BasisZ.Normalize();
                 t.BasisY = t.BasisX.CrossProduct(t.BasisZ);
             }
-            return Value.NewContainer(
-               t
-            );
+            
+            return Value.NewContainer(t);
         }
 
     }
