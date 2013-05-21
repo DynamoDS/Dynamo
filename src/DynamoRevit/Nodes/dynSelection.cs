@@ -697,7 +697,22 @@ namespace Dynamo.Nodes
 
             return rd;
         }
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
 
+            dynEl.SetAttribute("faceRef", this.f.ConvertToStableRepresentation( dynRevitSettings.Doc.Document));
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            try
+            {
+                this.f = Reference.ParseFromStableRepresentation(dynRevitSettings.Doc.Document, elNode.Attributes["faceRef"].Value.ToString());
+                if (f != null)
+                   this.SelectedElement = dynRevitSettings.Doc.Document.GetElement(f.ElementId);
+            }
+            catch { }
+        }
     }
 
     [NodeName("Select Edge")]
@@ -751,6 +766,23 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawGeometryElement(rd, edge);
 
             return rd;
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+
+            dynEl.SetAttribute("edgeRef", this.f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            try
+            {
+                this.f = Reference.ParseFromStableRepresentation(dynRevitSettings.Doc.Document, elNode.Attributes["edgeRef"].Value.ToString());
+                if (f != null)
+                    this.SelectedElement = dynRevitSettings.Doc.Document.GetElement(f.ElementId);
+            }
+            catch { }
         }
 
     }
