@@ -80,8 +80,11 @@ namespace Dynamo.Nodes
 
             tb = new TextBox();
             //tb.Text = "Nothing Selected";
-            SelectionText = "Nothing Selected";
-            SelectButtonContent = "Select Instance";
+            if (this.SelectedElement == null || SelectionText.Count() < 1 || SelectButtonContent.Count() < 1 )
+            {
+                SelectionText = "Nothing Selected";
+                SelectButtonContent = "Select Instance";
+            }
 
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
@@ -214,7 +217,7 @@ namespace Dynamo.Nodes
                     var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id) as FamilyInstance;
+                        saved = dynRevitSettings.Doc.Document.GetElement(id) as Element; // FamilyInstance;
                     }
                     catch
                     {
@@ -271,6 +274,7 @@ namespace Dynamo.Nodes
 
             tb = new TextBox();
             //tb.Text = "Nothing Selected";
+            
             SelectionText = "Nothing Selected";
             SelectButtonContent = "Select Instances";
 
@@ -424,7 +428,7 @@ namespace Dynamo.Nodes
                     var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id) as FamilyInstance;
+                        saved = dynRevitSettings.Doc.Document.GetElement(id) as Element;
                     }
                     catch
                     {
