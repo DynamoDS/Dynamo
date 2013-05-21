@@ -72,6 +72,7 @@ namespace Dynamo.Revit
             {
                 Draw(description, e);
             }
+
             return description;
         }
 
@@ -510,6 +511,129 @@ namespace Dynamo.Revit
         {
             foreach (var els in elements)
                 els.RemoveAll(x => deleted.Contains(x));
+        }
+
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        {
+            //if this element maintains a collcection of references
+            //then clear the collection
+            if (this is IClearable)
+                (this as IClearable).ClearReferences();
+
+            List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
+
+            //create a zip of the incoming args and the port data
+            //to be used for type comparison
+            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
+
+            //if any value is a list whose expectation is a single
+            //do an auto map
+            //TODO: figure out a better way to do this than using a lot
+            //of specific excludes
+            if (args.Count() > 0 &&
+                portComparison.Any(x => x.Item1 == typeof(Value.List) &&
+                x.Item2 != typeof(Value.List)) &&
+                !(this.ArgumentLacing == LacingStrategy.Disabled))
+            {
+                //if the argument is of the expected type, then
+                //leave it alone otherwise, wrap it in a list
+                int j = 0;
+                foreach (var arg in args)
+                {
+                    //incoming value is list and expecting single
+                    if (portComparison.ElementAt(j).Item1 == typeof(Value.List) &&
+                        portComparison.ElementAt(j).Item2 != typeof(Value.List))
+                    {
+                        //leave as list
+                        argSets.Add(((Value.List)arg).Item);
+                    }
+                    //incoming value is list and expecting list
+                    else
+                    {
+                        //wrap in list
+                        argSets.Add(Utils.MakeFSharpList(arg));
+                    }
+                    j++;
+                }
+
+                IEnumerable<IEnumerable<Value>> lacedArgs = null;
+                switch (this.ArgumentLacing)
+                {
+                    case LacingStrategy.First:
+                        lacedArgs = argSets.SingleSet();
+                        break;
+                    case LacingStrategy.Shortest:
+                        lacedArgs = argSets.ShortestSet();
+                        break;
+                    case LacingStrategy.Longest:
+                        lacedArgs = argSets.LongestSet();
+                        break;
+                    case LacingStrategy.CrossProduct:
+                        lacedArgs = argSets.CartesianProduct();
+                        break;
+                }
+
+                //setup a list to hold the results
+                //each output will have its own results collection
+                List<FSharpList<Value>> results = new List<FSharpList<FScheme.Value>>();
+                for(int i=0; i<OutPortData.Count(); i++)
+                {
+                    results.Add(FSharpList<Value>.Empty);
+                }
+                //FSharpList<Value> result = FSharpList<Value>.Empty;
+
+                //run the evaluate method for each set of 
+                //arguments in the la result. do these
+                //in reverse order so our cons comes out the right
+                //way around
+                for (int i = lacedArgs.Count() - 1; i >= 0; i--)
+                {
+                    var evalResult = Evaluate(Utils.MakeFSharpList(lacedArgs.ElementAt(i).ToArray()));
+
+                    //if the list does not have the same number of items
+                    //as the number of output ports, then throw a wobbly
+                    if (!evalResult.IsList)
+                        throw new Exception("Output value of the node is not a list.");
+
+                    for (int k = 0; k < OutPortData.Count(); k++)
+                    {
+                        FSharpList<Value> lst = ((Value.List)evalResult).Item;
+                        results[k] = FSharpList<Value>.Cons(lst[k], results[k]);
+                    }
+                    runCount++;
+                }
+
+                //the result of evaluation will be a list. we split that result
+                //and send the results to the outputs
+                for (int i = 0; i < OutPortData.Count(); i++)
+                {
+                    outPuts[OutPortData[i]] = Value.NewList(results[i]);      
+                }
+                
+            }
+            else
+            {
+                Value evalResult = Evaluate(args);
+
+                if (!evalResult.IsList)
+                        throw new Exception("Output value of the node is not a list.");
+
+                FSharpList<Value> lst = ((Value.List)evalResult).Item;
+
+                //the result of evaluation will be a list. we split that result
+                //and send the results to the outputs
+                for (int i = 0; i < OutPortData.Count(); i++)
+                {
+                    outPuts[OutPortData[i]] = lst[i];
+                }
+            }
+
+            ValidateConnections();
+        }
+
+        public virtual Value Evaluate(FSharpList<Value> args)
+        {
+            throw new NotImplementedException();
         }
     }
 
