@@ -90,10 +90,12 @@
     <Compile Include="Nodes\dynFamilies.cs" />
     <Compile Include="Nodes\dynGeometricForms.cs" />
     <Compile Include="Nodes\dynGeometry.cs" />
+    <Compile Include="Nodes\dynIntersection.cs" />
     <Compile Include="Nodes\dynMeasurement.cs" />
     <Compile Include="Nodes\dynModelUpdater.cs" />
     <Compile Include="Nodes\dynNormals.cs" />
     <Compile Include="Nodes\dynPoints.cs" />
+    <Compile Include="Nodes\dynProjection.cs" />
     <Compile Include="Nodes\dynSelection.cs" />
     <Compile Include="Nodes\dynSimplexNoise.cs" />
     <Compile Include="Nodes\dynSolarRadiation.cs" />
