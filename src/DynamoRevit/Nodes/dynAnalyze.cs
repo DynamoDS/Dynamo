@@ -38,13 +38,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Face f = null;
-
             Reference faceRef = (args[1] as Value.Container).Item as Reference;
-            if(faceRef != null)
-                f = (faceRef == null)? ((args[1] as Value.Container).Item as Face) : dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
-            else
-                f = (args[1] as Value.Container).Item as Face;
+            Face f = (faceRef == null)? ((args[1] as Value.Container).Item as Face) : dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
 
             XYZ norm = null;
             
@@ -76,13 +71,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Face f = null;
-
             Reference faceRef = (args[1] as Value.Container).Item as Reference;
-            if(faceRef != null)
-                f = (faceRef == null) ? ((args[1] as Value.Container).Item as Face) : dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
-            else
-                f = (args[1] as Value.Container).Item as Face;
+            Face f = (faceRef == null) ? ((args[1] as Value.Container).Item as Face) : dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
 
             XYZ face_point = null;
 
@@ -97,6 +87,44 @@ namespace Dynamo.Nodes
 
             return Value.NewContainer(face_point);
         }
+    }
+
+
+    [NodeName("Compute Face Derivatives")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
+    [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
+    public class dynComputeFaceDerivatives : dynNodeWithOneOutput
+    {
+        public dynComputeFaceDerivatives()
+        {
+            InPortData.Add(new PortData("f", "The face to evaluate(Face)", typeof(Value.Container)));
+            InPortData.Add(new PortData("uv", "The parameter to evaluate(UV)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("t", "Transform describing the face at the parameter(Transform)", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var faceRef = (Reference)((Value.Container)args[0]).Item;
+            var uv = (UV)((Value.Container)args[1]).Item;
+
+            Transform t = Transform.Identity;
+
+            Face f = (faceRef == null) ? ((Face)((Value.Container)args[0]).Item) : (dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face);
+
+            if (f != null)
+            {
+                t = f.ComputeDerivatives(uv);
+                t.BasisX = t.BasisX.Normalize();
+                t.BasisZ = t.BasisZ.Normalize();
+                t.BasisY = t.BasisX.CrossProduct(t.BasisZ);
+            }
+            return Value.NewContainer(
+               t
+            );
+        }
+
     }
 
 }
