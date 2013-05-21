@@ -19,6 +19,9 @@ namespace Dynamo.Controls
         protected List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
         public List<Point3D> _pointsCache = new List<Point3D>();
         public List<Point3D> _linesCache = new List<Point3D>();
+        public List<Point3D> _xAxisCache = new List<Point3D>();
+        public List<Point3D> _yAxisCache = new List<Point3D>();
+        public List<Point3D> _zAxisCache = new List<Point3D>();
 
         public Mesh3D _meshCache = new Mesh3D();
 
@@ -44,6 +47,33 @@ namespace Dynamo.Controls
             {
                 _linesCache = value;
                 RaisePropertyChanged("HelixLines");
+            }
+        }
+
+        public List<Point3D> HelixXAxes
+        {
+            get { return _xAxisCache; }
+            set
+            {
+                _xAxisCache = value;
+            }
+        }
+
+        public List<Point3D> HelixYAxes
+        {
+            get { return _yAxisCache; }
+            set
+            {
+                _yAxisCache = value;
+            }
+        }
+
+        public List<Point3D> HelixZAxes
+        {
+            get { return _zAxisCache; }
+            set
+            {
+                _zAxisCache = value;
             }
         }
 
@@ -93,6 +123,9 @@ namespace Dynamo.Controls
             List<Point3D> points = new List<Point3D>();
             List<Point3D> lines = new List<Point3D>();
             List<Mesh3D> meshes = new List<Mesh3D>();
+            List<Point3D> xAxes = new List<Point3D>();
+            List<Point3D> yAxes = new List<Point3D>();
+            List<Point3D> zAxes = new List<Point3D>();
 
             foreach (IDrawable d in drawables)
             {
@@ -112,16 +145,36 @@ namespace Dynamo.Controls
                 {
                     meshes.Add(m);
                 }
+
+                foreach (Point3D p in rd.xAxisPoints)
+                {
+                    xAxes.Add(p);
+                }
+
+                foreach (Point3D p in rd.yAxisPoints)
+                {
+                    yAxes.Add(p);
+                }
+
+                foreach (Point3D p in rd.zAxisPoints)
+                {
+                    zAxes.Add(p);
+                }
             }
 
             _pointsCache = points;
             _linesCache = lines;
-
             _meshCache = MergeMeshes(meshes);
+            _xAxisCache = xAxes;
+            _yAxisCache = yAxes;
+            _zAxisCache = zAxes;
 
             RaisePropertyChanged("HelixPoints");
             RaisePropertyChanged("HelixLines");
             RaisePropertyChanged("HelixMesh");
+            RaisePropertyChanged("HelixXAxes");
+            RaisePropertyChanged("HelixYAxes");
+            RaisePropertyChanged("HelixZAxes");
         }
 
         Mesh3D MergeMeshes(List<Mesh3D> meshes)

@@ -19,6 +19,7 @@ using Dynamo.Connectors;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Utilities;
+using System.Windows.Media.Media3D;
 
 namespace Dynamo.Nodes
 {
@@ -89,11 +90,10 @@ namespace Dynamo.Nodes
         }
     }
 
-
     [NodeName("Compute Face Derivatives")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
-    public class dynComputeFaceDerivatives : dynNodeWithOneOutput
+    public class dynComputeFaceDerivatives : dynTransformBase
     {
         public dynComputeFaceDerivatives()
         {
@@ -106,7 +106,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var faceRef = (Reference)((Value.Container)args[0]).Item;
+            var faceRef = ((Value.Container)args[0]).Item as Reference;
             var uv = (UV)((Value.Container)args[1]).Item;
 
             Transform t = Transform.Identity;
@@ -122,7 +122,9 @@ namespace Dynamo.Nodes
                 t.BasisZ = t.BasisZ.Normalize();
                 t.BasisY = t.BasisX.CrossProduct(t.BasisZ);
             }
-            
+
+            transforms.Add(t);
+
             return Value.NewContainer(t);
         }
 
