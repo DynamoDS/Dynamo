@@ -80,8 +80,11 @@ namespace Dynamo.Nodes
 
             tb = new TextBox();
             //tb.Text = "Nothing Selected";
-            SelectionText = "Nothing Selected";
-            SelectButtonContent = "Select Instance";
+            if (this.SelectedElement == null || SelectionText.Count() < 1 || SelectButtonContent.Count() < 1 )
+            {
+                SelectionText = "Nothing Selected";
+                SelectButtonContent = "Select Instance";
+            }
 
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
@@ -214,7 +217,7 @@ namespace Dynamo.Nodes
                     var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id) as FamilyInstance;
+                        saved = dynRevitSettings.Doc.Document.GetElement(id) as Element; // FamilyInstance;
                     }
                     catch
                     {
@@ -271,6 +274,7 @@ namespace Dynamo.Nodes
 
             tb = new TextBox();
             //tb.Text = "Nothing Selected";
+            
             SelectionText = "Nothing Selected";
             SelectButtonContent = "Select Instances";
 
@@ -424,7 +428,7 @@ namespace Dynamo.Nodes
                     var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id) as FamilyInstance;
+                        saved = dynRevitSettings.Doc.Document.GetElement(id) as Element;
                     }
                     catch
                     {
@@ -693,7 +697,22 @@ namespace Dynamo.Nodes
 
             return rd;
         }
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
 
+            dynEl.SetAttribute("faceRef", this.f.ConvertToStableRepresentation( dynRevitSettings.Doc.Document));
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            try
+            {
+                this.f = Reference.ParseFromStableRepresentation(dynRevitSettings.Doc.Document, elNode.Attributes["faceRef"].Value.ToString());
+                if (f != null)
+                   this.SelectedElement = dynRevitSettings.Doc.Document.GetElement(f.ElementId);
+            }
+            catch { }
+        }
     }
 
     [NodeName("Select Edge")]
@@ -747,6 +766,23 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawGeometryElement(rd, edge);
 
             return rd;
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+
+            dynEl.SetAttribute("edgeRef", this.f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            try
+            {
+                this.f = Reference.ParseFromStableRepresentation(dynRevitSettings.Doc.Document, elNode.Attributes["edgeRef"].Value.ToString());
+                if (f != null)
+                    this.SelectedElement = dynRevitSettings.Doc.Document.GetElement(f.ElementId);
+            }
+            catch { }
         }
 
     }

@@ -256,13 +256,17 @@ namespace Dynamo.Nodes
 
                 Array pointArray = pointList.ToArray();
 
-                pt1 = (ReferencePoint)((Value.Container)pointArray.GetValue(0)).Item as ReferencePoint;
-                pt2 = (ReferencePoint)((Value.Container)pointArray.GetValue(1)).Item as ReferencePoint;
+                for (int i = 0; i < pointArray.Length-1; i++)
+                {
 
-                (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt1.Id, ChangeTypeEnum.Modify, UpdateStart);
-                (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt2.Id, ChangeTypeEnum.Modify, UpdateEnd);
+                    pt1 = (ReferencePoint)((Value.Container)pointArray.GetValue(i)).Item as ReferencePoint;
+                    pt2 = (ReferencePoint)((Value.Container)pointArray.GetValue(i + 1)).Item as ReferencePoint;
 
-                CreateChainWithTwoFixedEnds(pt1, pt2, numX, d, r, s, m);
+                    (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt1.Id, ChangeTypeEnum.Modify, UpdateStart);
+                    (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt2.Id, ChangeTypeEnum.Modify, UpdateEnd);
+
+                    CreateChainWithTwoFixedEnds(pt1, pt2, numX, d, r, s, m);
+                }
 
                 return Value.NewContainer(particleSystem);
             }
