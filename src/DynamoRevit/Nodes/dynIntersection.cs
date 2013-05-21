@@ -44,7 +44,14 @@ namespace Dynamo.Nodes
             foreach (IntersectionResult ir in xsects)
             {
                 var xsect = FSharpList<Value>.Empty;
-                xsect = FSharpList<Value>.Cons(Value.NewNumber(ir.EdgeParameter), xsect);
+                try
+                {
+                    xsect = FSharpList<Value>.Cons(Value.NewNumber(ir.EdgeParameter), xsect);
+                }
+                catch
+                {
+                    xsect = FSharpList<Value>.Cons(Value.NewNumber(0), xsect);
+                }
                 xsect = FSharpList<Value>.Cons(Value.NewContainer(ir.EdgeObject), xsect);
                 xsect = FSharpList<Value>.Cons(Value.NewNumber(ir.Parameter), xsect);
                 xsect = FSharpList<Value>.Cons(Value.NewContainer(ir.UVPoint), xsect);
@@ -52,8 +59,9 @@ namespace Dynamo.Nodes
                 xsect_results = FSharpList<Value>.Cons(Value.NewList(xsect), xsect_results);
             }
             var results = FSharpList<Value>.Empty;
-            results = FSharpList<Value>.Cons(Value.NewString(result.ToString()), results);
             results = FSharpList<Value>.Cons(Value.NewList(xsect_results), results);
+            results = FSharpList<Value>.Cons(Value.NewString(result.ToString()), results);
+            
 
             return Value.NewList(results);
         }

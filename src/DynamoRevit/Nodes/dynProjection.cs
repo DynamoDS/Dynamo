@@ -83,7 +83,12 @@ namespace Dynamo.Nodes
             UV uv = ir.UVPoint;
             double d = ir.Distance;
             Edge e = ir.EdgeObject;
-            double et = ir.EdgeParameter;
+            double et = 0;
+            try
+            {
+                et = ir.EdgeParameter;
+            }
+            catch { }
 
             var results = FSharpList<Value>.Empty;
             results = FSharpList<Value>.Cons(Value.NewNumber(et), results);

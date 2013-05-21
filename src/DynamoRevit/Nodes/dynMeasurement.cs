@@ -44,18 +44,18 @@ namespace Dynamo.Nodes
             double area = 0.0;
 
             object arg0 = ((Value.Container)args[0]).Item;
-            if (arg0 is Reference)
-            {
-                Reference faceRef = arg0 as Reference;
-                Face f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
-                if (f != null)
-                {
-                    area = f.Area;
-                }
-            }
+
+            Face f;
+
+            Reference faceRef = arg0 as Reference;
+            if (faceRef != null)
+                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
             else
+                f = arg0 as Face;
+
+            if (f != null)
             {
-                throw new Exception("Cannot cast first argument to Face.");
+                area = f.Area;
             }
 
             //Fin
@@ -82,18 +82,18 @@ namespace Dynamo.Nodes
             BoundingBoxUV bbox = null;
 
             object arg0 = ((Value.Container)args[0]).Item;
-            if (arg0 is Reference)
-            {
-                Reference faceRef = arg0 as Reference;
-                Face f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
-                if (f != null)
-                {
-                    bbox = f.GetBoundingBox();
-                }
-            }
+
+            Face f;
+
+            Reference faceRef = arg0 as Reference;
+            if (faceRef != null)
+                f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
             else
+                f = arg0 as Face;
+
+            if (f != null)
             {
-                throw new Exception("Cannot cast first argument to Face.");
+                bbox = f.GetBoundingBox();
             }
 
             result = FSharpList<Value>.Cons(
