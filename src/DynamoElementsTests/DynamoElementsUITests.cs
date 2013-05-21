@@ -164,8 +164,6 @@ namespace Dynamo.Tests
                 {
                     try
                     {
-                        //dynSettings.Bench.Dispatcher.Invoke(OpenSample(), new object[] { fi.FullName });
-
                         dynSettings.Bench.Dispatcher.Invoke(new Action(delegate
                         {
                             dynSettings.Controller.CommandQueue.Enqueue(
