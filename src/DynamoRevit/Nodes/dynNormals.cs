@@ -38,9 +38,14 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            Face f = null;
+
             Reference faceRef = (args[1] as Value.Container).Item as Reference;
-            
-            Face f = (faceRef == null)? ((args[1] as Value.Container).Item as Face) : dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
+            if(faceRef != null)
+                f = (faceRef == null)? ((args[1] as Value.Container).Item as Face) : dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
+            else
+                f = (args[1] as Value.Container).Item as Face;
+
             XYZ norm = null;
             
             if (f != null)
@@ -71,10 +76,14 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Reference faceRef = (args[1] as Value.Container).Item as Reference;
+            Face f = null;
 
-            Face f = (faceRef == null) ? ((args[1] as Value.Container).Item as Face) : dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
-          
+            Reference faceRef = (args[1] as Value.Container).Item as Reference;
+            if(faceRef != null)
+                f = (faceRef == null) ? ((args[1] as Value.Container).Item as Face) : dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
+            else
+                f = (args[1] as Value.Container).Item as Face;
+
             XYZ face_point = null;
 
             if (f != null)
