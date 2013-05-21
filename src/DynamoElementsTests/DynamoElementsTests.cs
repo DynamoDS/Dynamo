@@ -88,8 +88,6 @@ namespace Dynamo.Tests
         [Test]
         public void CanOpenGoodFile()
         {
-            // NOTE rom PB: this test fails due to the fact that Bench is locked as it was never shown in these tests
-            //              The same test is present in DynamoElementsUITests.cs, where it succeeds
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string openPath = Path.Combine(directory, @"..\..\test\good_dyns\multiplicationAndAdd.dyn");
             controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.OpenCommand, openPath));

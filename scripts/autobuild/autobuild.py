@@ -74,7 +74,6 @@ def main():
 
 		if not options.debug:
 			update_realtimedev( installer_dir, installer_bin_dir, repo_root, autodoc_root, options.realtimedev_root )
-		
 	else:
 		print 'build failed'
 
@@ -137,7 +136,7 @@ def interpret_unit_tests( result ):
 def run_unit_tests(path, build_config = "Debug"):
 
 	print 'running unit tests....'
-	return run_cmd( ['nunit-console', 'DynamoElementsTests.dll'], cwd= form_path( [path, "bin", build_config ]) )
+	return run_cmd( ['nunit-console', 'DynamoElementsTests.dll DynamoPythonTests.dll /noshadow'], cwd= form_path( [path, "bin", build_config ]) )
 
 def mkdir(path):
 
