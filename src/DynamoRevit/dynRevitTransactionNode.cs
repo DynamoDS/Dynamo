@@ -382,10 +382,7 @@ namespace Dynamo.Revit
             {
                 #region debug
 
-                Bench.Dispatcher.Invoke(new Action(
-                   () =>
-                      dynSettings.Controller.DynamoViewModel.Log("Starting a debug transaction for element: " + NickName)
-                ));
+                dynSettings.Controller.DynamoViewModel.Log("Starting a debug transaction for element: " + NickName);
 
                 IdlePromise.ExecuteOnIdle(
                    delegate

@@ -1629,23 +1629,13 @@ namespace Dynamo.Nodes
         {
             var result = args[0];
 
-            Bench.Dispatcher.Invoke(new Action(
-               delegate
-               {
-                   Controller.DynamoViewModel.Log(FScheme.print(result));
-               }
-            ));
+            Controller.DynamoViewModel.Log(FScheme.print(result));
 
             if (Controller.DynamoViewModel.RunInDebug)
             {
-                button.Dispatcher.Invoke(new Action(
-                   delegate
-                   {
-                       enabled = true;
-                       Select();
-                       Controller.DynamoViewModel.ShowElement(this);
-                   }
-                ));
+                enabled = true;
+                Select();
+                Controller.DynamoViewModel.ShowElement(this);
 
                 while (enabled)
                 {

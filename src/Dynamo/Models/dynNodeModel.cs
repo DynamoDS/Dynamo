@@ -667,21 +667,18 @@ namespace Dynamo.Nodes
                 }
                 catch (Exception ex)
                 {
-                    Bench.Dispatcher.Invoke(new Action(
-                       delegate
-                       {
-                           Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                           dynSettings.Controller.DynamoViewModel.Log(ex);
 
-                           if (DynamoCommands.WriteToLogCmd.CanExecute(null))
-                           {
-                               DynamoCommands.WriteToLogCmd.Execute(ex.Message);
-                               DynamoCommands.WriteToLogCmd.Execute(ex.StackTrace);
-                           }
+                    Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
 
-                           Controller.DynamoViewModel.ShowElement(this);
-                       }
-                    ));
+                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    {
+                        DynamoCommands.WriteToLogCmd.Execute(ex.Message);
+                        DynamoCommands.WriteToLogCmd.Execute(ex.StackTrace);
+                    }
+
+                    Controller.DynamoViewModel.ShowElement(this);
+
 
                     Error(ex.Message);
                 }

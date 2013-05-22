@@ -472,13 +472,7 @@ namespace Dynamo
                 (DynamoViewModel as DynamoRevitViewModel).TransMode = DynamoRevitViewModel.TransactionMode.Debug; //Debug transaction control
                 this.InIdleThread = true; //Everything will be evaluated in the idle thread.
 
-                //MVVM: no need to invoke through UI
-                //Bench.Dispatcher.Invoke(new Action(
-                //   () => dynSettings.Controller.DynamoViewModel.Log("Running expression in debug.")
-                //));
-
                 dynSettings.Controller.DynamoViewModel.Log("Running expression in debug.");
-                
 
                 //Execute the Run Delegate.
                 base.Run(topElements, runningExpression);
