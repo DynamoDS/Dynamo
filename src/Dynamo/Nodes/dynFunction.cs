@@ -293,6 +293,7 @@ namespace Dynamo
 
                 Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
             }
+
         }
 
         [NodeName("Output")]

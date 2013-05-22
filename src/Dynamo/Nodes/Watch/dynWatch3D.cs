@@ -23,6 +23,7 @@ using Dynamo.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Controls;
+using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
@@ -129,6 +130,20 @@ namespace Dynamo.Nodes
                     drawables.Add(drawable);
 
                 GetUpstreamIDrawable(drawables, node.Inputs);
+
+                //if the node is function then get all the 
+                //drawables inside that node. only do this if the
+                //node's workspace is the home space to avoid infinite
+                //recursion in the case of custom nodes in custom nodes
+                if (node is dynFunction && node.WorkSpace == dynSettings.Controller.DynamoModel.HomeSpace)
+                {
+                    dynFunction func = (dynFunction)node;
+                    IEnumerable<dynNodeModel> topElements = func.Definition.Workspace.GetTopMostNodes();
+                    foreach (dynNodeModel innerNode in topElements)
+                    {
+                        GetUpstreamIDrawable(drawables, innerNode.Inputs);
+                    }
+                }
             }
         }
 
