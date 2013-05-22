@@ -1,21 +1,21 @@
-<dynWorkspace X="0" Y="0">
+<dynWorkspace X="31" Y="194">
   <dynElements>
-    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="c5516802-e335-41c6-a6e8-e0193b9ece1f" nickname="Filename" x="0" y="11.510141232268">
-      <System.String value="C:\Autodesk\16 CSV to Points\helix_smaller.csv" />
+    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="c5516802-e335-41c6-a6e8-e0193b9ece1f" nickname="Filename" x="0" y="11.510141232268" lacing="First">
+      <System.String value="C:\Users\Ian\Documents\GitHub\Dynamo\bin\Debug\Samples\15 CSV to Points\helix.csv" />
     </Dynamo.Nodes.dynStringFilename>
-    <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="13468dab-9934-4501-8bfa-f206ed95a92c" nickname="Read File" x="266.644736842105" y="19.4706675480577" />
-    <Dynamo.Nodes.dynSplitString type="Dynamo.Nodes.dynSplitString" guid="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" nickname="Split String" x="497.332535885168" y="21.8689929069096" />
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="123b16a4-3c87-451b-9915-d220fe5a58b9" nickname="String" x="267.886972215227" y="81.8102073365226">
+    <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="13468dab-9934-4501-8bfa-f206ed95a92c" nickname="Read File" x="546.644736842105" y="278.470667548058" lacing="First" />
+    <Dynamo.Nodes.dynSplitString type="Dynamo.Nodes.dynSplitString" guid="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" nickname="Split String" x="645.332535885168" y="6.8689929069096" lacing="First" />
+    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="123b16a4-3c87-451b-9915-d220fe5a58b9" nickname="String" x="365.886972215227" y="288.810207336523" lacing="First">
       <System.String value="%0a" />
     </Dynamo.Nodes.dynStringInput>
-    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="1863c612-883f-4bf5-9f74-6499a65dfb7f" nickname="Number Slider" x="6.67099298864231" y="167.074960127592">
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="1863c612-883f-4bf5-9f74-6499a65dfb7f" nickname="Number Slider" x="6.67099298864231" y="167.074960127592" lacing="First">
       <System.Double value="12.7277560291917" min="0" max="100" />
     </Dynamo.Nodes.dynDoubleSliderInput>
-    <Dynamo.Nodes.dynFamilyTypeSelector type="Dynamo.Nodes.dynFamilyTypeSelector" guid="579ab4b8-6711-4cf7-8740-06f1e15864a3" nickname="Family Type Selector" x="1783.95833333333" y="263.333333333333" index="5" />
-    <Dynamo.Nodes.dynFamilyInstanceCreatorXYZ type="Dynamo.Nodes.dynFamilyInstanceCreatorXYZ" guid="f72d164d-b1ea-4fe1-ae68-2b2f5dc52449" nickname="Family Instance Creator" x="1863.74999999999" y="145.625" />
-    <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="96c68b05-fe68-4127-93a8-6dafc70576be" nickname="Reference Point" x="1864.46666666667" y="20.8777777777778" />
-    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="ebcfc192-76df-4f33-b5a1-ea2414166fd5" nickname="Watch 3D" x="965.94814814815" y="25.7543209876548" />
-    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="5b3baf3e-1147-453b-82ee-43b156060664" nickname="Parse List of Lists" x="756.25" y="23.9583333333337">
+    <Dynamo.Nodes.dynFamilyTypeSelector type="Dynamo.Nodes.dynFamilyTypeSelector" guid="579ab4b8-6711-4cf7-8740-06f1e15864a3" nickname="Family Type Selector" x="1783.95833333333" y="263.333333333333" lacing="First" index="-1" />
+    <Dynamo.Nodes.dynFamilyInstanceCreatorXYZ type="Dynamo.Nodes.dynFamilyInstanceCreatorXYZ" guid="f72d164d-b1ea-4fe1-ae68-2b2f5dc52449" nickname="Family Instance Creator" x="1863.74999999999" y="145.625" lacing="First" />
+    <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="96c68b05-fe68-4127-93a8-6dafc70576be" nickname="Reference Point" x="1864.46666666667" y="20.8777777777778" lacing="First" />
+    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="ebcfc192-76df-4f33-b5a1-ea2414166fd5" nickname="Watch 3D" x="1113.94814814815" y="67.7543209876548" lacing="Disabled" />
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="5b3baf3e-1147-453b-82ee-43b156060664" nickname="Parse List of Lists" x="816.25" y="7.9583333333337" lacing="Disabled">
       <ID value="1f47466b-a6c8-49d1-a54e-eb901d971738" />
       <Name value="Parse List of Lists" />
       <Inputs>
@@ -23,23 +23,25 @@
         <Input value="multiplier" />
       </Inputs>
       <Outputs>
-        <Output value="xyz" />
+        <Output value="list" />
       </Outputs>
     </Dynamo.Nodes.dynFunction>
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="a5dc70f3-5a37-4dad-a875-0d079bcbe963" nickname="Watch" x="629.583333333333" y="190" />
+    <Dynamo.Nodes.dynXYZFromListOfNumbers type="Dynamo.Nodes.dynXYZFromListOfNumbers" guid="2b846e9c-245e-4a67-877e-4ce71c680c59" nickname="XYZ from List of Numbers" x="909.671808613311" y="187.319301413027" lacing="Disabled" />
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="c06aece7-7cf7-4ab8-ad0c-cb3eafc20276" nickname="Watch" x="1057.05039313112" y="446.890073242052" lacing="Disabled" />
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="c5516802-e335-41c6-a6e8-e0193b9ece1f" start_index="0" end="13468dab-9934-4501-8bfa-f206ed95a92c" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="13468dab-9934-4501-8bfa-f206ed95a92c" start_index="0" end="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" start_index="0" end="5b3baf3e-1147-453b-82ee-43b156060664" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="123b16a4-3c87-451b-9915-d220fe5a58b9" start_index="0" end="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="1863c612-883f-4bf5-9f74-6499a65dfb7f" start_index="0" end="5b3baf3e-1147-453b-82ee-43b156060664" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="579ab4b8-6711-4cf7-8740-06f1e15864a3" start_index="0" end="f72d164d-b1ea-4fe1-ae68-2b2f5dc52449" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="5b3baf3e-1147-453b-82ee-43b156060664" start_index="0" end="ebcfc192-76df-4f33-b5a1-ea2414166fd5" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="5b3baf3e-1147-453b-82ee-43b156060664" start_index="0" end="a5dc70f3-5a37-4dad-a875-0d079bcbe963" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="c5516802-e335-41c6-a6e8-e0193b9ece1f" start_index="0" end="13468dab-9934-4501-8bfa-f206ed95a92c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="13468dab-9934-4501-8bfa-f206ed95a92c" start_index="0" end="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" start_index="0" end="5b3baf3e-1147-453b-82ee-43b156060664" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="123b16a4-3c87-451b-9915-d220fe5a58b9" start_index="0" end="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="1863c612-883f-4bf5-9f74-6499a65dfb7f" start_index="0" end="5b3baf3e-1147-453b-82ee-43b156060664" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="579ab4b8-6711-4cf7-8740-06f1e15864a3" start_index="0" end="f72d164d-b1ea-4fe1-ae68-2b2f5dc52449" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="5b3baf3e-1147-453b-82ee-43b156060664" start_index="0" end="2b846e9c-245e-4a67-877e-4ce71c680c59" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="2b846e9c-245e-4a67-877e-4ce71c680c59" start_index="0" end="ebcfc192-76df-4f33-b5a1-ea2414166fd5" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="2b846e9c-245e-4a67-877e-4ce71c680c59" start_index="0" end="c06aece7-7cf7-4ab8-ad0c-cb3eafc20276" end_index="0" portType="0" />
   </dynConnectors>
   <dynNotes>
-    <Dynamo.Nodes.dynNote text="Readfile, String, Split String, and Parse List of Lists &#xD;&#xA;Can be made into a single file.  See 02 file." x="448.833333333333" y="97.3333333333334" />
-    <Dynamo.Nodes.dynNote text="connect Watch 3d to these &#xD;&#xA;to make Revit Stuff" x="1774.66666666667" y="68.9999999999999" />
+    <Dynamo.Nodes.dynNoteModel text="Readfile, String, Split String, and Parse List of Lists &#xD;&#xA;Can be made into a single file.  See 02 file." x="448.833333333333" y="97.3333333333334" />
+    <Dynamo.Nodes.dynNoteModel text="connect Watch 3d to these &#xD;&#xA;to make Revit Stuff" x="1774.66666666667" y="68.9999999999999" />
   </dynNotes>
 </dynWorkspace>
