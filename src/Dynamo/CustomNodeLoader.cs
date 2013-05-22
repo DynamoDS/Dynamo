@@ -350,7 +350,7 @@ namespace Dynamo.Utilities
                 outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
             }
 
-            result = new dynFunction(inputs, outputs, def);
+            result = controller.DynamoViewModel.CreateFunction(inputs, outputs, def);
             result.NickName = ws.Name;
 
             return true;

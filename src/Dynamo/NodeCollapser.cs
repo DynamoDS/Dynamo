@@ -212,7 +212,7 @@ namespace Dynamo.Utilities
             #region Insert new node into the current workspace
 
             //Step 5: insert new node into original workspace
-            var collapsedNode = new dynFunction(
+            var collapsedNode = dynSettings.Controller.DynamoViewModel.CreateFunction(
                 inputs.Select(x => x.Item1.InPortData[x.Item2].NickName),
                 outputs
                     .Where(x => !curriedNodeArgs.Any(y => y.OuterNode == x.Item3.Item2))

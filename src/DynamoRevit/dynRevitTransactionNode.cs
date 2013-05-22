@@ -62,6 +62,10 @@ namespace Dynamo.Revit
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
+            //Only save elements in the home workspace
+            if (WorkSpace is FuncWorkspace)
+                return;
+
             foreach (var run in elements)
             {
                 var outEl = xmlDoc.CreateElement("Run");
@@ -97,12 +101,31 @@ namespace Dynamo.Revit
                     {
                         if (element.Name == "Element")
                         {
-                            var id = UIDocument.Document.GetElement(subNode.InnerText).Id;
-                            runElements.Add(id);
-                            dynRevitSettings.Controller.RegisterDeleteHook(id, del);
+                            var eid = subNode.InnerText;
+                            try
+                            {
+                                var id = UIDocument.Document.GetElement(eid).Id;
+                                runElements.Add(id);
+                                dynRevitSettings.Controller.RegisterDeleteHook(id, del);
+                            }
+                            catch (NullReferenceException)
+                            {
+                                dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
+                            }
                         }
                     }
                 }
+            }
+        }
+
+        internal void RegisterAllElementsDeleteHook()
+        {
+            var del = new DynElementUpdateDelegate(onDeleted);
+
+            foreach (var eList in elements)
+            {
+                foreach (var id in eList)
+                    dynRevitSettings.Controller.RegisterDeleteHook(id, del);
             }
         }
 
