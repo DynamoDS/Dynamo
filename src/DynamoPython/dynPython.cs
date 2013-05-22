@@ -259,6 +259,8 @@ namespace Dynamo.Nodes
 
         private string script = "#The input to this node will be stored in the IN variable.\ndataEnteringNode = IN\n\n#Assign your output to the OUT variable\nOUT = 0";
 
+        public RenderDescription RenderDescription{get;set;}
+
         public dynPython()
         {
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
@@ -412,11 +414,10 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        public RenderDescription Draw()
+        public void Draw()
         {
-            return PythonEngine.Drawing(lastEvalValue);
+            PythonEngine.Drawing(lastEvalValue);
         }
-
     }
 
 

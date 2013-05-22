@@ -15,17 +15,13 @@ using System.Windows.Media.Media3D;
 using System.ComponentModel;
 using System.IO.Ports;
 using System.Threading;
-
 using Microsoft.FSharp.Collections;
-
 using HelixToolkit.Wpf;
-
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
 using Dynamo.Controls;
-
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Controls
@@ -42,7 +38,7 @@ namespace Dynamo.Controls
         public WatchViewFullscreen()
         {
             InitializeComponent();
-
+            
             MouseLeftButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_MouseButtonIgnore);
             MouseLeftButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseButtonIgnore);
             MouseRightButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseRightButtonUp);

@@ -158,19 +158,19 @@ namespace Dynamo.Nodes
 
             foreach (IDrawable d in drawables)
             {
-                RenderDescription rd = d.Draw();
+                d.Draw();
 
-                foreach (Point3D p in rd.points)
+                foreach (Point3D p in d.RenderDescription.points)
                 {
                     Points.Add(p);
                 }
 
-                foreach (Point3D p in rd.lines)
+                foreach (Point3D p in d.RenderDescription.lines)
                 {
                     Lines.Add(p);
                 }
 
-                foreach (Mesh3D mesh in rd.meshes)
+                foreach (Mesh3D mesh in d.RenderDescription.meshes)
                 {
                     Meshes.Add(mesh);
                 }

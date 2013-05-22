@@ -22,11 +22,22 @@ namespace Dynamo.Nodes
             yAxisPoints = new Point3DCollection();
             zAxisPoints = new Point3DCollection();
         }
+
+        public void ClearAll()
+        {
+            points.Clear();
+            lines.Clear();
+            meshes.Clear();
+            xAxisPoints.Clear();
+            yAxisPoints.Clear();
+            zAxisPoints.Clear();
+        }
     }
     
     public interface IDrawable
     {
-        RenderDescription Draw();
+        RenderDescription RenderDescription { get; set; }
+        void Draw();
     }
 
     /// <summary>

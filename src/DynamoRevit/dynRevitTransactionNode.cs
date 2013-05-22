@@ -59,9 +59,14 @@ namespace Dynamo.Revit
             }
         }
 
-        public RenderDescription Draw()
+        public RenderDescription RenderDescription { get; set; }
+
+        public void Draw()
         {
-            RenderDescription description = new RenderDescription();
+            if (this.RenderDescription == null)
+                this.RenderDescription = new Nodes.RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
 
             var drawaableRevitElements = elements.SelectMany(x => x.Select(y => dynRevitSettings.Doc.Document.GetElement(y)));
 
@@ -70,10 +75,8 @@ namespace Dynamo.Revit
             
             foreach (Element e in drawaableRevitElements)
             {
-                Draw(description, e);
+                Draw(this.RenderDescription, e);
             }
-
-            return description;
         }
 
         public static void DrawUndrawable(RenderDescription description, object obj)

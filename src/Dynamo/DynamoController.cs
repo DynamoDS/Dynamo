@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Windows.Input;
+using System.Windows.Threading;
+
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
@@ -51,7 +53,8 @@ namespace Dynamo
         public PackageManagerClient PackageManagerClient { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
-        
+        public Dispatcher UIDispatcher { get; set; }
+
         List<dynModelBase> clipBoard = new List<dynModelBase>();
         public List<dynModelBase> ClipBoard
         {
@@ -134,6 +137,7 @@ namespace Dynamo
                 dynSettings.Bench = new DynamoView();
                 dynSettings.Bench = dynSettings.Bench;
                 dynSettings.Bench.DataContext = DynamoViewModel;
+                this.UIDispatcher = dynSettings.Bench.Dispatcher;
             }
 
 
@@ -290,7 +294,7 @@ namespace Dynamo
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
             /* Execution Thread */
-            DynamoLogger.Instance.Log("******EVALUATION THREAD START*******");
+            //DynamoLogger.Instance.Log("******EVALUATION THREAD START*******");
 
             //Get our entry points (elements with nothing connected to output)
             IEnumerable<dynNodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes();
@@ -397,7 +401,7 @@ namespace Dynamo
                 }
             }
 
-            DynamoLogger.Instance.Log("******EVALUATION THREAD END*******");
+            //DynamoLogger.Instance.Log("******EVALUATION THREAD END*******");
         }
 
         protected internal virtual void Run(IEnumerable<dynNodeModel> topElements, FScheme.Expression runningExpression)

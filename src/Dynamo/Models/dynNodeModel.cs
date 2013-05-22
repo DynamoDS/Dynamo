@@ -730,9 +730,9 @@ namespace Dynamo.Nodes
                 outPutsList = outPuts.Keys.Select(x=>x.NickName).ToList<string>();
             }
 
-            Debug.WriteLine(string.Format("__eval_internal : {0} : {1}", 
-                string.Join(",", argList), 
-                string.Join(",", outPutsList)));
+            //Debug.WriteLine(string.Format("__eval_internal : {0} : {1}", 
+            //    string.Join(",", argList), 
+            //    string.Join(",", outPutsList)));
 
             Evaluate(args, outPuts);
         }
@@ -1405,6 +1405,7 @@ namespace Dynamo.Nodes
     public class UIDispatcherEventArgs:EventArgs
     {
         public Action ActionToDispatch { get; set; }
+        public List<object> Parameters { get; set; }
         public UIDispatcherEventArgs(Action a)
         {
             ActionToDispatch = a;
