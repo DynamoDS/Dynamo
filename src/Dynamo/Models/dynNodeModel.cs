@@ -693,7 +693,6 @@ namespace Dynamo.Nodes
                 return FSharpOption<Value>.Some(expr);
             };
 
-            //MVVM : Switched from nodeUI dispatcher to bench dispatcher 
             //C# doesn't have a Option type, so we'll just borrow F#'s instead.
             FSharpOption<Value> result = isInteractive && dynSettings.Controller.UIDispatcher != null
                 ? (FSharpOption<Value>)dynSettings.Controller.UIDispatcher.Invoke(evaluation)
