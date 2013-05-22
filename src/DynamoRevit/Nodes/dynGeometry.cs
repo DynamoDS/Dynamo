@@ -181,6 +181,48 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("XYZ from List of Numbers")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Creates a list of XYZs by taking sets of 3 numbers from an list.")]
+    public class dynXYZFromListOfNumbers : dynXYZBase
+    {
+        public dynXYZFromListOfNumbers()
+        {
+            InPortData.Add(new PortData("list", "The list of numbers from which to extract the XYZs.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("list", "A list of XYZs", typeof(Value.List)));
+
+            RegisterAllPorts();
+            this.ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+            {
+                throw new Exception("Input must be a list of numbers.");
+            }
+
+            FSharpList<Value> vals = ((Value.List)args[0]).Item;
+            if (vals.Count() % 3 != 0)
+                throw new Exception("List size must be a multiple of 3");
+
+            var results = FSharpList<Value>.Empty;
+
+            for(int i=0 ;i<vals.Count()-3; i+=3)
+            {
+                var x = (double)((Value.Number)vals[i]).Item;
+                var y = (double)((Value.Number)vals[i+1]).Item;
+                var z = (double)((Value.Number)vals[i+2]).Item;
+
+                XYZ pt = new XYZ(x,y,z);
+                pts.Add(pt);
+                results = FSharpList<Value>.Cons(Value.NewContainer(pt), results);
+            }
+
+            return Value.NewList(results);
+        }
+    }
+
     [NodeName("XYZ From Reference Point")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Extracts an XYZ from a Reference Point.")]
