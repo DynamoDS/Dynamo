@@ -464,6 +464,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("combined", "Combined lists", typeof(Value.List)));
 
             RegisterAllPorts();
+            this.ArgumentLacing = LacingStrategy.Disabled;
         }
 
         protected override string getInputRootName()
