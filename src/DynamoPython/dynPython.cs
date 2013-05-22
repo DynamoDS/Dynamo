@@ -222,7 +222,7 @@ namespace Dynamo.Nodes
     public static class PythonEngine
     {
         public delegate Value EvaluationDelegate(bool dirty, string script, IEnumerable<Binding> bindings);
-        public delegate RenderDescription DrawDelegate(Value val);
+        public delegate void DrawDelegate(Value val, RenderDescription rd);
 
         public static EvaluationDelegate Evaluator;
 
@@ -243,7 +243,7 @@ namespace Dynamo.Nodes
                 return engine.Evaluate(PythonBindings.Bindings.Concat(bindings));
             };
 
-            Drawing = delegate(Value val) { return new RenderDescription(); };
+            Drawing = delegate(Value val, RenderDescription rd) {};
         }
     }
 
@@ -416,7 +416,12 @@ namespace Dynamo.Nodes
 
         public void Draw()
         {
-            PythonEngine.Drawing(lastEvalValue);
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
+
+            PythonEngine.Drawing(lastEvalValue, this.RenderDescription);
         }
     }
 

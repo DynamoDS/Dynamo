@@ -163,13 +163,9 @@ namespace Dynamo
             }
         }
 
-        RenderDescription DrawPython(Value val)
+        void DrawPython(Value val, RenderDescription rd)
         {
-            RenderDescription rd = new RenderDescription();
-
             DrawContainers(val, rd);
-
-            return rd;
         }
 
         private void DrawContainers(Value val, RenderDescription rd)

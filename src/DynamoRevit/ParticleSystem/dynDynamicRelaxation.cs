@@ -283,7 +283,8 @@ namespace Dynamo.Nodes
             if(oldNumX == -1 || 
                 oldNumY == -1 || 
                 oldNumX != numX || 
-                oldNumY != numY)
+                oldNumY != numY ||
+                particleSystem.numberOfParticles() == 0)
             {
                 reset = true;
                 particleSystem.Clear();
