@@ -89,6 +89,9 @@ namespace Dynamo.Nodes
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
     class dynDynamicRelaxation :  dynParticleSystemBase
     {
+        int oldNumX = -1;
+        int oldNumY = -1;
+
         public dynDynamicRelaxation()
         {
             InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(Value.List)));
@@ -264,18 +267,6 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            //if we have an existing RenderDescription
-            //then clear it
-            if (dynSettings.Controller.UIDispatcher != null)
-            {
-                dynSettings.Controller.UIDispatcher.Invoke(new Action(
-                   delegate
-                   {
-                       if(this.RenderDescription != null)
-                        this.RenderDescription.ClearAll();
-                   }
-                ));
-            }
 
             var input = args[0];//point list
             double d = ((Value.Number)args[1]).Item;//dampening
@@ -286,7 +277,33 @@ namespace Dynamo.Nodes
             int numY = (int)((Value.Number)args[6]).Item;//number of particles in Y
             double g = ((Value.Number)args[7]).Item;//gravity z component
 
-            particleSystem.Clear();
+            //if the particle system has a different layout, then
+            //clear it instead of updating
+            bool reset = false;
+            if(oldNumX == -1 || 
+                oldNumY == -1 || 
+                oldNumX != numX || 
+                oldNumY != numY)
+            {
+                reset = true;
+                particleSystem.Clear();
+                oldNumX = numX;
+                oldNumY = numY;
+
+                //if we have an existing RenderDescription
+                //then clear it
+                if (dynSettings.Controller.UIDispatcher != null)
+                {
+                    dynSettings.Controller.UIDispatcher.Invoke(new Action(
+                       delegate
+                       {
+                           if (this.RenderDescription != null)
+                               this.RenderDescription.ClearAll();
+                       }
+                    ));
+                }
+            }
+
             particleSystem.setGravity(g);
 
             ReferencePoint pt1;
@@ -308,7 +325,29 @@ namespace Dynamo.Nodes
                     (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt1.Id, ChangeTypeEnum.Modify, UpdateStart);
                     (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt2.Id, ChangeTypeEnum.Modify, UpdateEnd);
 
-                    CreateChainWithTwoFixedEnds(pt1, pt2, numX, d, r, s, m);
+                    if (reset)
+                    {
+                        CreateChainWithTwoFixedEnds(pt1, pt2, numX, d, r, s, m);
+                    }
+                    else
+                    {
+                        //update the spring values
+                        for (int j = 0; j < particleSystem.numberOfSprings(); j++)
+                        {
+                            ParticleSpring spring = particleSystem.getSpring(j);
+                            spring.setDamping(d);
+                            spring.setRestLength(r);
+                            spring.setSpringConstant(s);
+                        }
+                        for (int j = 0; j < particleSystem.numberOfParticles(); j++)
+                        {
+                            Particle p = particleSystem.getParticle(j);
+                            p.setMass(m);
+                        }
+
+                        particleSystem.getParticle(0).setPosition(pt1.Position);
+                        particleSystem.getParticle(particleSystem.numberOfParticles()-1).setPosition(pt2.Position);
+                    }
                 }
 
                 return Value.NewContainer(particleSystem);
@@ -318,6 +357,7 @@ namespace Dynamo.Nodes
                 throw new Exception("You must pass in a list of reference points.");
             }
 
+            //setupLineTest(numX, numY, d, r, s, m);
             //return Value.NewContainer(particleSystem);
         }
 
