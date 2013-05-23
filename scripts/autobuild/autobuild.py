@@ -6,6 +6,7 @@ import sys
 import shutil
 import re
 import os
+import fnmatch
 from optparse import OptionParser
 
 from email.MIMEMultipart import MIMEMultipart
@@ -133,10 +134,19 @@ def interpret_unit_tests( result ):
 
 	return parsed_results
 
+def enumerate_tests(path):
+
+	# match *Tests.dll
+	testnames = []
+	for file in os.listdir(path):
+	    if fnmatch.fnmatch(file, '*Tests.dll'):
+	        testnames.append(file)
+	return " ".join(testnames)
+	
 def run_unit_tests(path, build_config = "Debug"):
 
 	print 'running unit tests....'
-	return run_cmd( ['nunit-console', 'DynamoElementsTests.dll DynamoPythonTests.dll /noshadow'], cwd= form_path( [path, "bin", build_config ]) )
+	return run_cmd( ['nunit-console', enumerate_tests() + ' /noshadow'], cwd= form_path( [path, "bin", build_config ]) )
 
 def mkdir(path):
 
