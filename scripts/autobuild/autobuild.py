@@ -141,12 +141,12 @@ def enumerate_tests(path):
 	for file in os.listdir(path):
 	    if fnmatch.fnmatch(file, '*Tests.dll'):
 	        testnames.append(file)
-	return " ".join(testnames)
+	return testnames
 	
 def run_unit_tests(path, build_config = "Debug"):
 
 	print 'running unit tests....'
-	return run_cmd( ['nunit-console', enumerate_tests() + ' /noshadow'], cwd= form_path( [path, "bin", build_config ]) )
+	return run_cmd( ['nunit-console', '/noshadow'] + enumerate_tests(form_path( [path, "bin", build_config ])), cwd= form_path( [path, "bin", build_config ]) )
 
 def mkdir(path):
 
