@@ -78,6 +78,14 @@ namespace Dynamo.Applications
                 pushButton.LargeImage = bitmapSource;
                 pushButton.Image = bitmapSource;
 
+#if DEBUG
+                var pushButton1 = ribbonPanel.AddItem(new PushButtonData("Test",
+                                                                        res.GetString("App_Name"), m_AssemblyName,
+                                                                        "Dynamo.Applications.DynamoRevitTester")) as PushButton;
+                pushButton1.LargeImage = bitmapSource;
+                pushButton1.Image = bitmapSource;
+#endif
+
                 // MDJ = element level events and dyanmic model update
                 // MDJ 6-8-12  trying to get new dynamo to watch for user created ref points and re-run definition when they are moved
 
@@ -212,6 +220,55 @@ namespace Dynamo.Applications
         private void dynamoForm_Loaded(object sender, RoutedEventArgs e)
         {
             ((DynamoView) sender).WindowState = WindowState.Maximized;
+        }
+    }
+
+    [Transaction(TransactionMode.Manual)]
+    [Regeneration(RegenerationOption.Manual)]
+    internal class DynamoRevitTester : IExternalCommand
+    {
+        private UIDocument m_doc;
+        private UIApplication m_revit;
+
+        public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
+        {
+            try
+            {
+                m_revit = revit.Application;
+                m_doc = m_revit.ActiveUIDocument;
+
+                #region default level
+
+                Level defaultLevel = null;
+                var fecLevel = new FilteredElementCollector(m_doc.Document);
+                fecLevel.OfClass(typeof(Level));
+                defaultLevel = fecLevel.ToElements()[0] as Level;
+
+                #endregion
+
+                dynRevitSettings.Revit = m_revit;
+                dynRevitSettings.Doc = m_doc;
+                dynRevitSettings.DefaultLevel = defaultLevel;
+
+                IdlePromise.ExecuteOnIdle(delegate
+                {
+                    //get window handle
+                    IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
+
+                    //show the window
+                    string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
+                    var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
+
+                    //execute the tests
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                return Result.Failed;
+            }
+
+            return Result.Succeeded;
         }
     }
 
