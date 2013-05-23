@@ -23,6 +23,8 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using System.Data;
+
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
@@ -35,6 +37,13 @@ using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
 using Dynamo.FSchemeInterop;
 using Dynamo.Commands;
+#if DEBUG
+using NUnit.Core;
+using NUnit.Core.Filters;
+using NUnit.Framework;
+using NUnit.Util;
+#endif
+
 //MDJ needed for spatialfeildmanager
 //TAF added to get strings from resource files
 
@@ -150,7 +159,6 @@ namespace Dynamo.Applications
                 return Result.Succeeded;
             }
 
-            //MVVM : don't start logging here.
             DynamoLogger.Instance.StartLogging();
 
             try
@@ -232,6 +240,8 @@ namespace Dynamo.Applications
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
+            DynamoLogger.Instance.StartLogging();
+
             try
             {
                 m_revit = revit.Application;
@@ -255,12 +265,48 @@ namespace Dynamo.Applications
                     //get window handle
                     IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-                    //show the window
+                    //create dynamo
                     string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
-                    var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
-
+                    var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);     
+#if DEBUG 
                     //execute the tests
+                    //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
+                    string assLocation = Assembly.GetExecutingAssembly().Location;
+                    FileInfo fi = new FileInfo(assLocation);
+                    string testLoc = Path.Combine(fi.DirectoryName, @"DynamoRevitTests.dll");
+                    
+                    //NUnit's SimpleTestRunner runs the tests on the main thread
+                    //http://stackoverflow.com/questions/16216011/nunit-c-run-specific-tests-through-coding?rq=1
+                    CoreExtensions.Host.InitializeService();
+                    SimpleTestRunner runner = new SimpleTestRunner();
+                    TestPackage package = new TestPackage("DynamoRevitTests", new List<string>(){testLoc});
+                    runner.Load(package);
+                    TestResult result = runner.Run(new RevitTestEventListener(), TestFilter.Empty, false, LoggingThreshold.All);
+
+                    #region run tests one by one
+                    //TestSuiteBuilder builder = new TestSuiteBuilder();
+                    //TestSuite suite = builder.Build(package);
+                    //TestSuite test = suite.Tests[0] as TestSuite;
+                    
+                    //TestFixture fixture = null;
+                    //FindFixtureByName(out fixture, test, "DynamoRevitTests");
+                    //if (fixture == null)
+                    //    throw new Exception("Could not find DynamoRevitTests fixture.");
+
+                    //var numberOfTests = fixture.TestCount;
+
+                    //foreach (TestMethod t in fixture.Tests)
+                    //{
+                    //    TestName testName = t.TestName;
+                    //    TestFilter filter = new NameFilter(testName);
+                    //    TestResult result = test.Run(new RevitTestEventListener(), filter);
+                    //    ResultSummarizer summ = new ResultSummarizer(result);
+                    //}
+                    #endregion
+
+                    DynamoLogger.Instance.FinishLogging();
                 });
+#endif
             }
             catch (Exception ex)
             {
@@ -270,6 +316,59 @@ namespace Dynamo.Applications
 
             return Result.Succeeded;
         }
+
+        private void FindFixtureByName(out TestFixture fixture, TestSuite suite, string name)
+        {
+            foreach (TestSuite innerSuite in suite.Tests)
+            {
+                if (innerSuite is TestFixture)
+                {
+                    if (((TestFixture)innerSuite).TestName.Name == name)
+                    {
+                        fixture = innerSuite as TestFixture;
+                        return;
+                    }
+                }
+                else
+                {
+                    FindFixtureByName(out fixture, innerSuite, name);
+                    if (fixture != null)
+                        return;
+                }
+            }
+
+            fixture = null;
+        }
+    }
+
+    //http://sqa.stackexchange.com/questions/2880/nunit-global-error-method-event-for-handling-exceptions
+    class RevitTestEventListener : EventListener
+    {
+        public void RunStarted(string name, int testCount) {}
+        public void RunFinished(TestResult result) { }
+        public void RunFinished(Exception exception) { }
+        public void TestStarted(TestName testName) 
+        {
+            DynamoLogger.Instance.Log(string.Format("Starting test {0}", testName.Name));
+        }
+        public void TestFinished(TestResult result) 
+        {
+            if (result.Executed && result.IsFailure)
+            {
+                DynamoLogger.Instance.Log(string.Format("Test FAILED : {0}", result.Message));
+            }
+            else if (result.Executed && result.IsSuccess)
+                DynamoLogger.Instance.Log("Test PASS");
+            else if (result.Executed && result.IsError)
+                DynamoLogger.Instance.Log("Test ERROR");
+        }
+        public void SuiteStarted(TestName testName) { }
+        public void SuiteFinished(TestResult result) { }
+        public void UnhandledException(Exception exception) 
+        {
+            DynamoLogger.Instance.Log(exception.Message);
+        }
+        public void TestOutput(TestOutput testOutput) { }
     }
 
     internal class WindowHandle : IWin32Window
