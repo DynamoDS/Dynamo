@@ -34,7 +34,7 @@ namespace Dynamo
         [IsInteractive(false)]
         public class dynFunction : dynBuiltinFunction
         {
-            public dynFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition def)
+            protected internal dynFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition def)
                 : base(def.FunctionId.ToString())
             {
                 _def = def;
@@ -271,7 +271,29 @@ namespace Dynamo
                 }
 
                 RegisterAllPorts();
+
+                //argument lacing on functions should be set to disabled
+                //by default in the constructor, but for any workflow saved
+                //before this was the case, we need to ensure it here.
+                ArgumentLacing = LacingStrategy.Disabled;
+
+                // we've found a custom node, we need to attempt to load its guid.  
+                // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
+                // deterministically
+                Guid funId;
+                try
+                {
+                    funId = Guid.Parse(Symbol);
+                }
+                catch
+                {
+                    funId = GuidUtility.Create(GuidUtility.UrlNamespace, elNode.Attributes["nickname"].Value);
+                    Symbol = funId.ToString();
+                }
+
+                Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
             }
+
         }
 
         [NodeName("Output")]

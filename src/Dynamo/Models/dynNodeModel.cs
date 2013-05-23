@@ -667,21 +667,18 @@ namespace Dynamo.Nodes
                 }
                 catch (Exception ex)
                 {
-                    Bench.Dispatcher.Invoke(new Action(
-                       delegate
-                       {
-                           Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                           dynSettings.Controller.DynamoViewModel.Log(ex);
 
-                           if (DynamoCommands.WriteToLogCmd.CanExecute(null))
-                           {
-                               DynamoCommands.WriteToLogCmd.Execute(ex.Message);
-                               DynamoCommands.WriteToLogCmd.Execute(ex.StackTrace);
-                           }
+                    Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
 
-                           Controller.DynamoViewModel.ShowElement(this);
-                       }
-                    ));
+                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    {
+                        DynamoCommands.WriteToLogCmd.Execute(ex.Message);
+                        DynamoCommands.WriteToLogCmd.Execute(ex.StackTrace);
+                    }
+
+                    Controller.DynamoViewModel.ShowElement(this);
+
 
                     Error(ex.Message);
                 }
@@ -693,10 +690,9 @@ namespace Dynamo.Nodes
                 return FSharpOption<Value>.Some(expr);
             };
 
-//MVVM : Switched from nodeUI dispatcher to bench dispatcher 
             //C# doesn't have a Option type, so we'll just borrow F#'s instead.
-            FSharpOption<Value> result = isInteractive && dynSettings.Bench != null
-                ? (FSharpOption<Value>)dynSettings.Bench.Dispatcher.Invoke(evaluation)
+            FSharpOption<Value> result = isInteractive && dynSettings.Controller.UIDispatcher != null
+                ? (FSharpOption<Value>)dynSettings.Controller.UIDispatcher.Invoke(evaluation)
                 : evaluation();
 
             if (result == FSharpOption<Value>.None)
@@ -730,9 +726,9 @@ namespace Dynamo.Nodes
                 outPutsList = outPuts.Keys.Select(x=>x.NickName).ToList<string>();
             }
 
-            Debug.WriteLine(string.Format("__eval_internal : {0} : {1}", 
-                string.Join(",", argList), 
-                string.Join(",", outPutsList)));
+            //Debug.WriteLine(string.Format("__eval_internal : {0} : {1}", 
+            //    string.Join(",", argList), 
+            //    string.Join(",", outPutsList)));
 
             Evaluate(args, outPuts);
         }
@@ -1405,6 +1401,7 @@ namespace Dynamo.Nodes
     public class UIDispatcherEventArgs:EventArgs
     {
         public Action ActionToDispatch { get; set; }
+        public List<object> Parameters { get; set; }
         public UIDispatcherEventArgs(Action a)
         {
             ActionToDispatch = a;

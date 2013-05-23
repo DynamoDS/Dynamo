@@ -135,9 +135,6 @@ namespace Dynamo.Nodes
                                 dynRevitSettings.Controller.EndTransaction();
                                 dynRevitSettings.Controller.InIdleThread = false;
 
-                                //MVVM: use our event on the view model to request layout update
-                                //dynNodeView.UpdateLayoutDelegate uld = new dynNodeView.UpdateLayoutDelegate(node.NodeUI.CallUpdateLayout);
-                                //node.NodeUI.Dispatcher.Invoke(uld, DispatcherPriority.Background, new object[] { node.NodeUI });
                                 dynSettings.Controller.DynamoViewModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
                                 
                                 node.ValidateConnections();

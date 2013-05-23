@@ -128,6 +128,11 @@ namespace Dynamo.Nodes
             return m_Mass;
         }
 
+        public void setMass(double mass)
+        {
+            m_Mass = mass;
+        }
+
         public void clearForce()
         {
             m_Force = new XYZ(0, 0, 0);

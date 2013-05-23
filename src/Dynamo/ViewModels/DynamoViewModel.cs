@@ -2259,16 +2259,16 @@ namespace Dynamo.Controls
 
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
-                    XmlAttribute typeAttrib = elNode.Attributes[0];
-                    XmlAttribute guidAttrib = elNode.Attributes[1];
-                    XmlAttribute nicknameAttrib = elNode.Attributes[2];
-                    XmlAttribute xAttrib = elNode.Attributes[3];
-                    XmlAttribute yAttrib = elNode.Attributes[4];
+                    XmlAttribute typeAttrib = elNode.Attributes["type"];
+                    XmlAttribute guidAttrib = elNode.Attributes["guid"];
+                    XmlAttribute nicknameAttrib = elNode.Attributes["nickname"];
+                    XmlAttribute xAttrib = elNode.Attributes["x"];
+                    XmlAttribute yAttrib = elNode.Attributes["y"];
 
                     XmlAttribute lacingAttrib = null;
                     if (elNode.Attributes.Count > 5)
                     {
-                        lacingAttrib = elNode.Attributes[5];
+                        lacingAttrib = elNode.Attributes["lacing"];
                     }
 
                     string typeName = typeAttrib.Value;
@@ -2344,37 +2344,10 @@ namespace Dynamo.Controls
 
                     el.DisableReporting();
 
-                    el.LoadElement(elNode);
-
                     if (ViewingHomespace)
                         el.SaveResult = true;
 
-                    if (el is dynFunction)
-                    {
-                        var fun = el as dynFunction;
-
-                        //argument lacing on functions should be set to disabled
-                        //by default in the constructor, but for any workflow saved
-                        //before this was the case, we need to ensure it here.
-                        el.ArgumentLacing = LacingStrategy.Disabled;
-
-                        // we've found a custom node, we need to attempt to load its guid.  
-                        // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
-                        // deterministically
-                        Guid funId;
-                        try
-                        {
-                            funId = Guid.Parse(fun.Symbol);
-                        }
-                        catch
-                        {
-                            funId = GuidUtility.Create(GuidUtility.UrlNamespace, nicknameAttrib.Value);
-                            fun.Symbol = funId.ToString();
-                        }
-
-                        fun.Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
-
-                    }
+                    el.LoadElement(elNode);
                 }
 
                 OnRequestLayoutUpdate(this, EventArgs.Empty);
@@ -2551,7 +2524,7 @@ namespace Dynamo.Controls
             return functionDefinition;
         }
 
-        protected virtual dynFunction CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs,
+        public virtual dynFunction CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs,
                                                      FunctionDefinition functionDefinition)
         {
             return new dynFunction(inputs, outputs, functionDefinition);

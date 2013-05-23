@@ -33,136 +33,45 @@ namespace Dynamo.Nodes
     {
         public dynLevel()
         {
-            InPortData.Add(new PortData("h", "Height.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("l", "Level", typeof(Value.Container)));
+            InPortData.Add(new PortData("el", "The elevation of the level.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("level", "The level.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            //Level elements take in one double for the z elevation (height)f
+            double h = (double)((Value.Number)args[0]).Item;
 
-            var input = args[0];
+            Level lev;
 
-            //If we are receiving a list, we must create levels for each double in the list.
-            if (input.IsList)
+            if (this.Elements.Any())
             {
-                var doubleList = (input as Value.List).Item;
-
-                //Counter to keep track of how many levels we've made. We'll use this to delete old
-                //elements later.
-                int count = 0;
-
-                //We create our output by...
-                var result = Utils.SequenceToFSharpList(
-                   doubleList.Select(
-                    //..taking each element in the list and...
-                      delegate(Value x)
-                      {
-                          Level lev;
-                          //...if we already have elements made by this node in a previous run...
-                          if (this.Elements.Count > count)
-                          {
-                              Element e;
-                              //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count], out e))
-                              {
-                                  //...and if we're successful, update it's position... 
-                                  lev = e as Level;
-                                  lev.Elevation = (double)((Value.Number)x).Item;
-                              }
-                              else
-                              {
-                                  //...otherwise, we can make a new level and replace it in the list of
-                                  //previously created levels.
-                                  lev = this.UIDocument.Document.IsFamilyDocument
-                                  ? this.UIDocument.Document.FamilyCreate.NewLevel(
-                                     (double)((Value.Number)x).Item
-                                  )
-                                  : this.UIDocument.Document.Create.NewLevel(
-                                     (double)((Value.Number)x).Item
-                                  );
-                                  this.Elements[0] = lev.Id;
-
-                              }
-                          }
-                          //...otherwise...
-                          else
-                          {
-                              //...we create a new level...
-                              lev = this.UIDocument.Document.IsFamilyDocument
-                              ? this.UIDocument.Document.FamilyCreate.NewLevel(
-                                 (double)((Value.Number)x).Item
-                              )
-                              : this.UIDocument.Document.Create.NewLevel(
-                                 (double)((Value.Number)x).Item
-                              );
-                              //...and store it in the element list for future runs.
-                              this.Elements.Add(lev.Id);
-
-                          }
-                          //Finally, we update the counter, and return a new Value containing the level.
-                          //This Value will be placed in the Value.List that will be passed downstream from this
-                          //node.
-                          count++;
-                          return Value.NewContainer(lev);
-                      }
-                   )
-                );
-
-                //Now that we've created all the Levels from this run, we delete all of the
-                //extra ones from the previous run.
-                foreach (var e in this.Elements.Skip(count))
+                Element e;
+                if (dynUtils.TryGetElement(this.Elements[0], out e))
                 {
-                    this.DeleteElement(e);
-                }
+                    lev = e as Level;
+                    lev.Elevation = h;
 
-                //Fin
-                return Value.NewList(result);
-            }
-            //If we're not receiving a list, we will just assume we received one double height.
-            else
-            {
-                //Level elements take in one double for the z elevation (height)f
-                double h = (double)((Value.Number)args[0]).Item;
-
-                Level lev;
-
-                if (this.Elements.Any())
-                {
-                    Element e;
-                    if (dynUtils.TryGetElement(this.Elements[0], out e))
-                    {
-                        lev = e as Level;
-                        lev.Elevation = h;
-
-                    }
-                    else
-                    {
-                        lev = this.UIDocument.Document.IsFamilyDocument
-                           ? this.UIDocument.Document.FamilyCreate.NewLevel(h)
-                           : this.UIDocument.Document.Create.NewLevel(h);
-                        this.Elements[0] = lev.Id;
-                    }
                 }
                 else
                 {
                     lev = this.UIDocument.Document.IsFamilyDocument
-                       ? this.UIDocument.Document.FamilyCreate.NewLevel(h)
-                       : this.UIDocument.Document.Create.NewLevel(h);
-                    this.Elements.Add(lev.Id);
+                        ? this.UIDocument.Document.FamilyCreate.NewLevel(h)
+                        : this.UIDocument.Document.Create.NewLevel(h);
+                    this.Elements[0] = lev.Id;
                 }
-
-                //Now that we've created this single Level from this run, we delete all of the
-                // potential extra ones from the previous run.
-                // this is to handle going from a list down to a simgle element.
-                foreach (var e in this.Elements.Skip(1))
-                {
-                    this.DeleteElement(e);
-                }
-
-                return Value.NewContainer(lev);
             }
+            else
+            {
+                lev = this.UIDocument.Document.IsFamilyDocument
+                    ? this.UIDocument.Document.FamilyCreate.NewLevel(h)
+                    : this.UIDocument.Document.Create.NewLevel(h);
+                this.Elements.Add(lev.Id);
+            }
+
+            return Value.NewContainer(lev);
         }
     }
 

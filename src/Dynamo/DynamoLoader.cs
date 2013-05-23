@@ -127,7 +127,7 @@ namespace Dynamo.Utilities
                         //and have the elementname attribute
                         object[] attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
 
-                        if (IsNodeSubType(t) && attribs.Length > 0)
+                        if (IsNodeSubType(t) /*&& attribs.Length > 0*/)
                         {
                             //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
                             //if available, to discern whether we should load this type
@@ -144,8 +144,18 @@ namespace Dynamo.Utilities
                                 }
                             }
 
-                            searchViewModel.Add(t);
-                            string typeName = (attribs[0] as NodeNameAttribute).Name;
+                            string typeName;
+
+                            if (attribs.Length > 0)
+                            {
+                                searchViewModel.Add(t);
+                                typeName = (attribs[0] as NodeNameAttribute).Name;
+                            }
+                            else
+                            {
+                                typeName = t.Name;
+                            }
+
                             var data = new TypeLoadData(assembly, t);
 
                             if (!controller.BuiltInTypesByNickname.ContainsKey(typeName))

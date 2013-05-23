@@ -464,6 +464,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("combined", "Combined lists", typeof(Value.List)));
 
             RegisterAllPorts();
+            this.ArgumentLacing = LacingStrategy.Disabled;
         }
 
         protected override string getInputRootName()
@@ -1628,23 +1629,13 @@ namespace Dynamo.Nodes
         {
             var result = args[0];
 
-            Bench.Dispatcher.Invoke(new Action(
-               delegate
-               {
-                   Controller.DynamoViewModel.Log(FScheme.print(result));
-               }
-            ));
+            Controller.DynamoViewModel.Log(FScheme.print(result));
 
             if (Controller.DynamoViewModel.RunInDebug)
             {
-                button.Dispatcher.Invoke(new Action(
-                   delegate
-                   {
-                       enabled = true;
-                       Select();
-                       Controller.DynamoViewModel.ShowElement(this);
-                   }
-                ));
+                enabled = true;
+                Select();
+                Controller.DynamoViewModel.ShowElement(this);
 
                 while (enabled)
                 {
@@ -1977,7 +1968,6 @@ namespace Dynamo.Nodes
         public dynDoubleInput()
         {
             RegisterAllPorts();
-            Value = 0.0;
         }
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
@@ -2002,7 +1992,8 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
-            
+
+            tb.Text = "0.0";
         }
 
         public override double Value

@@ -56,6 +56,9 @@ limitations under the License.
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="3DTools">
+      <HintPath>..\..\extern\3DTools-1.01-bin\3DTools.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Greg">
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
@@ -70,6 +73,9 @@ limitations under the License.
     </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>
+    </Reference>
+    <Reference Include="Petzold.Media3D">
+      <HintPath>..\..\extern\PetzoldMedia3D\Petzold.Media3D.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

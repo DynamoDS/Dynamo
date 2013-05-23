@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Windows.Input;
+using System.Windows.Threading;
+
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
@@ -51,7 +53,8 @@ namespace Dynamo
         public PackageManagerClient PackageManagerClient { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
-        
+        public Dispatcher UIDispatcher { get; set; }
+
         List<dynModelBase> clipBoard = new List<dynModelBase>();
         public List<dynModelBase> ClipBoard
         {
@@ -134,6 +137,7 @@ namespace Dynamo
                 dynSettings.Bench = new DynamoView();
                 dynSettings.Bench = dynSettings.Bench;
                 dynSettings.Bench.DataContext = DynamoViewModel;
+                this.UIDispatcher = dynSettings.Bench.Dispatcher;
             }
 
 
@@ -260,18 +264,9 @@ namespace Dynamo
             //We are now considered running
             Running = true;
 
-            //Set run auto flag
-            //this.DynamicRunEnabled = !showErrors;
-
             //Setup background worker
             var worker = new BackgroundWorker();
             worker.DoWork += EvaluationThread;
-
-            //Disable Run Button
-
-            //dynSettings.Bench.Dispatcher.Invoke(new Action(
-            //   delegate { dynSettings.Bench.RunButton.IsEnabled = false; }
-            //));
 
             DynamoViewModel.RunEnabled = false;
 
@@ -289,9 +284,6 @@ namespace Dynamo
         
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
-            /* Execution Thread */
-            DynamoLogger.Instance.Log("******EVALUATION THREAD START*******");
-
             //Get our entry points (elements with nothing connected to output)
             IEnumerable<dynNodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes();
 
@@ -360,14 +352,6 @@ namespace Dynamo
             {
                 /* Post-evaluation cleanup */
 
-                //Re-enable run button
-                //dynSettings.Bench.Dispatcher.Invoke(new Action(
-                //   delegate
-                //   {
-                //       dynSettings.Bench.RunButton.IsEnabled = true;
-                //   }
-                //));
-
                 DynamoViewModel.RunEnabled = true;
 
                 //No longer running
@@ -396,8 +380,6 @@ namespace Dynamo
                     OnRunCompleted(this, true);
                 }
             }
-
-            DynamoLogger.Instance.Log("******EVALUATION THREAD END*******");
         }
 
         protected internal virtual void Run(IEnumerable<dynNodeModel> topElements, FScheme.Expression runningExpression)
@@ -407,17 +389,11 @@ namespace Dynamo
             {
                 if (dynSettings.Bench != null)
                 {
-                    //string exp = FScheme.print(runningExpression);
-                    dynSettings.Bench.Dispatcher.Invoke(new Action(
-                                                delegate
-                                                    {
-                                                        foreach (dynNodeModel node in topElements)
-                                                        {
-                                                            string exp = node.PrintExpression();
-                                                            dynSettings.Controller.DynamoViewModel.Log("> " + exp);
-                                                        }
-                                                    }
-                                                ));
+                    foreach (dynNodeModel node in topElements)
+                    {
+                        string exp = node.PrintExpression();
+                        dynSettings.Controller.DynamoViewModel.Log("> " + exp);
+                    }
                 }
             }
 
@@ -433,10 +409,7 @@ namespace Dynamo
                     //Print some more stuff if we're in debug mode
                     if (DynamoViewModel.RunInDebug && expr != null)
                     {
-                        dynSettings.Bench.Dispatcher.Invoke(new Action(
-                                                    () =>
-                                                    dynSettings.Controller.DynamoViewModel.Log(FScheme.print(expr))
-                                                    ));
+                        dynSettings.Controller.DynamoViewModel.Log(FScheme.print(expr));
                     }
                 }
             }

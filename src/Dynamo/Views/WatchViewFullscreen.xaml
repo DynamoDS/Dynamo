@@ -31,16 +31,19 @@
                     <HelixToolkit:DefaultLights>
                     </HelixToolkit:DefaultLights>
                 </HelixToolkit:LightVisual3D>
-                <HelixToolkit:GridLinesVisual3D Width="8" Length="8" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
+                <HelixToolkit:GridLinesVisual3D  Width="8" Length="8" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
                 <HelixToolkit:PointsVisual3D Size="6" Color="Red" Points="{Binding HelixPoints}"></HelixToolkit:PointsVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="1" Color="Blue" Points="{Binding HelixLines}"></HelixToolkit:LinesVisual3D>
                 <HelixToolkit:MeshVisual3D FaceMaterial="{Binding HelixMeshMaterial}" 
-                                           FaceBackMaterial="{Binding HelixMeshMaterial}"
-                                           EdgeDiameter="0.0"
-                                           VertexRadius="0.0"
-                                           SharedVertices="True"
-                                           Mesh="{Binding HelixMesh}">
+                                        FaceBackMaterial="{Binding HelixMeshMaterial}"
+                                        EdgeDiameter="0.0"
+                                        VertexRadius="0.0"
+                                        SharedVertices="True"
+                                        Mesh="{Binding HelixMesh}">
                 </HelixToolkit:MeshVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="4" Color="Red" Points="{Binding HelixXAxes}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="4" Color="Green" Points="{Binding HelixYAxes}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="4" Color="Blue" Points="{Binding HelixZAxes}"></HelixToolkit:LinesVisual3D>
             </ModelVisual3D>
         </HelixToolkit:HelixViewport3D>
     </Grid>
