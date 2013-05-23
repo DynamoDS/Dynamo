@@ -1968,7 +1968,6 @@ namespace Dynamo.Nodes
         public dynDoubleInput()
         {
             RegisterAllPorts();
-            Value = 0.0;
         }
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
@@ -1993,7 +1992,8 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
-            
+
+            tb.Text = "0.0";
         }
 
         public override double Value
