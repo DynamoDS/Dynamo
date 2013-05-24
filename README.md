@@ -30,21 +30,24 @@ Fixes
 -Solar Radiation example works
 -More stability
 
+
 New and Updated Nodes
 -Adaptive Components
--Geometry subelement extraction
 -Formulas using N-Calc syntax
 -Compute Face Derivatives
--Project Point on Curves and Faces
--Extract Faces, Vertexes, and Edges from elements
- 
+-Project Points on Curves and Faces
+-Extract Solids, Faces, and Edges from elements
+-Evalution of Curves and Edges
+-Selection of Imports, Host objects, Edges, Faces and Solids from Element
+-Watch3d improvements
 
 Functionality and UI
-- Preview geometry in Dynamo Background
-- Category and Node Browsing Improvments
+- Apearance Cleanup
+- Preview geometry in Dynamo Background 
+- Category and Node Browsing Improvements
 - Ability to pass lists into nodes (Lacing and auto-mapping of lists)
 - New Node appearance
-- Graph retains memeory and parametric control of elements created in previous sessions
+- Graph retains memory and parametric control of elements created in previous sessions
  
 
 Engineering
