@@ -198,7 +198,30 @@ namespace Dynamo
         }
 
         #region CommandQueue
-    
+
+        /// <summary>
+        /// Add a command to the CommandQueue and run ProcessCommandQueue(), providing null as the 
+        /// command arguments
+        /// </summary>
+        /// <param name="command">The command to run</param>
+        public void RunCommand(ICommand command)
+        {
+            this.RunCommand(command, null);
+        }
+
+        /// <summary>
+        /// Add a command to the CommandQueue and run ProcessCommandQueue(), providing the given
+        /// arguments to the command
+        /// </summary>
+        /// <param name="command">The command to run</param>
+        /// <param name="args">Arguments to give to the command</param>
+        public void RunCommand(ICommand command, object args)
+        {
+            var commandAndParams = Tuple.Create<object, object>(command, args);
+            this.CommandQueue.Enqueue(commandAndParams);
+            this.ProcessCommandQueue();
+        }
+
         private void Hooks_DispatcherInactive(object sender, EventArgs e)
         {
             ProcessCommandQueue();

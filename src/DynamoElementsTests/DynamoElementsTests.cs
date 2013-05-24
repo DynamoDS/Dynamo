@@ -84,12 +84,41 @@ namespace Dynamo.Tests
             }
         }
 
+        // TODO: create set of sample files with no Revit dependencies
+        //[Test]
+        //public void CanOpenAllSampleFilesWithoutError()
+        //{
+        //    var di = new DirectoryInfo(@"..\..\doc\Distrib\Samples\");
+        //    int failCount = 0;
+
+        //    foreach (DirectoryInfo d in di.GetDirectories())
+        //    {
+        //        foreach (FileInfo fi in d.GetFiles())
+        //        {
+        //            try
+        //            {
+        //                controller.CommandQueue.Enqueue(
+        //                    Tuple.Create<object, object>(controller.DynamoViewModel.OpenCommand, fi.FullName));
+        //                controller.ProcessCommandQueue();
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                failCount++;
+        //                Console.WriteLine(string.Format("Could not open {0}", fi.FullName));
+        //                Console.WriteLine(string.Format("Could not open {0}", e.Message));
+        //                Console.WriteLine(string.Format("Could not open {0}", e.StackTrace));
+        //            }
+        //        }
+        //    }
+        //    Assert.AreEqual(failCount, 0);
+        //}
+
         // OpenCommand
         [Test]
         public void CanOpenGoodFile()
         {
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string openPath = Path.Combine(directory, @"..\..\test\good_dyns\multiplicationAndAdd.dyn");
+            string openPath = Path.Combine(directory, @"..\..\test\dynamo_elements_samples\working\multiplicationAndAdd\multiplicationAndAdd.dyn");
             controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.OpenCommand, openPath));
             controller.ProcessCommandQueue();
 
