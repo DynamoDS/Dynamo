@@ -19,7 +19,7 @@ namespace Dynamo.Nodes
     [NodeName("Project Point On Curve")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Project a point onto a curve.")]
-    public class dynProjectPointOnCurve : dynRevitTransactionNode
+    public class dynProjectPointOnCurve : dynRevitTransactionNode, IDrawable, IClearable
     {
         public dynProjectPointOnCurve()
         {
@@ -48,16 +48,34 @@ namespace Dynamo.Nodes
             results = FSharpList<Value>.Cons(Value.NewNumber(t), results);
             results = FSharpList<Value>.Cons(Value.NewContainer(pt), results);
 
-            drawableObject = pt;
+            pts.Add(pt);
 
             return Value.NewList(results);
+        }
+
+        protected List<XYZ> pts = new List<XYZ>();
+        public RenderDescription RenderDescription { get; set; }
+        public void Draw()
+        {
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
+
+            foreach (XYZ pt in pts)
+                this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
+        }
+
+        public void ClearReferences()
+        {
+            pts.Clear();
         }
     }
 
     [NodeName("Project Point On Face")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Project a point onto a curve.")]
-    public class dynProjectPointOnFace : dynRevitTransactionNode
+    public class dynProjectPointOnFace : dynRevitTransactionNode, IDrawable, IClearable
     {
         public dynProjectPointOnFace()
         {
@@ -82,7 +100,12 @@ namespace Dynamo.Nodes
             XYZ pt = ir.XYZPoint;
             UV uv = ir.UVPoint;
             double d = ir.Distance;
-            Edge e = ir.EdgeObject;
+            Edge e = null;
+            try
+            {
+                e = ir.EdgeObject;
+            }
+            catch { }
             double et = 0;
             try
             {
@@ -97,9 +120,27 @@ namespace Dynamo.Nodes
             results = FSharpList<Value>.Cons(Value.NewContainer(uv), results);
             results = FSharpList<Value>.Cons(Value.NewContainer(xyz), results);
 
-            drawableObject = pt;
+            pts.Add(pt);
 
             return Value.NewList(results);
+        }
+
+        protected List<XYZ> pts = new List<XYZ>();
+        public RenderDescription RenderDescription { get; set; }
+        public void Draw()
+        {
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
+
+            foreach (XYZ pt in pts)
+                this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
+        }
+
+        public void ClearReferences()
+        {
+            pts.Clear();
         }
     }
 }
