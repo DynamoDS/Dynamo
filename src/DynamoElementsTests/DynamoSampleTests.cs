@@ -121,7 +121,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void MapReduceFilter()
+        public void AddSubtractMapReduceFilterBasic()
         {
             var vm = controller.DynamoViewModel;
 
@@ -132,7 +132,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(28, vm.CurrentSpace.Connectors.Count);
             Assert.AreEqual(28, vm.CurrentSpace.Nodes.Count);
 
-            // check an input values
+            // check an input value
             var node1 = NodeFromCurrentSpace(vm, "51ed7fed-99fa-46c3-a03c-2c076f2d0538");
             Assert.NotNull(node1);
             Assert.IsAssignableFrom(typeof(dynDoubleInput), node1);
@@ -173,6 +173,97 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, GetDoubleFromFSchemeValue(listWatchVal[2]));
             Assert.AreEqual(9, GetDoubleFromFSchemeValue(listWatchVal[3]));
             Assert.AreEqual(10, GetDoubleFromFSchemeValue(listWatchVal[4]));
+
+        }
+
+        [Test]
+        public void Sequence()
+        {
+            var vm = controller.DynamoViewModel;
+
+            string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\sequence\sequence.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(8, vm.CurrentSpace.Connectors.Count);
+            Assert.AreEqual(8, vm.CurrentSpace.Nodes.Count);
+
+            // run the expression
+            controller.RunCommand(vm.RunExpressionCommand);
+
+            // wait for the expression to complete
+            Thread.Sleep(500);
+
+            // check the output values are correctly computed
+
+        }
+
+        [Test]
+        public void CombineWithCustomNodes()
+        {
+            var vm = controller.DynamoViewModel;
+
+            string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\combine\combine-with-three.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(13, vm.CurrentSpace.Connectors.Count);
+            Assert.AreEqual(10, vm.CurrentSpace.Nodes.Count);
+
+            // run the expression
+            controller.RunCommand(vm.RunExpressionCommand);
+
+            // wait for the expression to complete
+            Thread.Sleep(500);
+
+            // check the output values are correctly computed
+
+
+        }
+
+        [Test]
+        public void ReduceAndRecursion()
+        {
+            var vm = controller.DynamoViewModel;
+
+            string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\reduce_and_recursion\reduce-example.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(13, vm.CurrentSpace.Connectors.Count);
+            Assert.AreEqual(11, vm.CurrentSpace.Nodes.Count);
+
+            // run the expression
+            controller.RunCommand(vm.RunExpressionCommand);
+
+            // wait for the expression to complete
+            Thread.Sleep(500);
+
+            // check the output values are correctly computed
+
+
+        }
+
+        [Test]
+        public void FilterWithCustomNode()
+        {
+            var vm = controller.DynamoViewModel;
+
+            string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\filter\filter-example.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, vm.CurrentSpace.Connectors.Count);
+            Assert.AreEqual(6, vm.CurrentSpace.Nodes.Count);
+
+            // run the expression
+            controller.RunCommand(vm.RunExpressionCommand);
+
+            // wait for the expression to complete
+            Thread.Sleep(500);
+
+            // check the output values are correctly computed
+
 
         }
 
