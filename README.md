@@ -17,6 +17,36 @@ The current version will run on top of Revit 2013 and Project Vasari Beta 2 and 
 
 ## Releases ##
 
+###0.3.4892.10003###
+
+Known Issues
+- Cannot run Python scripts from disk location (embedded is fine)
+- 
+
+Fixes
+- Dynamo now works alongside Revit Python Shell and other conflicting addins
+- Solar Radiation example works
+- 
+
+New and Updated Nodes
+- Adaptive Components
+- Geometry sub-element extraction
+- 
+
+Functionality and UI
+- Category and Node Browsing Improvments
+- Ability to pass lists into nodes (Lacing and auto-mapping of lists)
+- New Node appearance
+- Graph retains memeory and parametric control of elements created in previous sessions
+- 
+
+Engineering
+- MVVM standardization
+
+Samples
+- Adaptive Component Placement
+
+
 ###0.3.0###
 
 April 2013
