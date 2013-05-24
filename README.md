@@ -17,7 +17,7 @@ The current version will run on top of Revit 2013 and Project Vasari Beta 2 and 
 
 ## Releases ##
 
-###0.3.4892.10003###
+###0.3.4.1###
 
 May 2013
 
