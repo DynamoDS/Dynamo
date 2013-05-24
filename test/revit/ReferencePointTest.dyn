@@ -1,0 +1,12 @@
+<dynWorkspace X="0" Y="0">
+  <dynElements>
+    <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="25456637-2521-4245-900a-2272c4df3581" nickname="Ref Point" x="584.485989150352" y="164.707893063616" lacing="First">
+      <Run />
+    </Dynamo.Nodes.dynReferencePointByXYZ>
+    <Dynamo.Nodes.dynXYZZero type="Dynamo.Nodes.dynXYZZero" guid="e384d3b6-0740-4a8f-b60b-8fd8600658d5" nickname="XYZ Zero" x="408.303561568867" y="165.999093277817" lacing="First" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="e384d3b6-0740-4a8f-b60b-8fd8600658d5" start_index="0" end="25456637-2521-4245-900a-2272c4df3581" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

@@ -262,50 +262,30 @@ namespace Dynamo.Applications
 
                 IdlePromise.ExecuteOnIdle(delegate
                 {
-                    //get window handle
-                    IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
+                //get window handle
+                IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-                    //create dynamo
-                    string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
-                    var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);     
-#if DEBUG 
-                    //execute the tests
-                    //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
-                    string assLocation = Assembly.GetExecutingAssembly().Location;
-                    FileInfo fi = new FileInfo(assLocation);
-                    string testLoc = Path.Combine(fi.DirectoryName, @"DynamoRevitTests.dll");
-                    
-                    //NUnit's SimpleTestRunner runs the tests on the main thread
-                    //http://stackoverflow.com/questions/16216011/nunit-c-run-specific-tests-through-coding?rq=1
-                    CoreExtensions.Host.InitializeService();
-                    SimpleTestRunner runner = new SimpleTestRunner();
-                    TestPackage package = new TestPackage("DynamoRevitTests", new List<string>(){testLoc});
-                    runner.Load(package);
-                    TestResult result = runner.Run(new RevitTestEventListener(), TestFilter.Empty, false, LoggingThreshold.All);
-
-                    #region run tests one by one
-                    //TestSuiteBuilder builder = new TestSuiteBuilder();
-                    //TestSuite suite = builder.Build(package);
-                    //TestSuite test = suite.Tests[0] as TestSuite;
-                    
-                    //TestFixture fixture = null;
-                    //FindFixtureByName(out fixture, test, "DynamoRevitTests");
-                    //if (fixture == null)
-                    //    throw new Exception("Could not find DynamoRevitTests fixture.");
-
-                    //var numberOfTests = fixture.TestCount;
-
-                    //foreach (TestMethod t in fixture.Tests)
-                    //{
-                    //    TestName testName = t.TestName;
-                    //    TestFilter filter = new NameFilter(testName);
-                    //    TestResult result = test.Run(new RevitTestEventListener(), filter);
-                    //    ResultSummarizer summ = new ResultSummarizer(result);
-                    //}
-                    #endregion
-
-                    DynamoLogger.Instance.FinishLogging();
+                //create dynamo
+                string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
+                var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
                 });
+#if DEBUG
+
+                //execute the tests
+                //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
+                string assLocation = Assembly.GetExecutingAssembly().Location;
+                FileInfo fi = new FileInfo(assLocation);
+                string testLoc = Path.Combine(fi.DirectoryName, @"DynamoRevitTests.dll");
+
+                //NUnit's SimpleTestRunner runs the tests on the main thread
+                //http://stackoverflow.com/questions/16216011/nunit-c-run-specific-tests-through-coding?rq=1
+                CoreExtensions.Host.InitializeService();
+                SimpleTestRunner runner = new SimpleTestRunner();
+                TestPackage package = new TestPackage("DynamoRevitTests", new List<string>() { testLoc });
+                runner.Load(package);
+                TestResult result = runner.Run(new RevitTestEventListener(), TestFilter.Empty, false, LoggingThreshold.All);
+
+                
 #endif
             }
             catch (Exception ex)
@@ -313,6 +293,11 @@ namespace Dynamo.Applications
                 Debug.WriteLine(ex.ToString());
                 return Result.Failed;
             }
+
+            IdlePromise.ExecuteOnIdle(delegate
+                {
+                    DynamoLogger.Instance.FinishLogging();
+                });
 
             return Result.Succeeded;
         }
