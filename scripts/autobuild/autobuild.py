@@ -105,34 +105,43 @@ def rm_dir(path):
 
 def interpret_unit_tests( result ):
 
+	if (result == None || result == ""):
+		result = "Unit tests failed to run"
+
 	parsed_results = {}
+	
+	try: 
+	
+		parsed_results['tests_run'] = int( re.search( r"Tests run: [0-9]+", result).group(0).split(' ')[2] )
+		parsed_results['errors'] = int( re.search( r"Errors: [0-9]+", result).group(0).split(' ')[1] )
+		parsed_results['failures'] = int( re.search( r"Failures: [0-9]+", result).group(0).split(' ')[1] )
+		parsed_results['inconclusives'] = int( re.search( r"Inconclusive: [0-9]+", result).group(0).split(' ')[1] )
+		parsed_results['time'] = float( re.search( r"Time: [0-9.]+", result).group(0).split(' ')[1] )
 
-	parsed_results['tests_run'] = int( re.search( r"Tests run: [0-9]+", result).group(0).split(' ')[2] )
-	parsed_results['errors'] = int( re.search( r"Errors: [0-9]+", result).group(0).split(' ')[1] )
-	parsed_results['failures'] = int( re.search( r"Failures: [0-9]+", result).group(0).split(' ')[1] )
-	parsed_results['inconclusives'] = int( re.search( r"Inconclusive: [0-9]+", result).group(0).split(' ')[1] )
-	parsed_results['time'] = float( re.search( r"Time: [0-9.]+", result).group(0).split(' ')[1] )
+		parsed_results['not_run'] = int( re.search( r"Not run: [0-9]+", result).group(0).split(' ')[2] )
+		parsed_results['invalid'] = int( re.search( r"Invalid: [0-9]+", result).group(0).split(' ')[1] )
+		parsed_results['ignored'] = int( re.search( r"Ignored: [0-9]+", result).group(0).split(' ')[1] )
+		parsed_results['skipped'] = int( re.search( r"Skipped: [0-9]+", result).group(0).split(' ')[1] )
 
-	parsed_results['not_run'] = int( re.search( r"Not run: [0-9]+", result).group(0).split(' ')[2] )
-	parsed_results['invalid'] = int( re.search( r"Invalid: [0-9]+", result).group(0).split(' ')[1] )
-	parsed_results['ignored'] = int( re.search( r"Ignored: [0-9]+", result).group(0).split(' ')[1] )
-	parsed_results['skipped'] = int( re.search( r"Skipped: [0-9]+", result).group(0).split(' ')[1] )
+		parsed_results["success"] = False
 
-	parsed_results["success"] = False
+		if parsed_results['errors'] == 0 and parsed_results['failures'] == 0 and parsed_results['inconclusives'] == 0:
+			parsed_results["success"] = True
 
-	if parsed_results['errors'] == 0 and parsed_results['failures'] == 0 and parsed_results['inconclusives'] == 0:
-		parsed_results["success"] = True
+		parsed_results["errors_and_failures"] = ""
 
-	parsed_results["errors_and_failures"] = ""
+		parsed_results["full_results"] = result
 
-	parsed_results["full_results"] = result
+		ef = re.search(r"\nErrors and Failures:(.|\n)+\r\n\r\n\n", result)
 
-	ef = re.search(r"\nErrors and Failures:(.|\n)+\r\n\r\n\n", result)
+		if ef != None:
+			parsed_results["errors_and_failures"] = ef.group(0)
 
-	if ef != None:
-		parsed_results["errors_and_failures"] = ef.group(0)
+		return parsed_results
 
-	return parsed_results
+	except: 
+		
+		return parsed_results
 
 def enumerate_tests(path):
 
