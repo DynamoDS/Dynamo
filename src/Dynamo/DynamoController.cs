@@ -43,8 +43,8 @@ namespace Dynamo
 
         private readonly Queue<Tuple<object, object>> commandQueue = new Queue<Tuple<object, object>>();
         
-        
         private bool isProcessingCommandQueue = false;
+        private bool runEvaluationSynchronously = false;
 
         public CustomNodeLoader CustomNodeLoader { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
@@ -54,6 +54,11 @@ namespace Dynamo
         public DynamoViewModel DynamoViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
+        public bool RunEvaluationSynchronously 
+        { 
+            get{return runEvaluationSynchronously;}
+            set { runEvaluationSynchronously = value; }
+        }
 
         List<dynModelBase> clipBoard = new List<dynModelBase>();
         public List<dynModelBase> ClipBoard
@@ -287,14 +292,19 @@ namespace Dynamo
             //We are now considered running
             Running = true;
 
-            //Setup background worker
-            var worker = new BackgroundWorker();
-            worker.DoWork += EvaluationThread;
+            if (!runEvaluationSynchronously)
+            {
+                //Setup background worker
+                var worker = new BackgroundWorker();
+                worker.DoWork += EvaluationThread;
 
-            DynamoViewModel.RunEnabled = false;
+                DynamoViewModel.RunEnabled = false;
 
-            //Let's start
-            worker.RunWorkerAsync();
+                //Let's start
+                worker.RunWorkerAsync();
+            }
+            else
+                EvaluationThread(null, null);
         }
 
         public delegate void RunCompletedHandler(object controller, bool success);

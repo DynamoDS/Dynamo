@@ -268,9 +268,12 @@ namespace Dynamo.Applications
                 //create dynamo
                 string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
                 var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
-                });
-#if DEBUG
+                
+                //flag to run evalauation synchronously, helps to 
+                //avoid threading issues when testing.
+                dynamoController.RunEvaluationSynchronously = true;
 
+#if DEBUG
                 //execute the tests
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
                 string assLocation = Assembly.GetExecutingAssembly().Location;
@@ -281,11 +284,29 @@ namespace Dynamo.Applications
                 //http://stackoverflow.com/questions/16216011/nunit-c-run-specific-tests-through-coding?rq=1
                 CoreExtensions.Host.InitializeService();
                 SimpleTestRunner runner = new SimpleTestRunner();
+                TestSuiteBuilder builder = new TestSuiteBuilder();
                 TestPackage package = new TestPackage("DynamoRevitTests", new List<string>() { testLoc });
                 runner.Load(package);
-                TestResult result = runner.Run(new RevitTestEventListener(), TestFilter.Empty, false, LoggingThreshold.All);
+                TestSuite suite = builder.Build(package);
+                TestFixture fixture = null;
+                FindFixtureByName(out fixture, suite, "DynamoRevitTests");
+                if (fixture == null)
+                    throw new Exception("Could not find DynamoRevitTests fixture.");
 
-                
+                foreach (TestMethod t in fixture.Tests)
+                {
+                    TestName testName = t.TestName;
+                    TestFilter filter = new NameFilter(testName);
+                    TestResult result = t.Run(new RevitTestEventListener(), filter);
+                    ResultSummarizer summ = new ResultSummarizer(result);
+                    Assert.AreEqual(1, summ.ResultCount);
+                }
+                });
+
+                IdlePromise.ExecuteOnIdle(delegate
+                {
+                    DynamoLogger.Instance.FinishLogging();
+                });
 #endif
             }
             catch (Exception ex)
@@ -293,11 +314,6 @@ namespace Dynamo.Applications
                 Debug.WriteLine(ex.ToString());
                 return Result.Failed;
             }
-
-            IdlePromise.ExecuteOnIdle(delegate
-                {
-                    DynamoLogger.Instance.FinishLogging();
-                });
 
             return Result.Succeeded;
         }
