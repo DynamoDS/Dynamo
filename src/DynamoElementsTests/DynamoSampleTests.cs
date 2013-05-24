@@ -284,31 +284,29 @@ namespace Dynamo.Tests
 
         }
 
-        //[Test]
-        //public void Sorting()
-        //{
-        //    var vm = controller.DynamoViewModel;
-        //    var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\sorting\");
+        [Test]
+        public void Sorting()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\sorting\");
 
-        //    Assert.IsTrue(controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf")));
+            string openPath = Path.Combine(examplePath, "sorting.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
 
-        //    string openPath = Path.Combine(examplePath, "filter-example.dyn");
-        //    controller.RunCommand(vm.OpenCommand, openPath);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(10, vm.CurrentSpace.Connectors.Count);
+            Assert.AreEqual(11, vm.CurrentSpace.Nodes.Count);
 
-        //    // check all the nodes and connectors are loaded
-        //    Assert.AreEqual(6, vm.CurrentSpace.Connectors.Count);
-        //    Assert.AreEqual(6, vm.CurrentSpace.Nodes.Count);
+            // run the expression
+            controller.RunCommand(vm.RunExpressionCommand);
 
-        //    // run the expression
-        //    controller.RunCommand(vm.RunExpressionCommand);
+            // wait for the expression to complete
+            Thread.Sleep(500);
 
-        //    // wait for the expression to complete
-        //    Thread.Sleep(500);
-
-        //    // check the output values are correctly computed
+            // check the output values are correctly computed
 
 
-        //}
+        }
 
     }
 }
