@@ -105,7 +105,7 @@ def rm_dir(path):
 
 def interpret_unit_tests( result ):
 
-	if (result == None || result == ""):
+	if (result == None or result == ""):
 		result = "Unit tests failed to run"
 
 	parsed_results = {}
