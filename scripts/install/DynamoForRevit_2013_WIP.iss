@@ -5,7 +5,7 @@
 AppName=Dynamo
 AppVerName=Dynamo WIP 0.3.4 for Revit 2013
 AppPublisher=Autodesk, Inc.
-AppID={12A2BEA3-7641-4AEC-B344-9B49C8DDFF1A}
+AppID={{12A2BEA3-7641-4AEC-B344-9B49C8DDFF1A}
 AppCopyright=
 AppPublisherURL=http://labs.autodesk.com/utilities/vasari
 AppSupportURL=
