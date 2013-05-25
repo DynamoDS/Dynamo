@@ -57,6 +57,8 @@ Engineering
 Samples
 - Adaptive Component Placement
 - Face Extraction from Solids
+- Formulas
+- Create Point Sequence
 - Some existing sample cleanup
 
 
