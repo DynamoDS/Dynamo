@@ -17,29 +17,30 @@ The current version will run on top of Revit 2013 and Project Vasari Beta 2 and 
 
 ## Releases ##
 
-###0.3.4.1###
+###0.3.4###
 
-May 2013
+April 2013
 
 Known Issues
-Cannot run Python scripts from disk location (embedded is fine)
+- Cannot run Python scripts from disk location (embedded is fine)
 
 
 Fixes
--Dynamo now works alongside Revit Python Shell and other conflicting addins
--Solar Radiation example works
--More stability
+- Dynamo now works alongside Revit Python Shell and other conflicting addins
+- Solar Radiation example works
+- More stability
 
 
 New and Updated Nodes
--Adaptive Components
--Formulas using N-Calc syntax
--Compute Face Derivatives
--Project Points on Curves and Faces
--Extract Solids, Faces, and Edges from elements
--Evalution of Curves and Edges
--Selection of Imports, Host objects, Edges, Faces and Solids from Element
--Watch3d improvements
+- Adaptive Components
+- Formulas using N-Calc syntax
+- Compute Face Derivatives
+- Project Points on Curves and Faces
+- Extract Solids, Faces, and Edges from elements
+- Evalution of Curves and Edges
+- Selection of Imports, Host objects, Edges, Faces and Solids from Element
+- Watch3d improvements
+- Python node Autocomplete (in progress and only in Revit)
 
 Functionality and UI
 - Apearance Cleanup
@@ -55,6 +56,10 @@ Engineering
 
 Samples
 - Adaptive Component Placement
+- Face Extraction from Solids
+- Formulas
+- Create Point Sequence
+- Some existing sample cleanup
 
 
 ###0.3.0###
