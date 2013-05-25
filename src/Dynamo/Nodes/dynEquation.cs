@@ -126,12 +126,14 @@ namespace Dynamo.Nodes
                 {
                     paramSet.Add(name);
                     parameters.Add(Formula.IndexOf(name), Tuple.Create(name, typeof(Value.Function)));
-                    foreach (var p in args.Parameters)
-                    {
-                        p.Evaluate();
-                    }
-                    args.Result = 0;
                 }
+
+                foreach (var p in args.Parameters)
+                {
+                    p.Evaluate();
+                }
+
+                args.Result = 0;
             };
 
             e.EvaluateParameter += delegate(string name, ParameterArgs args)
@@ -140,8 +142,9 @@ namespace Dynamo.Nodes
                 {
                     paramSet.Add(name);
                     parameters.Add(Formula.IndexOf(name), Tuple.Create(name, typeof(Value.Number)));
-                    args.Result = 0;
                 }
+
+                args.Result = 0;
             };
 
             try
