@@ -71,7 +71,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve Curve Intersection")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of the specified curve with this face.")]
-    public class dynCurveCurveIntersection : dynRevitTransactionNode
+    public class dynCurveCurveIntersection : dynRevitTransactionNode, IDrawable, IClearable
     {
         public dynCurveCurveIntersection()
         {
@@ -103,6 +103,8 @@ namespace Dynamo.Nodes
                     xsect = FSharpList<Value>.Cons(Value.NewNumber(ir.UVPoint.V), xsect);
                     xsect = FSharpList<Value>.Cons(Value.NewContainer(ir.XYZPoint), xsect);
                     xsect_results = FSharpList<Value>.Cons(Value.NewList(xsect), xsect_results);
+
+                    pts.Add(ir.XYZPoint);
                 }
                 
             }
@@ -111,5 +113,25 @@ namespace Dynamo.Nodes
 
             return Value.NewList(results);
         }
+
+        #region IDrawable Interface
+        protected List<XYZ> pts = new List<XYZ>();
+        public RenderDescription RenderDescription { get; set; }
+        public void Draw()
+        {
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
+
+            foreach (XYZ pt in pts)
+                this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
+        }
+
+        public void ClearReferences()
+        {
+            pts.Clear();
+        }
+        #endregion
     }
 }

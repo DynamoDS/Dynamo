@@ -23,6 +23,8 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using System.Data;
+
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
@@ -35,6 +37,13 @@ using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
 using Dynamo.FSchemeInterop;
 using Dynamo.Commands;
+#if DEBUG
+using NUnit.Core;
+using NUnit.Core.Filters;
+using NUnit.Framework;
+using NUnit.Util;
+#endif
+
 //MDJ needed for spatialfeildmanager
 //TAF added to get strings from resource files
 
@@ -77,6 +86,14 @@ namespace Dynamo.Applications
 
                 pushButton.LargeImage = bitmapSource;
                 pushButton.Image = bitmapSource;
+
+#if DEBUG
+                var pushButton1 = ribbonPanel.AddItem(new PushButtonData("Test",
+                                                                        res.GetString("App_Name"), m_AssemblyName,
+                                                                        "Dynamo.Applications.DynamoRevitTester")) as PushButton;
+                pushButton1.LargeImage = bitmapSource;
+                pushButton1.Image = bitmapSource;
+#endif
 
                 // MDJ = element level events and dyanmic model update
                 // MDJ 6-8-12  trying to get new dynamo to watch for user created ref points and re-run definition when they are moved
@@ -142,7 +159,6 @@ namespace Dynamo.Applications
                 return Result.Succeeded;
             }
 
-            //MVVM : don't start logging here.
             DynamoLogger.Instance.StartLogging();
 
             try
@@ -214,6 +230,154 @@ namespace Dynamo.Applications
             ((DynamoView) sender).WindowState = WindowState.Maximized;
         }
     }
+
+#if DEBUG
+
+    [Transaction(TransactionMode.Manual)]
+    [Regeneration(RegenerationOption.Manual)]
+    internal class DynamoRevitTester : IExternalCommand
+    {
+        private UIDocument m_doc;
+        private UIApplication m_revit;
+
+        public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
+        {
+            DynamoLogger.Instance.StartLogging();
+
+            try
+            {
+                m_revit = revit.Application;
+                m_doc = m_revit.ActiveUIDocument;
+
+                #region default level
+
+                Level defaultLevel = null;
+                var fecLevel = new FilteredElementCollector(m_doc.Document);
+                fecLevel.OfClass(typeof(Level));
+                defaultLevel = fecLevel.ToElements()[0] as Level;
+
+                #endregion
+
+                dynRevitSettings.Revit = m_revit;
+                dynRevitSettings.Doc = m_doc;
+                dynRevitSettings.DefaultLevel = defaultLevel;
+
+                IdlePromise.ExecuteOnIdle(delegate
+                {
+                    //get window handle
+                    IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
+
+                    //create dynamo
+                    string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
+                    var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
+                
+                    //flag to run evalauation synchronously, helps to 
+                    //avoid threading issues when testing.
+                    dynamoController.RunEvaluationSynchronously = true;
+
+                    //execute the tests
+                    //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
+                    string assLocation = Assembly.GetExecutingAssembly().Location;
+                    FileInfo fi = new FileInfo(assLocation);
+                    string testLoc = Path.Combine(fi.DirectoryName, @"DynamoRevitTests.dll");
+
+                    //Tests must be executed on the main thread in order to access the Revit API.
+                    //NUnit's SimpleTestRunner runs the tests on the main thread
+                    //http://stackoverflow.com/questions/16216011/nunit-c-run-specific-tests-through-coding?rq=1
+                    CoreExtensions.Host.InitializeService();
+                    SimpleTestRunner runner = new SimpleTestRunner();
+                    TestSuiteBuilder builder = new TestSuiteBuilder();
+                    TestPackage package = new TestPackage("DynamoRevitTests", new List<string>() { testLoc });
+                    runner.Load(package);
+                    TestSuite suite = builder.Build(package);
+                    TestFixture fixture = null;
+                    FindFixtureByName(out fixture, suite, "DynamoRevitTests");
+                    if (fixture == null)
+                        throw new Exception("Could not find DynamoRevitTests fixture.");
+
+                    foreach (TestMethod t in fixture.Tests)
+                    {
+                        TestName testName = t.TestName;
+                        TestFilter filter = new NameFilter(testName);
+                        TestResult result = t.Run(new RevitTestEventListener(), filter);
+                        ResultSummarizer summ = new ResultSummarizer(result);
+                        Assert.AreEqual(1, summ.ResultCount);
+                    }
+                });
+
+                IdlePromise.ExecuteOnIdle(delegate
+                {
+                    DynamoLogger.Instance.FinishLogging();
+                });
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                return Result.Failed;
+            }
+
+            return Result.Succeeded;
+        }
+
+        private void FindFixtureByName(out TestFixture fixture, TestSuite suite, string name)
+        {
+            foreach (TestSuite innerSuite in suite.Tests)
+            {
+                if (innerSuite is TestFixture)
+                {
+                    if (((TestFixture)innerSuite).TestName.Name == name)
+                    {
+                        fixture = innerSuite as TestFixture;
+                        return;
+                    }
+                }
+                else
+                {
+                    FindFixtureByName(out fixture, innerSuite, name);
+                    if (fixture != null)
+                        return;
+                }
+            }
+
+            fixture = null;
+        }
+    }
+
+
+    //http://sqa.stackexchange.com/questions/2880/nunit-global-error-method-event-for-handling-exceptions
+    /// <summary>
+    /// Listens for test events and logs information
+    /// </summary>
+    class RevitTestEventListener : EventListener
+    {
+        public void RunStarted(string name, int testCount) {}
+        public void RunFinished(TestResult result) { }
+        public void RunFinished(Exception exception) { }
+        public void TestStarted(TestName testName) 
+        {
+            DynamoLogger.Instance.Log(string.Format("Starting test {0}", testName.Name));
+        }
+        public void TestFinished(TestResult result) 
+        {
+            if (result.Executed && result.IsFailure)
+            {
+                DynamoLogger.Instance.Log(string.Format("Test FAILED : {0}", result.Message));
+            }
+            else if (result.Executed && result.IsSuccess)
+                DynamoLogger.Instance.Log("Test PASS");
+            else if (result.Executed && result.IsError)
+                DynamoLogger.Instance.Log("Test ERROR");
+        }
+        public void SuiteStarted(TestName testName) { }
+        public void SuiteFinished(TestResult result) { }
+        public void UnhandledException(Exception exception) 
+        {
+            DynamoLogger.Instance.Log(exception.Message);
+        }
+        public void TestOutput(TestOutput testOutput) { }
+    }
+#endif
 
     internal class WindowHandle : IWin32Window
     {

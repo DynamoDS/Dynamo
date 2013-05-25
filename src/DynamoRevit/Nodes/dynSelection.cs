@@ -804,7 +804,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Curve")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a curve from the document.")] //or set of curves in the future
-    public class dynCurvesBySelection : dynElementSelection
+    public class dynCurvesBySelection : dynElementSelection, IDrawable
     {
         public dynCurvesBySelection()
             : base(new PortData("curve", "The curve", typeof(Value.Container)))
@@ -832,6 +832,21 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
             }
         }
+
+        #region IDrawable Interface
+        public RenderDescription RenderDescription { get; set; }
+        public void Draw()
+        {
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
+
+            CurveElement ce = this.SelectedElement as CurveElement;
+            dynRevitTransactionNode.DrawCurve(this.RenderDescription, ce.GeometryCurve);
+
+        }
+        #endregion
     }
 
     [NodeName("Select Curves")]

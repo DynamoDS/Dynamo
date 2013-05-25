@@ -118,7 +118,7 @@ namespace Dynamo.Tests
         public void CanOpenGoodFile()
         {
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string openPath = Path.Combine(directory, @"..\..\test\good_dyns\multiplicationAndAdd.dyn");
+            string openPath = Path.Combine(directory, @"..\..\test\dynamo_elements_samples\working\multiplicationAndAdd\multiplicationAndAdd.dyn");
             controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.OpenCommand, openPath));
             controller.ProcessCommandQueue();
 

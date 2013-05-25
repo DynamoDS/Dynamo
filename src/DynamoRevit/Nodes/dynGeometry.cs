@@ -32,7 +32,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
-    public abstract class dynXYZBase:dynNodeWithOneOutput, IDrawable, IClearable
+    public abstract class dynXYZBase : dynNodeWithOneOutput, IDrawable, IClearable
     {
         protected List<XYZ> pts = new List<XYZ>();
         public RenderDescription RenderDescription { get; set; }
@@ -92,7 +92,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class dynSolidBase: dynNodeWithOneOutput, IDrawable, IClearable
+    public abstract class dynSolidBase : dynNodeWithOneOutput, IDrawable, IClearable
     {
         protected List<Solid> solids = new List<Solid>();
         public RenderDescription RenderDescription { get; set; }

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using Dynamo.Controls;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Dynamo.Selection;
 using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 
@@ -17,6 +13,9 @@ namespace Dynamo.Tests
     [TestFixture]
     internal class DynamoSampleTests
     {
+
+        #region startup and shutdown
+
         [SetUp]
         public void Init()
         {
@@ -86,6 +85,10 @@ namespace Dynamo.Tests
             }
         }
 
+        #endregion
+
+        #region utility methods
+
         public dynNodeModel NodeFromCurrentSpace(DynamoViewModel vm, string guidString)
         {
             Guid guid = Guid.Empty;
@@ -120,12 +123,14 @@ namespace Dynamo.Tests
             return listWatchVal;
         }
 
+        #endregion
+
         [Test]
         public void AddSubtractMapReduceFilterBasic()
         {
             var vm = controller.DynamoViewModel;
 
-            string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\map_reduce_filter\map_reduce_filter.dyn");
+            string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\map_reduce_filter\map_reduce_filter.dyn");
             controller.RunCommand( vm.OpenCommand, openPath );
 
             // check all the nodes and connectors are loaded
@@ -181,7 +186,7 @@ namespace Dynamo.Tests
         {
             var vm = controller.DynamoViewModel;
 
-            string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\sequence\sequence.dyn");
+            string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\sequence\sequence.dyn");
             controller.RunCommand(vm.OpenCommand, openPath);
 
             // check all the nodes and connectors are loaded
@@ -202,8 +207,12 @@ namespace Dynamo.Tests
         public void CombineWithCustomNodes()
         {
             var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\combine\");
 
-            string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\combine\combine-with-three.dyn");
+            Assert.IsTrue( controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "combine2.dyf")));
+            Assert.IsTrue( controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "Sequence2.dyf")));
+
+            string openPath = Path.Combine(examplePath, "combine-with-three.dyn");
             controller.RunCommand(vm.OpenCommand, openPath);
 
             // check all the nodes and connectors are loaded
@@ -226,7 +235,12 @@ namespace Dynamo.Tests
         {
             var vm = controller.DynamoViewModel;
 
-            string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\reduce_and_recursion\reduce-example.dyn");
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\reduce_and_recursion\");
+
+            Assert.IsTrue(controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "MyReduce.dyf")));
+            Assert.IsTrue(controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "Sum Numbers.dyf")));
+
+            string openPath = Path.Combine(examplePath, "reduce-example.dyn");
             controller.RunCommand(vm.OpenCommand, openPath);
 
             // check all the nodes and connectors are loaded
@@ -248,13 +262,40 @@ namespace Dynamo.Tests
         public void FilterWithCustomNode()
         {
             var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\filter\");
 
-            string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\filter\filter-example.dyn");
+            Assert.IsTrue(controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf")));
+
+            string openPath = Path.Combine(examplePath, "filter-example.dyn");
             controller.RunCommand(vm.OpenCommand, openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(6, vm.CurrentSpace.Connectors.Count);
             Assert.AreEqual(6, vm.CurrentSpace.Nodes.Count);
+
+            // run the expression
+            controller.RunCommand(vm.RunExpressionCommand);
+
+            // wait for the expression to complete
+            Thread.Sleep(500);
+
+            // check the output values are correctly computed
+
+
+        }
+
+        [Test]
+        public void Sorting()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\sorting\");
+
+            string openPath = Path.Combine(examplePath, "sorting.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(10, vm.CurrentSpace.Connectors.Count);
+            Assert.AreEqual(11, vm.CurrentSpace.Nodes.Count);
 
             // run the expression
             controller.RunCommand(vm.RunExpressionCommand);
