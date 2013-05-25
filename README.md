@@ -23,6 +23,9 @@ April 2013
 
 Known Issues
 - Cannot run Python scripts from disk location (embedded is fine)
+- Delauny Tesselation node is always passing an empty list
+- Preview 3d geometry in the view background is not consistently refreshing
+- Formula node crashes when copy pasting when running in auto
 
 
 Fixes
