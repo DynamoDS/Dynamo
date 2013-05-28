@@ -188,6 +188,10 @@ namespace Dynamo.Nodes
                             fArgs.Parameters.Select<Expression, Value>(
                                 p => Value.NewNumber(Convert.ToDouble(p.Evaluate())))))).Item;
                 }
+                else
+                {
+                    fArgs.HasResult = false;
+                }
             };
 
             return Value.NewNumber(Convert.ToDouble(e.Evaluate()));
