@@ -40,13 +40,13 @@ New and Updated Nodes
 - Compute Face Derivatives
 - Project Points on Curves and Faces
 - Extract Solids, Faces, and Edges from elements
-- Evalution of Curves and Edges
+- Evaluation of Curves and Edges
 - Selection of Imports, Host objects, Edges, Faces and Solids from Element
 - Watch3d improvements
 - Python node Autocomplete (in progress and only in Revit)
 
 Functionality and UI
-- Apearance Cleanup
+- Appearance Cleanup
 - Preview geometry in Dynamo Background 
 - Category and Node Browsing Improvements
 - Ability to pass lists into nodes (Lacing and auto-mapping of lists)
