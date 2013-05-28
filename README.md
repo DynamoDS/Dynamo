@@ -1,4 +1,4 @@
-#Dynamo: Visual Programming for Revit#
+#Dynamo: Visual Programming for BIM#
 
 ## Description ##
 The intent of this project is to provide a visual interface for building interesting parametric functionality on top of that already offered by Revit. Dynamo aims to be accessable both to the non-programmer and the programmer alike with the ability to visually script behavior and define your own nodes, but also the ability to write functionality using Python or by compiling .net code into dlls that can be linked at run time.
@@ -19,7 +19,7 @@ The current version will run on top of Revit 2013 and Project Vasari Beta 2 and 
 
 ###0.3.4###
 
-April 2013
+May2013
 
 Known Issues
 - Cannot run Python scripts from disk location (embedded is fine)
@@ -40,13 +40,13 @@ New and Updated Nodes
 - Compute Face Derivatives
 - Project Points on Curves and Faces
 - Extract Solids, Faces, and Edges from elements
-- Evalution of Curves and Edges
+- Evaluation of Curves and Edges
 - Selection of Imports, Host objects, Edges, Faces and Solids from Element
 - Watch3d improvements
 - Python node Autocomplete (in progress and only in Revit)
 
 Functionality and UI
-- Apearance Cleanup
+- Appearance Cleanup
 - Preview geometry in Dynamo Background 
 - Category and Node Browsing Improvements
 - Ability to pass lists into nodes (Lacing and auto-mapping of lists)
