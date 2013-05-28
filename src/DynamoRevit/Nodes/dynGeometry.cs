@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Windows.Controls; //for boolean option
 using System.Xml;              //for boolean option  
 using System.Windows.Media.Media3D;
+using System.Reflection;
 
 using Autodesk.Revit;
 using Autodesk.Revit.DB;
@@ -1655,4 +1656,145 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Face Through Points")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
+    [NodeDescription("Creates face on grid of points")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynFaceThroughPoints : dynNodeWithOneOutput
+    {
+
+        public dynFaceThroughPoints()
+        {
+            InPortData.Add(new PortData("Points", "Points to create face, list or list of lists", typeof(Value.List)));
+            InPortData.Add(new PortData("NumberOfRows", "Number of rows in the grid of the face", typeof(object)));
+            OutPortData.Add(new PortData("Face", "Face", typeof(object)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var listIn = ((Value.List)args[0]).Item.Select(
+                    x => ((XYZ)((Value.Container)x).Item)
+                       ).ToList();
+            /* consider passing n x m grid of points instead of flat list
+            var in1 = ((Value.Container)args[0]).Item;
+            List<XYZ> listIn = in1 as List<XYZ>;
+            List<List<XYZ>> listOfListsIn = (listIn != null) ? null : (in1 as List<List<XYZ>>);
+
+            if (listIn == null && listOfListsIn == null)
+                throw new Exception("no XYZ list or list of XYZ lists in Face Through Points node");
+
+            if (listOfListsIn != null)
+            {
+                listIn = new List<XYZ>();
+                for (int indexL = 0; indexL < listOfListsIn.Count; indexL++)
+                {
+                    listIn.Concat(listOfListsIn[indexL]);
+                }
+            }
+            */
+
+            int numberOfRows = (int)((Value.Number)args[1]).Item;
+            if (listIn.Count % numberOfRows != 0)
+                throw new Exception("number of rows should  match number of points Face Through Points node");
+
+            bool[] periodic = new bool[2];
+            periodic[0] = false;
+            periodic[1] = false;
+
+            Type HermiteFaceType = typeof(Autodesk.Revit.DB.HermiteFace);
+
+            MethodInfo[] hermiteFaceStaticMethods = HermiteFaceType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodCreate = "Create";
+            Face result = null;
+
+            foreach (MethodInfo m in hermiteFaceStaticMethods)
+            {
+                if (m.Name == nameOfMethodCreate)
+                {
+                    object[] argsM = new object[6];
+                    argsM[0] = numberOfRows;
+                    argsM[1] = listIn;
+                    argsM[2] = new List<XYZ>();
+                    argsM[3] = new List<XYZ>();
+                    argsM[4] = new List<XYZ>();
+                    argsM[5] = periodic;
+
+                    result = (Face) m.Invoke(null, argsM);
+
+                    break;
+                }
+            }
+
+            return Value.NewContainer(result);
+        }
+    }
+    [NodeName("Transform Solid")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
+    [NodeDescription("Creates solid by transforming solid")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynTransformSolid : dynNodeWithOneOutput
+    {
+
+        public dynTransformSolid()
+        {
+            InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));
+            InPortData.Add(new PortData("Transform", "Transform to apply", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Solid", "Resulting Solid", typeof(Value.Container)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Solid thisSolid = (Solid)((Value.Container)args[0]).Item;
+            Transform transform = (Transform)((Value.Container)args[0]).Item;
+
+            Solid result = null;
+
+            Type GeometryCreationUtilitiesType = typeof(Autodesk.Revit.DB.GeometryCreationUtilities);
+
+            MethodInfo[] geometryCreationUtilitiesStaticMethods = GeometryCreationUtilitiesType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfReplaceMethod = "createGeometryByFaceReplacement";
+
+            foreach (MethodInfo ms in geometryCreationUtilitiesStaticMethods)
+            {
+                if (ms.Name == nameOfReplaceMethod)
+                {
+                    object[] argsM = new object[3];
+                    argsM[0] = thisSolid;
+                    argsM[1] = new List<Face>();
+                    argsM[2] = new List<Face>();
+                    result = (Solid)ms.Invoke(null, argsM);
+                }
+            }
+            if (result == null)
+                throw new Exception(" could not copy solid or validation during copy failed");
+
+            Type SolidType = typeof(Autodesk.Revit.DB.Solid);
+            MethodInfo[] solidInstanceMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+             
+            String nameOfMethodTransform = "transform";
+
+            foreach (MethodInfo m in solidInstanceMethods)
+            {
+                if (m.Name == nameOfMethodTransform)
+                {
+                    object[] argsM = new object[1];
+                    argsM[0] = transform;
+
+                    result = (Solid)m.Invoke(result, argsM);
+
+                    break;
+                }
+            }
+
+            return Value.NewContainer(result);
+        }
+    }
 }
