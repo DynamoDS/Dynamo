@@ -1,0 +1,22 @@
+<dynWorkspace X="29" Y="96" Name="IsOdd?" Category="Misc" ID="239e29d8-7110-4c5f-9700-0c8458e3e716">
+  <dynElements>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="825ac69a-e13d-47f6-be8e-d5971b62c288" nickname="Input" x="0" y="118.879175078272" lacing="First">
+      <Symbol value="n" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynEqual type="Dynamo.Nodes.dynEqual" guid="b42843ac-4047-4841-b1a9-e99b2451436a" nickname="Equal" x="532.608988405489" y="121.832254259508" lacing="First" />
+    <Dynamo.Nodes.dynModulo type="Dynamo.Nodes.dynModulo" guid="d921b456-7bf3-45da-a4ae-981b1729f6c1" nickname="Modulo" x="223.3985954809" y="119.238990710899" lacing="First" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="56900f51-27cd-4f74-93cf-e41edf9b494e" nickname="Number" x="362.076344949695" y="283.957402712385" lacing="First">
+      <System.Double value="1" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="a93e75a0-b372-45e7-92a4-87febf92772a" nickname="Number" x="69.2128197561078" y="217.008423315104" lacing="First">
+      <System.Double value="2" />
+    </Dynamo.Nodes.dynDoubleInput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="825ac69a-e13d-47f6-be8e-d5971b62c288" start_index="0" end="d921b456-7bf3-45da-a4ae-981b1729f6c1" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="d921b456-7bf3-45da-a4ae-981b1729f6c1" start_index="0" end="b42843ac-4047-4841-b1a9-e99b2451436a" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="56900f51-27cd-4f74-93cf-e41edf9b494e" start_index="0" end="b42843ac-4047-4841-b1a9-e99b2451436a" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="a93e75a0-b372-45e7-92a4-87febf92772a" start_index="0" end="d921b456-7bf3-45da-a4ae-981b1729f6c1" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

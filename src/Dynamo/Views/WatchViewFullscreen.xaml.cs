@@ -15,17 +15,13 @@ using System.Windows.Media.Media3D;
 using System.ComponentModel;
 using System.IO.Ports;
 using System.Threading;
-
 using Microsoft.FSharp.Collections;
-
 using HelixToolkit.Wpf;
-
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
 using Dynamo.Controls;
-
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Controls
@@ -42,7 +38,7 @@ namespace Dynamo.Controls
         public WatchViewFullscreen()
         {
             InitializeComponent();
-
+            
             MouseLeftButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_MouseButtonIgnore);
             MouseLeftButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseButtonIgnore);
             MouseRightButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseRightButtonUp);
@@ -54,17 +50,17 @@ namespace Dynamo.Controls
 
             MainContextMenu.Items.Add(mi);
 
-            System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
-            Canvas.SetZIndex(backgroundRect, -10);
-            backgroundRect.IsHitTestVisible = false;
-            BrushConverter bc = new BrushConverter();
-            Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
-            backgroundRect.Stroke = strokeBrush;
-            backgroundRect.StrokeThickness = 1;
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
-            backgroundRect.Fill = backgroundBrush;
+            //System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
+            //Canvas.SetZIndex(backgroundRect, -10);
+            //backgroundRect.IsHitTestVisible = false;
+            //BrushConverter bc = new BrushConverter();
+            //Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
+            //backgroundRect.Stroke = strokeBrush;
+            //backgroundRect.StrokeThickness = 1;
+            //SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
+            //backgroundRect.Fill = backgroundBrush;
 
-            inputGrid.Children.Add(backgroundRect);
+            //inputGrid.Children.Add(backgroundRect);
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)

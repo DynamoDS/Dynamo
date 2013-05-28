@@ -1,4 +1,4 @@
-#Dynamo: Visual Programming for Revit#
+#Dynamo: Visual Programming for BIM#
 
 ## Description ##
 The intent of this project is to provide a visual interface for building interesting parametric functionality on top of that already offered by Revit. Dynamo aims to be accessable both to the non-programmer and the programmer alike with the ability to visually script behavior and define your own nodes, but also the ability to write functionality using Python or by compiling .net code into dlls that can be linked at run time.
@@ -16,6 +16,54 @@ Dynamo has been developed based on feedback from several parties inlcuding Buro 
 The current version will run on top of Revit 2013 and Project Vasari Beta 2 and 3. It will be released as a new Project Vasari WIP soon but is available now experimental form on github.
 
 ## Releases ##
+
+###0.3.4###
+
+May2013
+
+Known Issues
+- Cannot run Python scripts from disk location (embedded is fine)
+- Delauny Tesselation node is always passing an empty list
+- Preview 3d geometry in the view background is not consistently refreshing
+- Formula node crashes when copy pasting when running in auto
+
+
+Fixes
+- Dynamo now works alongside Revit Python Shell and other conflicting addins
+- Solar Radiation example works
+- More stability
+
+
+New and Updated Nodes
+- Adaptive Components
+- Formulas using N-Calc syntax
+- Compute Face Derivatives
+- Project Points on Curves and Faces
+- Extract Solids, Faces, and Edges from elements
+- Evaluation of Curves and Edges
+- Selection of Imports, Host objects, Edges, Faces and Solids from Element
+- Watch3d improvements
+- Python node Autocomplete (in progress and only in Revit)
+
+Functionality and UI
+- Appearance Cleanup
+- Preview geometry in Dynamo Background 
+- Category and Node Browsing Improvements
+- Ability to pass lists into nodes (Lacing and auto-mapping of lists)
+- New Node appearance
+- Graph retains memory and parametric control of elements created in previous sessions
+ 
+
+Engineering
+- MVVM standardization
+
+Samples
+- Adaptive Component Placement
+- Face Extraction from Solids
+- Formulas
+- Create Point Sequence
+- Some existing sample cleanup
+
 
 ###0.3.0###
 

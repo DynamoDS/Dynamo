@@ -657,9 +657,11 @@ namespace Dynamo.Nodes
     {
         Reference f;
 
+        public RenderDescription RenderDescription { get; set; }
+
         public dynFormElementBySelection()
             : base(new PortData("face", "The face", typeof(Value.Container)))
-        { }
+        {}
 
         protected override void OnSelectClick()
         {
@@ -693,16 +695,19 @@ namespace Dynamo.Nodes
             }
         }
 
-        public RenderDescription Draw()
+        public void Draw()
         {
-            RenderDescription rd = new RenderDescription();
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
 
             Face face = (Face)dynRevitSettings.Doc.Document.GetElement(f).GetGeometryObjectFromReference(f);
 
-            dynRevitTransactionNode.DrawFace(rd, face);
+            dynRevitTransactionNode.DrawFace(this.RenderDescription, face);
 
-            return rd;
         }
+        
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
 
@@ -727,10 +732,11 @@ namespace Dynamo.Nodes
     public class dynEdgeOnElementBySelection : dynElementSelection, IDrawable
     {
         Reference f;
+        public RenderDescription RenderDescription { get; set; }
 
         public dynEdgeOnElementBySelection()
             : base(new PortData("edge", "The edge", typeof(Value.Container)))
-        { }
+        {}
 
         protected override void OnSelectClick()
         {
@@ -763,15 +769,17 @@ namespace Dynamo.Nodes
             }
         }
 
-        public RenderDescription Draw()
+        public void Draw()
         {
-            RenderDescription rd = new RenderDescription();
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
 
             Edge edge = (Edge)dynRevitSettings.Doc.Document.GetElement(f).GetGeometryObjectFromReference(f);
 
-            dynRevitTransactionNode.DrawGeometryElement(rd, edge);
+            dynRevitTransactionNode.DrawGeometryElement(this.RenderDescription, edge);
 
-            return rd;
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -796,7 +804,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Curve")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a curve from the document.")] //or set of curves in the future
-    public class dynCurvesBySelection : dynElementSelection
+    public class dynCurvesBySelection : dynElementSelection, IDrawable
     {
         public dynCurvesBySelection()
             : base(new PortData("curve", "The curve", typeof(Value.Container)))
@@ -824,6 +832,21 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
             }
         }
+
+        #region IDrawable Interface
+        public RenderDescription RenderDescription { get; set; }
+        public void Draw()
+        {
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
+
+            CurveElement ce = this.SelectedElement as CurveElement;
+            dynRevitTransactionNode.DrawCurve(this.RenderDescription, ce.GeometryCurve);
+
+        }
+        #endregion
     }
 
     [NodeName("Select Curves")]

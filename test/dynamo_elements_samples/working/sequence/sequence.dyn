@@ -1,0 +1,31 @@
+<dynWorkspace X="0" Y="0">
+  <dynElements>
+    <Dynamo.Nodes.dynBuildSeq type="Dynamo.Nodes.dynBuildSeq" guid="6fcf4f89-8ecf-467f-8e74-6a221cd8fe69" nickname="Number Sequence" x="330.195304268441" y="149.714276259526" lacing="First" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="65f33a35-ca2d-4a2c-aa74-d165cffd8d20" nickname="Number" x="94.1500116705352" y="223.686220618644" lacing="First">
+      <System.Double value="1" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="33c2589e-bcbf-4b90-8a8f-e206da54e870" nickname="Number Slider" x="24.7732227587948" y="105.873593444151" lacing="First">
+      <System.Double value="50" min="0" max="100" />
+    </Dynamo.Nodes.dynDoubleSliderInput>
+    <Dynamo.Nodes.dynImageFileReader type="Dynamo.Nodes.dynImageFileReader" guid="03d31274-e9e8-44d2-ad7a-600b513e94fb" nickname="Read Image File" x="361.443184889128" y="395.052143846868" lacing="First" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="c0853786-4e74-4af3-a573-a2a3bbc6c264" nickname="Number" x="27.4833450038685" y="474.352887285311" lacing="First">
+      <System.Double value="0" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="897bb61a-7c07-4682-b701-6b2cd982cadf" nickname="Filename" x="10.2028687412554" y="391.330726336426" lacing="First">
+      <System.String value="C:\Users\kronz\Documents\2013-05-09_1555.png" />
+    </Dynamo.Nodes.dynStringFilename>
+    <Dynamo.Nodes.dynFormula type="Dynamo.Nodes.dynFormula" guid="5d06e3a7-b864-4d15-850e-e14c3947096b" nickname="Formula" x="557.537867153624" y="137.413582416959" lacing="Longest" formula="Sin(x)" />
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="939286b4-24b7-4295-8048-27b6b9988a3e" nickname="Watch" x="770.164876541976" y="31.8454358832066" lacing="Disabled" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="6fcf4f89-8ecf-467f-8e74-6a221cd8fe69" start_index="0" end="5d06e3a7-b864-4d15-850e-e14c3947096b" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="65f33a35-ca2d-4a2c-aa74-d165cffd8d20" start_index="0" end="6fcf4f89-8ecf-467f-8e74-6a221cd8fe69" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="65f33a35-ca2d-4a2c-aa74-d165cffd8d20" start_index="0" end="6fcf4f89-8ecf-467f-8e74-6a221cd8fe69" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="33c2589e-bcbf-4b90-8a8f-e206da54e870" start_index="0" end="6fcf4f89-8ecf-467f-8e74-6a221cd8fe69" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="c0853786-4e74-4af3-a573-a2a3bbc6c264" start_index="0" end="03d31274-e9e8-44d2-ad7a-600b513e94fb" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="c0853786-4e74-4af3-a573-a2a3bbc6c264" start_index="0" end="03d31274-e9e8-44d2-ad7a-600b513e94fb" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="897bb61a-7c07-4682-b701-6b2cd982cadf" start_index="0" end="03d31274-e9e8-44d2-ad7a-600b513e94fb" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="5d06e3a7-b864-4d15-850e-e14c3947096b" start_index="0" end="939286b4-24b7-4295-8048-27b6b9988a3e" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

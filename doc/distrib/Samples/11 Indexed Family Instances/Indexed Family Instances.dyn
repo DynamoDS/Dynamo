@@ -1,53 +1,41 @@
-<!--
-Copyright David Wood 2012. Derived from http://revitator.blogspot.co.uk/2012/10/dynamo-indexed-family-instances.html
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
-<dynWorkspace X="10" Y="55">
+<dynWorkspace X="0" Y="0">
   <dynElements>
-    <Dynamo.Elements.dynFamilyTypeSelector type="Dynamo.Elements.dynFamilyTypeSelector" guid="b8b7f004-e746-4dc4-81db-fac74458c39b" nickname="Family Type Selector" x="0" y="0" index="14" />
-    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="5b613ecd-2bba-410d-bade-5a9108205777" nickname="Number" x="72" y="220.65">
+    <Dynamo.Nodes.dynFamilyTypeSelector type="Dynamo.Nodes.dynFamilyTypeSelector" guid="b8b7f004-e746-4dc4-81db-fac74458c39b" nickname="Family Type Selector" x="0" y="0" lacing="First" index="17" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="5b613ecd-2bba-410d-bade-5a9108205777" nickname="Number" x="0" y="236.65" lacing="First">
       <System.Double value="1" />
-    </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="488527c3-9f5b-4c28-a2e3-fa814ebfcc2a" nickname="Number" x="72.45" y="292.7">
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="488527c3-9f5b-4c28-a2e3-fa814ebfcc2a" nickname="Number" x="0" y="319.366666666667" lacing="First">
       <System.Double value="1" />
-    </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="1eeff27a-57fb-4c58-939a-dfa4c1b3f7ed" nickname="Number Slider" x="21.15" y="169.4">
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="1eeff27a-57fb-4c58-939a-dfa4c1b3f7ed" nickname="Number Slider" x="0" y="156.733333333333" lacing="First">
       <System.Double value="20" min="0" max="20" />
-    </Dynamo.Elements.dynDoubleSliderInput>
-    <Dynamo.Elements.dynBuildSeq type="Dynamo.Elements.dynBuildSeq" guid="ab59ea64-82c3-4877-84dd-31321e5a3cfa" nickname="Number Sequence" x="305.55" y="183.25" />
-    <Dynamo.Elements.dynMap type="Dynamo.Elements.dynMap" guid="e1d2f6fa-9eb5-49d3-a9a7-c2984621ea92" nickname="Map" x="464.95" y="116.6" />
-    <Dynamo.Elements.dynStringInput type="Dynamo.Elements.dynStringInput" guid="d81e9974-c5fe-4e7c-9537-fc3f57aa3dc3" nickname="String" x="0" y="59.55">
+    </Dynamo.Nodes.dynDoubleSliderInput>
+    <Dynamo.Nodes.dynBuildSeq type="Dynamo.Nodes.dynBuildSeq" guid="ab59ea64-82c3-4877-84dd-31321e5a3cfa" nickname="Number Sequence" x="305.55" y="183.25" lacing="First" />
+    <Dynamo.Nodes.dynMap type="Dynamo.Nodes.dynMap" guid="e1d2f6fa-9eb5-49d3-a9a7-c2984621ea92" nickname="Map" x="616.95" y="111.266666666667" lacing="First" />
+    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="d81e9974-c5fe-4e7c-9537-fc3f57aa3dc3" nickname="String" x="0" y="82.2166666666667" lacing="First">
       <System.String value="increment" />
-    </Dynamo.Elements.dynStringInput>
-    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="5a95b8d6-8c93-419d-9f1f-9ebe2d58a99c" nickname="Family Instance Creator - Indexed" x="310.55" y="39.25">
+    </Dynamo.Nodes.dynStringInput>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="5a95b8d6-8c93-419d-9f1f-9ebe2d58a99c" nickname="Family Instance Creator - Indexed" x="383.883333333333" y="36.5833333333333" lacing="Disabled">
       <ID value="21db5e9b-68cb-431c-925b-9a947b5dc494" />
-      <Output value="out" />
+      <Name value="Family Instance Creator - Indexed" />
       <Inputs>
         <Input value="typ" />
         <Input value="param" />
         <Input value="index" />
       </Inputs>
-    </Dynamo.Elements.dynFunction>
+      <Outputs>
+        <Output value="out" />
+      </Outputs>
+    </Dynamo.Nodes.dynFunction>
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="b8b7f004-e746-4dc4-81db-fac74458c39b" start_index="0" end="5a95b8d6-8c93-419d-9f1f-9ebe2d58a99c" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="5b613ecd-2bba-410d-bade-5a9108205777" start_index="0" end="ab59ea64-82c3-4877-84dd-31321e5a3cfa" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="488527c3-9f5b-4c28-a2e3-fa814ebfcc2a" start_index="0" end="ab59ea64-82c3-4877-84dd-31321e5a3cfa" end_index="2" portType="0" />
-    <Dynamo.Connectors.dynConnector start="1eeff27a-57fb-4c58-939a-dfa4c1b3f7ed" start_index="0" end="ab59ea64-82c3-4877-84dd-31321e5a3cfa" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="ab59ea64-82c3-4877-84dd-31321e5a3cfa" start_index="0" end="e1d2f6fa-9eb5-49d3-a9a7-c2984621ea92" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="d81e9974-c5fe-4e7c-9537-fc3f57aa3dc3" start_index="0" end="5a95b8d6-8c93-419d-9f1f-9ebe2d58a99c" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="5a95b8d6-8c93-419d-9f1f-9ebe2d58a99c" start_index="0" end="e1d2f6fa-9eb5-49d3-a9a7-c2984621ea92" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="b8b7f004-e746-4dc4-81db-fac74458c39b" start_index="0" end="5a95b8d6-8c93-419d-9f1f-9ebe2d58a99c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="5b613ecd-2bba-410d-bade-5a9108205777" start_index="0" end="ab59ea64-82c3-4877-84dd-31321e5a3cfa" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="488527c3-9f5b-4c28-a2e3-fa814ebfcc2a" start_index="0" end="ab59ea64-82c3-4877-84dd-31321e5a3cfa" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="1eeff27a-57fb-4c58-939a-dfa4c1b3f7ed" start_index="0" end="ab59ea64-82c3-4877-84dd-31321e5a3cfa" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="ab59ea64-82c3-4877-84dd-31321e5a3cfa" start_index="0" end="e1d2f6fa-9eb5-49d3-a9a7-c2984621ea92" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="d81e9974-c5fe-4e7c-9537-fc3f57aa3dc3" start_index="0" end="5a95b8d6-8c93-419d-9f1f-9ebe2d58a99c" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="5a95b8d6-8c93-419d-9f1f-9ebe2d58a99c" start_index="0" end="e1d2f6fa-9eb5-49d3-a9a7-c2984621ea92" end_index="0" portType="0" />
   </dynConnectors>
   <dynNotes />
 </dynWorkspace>

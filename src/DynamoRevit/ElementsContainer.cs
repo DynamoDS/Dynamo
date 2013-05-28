@@ -12,6 +12,16 @@ namespace Dynamo.Revit
         Dictionary<dynRevitTransactionNode, List<List<ElementId>>> storedElementIds =
             new Dictionary<dynRevitTransactionNode,List<List<ElementId>>>();
 
+        internal IEnumerable<dynRevitTransactionNode> Nodes 
+        {
+            get { return storedElementIds.Keys; }
+        }
+
+        internal void Clear()
+        {
+            storedElementIds.Clear();
+        }
+
         public List<List<ElementId>> this[dynRevitTransactionNode node]
         {
             get

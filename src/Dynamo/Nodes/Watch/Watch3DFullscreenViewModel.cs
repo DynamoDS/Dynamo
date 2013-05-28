@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media.Media3D;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 
 using Dynamo.Connectors;
 using Dynamo.Nodes;
@@ -109,13 +110,35 @@ namespace Dynamo.Controls
 
                 IDrawable drawable = nodeModel as IDrawable;
 
-                if (drawable == null)
-                    continue;
+                if (drawable != null)
+                    drawables.Add(drawable);
 
-                drawables.Add(drawable);
+                //if the node is function then get all the 
+                //drawables inside that node. only do this if the
+                //node's workspace is the home space to avoid infinite
+                //recursion in the case of custom nodes in custom nodes
+                if (nodeModel is dynFunction && nodeModel.WorkSpace == dynSettings.Controller.DynamoModel.HomeSpace)
+                {
+                    dynFunction func = (dynFunction)nodeModel;
+                    foreach(dynNodeModel innerNode in func.Definition.Workspace.Nodes)
+                    {
+                        if (innerNode is IDrawable)
+                        {
+                            drawables.Add(innerNode as IDrawable);
+                        }
+                    }
+                }
             }
 
-            RenderDrawables(drawables);
+            if (dynSettings.Controller.UIDispatcher != null)
+            {
+                dynSettings.Controller.UIDispatcher.Invoke(new Action(
+                   delegate
+                   {
+                       RenderDrawables(drawables);
+                   }
+                ));
+            }
         }
 
         private void RenderDrawables(List<IDrawable> drawables)
@@ -129,34 +152,34 @@ namespace Dynamo.Controls
 
             foreach (IDrawable d in drawables)
             {
-                RenderDescription rd = d.Draw();
+                d.Draw();
 
-                foreach (Point3D p in rd.points)
+                foreach (Point3D p in d.RenderDescription.points)
                 {
                     points.Add(p);
                 }
 
-                foreach (Point3D p in rd.lines)
+                foreach (Point3D p in d.RenderDescription.lines)
                 {
                     lines.Add(p);
                 }
 
-                foreach (Mesh3D m in rd.meshes)
+                foreach (Mesh3D m in d.RenderDescription.meshes)
                 {
                     meshes.Add(m);
                 }
 
-                foreach (Point3D p in rd.xAxisPoints)
+                foreach (Point3D p in d.RenderDescription.xAxisPoints)
                 {
                     xAxes.Add(p);
                 }
 
-                foreach (Point3D p in rd.yAxisPoints)
+                foreach (Point3D p in d.RenderDescription.yAxisPoints)
                 {
                     yAxes.Add(p);
                 }
 
-                foreach (Point3D p in rd.zAxisPoints)
+                foreach (Point3D p in d.RenderDescription.zAxisPoints)
                 {
                     zAxes.Add(p);
                 }

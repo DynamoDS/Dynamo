@@ -33,16 +33,19 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
-    public abstract class dynXYZBase:dynNodeWithOneOutput, IDrawable, IClearable
+    public abstract class dynXYZBase : dynNodeWithOneOutput, IDrawable, IClearable
     {
         protected List<XYZ> pts = new List<XYZ>();
-
-        public RenderDescription Draw()
+        public RenderDescription RenderDescription { get; set; }
+        public void Draw()
         {
-            RenderDescription rd = new RenderDescription();
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
+
             foreach (XYZ pt in pts)
-                rd.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
-            return rd;
+                this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
         }
 
         public void ClearReferences()
@@ -54,13 +57,17 @@ namespace Dynamo.Nodes
     public abstract class dynCurveBase : dynNodeWithOneOutput, IDrawable, IClearable
     {
         protected List<Curve> crvs = new List<Curve>();
+        public RenderDescription RenderDescription { get; set; }
 
-        public RenderDescription Draw()
+        public void Draw()
         {
-            RenderDescription rd = new RenderDescription();
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
+
             foreach (Curve c in crvs)
-                DrawCurve(ref rd, c);
-            return rd;
+                DrawCurve(this.RenderDescription, c);
         }
 
         public void ClearReferences()
@@ -68,7 +75,7 @@ namespace Dynamo.Nodes
             crvs.Clear();
         }
 
-        private void DrawCurve(ref RenderDescription description, Curve curve)
+        private void DrawCurve(RenderDescription description, Curve curve)
         {
             IList<XYZ> points = curve.Tessellate();
 
@@ -86,16 +93,20 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class dynSolidBase: dynNodeWithOneOutput, IDrawable, IClearable
+    public abstract class dynSolidBase : dynNodeWithOneOutput, IDrawable, IClearable
     {
         protected List<Solid> solids = new List<Solid>();
+        public RenderDescription RenderDescription { get; set; }
 
-        public RenderDescription Draw()
+        public void Draw()
         {
-            RenderDescription rd = new RenderDescription();
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
+
             foreach (Solid s in solids)
-                dynRevitTransactionNode.DrawSolid(rd, s);
-            return rd;
+                dynRevitTransactionNode.DrawSolid(this.RenderDescription, s);
         }
 
         public void ClearReferences()
@@ -107,10 +118,14 @@ namespace Dynamo.Nodes
     public abstract class dynTransformBase : dynNodeWithOneOutput, IDrawable, IClearable
     {
         protected List<Transform> transforms = new List<Transform>();
+        public RenderDescription RenderDescription { get; set; }
 
-        public RenderDescription Draw()
+        public void Draw()
         {
-            RenderDescription rd = new RenderDescription();
+            if(this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
 
             foreach (Transform t in transforms)
             {
@@ -122,17 +137,15 @@ namespace Dynamo.Nodes
                 Point3D yEnd = new Point3D(y1.X, y1.Y, y1.Z);
                 Point3D zEnd = new Point3D(z1.X, z1.Y, z1.Z);
 
-                rd.xAxisPoints.Add(origin);
-                rd.xAxisPoints.Add(xEnd);
+                this.RenderDescription.xAxisPoints.Add(origin);
+                this.RenderDescription.xAxisPoints.Add(xEnd);
 
-                rd.yAxisPoints.Add(origin);
-                rd.yAxisPoints.Add(yEnd);
+                this.RenderDescription.yAxisPoints.Add(origin);
+                this.RenderDescription.yAxisPoints.Add(yEnd);
 
-                rd.zAxisPoints.Add(origin);
-                rd.zAxisPoints.Add(zEnd);
+                this.RenderDescription.zAxisPoints.Add(origin);
+                this.RenderDescription.zAxisPoints.Add(zEnd);
             }
-
-            return rd;
         }
 
         public void ClearReferences()
@@ -166,6 +179,48 @@ namespace Dynamo.Nodes
             XYZ pt = new XYZ(x, y, z);
             pts.Add(pt);
             return Value.NewContainer(pt);
+        }
+    }
+
+    [NodeName("XYZ from List of Numbers")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Creates a list of XYZs by taking sets of 3 numbers from an list.")]
+    public class dynXYZFromListOfNumbers : dynXYZBase
+    {
+        public dynXYZFromListOfNumbers()
+        {
+            InPortData.Add(new PortData("list", "The list of numbers from which to extract the XYZs.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("list", "A list of XYZs", typeof(Value.List)));
+
+            RegisterAllPorts();
+            this.ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+            {
+                throw new Exception("Input must be a list of numbers.");
+            }
+
+            FSharpList<Value> vals = ((Value.List)args[0]).Item;
+            if (vals.Count() % 3 != 0)
+                throw new Exception("List size must be a multiple of 3");
+
+            var results = FSharpList<Value>.Empty;
+
+            for(int i=0 ;i<vals.Count()-3; i+=3)
+            {
+                var x = (double)((Value.Number)vals[i]).Item;
+                var y = (double)((Value.Number)vals[i+1]).Item;
+                var z = (double)((Value.Number)vals[i+2]).Item;
+
+                XYZ pt = new XYZ(x,y,z);
+                pts.Add(pt);
+                results = FSharpList<Value>.Cons(Value.NewContainer(pt), results);
+            }
+
+            return Value.NewList(results);
         }
     }
 

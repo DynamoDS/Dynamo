@@ -16,6 +16,7 @@ using HelixToolkit.Wpf;
 
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using System.Xml;
 
 namespace Dynamo.Revit
 {
@@ -59,9 +60,85 @@ namespace Dynamo.Revit
             }
         }
 
-        public RenderDescription Draw()
+        public RenderDescription RenderDescription { get; set; }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-            RenderDescription description = new RenderDescription();
+            //Only save elements in the home workspace
+            if (WorkSpace is FuncWorkspace)
+                return;
+
+            foreach (var run in elements)
+            {
+                var outEl = xmlDoc.CreateElement("Run");
+
+                foreach (var id in run)
+                {
+                    Element e;
+                    if (dynUtils.TryGetElement(id, out e))
+                    {
+                        var elementStore = xmlDoc.CreateElement("Element");
+                        elementStore.InnerText = e.UniqueId;
+                        outEl.AppendChild(elementStore);
+                    }
+                }
+                dynEl.AppendChild(outEl);
+            }
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            var del = new DynElementUpdateDelegate(onDeleted);
+
+            elements.Clear();
+
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name == "Run")
+                {
+                    var runElements = new List<ElementId>();
+                    elements.Add(runElements);
+
+                    foreach (XmlNode element in subNode.ChildNodes)
+                    {
+                        if (element.Name == "Element")
+                        {
+                            var eid = subNode.InnerText;
+                            try
+                            {
+                                var id = UIDocument.Document.GetElement(eid).Id;
+                                runElements.Add(id);
+                                dynRevitSettings.Controller.RegisterDeleteHook(id, del);
+                            }
+                            catch (NullReferenceException)
+                            {
+                                dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        internal void RegisterAllElementsDeleteHook()
+        {
+            var del = new DynElementUpdateDelegate(onDeleted);
+
+            foreach (var eList in elements)
+            {
+                foreach (var id in eList)
+                    dynRevitSettings.Controller.RegisterDeleteHook(id, del);
+            }
+        }
+
+        #region Watch 3D Rendering
+
+        public void Draw()
+        {
+            if (this.RenderDescription == null)
+                this.RenderDescription = new Nodes.RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
 
             var drawaableRevitElements = elements.SelectMany(x => x.Select(y => dynRevitSettings.Doc.Document.GetElement(y)));
 
@@ -70,10 +147,8 @@ namespace Dynamo.Revit
             
             foreach (Element e in drawaableRevitElements)
             {
-                Draw(description, e);
+                Draw(this.RenderDescription, e);
             }
-
-            return description;
         }
 
         public static void DrawUndrawable(RenderDescription description, object obj)
@@ -297,6 +372,8 @@ namespace Dynamo.Revit
 
             DrawElement(description, obj);
         }
+
+        #endregion
         
         //TODO: Move handling of increments to wrappers for eval. Should never have to touch this in subclasses.
         /// <summary>
@@ -379,10 +456,7 @@ namespace Dynamo.Revit
             {
                 #region debug
 
-                Bench.Dispatcher.Invoke(new Action(
-                   () =>
-                      dynSettings.Controller.DynamoViewModel.Log("Starting a debug transaction for element: " + NickName)
-                ));
+                dynSettings.Controller.DynamoViewModel.Log("Starting a debug transaction for element: " + NickName);
 
                 IdlePromise.ExecuteOnIdle(
                    delegate

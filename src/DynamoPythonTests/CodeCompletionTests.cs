@@ -156,7 +156,7 @@ namespace DynamoPythonTests
 
             var completionData = completionProvider.GetCompletionData(str);
 
-            Assert.AreEqual(221, completionData.Length);
+            Assert.AreEqual(224, completionData.Length);
             Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
             Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
 

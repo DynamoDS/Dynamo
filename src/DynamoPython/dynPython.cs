@@ -222,7 +222,7 @@ namespace Dynamo.Nodes
     public static class PythonEngine
     {
         public delegate Value EvaluationDelegate(bool dirty, string script, IEnumerable<Binding> bindings);
-        public delegate RenderDescription DrawDelegate(Value val);
+        public delegate void DrawDelegate(Value val, RenderDescription rd);
 
         public static EvaluationDelegate Evaluator;
 
@@ -243,7 +243,7 @@ namespace Dynamo.Nodes
                 return engine.Evaluate(PythonBindings.Bindings.Concat(bindings));
             };
 
-            Drawing = delegate(Value val) { return new RenderDescription(); };
+            Drawing = delegate(Value val, RenderDescription rd) {};
         }
     }
 
@@ -258,6 +258,8 @@ namespace Dynamo.Nodes
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
         private string script = "#The input to this node will be stored in the IN variable.\ndataEnteringNode = IN\n\n#Assign your output to the OUT variable\nOUT = 0";
+
+        public RenderDescription RenderDescription{get;set;}
 
         public dynPython()
         {
@@ -412,11 +414,15 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        public RenderDescription Draw()
+        public void Draw()
         {
-            return PythonEngine.Drawing(lastEvalValue);
-        }
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
 
+            PythonEngine.Drawing(lastEvalValue, this.RenderDescription);
+        }
     }
 
 
