@@ -262,17 +262,13 @@ namespace Dynamo.Applications
                 dynRevitSettings.Doc = m_doc;
                 dynRevitSettings.DefaultLevel = defaultLevel;
 
-                
-                //get window handle
-                IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
-
                 //create dynamo
-                string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
-                var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
+                //string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
+                //var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
                 
-                //flag to run evalauation synchronously, helps to 
-                //avoid threading issues when testing.
-                dynamoController.Testing = true;
+                ////flag to run evalauation synchronously, helps to 
+                ////avoid threading issues when testing.
+                //dynamoController.Testing = true;
                 
                 //execute the tests
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code

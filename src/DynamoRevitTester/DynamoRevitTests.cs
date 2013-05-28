@@ -15,6 +15,7 @@ using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
+using Dynamo.Applications;
 
 using NUnit.Core;
 using NUnit.Framework;
@@ -56,20 +57,42 @@ namespace DynamoRevitTests
             string samplesLoc = Path.Combine(assDir, @"..\..\doc\distrib\Samples\");
             _samplesPath = Path.GetFullPath(samplesLoc);
 
+            string revitEmptyLoc = Path.Combine(_testPath, "empty.rfa");
+            string revitTestLoc = Path.Combine(_testPath, "shell.rfa");
+
+            if (dynRevitSettings.Doc.Application.ActiveUIDocument != null)
+            {
+                //TODO: find a better way of re-opening the same document
+                UIDocument initialDoc = dynRevitSettings.Revit.ActiveUIDocument;
+                if (initialDoc.Document.PathName != revitEmptyLoc)
+                {
+                    dynRevitSettings.Revit.OpenAndActivateDocument(revitEmptyLoc);
+                    initialDoc.Document.Close(false);
+                    initialDoc = dynRevitSettings.Revit.ActiveUIDocument;
+                }
+                dynRevitSettings.Revit.OpenAndActivateDocument(revitTestLoc);
+                initialDoc.Document.Close();
+            }
+            else
+                dynRevitSettings.Doc.Application.OpenAndActivateDocument(revitTestLoc);
+
+            dynRevitSettings.Doc = dynRevitSettings.Revit.ActiveUIDocument;
+
+            //create dynamo
+            string context = string.Format("{0} {1}", dynRevitSettings.Doc.Application.Application.VersionName, dynRevitSettings.Doc.Application.Application.VersionNumber);
+            var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
+
+            //flag to run evalauation synchronously, helps to 
+            //avoid threading issues when testing.
+            dynamoController.Testing = true;
+
         }
 
         [TearDown]
         //Called after each test method
         public void Cleanup()
         {
-            _trans = null;
-            using (_trans = new Transaction(dynRevitSettings.Doc.Document, "CreateAndDeleteAreReferencePoint"))
-            {
-                foreach (Element e in _elements)
-                {
-                    dynRevitSettings.Doc.Document.Delete(e);
-                }
-            }
+            dynRevitSettings.Controller.ShutDown();
         }
 
         [Test]
@@ -164,6 +187,46 @@ namespace DynamoRevitTests
         public void RefGridSlidersEndSample()
         {
             string samplePath = Path.Combine(_samplesPath, @".\02 Ref Grid Sliders\ref grid sliders - end.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void DivideSelectedCurveEndSample()
+        {
+            string samplePath = Path.Combine(_samplesPath, @".\03 Divide Selected Curve\divide selected curve - end.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void DivideSelectedCurveSample()
+        {
+            string samplePath = Path.Combine(_samplesPath, @".\03 Divide Selected Curve\divide selected curve.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void FormFromCurveSelectionListSample()
+        {
+            string samplePath = Path.Combine(_samplesPath, @".\04 Form From Curve Selection\form from curve selection - list.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void FormFromCurveSelectionSample()
+        {
+            string samplePath = Path.Combine(_samplesPath, @".\04 Form From Curve Selection\form from curve selection.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);

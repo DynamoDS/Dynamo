@@ -8,7 +8,7 @@ using Dynamo.Revit;
 
 namespace Dynamo.Controls
 {
-    class DynamoRevitViewModel : DynamoViewModel
+    public class DynamoRevitViewModel : DynamoViewModel
     {
         PredicateTraverser checkManualTransaction;
         PredicateTraverser checkRequiresTransaction;

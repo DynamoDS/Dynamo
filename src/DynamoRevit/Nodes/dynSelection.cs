@@ -190,8 +190,42 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            if (this.SelectedElement == null)
-                throw new Exception("Nothing selected.");
+            if (this.SelectedElement == null || dynSettings.Controller.Testing)
+            {
+                if (dynSettings.Controller.Testing)
+                {
+                    //if we're in test mode
+                    //try to pass out an object of the right type
+                    if (this is dynCurvesBySelection)
+                    {
+                        FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+                        fec.OfClass(typeof(CurveElement));
+
+                        if (fec.ToElements().Any())
+                        {
+                            //attempt to find elements that have not yet been selected
+                            //this is important for things like lofts where you cannot have
+                            //an element be the input for two parts of the form
+                            var curveBySelectionNodes = dynSettings.Controller.DynamoModel.Nodes
+                                .Where(x => (x is dynCurvesBySelection) && (x as dynCurvesBySelection).SelectedElement != null );
+                            var previouslySelectedElements = curveBySelectionNodes
+                                .Select(x => (x as dynCurvesBySelection).SelectedElement);
+                            foreach (Element e in fec.ToElements())
+                            {
+                                if (!previouslySelectedElements.Contains(e))
+                                {
+                                    this.SelectedElement = e;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                            throw new Exception("Suitable curve could not be found for testing.");
+                    }
+                }
+                else
+                    throw new Exception("Nothing selected.");
+            }
 
             return Value.NewContainer(this.SelectedElement);
         }
@@ -808,7 +842,8 @@ namespace Dynamo.Nodes
     {
         public dynCurvesBySelection()
             : base(new PortData("curve", "The curve", typeof(Value.Container)))
-        { }
+        { 
+        }
 
         protected override void OnSelectClick()
         {
@@ -830,6 +865,32 @@ namespace Dynamo.Nodes
             {
                 _selectionText = value;   
                 RaisePropertyChanged("SelectionText");
+            }
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name.Equals("instance"))
+                {
+                    Element saved = null;
+                    var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
+                    try
+                    {
+                        saved = dynRevitSettings.Doc.Document.GetElement(id) as Element; // FamilyInstance;
+                    }
+                    catch
+                    {
+                        dynSettings.Controller.DynamoViewModel.Log("Unable to find element with ID: " + id.IntegerValue);
+                    }
+
+                    //only set the selected element if the element
+                    //returned is of the type required by this node
+                    if(saved is CurveElement)
+                        this.SelectedElement = saved;
+
+                }
             }
         }
 
