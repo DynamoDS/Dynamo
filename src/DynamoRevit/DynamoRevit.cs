@@ -263,55 +263,54 @@ namespace Dynamo.Applications
                 dynRevitSettings.DefaultLevel = defaultLevel;
 
                 
-                    //get window handle
-                    IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
+                //get window handle
+                IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-                    //create dynamo
-                    string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
-                    var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
+                //create dynamo
+                string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
+                var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
                 
-                    //flag to run evalauation synchronously, helps to 
-                    //avoid threading issues when testing.
-                    dynamoController.Testing = true;
+                //flag to run evalauation synchronously, helps to 
+                //avoid threading issues when testing.
+                dynamoController.Testing = true;
                 
-                    //execute the tests
-                    //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
-                    string assLocation = Assembly.GetExecutingAssembly().Location;
-                    FileInfo fi = new FileInfo(assLocation);
-                    string testLoc = Path.Combine(fi.DirectoryName, @"DynamoRevitTests.dll");
+                //execute the tests
+                //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
+                string assLocation = Assembly.GetExecutingAssembly().Location;
+                FileInfo fi = new FileInfo(assLocation);
+                string testLoc = Path.Combine(fi.DirectoryName, @"DynamoRevitTests.dll");
 
-                    //Tests must be executed on the main thread in order to access the Revit API.
-                    //NUnit's SimpleTestRunner runs the tests on the main thread
-                    //http://stackoverflow.com/questions/16216011/nunit-c-run-specific-tests-through-coding?rq=1
-                    CoreExtensions.Host.InitializeService();
-                    SimpleTestRunner runner = new SimpleTestRunner();
-                    TestSuiteBuilder builder = new TestSuiteBuilder();
-                    TestPackage package = new TestPackage("DynamoRevitTests", new List<string>() { testLoc });
-                    runner.Load(package);
-                    TestSuite suite = builder.Build(package);
-                    TestFixture fixture = null;
-                    FindFixtureByName(out fixture, suite, "DynamoRevitTests");
-                    if (fixture == null)
-                        throw new Exception("Could not find DynamoRevitTests fixture.");
+                //Tests must be executed on the main thread in order to access the Revit API.
+                //NUnit's SimpleTestRunner runs the tests on the main thread
+                //http://stackoverflow.com/questions/16216011/nunit-c-run-specific-tests-through-coding?rq=1
+                CoreExtensions.Host.InitializeService();
+                SimpleTestRunner runner = new SimpleTestRunner();
+                TestSuiteBuilder builder = new TestSuiteBuilder();
+                TestPackage package = new TestPackage("DynamoRevitTests", new List<string>() { testLoc });
+                runner.Load(package);
+                TestSuite suite = builder.Build(package);
+                TestFixture fixture = null;
+                FindFixtureByName(out fixture, suite, "DynamoRevitTests");
+                if (fixture == null)
+                    throw new Exception("Could not find DynamoRevitTests fixture.");
                 
-                    foreach (TestMethod t in fixture.Tests)
+                foreach (TestMethod t in fixture.Tests)
+                {
+                    Debug.WriteLine(string.Format("Running test {0}", t.TestName));
+                    try
                     {
-                        Debug.WriteLine(string.Format("Running test {0}", t.TestName));
-                        try
-                        {
-                            TestName testName = t.TestName;
-                            TestFilter filter = new NameFilter(testName);
-                            TestResult result = t.Run(new RevitTestEventListener(), filter);
-                            ResultSummarizer summ = new ResultSummarizer(result);
-                            Assert.AreEqual(1, summ.ResultCount);
-                        }
-                        catch (Exception e)
-                        {
-                            DynamoLogger.Instance.Log(e.Message);
-                            DynamoLogger.Instance.Log(string.Format("Failed to run test : {0}", t.TestName));
-                        }
+                        TestName testName = t.TestName;
+                        TestFilter filter = new NameFilter(testName);
+                        TestResult result = t.Run(new RevitTestEventListener(), filter);
+                        ResultSummarizer summ = new ResultSummarizer(result);
+                        Assert.AreEqual(1, summ.ResultCount);
                     }
-                
+                    catch (Exception e)
+                    {
+                        DynamoLogger.Instance.Log(e.Message);
+                        DynamoLogger.Instance.Log(string.Format("Failed to run test : {0}", t.TestName));
+                    }
+                }
 
                 IdlePromise.ExecuteOnIdle(delegate
                 {

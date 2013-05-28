@@ -170,7 +170,6 @@ namespace DynamoRevitTests
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
         }
 
-
         private static void OpenAllSamplesInDirectory(DirectoryInfo di)
         {
             foreach (FileInfo file in di.GetFiles())
