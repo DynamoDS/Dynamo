@@ -431,8 +431,10 @@ namespace Dynamo
 
             //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
             //from the idle thread. Otherwise, just run it in this thread.
-            if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread)
+            if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !this.Testing)
+            {
                 IdlePromise.ExecuteOnIdle(cleanup, false);
+            }
             else
                 cleanup();
         }
@@ -447,13 +449,18 @@ namespace Dynamo
                 bool manualTrans = topElements.Any((DynamoViewModel as DynamoRevitViewModel).CheckManualTransaction.TraverseUntilAny);
 
                 //Can we avoid running everything in the Revit Idle thread?
-                bool noIdleThread = manualTrans || !topElements.Any((DynamoViewModel as DynamoRevitViewModel).CheckRequiresTransaction.TraverseUntilAny);
+                bool noIdleThread = manualTrans || 
+                    !topElements.Any((DynamoViewModel as DynamoRevitViewModel).CheckRequiresTransaction.TraverseUntilAny);
 
                 //If we don't need to be in the idle thread...
-                if (noIdleThread)
+                if (noIdleThread || this.Testing)
                 {
                     DynamoLogger.Instance.Log("Running expression in evaluation thread...");
                     (DynamoViewModel as DynamoRevitViewModel).TransMode = DynamoRevitViewModel.TransactionMode.Manual; //Manual transaction control
+
+                    if(this.Testing)
+                        (DynamoViewModel as DynamoRevitViewModel).TransMode = DynamoRevitViewModel.TransactionMode.Automatic;
+
                     this.InIdleThread = false; //Not in idle thread at the moment
                     base.Run(topElements, runningExpression); //Just run the Run Delegate
                 }
@@ -461,10 +468,13 @@ namespace Dynamo
                 {
                     DynamoLogger.Instance.Log("Running expression in Revit's Idle thread...");
                     (DynamoViewModel as DynamoRevitViewModel).TransMode = DynamoRevitViewModel.TransactionMode.Automatic; //Automatic transaction control
+
+                    Debug.WriteLine("Adding a run to the idle stack.");
                     this.InIdleThread = true; //Now in the idle thread.
                     IdlePromise.ExecuteOnIdle(new Action(
-                        () => base.Run(topElements, runningExpression)),
-                        false); //Execute the Run Delegate in the Idle thread.
+                            () => base.Run(topElements, runningExpression)),
+                            false); //Execute the Run Delegate in the Idle thread.
+                    
                 }
             }
             else //If we are in debug mode...

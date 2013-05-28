@@ -262,8 +262,7 @@ namespace Dynamo.Applications
                 dynRevitSettings.Doc = m_doc;
                 dynRevitSettings.DefaultLevel = defaultLevel;
 
-                IdlePromise.ExecuteOnIdle(delegate
-                {
+                
                     //get window handle
                     IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
@@ -273,8 +272,8 @@ namespace Dynamo.Applications
                 
                     //flag to run evalauation synchronously, helps to 
                     //avoid threading issues when testing.
-                    dynamoController.RunEvaluationSynchronously = true;
-
+                    dynamoController.Testing = true;
+                
                     //execute the tests
                     //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
                     string assLocation = Assembly.GetExecutingAssembly().Location;
@@ -294,16 +293,25 @@ namespace Dynamo.Applications
                     FindFixtureByName(out fixture, suite, "DynamoRevitTests");
                     if (fixture == null)
                         throw new Exception("Could not find DynamoRevitTests fixture.");
-
+                
                     foreach (TestMethod t in fixture.Tests)
                     {
-                        TestName testName = t.TestName;
-                        TestFilter filter = new NameFilter(testName);
-                        TestResult result = t.Run(new RevitTestEventListener(), filter);
-                        ResultSummarizer summ = new ResultSummarizer(result);
-                        Assert.AreEqual(1, summ.ResultCount);
+                        Debug.WriteLine(string.Format("Running test {0}", t.TestName));
+                        try
+                        {
+                            TestName testName = t.TestName;
+                            TestFilter filter = new NameFilter(testName);
+                            TestResult result = t.Run(new RevitTestEventListener(), filter);
+                            ResultSummarizer summ = new ResultSummarizer(result);
+                            Assert.AreEqual(1, summ.ResultCount);
+                        }
+                        catch (Exception e)
+                        {
+                            DynamoLogger.Instance.Log(e.Message);
+                            DynamoLogger.Instance.Log(string.Format("Failed to run test : {0}", t.TestName));
+                        }
                     }
-                });
+                
 
                 IdlePromise.ExecuteOnIdle(delegate
                 {

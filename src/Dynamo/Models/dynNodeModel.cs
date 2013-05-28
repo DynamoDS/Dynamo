@@ -681,6 +681,9 @@ namespace Dynamo.Nodes
 
 
                     Error(ex.Message);
+
+                    if (dynSettings.Controller.Testing)
+                        throw new Exception(ex.Message);
                 }
 
                 OnEvaluate();
