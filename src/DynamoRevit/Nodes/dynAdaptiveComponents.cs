@@ -55,6 +55,7 @@ namespace Dynamo.Nodes
             {
                 //create
                 ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(dynRevitSettings.Doc.Document, fs);
+                Elements.Add(ac.Id);
             }
 
             if (ac == null)
@@ -75,8 +76,6 @@ namespace Dynamo.Nodes
                 point.Position = pt;
                 i++;
             }
-
-            Elements.Add(ac.Id);
 
             return Value.NewContainer(ac);
         }
