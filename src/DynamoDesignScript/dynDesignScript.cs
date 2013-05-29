@@ -341,10 +341,11 @@ namespace Dynamo.Nodes
             return Value.NewList(nodeOutputObjects);
         }
 
-        public override RenderDescription Draw()
+        public override void Draw()
         {
-            // get the revit objects which can be drawn
-            RenderDescription revitDescription = base.Draw();
+            base.Draw();
+
+            RenderDescription revitDescription = this.RenderDescription;
 
             //generate the node-specific representations
             foreach (GraphicObject g in _nodeSpecificGraphicObjects)
@@ -413,7 +414,7 @@ namespace Dynamo.Nodes
                 revitDescription.meshes.Add(new Mesh3D(points, indicesBack)); 
             }
 
-            return revitDescription;
+            this.RenderDescription = revitDescription;
         }
 
         void editWindowItem_Click(object sender, RoutedEventArgs e)
