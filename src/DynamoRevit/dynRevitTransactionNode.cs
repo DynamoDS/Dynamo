@@ -133,7 +133,7 @@ namespace Dynamo.Revit
 
         #region Watch 3D Rendering
 
-        public void Draw()
+        public virtual void Draw()
         {
             if (this.RenderDescription == null)
                 this.RenderDescription = new Nodes.RenderDescription();

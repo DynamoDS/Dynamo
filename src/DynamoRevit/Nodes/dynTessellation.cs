@@ -11,6 +11,9 @@ using Dynamo.FSchemeInterop;
 using MIConvexHull;
 using Dynamo.Revit;
 
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
+
 namespace Dynamo.Nodes
 {
     [NodeName("Delaunay")]
@@ -18,6 +21,8 @@ namespace Dynamo.Nodes
     [NodeDescription("Create a delaunay tesselation from a number of reference points.")]
     public class dynDelaunayTessellation : dynRevitTransactionNodeWithOneOutput
     {
+        List<Line> _tessellationLines = new List<Line>();
+
         public dynDelaunayTessellation()
         {
             InPortData.Add(new PortData("pts", "List of reference points.", typeof(Value.List)));
@@ -29,15 +34,9 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            foreach (var e in this.Elements)
-            {
-                this.DeleteElement(e);
-            }
-            
             var input = args[0];
             var result = FSharpList<Value>.Empty;
 
-            //see dynSketchPlane
             if (input.IsList)
             {
                 var uvList = (input as Value.List).Item;
@@ -55,12 +54,13 @@ namespace Dynamo.Nodes
                 //ConvexHull<IVertex, DefaultConvexFace<IVertex>> ch = ConvexHull.Create(verts);
                 VoronoiMesh<Vertex, Cell, VoronoiEdge<Vertex, Cell>> voronoiMesh = voronoiMesh = VoronoiMesh.Create<Vertex, Cell>(verts);
 
-                object arg0 = ((Value.Container)args[1]).Item;
-                if (arg0 is Reference)
-                {
-                    Reference faceRef = arg0 as Reference;
-                    Face f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+                _tessellationLines.Clear();
 
+                object arg1 = ((Value.Container)args[1]).Item;
+                Face f = arg1 as Face;
+
+                if (f != null)
+                {
                     foreach (VoronoiEdge<Vertex, Cell> edge in voronoiMesh.Edges)
                     {
                         var from = edge.Source.Circumcenter;
@@ -82,33 +82,56 @@ namespace Dynamo.Nodes
                             continue;
                         }
 
+                        Line l = this.UIDocument.Application.Application.Create.NewLineBound(start, end);
+
+                        _tessellationLines.Add(l);
+
+                        result = FSharpList<Value>.Cons(Value.NewContainer(l), result);
+
+                        //ReferencePoint startRefPoint = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
+                        //ReferencePoint endRefPoint = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
+
+                        //ReferencePointArray refPointArray = new ReferencePointArray();
+                        //refPointArray.Append(startRefPoint);
+                        //refPointArray.Append(endRefPoint);
+
+                        //CurveElement lineElement = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPointArray);
+
+                        //this.Elements.Add(startRefPoint.Id);
+                        //this.Elements.Add(endRefPoint.Id);
+                        //this.Elements.Add(lineElement.Id);
+
                         //FSharpList<Value> pts = FSharpList<Value>.Empty;
+
                         //pts = FSharpList<Value>.Cons(Value.NewContainer(start), pts);
                         //pts = FSharpList<Value>.Cons(Value.NewContainer(end), pts);
 
-                        //Line l = this.UIDocument.Application.Application.Create.NewLineBound(start, end);
-
-                        ReferencePoint startRefPoint = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
-                        ReferencePoint endRefPoint = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
-
-                        ReferencePointArray refPointArray = new ReferencePointArray();
-                        refPointArray.Append(startRefPoint);
-                        refPointArray.Append(endRefPoint);
-
-                        CurveElement lineElement = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPointArray);
-
-                        this.Elements.Add(startRefPoint.Id);
-                        this.Elements.Add(endRefPoint.Id);
-                        this.Elements.Add(lineElement.Id);
-
                         //result = FSharpList<Value>.Cons(Value.NewList(pts), result);
-                        result = FSharpList<Value>.Cons(Value.NewContainer(lineElement), result);
+                        
+                        //result = FSharpList<Value>.Cons(Value.NewContainer(lineElement), result);
                     }
                 }
+
                 return Value.NewList(result);
             }
 
             return Value.NewList(result);
+        }
+
+        public override void Draw()
+        {
+            if (this.RenderDescription == null)
+                this.RenderDescription = new Nodes.RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
+
+            foreach (Line l in _tessellationLines)
+            {
+                RenderDescription.lines.Add(new Point3D(l.get_EndPoint(0).X, 
+                    l.get_EndPoint(0).Y, l.get_EndPoint(0).Z));
+                RenderDescription.lines.Add(new Point3D(l.get_EndPoint(1).X,
+                    l.get_EndPoint(1).Y, l.get_EndPoint(1).Z));
+            }
         }
     }
 
