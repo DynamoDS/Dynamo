@@ -32,6 +32,7 @@ namespace DynamoRevitTests
         List<Element> _elements = new List<Element>();
         string _testPath;
         string _samplesPath;
+        string _defsPath;
 
         [TestFixtureSetUp]
         public void InitFixture()
@@ -57,6 +58,10 @@ namespace DynamoRevitTests
             //get the samples path
             string samplesLoc = Path.Combine(assDir, @"..\..\doc\distrib\Samples\");
             _samplesPath = Path.GetFullPath(samplesLoc);
+
+            //set the custom node loader search path
+            string defsLoc = Path.Combine(assDir, @".\definitions\");
+            _defsPath = Path.GetFullPath(defsLoc);
 
             //string revitEmptyLoc = Path.Combine(_testPath, "empty.rfa");
             //string revitTestLoc = Path.Combine(_testPath, "shell.rfa");
@@ -309,19 +314,27 @@ namespace DynamoRevitTests
         [Test]
         public void GraphFunctionAndConnectPointsSample()
         {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function and connect points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(Path.Combine(_defsPath, "GraphFunction.dyf")));
+            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(Path.Combine(_defsPath, "ConnectPoints.dyf")));
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
         }
 
         [Test]
         public void ScalableGraphFunctionSample()
         {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\scalable graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
+
+            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(Path.Combine(_defsPath, "Cf(dx).dyf")));
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
@@ -330,8 +343,12 @@ namespace DynamoRevitTests
         [Test]
         public void GraphFunctionSample()
         {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
+
+            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(Path.Combine(_defsPath, "GraphFunction.dyf")));
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
