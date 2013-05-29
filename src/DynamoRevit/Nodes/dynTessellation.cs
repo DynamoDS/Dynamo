@@ -56,11 +56,11 @@ namespace Dynamo.Nodes
 
                 _tessellationLines.Clear();
 
-                object arg0 = ((Value.Container)args[1]).Item;
-                if (arg0 is Face)
-                {
-                    Face f = arg0 as Face;
+                object arg1 = ((Value.Container)args[1]).Item;
+                Face f = arg1 as Face;
 
+                if (f != null)
+                {
                     foreach (VoronoiEdge<Vertex, Cell> edge in voronoiMesh.Edges)
                     {
                         var from = edge.Source.Circumcenter;
