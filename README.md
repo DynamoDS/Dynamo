@@ -1,4 +1,4 @@
-#Dynamo: Visual Programming for Revit#
+#Dynamo: Visual Programming for BIM#
 
 ## Description ##
 The intent of this project is to provide a visual interface for building interesting parametric functionality on top of that already offered by Revit. Dynamo aims to be accessable both to the non-programmer and the programmer alike with the ability to visually script behavior and define your own nodes, but also the ability to write functionality using Python or by compiling .net code into dlls that can be linked at run time.
