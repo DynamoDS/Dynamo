@@ -37,7 +37,6 @@ namespace Dynamo.Nodes
             var input = args[0];
             var result = FSharpList<Value>.Empty;
 
-            //see dynSketchPlane
             if (input.IsList)
             {
                 var uvList = (input as Value.List).Item;
@@ -58,10 +57,9 @@ namespace Dynamo.Nodes
                 _tessellationLines.Clear();
 
                 object arg0 = ((Value.Container)args[1]).Item;
-                if (arg0 is Reference)
+                if (arg0 is Face)
                 {
-                    Reference faceRef = arg0 as Reference;
-                    Face f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+                    Face f = arg0 as Face;
 
                     foreach (VoronoiEdge<Vertex, Cell> edge in voronoiMesh.Edges)
                     {
@@ -84,13 +82,11 @@ namespace Dynamo.Nodes
                             continue;
                         }
 
-                        FSharpList<Value> pts = FSharpList<Value>.Empty;
-                        pts = FSharpList<Value>.Cons(Value.NewContainer(start), pts);
-                        pts = FSharpList<Value>.Cons(Value.NewContainer(end), pts);
-
                         Line l = this.UIDocument.Application.Application.Create.NewLineBound(start, end);
 
                         _tessellationLines.Add(l);
+
+                        result = FSharpList<Value>.Cons(Value.NewContainer(l), result);
 
                         //ReferencePoint startRefPoint = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
                         //ReferencePoint endRefPoint = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
@@ -105,11 +101,17 @@ namespace Dynamo.Nodes
                         //this.Elements.Add(endRefPoint.Id);
                         //this.Elements.Add(lineElement.Id);
 
-                        result = FSharpList<Value>.Cons(Value.NewList(pts), result);
-                        result = FSharpList<Value>.Cons(Value.NewContainer(l), result);
+                        //FSharpList<Value> pts = FSharpList<Value>.Empty;
+
+                        //pts = FSharpList<Value>.Cons(Value.NewContainer(start), pts);
+                        //pts = FSharpList<Value>.Cons(Value.NewContainer(end), pts);
+
+                        //result = FSharpList<Value>.Cons(Value.NewList(pts), result);
+                        
                         //result = FSharpList<Value>.Cons(Value.NewContainer(lineElement), result);
                     }
                 }
+
                 return Value.NewList(result);
             }
 
