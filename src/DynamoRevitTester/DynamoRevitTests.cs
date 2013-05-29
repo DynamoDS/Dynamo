@@ -286,6 +286,74 @@ namespace DynamoRevitTests
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
         }
 
+        [Test]
+        public void FormFromCurveSelectionSample()
+        {
+            ModelCurve mc1;
+            ModelCurve mc2;
+            CreateTwoModelCurves(out mc1, out mc2);
+
+            string samplePath = Path.Combine(_samplesPath, @".\04 Form From Curve Selection\form from curve selection.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            //populate the selection nodes in the sample
+            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection);
+            ((dynCurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
+            ((dynCurvesBySelection)selectionNodes.ElementAt(1)).SelectedElement = mc2;
+
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void GraphFunctionAndConnectPointsSample()
+        {
+
+            string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function and connect points.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void ScalableGraphFunctionSample()
+        {
+            string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\scalable graph function.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void GraphFunctionSample()
+        {
+            string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+
+        private static void OpenAllSamplesInDirectory(DirectoryInfo di)
+        {
+            foreach (FileInfo file in di.GetFiles())
+            {
+                if(file.Extension != ".dyn")
+                    continue;
+                dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(file.FullName);
+                dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            }
+
+            foreach (DirectoryInfo dir in di.GetDirectories())
+            {
+                OpenAllSamplesInDirectory(dir);
+            }
+        }
+
         /// <summary>
         /// Creates two model curves separated in Z.
         /// </summary>
@@ -330,42 +398,6 @@ namespace DynamoRevitTests
                 mc1 = dynRevitSettings.Doc.Document.FamilyCreate.NewModelCurve(c1, sp1);
 
                 _trans.Commit();
-            }
-        }
-
-        [Test]
-        public void FormFromCurveSelectionSample()
-        {
-            ModelCurve mc1;
-            ModelCurve mc2;
-            CreateTwoModelCurves(out mc1, out mc2);
-
-            string samplePath = Path.Combine(_samplesPath, @".\04 Form From Curve Selection\form from curve selection.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-
-            //populate the selection nodes in the sample
-            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection);
-            ((dynCurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
-            ((dynCurvesBySelection)selectionNodes.ElementAt(1)).SelectedElement = mc2;
-
-            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
-        }
-
-        private static void OpenAllSamplesInDirectory(DirectoryInfo di)
-        {
-            foreach (FileInfo file in di.GetFiles())
-            {
-                if(file.Extension != ".dyn")
-                    continue;
-                dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(file.FullName);
-                dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
-            }
-
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                OpenAllSamplesInDirectory(dir);
             }
         }
     }
