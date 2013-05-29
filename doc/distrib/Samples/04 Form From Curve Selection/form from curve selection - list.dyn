@@ -1,7 +1,6 @@
 <dynWorkspace X="7.14999999999981" Y="33.716">
   <dynElements>
     <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="a2cdfed6-8c03-4573-a790-b1a8c1b3a401" nickname="Curves by Selection" x="98" y="207.75" lacing="First">
-      <instance id="42314" />
     </Dynamo.Nodes.dynCurvesBySelection>
     <Dynamo.Nodes.dynCurveRef type="Dynamo.Nodes.dynCurveRef" guid="936ac174-79bd-4fdd-9c26-29a91d49f26b" nickname="Curve Reference" x="278" y="266.25" lacing="First" />
     <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="e77adb5b-c9db-403c-92a1-fe083b22674f" nickname="list" x="605" y="386.5" lacing="Disabled">
@@ -13,7 +12,6 @@
       <System.Boolean value="True" />
     </Dynamo.Nodes.dynBoolSelector>
     <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="fbb24bdf-101c-4002-b6bc-64b301905521" nickname="Curves by Selection" x="62" y="545.25" lacing="First">
-      <instance id="42268" />
     </Dynamo.Nodes.dynCurvesBySelection>
     <Dynamo.Nodes.dynCurveRef type="Dynamo.Nodes.dynCurveRef" guid="3ba117d7-3980-4d1d-a07f-b48110012812" nickname="Curve Reference" x="268" y="491.75" lacing="First" />
     <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="eecdaf74-8ea3-47bb-8fea-3be4b4a97b14" nickname="list" x="439.25" y="340.75" lacing="Disabled">

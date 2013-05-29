@@ -190,40 +190,43 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            if (this.SelectedElement == null || dynSettings.Controller.Testing)
+            if (this.SelectedElement == null)
             {
-                if (dynSettings.Controller.Testing)
-                {
-                    //if we're in test mode
-                    //try to pass out an object of the right type
-                    if (this is dynCurvesBySelection)
-                    {
-                        FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-                        fec.OfClass(typeof(CurveElement));
+                //if (dynSettings.Controller.Testing)
+                //{
+                //    //if we're in test mode
+                //    //try to pass out an object of the right type
+                //    if (this is dynCurvesBySelection)
+                //    {
+                //        FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+                //        fec.OfClass(typeof(CurveElement));
 
-                        if (fec.ToElements().Any())
-                        {
-                            //attempt to find elements that have not yet been selected
-                            //this is important for things like lofts where you cannot have
-                            //an element be the input for two parts of the form
-                            var curveBySelectionNodes = dynSettings.Controller.DynamoModel.Nodes
-                                .Where(x => (x is dynCurvesBySelection) && (x as dynCurvesBySelection).SelectedElement != null );
-                            var previouslySelectedElements = curveBySelectionNodes
-                                .Select(x => (x as dynCurvesBySelection).SelectedElement);
-                            foreach (Element e in fec.ToElements())
-                            {
-                                if (!previouslySelectedElements.Contains(e))
-                                {
-                                    this.SelectedElement = e;
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                            throw new Exception("Suitable curve could not be found for testing.");
-                    }
-                }
-                else
+                //        if (fec.ToElements().Any())
+                //        {
+                //            //attempt to find elements that have not yet been selected
+                //            //this is important for things like lofts where you cannot have
+                //            //an element be the input for two parts of the form
+                //            var curveBySelectionNodes = dynSettings.Controller.DynamoModel.Nodes
+                //                .Where(x => (x is dynCurvesBySelection) && (x as dynCurvesBySelection).SelectedElement != null);
+                //            var previouslySelectedElements = curveBySelectionNodes
+                //                .Select(x => (x as dynCurvesBySelection).SelectedElement);
+                //            foreach (Element e in fec.ToElements())
+                //            {
+                //                if (e is ModelCurve)
+                //                {
+                //                    if (!previouslySelectedElements.Contains(e))
+                //                    {
+                //                        this.SelectedElement = e;
+                //                        break;
+                //                    }
+                //                }
+                //            }
+                //        }
+                //        else
+                //            throw new Exception("Suitable curve could not be found for testing.");
+                //    }
+                //}
+                //else
                     throw new Exception("Nothing selected.");
             }
 
