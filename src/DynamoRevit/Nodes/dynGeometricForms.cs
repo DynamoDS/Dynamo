@@ -134,6 +134,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Creates a free form <FreeFormElement.Create>")]
     public class dynFreeForm : dynRevitTransactionNodeWithOneOutput
     {
+        public static Dictionary <ElementId, Solid> freeFormSolids = null;
         public dynFreeForm()
         {
             InPortData.Add(new PortData("solid", "solid to use for Freeform", typeof(Value.List)));
@@ -141,6 +142,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("form", "Free Form", typeof(object)));
 
             RegisterAllPorts();
+            if (freeFormSolids == null)
+                freeFormSolids = new Dictionary<ElementId, Solid>();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -183,7 +186,10 @@ namespace Dynamo.Nodes
                 }
             }
             if (ffe != null)
+            {
                 this.Elements.Add(ffe.Id);
+                freeFormSolids[ffe.Id] = mySolid;
+            }
             else if (!methodCalled)
                 throw new Exception("This method is not available before 2014 release.");
 

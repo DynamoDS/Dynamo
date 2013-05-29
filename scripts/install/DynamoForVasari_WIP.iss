@@ -1,14 +1,14 @@
 [Setup]
 AppName=Dynamo
-AppVerName=Dynamo WIP 0.3.0 for Vasari Beta 2 
+AppVerName=Dynamo WIP 0.3.4 for Vasari Beta 2 
 AppPublisher=Autodesk, Inc.
 AppID={{5F61EC1C-39EF-4E21-80DA-55621BB20B2A}
 AppCopyright=
 AppPublisherURL=http://labs.autodesk.com/utilities/vasari
 AppSupportURL=
 AppUpdatesURL=
-AppVersion=0.3.0
-VersionInfoVersion=0.3.0
+AppVersion=0.3.4
+VersionInfoVersion=0.3.4
 VersionInfoCompany=Autodesk
 VersionInfoDescription=Dynamo WIP for Vasari Beta 2
 VersionInfoTextVersion=Dynamo WIP for Vasari Beta 2

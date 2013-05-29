@@ -30,7 +30,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -47,6 +47,19 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="nunit.core">
+      <HintPath>..\..\extern\NUnit\nunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core.interfaces">
+      <HintPath>..\..\extern\NUnit\nunit.core.interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.util">
+      <HintPath>..\..\extern\NUnit\nunit.util.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -63,6 +76,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -88,10 +102,12 @@
     <Compile Include="Nodes\dynFamilies.cs" />
     <Compile Include="Nodes\dynGeometricForms.cs" />
     <Compile Include="Nodes\dynGeometry.cs" />
+    <Compile Include="Nodes\dynIntersection.cs" />
     <Compile Include="Nodes\dynMeasurement.cs" />
     <Compile Include="Nodes\dynModelUpdater.cs" />
-    <Compile Include="Nodes\dynNormals.cs" />
+    <Compile Include="Nodes\dynAnalyze.cs" />
     <Compile Include="Nodes\dynPoints.cs" />
+    <Compile Include="Nodes\dynProjection.cs" />
     <Compile Include="Nodes\dynSelection.cs" />
     <Compile Include="Nodes\dynSimplexNoise.cs" />
     <Compile Include="Nodes\dynSolarRadiation.cs" />

@@ -23,7 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -71,8 +71,8 @@
       <DependentUpon>dynScriptEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DynamoCompletionData.cs" />
-    <Compile Include="PythonConsoleCompletionProvider.cs" />
+    <Compile Include="IronPythonCompletionData.cs" />
+    <Compile Include="IronPythonCompletionProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
@@ -96,6 +96,14 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ICSharpCode.PythonBinding.Resources.Python.xshd" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\class.png" />
+    <EmbeddedResource Include="Resources\field.png" />
+    <EmbeddedResource Include="Resources\method.png" />
+    <EmbeddedResource Include="Resources\namespace.png" />
+    <EmbeddedResource Include="Resources\privateMethod.png" />
+    <EmbeddedResource Include="Resources\property.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

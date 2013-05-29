@@ -359,8 +359,8 @@ namespace Dynamo.Nodes
         public dynSortWith()
             : base("sort-with")
         {
-            InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
             InPortData.Add(new PortData("c(x, y)", "Comparitor", typeof(object)));
+            InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -375,8 +375,8 @@ namespace Dynamo.Nodes
         public dynSortBy()
             : base("sort-by")
         {
-            InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
             InPortData.Add(new PortData("c(x)", "Key Mapper", typeof(object)));
+            InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -464,6 +464,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("combined", "Combined lists", typeof(Value.List)));
 
             RegisterAllPorts();
+            this.ArgumentLacing = LacingStrategy.Disabled;
         }
 
         protected override string getInputRootName()
@@ -1628,23 +1629,13 @@ namespace Dynamo.Nodes
         {
             var result = args[0];
 
-            Bench.Dispatcher.Invoke(new Action(
-               delegate
-               {
-                   Controller.DynamoViewModel.Log(FScheme.print(result));
-               }
-            ));
+            Controller.DynamoViewModel.Log(FScheme.print(result));
 
             if (Controller.DynamoViewModel.RunInDebug)
             {
-                button.Dispatcher.Invoke(new Action(
-                   delegate
-                   {
-                       enabled = true;
-                       Select();
-                       Controller.DynamoViewModel.ShowElement(this);
-                   }
-                ));
+                enabled = true;
+                Select();
+                Controller.DynamoViewModel.ShowElement(this);
 
                 while (enabled)
                 {
@@ -1977,7 +1968,6 @@ namespace Dynamo.Nodes
         public dynDoubleInput()
         {
             RegisterAllPorts();
-            Value = 0.0;
         }
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
@@ -2002,7 +1992,8 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
-            
+
+            tb.Text = "0.0";
         }
 
         public override double Value
@@ -2662,6 +2653,25 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("n", "A number", typeof(Value.Number)));
             OutPortData.Add(new PortData("s", "A string", typeof(Value.String)));
             RegisterAllPorts();
+        }
+    }
+
+    [NodeName("String Length")]
+    [NodeDescription("Calculates the length of a string.")]
+    [NodeCategory(BuiltinNodeCategories.CORE_STRINGS)]
+    public class dynStringLen : dynNodeWithOneOutput
+    {
+        public dynStringLen()
+        {
+            InPortData.Add(new PortData("s", "A string", typeof(Value.String)));
+            OutPortData.Add(new PortData("len(s)", "Length of given string", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewNumber(((Value.String)args[0]).Item.Length);
         }
     }
 

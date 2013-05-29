@@ -364,6 +364,40 @@ namespace Dynamo.Utilities
                 }
             }
 
+
+            public static Reference RequestEdgeReferenceSelection(UIDocument doc, string message)
+            {
+                try
+                {
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                    choices.Elements.Clear();
+
+                    //MessageBox.Show(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
+
+                    //create some geometry options so that we compute references
+                    //Autodesk.Revit.DB.Options opts = new Options();
+                    //opts.ComputeReferences = true;
+                    //opts.DetailLevel = ViewDetailLevel.Medium;
+                    //opts.IncludeNonVisibleObjects = false;
+
+                    Reference edgeRef = doc.Selection.PickObject(ObjectType.Edge);
+
+                    //if (faceRef != null)
+                    //{
+                    //    GeometryElement geom = dynRevitSettings.Doc.Document.GetElement(faceRef).get_Geometry(opts); 
+                    //    dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
+                    //}
+                    return edgeRef;
+                }
+                catch (Exception ex)
+                {
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
+                    return null;
+                }
+           }
+
+
             public static Form RequestFormSelection(UIDocument doc, string message)
             {
                 try
@@ -523,6 +557,40 @@ namespace Dynamo.Utilities
                         else return null;
                     }
                     else return null;
+                }
+                catch (Exception ex)
+                {
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
+                    return null;
+                }
+            }
+
+            public static Element RequestModelElementSelection(UIDocument doc, string message)
+            {
+                try
+                {
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+
+                    choices.Elements.Clear();
+
+                    //MessageBox.Show(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
+
+                    Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
+
+                    if (fsRef != null)
+                    {
+                        Element selectedElement = doc.Document.GetElement(fsRef.ElementId);
+                        if (selectedElement is FamilyInstance || selectedElement is HostObject ||
+                             selectedElement is ImportInstance ||
+                              selectedElement is CombinableElement)
+                            return selectedElement;
+                        else
+                            return null;
+
+                    }
+                    else
+                        return null;
                 }
                 catch (Exception ex)
                 {

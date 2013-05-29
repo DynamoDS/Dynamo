@@ -29,6 +29,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoDesignScript", "Dynam
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevitTests", "DynamoRevitTests\DynamoRevitTests.csproj", "{2C1C4B42-4D95-496A-9078-28309DB47128}"
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPythonTests", "DynamoPythonTests\DynamoPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoNode", "DynamoNode\DynamoNode.csproj", "{9E5E449D-0933-4409-8E1F-06AFF56E5416}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevitTests", "DynamoRevitTester\DynamoRevitTests.csproj", "{9ADADC68-36A3-4A21-9B54-298154A88720}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Dynamo.vsmdi
@@ -142,6 +146,24 @@ Global
 		{773988FE-EDF6-45CB-A63F-482955EB3553}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{773988FE-EDF6-45CB-A63F-482955EB3553}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{773988FE-EDF6-45CB-A63F-482955EB3553}.Release|x86.ActiveCfg = Release|Any CPU
+		{9E5E449D-0933-4409-8E1F-06AFF56E5416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E5E449D-0933-4409-8E1F-06AFF56E5416}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E5E449D-0933-4409-8E1F-06AFF56E5416}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9E5E449D-0933-4409-8E1F-06AFF56E5416}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9E5E449D-0933-4409-8E1F-06AFF56E5416}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E5E449D-0933-4409-8E1F-06AFF56E5416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E5E449D-0933-4409-8E1F-06AFF56E5416}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9E5E449D-0933-4409-8E1F-06AFF56E5416}.Release|x86.ActiveCfg = Release|Any CPU
+		{9ADADC68-36A3-4A21-9B54-298154A88720}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ADADC68-36A3-4A21-9B54-298154A88720}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ADADC68-36A3-4A21-9B54-298154A88720}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9ADADC68-36A3-4A21-9B54-298154A88720}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9ADADC68-36A3-4A21-9B54-298154A88720}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9ADADC68-36A3-4A21-9B54-298154A88720}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ADADC68-36A3-4A21-9B54-298154A88720}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ADADC68-36A3-4A21-9B54-298154A88720}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9ADADC68-36A3-4A21-9B54-298154A88720}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9ADADC68-36A3-4A21-9B54-298154A88720}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,6 +6,7 @@ import sys
 import shutil
 import re
 import os
+import fnmatch
 from optparse import OptionParser
 
 from email.MIMEMultipart import MIMEMultipart
@@ -74,7 +75,6 @@ def main():
 
 		if not options.debug:
 			update_realtimedev( installer_dir, installer_bin_dir, repo_root, autodoc_root, options.realtimedev_root )
-		
 	else:
 		print 'build failed'
 
@@ -105,39 +105,57 @@ def rm_dir(path):
 
 def interpret_unit_tests( result ):
 
+	if (result == None or result == ""):
+		result = "Unit tests failed to run"
+
 	parsed_results = {}
+	
+	try: 
+	
+		parsed_results['tests_run'] = int( re.search( r"Tests run: [0-9]+", result).group(0).split(' ')[2] )
+		parsed_results['errors'] = int( re.search( r"Errors: [0-9]+", result).group(0).split(' ')[1] )
+		parsed_results['failures'] = int( re.search( r"Failures: [0-9]+", result).group(0).split(' ')[1] )
+		parsed_results['inconclusives'] = int( re.search( r"Inconclusive: [0-9]+", result).group(0).split(' ')[1] )
+		parsed_results['time'] = float( re.search( r"Time: [0-9.]+", result).group(0).split(' ')[1] )
 
-	parsed_results['tests_run'] = int( re.search( r"Tests run: [0-9]+", result).group(0).split(' ')[2] )
-	parsed_results['errors'] = int( re.search( r"Errors: [0-9]+", result).group(0).split(' ')[1] )
-	parsed_results['failures'] = int( re.search( r"Failures: [0-9]+", result).group(0).split(' ')[1] )
-	parsed_results['inconclusives'] = int( re.search( r"Inconclusive: [0-9]+", result).group(0).split(' ')[1] )
-	parsed_results['time'] = float( re.search( r"Time: [0-9.]+", result).group(0).split(' ')[1] )
+		parsed_results['not_run'] = int( re.search( r"Not run: [0-9]+", result).group(0).split(' ')[2] )
+		parsed_results['invalid'] = int( re.search( r"Invalid: [0-9]+", result).group(0).split(' ')[1] )
+		parsed_results['ignored'] = int( re.search( r"Ignored: [0-9]+", result).group(0).split(' ')[1] )
+		parsed_results['skipped'] = int( re.search( r"Skipped: [0-9]+", result).group(0).split(' ')[1] )
 
-	parsed_results['not_run'] = int( re.search( r"Not run: [0-9]+", result).group(0).split(' ')[2] )
-	parsed_results['invalid'] = int( re.search( r"Invalid: [0-9]+", result).group(0).split(' ')[1] )
-	parsed_results['ignored'] = int( re.search( r"Ignored: [0-9]+", result).group(0).split(' ')[1] )
-	parsed_results['skipped'] = int( re.search( r"Skipped: [0-9]+", result).group(0).split(' ')[1] )
+		parsed_results["success"] = False
 
-	parsed_results["success"] = False
+		if parsed_results['errors'] == 0 and parsed_results['failures'] == 0 and parsed_results['inconclusives'] == 0:
+			parsed_results["success"] = True
 
-	if parsed_results['errors'] == 0 and parsed_results['failures'] == 0 and parsed_results['inconclusives'] == 0:
-		parsed_results["success"] = True
+		parsed_results["errors_and_failures"] = ""
 
-	parsed_results["errors_and_failures"] = ""
+		parsed_results["full_results"] = result
 
-	parsed_results["full_results"] = result
+		ef = re.search(r"\nErrors and Failures:(.|\n)+\r\n\r\n\n", result)
 
-	ef = re.search(r"\nErrors and Failures:(.|\n)+\r\n\r\n\n", result)
+		if ef != None:
+			parsed_results["errors_and_failures"] = ef.group(0)
 
-	if ef != None:
-		parsed_results["errors_and_failures"] = ef.group(0)
+		return parsed_results
 
-	return parsed_results
+	except: 
+		
+		return parsed_results
 
+def enumerate_tests(path):
+
+	# match *Tests.dll
+	testnames = []
+	for file in os.listdir(path):
+	    if fnmatch.fnmatch(file, '*Tests.dll'):
+	        testnames.append(file)
+	return testnames
+	
 def run_unit_tests(path, build_config = "Debug"):
 
 	print 'running unit tests....'
-	return run_cmd( ['nunit-console', 'DynamoElementsTests.dll'], cwd= form_path( [path, "bin", build_config ]) )
+	return run_cmd( ['nunit-console', '/noshadow'] + enumerate_tests(form_path( [path, "bin", build_config ])), cwd= form_path( [path, "bin", build_config ]) )
 
 def mkdir(path):
 

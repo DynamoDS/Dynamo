@@ -1,0 +1,28 @@
+<dynWorkspace X="0" Y="0" Name="combine2" Category="Misc" ID="c6968c19-6f97-45bb-af3a-de50d4c551a3">
+  <dynElements>
+    <Dynamo.Nodes.dynCombine type="Dynamo.Nodes.dynCombine" guid="9fe86ab9-faca-4f4c-b8d9-b294069aec47" nickname="Combine" x="453.568951335535" y="86.6380536037674" lacing="First" inputs="3" />
+    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="59f39364-fce4-49c8-a461-075855ec7a34" nickname="List" x="250" y="0" lacing="Disabled">
+      <Input name="item(s)" />
+    </Dynamo.Nodes.dynNewList>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="61776d84-b8cd-4e32-aeae-a2052f041026" nickname="Input" x="0" y="0" lacing="First">
+      <Symbol value="list1" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="23e7eb5d-83bd-47d1-80b3-69c075178b64" nickname="Input" x="0" y="150" lacing="First">
+      <Symbol value="list2" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="925a011f-0aaa-4e08-89eb-092f71662287" nickname="Input" x="0" y="300" lacing="First">
+      <Symbol value="list3" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynOutput type="Dynamo.Nodes.dynOutput" guid="bad2e225-c9f8-4adb-9da1-644ab2481e0c" nickname="Output" x="691.535618002202" y="0" lacing="First">
+      <Symbol value="combined" />
+    </Dynamo.Nodes.dynOutput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="9fe86ab9-faca-4f4c-b8d9-b294069aec47" start_index="0" end="bad2e225-c9f8-4adb-9da1-644ab2481e0c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="59f39364-fce4-49c8-a461-075855ec7a34" start_index="0" end="9fe86ab9-faca-4f4c-b8d9-b294069aec47" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="61776d84-b8cd-4e32-aeae-a2052f041026" start_index="0" end="9fe86ab9-faca-4f4c-b8d9-b294069aec47" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="23e7eb5d-83bd-47d1-80b3-69c075178b64" start_index="0" end="9fe86ab9-faca-4f4c-b8d9-b294069aec47" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="925a011f-0aaa-4e08-89eb-092f71662287" start_index="0" end="9fe86ab9-faca-4f4c-b8d9-b294069aec47" end_index="3" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

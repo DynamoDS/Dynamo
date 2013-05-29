@@ -22,26 +22,42 @@ using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
+using System.Windows.Media.Media3D;
 
 namespace Dynamo.Nodes
 {
 
-    public abstract class dynParticleSystemBase : dynRevitTransactionNodeWithOneOutput, IDrawable
+    public abstract class dynParticleSystemBase : dynNodeWithOneOutput, IDrawable
     {
         internal ParticleSystem particleSystem;
 
-        public RenderDescription Draw()
+        public RenderDescription RenderDescription
         {
-            RenderDescription rd = new RenderDescription();
+            get;
+            set;
+        }
+
+        public void Draw()
+        {
+            if (this.RenderDescription == null)
+                this.RenderDescription = new Nodes.RenderDescription();
 
             if (particleSystem == null)
-                return rd;
+                return;
 
             for(int i=0; i<particleSystem.numberOfParticles(); i++) 
             {
                 Particle p = particleSystem.getParticle(i);
                 XYZ pos = p.getPosition();
-                rd.points.Add(new System.Windows.Media.Media3D.Point3D(pos.X, pos.Y, pos.Z));
+                if (i < this.RenderDescription.points.Count())
+                {
+                    this.RenderDescription.points[i] = new Point3D(pos.X, pos.Y, pos.Z);
+                }
+                else
+                {
+                    Point3D pt = new System.Windows.Media.Media3D.Point3D(pos.X, pos.Y, pos.Z);
+                    this.RenderDescription.points.Add(pt);
+                }
             }
 
             for (int i = 0; i < particleSystem.numberOfSprings(); i++) 
@@ -50,11 +66,22 @@ namespace Dynamo.Nodes
                 XYZ pos1 = ps.getOneEnd().getPosition();
                 XYZ pos2 = ps.getTheOtherEnd().getPosition();
 
-                rd.lines.Add(new System.Windows.Media.Media3D.Point3D(pos1.X, pos1.Y, pos1.Z));
-                rd.lines.Add(new System.Windows.Media.Media3D.Point3D(pos2.X, pos2.Y, pos2.Z));
+                if(i*2+1 < this.RenderDescription.lines.Count())
+                {
+                    this.RenderDescription.lines[i*2] = new Point3D(pos1.X, pos1.Y, pos1.Z);
+                    this.RenderDescription.lines[i*2+1] = new Point3D(pos2.X, pos2.Y, pos2.Z);
+                }
+                else
+                {
+                    Point3D pt1 = new System.Windows.Media.Media3D.Point3D(pos1.X, pos1.Y, pos1.Z);
+                    Point3D pt2 = new System.Windows.Media.Media3D.Point3D(pos2.X, pos2.Y, pos2.Z);
+
+                    this.RenderDescription.lines.Add(pt1);
+                    this.RenderDescription.lines.Add(pt2);
+                }
             }
-            return rd;
         }
+
     }
 
     [NodeName("Create Particle System")]
@@ -62,7 +89,9 @@ namespace Dynamo.Nodes
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
     class dynDynamicRelaxation :  dynParticleSystemBase
     {
- 
+        int oldNumX = -1;
+        int oldNumY = -1;
+
         public dynDynamicRelaxation()
         {
             InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(Value.List)));
@@ -130,23 +159,27 @@ namespace Dynamo.Nodes
             Particle fixedPart1 = particleSystem.makeParticleFromElementID(pt1.Id, mass, pt1.Position, true); // true means 'make fixed'
 
             XYZ partXYZ2 = partXYZ1 + new XYZ(10, 0, 0);
-            Line tempLine = this.UIDocument.Application.Application.Create.NewLineBound(partXYZ1, partXYZ2);
+            //Line tempLine = this.UIDocument.Application.Application.Create.NewLineBound(partXYZ1, partXYZ2);
+            XYZ vector = partXYZ2 - partXYZ1;
+            XYZ step = vector.Divide(numX);
 
             for (int j = 0; j < numX; j++)//step along curve and evaluate at each step, making sure to thread in the existing fixed parts
             {
-                double curveParam = 0;
+                //double curveParam = 0;
                 XYZ pointOnLine;
+
+                pointOnLine = partXYZ1 + step.Multiply(j);
 
                 if (j == 0) // starting point
                 {
-                    curveParam = (double)j / numX;
-                    pointOnLine = tempLine.Evaluate(curveParam, true);
+                    //curveParam = (double)j / numX;
+                    //pointOnLine = tempLine.Evaluate(curveParam, true);
                     p = particleSystem.makeParticle(mass, pointOnLine, true); // make first particle fixed
                 }
                 else // middle points
                 {
-                    curveParam = (double)j / numX;
-                    pointOnLine = tempLine.Evaluate(curveParam, true);
+                    //curveParam = (double)j / numX;
+                    //pointOnLine = tempLine.Evaluate(curveParam, true);
                     p = particleSystem.makeParticle(mass, pointOnLine, false); // make a new particle along curve at j-th point on line
                     particleSystem.makeSpring(particleSystem.getParticle((j - 1)), p, springRestLength, springConstant, springDampening);//make a new spring and connect it to the last-made point
                 }
@@ -166,7 +199,7 @@ namespace Dynamo.Nodes
 
             for (int j = 0; j < numX; j++)//step along curve and evaluate at each step, making sure to thread in the existing fixed parts
             {
-                double curveParam = 0;
+                //double curveParam = 0;
                 XYZ pointOnLine;
 
                 if (j == 0) // starting point
@@ -191,49 +224,50 @@ namespace Dynamo.Nodes
         }
 
         // geometric test, fairly expensive. obsoleted by CreateParticleByElementID and GetParticleFromElementID
-        public ReferencePoint FindRefPointFromXYZ(XYZ xyz)         
-        {
-            Element el;
-            ReferencePoint rp;
+        //public ReferencePoint FindRefPointFromXYZ(XYZ xyz)         
+        //{
+        //    Element el;
+        //    ReferencePoint rp;
 
-            foreach(ElementId id in this.Elements)
-            {
+        //    foreach(ElementId id in this.Elements)
+        //    {
 
-                dynUtils.TryGetElement(id, out el);
-                rp = el as ReferencePoint;
+        //        dynUtils.TryGetElement(id, out el);
+        //        rp = el as ReferencePoint;
 
-                if (rp != null && rp.Position.IsAlmostEqualTo(xyz))// note this is not gauranteed to be unique. there may be mulitple coincident refpoints and this utill will only return the first found
-                {
-                    return rp;
+        //        if (rp != null && rp.Position.IsAlmostEqualTo(xyz))// note this is not gauranteed to be unique. there may be mulitple coincident refpoints and this utill will only return the first found
+        //        {
+        //            return rp;
 
-                }
-            }
+        //        }
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         // geometric test, fairly expensive. 
-        public ReferencePoint FindRefPointWithCoincidentXYZ(ReferencePoint rp)
-        {
-            Element el;
-            ReferencePoint rp2;
+        //public ReferencePoint FindRefPointWithCoincidentXYZ(ReferencePoint rp)
+        //{
+        //    Element el;
+        //    ReferencePoint rp2;
 
-            foreach (ElementId id in this.Elements) // compare to inputed points
-            {
-                dynUtils.TryGetElement(id, out el);
-                rp2 = el as ReferencePoint;
+        //    foreach (ElementId id in this.Elements) // compare to inputed points
+        //    {
+        //        dynUtils.TryGetElement(id, out el);
+        //        rp2 = el as ReferencePoint;
 
-                if (rp != null && rp2 != null && rp.Position.IsAlmostEqualTo(rp2.Position))// note this is not gauranteed to be unique. there may be mulitple coincident refpoints and this utill will only return the first found
-                {
-                    return rp2; // found a match
-                }
-            }
+        //        if (rp != null && rp2 != null && rp.Position.IsAlmostEqualTo(rp2.Position))// note this is not gauranteed to be unique. there may be mulitple coincident refpoints and this utill will only return the first found
+        //        {
+        //            return rp2; // found a match
+        //        }
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+
             var input = args[0];//point list
             double d = ((Value.Number)args[1]).Item;//dampening
             double s = ((Value.Number)args[2]).Item;//spring constant
@@ -243,7 +277,34 @@ namespace Dynamo.Nodes
             int numY = (int)((Value.Number)args[6]).Item;//number of particles in Y
             double g = ((Value.Number)args[7]).Item;//gravity z component
 
-            particleSystem.Clear();
+            //if the particle system has a different layout, then
+            //clear it instead of updating
+            bool reset = false;
+            if(oldNumX == -1 || 
+                oldNumY == -1 || 
+                oldNumX != numX || 
+                oldNumY != numY ||
+                particleSystem.numberOfParticles() == 0)
+            {
+                reset = true;
+                particleSystem.Clear();
+                oldNumX = numX;
+                oldNumY = numY;
+
+                //if we have an existing RenderDescription
+                //then clear it
+                if (dynSettings.Controller.UIDispatcher != null)
+                {
+                    dynSettings.Controller.UIDispatcher.Invoke(new Action(
+                       delegate
+                       {
+                           if (this.RenderDescription != null)
+                               this.RenderDescription.ClearAll();
+                       }
+                    ));
+                }
+            }
+
             particleSystem.setGravity(g);
 
             ReferencePoint pt1;
@@ -256,13 +317,39 @@ namespace Dynamo.Nodes
 
                 Array pointArray = pointList.ToArray();
 
-                pt1 = (ReferencePoint)((Value.Container)pointArray.GetValue(0)).Item as ReferencePoint;
-                pt2 = (ReferencePoint)((Value.Container)pointArray.GetValue(1)).Item as ReferencePoint;
+                for (int i = 0; i < pointArray.Length-1; i++)
+                {
 
-                (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt1.Id, ChangeTypeEnum.Modify, UpdateStart);
-                (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt2.Id, ChangeTypeEnum.Modify, UpdateEnd);
+                    pt1 = (ReferencePoint)((Value.Container)pointArray.GetValue(i)).Item as ReferencePoint;
+                    pt2 = (ReferencePoint)((Value.Container)pointArray.GetValue(i + 1)).Item as ReferencePoint;
 
-                CreateChainWithTwoFixedEnds(pt1, pt2, numX, d, r, s, m);
+                    (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt1.Id, ChangeTypeEnum.Modify, UpdateStart);
+                    (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt2.Id, ChangeTypeEnum.Modify, UpdateEnd);
+
+                    if (reset)
+                    {
+                        CreateChainWithTwoFixedEnds(pt1, pt2, numX, d, r, s, m);
+                    }
+                    else
+                    {
+                        //update the spring values
+                        for (int j = 0; j < particleSystem.numberOfSprings(); j++)
+                        {
+                            ParticleSpring spring = particleSystem.getSpring(j);
+                            spring.setDamping(d);
+                            spring.setRestLength(r);
+                            spring.setSpringConstant(s);
+                        }
+                        for (int j = 0; j < particleSystem.numberOfParticles(); j++)
+                        {
+                            Particle p = particleSystem.getParticle(j);
+                            p.setMass(m);
+                        }
+
+                        particleSystem.getParticle(0).setPosition(pt1.Position);
+                        particleSystem.getParticle(particleSystem.numberOfParticles()-1).setPosition(pt2.Position);
+                    }
+                }
 
                 return Value.NewContainer(particleSystem);
             }
@@ -271,7 +358,8 @@ namespace Dynamo.Nodes
                 throw new Exception("You must pass in a list of reference points.");
             }
 
-            return Value.NewContainer(particleSystem);
+            //setupLineTest(numX, numY, d, r, s, m);
+            //return Value.NewContainer(particleSystem);
         }
 
         public void UpdateStart(List<ElementId> updated)

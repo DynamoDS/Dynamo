@@ -149,7 +149,7 @@ namespace Dynamo.Nodes
 
         public void ProcessCode(string code)
         {
-            code = "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\n" + code;
+            code = "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n" + code;
             this.source = engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
         }
 
@@ -222,7 +222,7 @@ namespace Dynamo.Nodes
     public static class PythonEngine
     {
         public delegate Value EvaluationDelegate(bool dirty, string script, IEnumerable<Binding> bindings);
-        public delegate RenderDescription DrawDelegate(Value val);
+        public delegate void DrawDelegate(Value val, RenderDescription rd);
 
         public static EvaluationDelegate Evaluator;
 
@@ -243,7 +243,7 @@ namespace Dynamo.Nodes
                 return engine.Evaluate(PythonBindings.Bindings.Concat(bindings));
             };
 
-            Drawing = delegate(Value val) { return new RenderDescription(); };
+            Drawing = delegate(Value val, RenderDescription rd) {};
         }
     }
 
@@ -257,7 +257,9 @@ namespace Dynamo.Nodes
 
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
-        private string script = "# Write your script here.";
+        private string script = "#The input to this node will be stored in the IN variable.\ndataEnteringNode = IN\n\n#Assign your output to the OUT variable\nOUT = 0";
+
+        public RenderDescription RenderDescription{get;set;}
 
         public dynPython()
         {
@@ -367,17 +369,23 @@ namespace Dynamo.Nodes
             this.dirty = true;
         }
 
+
+        #region Autocomplete
+
         CompletionWindow completionWindow;
-        private PythonConsoleCompletionDataProvider completionProvider = new PythonConsoleCompletionDataProvider();
+        private IronPythonCompletionProvider completionProvider = new IronPythonCompletionProvider();
 
         void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
             if (e.Text == ".")
             {
                 completionWindow = new CompletionWindow(editWindow.editText.TextArea);
-                IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
+                var data = completionWindow.CompletionList.CompletionData;
 
-                var completions = completionProvider.GenerateCompletionData(editWindow.editText.Text);
+                var completions = completionProvider.GetCompletionData(editWindow.editText.Text.Substring(0, editWindow.editText.CaretOffset));
+
+                if (completions.Length == 0)
+                    return;
 
                 foreach (var ele in completions)
                 {
@@ -404,9 +412,16 @@ namespace Dynamo.Nodes
             }
         }
 
-        public RenderDescription Draw()
+        #endregion
+
+        public void Draw()
         {
-            return PythonEngine.Drawing(lastEvalValue);
+            if (this.RenderDescription == null)
+                this.RenderDescription = new RenderDescription();
+            else
+                this.RenderDescription.ClearAll();
+
+            PythonEngine.Drawing(lastEvalValue, this.RenderDescription);
         }
     }
 

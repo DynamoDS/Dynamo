@@ -9,18 +9,35 @@ namespace Dynamo.Nodes
         public Point3DCollection points = null;
         public Point3DCollection lines = null;
         public List<Mesh3D> meshes = null;
+        public Point3DCollection xAxisPoints = null;
+        public Point3DCollection yAxisPoints = null;
+        public Point3DCollection zAxisPoints = null;
 
         public RenderDescription()
         {
             points = new Point3DCollection();
             lines = new Point3DCollection();
             meshes = new List<Mesh3D>();
+            xAxisPoints = new Point3DCollection();
+            yAxisPoints = new Point3DCollection();
+            zAxisPoints = new Point3DCollection();
+        }
+
+        public void ClearAll()
+        {
+            points.Clear();
+            lines.Clear();
+            meshes.Clear();
+            xAxisPoints.Clear();
+            yAxisPoints.Clear();
+            zAxisPoints.Clear();
         }
     }
     
     public interface IDrawable
     {
-        RenderDescription Draw();
+        RenderDescription RenderDescription { get; set; }
+        void Draw();
     }
 
     /// <summary>

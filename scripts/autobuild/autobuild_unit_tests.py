@@ -1,6 +1,6 @@
 import random
 import unittest
-import autobuild_test as ab
+import autobuild as ab
 
 class AutoBuildTests(unittest.TestCase):
         
@@ -31,8 +31,15 @@ class AutoBuildTests(unittest.TestCase):
 
         installer_result = "installer_result"
 
-        ab.get_email_content( repo_date, pull_result, build_results, installer_result, commits )
+        ab.get_email_content( repo_date, pull_result, build_results, installer_result, commits, "unit test results" )
 
+    def test_enumerate_tests(self):
+
+        testfns = ab.enumerate_tests('tests')
+        self.assertIn('Test2Tests.dll', testfns)
+        self.assertIn('TestTests.dll', testfns)
+        self.assertTrue(type(testfns) is str)
+        self.assertEqual(testfns, "Test2Tests.dll TestTests.dll")
     
     def test_interpret_build(self):
         
@@ -77,7 +84,7 @@ class AutoBuildTests(unittest.TestCase):
         installer_result = "installer_result"
         
         try:
-            log = ab.log_results(log_prefix, pull_result, build_results, installer_result, commits)
+            log = ab.log_results(log_prefix, pull_result, build_results, installer_result, commits, "unit test result")
             self.assertTrue( type(log) is str )
         except Exception:
             self.fail("log_result raised Exception unexpectedly!")

@@ -110,7 +110,7 @@ namespace Dynamo.Controls
             }
         }
 
-        protected override dynFunction CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition functionDefinition)
+        public override dynFunction CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition functionDefinition)
         {
             if (functionDefinition.Workspace.Nodes.Any(x => x is dynRevitTransactionNode)
                 || functionDefinition.Dependencies.Any(d => d.Workspace.Nodes.Any(x => x is dynRevitTransactionNode)))

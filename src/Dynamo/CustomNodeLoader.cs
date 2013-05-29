@@ -96,6 +96,24 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
+        ///     Import a dyf file for eventual initialization
+        /// </summary>
+        /// <returns>False if we failed to get data from the path, otherwise true</returns>
+        public bool AddFileToPath(string file)
+        {
+            Guid guid;
+            string name;
+            string category;
+            if (!GetHeaderFromPath(file, out guid, out name, out category))
+            {
+                return false;
+            }
+
+            this.SetNodeInfo(name, category, guid, file);
+            return true;
+        }
+
+        /// <summary>
         ///     Enumerates all of the files in the search path and get's their guids.
         ///     Does not instantiate the nodes.
         /// </summary>
@@ -109,13 +127,7 @@ namespace Dynamo.Utilities
 
             foreach (string file in Directory.EnumerateFiles(SearchPath, "*.dyf"))
             {
-                Guid guid;
-                string name;
-                string category;
-                if (GetHeaderFromPath(file, out guid, out name, out category))
-                {
-                    this.SetNodeInfo(name, category, guid, file);
-                }
+                this.AddFileToPath(file);
             }
             
             return true;
@@ -350,7 +362,7 @@ namespace Dynamo.Utilities
                 outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
             }
 
-            result = new dynFunction(inputs, outputs, def);
+            result = controller.DynamoViewModel.CreateFunction(inputs, outputs, def);
             result.NickName = ws.Name;
 
             return true;
