@@ -354,6 +354,45 @@ namespace DynamoRevitTests
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
         }
 
+        [Test]
+        public void FamilyTypeSelectorNode()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @"SelectFamily.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+            
+            //open the test file
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+
+            //first assert that we have only one node
+            var nodeCount = dynSettings.Controller.DynamoModel.Nodes.Count;
+            Assert.AreEqual(1, nodeCount);
+
+            //assert that we have the right number of family symbols
+            //in the node's items source
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(Family));
+            int count = 0;
+            foreach (Family f in fec.ToElements())
+            {
+                foreach (FamilySymbol fs in f.Symbols)
+                {
+                    count++;
+                }
+            }
+
+            dynFamilyTypeSelector typeSelNode = (dynFamilyTypeSelector)dynSettings.Controller.DynamoModel.Nodes.First();
+            Assert.AreEqual(typeSelNode.Items.Count, count);
+
+            //assert that the selected index is correct
+            Assert.AreEqual(typeSelNode.SelectedIndex, count - 1);
+
+            //now try and set the selected index to something
+            //greater than what is possible
+            typeSelNode.SelectedIndex = count + 5;
+            Assert.AreEqual(typeSelNode.SelectedIndex, -1);
+        }
 
         private static void OpenAllSamplesInDirectory(DirectoryInfo di)
         {

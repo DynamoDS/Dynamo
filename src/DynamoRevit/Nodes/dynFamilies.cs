@@ -75,7 +75,14 @@ namespace Dynamo.Nodes
             get { return selectedIndex; }
             set
             {
-                selectedIndex = value;
+                //do not allow selected index to
+                //go out of range of the items collection
+                if (value > Items.Count - 1)
+                {
+                    selectedIndex = -1;
+                }
+                else
+                    selectedIndex = value;
                 RaisePropertyChanged("SelectedIndex");
             }
         }
