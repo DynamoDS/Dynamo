@@ -117,9 +117,13 @@ namespace DynamoRevitTests
                 FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
                 ElementClassFilter curves = new ElementClassFilter(typeof(CurveElement));
                 ElementClassFilter refPts = new ElementClassFilter(typeof(ReferencePoint));
+                ElementClassFilter forms = new ElementClassFilter(typeof(GenericForm));
+
                 IList<ElementFilter> filters = new List<ElementFilter>();
                 filters.Add(curves);
                 filters.Add(refPts);
+                filters.Add(forms);
+
                 ElementFilter filter = new LogicalOrFilter(filters);
 
                 fec.WherePasses(filter);
@@ -392,6 +396,67 @@ namespace DynamoRevitTests
             //greater than what is possible
             typeSelNode.SelectedIndex = count + 5;
             Assert.AreEqual(typeSelNode.SelectedIndex, -1);
+        }
+
+        [Test]
+        public void ModelCurveNode()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\ModelCurve.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(CurveElement));
+
+            //verify one model curve created
+            int count = fec.ToElements().Count;
+            Assert.IsInstanceOf(typeof(ModelCurve), fec.ToElements().First());
+            Assert.AreEqual(1, count);
+        }
+
+        [Test]
+        public void ReferenceCurveNode()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\ReferenceCurve.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(CurveElement));
+
+            //verify one model curve created
+            int count = fec.ToElements().Count;
+            Assert.IsInstanceOf(typeof(ModelCurve), fec.ToElements().First());
+            Assert.IsTrue(((ModelCurve)fec.ToElements().First()).IsReferenceLine);
+            Assert.AreEqual(1, count);
+        }
+
+        [Test]
+        public void LoftNode()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Loft.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(GenericForm));
+
+            //verify one loft created
+            int count = fec.ToElements().Count;
+            Assert.IsInstanceOf(typeof(Form), fec.ToElements().First());
+            Assert.AreEqual(1, count);
         }
 
         private static void OpenAllSamplesInDirectory(DirectoryInfo di)

@@ -45,6 +45,75 @@ namespace Dynamo.Nodes
             Curve c = (Curve)((Value.Container)args[0]).Item;
             SketchPlane sp = (SketchPlane)((Value.Container)args[1]).Item;
 
+            
+            ModelCurve mc;
+            XYZ spOrigin = sp.Plane.Origin;
+            XYZ modelOrigin = XYZ.Zero;
+            Transform trf = Transform.get_Translation(spOrigin);
+            //trf =  trf.Multiply(Transform.get_Rotation(spOrigin,XYZ.BasisZ,spOrigin.AngleOnPlaneTo(XYZ.BasisY,spOrigin)));
+            //Curve ct = c.get_Transformed(trf);
+
+
+            // http://wikihelp.autodesk.com/Revit/enu/2013/Help/00006-API_Developer's_Guide/0074-Revit_Ge74/0114-Sketchin114/0117-ModelCur117
+            // The SetPlaneAndCurve() method and the Curve and SketchPlane property setters are used in different situations.
+            // When the new Curve lies in the same SketchPlane, or the new SketchPlane lies on the same planar face with the old SketchPlane, use the Curve or SketchPlane property setters.
+            // If new Curve does not lay in the same SketchPlane, or the new SketchPlane does not lay on the same planar face with the old SketchPlane, you must simultaneously change the Curve value and the SketchPlane value using SetPlaneAndCurve() to avoid internal data inconsistency.
+
+
+            if (this.Elements.Any())
+            {
+                Element e;
+                if (dynUtils.TryGetElement(this.Elements[0], out e))
+                {
+                    mc = e as ModelCurve;
+                    mc.SketchPlane = sp;
+                    var loc = mc.Location as LocationCurve;
+                    loc.Curve = c;
+
+                }
+                else
+                {
+                    mc = this.UIDocument.Document.IsFamilyDocument
+                       ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+                       : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+                    this.Elements[0] = mc.Id;
+                    mc.SketchPlane = sp;
+
+
+                }
+            }
+            else
+            {
+                mc = this.UIDocument.Document.IsFamilyDocument
+                   ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+                   : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+                this.Elements.Add(mc.Id);
+                mc.SketchPlane = sp;
+            }
+
+            return Value.NewContainer(mc);
+        }
+    }
+
+    [NodeName("Reference Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a model curve.")]
+    public class dynReferenceCurve : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynReferenceCurve()
+        {
+            InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Value.Container)));
+            InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("mc", "Model Curve", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve c = (Curve)((Value.Container)args[0]).Item;
+            SketchPlane sp = (SketchPlane)((Value.Container)args[1]).Item;
+
 
             ModelCurve mc;
             XYZ spOrigin = sp.Plane.Origin;
@@ -90,6 +159,8 @@ namespace Dynamo.Nodes
                 this.Elements.Add(mc.Id);
                 mc.SketchPlane = sp;
             }
+
+            mc.ChangeToReferenceLine();
 
             return Value.NewContainer(mc);
         }
