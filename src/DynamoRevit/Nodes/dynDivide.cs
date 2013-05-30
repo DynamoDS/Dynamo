@@ -97,7 +97,7 @@ namespace Dynamo.Nodes
                               Element e;
 
                               //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count], out e))
+                              if (dynUtils.TryGetElement(this.Elements[count],typeof(DividedPath), out e))
                               {
                                   //...if we find a divided path and if we're successful matching it to the doc, update it's properties... 
                                   divPath = e as DividedPath;
@@ -193,7 +193,7 @@ namespace Dynamo.Nodes
                 {
                     Element e;
                     //...try to get the first one...
-                    if (dynUtils.TryGetElement(this.Elements[0], out e))
+                    if (dynUtils.TryGetElement(this.Elements[0],typeof(DividedPath), out e))
                     {
                         //..and if we do, update it's data.
                         divPath = e as DividedPath;
@@ -379,7 +379,7 @@ namespace Dynamo.Nodes
                 {
                     Element e;
                     //...try to get the first one...
-                    if (dynUtils.TryGetElement(this.Elements[0], out e))
+                    if (dynUtils.TryGetElement(this.Elements[0],typeof(DividedSurface), out e))
                     {
                         //..and if we do, update it's data.
                         divSurf = e as DividedSurface;

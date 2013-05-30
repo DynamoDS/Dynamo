@@ -14,10 +14,12 @@
 
 using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using System.Xml;
+using System.Windows.Data;
 
 using Autodesk.Revit.DB;
 
@@ -32,27 +34,65 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Select Fam")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
-    [NodeDescription("Select a Family Type from a drop down list.")]
-    [IsInteractive(true)]
-    public class dynFamilyTypeSelector: dynNodeWithOneOutput
+    /// <summary>
+    /// A class used to store a name and associated item for a drop down menu
+    /// </summary>
+    public class DynamoDropDownItem
     {
-        ComboBox combo;
-        Dictionary<string, FamilySymbol> comboHash = new Dictionary<string, FamilySymbol>();
+        public string Name { get; set; }
+        public object Item { get; set; }
 
-        public dynFamilyTypeSelector()
+        public override string ToString()
         {
-            OutPortData.Add(new PortData("", "Family type", typeof(Value.Container)));
+            return Name;
+        }
 
-            RegisterAllPorts();
+        public DynamoDropDownItem(string name, object item)
+        {
+            Name = name;
+            Item = item;
+        }
+    }
+    /// <summary>
+    /// Base class for all nodes using a drop down
+    /// </summary>
+    public abstract class dynDropDrownBase : dynNodeWithOneOutput
+    {
+        private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
+        public ObservableCollection<DynamoDropDownItem> Items
+        {
+            get { return items; }
+            set 
+            { 
+                items = value;
+                RaisePropertyChanged("Items");
+            }
+        }
+
+        private int selectedIndex = 0;
+        public int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set
+            {
+                //do not allow selected index to
+                //go out of range of the items collection
+                if (value > Items.Count - 1)
+                {
+                    selectedIndex = -1;
+                }
+                else
+                    selectedIndex = value;
+                RaisePropertyChanged("SelectedIndex");
+            }
         }
 
         public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
         {
+            base.SetupCustomUIElements(NodeUI);
 
             //add a drop down list to the window
-            combo = new ComboBox();
+            ComboBox combo = new ComboBox();
             combo.Width = 300;
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
@@ -67,18 +107,74 @@ namespace Dynamo.Nodes
                     this.RequiresRecalc = true;
             };
 
-            PopulateComboBox();
+            combo.DataContext = this;
+            //bind this combo box to the selected item hash
+            
+            var bindingVal = new System.Windows.Data.Binding("Items")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = this
+            };
+            combo.SetBinding(ComboBox.ItemsSourceProperty, bindingVal);
+
+            //bind the selected index to the 
+            var indexBinding = new System.Windows.Data.Binding("SelectedIndex")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = this
+            };
+            combo.SetBinding(ComboBox.SelectedIndexProperty, indexBinding);
         }
 
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            dynEl.SetAttribute("index", SelectedIndex.ToString());
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            try
+            {
+                SelectedIndex = Convert.ToInt32(elNode.Attributes["index"].Value);
+            }
+            catch { }
+        }
+
+        public virtual void PopulateItems()
+        {
+            //override in child classes
+        }
+
+        /// <summary>
+        /// When the dropdown is opened, the node's implementation of PopulateItemsHash is called
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void combo_DropDownOpened(object sender, EventArgs e)
         {
-            PopulateComboBox();
+            PopulateItems();
+        }
+    }
+
+    [NodeName("Select Fam")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeDescription("Select a Family Type from a drop down list.")]
+    [IsInteractive(true)]
+    public class dynFamilyTypeSelector : dynDropDrownBase
+    {
+        Dictionary<string, FamilySymbol> comboHash = new Dictionary<string, FamilySymbol>();
+
+        public dynFamilyTypeSelector()
+        {
+            OutPortData.Add(new PortData("", "Family type", typeof(Value.Container)));
+            RegisterAllPorts();
+
+            PopulateItems();
         }
 
-        private void PopulateComboBox()
+        public override void PopulateItems()
         {
-            comboHash.Clear();
-            combo.Items.Clear();
+            Items.Clear();
 
             //load all the currently loaded types into the combo list
             FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
@@ -87,41 +183,24 @@ namespace Dynamo.Nodes
             {
                 foreach (FamilySymbol fs in f.Symbols)
                 {
-                    ComboBoxItem cbi = new ComboBoxItem();
-                    string comboText = f.Name + ":" + fs.Name;
-                    cbi.Content = comboText;
-                    combo.Items.Add(cbi);
-                    comboHash[comboText] = fs;
+                    //ComboBoxItem cbi = new ComboBoxItem();
+                    //string comboText = f.Name + ":" + fs.Name;
+                    //cbi.Content = comboText;
+                    //combo.Items.Add(cbi);
+                    //comboHash[comboText] = fs;
+                    Items.Add(new DynamoDropDownItem(f.Name + ":" + fs.Name, fs)); 
                 }
             }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            ComboBoxItem cbi = combo.SelectedItem as ComboBoxItem;
+            if(SelectedIndex < 0)
+                throw new Exception("Nothing selected!");
 
-            if (cbi != null)
-            {
-                var f = comboHash[cbi.Content as string];
-                return Value.NewContainer(f);
-            }
-
-            throw new Exception("Nothing selected!");
+            return Value.NewContainer(Items[SelectedIndex].Item);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-        {
-            dynEl.SetAttribute("index", this.combo.SelectedIndex.ToString());
-        }
-
-        public override void LoadElement(XmlNode elNode)
-        {
-            try
-            {
-                combo.SelectedIndex = Convert.ToInt32(elNode.Attributes["index"].Value);
-            }
-            catch { }
-        }
     }
 
     [NodeName("Select Fam Inst Param")]
@@ -726,7 +805,7 @@ namespace Dynamo.Nodes
             if (this.Elements.Count > count)
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[count], out e))
+                if (dynUtils.TryGetElement(this.Elements[count],typeof(FamilyInstance), out e))
                 {
                     fi = this.UIDocument.Document.GetElement(this.Elements[count]) as FamilyInstance;
                     fi.Symbol = fs;
@@ -838,7 +917,7 @@ namespace Dynamo.Nodes
             if (this.Elements.Count > count)
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[count], out e))
+                if (dynUtils.TryGetElement(this.Elements[count],typeof(FamilyInstance), out e))
                 {
                     fi = this.UIDocument.Document.GetElement(this.Elements[count]) as FamilyInstance;
                     fi.Symbol = fs;

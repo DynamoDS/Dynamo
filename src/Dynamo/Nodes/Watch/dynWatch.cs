@@ -101,7 +101,8 @@ namespace Dynamo.Nodes
 
         void p_PortDisconnected(object sender, EventArgs e)
         {
-            watchTreeBranch.Clear();
+            if(watchTreeBranch != null)
+                watchTreeBranch.Clear();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

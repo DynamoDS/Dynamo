@@ -3,10 +3,16 @@
     <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="25456637-2521-4245-900a-2272c4df3581" nickname="Ref Point" x="584.485989150352" y="164.707893063616" lacing="First">
       <Run />
     </Dynamo.Nodes.dynReferencePointByXYZ>
-    <Dynamo.Nodes.dynXYZZero type="Dynamo.Nodes.dynXYZZero" guid="e384d3b6-0740-4a8f-b60b-8fd8600658d5" nickname="XYZ Zero" x="408.303561568867" y="165.999093277817" lacing="First" />
+    <Dynamo.Nodes.dynXYZ type="Dynamo.Nodes.dynXYZ" guid="b435825a-40eb-4c0a-964b-6b5aed4a3d5d" nickname="XYZ" x="425.385267964278" y="181.960591131775" lacing="First" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="24aa71f1-a184-4b28-a992-753ada5d1030" nickname="Number" x="268.457136532039" y="250.147374698933" lacing="First">
+      <System.Double value="0" />
+    </Dynamo.Nodes.dynDoubleInput>
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="e384d3b6-0740-4a8f-b60b-8fd8600658d5" start_index="0" end="25456637-2521-4245-900a-2272c4df3581" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="b435825a-40eb-4c0a-964b-6b5aed4a3d5d" start_index="0" end="25456637-2521-4245-900a-2272c4df3581" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="24aa71f1-a184-4b28-a992-753ada5d1030" start_index="0" end="b435825a-40eb-4c0a-964b-6b5aed4a3d5d" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="24aa71f1-a184-4b28-a992-753ada5d1030" start_index="0" end="b435825a-40eb-4c0a-964b-6b5aed4a3d5d" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="24aa71f1-a184-4b28-a992-753ada5d1030" start_index="0" end="b435825a-40eb-4c0a-964b-6b5aed4a3d5d" end_index="2" portType="0" />
   </dynConnectors>
   <dynNotes />
 </dynWorkspace>

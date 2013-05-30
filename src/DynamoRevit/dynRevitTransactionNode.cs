@@ -75,7 +75,7 @@ namespace Dynamo.Revit
                 foreach (var id in run)
                 {
                     Element e;
-                    if (dynUtils.TryGetElement(id, out e))
+                    if (dynUtils.TryGetElement(id,typeof(object), out e))
                     {
                         var elementStore = xmlDoc.CreateElement("Element");
                         elementStore.InnerText = e.UniqueId;
@@ -133,7 +133,7 @@ namespace Dynamo.Revit
 
         #region Watch 3D Rendering
 
-        public void Draw()
+        public virtual void Draw()
         {
             if (this.RenderDescription == null)
                 this.RenderDescription = new Nodes.RenderDescription();

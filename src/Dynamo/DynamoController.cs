@@ -14,6 +14,9 @@ using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Utilities;
 
+using NUnit.Core;
+using NUnit.Framework;
+
 namespace Dynamo
 {
 
@@ -44,7 +47,7 @@ namespace Dynamo
         private readonly Queue<Tuple<object, object>> commandQueue = new Queue<Tuple<object, object>>();
         
         private bool isProcessingCommandQueue = false;
-        private bool runEvaluationSynchronously = false;
+        private bool testing = false;
 
         public CustomNodeLoader CustomNodeLoader { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
@@ -54,10 +57,16 @@ namespace Dynamo
         public DynamoViewModel DynamoViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
-        public bool RunEvaluationSynchronously 
-        { 
-            get{return runEvaluationSynchronously;}
-            set { runEvaluationSynchronously = value; }
+        
+        /// <summary>
+        /// Testing flag is used to defer calls to run in the idle thread
+        /// with the assumption that the entire test will be wrapped in an
+        /// idle thread call.
+        /// </summary>
+        public bool Testing 
+        {
+            get { return testing; }
+            set { testing = value; }
         }
 
         List<dynModelBase> clipBoard = new List<dynModelBase>();
@@ -292,7 +301,7 @@ namespace Dynamo
             //We are now considered running
             Running = true;
 
-            if (!runEvaluationSynchronously)
+            if (!testing)
             {
                 //Setup background worker
                 var worker = new BackgroundWorker();
@@ -304,6 +313,10 @@ namespace Dynamo
                 worker.RunWorkerAsync();
             }
             else
+                //for testing, we do not want to run
+                //asynchronously, as it will finish the 
+                //test before the evaluation (and the run)
+                //is complete
                 EvaluationThread(null, null);
         }
 
@@ -380,6 +393,9 @@ namespace Dynamo
                 RunCancelled = true;
 
                 OnRunCompleted(this, false);
+
+                if (Testing)
+                    Assert.Fail(ex.Message);
             }
             finally
             {
@@ -473,6 +489,12 @@ namespace Dynamo
                 OnRunCancelled(true);
                 RunCancelled = true;
                 runAgain = false;
+
+                //If we are testing, we need to throw an exception here
+                //which will, in turn, throw an Assert.Fail in the 
+                //Evaluation thread.
+                if (Testing)
+                    throw new Exception(ex.Message);
             }
 
             OnEvaluationCompleted();
