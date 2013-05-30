@@ -88,6 +88,8 @@ namespace Dynamo.Nodes
         //bool isSelected = false;
         private bool _isCustomFunction = false;
         private bool interactionEnabled = true;
+        private bool _isVisible;
+        private bool _isUpstreamVisible;
 
         /// <summary>
         /// Returns whether this node represents a built-in or custom function.
@@ -99,14 +101,30 @@ namespace Dynamo.Nodes
 
         public bool IsVisible
         {
-            get;
-            set;
+            get 
+            {
+                return _isVisible;
+            }
+            set
+            {
+                _isVisible = value;
+                isDirty = true;
+                RaisePropertyChanged("IsVisible");
+            }
         }
 
         public bool IsUpstreamVisible
         {
-            get;
-            set;
+            get 
+            {
+                return _isUpstreamVisible;
+            }
+            set
+            {
+                _isUpstreamVisible = value;
+                isDirty = true;
+                RaisePropertyChanged("IsUpstreamVisible");
+            }
         }
 
         public ElementState State
