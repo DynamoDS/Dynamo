@@ -45,7 +45,7 @@ namespace Dynamo.Nodes
                 //mutate
                 Element e;
                 //...we attempt to fetch it from the document...
-                if (dynUtils.TryGetElement(this.Elements[0], out e))
+                if (dynUtils.TryGetElement(this.Elements[0],typeof(FamilyInstance), out e))
                 {
                     ac = e as FamilyInstance;
                     ac.Symbol = fs;
@@ -55,6 +55,7 @@ namespace Dynamo.Nodes
             {
                 //create
                 ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(dynRevitSettings.Doc.Document, fs);
+                Elements.Add(ac.Id);
             }
 
             if (ac == null)
@@ -75,8 +76,6 @@ namespace Dynamo.Nodes
                 point.Position = pt;
                 i++;
             }
-
-            Elements.Add(ac.Id);
 
             return Value.NewContainer(ac);
         }

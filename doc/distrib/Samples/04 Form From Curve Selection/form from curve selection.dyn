@@ -1,35 +1,28 @@
-<!--
-Copyright Autodesk, Inc. 2012. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
-<dynWorkspace X="10" Y="55">
+<dynWorkspace X="-88.6666666666671" Y="39.9166666666663">
   <dynElements>
-    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="a2cdfed6-8c03-4573-a790-b1a8c1b3a401" nickname="Curves by Selection" x="0" y="0" />
-    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="e77adb5b-c9db-403c-92a1-fe083b22674f" nickname="list" x="280" y="101.7">
-      <Input name="index0" />
+    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="a2cdfed6-8c03-4573-a790-b1a8c1b3a401" nickname="Curves by Selection" x="0" y="0" lacing="First">
+    </Dynamo.Nodes.dynCurvesBySelection>
+    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="e77adb5b-c9db-403c-92a1-fe083b22674f" nickname="list" x="280" y="101.7" lacing="Disabled">
+      <Input name="item(s)" />
       <Input name="index1" />
-    </Dynamo.Elements.dynNewList>
-    <Dynamo.Elements.dynLoftForm type="Dynamo.Elements.dynLoftForm" guid="5ddaa2b8-21e9-4fda-9cb8-b9fd317dbde0" nickname="Loft Form" x="598.3" y="91.15" />
-    <Dynamo.Elements.dynBoolSelector type="Dynamo.Elements.dynBoolSelector" guid="cc57c2ac-f690-41de-9c6f-f4e01a88bffb" nickname="Boolean" x="409.35" y="0">
+    </Dynamo.Nodes.dynNewList>
+    <Dynamo.Nodes.dynLoftForm type="Dynamo.Nodes.dynLoftForm" guid="5ddaa2b8-21e9-4fda-9cb8-b9fd317dbde0" nickname="Loft Form" x="598.3" y="91.15" lacing="First" />
+    <Dynamo.Nodes.dynBoolSelector type="Dynamo.Nodes.dynBoolSelector" guid="cc57c2ac-f690-41de-9c6f-f4e01a88bffb" nickname="Boolean" x="409.35" y="0" lacing="First">
       <System.Boolean value="True" />
-    </Dynamo.Elements.dynBoolSelector>
-    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="fbb24bdf-101c-4002-b6bc-64b301905521" nickname="Curves by Selection" x="0" y="197.85" />
+    </Dynamo.Nodes.dynBoolSelector>
+    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="fbb24bdf-101c-4002-b6bc-64b301905521" nickname="Curves by Selection" x="0" y="197.85" lacing="First">
+      <instance id="42314" />
+    </Dynamo.Nodes.dynCurvesBySelection>
+    <Dynamo.Nodes.dynBoolSelector type="Dynamo.Nodes.dynBoolSelector" guid="b1ce0b0a-a3fc-42fe-abbe-f896acabe8af" nickname="Boolean" x="400.35" y="224" lacing="First">
+      <System.Boolean value="True" />
+    </Dynamo.Nodes.dynBoolSelector>
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="a2cdfed6-8c03-4573-a790-b1a8c1b3a401" start_index="0" end="e77adb5b-c9db-403c-92a1-fe083b22674f" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="e77adb5b-c9db-403c-92a1-fe083b22674f" start_index="0" end="5ddaa2b8-21e9-4fda-9cb8-b9fd317dbde0" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="cc57c2ac-f690-41de-9c6f-f4e01a88bffb" start_index="0" end="5ddaa2b8-21e9-4fda-9cb8-b9fd317dbde0" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="fbb24bdf-101c-4002-b6bc-64b301905521" start_index="0" end="e77adb5b-c9db-403c-92a1-fe083b22674f" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="a2cdfed6-8c03-4573-a790-b1a8c1b3a401" start_index="0" end="e77adb5b-c9db-403c-92a1-fe083b22674f" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e77adb5b-c9db-403c-92a1-fe083b22674f" start_index="0" end="5ddaa2b8-21e9-4fda-9cb8-b9fd317dbde0" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="cc57c2ac-f690-41de-9c6f-f4e01a88bffb" start_index="0" end="5ddaa2b8-21e9-4fda-9cb8-b9fd317dbde0" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="fbb24bdf-101c-4002-b6bc-64b301905521" start_index="0" end="e77adb5b-c9db-403c-92a1-fe083b22674f" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="b1ce0b0a-a3fc-42fe-abbe-f896acabe8af" start_index="0" end="5ddaa2b8-21e9-4fda-9cb8-b9fd317dbde0" end_index="2" portType="0" />
   </dynConnectors>
+  <dynNotes />
 </dynWorkspace>

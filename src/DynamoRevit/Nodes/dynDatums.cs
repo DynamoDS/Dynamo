@@ -49,7 +49,7 @@ namespace Dynamo.Nodes
             if (this.Elements.Any())
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], out e))
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(Level), out e))
                 {
                     lev = e as Level;
                     lev.Elevation = h;
@@ -117,7 +117,7 @@ namespace Dynamo.Nodes
                           {
                               Element e;
                               //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count], out e))
+                              if (dynUtils.TryGetElement(this.Elements[count],typeof(ReferencePlane), out e))
                               {
                                   //...and if we're successful, update it's position (well for now make a new one with the same name)... 
                                   refPlane = e as ReferencePlane;
@@ -234,7 +234,7 @@ namespace Dynamo.Nodes
                 if (this.Elements.Any())
                 {
                     Element e;
-                    if (dynUtils.TryGetElement(this.Elements[0], out e))
+                    if (dynUtils.TryGetElement(this.Elements[0],typeof(ReferencePlane), out e))
                     {
                         
                         //...and if we're successful, update it's position (well for now make a new one with the same name)... 
@@ -364,7 +364,7 @@ namespace Dynamo.Nodes
                           {
                               Element e;
                               //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count], out e))
+                              if (dynUtils.TryGetElement(this.Elements[count],typeof(Grid), out e))
                               {
                                   //...and if we're successful, update it's position... 
                                   grid = e as Grid;
@@ -442,7 +442,7 @@ namespace Dynamo.Nodes
                 if (this.Elements.Any())
                 {
                     Element e;
-                    if (dynUtils.TryGetElement(this.Elements[0], out e))
+                    if (dynUtils.TryGetElement(this.Elements[0],typeof(Grid), out e))
                     {
                         grid = e as Grid;
                         grid = this.UIDocument.Document.Create.NewGrid(c);

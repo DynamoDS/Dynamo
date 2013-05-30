@@ -20,12 +20,12 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="e">ID to check.</param>
         /// <returns>True if exists, false otherwise.</returns>
-        public static bool TryGetElement(ElementId id, out Element e)
+        public static bool TryGetElement(ElementId id, Type t, out Element e)
         {
             try
             {
                 e = dynRevitSettings.Doc.Document.GetElement(id);
-                if (e != null)
+                if (e != null && t.IsAssignableFrom(e.GetType()))
                 {
                     _testid = e.Id;
                     return true;

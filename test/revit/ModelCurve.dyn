@@ -1,0 +1,38 @@
+<dynWorkspace X="0" Y="0">
+  <dynElements>
+    <Dynamo.Nodes.dynEllipticalArc type="Dynamo.Nodes.dynEllipticalArc" guid="09a0b67b-740b-4739-a94e-b4a7380919eb" nickname="Ellipse Arc" x="559.902925976041" y="228.722065215773" lacing="First" />
+    <Dynamo.Nodes.dynXYZZero type="Dynamo.Nodes.dynXYZZero" guid="0da624b8-51cb-4f14-b9a4-528258a1d8cd" nickname="XYZ Zero" x="319.145953152862" y="189.039253197601" lacing="First" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="3e4228fd-68c4-4d10-87e2-1a91c70c6439" nickname="Number" x="318.391126103416" y="264.016501077431" lacing="First">
+      <System.Double value="5" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="33102bf7-a642-47e5-814b-677d8e95650b" nickname="Number" x="318.851408999344" y="345.578773435912" lacing="First">
+      <System.Double value="0" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynPi type="Dynamo.Nodes.dynPi" guid="eff0c266-600e-491b-9ed1-653f00f65fa5" nickname="Pi" x="305.920306785461" y="429.763130267478" lacing="First" />
+    <Dynamo.Nodes.dynModelCurve type="Dynamo.Nodes.dynModelCurve" guid="f809751a-ab9f-471f-ad51-269751f26aa8" nickname="Model Curve" x="1005.10882026521" y="253.933684303366" lacing="First">
+      <Run>
+        <Element>f53704a3-088c-4eb7-a78f-623a46fcfbb7-0000775a</Element>
+      </Run>
+    </Dynamo.Nodes.dynModelCurve>
+    <Dynamo.Nodes.dynSketchPlane type="Dynamo.Nodes.dynSketchPlane" guid="d068dac0-62a5-44e1-9165-4d156b99c898" nickname="Sketch Plane" x="836.686454684793" y="356.36610861975" lacing="First">
+      <Run>
+        <Element>f53704a3-088c-4eb7-a78f-623a46fcfbb7-00007759</Element>
+      </Run>
+    </Dynamo.Nodes.dynSketchPlane>
+    <Dynamo.Nodes.dynPlane type="Dynamo.Nodes.dynPlane" guid="93d14047-6594-44c4-9f85-b8c041d6d6e4" nickname="Plane" x="676.878763954099" y="427.881456228821" lacing="First" />
+    <Dynamo.Nodes.dynXYZBasisZ type="Dynamo.Nodes.dynXYZBasisZ" guid="1954d0f3-543b-48df-832f-efe2eed43b85" nickname="Z Axis" x="554.210400415217" y="498.994265827785" lacing="First" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="09a0b67b-740b-4739-a94e-b4a7380919eb" start_index="0" end="f809751a-ab9f-471f-ad51-269751f26aa8" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="0da624b8-51cb-4f14-b9a4-528258a1d8cd" start_index="0" end="09a0b67b-740b-4739-a94e-b4a7380919eb" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="0da624b8-51cb-4f14-b9a4-528258a1d8cd" start_index="0" end="93d14047-6594-44c4-9f85-b8c041d6d6e4" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="3e4228fd-68c4-4d10-87e2-1a91c70c6439" start_index="0" end="09a0b67b-740b-4739-a94e-b4a7380919eb" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="3e4228fd-68c4-4d10-87e2-1a91c70c6439" start_index="0" end="09a0b67b-740b-4739-a94e-b4a7380919eb" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="33102bf7-a642-47e5-814b-677d8e95650b" start_index="0" end="09a0b67b-740b-4739-a94e-b4a7380919eb" end_index="3" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="eff0c266-600e-491b-9ed1-653f00f65fa5" start_index="0" end="09a0b67b-740b-4739-a94e-b4a7380919eb" end_index="4" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="d068dac0-62a5-44e1-9165-4d156b99c898" start_index="0" end="f809751a-ab9f-471f-ad51-269751f26aa8" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="93d14047-6594-44c4-9f85-b8c041d6d6e4" start_index="0" end="d068dac0-62a5-44e1-9165-4d156b99c898" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="1954d0f3-543b-48df-832f-efe2eed43b85" start_index="0" end="93d14047-6594-44c4-9f85-b8c041d6d6e4" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>
