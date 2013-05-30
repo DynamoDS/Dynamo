@@ -805,7 +805,7 @@ namespace Dynamo.Nodes
             if (this.Elements.Count > count)
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[count], out e))
+                if (dynUtils.TryGetElement(this.Elements[count],typeof(FamilyInstance), out e))
                 {
                     fi = this.UIDocument.Document.GetElement(this.Elements[count]) as FamilyInstance;
                     fi.Symbol = fs;
@@ -917,7 +917,7 @@ namespace Dynamo.Nodes
             if (this.Elements.Count > count)
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[count], out e))
+                if (dynUtils.TryGetElement(this.Elements[count],typeof(FamilyInstance), out e))
                 {
                     fi = this.UIDocument.Document.GetElement(this.Elements[count]) as FamilyInstance;
                     fi.Symbol = fs;

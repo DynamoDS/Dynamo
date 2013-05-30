@@ -63,7 +63,7 @@ namespace Dynamo.Nodes
             if (this.Elements.Any())
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], out e))
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(ModelCurve), out e))
                 {
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
@@ -132,7 +132,7 @@ namespace Dynamo.Nodes
             if (this.Elements.Any())
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], out e))
+                if (dynUtils.TryGetElement(this.Elements[0],typeof(dynReferenceCurve), out e))
                 {
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
@@ -201,7 +201,7 @@ namespace Dynamo.Nodes
             if (this.Elements.Any())
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], out e))
+                if (dynUtils.TryGetElement(this.Elements[0],typeof(CurveByPoints), out e))
                 {
                     c = e as CurveByPoints;
                     c.SetPoints(refPtArr);
@@ -281,7 +281,7 @@ namespace Dynamo.Nodes
                           {
                               Element e;
                               //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count], out e))
+                              if (dynUtils.TryGetElement(this.Elements[count],typeof(CurveByPoints), out e))
                               {
                                   //...and if we're successful, update it's position... 
                                   c = e as CurveByPoints;
@@ -347,7 +347,7 @@ namespace Dynamo.Nodes
                 {
                     Element e;
                     //...try to get the first one...
-                    if (dynUtils.TryGetElement(this.Elements[0], out e))
+                    if (dynUtils.TryGetElement(this.Elements[0],typeof(CurveByPoints), out e))
                     {
                         //..and if we do, update it's position.
                         c = e as CurveByPoints;
@@ -533,7 +533,7 @@ namespace Dynamo.Nodes
             ModelNurbSpline c;
             Element e;
 
-            if (Elements.Any() && dynUtils.TryGetElement(Elements[0], out e))
+            if (Elements.Any() && dynUtils.TryGetElement(Elements[0],typeof(ModelCurve), out e))
             {
                 c = e as ModelNurbSpline;
 

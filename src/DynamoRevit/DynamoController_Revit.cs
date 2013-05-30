@@ -45,11 +45,10 @@ namespace Dynamo
 
         void Application_DocumentOpened(object sender, Autodesk.Revit.DB.Events.DocumentOpenedEventArgs e)
         {
-            //when a document is closed
+            //when a document is opened 
             if (dynRevitSettings.Doc == null)
             {
                 dynRevitSettings.Doc = dynRevitSettings.Revit.ActiveUIDocument;
-                
                 this.DynamoViewModel.RunEnabled = true;
             }
         }
@@ -57,8 +56,16 @@ namespace Dynamo
         void Application_DocumentClosed(object sender, Autodesk.Revit.DB.Events.DocumentClosedEventArgs e)
         {
             //Disable running against revit without a document
-            dynRevitSettings.Doc = null;
-            DynamoViewModel.RunEnabled = false;
+            if (dynRevitSettings.Revit.ActiveUIDocument == null)
+            {
+                dynRevitSettings.Doc = null;
+                DynamoViewModel.RunEnabled = false;
+            }
+            else
+            {
+                dynRevitSettings.Doc = dynRevitSettings.Revit.ActiveUIDocument;
+                DynamoViewModel.RunEnabled = true;
+            }
         }
 
         #region Python Nodes Revit Hooks
