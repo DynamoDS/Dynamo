@@ -558,11 +558,29 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var pts = ((Value.List)args[0]).Item.Select(
-               x => ((XYZ)((Value.Container)x).Item)
-            ).ToList();
+            List<XYZ> xyzList = new List<XYZ>();
 
-            if (pts.Count <= 1)
+            FSharpList<Value> vals = ((Value.List)args[0]).Item;
+            var doc = dynRevitSettings.Doc;
+
+            for (int ii = 0; ii < vals.Count(); ii++)
+            {
+                var item = ((Value.Container)vals[ii]).Item;
+
+                if (item is ReferencePoint)
+                {
+                    ReferencePoint refPoint = (ReferencePoint)item;
+                    XYZ thisXYZ = refPoint.GetCoordinateSystem().Origin;
+                    xyzList.Add(thisXYZ);
+                }
+                else if (item is XYZ)
+                {
+                    XYZ thisXYZ = (XYZ)item;
+                    xyzList.Add(thisXYZ);
+                }
+            }
+
+            if (xyzList.Count <= 1)
             {
                 throw new Exception("Not enough reference points to make a curve.");
             }
@@ -580,7 +598,7 @@ namespace Dynamo.Nodes
                 if (m.Name == nameOfMethodCreateByFit)
                 {
                     object[] argsM = new object[1];
-                    argsM[0] = pts;
+                    argsM[0] = xyzList;
 
                     result = (Arc)m.Invoke(null, argsM);
 
@@ -593,7 +611,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Approximate By Tangent Arcs")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates best fit arc through points")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class dynApproximateByTangentArcs : dynRevitTransactionNodeWithOneOutput
@@ -609,11 +627,9 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var pts = ((Value.List)args[0]).Item.Select(
-               x => ((XYZ)((Value.Container)x).Item)
-            ).ToList();
+            Curve thisCurve = (Curve)((Value.Container)args[0]).Item;
 
-            if (pts.Count <= 1)
+            if (thisCurve == null)
             {
                 throw new Exception("Not enough reference points to make a curve.");
             }
@@ -633,7 +649,7 @@ namespace Dynamo.Nodes
                 {
                     object[] argsM = new object[0];
 
-                    resultArcs = (List<Curve>)m.Invoke(null, argsM);
+                    resultArcs = (List<Curve>)m.Invoke(thisCurve, argsM);
 
                     break;
                 }

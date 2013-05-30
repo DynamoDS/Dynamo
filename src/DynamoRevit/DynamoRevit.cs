@@ -186,7 +186,7 @@ namespace Dynamo.Applications
 
                         //show the window
 
-                        string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
+                        string context = m_revit.Application.VersionName; // string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
                         var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, true, typeof(DynamoRevitViewModel), context);
                         dynamoBench = dynSettings.Bench;
 
