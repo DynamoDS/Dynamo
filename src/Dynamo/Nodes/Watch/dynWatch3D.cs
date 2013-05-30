@@ -126,10 +126,13 @@ namespace Dynamo.Nodes
                 dynNodeModel node = pair.Value.Item2;
                 IDrawable drawable = node as IDrawable;
 
-                if (drawable != null)
+                if (node.IsVisible && drawable != null)
                     drawables.Add(drawable);
 
-                GetUpstreamIDrawable(drawables, node.Inputs);
+                if (node.IsUpstreamVisible)
+                    GetUpstreamIDrawable(drawables, node.Inputs);
+                else
+                    continue; // don't bother checking if function
 
                 //if the node is function then get all the 
                 //drawables inside that node. only do this if the

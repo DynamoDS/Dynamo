@@ -445,12 +445,13 @@ namespace Dynamo.Controls
         private void ToggleIsVisible()
         {
             this.nodeLogic.IsVisible = !this.nodeLogic.IsVisible;
-            //this.nodeLogic.PropertyChanged("IsVisible");
+            RaisePropertyChanged("IsVisible");
         }
 
         private void ToggleIsUpstreamVisible()
         {
             this.nodeLogic.IsUpstreamVisible = !this.nodeLogic.IsUpstreamVisible;
+            RaisePropertyChanged("IsUpstreamVisible");
         }
 
         private bool CanVisibilityBeToggled() 
