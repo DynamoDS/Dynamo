@@ -163,29 +163,17 @@ namespace DynamoRevitTests
             }
         }
 
-        //[Test]
-        //public void ThrowsExceptionWithBadFileName()
-        //{
-        //    dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(@"blah.dyn");
-        //    dynSettings.Controller.OnRunCompleted(this, true);
-        //}
-
         [Test]
         public void CanOpenReferencePointTest()
         {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
             string testPath = Path.Combine(_testPath, "ReferencePointTest.dyn");
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.AreEqual(2, dynSettings.Controller.DynamoModel.Nodes.Count());
+            Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
 
-            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand,true);
         }
-
-        //[Test]
-        //public void CanOpenAndExecuteAllSamples()
-        //{
-        //    DirectoryInfo di = new DirectoryInfo(_samplesPath);
-        //    OpenAllSamplesInDirectory(di);
-        //}
 
         [Test]
         public void CreatePointSequenceSample()
@@ -416,6 +404,18 @@ namespace DynamoRevitTests
             int count = fec.ToElements().Count;
             Assert.IsInstanceOf(typeof(ModelCurve), fec.ToElements().First());
             Assert.AreEqual(1, count);
+
+            ElementId id = fec.ToElements().First().Id;
+
+            //update any number node and verify 
+            //that the element gets updated not recreated
+            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynBasicInteractive<double>);
+            dynBasicInteractive<double> node = doubleNodes.First() as dynBasicInteractive<double>;
+            node.Value = node.Value + .1;
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            Assert.AreEqual(1, fec.ToElements().Count);
+
+            Assert.AreEqual(id.IntegerValue, fec.ToElements().First().Id.IntegerValue);
         }
 
         [Test]
@@ -437,6 +437,18 @@ namespace DynamoRevitTests
             Assert.IsInstanceOf(typeof(ModelCurve), fec.ToElements().First());
             Assert.IsTrue(((ModelCurve)fec.ToElements().First()).IsReferenceLine);
             Assert.AreEqual(1, count);
+
+            ElementId id = fec.ToElements().First().Id;
+
+            //update any number node and verify 
+            //that the element gets updated not recreated
+            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynBasicInteractive<double>);
+            dynBasicInteractive<double> node = doubleNodes.First() as dynBasicInteractive<double>;
+            node.Value = node.Value + .1;
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            Assert.AreEqual(1, fec.ToElements().Count);
+
+            Assert.AreEqual(id.IntegerValue, fec.ToElements().First().Id.IntegerValue);
         }
 
         [Test]
@@ -457,6 +469,50 @@ namespace DynamoRevitTests
             int count = fec.ToElements().Count;
             Assert.IsInstanceOf(typeof(Form), fec.ToElements().First());
             Assert.AreEqual(1, count);
+        }
+
+        [Test]
+        public void SwitchDocuments()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            //open the workflow and run the expression
+            string testPath = Path.Combine(_testPath, "ReferencePointTest.dyn");
+            dynSettings.Controller.RunCommand(vm.OpenCommand,testPath);
+            Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            //verify we have a reference point
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(1, fec.ToElements().Count());
+
+            //open a new document and activate it
+            UIDocument initialDoc = dynRevitSettings.Revit.ActiveUIDocument;
+            string shellPath = Path.Combine(_testPath, @"empty1.rfa");
+            dynRevitSettings.Revit.OpenAndActivateDocument(shellPath);
+            initialDoc.Document.Close(false);
+            
+            //assert that the doc is set on the controller
+            Assert.IsNotNull(dynRevitSettings.Doc.Document);
+
+            //update the double node so the graph reevaluates
+            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynBasicInteractive<double>);
+            dynBasicInteractive<double> node = doubleNodes.First() as dynBasicInteractive<double>;
+            node.Value = node.Value + .1;
+
+            //run the expression again
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(1, fec.ToElements().Count());
+
+            //finish out by restoring the original
+            initialDoc = dynRevitSettings.Revit.ActiveUIDocument;
+            shellPath = Path.Combine(_testPath, @"empty.rfa");
+            dynRevitSettings.Revit.OpenAndActivateDocument(shellPath);
+            initialDoc.Document.Close(false);
+
         }
 
         private static void OpenAllSamplesInDirectory(DirectoryInfo di)
