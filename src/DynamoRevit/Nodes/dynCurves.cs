@@ -503,9 +503,9 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Planar Nurb Spline")]
+    [NodeName("Nurbs Spline Model Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Node to create a planar model curve.")]
+    [NodeDescription("Node to create a planar nurbs spline model curve.")]
     public class dynModelCurveNurbSpline : dynRevitTransactionNodeWithOneOutput
     {
         public dynModelCurveNurbSpline()
@@ -565,5 +565,143 @@ namespace Dynamo.Nodes
             return Value.NewContainer(c);
         }
     }
+
+    [NodeName("Nurbs Spline")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Node to create a planar nurbs spline curve.")]
+    public class dynGeometryCurveNurbSpline : dynCurveBase
+    {
+        public dynGeometryCurveNurbSpline()
+        {
+            InPortData.Add(new PortData("xyzs", "The xyzs from which to create the nurbs curve", typeof(Value.List)));
+            OutPortData.Add(new PortData("cv", "The nurbs spline curve created by this operation.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var pts = ((Value.List)args[0]).Item.Select(
+               x => ((XYZ)((Value.Container)x).Item)).ToList();
+
+            if (pts.Count <= 1)
+            {
+                throw new Exception("Not enough reference points to make a curve.");
+            }
+
+            var ns = dynRevitSettings.Revit.Application.Create.NewNurbSpline(
+                    pts, Enumerable.Repeat(1.0, pts.Count).ToList());
+
+            crvs.Add(ns);
+            
+            return Value.NewContainer(ns);
+        }
+    }
+
+    [NodeName("Offset Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Create an offset curve from a given curve.")]
+    public class dynOffsetCurve : dynCurveBase
+    {
+        public dynOffsetCurve()
+        {
+            InPortData.Add(new PortData("crv", "The curve to offset.", typeof(Value.Container)));
+            InPortData.Add(new PortData("d", "The distance to offset.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("crv", "The offset curve.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve cIn = (Curve)((Value.Container)args[0]).Item;
+            double dIn = ((Value.Number)args[1]).Item;
+
+            Curve cOut = null;
+
+            if(cIn is Arc)
+            {
+                Arc a = cIn as Arc;
+                //use the api method which takes the start, end, and point on curve
+                XYZ startVec = cIn.ComputeDerivatives(0, true).BasisZ.Normalize();
+                XYZ endVec = cIn.ComputeDerivatives(1, true).BasisZ.Normalize();
+                XYZ pointOnCrvVec = cIn.ComputeDerivatives(.5, true).BasisZ.Normalize();
+                XYZ start = a.Evaluate(0, true) + startVec*dIn;
+                XYZ end = a.Evaluate(1,true) + endVec*dIn;
+                XYZ mid = a.Evaluate(.5,true) + pointOnCrvVec*dIn;
+
+                cOut = dynRevitSettings.Revit.Application.Create.NewArc(start, end, mid);
+            }
+            else if (cIn is CylindricalHelix)
+            {
+                CylindricalHelix ch = cIn as CylindricalHelix;
+
+                cOut = CylindricalHelix.Create(ch.BasePoint, ch.Radius + dIn, ch.XVector, ch.ZVector, ch.Pitch, 0, Math.PI * 2);
+            }
+            else if (cIn is Ellipse)
+            {
+                Ellipse e = cIn as Ellipse;
+                cOut = dynRevitSettings.Revit.Application.Create.NewEllipse(e.Center, e.RadiusX+dIn, e.RadiusY+dIn, e.XDirection, e.YDirection, 0, Math.PI*2);
+            }
+            else if (cIn is HermiteSpline)
+            {
+                HermiteSpline hs = cIn as HermiteSpline;
+                bool periodic = hs.IsPeriodic;
+                List<XYZ> newCtrlPoints = new List<XYZ>();
+                foreach (XYZ pt in hs.ControlPoints)
+                {
+                    //project point onto curve to get a parameter
+                    IntersectionResult ir = hs.Project(pt);
+                    if (ir != null)
+                    {
+                        Transform t = hs.ComputeDerivatives(ir.Parameter, false);
+                        newCtrlPoints.Add(ir.XYZPoint + t.BasisZ.Normalize() * dIn);
+                    }
+                }
+
+                cOut = dynRevitSettings.Revit.Application.Create.NewHermiteSpline(newCtrlPoints, periodic);
+            }
+            else if (cIn is Line)
+            {
+                Line l = cIn as Line;
+                XYZ startVec = cIn.ComputeDerivatives(0, true).BasisZ.Normalize();
+                XYZ endVec = cIn.ComputeDerivatives(1, true).BasisZ.Normalize();
+                XYZ start = l.Evaluate(0, true) + startVec * dIn;
+                XYZ end = l.Evaluate(1, true) + endVec * dIn;
+
+                cOut = dynRevitSettings.Revit.Application.Create.NewLineBound(start, end);
+            }
+            else if (cIn is NurbSpline)
+            {
+                List<XYZ> newCtrlPoints = new List<XYZ>();
+                NurbSpline ns = cIn as NurbSpline;
+                foreach (XYZ pt in ns.CtrlPoints)
+                {
+                    //project point onto curve to get a parameter
+                    IntersectionResult ir = ns.Project(pt);
+                    if (ir != null)
+                    {
+                        Transform t = ns.ComputeDerivatives(ir.Parameter, false);
+                        newCtrlPoints.Add(ir.XYZPoint + t.BasisZ.Normalize() * dIn);
+                    }
+                }
+
+                List<double> newWeights = new List<double>();
+                foreach (double d in ns.Weights)
+                {
+                    newWeights.Add(d);
+                }
+
+                cOut = dynRevitSettings.Revit.Application.Create.NewNurbSpline(newCtrlPoints, newWeights);
+            }
+
+            if (cOut != null)
+                crvs.Add(cOut);
+
+            return Value.NewContainer(cOut);
+        }
+    }
+
+
 }
 
