@@ -25,7 +25,7 @@ namespace Dynamo.Utilities
             try
             {
                 e = dynRevitSettings.Doc.Document.GetElement(id);
-                if (e != null && e.GetType().IsAssignableFrom(t))
+                if (e != null && t.IsAssignableFrom(e.GetType()))
                 {
                     _testid = e.Id;
                     return true;

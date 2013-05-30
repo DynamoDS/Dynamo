@@ -132,7 +132,7 @@ namespace Dynamo.Nodes
             if (this.Elements.Any())
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(dynReferenceCurve), out e))
+                if (dynUtils.TryGetElement(this.Elements[0],typeof(ModelCurve), out e))
                 {
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
