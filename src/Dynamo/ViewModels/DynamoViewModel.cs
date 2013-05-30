@@ -1348,6 +1348,16 @@ namespace Dynamo.Controls
             }
         }
 
+        private bool CanVisibilityBeToggled(object parameters)
+        {
+            return true;
+        }
+
+        private bool CanUpstreamVisibilityBeToggled(object parameters)
+        {
+            return true;
+        }
+
         private bool CanDelete(object parameters)
         {
             return DynamoSelection.Instance.Selection.Count > 0;

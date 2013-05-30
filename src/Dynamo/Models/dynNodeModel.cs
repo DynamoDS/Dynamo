@@ -97,6 +97,18 @@ namespace Dynamo.Nodes
             get { return this.GetType().IsAssignableFrom(typeof(dynFunction)); }
         }
 
+        public bool IsVisible
+        {
+            get;
+            set;
+        }
+
+        public bool IsUpstreamVisible
+        {
+            get;
+            set;
+        }
+
         public ElementState State
         {
             get
@@ -328,6 +340,9 @@ namespace Dynamo.Nodes
         {
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
+
+            IsVisible = true;
+            IsUpstreamVisible = true;
 
             //Fetch the element name from the custom attribute.
             var nameArray = GetType().GetCustomAttributes(typeof(NodeNameAttribute), true);

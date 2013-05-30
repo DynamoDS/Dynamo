@@ -75,6 +75,12 @@
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CrossProduct,Mode=TwoWay}" 
                               Command="{Binding Path=SetLacingTypeCommand}" CommandParameter="CrossProduct" Header="Cross Product"/>
                 </MenuItem>
+                <MenuItem Name="isVisible_cm" Header="Display Output" 
+                          IsChecked="{Binding Path=IsVisible}" 
+                          Command="{Binding Path=ToggleIsVisibleCommand}"/>
+                <MenuItem Name="isUpstreamVisible_cm" Header="Display Upstream Output" 
+                          IsChecked="{Binding Path=IsUpstreamVisible}"
+                          Command="{Binding Path=ToggleIsUpstreamVisibleCommand}"/>
             </ContextMenu>
         </Grid.ContextMenu>
 
