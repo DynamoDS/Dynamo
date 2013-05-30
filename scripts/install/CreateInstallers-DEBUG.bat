@@ -1,4 +1,4 @@
-robocopy ..\..\bin\Debug temp\bin *.dll -XF *Tests.dll nunit*.dll
+robocopy ..\..\bin\Debug temp\bin *.dll -XF *Tests.dll
 robocopy ..\..\ Extra README.md
 cd Extra
 del README.txt
