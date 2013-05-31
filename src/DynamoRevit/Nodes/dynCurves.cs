@@ -179,6 +179,7 @@ namespace Dynamo.Nodes
         public dynCurveByPoints()
         {
             InPortData.Add(new PortData("refPts", "List of reference points", typeof(Value.List)));
+            InPortData.Add(new PortData("isRef", "Boolean indicating whether the resulting curve is a reference curve.", typeof(Value.Number)));
             OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -186,7 +187,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            
+            bool isRefCurve = Convert.ToBoolean(((Value.Number)args[1]).Item);
+
             //Build a sequence that unwraps the input list from it's Value form.
             IEnumerable<ReferencePoint> refPts = ((Value.List)args[0]).Item.Select(
                x => (ReferencePoint)((Value.Container)x).Item
@@ -222,6 +224,8 @@ namespace Dynamo.Nodes
                 c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
                 this.Elements.Add(c.Id);
             }
+
+            c.IsReferenceLine = isRefCurve;
 
             return Value.NewContainer(c);
         }
