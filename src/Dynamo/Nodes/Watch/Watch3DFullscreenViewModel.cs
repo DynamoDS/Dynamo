@@ -110,7 +110,7 @@ namespace Dynamo.Controls
 
                 IDrawable drawable = nodeModel as IDrawable;
 
-                if (drawable != null)
+                if (nodeModel.IsVisible && drawable != null)
                     drawables.Add(drawable);
 
                 //if the node is function then get all the 
