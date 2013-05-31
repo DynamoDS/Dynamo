@@ -19,47 +19,52 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class dynEnum : dynNodeWithOneOutput
     {
-        ComboBox combo;
+
+        public int SelectedIndex { get; set; }
+        public Array Items { get; set; }
 
         public dynEnum()
         {
-            OutPortData.Add(new PortData("", "Enum", typeof(Value.Container)));
+            Items = new string[] {""};
+            SelectedIndex = 0;
+            OutPortData.Add(new PortData("", "Value", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
-            //widen the control
-            NodeUI.topControl.Width = 300;
+            var comboBox = new ComboBox
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
 
-            //add a drop down list to the window
-            combo = new ComboBox();
-            combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            NodeUI.inputGrid.Children.Add(comboBox);
 
-            NodeUI.inputGrid.Children.Add(combo);
+            Grid.SetColumn(comboBox, 0);
+            Grid.SetRow(comboBox, 0);
 
-            System.Windows.Controls.Grid.SetColumn(combo, 0);
-            System.Windows.Controls.Grid.SetRow(combo, 0);
-
-            combo.SelectionChanged += delegate
+            comboBox.ItemsSource = this.Items;
+            comboBox.SelectionChanged += delegate
             {
-                if (combo.SelectedIndex != -1)
-                    this.RequiresRecalc = true;
+                if (comboBox.SelectedIndex == -1) return;
+                this.RequiresRecalc = true;
+                this.SelectedIndex = comboBox.SelectedIndex;
             };
         }
 
         public void WireToEnum(Array arr)
         {
-            combo.ItemsSource = arr;
+            Items = arr;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            if (combo.SelectedItem != null)
+            if (this.SelectedIndex < this.Items.Length)
             {
-                return Value.NewContainer(combo.SelectedItem);
+                var value = Value.NewContainer( this.SelectedIndex );
+                return value;
             }
             else
             {
@@ -69,17 +74,36 @@ namespace Dynamo.Nodes
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-            dynEl.SetAttribute("index", this.combo.SelectedIndex.ToString());
+            dynEl.SetAttribute("index", this.SelectedIndex.ToString());
         }
 
         public override void LoadElement(XmlNode elNode)
         {
             try
             {
-                combo.SelectedIndex = Convert.ToInt32(elNode.Attributes["index"].Value);
+                this.SelectedIndex = Convert.ToInt32(elNode.Attributes["index"].Value);
             }
             catch { }
         }
+    }
+
+    [IsInteractive(true)]
+    public abstract class dynEnumAsString : dynEnum
+    {
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (this.SelectedIndex < this.Items.Length)
+            {
+                var value = Value.NewContainer( Items.GetValue(this.SelectedIndex) );
+                return value;
+            }
+            else
+            {
+                throw new Exception("There is nothing selected.");
+            }
+        }
+
     }
 
 }
