@@ -2069,4 +2069,71 @@ namespace Dynamo.Nodes
             return Value.NewContainer(result);
         }
     }
+
+    [NodeName("Create Revolved Geometry")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates a solid by revolving  closed curve loops lying in xy plane of Transform.")]
+    public class CreateRevolvedGeometry : dynSolidBase
+    {
+        public CreateRevolvedGeometry()
+        {
+            InPortData.Add(new PortData("curve loop", "The curve loop to revolve must be a closed planar loop.", typeof(Value.Container)));
+            InPortData.Add(new PortData("transform", "Coordinate system for revolve, loop should be in xy plane of this transform on the right side of z axis used for rotate.", typeof(Value.Container)));
+            InPortData.Add(new PortData("start angle", "start angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
+            InPortData.Add(new PortData("end angle", "end angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
+            OutPortData.Add(new PortData("geometry", "The revolved geometry.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            CurveLoop cLoop = (CurveLoop)((Value.Container)args[0]).Item;
+            Transform trf = (Transform)((Value.Container)args[1]).Item;
+            double sAngle =  ((Value.Number)args[2]).Item;
+            double eAngle =  ((Value.Number)args[3]).Item;
+
+            List<CurveLoop> loopList = new List<CurveLoop>();
+            loopList.Add(cLoop);
+
+            Autodesk.Revit.DB.Frame thisFrame = new Autodesk.Revit.DB.Frame();
+            thisFrame.Transform(trf);
+
+            Solid result = GeometryCreationUtilities.CreateRevolvedGeometry(thisFrame, loopList, sAngle, eAngle);
+
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Create Swept Geometry")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates a solid by sweeping curve loop along the path")]
+    public class CreateSweptGeometry : dynSolidBase
+    {
+        public CreateSweptGeometry()
+        {
+            InPortData.Add(new PortData("sweep path", "The curve loop to sweep along.", typeof(Value.Container)));
+            InPortData.Add(new PortData("attachment curve index", "index of the curve where profile loop is attached", typeof(Value.Number)));
+            InPortData.Add(new PortData("attachment parameter", "end angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
+            InPortData.Add(new PortData("profile loop", "The curve loop to sweep lie in orthogonal plane to path at attachement point.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("geometry", "The swept geometry.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            CurveLoop pathLoop = (CurveLoop)((Value.Container)args[0]).Item;
+            int attachementIndex = (int)((Value.Number)args[1]).Item;
+            double attachementPar = ((Value.Number)args[2]).Item;
+            CurveLoop profileLoop = (CurveLoop)((Value.Container)args[3]).Item;
+            List<CurveLoop> loopList = new List<CurveLoop>();
+            loopList.Add(profileLoop);
+
+            Solid result = GeometryCreationUtilities.CreateSweptGeometry(pathLoop, attachementIndex, attachementPar, loopList);
+
+            return Value.NewContainer(result);
+        }
+    }
 }
