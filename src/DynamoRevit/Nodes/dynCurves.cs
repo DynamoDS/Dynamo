@@ -598,7 +598,8 @@ namespace Dynamo.Nodes
             return Value.NewContainer(ns);
         }
     }
-
+     
+    /*
     [NodeName("Offset Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create an offset curve from a given curve.")]
@@ -699,6 +700,134 @@ namespace Dynamo.Nodes
                 crvs.Add(cOut);
 
             return Value.NewContainer(cOut);
+        }
+    }
+    */
+
+    [NodeName("Curve Loop")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates Curve Loop")]
+    public class dynCurveLoop : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynCurveLoop()
+        {
+            InPortData.Add(new PortData("curves", "Geometry curves to make curve loop", typeof(Value.List)));
+            OutPortData.Add(new PortData("CurveLoop", "CurveLoop", typeof(Value.Container)));
+            RegisterAllPorts();
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var curves = ((Value.List)args[0]).Item.Select(
+               x => ((Curve)((Value.Container)x).Item)).ToList();
+
+            CurveLoop result = CurveLoop.Create(curves);
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Thicken Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates Curve Loop by thickening curve")]
+    public class dynThickenCurveLoop : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynThickenCurveLoop()
+        {
+            InPortData.Add(new PortData("Curve", "Curve to thicken, could not be closed.", typeof(Value.List)));
+            InPortData.Add(new PortData("Thickness", "Thickness value.", typeof(Value.Number)));
+            InPortData.Add(new PortData("Normal", "The normal vector to the plane used for thickening.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("CurveLoop", "CurveLoop which is the result of thickening.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve curve = (Curve)((Value.Container)args[0]).Item;
+            double thickness = ((Value.Number)args[1]).Item;
+            XYZ normal = (XYZ)((Value.Container)args[2]).Item;
+
+            CurveLoop result = CurveLoop.CreateViaThicken(curve, thickness, normal);
+            if (result == null)
+                throw new Exception("Could not thicken curve");
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Curve Loop List")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates list of curves in the Curve Loop")]
+    public class dynListCurveLoop : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynListCurveLoop()
+        {
+            InPortData.Add(new PortData("CurveLoop", "Curve to thicken.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Curve List", "List of curves in the curve loop.", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            CurveLoop curveLoop = (CurveLoop)((Value.Container)args[0]).Item;
+
+            CurveLoopIterator CLiter = curveLoop.GetCurveLoopIterator();
+
+            List<Curve> listCurves = new List<Curve>();
+            for (; CLiter.MoveNext(); )
+            {
+                listCurves.Add(CLiter.Current);
+            }
+
+            var result = FSharpList<Value>.Empty;
+            for (int indexCurve = listCurves.Count - 1; indexCurve > -1; indexCurve--)
+            {
+                result = FSharpList<Value>.Cons(Value.NewContainer(listCurves[indexCurve]), result);
+            }
+
+            return Value.NewList(result);
+        }
+    }
+     
+    [NodeName("Offset Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates curve by offseting curve")]
+    public class dynOffsetCrv : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynOffsetCrv()
+        {
+            InPortData.Add(new PortData("Curve", "Curve to thicken, could not be closed.", typeof(Value.Container)));
+            InPortData.Add(new PortData("Offset", "Offset value.", typeof(Value.Number)));
+            InPortData.Add(new PortData("Normal", "The normal vector to the plane used for offset.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("Curve", "Curve which is the result of offset.", typeof(Value.Container)));
+            RegisterAllPorts();
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve curve = (Curve)((Value.Container)args[0]).Item;
+
+            double thickness = ((Value.Number)args[1]).Item;
+            XYZ normal = (XYZ)((Value.Container)args[2]).Item;
+
+            CurveLoop thickenLoop = CurveLoop.CreateViaThicken(curve, thickness, normal);
+
+            if (thickenLoop == null)
+                throw new Exception("Could not offset curve");
+
+            CurveLoopIterator CLiter = thickenLoop.GetCurveLoopIterator();
+
+            Curve result = null;
+
+            //relying heavily on the order of curves in the resulting curve loop, based on internal implemen
+            for (int index = 0; CLiter.MoveNext(); index++)
+            {
+                if (index == 2)
+                    result = CLiter.Current;
+            }
+
+            if (result == null)
+                throw new Exception("Could not offset curve");
+
+            return Value.NewContainer(result);
         }
     }
 
