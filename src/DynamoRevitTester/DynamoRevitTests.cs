@@ -17,6 +17,9 @@ using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
 using Dynamo.Applications;
 using Dynamo.Nodes;
+using Value = Dynamo.FScheme.Value;
+
+using Microsoft.FSharp.Collections;
 
 using NUnit.Core;
 using NUnit.Framework;
@@ -596,6 +599,36 @@ namespace DynamoRevitTests
 
             mc = (CurveByPoints)fec.ToElements().ElementAt(0);
             Assert.IsFalse(mc.IsReferenceLine);
+        }
+
+        [Test]
+        public void XYZFromReferencePoint()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\XYZFromReferencePoint.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            //dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            ReferencePoint rp;
+            using(_trans = new Transaction(dynRevitSettings.Doc.Document))
+            {
+                _trans.Start("Create a reference point.");
+
+                rp = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ());
+
+                _trans.Commit();
+
+            }
+            FSharpList<Value> args = FSharpList<Value>.Empty;
+            args = FSharpList<Value>.Cons(Value.NewContainer(rp), args);
+
+            //find the XYZFromReferencePoint node
+            var node = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynXYZFromReferencePoint).First();
+
+            Value v = ((dynNodeWithOneOutput)node).Evaluate(args);
+            Assert.IsInstanceOf(typeof(XYZ), ((Value.Container)v).Item);
         }
 
         private static void OpenAllSamplesInDirectory(DirectoryInfo di)
