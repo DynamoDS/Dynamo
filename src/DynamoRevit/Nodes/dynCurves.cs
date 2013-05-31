@@ -847,7 +847,7 @@ namespace Dynamo.Nodes
     [NodeName("Offset Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates curve by offseting curve")]
-    public class dynOffsetCrv : dynRevitTransactionNodeWithOneOutput
+    public class dynOffsetCrv : dynCurveBase
     {
         public dynOffsetCrv()
         {
@@ -882,6 +882,8 @@ namespace Dynamo.Nodes
 
             if (result == null)
                 throw new Exception("Could not offset curve");
+
+            crvs.Add(result);
 
             return Value.NewContainer(result);
         }
