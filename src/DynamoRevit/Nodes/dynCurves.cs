@@ -753,7 +753,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve Loop")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates Curve Loop")]
-    public class dynCurveLoop : dynRevitTransactionNodeWithOneOutput
+    public class dynCurveLoop : dynCurveBase
     {
         public dynCurveLoop()
         {
@@ -768,6 +768,11 @@ namespace Dynamo.Nodes
 
             CurveLoop result = CurveLoop.Create(curves);
 
+            foreach (Curve c in result)
+            {
+                crvs.Add(c);
+            }
+
             return Value.NewContainer(result);
         }
     }
@@ -775,13 +780,13 @@ namespace Dynamo.Nodes
     [NodeName("Thicken Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates Curve Loop by thickening curve")]
-    public class dynThickenCurveLoop : dynRevitTransactionNodeWithOneOutput
+    public class dynThickenCurveLoop : dynCurveBase
     {
         public dynThickenCurveLoop()
         {
-            InPortData.Add(new PortData("Curve", "Curve to thicken, could not be closed.", typeof(Value.List)));
+            InPortData.Add(new PortData("Curve", "Curve to thicken, could not be closed.", typeof(Value.Container)));
             InPortData.Add(new PortData("Thickness", "Thickness value.", typeof(Value.Number)));
-            InPortData.Add(new PortData("Normal", "The normal vector to the plane used for thickening.", typeof(Value.Number)));
+            InPortData.Add(new PortData("Normal", "The normal vector to the plane used for thickening.", typeof(Value.Container)));
             OutPortData.Add(new PortData("CurveLoop", "CurveLoop which is the result of thickening.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -795,6 +800,11 @@ namespace Dynamo.Nodes
             CurveLoop result = CurveLoop.CreateViaThicken(curve, thickness, normal);
             if (result == null)
                 throw new Exception("Could not thicken curve");
+
+            foreach (Curve c in result)
+            {
+                crvs.Add(c);
+            }
 
             return Value.NewContainer(result);
         }
