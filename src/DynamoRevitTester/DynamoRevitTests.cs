@@ -17,6 +17,8 @@ using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
 using Dynamo.Applications;
 using Dynamo.Nodes;
+using Dynamo.Selection;
+
 using Value = Dynamo.FScheme.Value;
 
 using Microsoft.FSharp.Collections;
@@ -217,11 +219,20 @@ namespace DynamoRevitTests
         [Test]
         public void CreatePointEndSample()
         {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
             string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point - end.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            //test running the expression
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            //test copying and pasting the workflow
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddRange(dynSettings.Controller.DynamoModel.Nodes);
+            dynSettings.Controller.RunCommand(vm.CopyCommand, null);
+            dynSettings.Controller.RunCommand(vm.PasteCommand, null);
         }
 
         [Test]
