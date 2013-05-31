@@ -15,6 +15,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
@@ -622,13 +623,18 @@ namespace Dynamo.Nodes
             if(cIn is Arc)
             {
                 Arc a = cIn as Arc;
-                //use the api method which takes the start, end, and point on curve
-                XYZ startVec = cIn.ComputeDerivatives(0, true).BasisZ.Normalize();
-                XYZ endVec = cIn.ComputeDerivatives(1, true).BasisZ.Normalize();
-                XYZ pointOnCrvVec = cIn.ComputeDerivatives(.5, true).BasisZ.Normalize();
+
+                Transform tStart = cIn.ComputeDerivatives(0, true);
+                Transform tEnd = cIn.ComputeDerivatives(1, true);
+                Transform tMid = cIn.ComputeDerivatives(.5, true);
+
+                XYZ startVec = tStart.BasisX.CrossProduct(tStart.BasisZ).Normalize();
+                XYZ endVec = tEnd.BasisX.CrossProduct(tEnd.BasisZ).Normalize();
+                XYZ midVec = tMid.BasisX.CrossProduct(tMid.BasisZ).Normalize();
+
                 XYZ start = a.Evaluate(0, true) + startVec*dIn;
                 XYZ end = a.Evaluate(1,true) + endVec*dIn;
-                XYZ mid = a.Evaluate(.5,true) + pointOnCrvVec*dIn;
+                XYZ mid = a.Evaluate(.5,true) + midVec*dIn;
 
                 cOut = dynRevitSettings.Revit.Application.Create.NewArc(start, end, mid);
             }
@@ -645,21 +651,36 @@ namespace Dynamo.Nodes
             }
             else if (cIn is HermiteSpline)
             {
-                HermiteSpline hs = cIn as HermiteSpline;
-                bool periodic = hs.IsPeriodic;
                 List<XYZ> newCtrlPoints = new List<XYZ>();
-                foreach (XYZ pt in hs.ControlPoints)
+                HermiteSpline hs = cIn as HermiteSpline;
+
+                double tStart = hs.get_EndParameter(0);
+                double tEnd = hs.get_EndParameter(1);
+
+                List<XYZ> newPts = new List<XYZ>();
+                double domain = tEnd - tStart;
+
+                for (double i = tStart; i <= tEnd; i += domain / 20)
                 {
-                    //project point onto curve to get a parameter
-                    IntersectionResult ir = hs.Project(pt);
-                    if (ir != null)
+                    Transform t = hs.ComputeDerivatives(i, false);
+
+                    XYZ curveNormal = t.BasisX.CrossProduct(t.BasisZ).Normalize();
+
+                    if (t.BasisY.Normalize().GetLength() == 0)
+                        continue;
+
+                    double dot = t.BasisY.Normalize().DotProduct(curveNormal);
+                    if (dot > 0)
                     {
-                        Transform t = hs.ComputeDerivatives(ir.Parameter, false);
-                        newCtrlPoints.Add(ir.XYZPoint + t.BasisZ.Normalize() * dIn);
+                        newPts.Add(t.Origin + curveNormal * dIn);
                     }
+                    else
+                        newPts.Add(t.Origin + curveNormal * -dIn);
+
+                    Debug.WriteLine(string.Format("{0} : {1} : {2}", t.BasisY.Normalize(), newPts.Last(), dot));
                 }
 
-                cOut = dynRevitSettings.Revit.Application.Create.NewHermiteSpline(newCtrlPoints, periodic);
+                cOut = dynRevitSettings.Revit.Application.Create.NewHermiteSpline(newPts, false);
             }
             else if (cIn is Line)
             {
@@ -673,26 +694,47 @@ namespace Dynamo.Nodes
             }
             else if (cIn is NurbSpline)
             {
+                bool flip = false;
+                double lastMagnitude = 0.0;
+
                 List<XYZ> newCtrlPoints = new List<XYZ>();
                 NurbSpline ns = cIn as NurbSpline;
-                foreach (XYZ pt in ns.CtrlPoints)
+
+                double tStart = ns.get_EndParameter(0);
+                double tEnd = ns.get_EndParameter(1);
+
+                List<XYZ> newPts = new List<XYZ>();
+                double domain = tEnd - tStart;
+
+                for (double i = tStart; i <= tEnd; i += domain / 20)
                 {
-                    //project point onto curve to get a parameter
-                    IntersectionResult ir = ns.Project(pt);
-                    if (ir != null)
+                    Transform t = ns.ComputeDerivatives(i, false);
+
+                    XYZ curveNormal = t.BasisX.CrossProduct(t.BasisZ).Normalize();
+
+                    if (t.BasisY.Normalize().GetLength() == 0)
+                        continue;
+
+                    double deviation = t.BasisY.GetLength() - lastMagnitude;
+                    if(deviation < 0 + .0000001 && deviation > 0 - .0000001)
+                        continue;
+
+                    flip = deviation < 0;
+
+                    if (flip || i==tStart)
                     {
-                        Transform t = ns.ComputeDerivatives(ir.Parameter, false);
-                        newCtrlPoints.Add(ir.XYZPoint + t.BasisZ.Normalize() * dIn);
+                        newPts.Add(t.Origin + curveNormal * dIn);
                     }
+                    else
+                        newPts.Add(t.Origin + curveNormal * -dIn);
+
+                    Debug.WriteLine(string.Format("{0} : {1} : {2}", t.BasisY, newPts.Last(), t.BasisY.GetLength()));
+
+                    lastMagnitude = t.BasisY.GetLength();
                 }
 
-                List<double> newWeights = new List<double>();
-                foreach (double d in ns.Weights)
-                {
-                    newWeights.Add(d);
-                }
-
-                cOut = dynRevitSettings.Revit.Application.Create.NewNurbSpline(newCtrlPoints, newWeights);
+                cOut = dynRevitSettings.Revit.Application.Create.NewHermiteSpline(newPts, false);
+                
             }
 
             if (cOut != null)

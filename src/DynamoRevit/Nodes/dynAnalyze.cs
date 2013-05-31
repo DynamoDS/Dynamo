@@ -130,4 +130,40 @@ namespace Dynamo.Nodes
 
     }
 
+    [NodeName("Compute Curve Derivatives")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
+    [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
+    public class dynComputeCurveDerivatives : dynTransformBase
+    {
+        public dynComputeCurveDerivatives()
+        {
+            InPortData.Add(new PortData("crv", "The curve to evaluate", typeof(Value.Container)));
+            InPortData.Add(new PortData("p", "The parameter to evaluate", typeof(Value.Container)));
+            OutPortData.Add(new PortData("t", "Transform describing the curve at the parameter(Transform)", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve crv = (Curve)((Value.Container)args[0]).Item;
+            double p = (double)((Value.Number)args[1]).Item;
+
+            Transform t = Transform.Identity;
+
+            if (crv != null)
+            {
+                t = crv.ComputeDerivatives(p,true);
+                t.BasisX = t.BasisX.Normalize();
+                t.BasisZ = t.BasisZ.Normalize();
+                t.BasisY = t.BasisX.CrossProduct(t.BasisZ);
+            }
+
+            transforms.Add(t);
+
+            return Value.NewContainer(t);
+        }
+
+    }
+
 }
