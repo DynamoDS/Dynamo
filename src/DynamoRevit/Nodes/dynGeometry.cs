@@ -232,7 +232,7 @@ namespace Dynamo.Nodes
         public dynXYZFromReferencePoint()
         {
             InPortData.Add(new PortData("pt", "Reference Point", typeof(Value.Container)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "Location of the reference point.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -244,7 +244,7 @@ namespace Dynamo.Nodes
 
             pts.Add(point.Position);
 
-            return Value.NewContainer(point);
+            return Value.NewContainer(point.Position);
         }
     }
 
