@@ -24,6 +24,7 @@ using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
+using System.Reflection;
 
 namespace Dynamo.Nodes
 {
@@ -580,7 +581,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+         public override Value Evaluate(FSharpList<Value> args)
         {
             var pts = ((Value.List)args[0]).Item.Select(
                x => ((XYZ)((Value.Container)x).Item)).ToList();
@@ -609,7 +610,6 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("crv", "The curve to offset.", typeof(Value.Container)));
             InPortData.Add(new PortData("d", "The distance to offset.", typeof(Value.Number)));
             OutPortData.Add(new PortData("crv", "The offset curve.", typeof(Value.Container)));
-
             RegisterAllPorts();
         }
 
@@ -744,6 +744,164 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Bisector Line")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates bisector of two lines")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynBisector : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynBisector()
+        {
+            InPortData.Add(new PortData("line1", "First Line", typeof(Value.Container)));
+            InPortData.Add(new PortData("line2", "Second Line", typeof(Value.Container)));
+            OutPortData.Add(new PortData("bisector", "Bisector Line", typeof(Value.Container)));
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Line line1 = (Line)((Value.Container)args[0]).Item;
+            Line line2 = (Line)((Value.Container)args[1]).Item;
 
+            Type LineType = typeof(Autodesk.Revit.DB.Line);
+
+            MethodInfo[] lineInstanceMethods = LineType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodCreateBisector = "CreateBisector";
+            Line result = null;
+
+            foreach (MethodInfo m in lineInstanceMethods)
+            {
+                if (m.Name == nameOfMethodCreateBisector)
+                {
+                    object[] argsM = new object[1];
+                    argsM[0] = line2;
+
+                    result = (Line)m.Invoke(line1, argsM);
+
+                    break;
+                }
+            }
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Best fit arc")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates best fit arc through points")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynBestFitArc : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynBestFitArc()
+        {
+            InPortData.Add(new PortData("points", "Points to Fit Arc Through", typeof(Value.List)));
+            OutPortData.Add(new PortData("arc", "Best Fit Arc", typeof(Value.Container)));
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            List<XYZ> xyzList = new List<XYZ>();
+
+            FSharpList<Value> vals = ((Value.List)args[0]).Item;
+            var doc = dynRevitSettings.Doc;
+
+            for (int ii = 0; ii < vals.Count(); ii++)
+            {
+                var item = ((Value.Container)vals[ii]).Item;
+
+                if (item is ReferencePoint)
+                {
+                    ReferencePoint refPoint = (ReferencePoint)item;
+                    XYZ thisXYZ = refPoint.GetCoordinateSystem().Origin;
+                    xyzList.Add(thisXYZ);
+                }
+                else if (item is XYZ)
+                {
+                    XYZ thisXYZ = (XYZ)item;
+                    xyzList.Add(thisXYZ);
+                }
+            }
+
+            if (xyzList.Count <= 1)
+            {
+                throw new Exception("Not enough reference points to make a curve.");
+            }
+
+
+            Type ArcType = typeof(Autodesk.Revit.DB.Arc);
+
+            MethodInfo[] arcStaticMethods = ArcType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodCreateByFit = "CreateByFit";
+            Arc result = null;
+
+            foreach (MethodInfo m in arcStaticMethods)
+            {
+                if (m.Name == nameOfMethodCreateByFit)
+                {
+                    object[] argsM = new object[1];
+                    argsM[0] = xyzList;
+
+                    result = (Arc)m.Invoke(null, argsM);
+
+                    break;
+                }
+            }
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Approximate By Tangent Arcs")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates best fit arc through points")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynApproximateByTangentArcs : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynApproximateByTangentArcs()
+        {
+            InPortData.Add(new PortData("curve", "Curve to Approximate by Tangent Arcs", typeof(Value.Container)));
+            OutPortData.Add(new PortData("arcs", "List of Approximating Arcs", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve thisCurve = (Curve)((Value.Container)args[0]).Item;
+
+            if (thisCurve == null)
+            {
+                throw new Exception("Not enough reference points to make a curve.");
+            }
+
+
+            Type CurveType = typeof(Autodesk.Revit.DB.Curve);
+
+            MethodInfo[] curveInstanceMethods = CurveType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodApproximateByTangentArcs = "ApproximateByTangentArcs";
+            List <Curve> resultArcs = null;
+            var result = FSharpList<Value>.Empty;
+
+            foreach (MethodInfo m in curveInstanceMethods)
+            {
+                if (m.Name == nameOfMethodApproximateByTangentArcs)
+                {
+                    object[] argsM = new object[0];
+
+                    resultArcs = (List<Curve>)m.Invoke(thisCurve, argsM);
+
+                    break;
+                }
+            }
+            for (int indexCurve = resultArcs.Count - 1; indexCurve > -1; indexCurve--)
+            {
+                result = FSharpList<Value>.Cons(Value.NewContainer(resultArcs[indexCurve]), result);   
+            }
+
+            return Value.NewList(result);
+        }
+    }
 }
 

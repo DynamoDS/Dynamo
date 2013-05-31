@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Windows.Controls; //for boolean option
 using System.Xml;              //for boolean option  
 using System.Windows.Media.Media3D;
+using System.Reflection;
 
 using Autodesk.Revit;
 using Autodesk.Revit.DB;
@@ -923,7 +924,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("cv", "Curve(Curve)", typeof(Value.Container)));
             InPortData.Add(new PortData("t", "Transform(Transform)", typeof(Value.Container)));
-            OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Value.Container)));
+            OutPortData.Add(new PortData("tcv", "Transformed Curve", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -1280,7 +1281,8 @@ namespace Dynamo.Nodes
             Solid mySolid = null;
 
             //because of r2013 used GenericForm  which is superclass of FreeFromElement
-            if (thisElement is GenericForm && dynFreeForm.freeFormSolids.ContainsKey(thisElement.Id))
+            if ((thisElement is GenericForm) && (dynFreeForm.freeFormSolids != null &&
+                  dynFreeForm.freeFormSolids.ContainsKey(thisElement.Id)))
             {
                 mySolid = dynFreeForm.freeFormSolids[thisElement.Id];
             }
@@ -1710,4 +1712,361 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Face Through Points")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
+    [NodeDescription("Creates face on grid of points")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynFaceThroughPoints : dynNodeWithOneOutput
+    {
+
+        public dynFaceThroughPoints()
+        {
+            InPortData.Add(new PortData("Points", "Points to create face, list or list of lists", typeof(Value.List)));
+            InPortData.Add(new PortData("NumberOfRows", "Number of rows in the grid of the face", typeof(object)));
+            OutPortData.Add(new PortData("Face", "Face", typeof(object)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var listIn = ((Value.List)args[0]).Item.Select(
+                    x => ((XYZ)((Value.Container)x).Item)
+                       ).ToList();
+            /* consider passing n x m grid of points instead of flat list
+            var in1 = ((Value.Container)args[0]).Item;
+            List<XYZ> listIn = in1 as List<XYZ>;
+            List<List<XYZ>> listOfListsIn = (listIn != null) ? null : (in1 as List<List<XYZ>>);
+
+            if (listIn == null && listOfListsIn == null)
+                throw new Exception("no XYZ list or list of XYZ lists in Face Through Points node");
+
+            if (listOfListsIn != null)
+            {
+                listIn = new List<XYZ>();
+                for (int indexL = 0; indexL < listOfListsIn.Count; indexL++)
+                {
+                    listIn.Concat(listOfListsIn[indexL]);
+                }
+            }
+            */
+
+            int numberOfRows = (int)((Value.Number)args[1]).Item;
+            if (numberOfRows < 2 || listIn.Count % numberOfRows != 0)
+                throw new Exception("number of rows should  match number of points Face Through Points node");
+
+            bool periodicU = false;
+            bool periodicV = false;
+
+            Type HermiteFaceType = typeof(Autodesk.Revit.DB.HermiteFace);
+
+            MethodInfo[] hermiteFaceStaticMethods = HermiteFaceType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodCreate = "Create";
+            Face result = null;
+
+            foreach (MethodInfo m in hermiteFaceStaticMethods)
+            {
+                if (m.Name == nameOfMethodCreate)
+                {
+                    object[] argsM = new object[7];
+                    argsM[0] = numberOfRows;
+                    argsM[1] = listIn;
+                    argsM[2] = new List<XYZ>();
+                    argsM[3] = new List<XYZ>();
+                    argsM[4] = new List<XYZ>();
+                    argsM[5] = periodicU;
+                    argsM[6] = periodicV;
+
+                    result = (Face) m.Invoke(null, argsM);
+
+                    break;
+                }
+            }
+
+            return Value.NewContainer(result);
+        }
+    }
+    [NodeName("Transform Solid")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates solid by transforming solid")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynTransformSolid : dynNodeWithOneOutput
+    {
+
+        public dynTransformSolid()
+        {
+            InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));
+            InPortData.Add(new PortData("Transform", "Transform to apply", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Solid", "Resulting Solid", typeof(Value.Container)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Solid thisSolid = (Solid)((Value.Container)args[0]).Item;
+            Transform transform = (Transform)((Value.Container)args[1]).Item;
+
+            Solid result = null;
+
+            Type GeometryCreationUtilitiesType = typeof(Autodesk.Revit.DB.GeometryCreationUtilities);
+
+            MethodInfo[] geometryCreationUtilitiesStaticMethods = GeometryCreationUtilitiesType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfReplaceMethod = "CreateGeometryByFaceReplacement";
+
+            foreach (MethodInfo ms in geometryCreationUtilitiesStaticMethods)
+            {
+                if (ms.Name == nameOfReplaceMethod)
+                {
+                    object[] argsM = new object[3];
+                    argsM[0] = thisSolid;
+                    argsM[1] = new List<GeometryObject>();
+                    argsM[2] = new List<GeometryObject>();
+                    result = (Solid)ms.Invoke(null, argsM);
+                    break;
+                }
+            }
+            if (result == null)
+                throw new Exception(" could not copy solid or validation during copy failed");
+
+            Type SolidType = typeof(Autodesk.Revit.DB.Solid);
+            MethodInfo[] solidInstanceMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+             
+            String nameOfMethodTransform = "transform";
+
+            foreach (MethodInfo m in solidInstanceMethods)
+            {
+                if (m.Name == nameOfMethodTransform)
+                {
+                    object[] argsM = new object[1];
+                    argsM[0] = transform;
+
+                    m.Invoke(result, argsM);
+
+                    break;
+                }
+            }
+
+            return Value.NewContainer(result);
+        }
+    }
+    [NodeName("Replace Faces")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Build solid replacing faces of input solid by supplied faces")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynReplaceFacesOfSolid : dynNodeWithOneOutput
+    {
+
+        public dynReplaceFacesOfSolid()
+        {
+            InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));
+            InPortData.Add(new PortData("Faces", "Faces to be replaced", typeof(Value.List)));
+            InPortData.Add(new PortData("Faces", "Faces to use", typeof(Value.List)));
+            OutPortData.Add(new PortData("Solid", "Resulting Solid", typeof(Value.Container)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Solid thisSolid = (Solid)((Value.Container)args[0]).Item;
+
+            var facesToBeReplaced = ((Value.List)args[1]).Item.Select(
+               x => ((GeometryObject)((Value.Container)x).Item)).ToList();
+
+            var facesToReplaceWith = ((Value.List)args[2]).Item.Select(
+               x => ((GeometryObject)((Value.Container)x).Item)).ToList();
+
+            Type GeometryCreationUtilitiesType = typeof(Autodesk.Revit.DB.GeometryCreationUtilities);
+
+            MethodInfo[] geometryCreationUtilitiesStaticMethods = GeometryCreationUtilitiesType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfReplaceMethod = "CreateGeometryByFaceReplacement";
+
+            Solid result = null;
+
+            foreach (MethodInfo ms in geometryCreationUtilitiesStaticMethods)
+            {
+                if (ms.Name == nameOfReplaceMethod)
+                {
+                    object[] argsM = new object[3];
+                    argsM[0] = thisSolid;
+                    argsM[1] = facesToBeReplaced;
+                    argsM[2] = facesToReplaceWith;
+                    result = (Solid)ms.Invoke(null, argsM);
+                }
+            }
+            if (result == null)
+                throw new Exception(" could not make solid by replacement of face or faces");
+
+            return Value.NewContainer(result);
+        }
+    }
+    [NodeName("Blend Edges")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Build solid by replace edges with round blends")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynBlendEdges : dynNodeWithOneOutput
+    {
+
+        public dynBlendEdges()
+        {
+            InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));
+            InPortData.Add(new PortData("Edges", "Edges to be blends", typeof(Value.List)));
+            InPortData.Add(new PortData("Radius", "Radius of blend", typeof( Value.Number)));
+            OutPortData.Add(new PortData("Solid", "Resulting Solid", typeof(Value.Container)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Solid thisSolid = (Solid)((Value.Container)args[0]).Item;
+
+            FSharpList<Value> vals = ((Value.List)args[1]).Item;
+            List <GeometryObject> edgesToBeReplaced = new List <GeometryObject>();
+
+            var doc = dynRevitSettings.Doc;
+
+            for (int ii = 0; ii < vals.Count(); ii++)
+            {
+                 var item = ((Value.Container)vals[ii]).Item;
+
+                 if (item is Reference)
+                 {
+                     Reference refEdge = (Reference)item;
+                     Element selectedElement = doc.Document.GetElement(refEdge);
+
+                     GeometryObject edge = selectedElement.GetGeometryObjectFromReference(refEdge);
+                     if (edge is Edge)
+                         edgesToBeReplaced.Add(edge);
+                 }
+                 else if (item is Edge)
+                 {
+                     GeometryObject edge = (Edge)item;
+                     edgesToBeReplaced.Add(edge);
+                 }
+            }
+
+            double radius = ((Value.Number)args[2]).Item;
+
+            System.Reflection.Assembly revitAPIAssembly = System.Reflection.Assembly.GetAssembly(typeof(GeometryCreationUtilities));
+            Type SolidModificationUtilsType = revitAPIAssembly.GetType("Autodesk.Revit.DB.SolidModificationUtils", false);
+
+            if (SolidModificationUtilsType == null)
+                throw new Exception(" could not make edge chamfer");
+
+            MethodInfo[] solidModificationUtilsStaticMethods = SolidModificationUtilsType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfReplaceMethod = "ExecuteShapingOfEdges";
+
+            Solid result = null;
+
+            foreach (MethodInfo ms in solidModificationUtilsStaticMethods)
+            {
+                if (ms.Name == nameOfReplaceMethod)
+                {
+                    object[] argsM = new object[4];
+                    bool isRound = true;
+                    argsM[0] = thisSolid;
+                    argsM[1] = isRound;
+                    argsM[2] = radius;
+                    argsM[3] = edgesToBeReplaced;
+                    result = (Solid)ms.Invoke(null, argsM);
+                    break;
+                }
+            }
+            if (result == null)
+                throw new Exception(" could not make solid by blending requested edges with given radius");
+
+            return Value.NewContainer(result);
+        }
+    }
+    [NodeName("Chamfer Edges")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Build solid by replace edges with chamfers")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynChamferEdges : dynNodeWithOneOutput
+    {
+
+        public dynChamferEdges()
+        {
+            InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));
+            InPortData.Add(new PortData("Edges", "Edges to be blends", typeof(Value.List)));
+            InPortData.Add(new PortData("Size", "Size of chamfer ", typeof(Value.Number)));
+            OutPortData.Add(new PortData("Solid", "Resulting Solid", typeof(Value.Container)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Solid thisSolid = (Solid)((Value.Container)args[0]).Item;
+
+            FSharpList<Value> vals = ((Value.List)args[1]).Item;
+            List<GeometryObject> edgesToBeReplaced = new List<GeometryObject>();
+            var doc = dynRevitSettings.Doc;
+
+            for (int ii = 0; ii < vals.Count(); ii++)
+            {
+                var item = ((Value.Container)vals[ii]).Item;
+
+                if (item is Reference)
+                {
+                    Reference refEdge = (Reference)item;
+                    Element selectedElement = doc.Document.GetElement(refEdge);
+
+                    GeometryObject edge = selectedElement.GetGeometryObjectFromReference(refEdge);
+                    if (edge is Edge)
+                        edgesToBeReplaced.Add(edge);
+                }
+                else if (item is Edge)
+                {
+                    GeometryObject edge = (Edge)item;
+                    edgesToBeReplaced.Add(edge);
+                }
+            }
+
+            double size = ((Value.Number)args[2]).Item;
+
+            System.Reflection.Assembly revitAPIAssembly = System.Reflection.Assembly.GetAssembly(typeof(GeometryCreationUtilities));
+            Type SolidModificationUtilsType = revitAPIAssembly.GetType("Autodesk.Revit.DB.SolidModificationUtils", false);
+
+            if (SolidModificationUtilsType == null)
+                throw new Exception(" could not make edge chamfer");
+
+
+            MethodInfo[] solidModificationUtilsStaticMethods = SolidModificationUtilsType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfReplaceMethod = "ExecuteShapingOfEdges";
+
+            Solid result = null;
+
+            foreach (MethodInfo ms in solidModificationUtilsStaticMethods)
+            {
+                if (ms.Name == nameOfReplaceMethod)
+                {
+                    object[] argsM = new object[4];
+                    bool isRound = false;
+                    argsM[0] = thisSolid;
+                    argsM[1] = isRound;
+                    argsM[2] = size;
+                    argsM[3] = edgesToBeReplaced;
+                    result = (Solid)ms.Invoke(null, argsM);
+                    break;
+                }
+            }
+            if (result == null)
+                throw new Exception(" could not make solid by chamfering requested edges with given chamfer size");
+
+            return Value.NewContainer(result);
+        }
+    }
 }

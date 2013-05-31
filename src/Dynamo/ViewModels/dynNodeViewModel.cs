@@ -167,6 +167,32 @@ namespace Dynamo.Controls
             get { return nodeLogic.InteractionEnabled; }
         }
 
+        public bool IsVisible
+        {
+            get
+            {
+                return nodeLogic.IsVisible;
+            }
+            set
+            {
+                nodeLogic.IsVisible = value;
+                RaisePropertyChanged("IsVisible");
+            }
+        }
+
+        public bool IsUpstreamVisible
+        {
+            get
+            {
+                return nodeLogic.IsUpstreamVisible;
+            }
+            set
+            {
+                nodeLogic.IsUpstreamVisible = value;
+                RaisePropertyChanged("IsUpstreamVisible");
+            }
+        }
+
         #endregion
 
         #region commands
@@ -179,6 +205,8 @@ namespace Dynamo.Controls
         public DelegateCommand<object> SetLayoutCommand { get; set; }
         public DelegateCommand<dynNodeView> SetupCustomUIElementsCommand { get; set; }
         public DelegateCommand ValidateConnectionsCommand { get; set; }
+        public DelegateCommand ToggleIsVisibleCommand { get; set; }
+        public DelegateCommand ToggleIsUpstreamVisibleCommand { get; set; }
         #endregion
 
         #region constructors
@@ -203,6 +231,10 @@ namespace Dynamo.Controls
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
             SetupCustomUIElementsCommand = new DelegateCommand<dynNodeView>(SetupCustomUIElements, CanSetupCustomUIElements);
             ValidateConnectionsCommand = new DelegateCommand(ValidateConnections, CanValidateConnections);
+            ToggleIsVisibleCommand = new DelegateCommand(ToggleIsVisible, CanVisibilityBeToggled);
+            ToggleIsUpstreamVisibleCommand = new DelegateCommand(ToggleIsUpstreamVisible, CanUpstreamVisibilityBeToggled);
+
+
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
@@ -408,6 +440,28 @@ namespace Dynamo.Controls
                     OutPorts.Remove(OutPorts.ToList().First(x => x.PortModel == item));
                 }
             }
+        }
+
+        private void ToggleIsVisible()
+        {
+            this.nodeLogic.IsVisible = !this.nodeLogic.IsVisible;
+            RaisePropertyChanged("IsVisible");
+        }
+
+        private void ToggleIsUpstreamVisible()
+        {
+            this.nodeLogic.IsUpstreamVisible = !this.nodeLogic.IsUpstreamVisible;
+            RaisePropertyChanged("IsUpstreamVisible");
+        }
+
+        private bool CanVisibilityBeToggled() 
+        {
+            return true;
+        }
+
+        private bool CanUpstreamVisibilityBeToggled()
+        {
+            return true;
         }
 
         private void ValidateConnections()

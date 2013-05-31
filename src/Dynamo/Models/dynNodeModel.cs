@@ -88,6 +88,8 @@ namespace Dynamo.Nodes
         //bool isSelected = false;
         private bool _isCustomFunction = false;
         private bool interactionEnabled = true;
+        private bool _isVisible;
+        private bool _isUpstreamVisible;
 
         /// <summary>
         /// Returns whether this node represents a built-in or custom function.
@@ -95,6 +97,34 @@ namespace Dynamo.Nodes
         public bool IsCustomFunction
         {
             get { return this.GetType().IsAssignableFrom(typeof(dynFunction)); }
+        }
+
+        public bool IsVisible
+        {
+            get 
+            {
+                return _isVisible;
+            }
+            set
+            {
+                _isVisible = value;
+                isDirty = true;
+                RaisePropertyChanged("IsVisible");
+            }
+        }
+
+        public bool IsUpstreamVisible
+        {
+            get 
+            {
+                return _isUpstreamVisible;
+            }
+            set
+            {
+                _isUpstreamVisible = value;
+                isDirty = true;
+                RaisePropertyChanged("IsUpstreamVisible");
+            }
         }
 
         public ElementState State
@@ -328,6 +358,9 @@ namespace Dynamo.Nodes
         {
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
+
+            IsVisible = true;
+            IsUpstreamVisible = true;
 
             //Fetch the element name from the custom attribute.
             var nameArray = GetType().GetCustomAttributes(typeof(NodeNameAttribute), true);
