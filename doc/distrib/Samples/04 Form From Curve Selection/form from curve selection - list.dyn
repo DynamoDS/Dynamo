@@ -1,7 +1,5 @@
-<dynWorkspace X="7.14999999999981" Y="33.716">
+<dynWorkspace X="-21.9999999999999" Y="-61.4364444444446">
   <dynElements>
-    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="a2cdfed6-8c03-4573-a790-b1a8c1b3a401" nickname="Curves by Selection" x="98" y="207.75" lacing="First">
-    </Dynamo.Nodes.dynCurvesBySelection>
     <Dynamo.Nodes.dynCurveRef type="Dynamo.Nodes.dynCurveRef" guid="936ac174-79bd-4fdd-9c26-29a91d49f26b" nickname="Curve Reference" x="278" y="266.25" lacing="First" />
     <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="e77adb5b-c9db-403c-92a1-fe083b22674f" nickname="list" x="605" y="386.5" lacing="Disabled">
       <Input name="item(s)" />
@@ -11,8 +9,6 @@
     <Dynamo.Nodes.dynBoolSelector type="Dynamo.Nodes.dynBoolSelector" guid="cc57c2ac-f690-41de-9c6f-f4e01a88bffb" nickname="Boolean" x="615.75" y="202.25" lacing="First">
       <System.Boolean value="True" />
     </Dynamo.Nodes.dynBoolSelector>
-    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="fbb24bdf-101c-4002-b6bc-64b301905521" nickname="Curves by Selection" x="62" y="545.25" lacing="First">
-    </Dynamo.Nodes.dynCurvesBySelection>
     <Dynamo.Nodes.dynCurveRef type="Dynamo.Nodes.dynCurveRef" guid="3ba117d7-3980-4d1d-a07f-b48110012812" nickname="Curve Reference" x="268" y="491.75" lacing="First" />
     <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="eecdaf74-8ea3-47bb-8fea-3be4b4a97b14" nickname="list" x="439.25" y="340.75" lacing="Disabled">
       <Input name="item(s)" />
@@ -23,17 +19,19 @@
     <Dynamo.Nodes.dynBoolSelector type="Dynamo.Nodes.dynBoolSelector" guid="cf51ee6a-43eb-4405-a392-2b4e17fd7f6b" nickname="Boolean" x="657.355024777053" y="517.432397939379" lacing="First">
       <System.Boolean value="True" />
     </Dynamo.Nodes.dynBoolSelector>
+    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="f981b717-29af-4767-9720-d9bfcb7ff362" nickname="Select Curve" x="37.84686184679" y="170.608312460941" lacing="First" />
+    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="0a0b6e22-0fb5-4999-8876-f013ef0f858b" nickname="Select Curve" x="41.1801951801233" y="553.941645794274" lacing="First" />
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="a2cdfed6-8c03-4573-a790-b1a8c1b3a401" start_index="0" end="936ac174-79bd-4fdd-9c26-29a91d49f26b" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="936ac174-79bd-4fdd-9c26-29a91d49f26b" start_index="0" end="eecdaf74-8ea3-47bb-8fea-3be4b4a97b14" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="e77adb5b-c9db-403c-92a1-fe083b22674f" start_index="0" end="5ddaa2b8-21e9-4fda-9cb8-b9fd317dbde0" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="cc57c2ac-f690-41de-9c6f-f4e01a88bffb" start_index="0" end="5ddaa2b8-21e9-4fda-9cb8-b9fd317dbde0" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="fbb24bdf-101c-4002-b6bc-64b301905521" start_index="0" end="3ba117d7-3980-4d1d-a07f-b48110012812" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="3ba117d7-3980-4d1d-a07f-b48110012812" start_index="0" end="344c1cac-aa12-4908-857b-fee6876f4888" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="eecdaf74-8ea3-47bb-8fea-3be4b4a97b14" start_index="0" end="e77adb5b-c9db-403c-92a1-fe083b22674f" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="344c1cac-aa12-4908-857b-fee6876f4888" start_index="0" end="e77adb5b-c9db-403c-92a1-fe083b22674f" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="cf51ee6a-43eb-4405-a392-2b4e17fd7f6b" start_index="0" end="5ddaa2b8-21e9-4fda-9cb8-b9fd317dbde0" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="f981b717-29af-4767-9720-d9bfcb7ff362" start_index="0" end="936ac174-79bd-4fdd-9c26-29a91d49f26b" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="0a0b6e22-0fb5-4999-8876-f013ef0f858b" start_index="0" end="3ba117d7-3980-4d1d-a07f-b48110012812" end_index="0" portType="0" />
   </dynConnectors>
   <dynNotes />
 </dynWorkspace>
