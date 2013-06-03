@@ -295,7 +295,7 @@ namespace Dynamo.Nodes
                 refPtArr.Append(refPointEnd);
             }
 
-            c = CreateCurveByPoints(c, gc, start, end);
+            c = dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(refPtArr);
             return c;
         }
     }
