@@ -378,7 +378,7 @@ namespace Dynamo.Nodes
 
             this.IsSelected = false;
             State = ElementState.DEAD;
-            ArgumentLacing = LacingStrategy.First;
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         /// <summary>
