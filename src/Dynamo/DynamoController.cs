@@ -395,7 +395,7 @@ namespace Dynamo
                 OnRunCompleted(this, false);
 
                 if (Testing)
-                    Assert.Fail(ex.Message);
+                    Assert.Fail(ex.Message + ":" + ex.StackTrace);
             }
             finally
             {
