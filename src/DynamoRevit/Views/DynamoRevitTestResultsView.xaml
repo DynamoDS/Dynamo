@@ -6,7 +6,7 @@
              xmlns:revit="clr-namespace:Dynamo.Applications"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-        Width="600" Height="400">
+        Width="800" Height="400">
     <Grid>
         <Grid.Resources>
             <revit:ResultTypeToColorConverter x:Key="ResultTypeToColorConverter"/>

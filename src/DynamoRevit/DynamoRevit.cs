@@ -29,10 +29,13 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Linq;
 
+using Microsoft.Practices.Prism.ViewModel;
+
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.UI;
+
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
@@ -41,6 +44,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
 using Dynamo.FSchemeInterop;
 using Dynamo.Commands;
+
 #if DEBUG
 using NUnit.Core;
 using NUnit.Core.Filters;
@@ -276,6 +280,9 @@ namespace Dynamo.Applications
                 
                 //execute the tests
                 DynamoTestResultSummary Results = new DynamoTestResultSummary();
+                DynamoRevitTestResultsView resultsView = new DynamoRevitTestResultsView();
+                resultsView.DataContext = Results;
+                resultsView.Show();
 
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
                 string assLocation = Assembly.GetExecutingAssembly().Location;
@@ -320,10 +327,9 @@ namespace Dynamo.Applications
                 });
 
                 //show the results
-                DynamoRevitTestResultsView resultsView = new DynamoRevitTestResultsView();
-                resultsView.DataContext = Results;
-
-                resultsView.ShowDialog();
+                //DynamoRevitTestResultsView resultsView = new DynamoRevitTestResultsView();
+                //resultsView.DataContext = Results;
+                //resultsView.ShowDialog();
             }
             catch (Exception ex)
             {
@@ -360,9 +366,18 @@ namespace Dynamo.Applications
 
     public enum DynamoRevitTestResultType { PASS, FAIL, ERROR, EXCEPTION }
 
-    public class DynamoRevitTestResult
+    public class DynamoRevitTestResult:NotificationObject
     {
-        public DynamoRevitTestResultType ResultType { get; set; }
+        DynamoRevitTestResultType _resultType;
+        public DynamoRevitTestResultType ResultType 
+        {
+            get { return _resultType; }
+            set
+            {
+                _resultType = value;
+                RaisePropertyChanged("ResultType");
+            }
+        }
         public string Message { get; set; }
         public string TestName { get; set; }
         public DynamoRevitTestResult(){}
@@ -420,12 +435,16 @@ namespace Dynamo.Applications
         public void TestOutput(TestOutput testOutput) { }
     }
 
-    class DynamoTestResultSummary
+    class DynamoTestResultSummary:NotificationObject
     {
+        ObservableCollection<DynamoRevitTestResult> _results;
         public ObservableCollection<DynamoRevitTestResult> Results
         {
-            get;
-            set;
+            get { return _results; }
+            set
+            {
+                _results = value;
+            }
         }
 
         public string TestSummary
@@ -447,7 +466,14 @@ namespace Dynamo.Applications
 
         public DynamoTestResultSummary() 
         {
-            Results = new ObservableCollection<DynamoRevitTestResult>();
+            _results = new ObservableCollection<DynamoRevitTestResult>();
+            _results.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_results_CollectionChanged);
+        }
+
+        void _results_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged("Results");
+            RaisePropertyChanged("TestSummary");
         }
     }
 
