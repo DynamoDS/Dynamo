@@ -1,30 +1,18 @@
-<!--
-Copyright Autodesk, Inc. 2012. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
-<dynWorkspace X="10" Y="55">
+<dynWorkspace X="314" Y="73">
   <dynElements>
-    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="32534b9a-8fe9-4cbd-867a-1741b23e1e6c" nickname="Number" x="21.25" y="69.75">
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="bc6aefc7-0a6e-436d-8eec-9e4b1a337c9e" nickname="Number" x="14.25" y="20.75" lacing="Longest">
       <System.Double value="0" />
-    </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynXYZ type="Dynamo.Elements.dynXYZ" guid="14af8f89-a133-43cc-8449-95336fb0bb6d" nickname="XYZ" x="303" y="102.75" />
-    <Dynamo.Elements.dynReferencePointByXYZ type="Dynamo.Elements.dynReferencePointByXYZ" guid="caec8ec2-19b1-4b08-971b-92ebc9e2ad6c" nickname="Reference Point" x="445" y="203.25" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynXYZ type="Dynamo.Nodes.dynXYZ" guid="888ce288-f0fe-4777-9cf4-aa586b226bb0" nickname="XYZ" x="302" y="64.75" lacing="Longest" />
+    <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="d585c702-bbd6-4faf-9d2e-be298bbbf9d6" nickname="Ref Point" x="487.70085055274" y="125.223897853943" lacing="Longest">
+      <Run />
+    </Dynamo.Nodes.dynReferencePointByXYZ>
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="32534b9a-8fe9-4cbd-867a-1741b23e1e6c" start_index="0" end="14af8f89-a133-43cc-8449-95336fb0bb6d" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="32534b9a-8fe9-4cbd-867a-1741b23e1e6c" start_index="0" end="14af8f89-a133-43cc-8449-95336fb0bb6d" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="32534b9a-8fe9-4cbd-867a-1741b23e1e6c" start_index="0" end="14af8f89-a133-43cc-8449-95336fb0bb6d" end_index="2" portType="0" />
-    <Dynamo.Connectors.dynConnector start="14af8f89-a133-43cc-8449-95336fb0bb6d" start_index="0" end="caec8ec2-19b1-4b08-971b-92ebc9e2ad6c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="bc6aefc7-0a6e-436d-8eec-9e4b1a337c9e" start_index="0" end="888ce288-f0fe-4777-9cf4-aa586b226bb0" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="bc6aefc7-0a6e-436d-8eec-9e4b1a337c9e" start_index="0" end="888ce288-f0fe-4777-9cf4-aa586b226bb0" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="bc6aefc7-0a6e-436d-8eec-9e4b1a337c9e" start_index="0" end="888ce288-f0fe-4777-9cf4-aa586b226bb0" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="888ce288-f0fe-4777-9cf4-aa586b226bb0" start_index="0" end="d585c702-bbd6-4faf-9d2e-be298bbbf9d6" end_index="0" portType="0" />
   </dynConnectors>
+  <dynNotes />
 </dynWorkspace>
