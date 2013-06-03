@@ -404,7 +404,7 @@ namespace Dynamo.Revit
         {
             base.OnEvaluate();
 
-            runCount++;
+            //runCount++;
         }
 
         internal void PruneRuns(int runCount)
@@ -699,6 +699,8 @@ namespace Dynamo.Revit
             {
                 Value evalResult = Evaluate(args);
 
+                runCount++;
+
                 if (!evalResult.IsList)
                         throw new Exception("Output value of the node is not a list.");
 
@@ -806,6 +808,7 @@ namespace Dynamo.Revit
             else
             {
                 outPuts[OutPortData[0]] = Evaluate(args);
+                runCount++;
             }
         }
 
