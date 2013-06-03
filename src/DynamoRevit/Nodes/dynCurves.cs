@@ -247,130 +247,46 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             //Our eventual output.
-            CurveByPoints c;
+            CurveByPoints c = null;
 
             var input = args[0];
 
+            Curve gc = (Curve)((Value.Container)args[0]).Item;
+            XYZ start = gc.get_EndPoint(0);
+            XYZ end = gc.get_EndPoint(1);
 
-            //If we are receiving a list, we must create a curve by points (CBPs) for each curve in the list.
-            if (input.IsList)
+            //If we've made any elements previously...
+            if (this.Elements.Any())
             {
-                var curveList = (input as Value.List).Item;
-
-                //Counter to keep track of how many CBPs we've made. We'll use this to delete old
-                //elements later.
-                int count = 0;
-
-                //We create our output by...
-                var result = Utils.SequenceToFSharpList(
-                   curveList.Select(
-                    //..taking each element in the list and...
-                      delegate(Value x)
-                      {
-                          Curve gc = (Curve)((Value.Container)x).Item;
-                          //Add the geometry curves start and end points to a ReferencePointArray.
-                          ReferencePointArray refPtArr = new ReferencePointArray();
-                          if (gc.GetType() == typeof(Line))
-                          {
-                              XYZ start = gc.get_EndPoint(0);
-                              XYZ end = gc.get_EndPoint(1);
-
-                              ReferencePoint refPointStart = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
-                              ReferencePoint refPointEnd = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
-                              refPtArr.Append(refPointStart);
-                              refPtArr.Append(refPointEnd);
-                          }
-                          //only lines supported at this point
-
-                          //...if we already have elements made by this node in a previous run...
-                          if (this.Elements.Count > count)
-                          {
-                              Element e;
-                              //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count],typeof(CurveByPoints), out e))
-                              {
-                                  //...and if we're successful, update it's position... 
-                                  c = e as CurveByPoints;
-                                  //c.SetPoints(refPtArr);
-                                  //c.GetPoints().get_Item(0).Position.X = gc.get_EndPoint(0).X;
-                              }
-                              else
-                              {
-                                  //...otherwise, we can make a new CBP and replace it in the list of
-                                  //previously created CBPs.
-                                  c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
-                                  this.Elements[count] = c.Id;
-                              }
-                          }
-                          //...otherwise...
-                          else
-                          {
-                              //...we create a new point...
-                              c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
-                              //...and store it in the element list for future runs.
-                              this.Elements.Add(c.Id);
-                          }
-                          //Finally, we update the counter, and return a new Value containing the CBP.
-                          //This Value will be placed in the Value.List that will be passed downstream from this
-                          //node.
-                          count++;
-                          return Value.NewContainer(c);
-                      }
-                   )
-                );
-
-                //Now that we've created all the CBPs from this run, we delete all of the
-                //extra ones from the previous run.
-                foreach (var e in this.Elements.Skip(count))
+                Element e;
+                //...try to get the first one...
+                if (dynUtils.TryGetElement(this.Elements[0],typeof(CurveByPoints), out e))
                 {
-                    this.DeleteElement(e);
+                    //..and if we do, update it's position.
+                    c = e as CurveByPoints;
+
+                    ReferencePointArray existingPts = c.GetPoints();
+
+                    //update the points on the curve to match
+                    ReferencePointArrayIterator iter = existingPts.ForwardIterator();
+                    existingPts.get_Item(0).Position = start;
+                    existingPts.get_Item(1).Position = end;
                 }
-
-                //Fin
-                return Value.NewList(result);
             }
-
             else
-            {
-                //If we're not receiving a list, we will just assume we received one geometry curve.
-
-                Curve gc = (Curve)((Value.Container)args[0]).Item;
+            {    
                 //Add the geometry curves start and end points to a ReferencePointArray.
                 ReferencePointArray refPtArr = new ReferencePointArray();
                 if (gc.GetType() == typeof(Line))
                 {
-                    XYZ start = gc.get_EndPoint(0);
-                    XYZ end = gc.get_EndPoint(1);
-
                     ReferencePoint refPointStart = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
                     ReferencePoint refPointEnd = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
                     refPtArr.Append(refPointStart);
                     refPtArr.Append(refPointEnd);
                 }
 
-                //If we've made any elements previously...
-                if (this.Elements.Any())
-                {
-                    Element e;
-                    //...try to get the first one...
-                    if (dynUtils.TryGetElement(this.Elements[0],typeof(CurveByPoints), out e))
-                    {
-                        //..and if we do, update it's position.
-                        c = e as CurveByPoints;
-                        c.SetPoints(refPtArr);
-                    }
-                    else
-                    {
-                        c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
-                        this.Elements[0] = c.Id;
-                    }
-                }
-                //...otherwise...
-                else
-                {
-                    c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
-                    this.Elements.Add(c.Id);
-                }
+                c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+                this.Elements.Add(c.Id);
             }
 
             return Value.NewContainer(c);

@@ -642,6 +642,38 @@ namespace DynamoRevitTests
             Assert.IsInstanceOf(typeof(XYZ), ((Value.Container)v).Item);
         }
 
+        [Test]
+        public void CurveByPointsByLine()
+        {
+            //this sample creates a geometric line
+            //then creates a curve by points from that line
+   
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\CurveByPointsByLine.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+
+            Assert.AreEqual(2, fec.ToElements().Count());
+
+            //now change one of the number inputs and rerun
+            //verify that there are still only two reference points in
+            //the model
+            var node = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynDoubleInput).First();
+            ((dynBasicInteractive<double>)node).Value = 12.0;
+
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            fec = null;
+            fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(2, fec.ToElements().Count);
+        }
+
         private static void OpenAllSamplesInDirectory(DirectoryInfo di)
         {
             foreach (FileInfo file in di.GetFiles())
