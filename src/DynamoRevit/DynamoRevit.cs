@@ -24,6 +24,9 @@ using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Data;
+using System.Collections.ObjectModel;
+using System.Windows.Data;
+using System.Windows.Media;
 
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
@@ -240,6 +243,44 @@ namespace Dynamo.Applications
         private UIDocument m_doc;
         private UIApplication m_revit;
 
+        public ObservableCollection<DynamoRevitTestResult> Results
+        {
+            get;
+            set;
+        }
+
+        public string TestSummary
+        {
+            get
+            {
+                int failCount = 0;
+                int passCount = 0;
+                int errorCount = 0;
+                int exceptionCount = 0;
+                foreach(DynamoRevitTestResult res in Results)
+                {
+                    switch (res.ResultType)
+                    {
+                        case DynamoRevitTestResultType.ERROR:
+                            errorCount++;
+                            break;
+                        case DynamoRevitTestResultType.EXCEPTION:
+                            exceptionCount++;
+                            break;
+                        case DynamoRevitTestResultType.FAIL:
+                            failCount++;
+                            break;
+                        case DynamoRevitTestResultType.PASS:
+                            passCount++;
+                            break;
+                    }
+                }
+
+                return (string.Format("{0} tests run. {1} passed. {2} failed. {3} exceptions.", 
+                    new object[] { Results.Count, passCount, failCount, exceptionCount }));
+            }
+        }
+
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             DynamoLogger.Instance.StartLogging();
@@ -271,6 +312,8 @@ namespace Dynamo.Applications
                 dynamoController.Testing = true;
                 
                 //execute the tests
+                Results = new ObservableCollection<DynamoRevitTestResult>();
+
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
                 string assLocation = Assembly.GetExecutingAssembly().Location;
                 FileInfo fi = new FileInfo(assLocation);
@@ -297,7 +340,7 @@ namespace Dynamo.Applications
                     {
                         TestName testName = t.TestName;
                         TestFilter filter = new NameFilter(testName);
-                        TestResult result = t.Run(new RevitTestEventListener(), filter);
+                        TestResult result = t.Run(new RevitTestEventListener(t, Results), filter);
                         ResultSummarizer summ = new ResultSummarizer(result);
                         Assert.AreEqual(1, summ.ResultCount);
                     }
@@ -313,6 +356,11 @@ namespace Dynamo.Applications
                     DynamoLogger.Instance.FinishLogging();
                 });
 
+                //show the results
+                DynamoRevitTestResultsView resultsView = new DynamoRevitTestResultsView();
+                resultsView.DataContext = this;
+
+                resultsView.ShowDialog();
             }
             catch (Exception ex)
             {
@@ -347,6 +395,15 @@ namespace Dynamo.Applications
         }
     }
 
+    public enum DynamoRevitTestResultType { PASS, FAIL, ERROR, EXCEPTION }
+
+    public class DynamoRevitTestResult
+    {
+        public DynamoRevitTestResultType ResultType { get; set; }
+        public string Message { get; set; }
+        public string TestName { get; set; }
+        public DynamoRevitTestResult(){}
+    }
 
     //http://sqa.stackexchange.com/questions/2880/nunit-global-error-method-event-for-handling-exceptions
     /// <summary>
@@ -354,6 +411,16 @@ namespace Dynamo.Applications
     /// </summary>
     class RevitTestEventListener : EventListener
     {
+        TestMethod _test;
+        DynamoRevitTestResult _result;
+
+        public RevitTestEventListener(TestMethod test, ObservableCollection<DynamoRevitTestResult> results)
+        {
+            _result = new DynamoRevitTestResult();
+            _test = test;
+            _result.TestName = test.TestName.Name;
+            results.Add(_result);
+        }
         public void RunStarted(string name, int testCount) {}
         public void RunFinished(TestResult result) { }
         public void RunFinished(Exception exception) { }
@@ -366,21 +433,56 @@ namespace Dynamo.Applications
             if (result.Executed && result.IsFailure)
             {
                 DynamoLogger.Instance.Log(string.Format("Test FAILED : {0}", result.Message));
+                _result.ResultType = DynamoRevitTestResultType.FAIL;
             }
             else if (result.Executed && result.IsSuccess)
+            {
                 DynamoLogger.Instance.Log("Test PASS");
+                _result.ResultType = DynamoRevitTestResultType.PASS;
+            }
             else if (result.Executed && result.IsError)
+            {
                 DynamoLogger.Instance.Log("Test ERROR");
+                _result.ResultType = DynamoRevitTestResultType.ERROR;
+            }
+            _result.Message = result.Message;
         }
         public void SuiteStarted(TestName testName) { }
         public void SuiteFinished(TestResult result) { }
         public void UnhandledException(Exception exception) 
         {
             DynamoLogger.Instance.Log(exception.Message);
+            _result.Message = exception.Message;
         }
         public void TestOutput(TestOutput testOutput) { }
     }
 #endif
+
+    public class ResultTypeToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            DynamoRevitTestResultType resultType = (DynamoRevitTestResultType)value;
+            switch (resultType)
+            {
+                case DynamoRevitTestResultType.PASS:
+                    return new SolidColorBrush(System.Windows.Media.Color.FromRgb(0,255,0));
+                case DynamoRevitTestResultType.FAIL:
+                    return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255,0,0));
+                case DynamoRevitTestResultType.ERROR:
+                    return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 160, 0));
+                case DynamoRevitTestResultType.EXCEPTION:
+                    return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 0, 0));
+            }
+
+            return System.Drawing.Color.Gray;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
 
     internal class WindowHandle : IWin32Window
     {
