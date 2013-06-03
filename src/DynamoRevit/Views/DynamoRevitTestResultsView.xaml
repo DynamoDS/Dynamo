@@ -11,7 +11,7 @@
         <Grid.Resources>
             <revit:ResultTypeToColorConverter x:Key="ResultTypeToColorConverter"/>
         </Grid.Resources>
-        <TextBox VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,5,5,35" Text="{Binding TestSummary, Mode=OneWay}"/>
+        <TextBox VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,5,5,35" Text="{Binding TestSummary, Mode=OneWay}" BorderBrush="{x:Null}" />
         <ListBox Margin="5,5,5,55" Name="listBox1" ItemsSource="{Binding Results}">
             <ListBox.ItemTemplate>
                 <DataTemplate>

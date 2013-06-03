@@ -27,6 +27,7 @@ using System.Data;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Linq;
 
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
@@ -243,44 +244,6 @@ namespace Dynamo.Applications
         private UIDocument m_doc;
         private UIApplication m_revit;
 
-        public ObservableCollection<DynamoRevitTestResult> Results
-        {
-            get;
-            set;
-        }
-
-        public string TestSummary
-        {
-            get
-            {
-                int failCount = 0;
-                int passCount = 0;
-                int errorCount = 0;
-                int exceptionCount = 0;
-                foreach(DynamoRevitTestResult res in Results)
-                {
-                    switch (res.ResultType)
-                    {
-                        case DynamoRevitTestResultType.ERROR:
-                            errorCount++;
-                            break;
-                        case DynamoRevitTestResultType.EXCEPTION:
-                            exceptionCount++;
-                            break;
-                        case DynamoRevitTestResultType.FAIL:
-                            failCount++;
-                            break;
-                        case DynamoRevitTestResultType.PASS:
-                            passCount++;
-                            break;
-                    }
-                }
-
-                return (string.Format("{0} tests run. {1} passed. {2} failed. {3} exceptions.", 
-                    new object[] { Results.Count, passCount, failCount, exceptionCount }));
-            }
-        }
-
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             DynamoLogger.Instance.StartLogging();
@@ -312,7 +275,7 @@ namespace Dynamo.Applications
                 dynamoController.Testing = true;
                 
                 //execute the tests
-                Results = new ObservableCollection<DynamoRevitTestResult>();
+                DynamoTestResultSummary Results = new DynamoTestResultSummary();
 
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
                 string assLocation = Assembly.GetExecutingAssembly().Location;
@@ -358,7 +321,7 @@ namespace Dynamo.Applications
 
                 //show the results
                 DynamoRevitTestResultsView resultsView = new DynamoRevitTestResultsView();
-                resultsView.DataContext = this;
+                resultsView.DataContext = Results;
 
                 resultsView.ShowDialog();
             }
@@ -414,12 +377,12 @@ namespace Dynamo.Applications
         TestMethod _test;
         DynamoRevitTestResult _result;
 
-        public RevitTestEventListener(TestMethod test, ObservableCollection<DynamoRevitTestResult> results)
+        public RevitTestEventListener(TestMethod test, DynamoTestResultSummary summary)
         {
             _result = new DynamoRevitTestResult();
             _test = test;
             _result.TestName = test.TestName.Name;
-            results.Add(_result);
+            summary.Results.Add(_result);
         }
         public void RunStarted(string name, int testCount) {}
         public void RunFinished(TestResult result) { }
@@ -456,6 +419,38 @@ namespace Dynamo.Applications
         }
         public void TestOutput(TestOutput testOutput) { }
     }
+
+    class DynamoTestResultSummary
+    {
+        public ObservableCollection<DynamoRevitTestResult> Results
+        {
+            get;
+            set;
+        }
+
+        public string TestSummary
+        {
+            get
+            {
+                IEnumerable<DynamoRevitTestResult> results = (IEnumerable<DynamoRevitTestResult>)Results;
+                var list = new List<DynamoRevitTestResult>(results);
+
+                int failCount = list.Where(x => x.ResultType == DynamoRevitTestResultType.FAIL).Count();
+                int passCount = list.Where(x => x.ResultType == DynamoRevitTestResultType.PASS).Count();
+                int errorCount = list.Where(x => x.ResultType == DynamoRevitTestResultType.ERROR).Count();
+                int exceptionCount = list.Where(x => x.ResultType == DynamoRevitTestResultType.EXCEPTION).Count();
+
+                return (string.Format("{0} tests run. {1} passed. {2} failed. {3} exceptions.",
+                    new object[] { Results.Count, passCount, failCount, exceptionCount }));
+            }
+        }
+
+        public DynamoTestResultSummary() 
+        {
+            Results = new ObservableCollection<DynamoRevitTestResult>();
+        }
+    }
+
 #endif
 
     public class ResultTypeToColorConverter : IValueConverter
