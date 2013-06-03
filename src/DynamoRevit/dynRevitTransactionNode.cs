@@ -361,7 +361,17 @@ namespace Dynamo.Revit
             else
             {
                 Element elem = obj as Element;
-                DrawGeometryElement(description, elem.get_Geometry(new Options()));
+                if (elem != null)
+                {
+                    Options o = new Options();
+                    o.DetailLevel = ViewDetailLevel.Medium;
+                    GeometryElement geom = elem.get_Geometry(o);
+
+                    if (geom != null)
+                    {
+                        DrawGeometryObject(description, geom);
+                    }
+                }
             }
         }
 
