@@ -1283,6 +1283,10 @@ namespace Dynamo.Controls
                 return true;
             }
 
+            string message = string.Format("Can not create instance of node {0}.", data["name"]);
+            DynamoCommands.WriteToLogCmd.Execute(message);
+            Log(message);
+
             return false;
         }
 
@@ -1304,6 +1308,7 @@ namespace Dynamo.Controls
             catch (Exception e)
             {
                 DynamoLogger.Instance.Log(e.Message);
+                Log(e);
             }
         }
 
