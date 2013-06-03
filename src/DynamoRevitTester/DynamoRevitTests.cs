@@ -674,6 +674,52 @@ namespace DynamoRevitTests
             Assert.AreEqual(2, fec.ToElements().Count);
         }
 
+        [Test]
+        public void CanChangeLacingAndHaveElementsUpdate()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\LacingTest.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+
+            var xyzNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynXYZ).First();
+            Assert.IsNotNull(xyzNode);
+
+            //test the first lacing
+            xyzNode.ArgumentLacing = LacingStrategy.First;
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(1, fec.ToElements().Count());
+
+            //test the shortest lacing
+            xyzNode.ArgumentLacing = LacingStrategy.First;
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            fec = null;
+            fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(1, fec.ToElements().Count());
+
+            //test the longest lacing
+            xyzNode.ArgumentLacing = LacingStrategy.Longest;
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            fec = null;
+            fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(5, fec.ToElements().Count());
+
+            //test the cross product lacing
+            xyzNode.ArgumentLacing = LacingStrategy.CrossProduct;
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            fec = null;
+            fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(20, fec.ToElements().Count());
+        }
+
         private static void OpenAllSamplesInDirectory(DirectoryInfo di)
         {
             foreach (FileInfo file in di.GetFiles())
