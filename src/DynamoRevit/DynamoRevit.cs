@@ -247,6 +247,7 @@ namespace Dynamo.Applications
     {
         private UIDocument m_doc;
         private UIApplication m_revit;
+        public DynamoTestResultSummary Results{get;set;}
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
@@ -279,7 +280,7 @@ namespace Dynamo.Applications
                 dynamoController.Testing = true;
                 
                 //execute the tests
-                DynamoTestResultSummary Results = new DynamoTestResultSummary();
+                Results = new DynamoTestResultSummary();
                 DynamoRevitTestResultsView resultsView = new DynamoRevitTestResultsView();
                 resultsView.DataContext = Results;
                 resultsView.Show();
@@ -326,10 +327,15 @@ namespace Dynamo.Applications
                     DynamoLogger.Instance.FinishLogging();
                 });
 
-                //show the results
-                //DynamoRevitTestResultsView resultsView = new DynamoRevitTestResultsView();
-                //resultsView.DataContext = Results;
-                //resultsView.ShowDialog();
+                //serialize the test results to a file
+                System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(Results.GetType());
+                string resultsDir = Path.GetDirectoryName(DynamoLogger.Instance.LogPath);
+                string resultsPath = Path.Combine(resultsDir, string.Format("dynamoRevitTests_{0}.xml", Guid.NewGuid().ToString()));
+                using(TextWriter tw = new StreamWriter(resultsPath))
+                {
+                    x.Serialize(tw, Results);
+                }
+
             }
             catch (Exception ex)
             {
@@ -435,7 +441,7 @@ namespace Dynamo.Applications
         public void TestOutput(TestOutput testOutput) { }
     }
 
-    class DynamoTestResultSummary:NotificationObject
+    public class DynamoTestResultSummary:NotificationObject
     {
         ObservableCollection<DynamoRevitTestResult> _results;
         public ObservableCollection<DynamoRevitTestResult> Results

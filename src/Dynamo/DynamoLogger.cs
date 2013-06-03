@@ -14,6 +14,12 @@ namespace Dynamo
 
         public TextWriter Writer { get; set; }
 
+        private string _logPath;
+        public string LogPath 
+        {
+            get { return _logPath; }
+        }
+
         /// <summary>
         /// The singelton instance.
         /// </summary>
@@ -69,9 +75,9 @@ namespace Dynamo
                 Directory.CreateDirectory(log_dir);
             }
 
-            string logPath = Path.Combine(log_dir, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
+            _logPath = Path.Combine(log_dir, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
 
-            Writer = new StreamWriter(logPath);
+            Writer = new StreamWriter(_logPath);
             Writer.WriteLine("Dynamo log started " + DateTime.Now.ToString());
         }
 
