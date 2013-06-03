@@ -179,6 +179,7 @@ namespace Dynamo.Nodes
         public dynCurveByPoints()
         {
             InPortData.Add(new PortData("refPts", "List of reference points", typeof(Value.List)));
+            InPortData.Add(new PortData("isRef", "Boolean indicating whether the resulting curve is a reference curve.", typeof(Value.Number)));
             OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -186,7 +187,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            
+            bool isRefCurve = Convert.ToBoolean(((Value.Number)args[1]).Item);
+
             //Build a sequence that unwraps the input list from it's Value form.
             IEnumerable<ReferencePoint> refPts = ((Value.List)args[0]).Item.Select(
                x => (ReferencePoint)((Value.Container)x).Item
@@ -223,6 +225,8 @@ namespace Dynamo.Nodes
                 this.Elements.Add(c.Id);
             }
 
+            c.IsReferenceLine = isRefCurve;
+
             return Value.NewContainer(c);
         }
     }
@@ -243,130 +247,46 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             //Our eventual output.
-            CurveByPoints c;
+            CurveByPoints c = null;
 
             var input = args[0];
 
+            Curve gc = (Curve)((Value.Container)args[0]).Item;
+            XYZ start = gc.get_EndPoint(0);
+            XYZ end = gc.get_EndPoint(1);
 
-            //If we are receiving a list, we must create a curve by points (CBPs) for each curve in the list.
-            if (input.IsList)
+            //If we've made any elements previously...
+            if (this.Elements.Any())
             {
-                var curveList = (input as Value.List).Item;
-
-                //Counter to keep track of how many CBPs we've made. We'll use this to delete old
-                //elements later.
-                int count = 0;
-
-                //We create our output by...
-                var result = Utils.SequenceToFSharpList(
-                   curveList.Select(
-                    //..taking each element in the list and...
-                      delegate(Value x)
-                      {
-                          Curve gc = (Curve)((Value.Container)x).Item;
-                          //Add the geometry curves start and end points to a ReferencePointArray.
-                          ReferencePointArray refPtArr = new ReferencePointArray();
-                          if (gc.GetType() == typeof(Line))
-                          {
-                              XYZ start = gc.get_EndPoint(0);
-                              XYZ end = gc.get_EndPoint(1);
-
-                              ReferencePoint refPointStart = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
-                              ReferencePoint refPointEnd = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
-                              refPtArr.Append(refPointStart);
-                              refPtArr.Append(refPointEnd);
-                          }
-                          //only lines supported at this point
-
-                          //...if we already have elements made by this node in a previous run...
-                          if (this.Elements.Count > count)
-                          {
-                              Element e;
-                              //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count],typeof(CurveByPoints), out e))
-                              {
-                                  //...and if we're successful, update it's position... 
-                                  c = e as CurveByPoints;
-                                  //c.SetPoints(refPtArr);
-                                  //c.GetPoints().get_Item(0).Position.X = gc.get_EndPoint(0).X;
-                              }
-                              else
-                              {
-                                  //...otherwise, we can make a new CBP and replace it in the list of
-                                  //previously created CBPs.
-                                  c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
-                                  this.Elements[count] = c.Id;
-                              }
-                          }
-                          //...otherwise...
-                          else
-                          {
-                              //...we create a new point...
-                              c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
-                              //...and store it in the element list for future runs.
-                              this.Elements.Add(c.Id);
-                          }
-                          //Finally, we update the counter, and return a new Value containing the CBP.
-                          //This Value will be placed in the Value.List that will be passed downstream from this
-                          //node.
-                          count++;
-                          return Value.NewContainer(c);
-                      }
-                   )
-                );
-
-                //Now that we've created all the CBPs from this run, we delete all of the
-                //extra ones from the previous run.
-                foreach (var e in this.Elements.Skip(count))
+                Element e;
+                //...try to get the first one...
+                if (dynUtils.TryGetElement(this.Elements[0],typeof(CurveByPoints), out e))
                 {
-                    this.DeleteElement(e);
+                    //..and if we do, update it's position.
+                    c = e as CurveByPoints;
+
+                    ReferencePointArray existingPts = c.GetPoints();
+
+                    //update the points on the curve to match
+                    ReferencePointArrayIterator iter = existingPts.ForwardIterator();
+                    existingPts.get_Item(0).Position = start;
+                    existingPts.get_Item(1).Position = end;
                 }
-
-                //Fin
-                return Value.NewList(result);
             }
-
             else
-            {
-                //If we're not receiving a list, we will just assume we received one geometry curve.
-
-                Curve gc = (Curve)((Value.Container)args[0]).Item;
+            {    
                 //Add the geometry curves start and end points to a ReferencePointArray.
                 ReferencePointArray refPtArr = new ReferencePointArray();
                 if (gc.GetType() == typeof(Line))
                 {
-                    XYZ start = gc.get_EndPoint(0);
-                    XYZ end = gc.get_EndPoint(1);
-
                     ReferencePoint refPointStart = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
                     ReferencePoint refPointEnd = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
                     refPtArr.Append(refPointStart);
                     refPtArr.Append(refPointEnd);
                 }
 
-                //If we've made any elements previously...
-                if (this.Elements.Any())
-                {
-                    Element e;
-                    //...try to get the first one...
-                    if (dynUtils.TryGetElement(this.Elements[0],typeof(CurveByPoints), out e))
-                    {
-                        //..and if we do, update it's position.
-                        c = e as CurveByPoints;
-                        c.SetPoints(refPtArr);
-                    }
-                    else
-                    {
-                        c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
-                        this.Elements[0] = c.Id;
-                    }
-                }
-                //...otherwise...
-                else
-                {
-                    c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
-                    this.Elements.Add(c.Id);
-                }
+                c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+                this.Elements.Add(c.Id);
             }
 
             return Value.NewContainer(c);
@@ -599,7 +519,8 @@ namespace Dynamo.Nodes
             return Value.NewContainer(ns);
         }
     }
-
+     
+    /*
     [NodeName("Offset Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create an offset curve from a given curve.")]
@@ -741,6 +662,146 @@ namespace Dynamo.Nodes
                 crvs.Add(cOut);
 
             return Value.NewContainer(cOut);
+        }
+    }
+    */
+
+    [NodeName("Curve Loop")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates Curve Loop")]
+    public class dynCurveLoop : dynCurveBase
+    {
+        public dynCurveLoop()
+        {
+            InPortData.Add(new PortData("curves", "Geometry curves to make curve loop", typeof(Value.List)));
+            OutPortData.Add(new PortData("CurveLoop", "CurveLoop", typeof(Value.Container)));
+            RegisterAllPorts();
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var curves = ((Value.List)args[0]).Item.Select(
+               x => ((Curve)((Value.Container)x).Item)).ToList();
+
+            CurveLoop result = CurveLoop.Create(curves);
+
+            foreach (Curve c in result)
+            {
+                crvs.Add(c);
+            }
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Thicken Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates Curve Loop by thickening curve")]
+    public class dynThickenCurveLoop : dynCurveBase
+    {
+        public dynThickenCurveLoop()
+        {
+            InPortData.Add(new PortData("Curve", "Curve to thicken, could not be closed.", typeof(Value.Container)));
+            InPortData.Add(new PortData("Thickness", "Thickness value.", typeof(Value.Number)));
+            InPortData.Add(new PortData("Normal", "The normal vector to the plane used for thickening.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("CurveLoop", "CurveLoop which is the result of thickening.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve curve = (Curve)((Value.Container)args[0]).Item;
+            double thickness = ((Value.Number)args[1]).Item;
+            XYZ normal = (XYZ)((Value.Container)args[2]).Item;
+
+            CurveLoop result = CurveLoop.CreateViaThicken(curve, thickness, normal);
+            if (result == null)
+                throw new Exception("Could not thicken curve");
+
+            foreach (Curve c in result)
+            {
+                crvs.Add(c);
+            }
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Curve Loop List")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates list of curves in the Curve Loop")]
+    public class dynListCurveLoop : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynListCurveLoop()
+        {
+            InPortData.Add(new PortData("CurveLoop", "Curve to thicken.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Curve List", "List of curves in the curve loop.", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            CurveLoop curveLoop = (CurveLoop)((Value.Container)args[0]).Item;
+
+            CurveLoopIterator CLiter = curveLoop.GetCurveLoopIterator();
+
+            List<Curve> listCurves = new List<Curve>();
+            for (; CLiter.MoveNext(); )
+            {
+                listCurves.Add(CLiter.Current);
+            }
+
+            var result = FSharpList<Value>.Empty;
+            for (int indexCurve = listCurves.Count - 1; indexCurve > -1; indexCurve--)
+            {
+                result = FSharpList<Value>.Cons(Value.NewContainer(listCurves[indexCurve]), result);
+            }
+
+            return Value.NewList(result);
+        }
+    }
+     
+    [NodeName("Offset Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates curve by offseting curve")]
+    public class dynOffsetCrv : dynCurveBase
+    {
+        public dynOffsetCrv()
+        {
+            InPortData.Add(new PortData("Curve", "Curve to thicken, could not be closed.", typeof(Value.Container)));
+            InPortData.Add(new PortData("Offset", "Offset value.", typeof(Value.Number)));
+            InPortData.Add(new PortData("Normal", "The normal vector to the plane used for offset.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("Curve", "Curve which is the result of offset.", typeof(Value.Container)));
+            RegisterAllPorts();
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve curve = (Curve)((Value.Container)args[0]).Item;
+
+            double thickness = ((Value.Number)args[1]).Item;
+            XYZ normal = (XYZ)((Value.Container)args[2]).Item;
+
+            CurveLoop thickenLoop = CurveLoop.CreateViaThicken(curve, thickness, normal);
+
+            if (thickenLoop == null)
+                throw new Exception("Could not offset curve");
+
+            CurveLoopIterator CLiter = thickenLoop.GetCurveLoopIterator();
+
+            Curve result = null;
+
+            //relying heavily on the order of curves in the resulting curve loop, based on internal implemen
+            for (int index = 0; CLiter.MoveNext(); index++)
+            {
+                if (index == 2)
+                    result = CLiter.Current;
+            }
+
+            if (result == null)
+                throw new Exception("Could not offset curve");
+
+            crvs.Add(result);
+
+            return Value.NewContainer(result);
         }
     }
 

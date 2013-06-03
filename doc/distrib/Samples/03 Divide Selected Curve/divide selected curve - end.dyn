@@ -1,35 +1,21 @@
-<!--
-Copyright Autodesk, Inc. 2012. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
-<dynWorkspace X="10" Y="55">
+<dynWorkspace X="22.0000000000001" Y="92.5635555555554">
   <dynElements>
-    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="849bb853-81b8-4b63-bb86-5546794a9087" nickname="Curve by Selection" x="9" y="74">
-      <instance id="30515" />
-    </Dynamo.Elements.dynCurvesBySelection>
-    <Dynamo.Elements.dynXYZArrayAlongCurve type="Dynamo.Elements.dynXYZArrayAlongCurve" guid="c9433b83-f998-4027-a81e-136581967ea0" nickname="XYZ Array Along Curve" x="287" y="104.25" />
-    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="c84b1288-03cc-4854-b67d-0ef60370eb87" nickname="Number" x="6" y="177">
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="c84b1288-03cc-4854-b67d-0ef60370eb87" nickname="Number" x="6" y="177" lacing="First">
       <System.Double value="21" />
-    </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynReferencePointByXYZ type="Dynamo.Elements.dynReferencePointByXYZ" guid="72092b8f-57a9-496c-978a-ce08cfdf7cd2" nickname="Reference Point" x="448.5" y="169.5" />
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="a1844c0d-99bd-4a32-84f8-2e94685f3229" nickname="Number Slider" x="11" y="250.25">
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="a1844c0d-99bd-4a32-84f8-2e94685f3229" nickname="Number Slider" x="11" y="250.25" lacing="First">
       <System.Double value="33.3333333333333" min="0" max="100" />
-    </Dynamo.Elements.dynDoubleSliderInput>
+    </Dynamo.Nodes.dynDoubleSliderInput>
+    <Dynamo.Nodes.dynXYZArrayAlongCurve type="Dynamo.Nodes.dynXYZArrayAlongCurve" guid="e58af4fe-6d1a-42e7-9bd8-103644da1b24" nickname="XYZ Array On Curve" x="277.824893707639" y="90.6915087642431" lacing="First" />
+    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="e870f7bc-717a-450d-81b7-bf8703f36bcd" nickname="Select Curve" x="9.05747629231354" y="55.8333333333334" lacing="First" />
+    <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="7e23ea22-600f-4263-89af-defa541e90f2" nickname="Ref Point" x="506.42585049993" y="87.8365182701835" lacing="Longest">
+      <Run />
+    </Dynamo.Nodes.dynReferencePointByXYZ>
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="849bb853-81b8-4b63-bb86-5546794a9087" start_index="0" end="c9433b83-f998-4027-a81e-136581967ea0" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="c9433b83-f998-4027-a81e-136581967ea0" start_index="0" end="72092b8f-57a9-496c-978a-ce08cfdf7cd2" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="a1844c0d-99bd-4a32-84f8-2e94685f3229" start_index="0" end="c9433b83-f998-4027-a81e-136581967ea0" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="a1844c0d-99bd-4a32-84f8-2e94685f3229" start_index="0" end="e58af4fe-6d1a-42e7-9bd8-103644da1b24" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e58af4fe-6d1a-42e7-9bd8-103644da1b24" start_index="0" end="7e23ea22-600f-4263-89af-defa541e90f2" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e870f7bc-717a-450d-81b7-bf8703f36bcd" start_index="0" end="e58af4fe-6d1a-42e7-9bd8-103644da1b24" end_index="0" portType="0" />
   </dynConnectors>
+  <dynNotes />
 </dynWorkspace>

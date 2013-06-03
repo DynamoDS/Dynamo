@@ -17,6 +17,11 @@ using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
 using Dynamo.Applications;
 using Dynamo.Nodes;
+using Dynamo.Selection;
+
+using Value = Dynamo.FScheme.Value;
+
+using Microsoft.FSharp.Collections;
 
 using NUnit.Core;
 using NUnit.Framework;
@@ -101,11 +106,13 @@ namespace DynamoRevitTests
             //dynRevitSettings.Controller.ShutDown();
 
             //delete all the elements in the document
-            using (_trans = _trans = new Transaction(dynRevitSettings.Doc.Document, "CreateAndDeleteAreReferencePoint"))
+            using (_trans = _trans = new Transaction(dynRevitSettings.Doc.Document))
             {
-                _trans.Start();
+                _trans.Start("Cleanup test geometry.");
 
                 //get all the generic forms and dissolve them
+                //if you don't dissolve them, you don't get the original
+                //points back
                 FilteredElementCollector fecForms = new FilteredElementCollector(dynRevitSettings.Doc.Document);
                 fecForms.OfClass(typeof(GenericForm));
 
@@ -114,23 +121,47 @@ namespace DynamoRevitTests
                     FormUtils.DissolveForms(dynRevitSettings.Doc.Document, fecForms.ToElementIds());
                 }
 
+                //TODO: can we reset the collector instead of 
+                //instantiating anew each time?
+                //this is the only way I could get this to work so
+                //that it would allow deletion of things like curves with sub-points
+
                 FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-                ElementClassFilter curves = new ElementClassFilter(typeof(CurveElement));
-                ElementClassFilter refPts = new ElementClassFilter(typeof(ReferencePoint));
-                ElementClassFilter forms = new ElementClassFilter(typeof(GenericForm));
-
-                IList<ElementFilter> filters = new List<ElementFilter>();
-                filters.Add(curves);
-                filters.Add(refPts);
-                filters.Add(forms);
-
-                ElementFilter filter = new LogicalOrFilter(filters);
-
-                fec.WherePasses(filter);
-
+                //delete curves
+                fec.OfClass(typeof(CurveElement));
                 IList<Element> elements = fec.ToElements();
+                if (elements.Count > 0)
+                    DynamoLogger.Instance.Log(string.Format("Cleaning up {0} curve elements.", elements.Count));
 
                 for (int i = elements.Count-1; i >= 0; i--)
+                {
+                    dynRevitSettings.Doc.Document.Delete(elements[i]);
+                }
+
+                fec = null;
+                fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+                //delete ref points
+                elements.Clear();
+                fec.OfClass(typeof(ReferencePoint));
+                elements = fec.ToElements();
+                if (elements.Count > 0)
+                    DynamoLogger.Instance.Log(string.Format("Cleaning up {0} reference points.", elements.Count));
+
+                for (int i = elements.Count - 1; i >= 0; i--)
+                {
+                    dynRevitSettings.Doc.Document.Delete(elements[i]);
+                }
+
+                fec = null;
+                fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+                //delete forms
+                elements.Clear();
+                fec.OfClass(typeof(GenericForm));
+                elements = fec.ToElements();
+                if (elements.Count > 0)
+                    DynamoLogger.Instance.Log(string.Format("Cleaning up {0} generic forms.", elements.Count));
+
+                for (int i = elements.Count - 1; i >= 0; i--)
                 {
                     dynRevitSettings.Doc.Document.Delete(elements[i]);
                 }
@@ -188,11 +219,20 @@ namespace DynamoRevitTests
         [Test]
         public void CreatePointEndSample()
         {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
             string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point - end.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            //test running the expression
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            //test copying and pasting the workflow
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddRange(dynSettings.Controller.DynamoModel.Nodes);
+            dynSettings.Controller.RunCommand(vm.CopyCommand, null);
+            dynSettings.Controller.RunCommand(vm.PasteCommand, null);
         }
 
         [Test]
@@ -513,6 +553,125 @@ namespace DynamoRevitTests
             dynRevitSettings.Revit.OpenAndActivateDocument(shellPath);
             initialDoc.Document.Close(false);
 
+        }
+
+        [Test]
+        public void CurveByPoints()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\CurveByPoints.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+
+            //cerate some points and wire them
+            //to the selections
+            ReferencePoint p1, p2, p3, p4;
+
+            using(_trans = new Transaction(dynRevitSettings.Doc.Document))
+            {
+                _trans.Start("Create reference points for testing.");
+
+                p1 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(1, 5, 12));
+                p2 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(5, 1, 12));
+                p3 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(12, 1, 5));
+                p4 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(5, 12, 1));
+
+                _trans.Commit();
+            }
+
+            var ptSelectNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynPointBySelection);
+            if (!ptSelectNodes.Any())
+                Assert.Fail("Could not find point selection nodes in dynamo graph.");
+
+            ((dynPointBySelection)ptSelectNodes.ElementAt(0)).SelectedElement = p1;
+            ((dynPointBySelection)ptSelectNodes.ElementAt(1)).SelectedElement = p2;
+            ((dynPointBySelection)ptSelectNodes.ElementAt(2)).SelectedElement = p3;
+            ((dynPointBySelection)ptSelectNodes.ElementAt(3)).SelectedElement = p4;
+
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(CurveElement));
+
+            Assert.AreEqual(fec.ToElements().Count(), 1);
+
+            CurveByPoints mc = (CurveByPoints)fec.ToElements().ElementAt(0);
+            Assert.IsTrue(mc.IsReferenceLine);
+
+            //now flip the switch for creating a reference curve
+            var boolNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynBoolSelector).First();
+
+            ((dynBasicInteractive<bool>)boolNode).Value = false;
+
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            Assert.AreEqual(fec.ToElements().Count(), 1);
+
+            mc = (CurveByPoints)fec.ToElements().ElementAt(0);
+            Assert.IsFalse(mc.IsReferenceLine);
+        }
+
+        [Test]
+        public void XYZFromReferencePoint()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\XYZFromReferencePoint.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            //dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            ReferencePoint rp;
+            using(_trans = new Transaction(dynRevitSettings.Doc.Document))
+            {
+                _trans.Start("Create a reference point.");
+
+                rp = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ());
+
+                _trans.Commit();
+
+            }
+            FSharpList<Value> args = FSharpList<Value>.Empty;
+            args = FSharpList<Value>.Cons(Value.NewContainer(rp), args);
+
+            //find the XYZFromReferencePoint node
+            var node = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynXYZFromReferencePoint).First();
+
+            Value v = ((dynNodeWithOneOutput)node).Evaluate(args);
+            Assert.IsInstanceOf(typeof(XYZ), ((Value.Container)v).Item);
+        }
+
+        [Test]
+        public void CurveByPointsByLine()
+        {
+            //this sample creates a geometric line
+            //then creates a curve by points from that line
+   
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\CurveByPointsByLine.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+
+            Assert.AreEqual(2, fec.ToElements().Count());
+
+            //now change one of the number inputs and rerun
+            //verify that there are still only two reference points in
+            //the model
+            var node = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynDoubleInput).First();
+            ((dynBasicInteractive<double>)node).Value = 12.0;
+
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            fec = null;
+            fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(2, fec.ToElements().Count);
         }
 
         private static void OpenAllSamplesInDirectory(DirectoryInfo di)

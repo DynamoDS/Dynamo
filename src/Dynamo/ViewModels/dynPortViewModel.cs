@@ -176,13 +176,21 @@ namespace Dynamo.Connectors
                 if (_port.Connectors.Count > 0)
                     return;
 
-                // create the new connector model
-                var start = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ActiveStartPort;
-                var end = _port;
-                var newConnectorModel = new dynConnectorModel(start.Owner, end.Owner, start.Index, end.Index, 0);
+                try
+                {
+                    // create the new connector model
+                    var start = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ActiveStartPort;
+                    var end = _port;
+                    var newConnectorModel = new dynConnectorModel(start.Owner, end.Owner, start.Index, end.Index, 0);
 
-                // Add to the current workspace
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Model.Connectors.Add(newConnectorModel);
+                    // Add to the current workspace
+                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Model.Connectors.Add(newConnectorModel);
+                }
+                catch (Exception e)
+                {
+                    DynamoLogger.Instance.Log(e.Message);
+                    dynSettings.Controller.DynamoViewModel.Log(e.Message);
+                }
 
                 // Cleanup
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = false;

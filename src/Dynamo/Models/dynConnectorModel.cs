@@ -62,10 +62,14 @@ namespace Dynamo.Connectors
             //don't try to create a connector with a bad start,
             //end, or if we're trying to connector the same
             //port to itself.
-            if (start == null || end == null || start == end)
-            {
-                throw new Exception("Attempting to create connector with invalid start or end nodes.");
-            }
+            if (start == null)
+                throw new Exception("Can not create a connection with a null start port.");
+
+            if (end == null)
+                throw new Exception("Can not create a connection will a null end port.");
+
+            if (start == end)
+                throw new Exception("Can not connect a node to iteself.");
 
             pStart = start.OutPorts[startIndex];
 

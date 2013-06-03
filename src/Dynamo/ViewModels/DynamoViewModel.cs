@@ -1283,21 +1283,33 @@ namespace Dynamo.Controls
                 return true;
             }
 
+            string message = string.Format("Can not create instance of node {0}.", data["name"]);
+            DynamoCommands.WriteToLogCmd.Execute(message);
+            Log(message);
+
             return false;
         }
 
         void CreateConnection(object parameters)
         {
-            Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
+            try
+            {
+                Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
 
-            dynNodeModel start = (dynNodeModel)connectionData["start"];
-            dynNodeModel end = (dynNodeModel)connectionData["end"];
-            int startIndex = (int)connectionData["port_start"];
-            int endIndex = (int)connectionData["port_end"];
+                dynNodeModel start = (dynNodeModel)connectionData["start"];
+                dynNodeModel end = (dynNodeModel)connectionData["end"];
+                int startIndex = (int)connectionData["port_start"];
+                int endIndex = (int)connectionData["port_end"];
 
-            dynConnectorModel c = new dynConnectorModel(start, end, startIndex, endIndex, 0);
+                dynConnectorModel c = new dynConnectorModel(start, end, startIndex, endIndex, 0);
 
-            _model.CurrentSpace.Connectors.Add(c);
+                _model.CurrentSpace.Connectors.Add(c);
+            }
+            catch (Exception e)
+            {
+                DynamoLogger.Instance.Log(e.Message);
+                Log(e);
+            }
         }
 
         bool CanCreateConnection(object parameters)
