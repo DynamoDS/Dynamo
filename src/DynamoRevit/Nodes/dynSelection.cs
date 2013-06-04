@@ -36,7 +36,7 @@ using Dynamo.FSchemeInterop;
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class dynElementSelection: dynNodeWithOneOutput
+    public abstract class dynElementSelectionBase: dynNodeWithOneOutput
     {
         TextBox tb;
         System.Windows.Controls.Button selectButton;
@@ -61,7 +61,7 @@ namespace Dynamo.Nodes
 
         public abstract string SelectionText { get; set; }
 
-        protected dynElementSelection(PortData outPortData)
+        protected dynElementSelectionBase(PortData outPortData)
         {
             OutPortData.Add(outPortData);
             RegisterAllPorts();
@@ -267,7 +267,7 @@ namespace Dynamo.Nodes
     }
 
     [IsInteractive(true)]
-    public abstract class dynMultipleElementSelection: dynNodeWithOneOutput
+    public abstract class dynMultipleElementSelectionBase: dynNodeWithOneOutput
     {
         TextBox tb;
         System.Windows.Controls.Button selectButton;
@@ -291,7 +291,7 @@ namespace Dynamo.Nodes
         protected string _selectionText;
         public abstract string SelectionText { get; set; }
 
-        protected dynMultipleElementSelection(PortData outData)
+        protected dynMultipleElementSelectionBase(PortData outData)
         {
             OutPortData.Add(outData);
             RegisterAllPorts();
@@ -486,7 +486,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Family Instance")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a family instance from the document.")]
-    public class dynFamilyInstanceCreatorSelection : dynElementSelection
+    public class dynFamilyInstanceCreatorSelection : dynElementSelectionBase
     {
         public dynFamilyInstanceCreatorSelection()
             : base(new PortData("fi", "Family instances created by this operation.", typeof(Value.Container)))
@@ -519,7 +519,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Divided Surface")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a divided surface from the document.")]
-    public class dynDividedSurfaceBySelection : dynElementSelection
+    public class dynDividedSurfaceBySelection : dynElementSelectionBase
     {
         Value data;
 
@@ -690,7 +690,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Face")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a face from the document.")]
-    public class dynFormElementBySelection : dynElementSelection, IDrawable
+    public class dynFormElementBySelection : dynElementSelectionBase, IDrawable
     {
         Reference f;
 
@@ -766,7 +766,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Edge")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select an edge from the document.")]
-    public class dynEdgeOnElementBySelection : dynElementSelection, IDrawable
+    public class dynEdgeOnElementBySelection : dynElementSelectionBase, IDrawable
     {
         Reference f;
         public RenderDescription RenderDescription { get; set; }
@@ -841,7 +841,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Curve")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a curve from the document.")] //or set of curves in the future
-    public class dynCurvesBySelection : dynElementSelection, IDrawable
+    public class dynCurvesBySelection : dynElementSelectionBase, IDrawable
     {
         public dynCurvesBySelection()
             : base(new PortData("curve", "The curve", typeof(Value.Container)))
@@ -916,7 +916,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Curves")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a set of curves from the document.")]
-    public class dynMultipleCurvesBySelection : dynMultipleElementSelection
+    public class dynMultipleCurvesBySelection : dynMultipleElementSelectionBase
     {
         public dynMultipleCurvesBySelection()
             : base(new PortData("curves", "The curves", typeof(Value.Container)))
@@ -966,7 +966,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Point")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a reference point from the document.")]
-    public class dynPointBySelection : dynElementSelection
+    public class dynPointBySelection : dynElementSelectionBase
     {
         public dynPointBySelection() :
             base(new PortData("pt", "The point", typeof(Value.Container)))
@@ -1000,7 +1000,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Level")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a level from the document.")]
-    public class dynLevelBySelection : dynElementSelection
+    public class dynLevelBySelection : dynElementSelectionBase
     {
         public dynLevelBySelection() :
             base(new PortData("lvl", "The selected level", typeof(Value.Container)))
@@ -1033,7 +1033,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Model Element")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a model element from the document.")]
-    public class dynModelElementSelection : dynElementSelection
+    public class dynModelElementSelection : dynElementSelectionBase
     {
         public dynModelElementSelection()
             : base(new PortData("me", "Model element reference created by this operation.", typeof(Value.Container)))

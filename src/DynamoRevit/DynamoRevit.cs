@@ -288,7 +288,7 @@ namespace Dynamo.Applications
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
                 string assLocation = Assembly.GetExecutingAssembly().Location;
                 FileInfo fi = new FileInfo(assLocation);
-                string testLoc = Path.Combine(fi.DirectoryName, @"DynamoRevitTests.dll");
+                string testLoc = Path.Combine(fi.DirectoryName, @"DynamoRevitTester.dll");
 
                 //Tests must be executed on the main thread in order to access the Revit API.
                 //NUnit's SimpleTestRunner runs the tests on the main thread
