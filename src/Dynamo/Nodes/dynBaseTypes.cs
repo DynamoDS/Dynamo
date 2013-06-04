@@ -2063,8 +2063,8 @@ namespace Dynamo.Nodes
 
             tb_slider.Width = 100;
 
-            tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
-            tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
+            tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.None;
+
             tb_slider.ValueChanged += delegate
             {
                 var pos = Mouse.GetPosition(NodeUI.elementCanvas);

@@ -139,6 +139,7 @@
             HorizontalAlignment="Stretch"
             Height="Auto"
             Width="Auto"
+            Background="Transparent"
               Margin="5,0,5,0"
               Canvas.ZIndex="5"  
               IsEnabled="{Binding Path=IsInteractionEnabled}" Grid.Column="1"/>
