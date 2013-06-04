@@ -45,10 +45,16 @@ namespace Dynamo.Nodes
                 //mutate
                 Element e;
                 //...we attempt to fetch it from the document...
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(FamilyInstance), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(FamilyInstance), out e))
                 {
                     ac = e as FamilyInstance;
                     ac.Symbol = fs;
+                }
+                else
+                {
+                    //create
+                    ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(dynRevitSettings.Doc.Document, fs);
+                    Elements[0] = ac.Id;
                 }
             }
             else
