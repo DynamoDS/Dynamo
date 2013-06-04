@@ -27,15 +27,14 @@ namespace Dynamo.Nodes
         {
             Items = new string[] {""};
             SelectedIndex = 0;
-            OutPortData.Add(new PortData("", "Value", typeof(Value.Container)));
-
-            RegisterAllPorts();
         }
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
             var comboBox = new ComboBox
                 {
+                    MinWidth = 150,
+                    Padding = new Thickness(8),
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Center
                 };
@@ -46,6 +45,8 @@ namespace Dynamo.Nodes
             Grid.SetRow(comboBox, 0);
 
             comboBox.ItemsSource = this.Items;
+            comboBox.SelectedIndex = this.SelectedIndex;
+
             comboBox.SelectionChanged += delegate
             {
                 if (comboBox.SelectedIndex == -1) return;
@@ -57,19 +58,6 @@ namespace Dynamo.Nodes
         public void WireToEnum(Array arr)
         {
             Items = arr;
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            if (this.SelectedIndex < this.Items.Length)
-            {
-                var value = Value.NewContainer( this.SelectedIndex );
-                return value;
-            }
-            else
-            {
-                throw new Exception("There is nothing selected.");
-            }
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -88,14 +76,45 @@ namespace Dynamo.Nodes
     }
 
     [IsInteractive(true)]
-    public abstract class dynEnumAsString : dynEnum
+    public abstract class dynEnumAsInt : dynEnum
     {
+        public dynEnumAsInt()
+        {
+            OutPortData.Add(new PortData("Int", "The index of the enum", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             if (this.SelectedIndex < this.Items.Length)
             {
-                var value = Value.NewContainer( Items.GetValue(this.SelectedIndex) );
+                var value = Value.NewNumber(this.SelectedIndex);
+                return value;
+            }
+            else
+            {
+                throw new Exception("There is nothing selected.");
+            }
+        }
+
+    }
+
+    [IsInteractive(true)]
+    public abstract class dynEnumAsString : dynEnum
+    {
+        public dynEnumAsString()
+        {
+            OutPortData.Add(new PortData("String", "The enum as a string", typeof(Value.String)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (this.SelectedIndex < this.Items.Length)
+            {
+                var value = Value.NewString( Items.GetValue(this.SelectedIndex).ToString() );
                 return value;
             }
             else

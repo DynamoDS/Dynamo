@@ -480,6 +480,17 @@ namespace Dynamo.Controls
                 var fi = new FileInfo(_model.CurrentSpace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
+            else // use the samples directory, if it exists
+            {
+                Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
+                string location = Path.GetDirectoryName(dynamoAssembly.Location);
+                string path = Path.Combine(location, "samples");
+
+                if (Directory.Exists(path))
+                {
+                    _fileDialog.InitialDirectory = path;
+                }
+            }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
