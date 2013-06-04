@@ -1768,9 +1768,14 @@ namespace Dynamo.Controls
 
                     if (lacingAttrib != null)
                     {
-                        LacingStrategy lacing = LacingStrategy.First;
-                        Enum.TryParse(lacingAttrib.Value, out lacing);
-                        el.ArgumentLacing = lacing;
+                        //don't set the lacing strategy if the type
+                        //wants it disabled
+                        if (el.ArgumentLacing != LacingStrategy.Disabled)
+                        {
+                            LacingStrategy lacing = LacingStrategy.First;
+                            Enum.TryParse(lacingAttrib.Value, out lacing);
+                            el.ArgumentLacing = lacing;
+                        }
                     }
 
                     if (el == null)
@@ -2422,9 +2427,12 @@ namespace Dynamo.Controls
 
                     if (lacingAttrib != null)
                     {
-                        LacingStrategy lacing = LacingStrategy.Disabled;
-                        Enum.TryParse(lacingAttrib.Value, out lacing);
-                        el.ArgumentLacing = lacing;
+                        if (el.ArgumentLacing != LacingStrategy.Disabled)
+                        {
+                            LacingStrategy lacing = LacingStrategy.Disabled;
+                            Enum.TryParse(lacingAttrib.Value, out lacing);
+                            el.ArgumentLacing = lacing;
+                        }
                     }
 
                     el.DisableReporting();
