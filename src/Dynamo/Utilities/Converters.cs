@@ -541,4 +541,79 @@ namespace Dynamo.Controls
             throw new NotSupportedException();
         }
     }
+
+    public class LacingToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            LacingStrategy strategy = (LacingStrategy)value;
+            if (strategy == LacingStrategy.Disabled)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class LacingToAbbreviationConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            LacingStrategy strategy = (LacingStrategy)value;
+
+            switch (strategy)
+            {
+                case LacingStrategy.Disabled:
+                    return "";
+                case LacingStrategy.CrossProduct:
+                    return "CP";
+                case LacingStrategy.First:
+                    return "F";
+                case LacingStrategy.Longest:
+                    return "L";
+                case LacingStrategy.Shortest:
+                    return "S";
+            }
+
+            return "?";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class LacingToTooltipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            LacingStrategy strategy = (LacingStrategy)value;
+
+            switch (strategy)
+            {
+                case LacingStrategy.Disabled:
+                    return "Arugment lacing is disabled for this node.";
+                case LacingStrategy.CrossProduct:
+                    return "For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}.";
+                case LacingStrategy.First:
+                    return "For two lists {a,b,c}{1,2,3} returns {a1}.";
+                case LacingStrategy.Longest:
+                    return "For two lists {a,b,c}{1,2} returns {a1,b2,c2}.";
+                case LacingStrategy.Shortest:
+                    return "For two lists {a,b,c}{1,2} returns {a1,b2}.";
+            }
+
+            return "?";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
 }

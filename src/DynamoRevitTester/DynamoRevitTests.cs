@@ -38,6 +38,7 @@ namespace DynamoRevitTests
         string _testPath;
         string _samplesPath;
         string _defsPath;
+        string _emptyModelPath;
 
         [TestFixtureSetUp]
         public void InitFixture()
@@ -54,6 +55,10 @@ namespace DynamoRevitTests
         //Called before each test method
         public void Init()
         {
+            //it doesn't make sense to do these steps before every test
+            //but when running from the revit plugin we are not loading the 
+            //fixture, so the initfixture method is not called.
+
             //get the test path
             FileInfo fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
@@ -68,35 +73,7 @@ namespace DynamoRevitTests
             string defsLoc = Path.Combine(assDir, @".\definitions\");
             _defsPath = Path.GetFullPath(defsLoc);
 
-            //string revitEmptyLoc = Path.Combine(_testPath, "empty.rfa");
-            //string revitTestLoc = Path.Combine(_testPath, "shell.rfa");
-
-            //if (dynRevitSettings.Doc.Application.ActiveUIDocument != null)
-            //{
-            //    //TODO: find a better way of re-opening the same document
-            //    UIDocument initialDoc = dynRevitSettings.Revit.ActiveUIDocument;
-            //    if (initialDoc.Document.PathName != revitEmptyLoc)
-            //    {
-            //        dynRevitSettings.Revit.OpenAndActivateDocument(revitEmptyLoc);
-            //        initialDoc.Document.Close(false);
-            //        initialDoc = dynRevitSettings.Revit.ActiveUIDocument;
-            //    }
-            //    dynRevitSettings.Revit.OpenAndActivateDocument(revitTestLoc);
-            //    initialDoc.Document.Close();
-            //}
-            //else
-            //    dynRevitSettings.Doc.Application.OpenAndActivateDocument(revitTestLoc);
-
-            //dynRevitSettings.Doc = dynRevitSettings.Revit.ActiveUIDocument;
-
-            ////create dynamo
-            //string context = string.Format("{0} {1}", dynRevitSettings.Doc.Application.Application.VersionName, dynRevitSettings.Doc.Application.Application.VersionNumber);
-            //var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
-
-            ////flag to run evalauation synchronously, helps to 
-            ////avoid threading issues when testing.
-            //dynamoController.Testing = true;
-
+            _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
         }
 
         [TearDown]
@@ -823,6 +800,64 @@ namespace DynamoRevitTests
             fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(20, fec.ToElements().Count());
+        }
+
+        [Test]
+        public void AdaptiveComponents()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string path = Path.Combine(_testPath, @".\AdaptiveComponents\AdaptiveComponentSample.rfa");
+            string modelPath = Path.GetFullPath(path);
+            SwapCurrentModel(modelPath);
+
+            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponents\AdaptiveComponents.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+
+            //the .dyn has the slider set at 5. let's make sure that
+            //if you set the slider to somethin else before running, that it get the correct number
+            var slider = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynDoubleSliderInput).First();
+            ((dynBasicInteractive<double>)slider).Value = 1;
+
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            //get all the family instances in the document
+            var acs = GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
+            Assert.AreEqual(1, acs.Count());
+
+            //change the number slider
+            ((dynBasicInteractive<double>)slider).Value = 3;
+
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            acs = GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
+            Assert.AreEqual(3, acs.Count());
+
+            //reset the original model
+            SwapCurrentModel(_emptyModelPath);
+        }
+        
+        /// <summary>
+        /// Opens and activates a new model, and closes the old model.
+        /// </summary>
+        private static void SwapCurrentModel(string modelPath)
+        {
+            Document initialDoc = dynRevitSettings.Doc.Document;
+            dynRevitSettings.Revit.OpenAndActivateDocument(modelPath);
+            initialDoc.Close(false);
+        }
+
+        /// <summary>
+        /// Retrieves all family instances of the named type from the active document.
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
+        private static IEnumerable<FamilyInstance> GetAllFamilyInstancesWithTypeName(string typeName)
+        {
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(FamilyInstance));
+            return fec.ToElements().Where(x => ((FamilyInstance)x).Symbol.Name == typeName).Cast<FamilyInstance>();
         }
 
         private static void OpenAllSamplesInDirectory(DirectoryInfo di)

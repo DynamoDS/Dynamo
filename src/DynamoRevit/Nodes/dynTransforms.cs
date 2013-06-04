@@ -13,7 +13,7 @@ namespace Dynamo.Nodes
     [NodeName("Identity Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the identity transformation.")]
-    public class dynTransformIdentity: dynNodeWithOneOutput
+    public class dynTransformIdentity: dynTransformBase
     {
         public dynTransformIdentity()
         {
@@ -24,16 +24,17 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewContainer(
-               Transform.Identity
-            );
+            Transform t = Transform.Identity;
+            transforms.Add(t);
+
+            return Value.NewContainer(t);
         }
     }
 
     [NodeName("Transf From Origin and Vecs")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns a transformation with origin (o), up vector (u), and forward (f).")]
-    public class dynTransformOriginAndVectors: dynNodeWithOneOutput
+    public class dynTransformOriginAndVectors : dynTransformBase
     {
         public dynTransformOriginAndVectors()
         {
@@ -56,7 +57,9 @@ namespace Dynamo.Nodes
             t.BasisZ = up;
             t.BasisY = forward;
             t.BasisX = forward.CrossProduct(up);
-            
+
+            transforms.Add(t);
+
             return Value.NewContainer(
                t
             );
@@ -66,7 +69,7 @@ namespace Dynamo.Nodes
     [NodeName("Scale Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the identity transformation.")]
-    public class dynTransformScaleBasis: dynNodeWithOneOutput
+    public class dynTransformScaleBasis : dynTransformBase
     {
         public dynTransformScaleBasis()
         {
@@ -82,16 +85,16 @@ namespace Dynamo.Nodes
             var transform = (Transform)((Value.Container)args[0]).Item;
             var scale = ((Value.Number)args[1]).Item;
 
-            return Value.NewContainer(
-               transform.ScaleBasis(scale)
-            );
+            Transform t = transform.ScaleBasis(scale);
+            transforms.Add(t);
+            return Value.NewContainer(t);
         }
     }
 
     [NodeName("Rotate Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns a transform that rotates by the specified angle about the specified axis and point.")]
-    public class dynTransformRotation: dynNodeWithOneOutput
+    public class dynTransformRotation : dynTransformBase
     {
         public dynTransformRotation()
         {
@@ -109,16 +112,18 @@ namespace Dynamo.Nodes
             var axis = (XYZ)((Value.Container)args[1]).Item;
             var angle = ((Value.Number)args[2]).Item;
 
-            return Value.NewContainer(
-               Transform.get_Rotation(origin, axis, angle)
-            );
+            Transform t = Transform.get_Rotation(origin, axis, angle);
+
+            transforms.Add(t);
+
+            return Value.NewContainer(t);
         }
     }
 
     [NodeName("Translate Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns he transformation that translates by the specified vector.")]
-    public class dynTransformTranslation: dynNodeWithOneOutput
+    public class dynTransformTranslation : dynTransformBase
     {
         public dynTransformTranslation()
         {
@@ -132,16 +137,18 @@ namespace Dynamo.Nodes
         {
             var vector = (XYZ)((Value.Container)args[0]).Item;
 
-            return Value.NewContainer(
-               Transform.get_Translation(vector)
-            );
+            Transform t = Transform.get_Translation(vector);
+
+            transforms.Add(t);
+
+            return Value.NewContainer(t);
         }
     }
 
     [NodeName("Reflect Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the transformation that reflects about the specified plane.")]
-    public class dynTransformReflection: dynNodeWithOneOutput
+    public class dynTransformReflection : dynTransformBase
     {
         public dynTransformReflection()
         {
@@ -155,16 +162,18 @@ namespace Dynamo.Nodes
         {
             var plane = (Plane)((Value.Container)args[0]).Item;
 
-            return Value.NewContainer(
-               Transform.get_Reflection(plane)
-            );
+            Transform t = Transform.get_Reflection(plane);
+
+            transforms.Add(t);
+
+            return Value.NewContainer(t);
         }
     }
 
     [NodeName("Transform Point")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Transform a point with a transform.")]
-    public class dynTransformPoint: dynNodeWithOneOutput
+    public class dynTransformPoint : dynXYZBase
     {
         public dynTransformPoint()
         {
@@ -180,9 +189,10 @@ namespace Dynamo.Nodes
             var t = (Transform)((Value.Container)args[0]).Item;
             var pt = (XYZ)((Value.Container)args[1]).Item;
 
-            return Value.NewContainer(
-               TransformPoint(pt, t)
-            );
+            XYZ tpt = TransformPoint(pt, t);
+            pts.Add(pt);
+
+            return Value.NewContainer(pt);
         }
 
         private XYZ TransformPoint(XYZ point, Transform transform)
@@ -211,7 +221,7 @@ namespace Dynamo.Nodes
     [NodeName("Multiply Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Multiply two transforms.")]
-    public class Multiplytransform : dynNodeWithOneOutput
+    public class Multiplytransform : dynTransformBase
     {
         public Multiplytransform()
         {
@@ -227,8 +237,10 @@ namespace Dynamo.Nodes
             var t1 = (Transform)((Value.Container)args[0]).Item;
             var t2 = (Transform)((Value.Container)args[1]).Item;
 
-            return Value.NewContainer(
-               t1.Multiply(t2));
+            Transform t = t1.Multiply(t2);
+            transforms.Add(t);
+
+            return Value.NewContainer(t);
         }
 
     }

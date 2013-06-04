@@ -39,4 +39,7 @@
     <controls:BoolToConsoleHeightConverter x:Key="BoolToConsoleHeightConverter"/>
     <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter"/>
     <controls:BoolToCanvasCursorConverter x:Key="BoolToCanvasCursorConverter"/>
+    <controls:LacingToVisibilityConverter x:Key="LacingToVisibilityConverter"/>
+    <controls:LacingToAbbreviationConverter x:Key="LacingToAbbreviationConverter"/>
+    <controls:LacingToTooltipConverter x:Key="LacingToTooltipConverter"/>
 </ResourceDictionary>

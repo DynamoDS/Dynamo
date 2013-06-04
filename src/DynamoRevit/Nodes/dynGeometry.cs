@@ -33,7 +33,15 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
-    public abstract class dynXYZBase : dynNodeWithOneOutput, IDrawable, IClearable
+    public abstract class dynGeometryBase : dynNodeWithOneOutput
+    {
+        protected dynGeometryBase()
+        {
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+    }
+
+    public abstract class dynXYZBase : dynGeometryBase, IDrawable, IClearable
     {
         protected List<XYZ> pts = new List<XYZ>();
         public RenderDescription RenderDescription { get; set; }
@@ -54,7 +62,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class dynCurveBase : dynNodeWithOneOutput, IDrawable, IClearable
+    public abstract class dynCurveBase : dynGeometryBase, IDrawable, IClearable
     {
         protected List<Curve> crvs = new List<Curve>();
         public RenderDescription RenderDescription { get; set; }
@@ -93,7 +101,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class dynSolidBase : dynNodeWithOneOutput, IDrawable, IClearable
+    public abstract class dynSolidBase : dynGeometryBase, IDrawable, IClearable
     {
         protected List<Solid> solids = new List<Solid>();
         public RenderDescription RenderDescription { get; set; }
@@ -115,7 +123,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class dynTransformBase : dynNodeWithOneOutput, IDrawable, IClearable
+    public abstract class dynTransformBase : dynGeometryBase, IDrawable, IClearable
     {
         protected List<Transform> transforms = new List<Transform>();
         public RenderDescription RenderDescription { get; set; }
@@ -536,7 +544,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Grid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of XYZs.")]
-    public class dynReferencePtGrid: dynNodeWithOneOutput
+    public class dynReferencePtGrid: dynXYZBase
     {
         public dynReferencePtGrid()
         {
@@ -579,8 +587,10 @@ namespace Dynamo.Nodes
                     double x = x0;
                     for (int xCount = 0; xCount < xi; xCount++)
                     {
+                        XYZ pt = new XYZ(x, y, z);
+                        pts.Add(pt);
                         result = FSharpList<Value>.Cons(
-                           Value.NewContainer(new XYZ(x, y, z)),
+                           Value.NewContainer(pt),
                            result
                         );
                         x += xs;
@@ -1252,7 +1262,7 @@ namespace Dynamo.Nodes
     [NodeName("Extract Solid from Element")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates reference to the solid in the element's geometry objects.")]
-    public class dynElementSolid : dynNodeWithOneOutput
+    public class dynElementSolid : dynSolidBase
     {
         Dictionary <ElementId, List<GeometryObject> > instanceSolids;
 
@@ -1346,6 +1356,8 @@ namespace Dynamo.Nodes
                     }
                 }
             }
+
+            solids.Add(mySolid);
 
             return Value.NewContainer(mySolid);
         }
@@ -1487,7 +1499,6 @@ namespace Dynamo.Nodes
             return Value.NewContainer(cl);
         }
     }
-
 
     [NodeName("Faces of Solid Along Line")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
@@ -1788,13 +1799,13 @@ namespace Dynamo.Nodes
             return Value.NewContainer(result);
         }
     }
+    
     [NodeName("Transform Solid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates solid by transforming solid")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class dynTransformSolid : dynNodeWithOneOutput
     {
-
         public dynTransformSolid()
         {
             InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));
@@ -1854,13 +1865,13 @@ namespace Dynamo.Nodes
             return Value.NewContainer(result);
         }
     }
+    
     [NodeName("Replace Faces")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Build solid replacing faces of input solid by supplied faces")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class dynReplaceFacesOfSolid : dynNodeWithOneOutput
     {
-
         public dynReplaceFacesOfSolid()
         {
             InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));
@@ -1907,13 +1918,13 @@ namespace Dynamo.Nodes
             return Value.NewContainer(result);
         }
     }
+    
     [NodeName("Blend Edges")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Build solid by replace edges with round blends")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class dynBlendEdges : dynNodeWithOneOutput
     {
-
         public dynBlendEdges()
         {
             InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));
@@ -1988,13 +1999,13 @@ namespace Dynamo.Nodes
             return Value.NewContainer(result);
         }
     }
+    
     [NodeName("Chamfer Edges")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Build solid by replace edges with chamfers")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class dynChamferEdges : dynNodeWithOneOutput
     {
-
         public dynChamferEdges()
         {
             InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));

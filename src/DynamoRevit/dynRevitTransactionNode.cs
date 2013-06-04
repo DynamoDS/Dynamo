@@ -62,6 +62,11 @@ namespace Dynamo.Revit
 
         public RenderDescription RenderDescription { get; set; }
 
+        protected dynRevitTransactionNode()
+        {
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
             //Only save elements in the home workspace

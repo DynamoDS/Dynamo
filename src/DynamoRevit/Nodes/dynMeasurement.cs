@@ -26,10 +26,18 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
+    public abstract class dynMeasurementBase:dynNodeWithOneOutput
+    {
+        protected dynMeasurementBase()
+        {
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+    }
+
     [NodeName("Surface Area")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("An element which measures the surface area of a face (f)")]
-    public class dynSurfaceArea: dynNodeWithOneOutput
+    public class dynSurfaceArea : dynMeasurementBase
     {
         public dynSurfaceArea()
         {
@@ -117,7 +125,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Distance")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Returns the distance between a(XYZ) and b(XYZ).")]
-    public class dynXYZDistance: dynNodeWithOneOutput
+    public class dynXYZDistance : dynMeasurementBase
     {
         public dynXYZDistance()
         {
@@ -140,7 +148,7 @@ namespace Dynamo.Nodes
     [NodeName("Height")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Returns the height in z of an element.")]
-    public class dynHeight: dynNodeWithOneOutput
+    public class dynHeight : dynMeasurementBase
     {
         public dynHeight()
         {
@@ -187,6 +195,52 @@ namespace Dynamo.Nodes
             var a = ((Value.Container)args[0]).Item;
 
             return Value.NewNumber(getHeight(a));
+        }
+    }
+
+    [NodeName("Ref Point Dist")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Measures a distance between point(s).")]
+    public class dynDistanceBetweenPoints : dynMeasurementBase
+    {
+        public dynDistanceBetweenPoints()
+        {
+            InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(Value.Container)));
+            InPortData.Add(new PortData("ptB", "A Reference point.", typeof(Value.Container)));
+
+            OutPortData.Add(new PortData("dist", "Distance between points.", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        private XYZ getXYZ(object arg)
+        {
+            if (arg is ReferencePoint)
+            {
+                return (arg as ReferencePoint).Position;
+            }
+            else if (arg is FamilyInstance)
+            {
+                return ((arg as FamilyInstance).Location as LocationPoint).Point;
+            }
+            else if (arg is XYZ)
+            {
+                return arg as XYZ;
+            }
+            else
+            {
+                throw new Exception("Cannot cast argument to ReferencePoint or FamilyInstance or XYZ.");
+            }
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            //Grab our inputs and turn them into XYZs.
+            XYZ ptA = this.getXYZ(((Value.Container)args[0]).Item);
+            XYZ ptB = this.getXYZ(((Value.Container)args[1]).Item);
+
+            //Return the calculated distance.
+            return Value.NewNumber(ptA.DistanceTo(ptB));
         }
     }
 }

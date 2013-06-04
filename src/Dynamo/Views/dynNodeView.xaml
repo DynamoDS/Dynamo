@@ -61,7 +61,7 @@
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
                 <MenuItem Name="deleteElem_cm" Header="Delete" Command="{Binding Path=DeleteCommand}"/>
-                <MenuItem Header="Lacing" Name="lacingStrategy">
+                <MenuItem Header="Lacing" Name="lacingStrategy" Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
                   <MenuItem Name="lacing_strategy_single" IsCheckable="True" 
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=First,Mode=TwoWay}" 
                               Command="{Binding Path=SetLacingTypeCommand}" CommandParameter="First" Header="First"/>
@@ -92,6 +92,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
             
         <!-- INPUT PORTS -->
@@ -102,7 +103,7 @@
             IsHitTestVisible="True" 
             Margin="0"
             Background="Transparent"
-            Canvas.ZIndex="1" Width="Auto" Grid.Column="0" Grid.Row="1">
+            Canvas.ZIndex="1" Width="Auto" Grid.Column="0" Grid.Row="0">
             
             <ItemsControl ItemsSource="{Binding Path=InPorts}">
                 <ItemsControl.ItemTemplate>
@@ -121,7 +122,7 @@
               VerticalAlignment="Stretch"
               IsHitTestVisible="True" 
               Background="Transparent"
-              Canvas.ZIndex="1" Width="Auto" Grid.Column="2" Grid.Row="1">
+              Canvas.ZIndex="1" Width="Auto" Grid.Column="2" Grid.Row="0">
             <ItemsControl ItemsSource="{Binding Path=OutPorts}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -142,7 +143,13 @@
             Background="Transparent"
               Margin="5,0,5,0"
               Canvas.ZIndex="5"  
-              IsEnabled="{Binding Path=IsInteractionEnabled}" Grid.Column="1"/>
+              IsEnabled="{Binding Path=IsInteractionEnabled}" Grid.Column="1" Grid.Row="0"/>
+
+            <TextBlock Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}" 
+                       ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}" 
+                       FontFamily="Consolas" FontSize="10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" 
+                       HorizontalAlignment="right" Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
+                       Foreground="#FF505050"/>
         </Grid>
 
         <TextBlock  Name="nickNameBlock" 
