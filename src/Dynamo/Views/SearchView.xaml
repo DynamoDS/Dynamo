@@ -253,7 +253,7 @@ Source="..\Images\search_24.png" Opacity="1">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="..\Themes\DynamoModern.xaml" />
+        <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </UserControl.Resources>

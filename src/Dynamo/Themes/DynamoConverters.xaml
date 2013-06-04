@@ -3,7 +3,7 @@
                     xmlns:controls="clr-namespace:Dynamo.Controls">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="..\Themes\DynamoColorsAndBrushes.xaml" />
+        <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoColorsAndBrushes.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <controls:WorkspaceTypeConverter x:Key="WorkspaceTypeConverter" />
