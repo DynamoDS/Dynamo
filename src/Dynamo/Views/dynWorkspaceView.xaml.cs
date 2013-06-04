@@ -359,7 +359,7 @@ namespace Dynamo.Views
             for (double i = 0.0; i < selectionCanvas.ActualWidth; i += gridSpacing)
             {
                 var xLine = new Line();
-                xLine.Stroke = new SolidColorBrush(Color.FromArgb(50, 100, 100, 100));
+                xLine.Stroke = new SolidColorBrush(Color.FromArgb(100, 100, 100, 100));
                 xLine.X1 = i;
                 xLine.Y1 = 0;
                 xLine.X2 = i;
@@ -383,7 +383,7 @@ namespace Dynamo.Views
             for (double i = 0.0; i < selectionCanvas.ActualHeight; i += gridSpacing)
             {
                 var yLine = new Line();
-                yLine.Stroke = new SolidColorBrush(Color.FromArgb(50, 100, 100, 100));
+                yLine.Stroke = new SolidColorBrush(Color.FromArgb(100, 100, 100, 100));
                 yLine.X1 = 0;
                 yLine.Y1 = i;
                 yLine.X2 = selectionCanvas.ActualWidth;
