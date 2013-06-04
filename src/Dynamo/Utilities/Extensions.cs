@@ -98,7 +98,7 @@ namespace Dynamo.Utilities
 
         public static IEnumerable<IEnumerable<T>> ShortestSet<T>(this IEnumerable<IEnumerable<T>> sequences)
         {
-            //find the longest sequences
+            //find the shortest sequences
             int shortest = sequences.Min(x => x.Count());
 
             //the result is a an enumerable

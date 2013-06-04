@@ -386,6 +386,111 @@ namespace DynamoRevitTests
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
         }
 
+        #region Python samples
+        /*
+        [Test]
+        public void ConnectTwoPointArraysWithoutPython()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\connect two point arrays without python.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void ConnectTwoPointArrays()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\connect two point arrays.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        
+        [Test]
+        public void CreateSineWaveFromSelectedCurve()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\create sine wave from selected curve.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            CurveByPoints cbp = null;
+            using (_trans = new Transaction(dynRevitSettings.Doc.Document))
+            {
+                _trans.Start("Create reference points for testing Python node.");
+
+                ReferencePoint p1 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ());
+                ReferencePoint p2 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(0,10,0));
+                ReferencePoint p3 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(0,20,0));
+                ReferencePointArray ptArr = new ReferencePointArray();
+                ptArr.Append(p1);
+                ptArr.Append(p2);
+                ptArr.Append(p3);
+
+                cbp = dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(ptArr);
+
+                _trans.Commit();
+            }
+
+            Assert.IsNotNull(cbp);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            var selectionNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection).First();
+            ((dynCurvesBySelection)selectionNode).SelectedElement = cbp;
+
+            //delete the transaction node when testing
+            //var transNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynTransaction).First();
+            //dynRevitSettings.Controller.RunCommand(vm.DeleteCommand, transNode);
+
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void CreateSineWaveFromSelectedPoints()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\create sine wave from selected points.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            ReferencePoint p1 = null;
+            ReferencePoint p2 = null;
+
+            using (_trans = new Transaction(dynRevitSettings.Doc.Document))
+            {
+                _trans.Start("Create reference points for testing python node.");
+
+                p1 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ());
+                p2 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(0, 10, 0));
+
+                _trans.Commit();
+            }
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynPointBySelection);
+            Assert.AreEqual(2, selectionNodes.Count());
+
+            ((dynPointBySelection)selectionNodes.ElementAt(0)).SelectedElement = p1;
+            ((dynPointBySelection)selectionNodes.ElementAt(1)).SelectedElement = p2;
+
+            //delete the transaction node when testing
+            //var transNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynTransaction).First();
+            //dynRevitSettings.Controller.RunCommand(vm.DeleteCommand, transNode);
+
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+        */
+        #endregion
+
         [Test]
         public void FamilyTypeSelectorNode()
         {
@@ -672,6 +777,52 @@ namespace DynamoRevitTests
             fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(2, fec.ToElements().Count);
+        }
+
+        [Test]
+        public void CanChangeLacingAndHaveElementsUpdate()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\LacingTest.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+
+            var xyzNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynXYZ).First();
+            Assert.IsNotNull(xyzNode);
+
+            //test the first lacing
+            xyzNode.ArgumentLacing = LacingStrategy.First;
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(1, fec.ToElements().Count());
+
+            //test the shortest lacing
+            xyzNode.ArgumentLacing = LacingStrategy.First;
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            fec = null;
+            fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(1, fec.ToElements().Count());
+
+            //test the longest lacing
+            xyzNode.ArgumentLacing = LacingStrategy.Longest;
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            fec = null;
+            fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(5, fec.ToElements().Count());
+
+            //test the cross product lacing
+            xyzNode.ArgumentLacing = LacingStrategy.CrossProduct;
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            fec = null;
+            fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(20, fec.ToElements().Count());
         }
 
         private static void OpenAllSamplesInDirectory(DirectoryInfo di)

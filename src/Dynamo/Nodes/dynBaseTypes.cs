@@ -474,9 +474,14 @@ namespace Dynamo.Nodes
 
         protected internal override void RemoveInput()
         {
+            //don't allow us to remove
+            //the second list
+            if (InPortData.Count == 3)
+                return;
+
             if (InPortData.Count == 3)
                 InPortData[1] = new PortData("lists", "List of lists to combine", typeof(object));
-            if (InPortData.Count > 2)
+            if (InPortData.Count > 3)
                 base.RemoveInput();
         }
 

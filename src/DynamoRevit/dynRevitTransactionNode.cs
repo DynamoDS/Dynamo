@@ -361,7 +361,17 @@ namespace Dynamo.Revit
             else
             {
                 Element elem = obj as Element;
-                DrawGeometryElement(description, elem.get_Geometry(new Options()));
+                if (elem != null)
+                {
+                    Options o = new Options();
+                    o.DetailLevel = ViewDetailLevel.Medium;
+                    GeometryElement geom = elem.get_Geometry(o);
+
+                    if (geom != null)
+                    {
+                        DrawGeometryObject(description, geom);
+                    }
+                }
             }
         }
 
@@ -394,7 +404,7 @@ namespace Dynamo.Revit
         {
             base.OnEvaluate();
 
-            runCount++;
+            //runCount++;
         }
 
         internal void PruneRuns(int runCount)
@@ -689,6 +699,8 @@ namespace Dynamo.Revit
             {
                 Value evalResult = Evaluate(args);
 
+                runCount++;
+
                 if (!evalResult.IsList)
                         throw new Exception("Output value of the node is not a list.");
 
@@ -796,6 +808,7 @@ namespace Dynamo.Revit
             else
             {
                 outPuts[OutPortData[0]] = Evaluate(args);
+                runCount++;
             }
         }
 

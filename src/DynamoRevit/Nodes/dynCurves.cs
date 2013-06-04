@@ -80,8 +80,6 @@ namespace Dynamo.Nodes
                        : this.UIDocument.Document.Create.NewModelCurve(c, sp);
                     this.Elements[0] = mc.Id;
                     mc.SketchPlane = sp;
-
-
                 }
             }
             else
@@ -149,8 +147,6 @@ namespace Dynamo.Nodes
                        : this.UIDocument.Document.Create.NewModelCurve(c, sp);
                     this.Elements[0] = mc.Id;
                     mc.SketchPlane = sp;
-
-
                 }
             }
             else
@@ -260,7 +256,7 @@ namespace Dynamo.Nodes
             {
                 Element e;
                 //...try to get the first one...
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(CurveByPoints), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(CurveByPoints), out e))
                 {
                     //..and if we do, update it's position.
                     c = e as CurveByPoints;
@@ -272,24 +268,35 @@ namespace Dynamo.Nodes
                     existingPts.get_Item(0).Position = start;
                     existingPts.get_Item(1).Position = end;
                 }
+                else
+                {
+                    c = CreateCurveByPoints(c, gc, start, end);
+                    this.Elements[0] = c.Id;
+                }
             }
             else
             {    
-                //Add the geometry curves start and end points to a ReferencePointArray.
-                ReferencePointArray refPtArr = new ReferencePointArray();
-                if (gc.GetType() == typeof(Line))
-                {
-                    ReferencePoint refPointStart = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
-                    ReferencePoint refPointEnd = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
-                    refPtArr.Append(refPointStart);
-                    refPtArr.Append(refPointEnd);
-                }
-
-                c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+                c = CreateCurveByPoints(c, gc, start, end);
                 this.Elements.Add(c.Id);
             }
 
             return Value.NewContainer(c);
+        }
+
+        private CurveByPoints CreateCurveByPoints(CurveByPoints c, Curve gc, XYZ start, XYZ end)
+        {
+            //Add the geometry curves start and end points to a ReferencePointArray.
+            ReferencePointArray refPtArr = new ReferencePointArray();
+            if (gc.GetType() == typeof(Line))
+            {
+                ReferencePoint refPointStart = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
+                ReferencePoint refPointEnd = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
+                refPtArr.Append(refPointStart);
+                refPtArr.Append(refPointEnd);
+            }
+
+            c = dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+            return c;
         }
     }
 

@@ -370,8 +370,6 @@ namespace Dynamo.Applications
         }
     }
 
-    public enum DynamoRevitTestResultType { PASS, FAIL, ERROR, EXCEPTION }
-
     public class DynamoRevitTestResult:NotificationObject
     {
         DynamoRevitTestResultType _resultType;
@@ -484,6 +482,9 @@ namespace Dynamo.Applications
     }
 
 #endif
+
+
+    public enum DynamoRevitTestResultType { PASS, FAIL, ERROR, EXCEPTION }
 
     public class ResultTypeToColorConverter : IValueConverter
     {

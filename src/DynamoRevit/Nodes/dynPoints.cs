@@ -486,7 +486,7 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate curve or edge")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Evaluates curve or edge at parameter.")]
-    public class dynXYZOnCurveOrEdge : dynRevitTransactionNodeWithOneOutput
+    public class dynXYZOnCurveOrEdge : dynXYZBase
     {
         public dynXYZOnCurveOrEdge()
         {
@@ -508,7 +508,7 @@ namespace Dynamo.Nodes
                 Reference r = (Reference)((Value.Container)args[1]).Item;
                 if (r != null)
                 {
-                    Element refElem = this.UIDocument.Document.GetElement(r.ElementId);
+                    Element refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
                     if (refElem != null)
                     {
                         GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
@@ -522,6 +522,7 @@ namespace Dynamo.Nodes
             XYZ result = (thisCurve != null) ? thisCurve.Evaluate(parameter, true) :  
                 (thisEdge == null ? null : thisEdge.Evaluate(parameter));
 
+            pts.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -530,7 +531,7 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate tangent transform of curve or edge")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
-    public class dynTangentTransformOnCurveOrEdge : dynRevitTransactionNodeWithOneOutput
+    public class dynTangentTransformOnCurveOrEdge : dynTransformBase
     {
         public dynTangentTransformOnCurveOrEdge()
         {
@@ -553,7 +554,7 @@ namespace Dynamo.Nodes
                 Reference r = (Reference)((Value.Container)args[1]).Item;
                 if (r != null)
                 {
-                    Element refElem = this.UIDocument.Document.GetElement(r.ElementId);
+                    Element refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
                     if (refElem != null)
                     {
                         GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
@@ -567,6 +568,7 @@ namespace Dynamo.Nodes
             Transform result = (thisCurve != null) ? thisCurve.ComputeDerivatives(parameter, true) : 
                 (thisEdge == null ? null : thisEdge.ComputeDerivatives(parameter));
 
+            transforms.Add(result);
 
             return Value.NewContainer(result);
         }
