@@ -377,38 +377,58 @@ namespace Dynamo.Nodes
 
         void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
-            if (e.Text == ".")
+            try
             {
-                completionWindow = new CompletionWindow(editWindow.editText.TextArea);
-                var data = completionWindow.CompletionList.CompletionData;
-
-                var completions = completionProvider.GetCompletionData(editWindow.editText.Text.Substring(0, editWindow.editText.CaretOffset));
-
-                if (completions.Length == 0)
-                    return;
-
-                foreach (var ele in completions)
+                if (e.Text == ".")
                 {
-                    data.Add(ele);
+                    completionWindow = new CompletionWindow(editWindow.editText.TextArea);
+                    var data = completionWindow.CompletionList.CompletionData;
+
+                    var completions =
+                        completionProvider.GetCompletionData(editWindow.editText.Text.Substring(0,
+                                                                                                editWindow.editText
+                                                                                                          .CaretOffset));
+
+                    if (completions.Length == 0)
+                        return;
+
+                    foreach (var ele in completions)
+                    {
+                        data.Add(ele);
+                    }
+
+                    completionWindow.Show();
+
+                    completionWindow.Closed += delegate
+                        {
+                            completionWindow = null;
+                        };
                 }
-
-                completionWindow.Show();
-
-                completionWindow.Closed += delegate
-                {
-                    completionWindow = null;
-                };
+            }
+            catch (Exception ex)
+            {
+                DynamoLogger.Instance.Log("Failed to perform python autocomplete with exception:");
+                DynamoLogger.Instance.Log(ex.Message);
+                DynamoLogger.Instance.Log(ex.StackTrace);
             }
         }
 
         void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
         {
-            if (e.Text.Length > 0 && completionWindow != null)
-            {
-                if (!char.IsLetterOrDigit(e.Text[0]))
+            try {
+                if (e.Text.Length > 0 && completionWindow != null)
                 {
-                    completionWindow.CompletionList.RequestInsertion(e);
+                    if (!char.IsLetterOrDigit(e.Text[0]))
+                    {
+                        completionWindow.CompletionList.RequestInsertion(e);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                DynamoLogger.Instance.Log("Failed to perform python autocomplete with exception:");
+                DynamoLogger.Instance.Log(ex.Message);
+                DynamoLogger.Instance.Log(ex.StackTrace);
             }
         }
 
