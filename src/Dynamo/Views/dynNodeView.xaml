@@ -61,7 +61,7 @@
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
                 <MenuItem Name="deleteElem_cm" Header="Delete" Command="{Binding Path=DeleteCommand}"/>
-                <MenuItem Header="Lacing" Name="lacingStrategy">
+                <MenuItem Header="Lacing" Name="lacingStrategy" Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
                   <MenuItem Name="lacing_strategy_single" IsCheckable="True" 
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=First,Mode=TwoWay}" 
                               Command="{Binding Path=SetLacingTypeCommand}" CommandParameter="First" Header="First"/>

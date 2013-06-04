@@ -541,4 +541,21 @@ namespace Dynamo.Controls
             throw new NotSupportedException();
         }
     }
+
+    public class LacingToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            LacingStrategy strategy = (LacingStrategy)value;
+            if (strategy == LacingStrategy.Disabled)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
 }
