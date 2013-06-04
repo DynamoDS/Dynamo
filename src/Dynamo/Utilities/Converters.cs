@@ -50,7 +50,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is string)
+            if (value is string && !string.IsNullOrEmpty(value as string) )
             {
                 // convert to path, get file name
                 return Path.GetFileName((string) value);
