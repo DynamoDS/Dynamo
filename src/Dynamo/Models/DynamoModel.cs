@@ -56,6 +56,28 @@ namespace Dynamo
         }
 
         /// <summary>
+        /// Replace the home workspace with a new 
+        /// workspace. Only valid if the home workspace is already
+        /// defined (usually by calling AddHomeWorkspace).
+        /// </summary>
+        public void NewHomeWorkspace()
+        {
+            if (this.Workspaces.Count > 0 && this.HomeSpace != null)
+            {
+                //var homeIndex = this._workSpaces.IndexOf(this.HomeSpace);
+                //var newHomespace = new HomeWorkspace();
+                //this.Workspaces[0] = newHomespace;
+                //this.HomeSpace = newHomespace;
+                //this.CurrentSpace = newHomespace;
+
+                this.AddHomeWorkspace();
+                _cspace = this.HomeSpace;
+                this.CurrentSpace = this.HomeSpace;
+                this.Workspaces.RemoveAt(1);
+            }
+        }
+
+        /// <summary>
         /// Add a workspace to the dynamo model.
         /// </summary>
         /// <param name="workspace"></param>
@@ -63,7 +85,7 @@ namespace Dynamo
         {
             var workspace = new HomeWorkspace();
             HomeSpace = workspace;
-            _workSpaces.Add(workspace);
+            _workSpaces.Insert(0, workspace); // to front
         }
 
         /// <summary>

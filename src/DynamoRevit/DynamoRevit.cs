@@ -63,7 +63,6 @@ namespace Dynamo.Applications
     public class DynamoRevitApp : IExternalApplication
     {
         private static readonly string m_AssemblyName = Assembly.GetExecutingAssembly().Location;
-        private static string m_AssemblyDirectory = Path.GetDirectoryName(m_AssemblyName);
         public static DynamoUpdater updater;
         private static ResourceManager res;
         public static ExecutionEnvironment env;

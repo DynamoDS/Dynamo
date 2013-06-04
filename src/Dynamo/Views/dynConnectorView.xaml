@@ -10,9 +10,9 @@
         <Grid.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <ResourceDictionary Source="..\Themes\DynamoColorsAndBrushes.xaml" />
-                    <ResourceDictionary Source="..\Themes\DynamoConverters.xaml" />
-                    <ResourceDictionary Source="..\Themes\DynamoModern.xaml" />
+                    <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoColorsAndBrushes.xaml" />
+                    <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoConverters.xaml" />
+                    <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
                 </ResourceDictionary.MergedDictionaries>
                 
                 <LinearGradientBrush x:Key="SelectionGradientBrush" StartPoint="0,.5" EndPoint="1,.5">

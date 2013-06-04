@@ -40,7 +40,7 @@
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="..\..\Themes\DynamoModern.xaml" />
+        <ResourceDictionary Source="..\/DynamoElements;component/Themes/DynamoModern.xaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </UserControl.Resources>

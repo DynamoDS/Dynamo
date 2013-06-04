@@ -19,9 +19,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="..\Themes\DynamoColorsAndBrushes.xaml" />
-                <ResourceDictionary Source="..\Themes\DynamoConverters.xaml" />
-                <ResourceDictionary Source="..\Themes\DynamoModern.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoConverters.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -140,6 +140,7 @@
             HorizontalAlignment="Stretch"
             Height="Auto"
             Width="Auto"
+            Background="Transparent"
               Margin="5,0,5,0"
               Canvas.ZIndex="5"  
               IsEnabled="{Binding Path=IsInteractionEnabled}" Grid.Column="1" Grid.Row="0"/>

@@ -20,9 +20,9 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="..\Themes\DynamoModern.xaml" />
-                <ResourceDictionary Source="..\Themes\DynamoConverters.xaml"/>
-                <ResourceDictionary Source="..\Themes\DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoConverters.xaml"/>
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoColorsAndBrushes.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -34,6 +34,9 @@
 
         <KeyBinding Key="Delete"
                                 Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="N"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.NewHomeWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="N"
                                 Modifiers="Control+Shift"
                                 Command="{Binding Path=DataContext.ShowNewFunctionDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
@@ -108,6 +111,9 @@
 
             <MenuItem Header="_File" Name="fileMenu" Focusable="False">
 
+                <MenuItem Header="_New Home Workspace..." Command="{Binding Path=NewHomeWorkspaceCommand}"  Name="newHomeWorkspace" InputGestureText="Ctrl+N">
+                </MenuItem>
+                
                 <MenuItem Header="_New Custom Node..." Command="{Binding Path=ShowNewFunctionDialogCommand}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
                 </MenuItem>
 
@@ -207,6 +213,7 @@
                         <Image Source="/DynamoElements;component/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="_Report A Bug" Command="{Binding Path=ReportABugCommand}"  Name="bugCommand"/>
                 <MenuItem Header="_Go To Project Website" Command="{Binding Path=GoToSourceCodeCommand}"  Name="sourceCode"/>
                 <MenuItem Header="_Go To Project Wiki" Command="{Binding Path=GoToWikiCommand}"  Name="wiki"/>
 

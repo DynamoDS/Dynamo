@@ -15,8 +15,6 @@ using System.Windows.Media.Imaging;
 using System.Xml;
 using Dynamo.Commands;
 using Dynamo.Connectors;
-using Dynamo.FSchemeInterop;
-using Dynamo.FSchemeInterop.Node;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -70,7 +68,7 @@ namespace Dynamo.Controls
         /// An observable collection of workspace view models which tracks the model
         /// </summary>
         private ObservableCollection<dynWorkspaceViewModel> _workspaces = new ObservableCollection<dynWorkspaceViewModel>();
-
+        public DelegateCommand ReportABugCommand { get; set; }
         public DelegateCommand GoToWikiCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
@@ -86,6 +84,7 @@ namespace Dynamo.Controls
         public DelegateCommand ClearCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand LayoutAllCommand { get; set; }
+        public DelegateCommand NewHomeWorkspaceCommand { get; set; }
         public DelegateCommand<object> CopyCommand { get; set; }
         public DelegateCommand<object> PasteCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
@@ -245,7 +244,11 @@ namespace Dynamo.Controls
         /// </summary>
         public int CurrentWorkspaceIndex
         {
-            get { return _model.Workspaces.IndexOf(_model.CurrentSpace); }
+            get
+            {
+                var index = _model.Workspaces.IndexOf(_model.CurrentSpace);
+                return index;
+            }
             set
             {
                 _model.CurrentSpace = _model.Workspaces[value];
@@ -319,9 +322,11 @@ namespace Dynamo.Controls
 
             #region Initialize Commands
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
+            ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode,  CanGoToSourceCode);
             CleanupCommand = new DelegateCommand(Cleanup, CanCleanup);
             ExitCommand = new DelegateCommand(Exit, CanExit);
+            NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
@@ -389,6 +394,32 @@ namespace Dynamo.Controls
         }
 
         private bool CanSave()
+        {
+            return true;
+        }
+
+        private void ReportABug()
+        {
+            Process.Start("https://github.com/ikeough/Dynamo/issues?state=open");
+        }
+
+        private bool CanReportABug()
+        {
+            return true;
+        }
+
+        private void MakeNewHomeWorkspace()
+        {
+            // if the workspace is unsaved, prompt to save
+            // otherwise overwrite the home workspace with new workspace
+            if (!this.Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
+            {
+                this.Model.CurrentSpace = this.Model.HomeSpace;
+                ClearCommand.Execute();
+            }
+        }
+
+        private bool CanMakeNewHomeWorkspace()
         {
             return true;
         }
@@ -677,7 +708,27 @@ namespace Dynamo.Controls
         /// <returns>False if the user cancels, otherwise true</returns>
         public bool AskUserToSaveWorkspaceOrCancel(dynWorkspaceModel workspace)
         {
-            var result = System.Windows.MessageBox.Show("You have unsaved changes to " + workspace.Name + "\n\n Would you like to save your changes?", "Confirmation", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            var dialogText = "";
+            if (workspace is FuncWorkspace)
+            {
+                dialogText = "You have unsaved changes to custom node workspace " + workspace.Name +
+                             "\n\n Would you like to save your changes?";
+            }
+            else // homeworkspace
+            {
+                if (string.IsNullOrEmpty(workspace.FilePath))
+                {
+                    dialogText = "You haven't saved your changes to the Home workspace. " +
+                                 "\n\n Would you like to save your changes?";
+                }
+                else
+                {
+                    dialogText = "You have unsaved changes to " + Path.GetFileName( workspace.FilePath ) +
+                    "\n\n Would you like to save your changes?";
+                }
+            }
+
+            var result = System.Windows.MessageBox.Show(dialogText, "Confirmation", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
                 this.ShowSaveDialogIfNeededAndSave(workspace);
@@ -744,6 +795,7 @@ namespace Dynamo.Controls
 
             //don't save the file path
             _model.CurrentSpace.FilePath = "";
+            _model.CurrentSpace.HasUnsavedChanges = false;
 
             IsUILocked = false;
         }
