@@ -1,4 +1,4 @@
-<dynWorkspace X="49.3333333333333" Y="26.6666666666667">
+<dynWorkspace X="0" Y="0">
   <dynElements>
     <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="db105fd7-4e6a-4341-8ed7-5eded47417e6" nickname="Select Curve" x="0" y="0" lacing="First">
       <instance id="33124" />
@@ -7,7 +7,7 @@
       <instance id="33346" />
     </Dynamo.Nodes.dynCurvesBySelection>
     <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="91b7e7ef-9db3-4aa2-8762-6a863188e7ec" nickname="Number Slider" x="0" y="294.418290272358" lacing="First">
-      <System.Double value="3.93258426966292" min="0" max="5" />
+      <System.Double value="4.8876404494382" min="0" max="5" />
     </Dynamo.Nodes.dynDoubleSliderInput>
     <Dynamo.Nodes.dynAdaptiveComponentByPoints type="Dynamo.Nodes.dynAdaptiveComponentByPoints" guid="ac5bd8f9-fcf5-46db-b795-3590044edb56" nickname="Adaptive Component by Points" x="968.4119218321" y="286.524658788488" lacing="Longest">
       <Run>
@@ -21,6 +21,9 @@
       </Run>
       <Run>
         <Element>414aa748-d842-4cde-9de6-d4a4b0bec451-0000b505</Element>
+      </Run>
+      <Run>
+        <Element>a31656a8-c052-4380-9bc8-5fa428a2806e-0000b514</Element>
       </Run>
     </Dynamo.Nodes.dynAdaptiveComponentByPoints>
     <Dynamo.Nodes.dynFamilyTypeSelector type="Dynamo.Nodes.dynFamilyTypeSelector" guid="7355a862-74db-4c34-b9c2-e63ac7cfe000" nickname="Select Fam" x="0" y="433.376275268211" lacing="First" index="7" />
