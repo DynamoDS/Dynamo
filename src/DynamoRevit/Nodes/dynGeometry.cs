@@ -659,7 +659,7 @@ namespace Dynamo.Nodes
     [NodeName("Plane")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates a geometric plane.")]
-    public class dynPlane: dynNodeWithOneOutput
+    public class dynPlane: dynGeometryBase
     {
         public dynPlane()
         {
@@ -1091,7 +1091,7 @@ namespace Dynamo.Nodes
     [NodeName("UV")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a UV from two double values.")]
-    public class dynUV: dynNodeWithOneOutput
+    public class dynUV : dynGeometryBase
     {
         public dynUV()
         {
