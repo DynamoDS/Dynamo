@@ -24,7 +24,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Design and compute mathematical expressions.")]
     [NodeSearchTags("Equation", "Arithmetic")]
     [IsInteractive(true)]
-    public class dynFormula : dynNodeWithOneOutput
+    public class dynFormula : dynMathBase
     {
         private string _formula;
         public string Formula
