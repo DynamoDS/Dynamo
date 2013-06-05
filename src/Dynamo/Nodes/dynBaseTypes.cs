@@ -826,6 +826,184 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Slice List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Create a lists of lists with each sub-list containing n elements.")]
+    public class dynSlice : dynNodeWithOneOutput
+    {
+        public dynSlice()
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The number of elements in each sub-list.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "The list of lists.", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if(!args[0].IsList)
+                throw new Exception("A list is required to slice.");
+
+            FSharpList<Value> lst = ((Value.List)args[0]).Item;
+            double n = (double)((Value.Number)args[1]).Item;
+
+            //if we have less elements in the 
+            //incoming list than the slice size,
+            //just return the list
+            if (lst.Count<Value>() < n)
+            {
+                return Value.NewList(lst);
+            }
+
+            List<Value> finalList = new List<Value>();
+            List<Value> currList = new List<Value>();
+            int count = 0;
+
+            foreach (Value v in lst)
+            {
+                count++;
+
+                currList.Add(v);
+
+                if (count == n)
+                {
+                    finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                    currList = new List<Value>();
+                    count = 0;
+                }
+            }
+
+            if (currList.Count<Value>() > 0)
+            {
+                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+            }
+
+            return Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
+
+        }
+    }
+
+    [NodeName("Build Sublists")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Build sublists from a list using a list-building syntax.")]
+    public class dynSublists : dynBasicInteractive<string>
+    {
+        public dynSublists()
+        {
+            InPortData.Add(new PortData("list", "The list from which to create sublists.", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The offset to apply to the sub-list.", typeof(Value.List)));
+
+            OutPortData.RemoveAt(0); //remove the existing blank output
+            OutPortData.Add(new PortData("list", "The sublists.", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        {
+            //add a text box to the input grid of the control
+            TextBox tb = new dynTextBox();
+
+            NodeUI.inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+
+            tb.DataContext = this;
+            var bindingVal = new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                //Converter = new StringDisplay(),
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            tb.SetBinding(TextBox.TextProperty, bindingVal);
+            tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+                throw new Exception("A list is required to create sub-lists.");
+
+            FSharpList<Value> list = ((Value.List)args[0]).Item;
+            int offset = Convert.ToInt32(((Value.Number)args[1]).Item);
+
+            //sublist creation semantics are as follows:
+            //EX. 1..2,5..8
+            //This expression says give me elements 1-2 then jump 3 and give me elements 5-8
+            //For a list 1,2,3,4,5,6,7,8,9,10, this will give us
+            //1,2,5,8,2,3,6,9
+
+            string[] chunks = Value.Split(new string[]{","}, StringSplitOptions.RemoveEmptyEntries);
+            if (chunks.Count() == 0)
+                throw new Exception("Sub-list expression could not be parsed.");
+
+            List<Tuple<int,int>> ranges = new List<Tuple<int,int>>();
+
+            foreach (string chunk in chunks)
+            {
+                string[] valueRange = chunk.Split(new string[]{".."}, StringSplitOptions.RemoveEmptyEntries);
+                
+                int start=0;
+                
+                if(!int.TryParse(valueRange[0],out start))
+                    throw new Exception("Range start could not be parsed.");
+                int end = start;
+                if(valueRange.Count() > 1)
+                {
+                    if(!int.TryParse(valueRange[1], out end))
+                        throw new Exception("Only one range can be specified within a jump. Ex. 1..2,3..4 is fine, but 1..2..3,3..4 is bad!");
+                }
+
+                if (start < 0 || end < 0)
+                    throw new Exception("Range values must be greater than zero.");
+
+                //if any values are greater than the length of the list - fail
+                if (start > list.Count<Value>() - 1 || end > list.Count<Value>() - 1)
+                    throw new Exception("The start or end of a range is greater than the number of available elements in the list.");
+
+                ranges.Add(new Tuple<int, int>(start, end));
+            }
+
+            //move through the list, creating sublists
+            List<Value> finalList = new List<Value>();
+
+            for (int j = 0; j < list.Count<Value>(); j+=offset)
+            {
+                List<Value> currList = new List<Value>();
+                foreach (Tuple<int, int> range in ranges)
+                {
+                    if (range.Item1 + j > list.Count<Value>() - 1 ||
+                        range.Item2 + j > list.Count<Value>() - 1)
+                    {
+                        continue;
+                    }
+
+                    for (int i = range.Item1 + j; i <= range.Item2 + j; i++)
+                    {
+                        currList.Add(list.ElementAt<Value>(i));
+                    }
+                }
+
+                if(currList.Count<Value>() > 0)
+                    finalList.Add(Dynamo.FScheme.Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+            }
+
+            return Dynamo.FScheme.Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
+
+        }
+
+        protected override string DeserializeValue(string val)
+        {
+            return val;
+        }
+    }
+
     #endregion
 
     #region Boolean
