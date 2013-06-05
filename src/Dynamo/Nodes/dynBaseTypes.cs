@@ -894,7 +894,7 @@ namespace Dynamo.Nodes
         public dynSublists()
         {
             InPortData.Add(new PortData("list", "The list from which to create sublists.", typeof(Value.List)));
-            InPortData.Add(new PortData("n", "The offset to apply to the sub-list.", typeof(Value.List)));
+            InPortData.Add(new PortData("shift", "The shift to apply to the sub-list.", typeof(Value.List)));
 
             OutPortData.RemoveAt(0); //remove the existing blank output
             OutPortData.Add(new PortData("list", "The sublists.", typeof(Value.List)));
@@ -1002,6 +1002,35 @@ namespace Dynamo.Nodes
         {
             return val;
         }
+    }
+
+    [NodeName("Flatten")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Flatten a list of lists into one list.")]
+    public class dynFlattenList : dynNodeWithOneOutput
+    {
+        public dynFlattenList()
+        {
+            InPortData.Add(new PortData("list", "The list of lists to flatten.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "The flattened list.", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+                throw new Exception("A list is required to flatten.");
+
+            FSharpList<Value> list = ((Value.List)args[0]).Item;
+            var vals = list.ToList<Value>().SelectMany(x=>((Value.List)x).Item);
+
+            return Dynamo.FScheme.Value.NewList(Utils.MakeFSharpList<Value>(vals.ToArray<Value>()));
+
+        }
+
     }
 
     #endregion
