@@ -1,0 +1,12 @@
+<dynWorkspace X="0" Y="0">
+  <dynElements>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="4d9fb747-2e90-4571-9c8f-7d59ad14a939" nickname="Watch" x="596.712446940876" y="144.374114460597" lacing="Disabled" />
+    <Dynamo.Nodes.dynTan type="Dynamo.Nodes.dynTan" guid="e7f0befb-34b5-4c99-815c-31c4302e1466" nickname="Tangent" x="439.147943142352" y="154.206263844996" lacing="Longest" />
+    <Dynamo.Nodes.dynPi type="Dynamo.Nodes.dynPi" guid="686d34b9-ca72-41a1-9eda-3e4cf6df6bde" nickname="Pi" x="265.995045676359" y="147.858512794971" lacing="Disabled" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="e7f0befb-34b5-4c99-815c-31c4302e1466" start_index="0" end="4d9fb747-2e90-4571-9c8f-7d59ad14a939" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="686d34b9-ca72-41a1-9eda-3e4cf6df6bde" start_index="0" end="e7f0befb-34b5-4c99-815c-31c4302e1466" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

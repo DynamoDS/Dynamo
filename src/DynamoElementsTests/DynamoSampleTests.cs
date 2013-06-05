@@ -308,5 +308,197 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void Add()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
+
+            string openPath = Path.Combine(examplePath, "Add.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(100);
+
+            var watch = GetWatchNodeFromCurrentSpace(vm, "4c5889ac-7b91-4fb5-aaad-a2128b533279");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(4.0, doubleWatchVal);
+        }
+
+        [Test]
+        public void Subtract()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
+
+            string openPath = Path.Combine(examplePath, "Subtract.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(100);
+
+            var watch = GetWatchNodeFromCurrentSpace(vm, "a574df4e-2dff-4c06-bbb6-e9467060085f");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(0.0, doubleWatchVal);
+        }
+
+        [Test]
+        public void Multiply()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
+
+            string openPath = Path.Combine(examplePath, "Multiply.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(100);
+
+            var watch = GetWatchNodeFromCurrentSpace(vm, "4c650bcc-9f18-4d23-a769-34845fd50fab");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(4.0, doubleWatchVal);
+        }
+
+        [Test]
+        public void Divide()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
+
+            string openPath = Path.Combine(examplePath, "Divide.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(100);
+
+            var watch = GetWatchNodeFromCurrentSpace(vm, "4c650bcc-9f18-4d23-a769-34845fd50fab");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(1.0, doubleWatchVal);
+        }
+
+        [Test]
+        public void Modulo()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
+
+            string openPath = Path.Combine(examplePath, "Modulo.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(100);
+
+            var watch = GetWatchNodeFromCurrentSpace(vm, "4a780dfb-74b1-453a-86ef-2f4a5c46792e");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(0.0, doubleWatchVal);
+        }
+
+        [Test]
+        public void Ceiling()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
+
+            string openPath = Path.Combine(examplePath, "Ceiling.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(100);
+
+            var watch = GetWatchNodeFromCurrentSpace(vm, "97e58c7f-9082-4980-997a-d290cf8055e1");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(2.0, doubleWatchVal);
+        }
+
+        [Test]
+        public void Floor()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
+
+            string openPath = Path.Combine(examplePath, "Floor.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(100);
+
+            var watch = GetWatchNodeFromCurrentSpace(vm, "fb52d286-ebcc-449c-989e-e4ea94831125");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(1.0, doubleWatchVal);
+        }
+
+        [Test]
+        public void Power()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
+
+            string openPath = Path.Combine(examplePath, "Power.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(100);
+
+            var watch = GetWatchNodeFromCurrentSpace(vm, "6a7b150e-f053-4b29-b672-007aa1acde24");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(4.0, doubleWatchVal);
+        }
+
+        [Test]
+        public void Round()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
+
+            string openPath = Path.Combine(examplePath, "Round.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(100);
+
+            var watch = GetWatchNodeFromCurrentSpace(vm, "430e086e-8cf0-4e89-abba-69dc1cd94058");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(1.0, doubleWatchVal);
+        }
+
+        [Test]
+        public void Sine()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
+
+            string openPath = Path.Combine(examplePath, "Sine.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(100);
+
+            var watch = GetWatchNodeFromCurrentSpace(vm, "4d9fb747-2e90-4571-9c8f-7d59ad14a939");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(1.0, doubleWatchVal);
+        }
+
+        [Test]
+        public void Cosine()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
+
+            string openPath = Path.Combine(examplePath, "Cosine.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(100);
+
+            var watch = GetWatchNodeFromCurrentSpace(vm, "4d9fb747-2e90-4571-9c8f-7d59ad14a939");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(-1.0, doubleWatchVal);
+        }
+
+        [Test]
+        public void Tangent()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
+
+            string openPath = Path.Combine(examplePath, "Tangent.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(100);
+
+            var watch = GetWatchNodeFromCurrentSpace(vm, "4d9fb747-2e90-4571-9c8f-7d59ad14a939");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(0.0, doubleWatchVal, 0.00001);
+        }
+
     }
 }

@@ -570,13 +570,13 @@ namespace Dynamo.Controls
                 case LacingStrategy.Disabled:
                     return "";
                 case LacingStrategy.CrossProduct:
-                    return "CP";
+                    return "XXX";
                 case LacingStrategy.First:
-                    return "F";
+                    return "|";
                 case LacingStrategy.Longest:
-                    return "L";
+                    return @"||\";
                 case LacingStrategy.Shortest:
-                    return "S";
+                    return "|";
             }
 
             return "?";

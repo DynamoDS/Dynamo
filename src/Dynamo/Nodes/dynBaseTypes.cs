@@ -1070,19 +1070,34 @@ namespace Dynamo.Nodes
 
     #region Math
 
+    public abstract class dynMathBase : dynNodeWithOneOutput
+    {
+        protected dynMathBase()
+        {
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+    }
+
     [NodeName("Add")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Adds two numbers.")]
     [NodeSearchTags("plus", "sum", "+")]
-    public class dynAddition : dynBuiltinFunction
+    public class dynAddition : dynMathBase
     {
         public dynAddition()
-            : base("+")
         {
             InPortData.Add(new PortData("x", "operand", typeof(Value.Number)));
             InPortData.Add(new PortData("y", "operand", typeof(Value.Number)));
             OutPortData.Add(new PortData("x+y", "sum", typeof(Value.Number)));
             RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var x = ((Value.Number)args[0]).Item;
+            var y = ((Value.Number)args[1]).Item;
+
+            return Value.NewNumber(x + y);
         }
 
     }
@@ -1091,15 +1106,22 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Subtracts two numbers.")]
     [NodeSearchTags("minus", "difference", "-")]
-    public class dynSubtraction : dynBuiltinFunction
+    public class dynSubtraction : dynMathBase
     {
         public dynSubtraction()
-            : base("-")
         {
             InPortData.Add(new PortData("x", "operand", typeof(Value.Number)));
             InPortData.Add(new PortData("y", "operand", typeof(Value.Number)));
             OutPortData.Add(new PortData("x-y", "difference", typeof(Value.Number)));
             RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var x = ((Value.Number)args[0]).Item;
+            var y = ((Value.Number)args[1]).Item;
+
+            return Value.NewNumber(x - y);
         }
     }
 
@@ -1107,15 +1129,22 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Multiplies two numbers.")]
     [NodeSearchTags("times", "product", "*")]
-    public class dynMultiplication : dynBuiltinFunction
+    public class dynMultiplication : dynMathBase
     {
         public dynMultiplication()
-            : base("*")
         {
             InPortData.Add(new PortData("x", "operand", typeof(Value.Number)));
             InPortData.Add(new PortData("y", "operand", typeof(Value.Number)));
             OutPortData.Add(new PortData("x∙y", "product", typeof(Value.Number)));
             RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var x = ((Value.Number)args[0]).Item;
+            var y = ((Value.Number)args[1]).Item;
+
+            return Value.NewNumber(x * y);
         }
 
     }
@@ -1124,15 +1153,22 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Divides two numbers.")]
     [NodeSearchTags("division", "quotient", "/")]
-    public class dynDivision : dynBuiltinFunction
+    public class dynDivision : dynMathBase
     {
         public dynDivision()
-            : base("/")
         {
             InPortData.Add(new PortData("x", "operand", typeof(Value.Number)));
             InPortData.Add(new PortData("y", "operand", typeof(Value.Number)));
             OutPortData.Add(new PortData("x÷y", "result", typeof(Value.Number)));
             RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var x = ((Value.Number)args[0]).Item;
+            var y = ((Value.Number)args[1]).Item;
+
+            return Value.NewNumber(x / y);
         }
 
     }
@@ -1141,10 +1177,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Remainder of division of two numbers.")]
     [NodeSearchTags("%", "remainder")]
-    public class dynModulo : dynBuiltinFunction
+    public class dynModulo : dynMathBase
     {
         public dynModulo()
-            : base("%")
         {
             InPortData.Add(new PortData("x", "operand", typeof(Value.Number)));
             InPortData.Add(new PortData("y", "operand", typeof(Value.Number)));
@@ -1152,16 +1187,23 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
         }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var x = ((Value.Number)args[0]).Item;
+            var y = ((Value.Number)args[1]).Item;
+
+            return Value.NewNumber(x % y);
+        }
     }
 
     [NodeName("Power")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Raises a number to the power of another.")]
     [NodeSearchTags("pow", "exponentiation", "^")]
-    public class dynPow : dynBuiltinFunction
+    public class dynPow : dynMathBase
     {
         public dynPow()
-            : base("pow")
         {
             InPortData.Add(new PortData("x", "operand", typeof(Value.Number)));
             InPortData.Add(new PortData("y", "operand", typeof(Value.Number)));
@@ -1169,12 +1211,20 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
         }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var x = ((Value.Number)args[0]).Item;
+            var y = ((Value.Number)args[1]).Item;
+
+            return Value.NewNumber(Math.Pow(x,y));
+        }
     }
 
     [NodeName("Round")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Rounds a number to the nearest integer value.")]
-    public class dynRound : dynNodeWithOneOutput
+    public class dynRound : dynMathBase
     {
         public dynRound()
         {
@@ -1196,7 +1246,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Rounds a number to the nearest smaller integer.")]
     [NodeSearchTags("round")]
-    public class dynFloor : dynNodeWithOneOutput
+    public class dynFloor : dynMathBase
     {
         public dynFloor()
         {
@@ -1218,7 +1268,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Rounds a number to the nearest larger integer value.")]
     [NodeSearchTags("round")]
-    public class dynCeiling : dynNodeWithOneOutput
+    public class dynCeiling : dynMathBase
     {
         public dynCeiling()
         {
@@ -1302,7 +1352,7 @@ namespace Dynamo.Nodes
     [NodeName("Sine")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Computes the sine of the given angle.")]
-    public class dynSin : dynNodeWithOneOutput
+    public class dynSin : dynMathBase
     {
         public dynSin()
         {
@@ -1338,7 +1388,7 @@ namespace Dynamo.Nodes
     [NodeName("Cosine")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Computes the cosine of the given angle.")]
-    public class dynCos : dynNodeWithOneOutput
+    public class dynCos : dynMathBase
     {
         public dynCos()
         {
@@ -1374,7 +1424,7 @@ namespace Dynamo.Nodes
     [NodeName("Tangent")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Computes the tangent of the given angle.")]
-    public class dynTan : dynNodeWithOneOutput
+    public class dynTan : dynMathBase
     {
         public dynTan()
         {
