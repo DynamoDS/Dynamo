@@ -143,6 +143,13 @@ namespace Dynamo
         public void FullscreenChanged()
         {
             RaisePropertyChanged("FullscreenWatchVisible");
+
+            if (dynSettings.Controller.IsProcessingCommandQueue)
+                return;
+
+            // rerun everthyng to make the objects appear
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null));
+            dynSettings.Controller.ProcessCommandQueue();
         }
 
         public bool FullscreenWatchVisible
