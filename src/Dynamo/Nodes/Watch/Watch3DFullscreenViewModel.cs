@@ -106,8 +106,11 @@ namespace Dynamo.Controls
 
             foreach (dynNodeViewModel nodeViewModel in _parentWorkspace.Nodes)
             {
-                dynNodeModel nodeModel = nodeViewModel.NodeLogic;
+                if (nodeViewModel.State != ElementState.ACTIVE)
+                    continue;
 
+                dynNodeModel nodeModel = nodeViewModel.NodeLogic;
+                
                 IDrawable drawable = nodeModel as IDrawable;
 
                 if (nodeModel.IsVisible && drawable != null)
