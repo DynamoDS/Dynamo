@@ -149,20 +149,25 @@ namespace Dynamo.Applications
         }
     }
 
+
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     internal class DynamoRevit : IExternalCommand
     {
-        private static DynamoView dynamoBench;
+        private static DynamoView dynamoView;
         private UIDocument m_doc;
         private UIApplication m_revit;
 
+        public static double? dynamoViewX = null;
+        public static double? dynamoViewY = null;
+        public static double? dynamoViewWidth = null;
+        public static double? dynamoViewHeight = null;
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-            if (dynamoBench != null)
+            if (dynamoView != null)
             {
-                dynamoBench.Focus();
+                dynamoView.Focus();
                 return Result.Succeeded;
             }
 
@@ -195,21 +200,23 @@ namespace Dynamo.Applications
 
                         string context = m_revit.Application.VersionName; // string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
                         var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, true, typeof(DynamoRevitViewModel), context);
-                        dynamoBench = dynSettings.Bench;
+                        dynamoView = dynSettings.Bench;
 
                         //set window handle and show dynamo
-                        new WindowInteropHelper(dynamoBench).Owner = mwHandle;
+                        new WindowInteropHelper(dynamoView).Owner = mwHandle;
 
-                        dynamoBench.WindowStartupLocation = WindowStartupLocation.Manual;
+                        dynamoView.WindowStartupLocation = WindowStartupLocation.Manual;
 
                         Rectangle bounds = Screen.PrimaryScreen.Bounds;
-                        dynamoBench.Left = bounds.X;
-                        dynamoBench.Top = bounds.Y;
-                        dynamoBench.Loaded += dynamoForm_Loaded;
+                        dynamoView.Left = dynamoViewX ?? bounds.X;
+                        dynamoView.Top = dynamoViewY ?? bounds.Y;
+                        dynamoView.Width = dynamoViewWidth ?? 1000.0;
+                        dynamoView.Height = dynamoViewHeight ?? 800.0;
 
-                        dynamoBench.Show();
+                        dynamoView.Show();
 
-                        dynamoBench.Closed += dynamoForm_Closed;
+                        dynamoView.Closing += dynamoView_Closing;
+                        dynamoView.Closed += dynamoView_Closed;
                     });
             }
             catch (Exception ex)
@@ -226,15 +233,19 @@ namespace Dynamo.Applications
             return Result.Succeeded;
         }
 
-        private void dynamoForm_Closed(object sender, EventArgs e)
+        private void dynamoView_Closing(object sender, EventArgs e)
         {
-            IdlePromise.ClearPromises();
-            dynamoBench = null;
+            // cache the size of the window for later reloading
+            dynamoViewX = dynamoView.Left;
+            dynamoViewY = dynamoView.Top;
+            dynamoViewWidth = dynamoView.ActualWidth;
+            dynamoViewHeight = dynamoView.ActualHeight;
         }
 
-        private void dynamoForm_Loaded(object sender, RoutedEventArgs e)
+        private void dynamoView_Closed(object sender, EventArgs e)
         {
-            ((DynamoView) sender).WindowState = WindowState.Maximized;
+            IdlePromise.ClearPromises();
+            dynamoView = null;
         }
     }
 
