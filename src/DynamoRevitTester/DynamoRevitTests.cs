@@ -1,32 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Threading;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-
 using Dynamo;
-using Dynamo.Applications.Properties;
 using Dynamo.Controls;
-using Dynamo.Utilities;
-using Dynamo.FSchemeInterop;
-using Dynamo.Applications;
 using Dynamo.Nodes;
 using Dynamo.Selection;
-
-using Value = Dynamo.FScheme.Value;
-
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-
+using Microsoft.Practices.Prism;
 using NUnit.Core;
 using NUnit.Framework;
-
-using Microsoft.Practices.Prism;
+using Value = Dynamo.FScheme.Value;
 
 namespace DynamoRevitTests
 {

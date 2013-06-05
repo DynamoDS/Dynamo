@@ -11,6 +11,9 @@ using Dynamo.Utilities;
 
 namespace Dynamo
 {
+    /// <summary>
+    /// Not completed yet, but this class is meant to isolate dynamo running into a single class.
+    /// </summary>
     public class DynamoRunner
     {
         /// <summary>

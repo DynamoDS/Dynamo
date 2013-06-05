@@ -20,7 +20,7 @@ namespace Dynamo.Nodes.Views
 
         void EndDot_OnMouseDown(object sender, MouseEventArgs e)
         {
-           Console.WriteLine("HI");
+          
         }
 
         private void Highlight(object sender, MouseEventArgs e)
