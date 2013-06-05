@@ -255,6 +255,8 @@ namespace Dynamo.Applications
             MessageBox.Show(message, "Dynamo Error", MessageBoxButtons.OK, MessageBoxIcon.Error,
                             MessageBoxDefaultButton.Button1);
 
+            args.Handled = true;
+
             dynamoController.DynamoViewModel.ExitCommand.Execute();
             dynamoController.DynamoViewModel.ReportABugCommand.Execute();
 
