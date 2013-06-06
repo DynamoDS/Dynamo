@@ -259,7 +259,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ -> X")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the X value of the given XYZ")]
-    public class dynXYZGetX: dynNodeWithOneOutput
+    public class dynXYZGetX: dynGeometryBase
     { 
         public dynXYZGetX()
         {
@@ -278,7 +278,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ -> Y")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the Y value of the given XYZ")]
-    public class dynXYZGetY: dynNodeWithOneOutput
+    public class dynXYZGetY : dynGeometryBase
     {
         public dynXYZGetY()
         {
@@ -297,7 +297,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ -> Z")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the Z value of the given XYZ")]
-    public class dynXYZGetZ: dynNodeWithOneOutput
+    public class dynXYZGetZ : dynGeometryBase
     {
         public dynXYZGetZ()
         {
@@ -335,7 +335,7 @@ namespace Dynamo.Nodes
     [NodeName("X Axis")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the X basis (1,0,0).")]
-    public class dynXYZBasisX : dynXYZBase
+    public class dynXYZBasisX : dynGeometryBase
     {
         public dynXYZBasisX()
         {
@@ -347,7 +347,6 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             XYZ pt = XYZ.BasisX;
-            pts.Add(pt);
             return Value.NewContainer(pt);
         }
     }
@@ -355,7 +354,7 @@ namespace Dynamo.Nodes
     [NodeName("Y Axis")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the Y basis (0,1,0).")]
-    public class dynXYZBasisY : dynXYZBase
+    public class dynXYZBasisY : dynGeometryBase
     {
         public dynXYZBasisY()
         {
@@ -367,7 +366,6 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             XYZ pt = XYZ.BasisY;
-            pts.Add(pt);
             return Value.NewContainer(pt);
         }
     }
@@ -375,7 +373,7 @@ namespace Dynamo.Nodes
     [NodeName("Z Axis")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the Z basis (0,0,1).")]
-    public class dynXYZBasisZ: dynXYZBase
+    public class dynXYZBasisZ : dynGeometryBase
     {
         public dynXYZBasisZ()
         {
@@ -388,7 +386,6 @@ namespace Dynamo.Nodes
         {
 
             XYZ pt = XYZ.BasisZ;
-            pts.Add(pt);
             return Value.NewContainer(pt);
         }
     }
@@ -440,6 +437,107 @@ namespace Dynamo.Nodes
             XYZ pt = xyza + xyzb;
             pts.Add(pt);
             return Value.NewContainer(pt);
+        }
+    }
+
+    [NodeName("Average XYZ")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Averages a list of XYZs.")]
+    public class dynXYZAverage : dynXYZBase
+    {
+        public dynXYZAverage()
+        {
+            InPortData.Add(new PortData("XYZs", "The list of XYZs to average.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+                throw new Exception("A list of XYZs is required to average.");
+
+            FSharpList<Value> lst = ((Value.List)args[0]).Item;
+
+            XYZ average = new XYZ();
+            foreach (Value v in lst)
+            {
+                XYZ pt = (XYZ)((Value.Container)v).Item;
+                average = average.Add(pt);
+            }
+
+            average = average.Divide(lst.Count<Value>());
+            pts.Add(average);
+
+            return Value.NewContainer(average);
+        }
+    }
+
+    [NodeName("Negate XYZ")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Negate an XYZ.")]
+    public class dynXYZNegate : dynXYZBase
+    {
+        public dynXYZNegate()
+        {
+            InPortData.Add(new PortData("XYZ", "The XYZ to negate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ pt = (XYZ)((Value.Container)args[0]).Item;
+            pts.Add(pt);
+            return Value.NewContainer(pt.Negate());
+        }
+    }
+
+    [NodeName("XYZ Cross Product")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Calculate the cross product of two XYZs.")]
+    public class dynXYZCrossProduct : dynGeometryBase
+    {
+        public dynXYZCrossProduct()
+        {
+            InPortData.Add(new PortData("a", "XYZ A.", typeof(Value.Container)));
+            InPortData.Add(new PortData("b", "XYZ B.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "The cross product of vectors A and B. ", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ a = (XYZ)((Value.Container)args[0]).Item;
+            XYZ b = (XYZ)((Value.Container)args[1]).Item;
+
+            return Value.NewContainer(a.CrossProduct(b));
+        }
+    }
+
+    [NodeName("XYZ Start End Vector")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Calculate the normalized vector from one xyz to another.")]
+    public class dynXYZStartEndVector : dynGeometryBase
+    {
+        public dynXYZStartEndVector()
+        {
+            InPortData.Add(new PortData("start", "The start of the vector.", typeof(Value.Container)));
+            InPortData.Add(new PortData("end", "The end of the vector.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "The normalized vector from start to end. ", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ a = (XYZ)((Value.Container)args[0]).Item;
+            XYZ b = (XYZ)((Value.Container)args[1]).Item;
+
+            return Value.NewContainer((b-a).Normalize());
         }
     }
 
@@ -659,7 +757,7 @@ namespace Dynamo.Nodes
     [NodeName("Plane")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates a geometric plane.")]
-    public class dynPlane: dynNodeWithOneOutput
+    public class dynPlane: dynGeometryBase
     {
         public dynPlane()
         {
@@ -1091,7 +1189,7 @@ namespace Dynamo.Nodes
     [NodeName("UV")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a UV from two double values.")]
-    public class dynUV: dynNodeWithOneOutput
+    public class dynUV : dynGeometryBase
     {
         public dynUV()
         {
