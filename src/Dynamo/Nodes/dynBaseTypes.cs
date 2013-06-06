@@ -2288,6 +2288,72 @@ namespace Dynamo.Nodes
 
     }
 
+    [NodeName("Angle(deg.)")]
+    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeDescription("An angle in degrees.")]
+    public class dynAngleInput : dynDouble
+    {
+        public dynAngleInput()
+        {
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        {
+            //add a text box to the input grid of the control
+            var tb = new dynTextBox();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            NodeUI.inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+            tb.IsNumeric = true;
+            tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+
+            tb.DataContext = this;
+            var bindingVal = new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new RadianToDegreesConverter(),
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            tb.SetBinding(TextBox.TextProperty, bindingVal);
+
+            tb.Text = "0.0";
+        }
+
+        public override double Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                if (base.Value == value)
+                    return;
+
+                base.Value = value;
+                //RaisePropertyChanged("Value");
+            }
+        }
+
+        protected override double DeserializeValue(string val)
+        {
+            try
+            {
+                return Convert.ToDouble(val);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+    }
+
     [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Change a number value with a slider.")]
@@ -3054,6 +3120,21 @@ namespace Dynamo.Nodes
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value.ToString();
+        }
+    }
+
+    public class RadianToDegreesConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double radians = System.Convert.ToDouble(value) * 180.0 / Math.PI;
+            return radians;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double degrees = System.Convert.ToDouble(value) * Math.PI / 180.0;
+            return degrees;
         }
     }
 
