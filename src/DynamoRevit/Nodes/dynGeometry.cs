@@ -443,6 +443,107 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Average XYZ")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Averages a list of XYZs.")]
+    public class dynXYZAverage : dynXYZBase
+    {
+        public dynXYZAverage()
+        {
+            InPortData.Add(new PortData("XYZs", "The list of XYZs to average.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+                throw new Exception("A list of XYZs is required to average.");
+
+            FSharpList<Value> lst = ((Value.List)args[0]).Item;
+
+            XYZ average = new XYZ();
+            foreach (Value v in lst)
+            {
+                XYZ pt = (XYZ)((Value.Container)v).Item;
+                average = average.Add(pt);
+            }
+
+            average = average.Divide(lst.Count<Value>());
+            pts.Add(average);
+
+            return Value.NewContainer(average);
+        }
+    }
+
+    [NodeName("Negate XYZ")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Negate an XYZ.")]
+    public class dynXYZNegate : dynXYZBase
+    {
+        public dynXYZNegate()
+        {
+            InPortData.Add(new PortData("XYZ", "The XYZ to negate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ pt = (XYZ)((Value.Container)args[0]).Item;
+            pts.Add(pt);
+            return Value.NewContainer(pt.Negate());
+        }
+    }
+
+    [NodeName("XYZ Cross Product")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Calculate the cross product of two XYZs.")]
+    public class dynXYZCrossProduct : dynXYZBase
+    {
+        public dynXYZCrossProduct()
+        {
+            InPortData.Add(new PortData("a", "XYZ A.", typeof(Value.Container)));
+            InPortData.Add(new PortData("b", "XYZ B.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "The cross product of vectors A and B. ", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ a = (XYZ)((Value.Container)args[0]).Item;
+            XYZ b = (XYZ)((Value.Container)args[1]).Item;
+
+            return Value.NewContainer(a.CrossProduct(b));
+        }
+    }
+
+    [NodeName("XYZ Start End Vector")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Calculate the normalized vector from one xyz to another.")]
+    public class dynXYZStartEndVector : dynXYZBase
+    {
+        public dynXYZStartEndVector()
+        {
+            InPortData.Add(new PortData("start", "The start of the vector.", typeof(Value.Container)));
+            InPortData.Add(new PortData("end", "The end of the vector.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "The normalized vector from start to end. ", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ a = (XYZ)((Value.Container)args[0]).Item;
+            XYZ b = (XYZ)((Value.Container)args[1]).Item;
+
+            return Value.NewContainer((b-a).Normalize());
+        }
+    }
+
     [NodeName("UV Grid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of UVs from a domain.")]
