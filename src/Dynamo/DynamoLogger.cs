@@ -88,8 +88,14 @@ namespace Dynamo
         {
             if (Writer != null)
             {
-                Writer.WriteLine("Goodbye.");
-                Writer.Close();
+                try
+                {
+                    Writer.WriteLine("Goodbye.");
+                    Writer.Close();
+                }
+                catch
+                {
+                }
             }
         }
     }

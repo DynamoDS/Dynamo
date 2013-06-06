@@ -145,11 +145,12 @@
               Canvas.ZIndex="5"  
               IsEnabled="{Binding Path=IsInteractionEnabled}" Grid.Column="1" Grid.Row="0"/>
 
-            <TextBlock Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}" 
+                <TextBlock Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}" 
                        ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}" 
-                       FontFamily="Tahoma" FontSize="10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="2" 
+                       FontFamily="Tahoma" FontSize="8" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="2" 
                        HorizontalAlignment="right" Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
-                       Foreground="#FF505050"/>
+                       Foreground="#99000000" FontWeight="Bold" />
+            
         </Grid>
 
         <TextBlock  Name="nickNameBlock" 

@@ -1030,8 +1030,11 @@ namespace Dynamo.Controls
 
                 try
                 {
+                    var connectorStart = c.Start;
+                    var guidLookup = (Guid)nodeLookup[connectorStart.Owner.GUID];
+
                     startNode = _model.CurrentSpace.Nodes
-                        .Where(x => x.GUID == (Guid)nodeLookup[c.Start.Owner.GUID]).FirstOrDefault();
+                        .Where(x => x.GUID == guidLookup).FirstOrDefault();
                 }
                 catch
                 {

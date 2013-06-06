@@ -23,12 +23,11 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
-using System.Data;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Linq;
-
+using System.Windows.Threading;
 using Microsoft.Practices.Prism.ViewModel;
 
 using Autodesk.Revit.Attributes;
@@ -43,13 +42,15 @@ using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
 using Dynamo.FSchemeInterop;
-using Dynamo.Commands;
+
 
 #if DEBUG
 using NUnit.Core;
 using NUnit.Core.Filters;
 using NUnit.Framework;
 using NUnit.Util;
+using MessageBoxOptions = System.Windows.MessageBoxOptions;
+
 #endif
 
 //MDJ needed for spatialfeildmanager
@@ -157,6 +158,7 @@ namespace Dynamo.Applications
         private static DynamoView dynamoView;
         private UIDocument m_doc;
         private UIApplication m_revit;
+        private DynamoController dynamoController;
 
         public static double? dynamoViewX = null;
         public static double? dynamoViewY = null;
@@ -199,7 +201,7 @@ namespace Dynamo.Applications
                         //show the window
 
                         string context = m_revit.Application.VersionName; // string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
-                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, true, typeof(DynamoRevitViewModel), context);
+                        dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, true, typeof(DynamoRevitViewModel), context);
                         dynamoView = dynSettings.Bench;
 
                         //set window handle and show dynamo
@@ -214,7 +216,7 @@ namespace Dynamo.Applications
                         dynamoView.Height = dynamoViewHeight ?? 800.0;
 
                         dynamoView.Show();
-
+                        dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException; 
                         dynamoView.Closing += dynamoView_Closing;
                         dynamoView.Closed += dynamoView_Closed;
                     });
@@ -233,6 +235,41 @@ namespace Dynamo.Applications
             return Result.Succeeded;
         }
 
+        /// <summary>
+        /// A method to deal with unhandle exceptions.  Executes right before Revit crashes.
+        /// Dynamo is still valid at this time, but further work may cause corruption.  Here, 
+        /// we run the ExitCommand, allowing the user to save all of their work.  Then, we send them
+        /// to the issues page on Github. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args">Info about the exception</param>
+        private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
+        {
+            var exceptionMessage = args.Exception.Message;
+            var stackTrace = args.Exception.StackTrace;
+
+            var message =
+                "Dynamo has crashed and is now closing.  You will get a chance to save your work.  \n\nThis is the message given:\n\n" +
+                exceptionMessage + "\n\nThis is where the exception took place: \n\n" + stackTrace;
+
+            MessageBox.Show(message, "Dynamo Error", MessageBoxButtons.OK, MessageBoxIcon.Error,
+                            MessageBoxDefaultButton.Button1);
+
+            args.Handled = true;
+
+            DynamoLogger.Instance.Log("Dynamo Unhandled Exception");
+            DynamoLogger.Instance.Log(message);
+
+            dynamoController.DynamoViewModel.ExitCommand.Execute();
+            dynamoController.DynamoViewModel.ReportABugCommand.Execute();
+
+        }
+
+        /// <summary>
+        /// Executes right before Dynamo closes, gives you the chance to cache whatever you might want.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dynamoView_Closing(object sender, EventArgs e)
         {
             // cache the size of the window for later reloading
@@ -240,11 +277,16 @@ namespace Dynamo.Applications
             dynamoViewY = dynamoView.Top;
             dynamoViewWidth = dynamoView.ActualWidth;
             dynamoViewHeight = dynamoView.ActualHeight;
+            IdlePromise.ClearPromises();
         }
 
+        /// <summary>
+        /// Executes after Dynamo closes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dynamoView_Closed(object sender, EventArgs e)
         {
-            IdlePromise.ClearPromises();
             dynamoView = null;
         }
     }
