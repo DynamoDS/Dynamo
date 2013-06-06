@@ -165,7 +165,7 @@ namespace Dynamo.Nodes
 
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             image1 = new System.Windows.Controls.Image();
             image1.Width = 320;
@@ -177,7 +177,7 @@ namespace Dynamo.Nodes
 
             //image1.Margin = new Thickness(0, 0, 0, 0);
 
-            NodeUI.inputGrid.Children.Add(image1);
+            nodeUI.inputGrid.Children.Add(image1);
             //NodeUI.Width = 450;
             //NodeUI.Height = 240 + 5;
         }

@@ -59,7 +59,7 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             //topControl.Height = 200;
             //topControl.Width = 300;
@@ -69,9 +69,9 @@ namespace Dynamo.Nodes
             var editWindowItem = new System.Windows.Controls.MenuItem();
             editWindowItem.Header = "Edit...";
             editWindowItem.IsCheckable = false;
-            NodeUI.MainContextMenu.Items.Add(editWindowItem);
+            nodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
-            NodeUI.UpdateLayout();
+            nodeUI.UpdateLayout();
         }
 
         //TODO: Make this smarter

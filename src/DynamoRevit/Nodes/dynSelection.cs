@@ -67,7 +67,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
             selectButton = new System.Windows.Controls.Button();
@@ -95,11 +95,11 @@ namespace Dynamo.Nodes
             tb.IsReadOnlyCaretVisible = false;
 
             //NodeUI.SetRowAmount(2);
-            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
-            NodeUI.inputGrid.Children.Add(tb);
-            NodeUI.inputGrid.Children.Add(selectButton);
+            nodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(selectButton);
 
             System.Windows.Controls.Grid.SetRow(selectButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
@@ -297,7 +297,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
 
             //add a button to the inputGrid on the dynElement
@@ -327,11 +327,11 @@ namespace Dynamo.Nodes
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
 
-            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
-            NodeUI.inputGrid.Children.Add(tb);
-            NodeUI.inputGrid.Children.Add(selectButton);
+            nodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(selectButton);
 
             System.Windows.Controls.Grid.SetRow(selectButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
