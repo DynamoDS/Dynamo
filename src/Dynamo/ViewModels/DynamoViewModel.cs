@@ -1202,8 +1202,12 @@ namespace Dynamo.Controls
 
         private void ShowPackageManager()
         {
-            dynSettings.Bench.PackageManagerLoginStateContainer.Visibility = Visibility.Visible;
-            dynSettings.Bench.PackageManagerMenu.Visibility = Visibility.Visible;
+
+
+            //dynSettings.Bench.PackageManagerLoginStateContainer.Visibility = Visibility.Visible;
+            //dynSettings.Bench.PackageManagerMenu.Visibility = Visibility.Visible;
+
+
         }
 
         private bool CanShowPackageManager()
