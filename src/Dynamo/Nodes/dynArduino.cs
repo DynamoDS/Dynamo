@@ -54,7 +54,7 @@ namespace Dynamo.Nodes
 
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             string[] serialPortNames = System.IO.Ports.SerialPort.GetPortNames();
 
@@ -70,7 +70,7 @@ namespace Dynamo.Nodes
                 comItem.IsCheckable = true;
                 comItem.IsChecked = true;
                 comItem.Checked += new System.Windows.RoutedEventHandler(comItem_Checked);
-                NodeUI.MainContextMenu.Items.Add(comItem);
+                nodeUI.MainContextMenu.Items.Add(comItem);
 
                 port.PortName = portName;
                 lastComItem = comItem;

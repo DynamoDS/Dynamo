@@ -338,13 +338,13 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             //add a drop down list to the window
             combo = new ComboBox();
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            NodeUI.inputGrid.Children.Add(combo);
+            nodeUI.inputGrid.Children.Add(combo);
             System.Windows.Controls.Grid.SetColumn(combo, 0);
             System.Windows.Controls.Grid.SetRow(combo, 0);
 

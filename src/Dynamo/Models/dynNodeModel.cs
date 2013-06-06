@@ -1162,7 +1162,7 @@ namespace Dynamo.Nodes
         /// Called back from the view to enable users to setup their own view elements
         /// </summary>
         /// <param name="parameter"></param>
-        public virtual void SetupCustomUIElements(dynNodeView NodeUI)
+        public virtual void SetupCustomUIElements(dynNodeView nodeUI)
         {
             
         }

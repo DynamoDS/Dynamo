@@ -55,14 +55,14 @@ namespace Dynamo
 
             }
 
-            public override void SetupCustomUIElements(dynNodeView ui)
+            public override void SetupCustomUIElements(dynNodeView nodeUI)
             {
-                ((DropShadowEffect) ui.elementRectangle.Effect).Opacity = 1;
-                ((DropShadowEffect) ui.elementRectangle.Effect).Color = Colors.WhiteSmoke;
-                ((DropShadowEffect) ui.elementRectangle.Effect).BlurRadius = 20;
-                ((DropShadowEffect) ui.elementRectangle.Effect).ShadowDepth = 0;
+                ((DropShadowEffect) nodeUI.elementRectangle.Effect).Opacity = 1;
+                ((DropShadowEffect) nodeUI.elementRectangle.Effect).Color = Colors.WhiteSmoke;
+                ((DropShadowEffect) nodeUI.elementRectangle.Effect).BlurRadius = 20;
+                ((DropShadowEffect) nodeUI.elementRectangle.Effect).ShadowDepth = 0;
 
-                ui.MouseDoubleClick += new System.Windows.Input.MouseButtonEventHandler(ui_MouseDoubleClick);
+                nodeUI.MouseDoubleClick += new System.Windows.Input.MouseButtonEventHandler(ui_MouseDoubleClick);
 
             }
 
@@ -312,13 +312,13 @@ namespace Dynamo
                 RegisterAllPorts();
             }
 
-            public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+            public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
             {
                 //add a text box to the input grid of the control
                 tb = new TextBox();
                 tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
                 tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-                NodeUI.inputGrid.Children.Add(tb);
+                nodeUI.inputGrid.Children.Add(tb);
                 System.Windows.Controls.Grid.SetColumn(tb, 0);
                 System.Windows.Controls.Grid.SetRow(tb, 0);
 
@@ -402,13 +402,13 @@ namespace Dynamo
                 RegisterAllPorts();
             }
 
-            public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+            public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
             {
                 //add a text box to the input grid of the control
                 tb = new TextBox();
                 tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
                 tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-                NodeUI.inputGrid.Children.Add(tb);
+                nodeUI.inputGrid.Children.Add(tb);
                 System.Windows.Controls.Grid.SetColumn(tb, 0);
                 System.Windows.Controls.Grid.SetRow(tb, 0);
 
