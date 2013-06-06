@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -907,7 +908,12 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            TextBox tb = new dynTextBox();
+            var tb = new dynTextBox
+            {
+                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+            };
+
+            tb.OnChangeCommitted += processTextForNewInputs;
 
             nodeUI.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
@@ -922,7 +928,117 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
-            tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+        }
+
+        private void processTextForNewInputs()
+        {
+            if (InPortData.Count > 2)
+                InPortData.RemoveRange(2, InPortData.Count - 2);
+
+            var parameters = new HashSet<string>();
+
+            try
+            {
+                processText(
+                    Value,
+                    int.MaxValue,
+                    delegate(string identifier)
+                    {
+                        parameters.Add(identifier);
+                        return 0;
+                    });
+            }
+            catch (Exception e)
+            {
+                Error(e.Message);
+            }
+
+            foreach (string parameter in parameters)
+            {
+                InPortData.Add(new PortData(parameter, "variable", typeof(Value.Number)));
+            }
+
+            RegisterInputs();
+        }
+
+        static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|{(?<id>\w(?:[^}\\]|(?:\\}))*)}");
+
+        private static List<Tuple<int, int, int>> processText(string text, int maxVal, Func<string, int> idFoundCallback)
+        {
+            text = text.Replace(" ", "");
+
+            string[] chunks = text.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            if (!chunks.Any())
+                throw new Exception("Sub-list expression could not be parsed.");
+
+            var ranges = new List<Tuple<int, int, int>>();
+
+            foreach (string chunk in chunks)
+            {
+                string[] valueRange = chunk.Split(new[] { "..", "-" }, StringSplitOptions.RemoveEmptyEntries);
+
+                int start = 0;
+                int step = 1;
+
+                if (!int.TryParse(valueRange[0], out start))
+                {
+                    var match = IdentifierPattern.Match(valueRange[0]);
+                    if (match.Success)
+                    {
+                        start = idFoundCallback(match.Groups["id"].Value);
+                    }
+                    else
+                    {
+                        throw new Exception("Range start could not be parsed.");
+                    }
+                }
+
+                int end = start;
+
+                if (valueRange.Length > 1)
+                {
+                    if (!int.TryParse(valueRange[1], out end))
+                    {
+                        var match = IdentifierPattern.Match(valueRange[1]);
+                        if (match.Success)
+                        {
+                            end = idFoundCallback(match.Groups["id"].Value);
+                        }
+                        else
+                        {
+                            throw new Exception("Range " + (valueRange.Length > 2 ? "step" : "end") + "could not be parsed.");
+                        }
+                    }
+                }
+
+                if (valueRange.Length > 2)
+                {
+                    step = end;
+                    if (!int.TryParse(valueRange[2], out end))
+                    {
+                        var match = IdentifierPattern.Match(valueRange[2]);
+                        if (match.Success)
+                        {
+                            end = idFoundCallback(match.Groups["id"].Value);
+                        }
+                        else
+                        {
+                            throw new Exception("Range end could not be parsed.");
+                        }
+                    }
+                }
+
+                if (start < 0 || end < 0 || step <= 0)
+                    throw new Exception("Range values must be greater than zero.");
+
+                //if any values are greater than the length of the list - fail
+                if (start >= maxVal || end >= maxVal)
+                    throw new Exception("The start or end of a range is greater than the number of available elements in the list.");
+
+                ranges.Add(Tuple.Create(start, end, step));
+            }
+
+            return ranges;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -939,46 +1055,12 @@ namespace Dynamo.Nodes
             //For a list 1,2,3,4,5,6,7,8,9,10, this will give us
             //1,2,5,8,2,3,6,9
 
-            string[] chunks = Value.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
-            if (!chunks.Any())
-                throw new Exception("Sub-list expression could not be parsed.");
+            var paramLookup = args.Skip(2)
+                                  .Select(
+                                      (x, i) => new { Name = InPortData[i+2].NickName, Argument = x })
+                                  .ToDictionary(x => x.Name, x => Convert.ToInt32(((Value.Number)x.Argument).Item));
 
-            var ranges = new List<Tuple<int, int, int>>();
-
-            foreach (string chunk in chunks)
-            {
-                string[] valueRange = chunk.Split(new[] {"..", "-"}, StringSplitOptions.RemoveEmptyEntries);
-                
-                int start = 0;
-                int step = 1;
-                
-                if(!int.TryParse(valueRange[0], out start))
-                    throw new Exception("Range start could not be parsed.");
-
-                int end = start;
-
-                if (valueRange.Length > 1)
-                {
-                    if (!int.TryParse(valueRange[1], out end))
-                        throw new Exception("Only one range can be specified within a jump. Ex. 1..2,3..4 is fine, but 1..2..3,3..4 is bad!");
-                }
-
-                if (valueRange.Length > 2)
-                {
-                    step = end;
-                    if (!int.TryParse(valueRange[2], out end))
-                        throw new Exception("Only one range can be specified within a jump. Ex. 1..2,3..4 is fine, but 1..2..3,3..4 is bad!");
-                }
-
-                if (start < 0 || end < 0 || step <= 0)
-                    throw new Exception("Range values must be greater than zero.");
-
-                //if any values are greater than the length of the list - fail
-                if (start > list.Count() - 1 || end > list.Count() - 1)
-                    throw new Exception("The start or end of a range is greater than the number of available elements in the list.");
-
-                ranges.Add(Tuple.Create(start, end, step));
-            }
+            var ranges = processText(Value, list.Length, x => paramLookup[x]);
 
             //move through the list, creating sublists
             var finalList = new List<Value>();
@@ -2026,9 +2108,8 @@ namespace Dynamo.Nodes
 
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
+            if (e.Key == Key.Return || e.Key == Key.Enter)
             {
-                commit();
                 dynSettings.ReturnFocusToSearch();
             }
         }
