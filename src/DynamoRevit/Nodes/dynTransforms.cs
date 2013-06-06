@@ -54,10 +54,10 @@ namespace Dynamo.Nodes
 
             Transform t = Transform.Identity;
             t.Origin = origin;
-            t.BasisZ = up;
-            t.BasisY = forward;
-            t.BasisX = forward.CrossProduct(up);
-
+            t.BasisZ = up.Normalize();
+            t.BasisY = forward.Normalize();
+            t.BasisX = forward.CrossProduct(up).Normalize();
+            
             transforms.Add(t);
 
             return Value.NewContainer(
