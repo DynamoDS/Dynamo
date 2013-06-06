@@ -347,7 +347,7 @@ namespace Dynamo.Nodes
                 editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
                 editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
 
-                var pythonHighlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
+                const string pythonHighlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
                 var elem = GetType().Assembly.GetManifestResourceStream("DynamoPython.Resources." + pythonHighlighting);
 
                 editWindow.editText.SyntaxHighlighting =
