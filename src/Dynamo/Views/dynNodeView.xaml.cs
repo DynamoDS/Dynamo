@@ -142,6 +142,8 @@ namespace Dynamo.Controls
 
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (ViewModel == null) return;
+
             dynSettings.ReturnFocusToSearch();
             dynSettings.Bench.mainGrid.Focus();
             ViewModel.SelectCommand.Execute();

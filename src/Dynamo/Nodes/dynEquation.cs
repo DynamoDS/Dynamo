@@ -58,12 +58,12 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             var tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            NodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = false;

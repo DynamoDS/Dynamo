@@ -83,7 +83,7 @@ namespace Dynamo.Utilities
         /// <returns>A list of the current loaded custom node defs</returns>
         public IEnumerable<FunctionDefinition> GetLoadedDefinitions()
         {
-            return loadedNodes.Values.ToList();
+            return loadedNodes.Values;
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Get the function definition from a guid
         /// </summary>
-        /// <param name="guid">The unique id for the node.</param>
+        /// <param name="id">The unique id for the node.</param>
         /// <returns>The path to the node or null if it wasn't found.</returns>
         public FunctionDefinition GetFunctionDefinition(Guid id)
         {
@@ -220,7 +220,7 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Stores the path and function definition without initializing node
         /// </summary>
-        /// <param name="guid">The unique id for the node.</param>
+        /// <param name="id">The unique id for the node.</param>
         /// <returns>The path to the node or null if it wasn't found.</returns>
         public string GetNodePath(Guid id)
         {

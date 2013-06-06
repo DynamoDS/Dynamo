@@ -58,13 +58,13 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             MenuItem mi = new MenuItem();
             mi.Header = "Zoom to Fit";
             mi.Click += new RoutedEventHandler(mi_Click);
 
-            NodeUI.MainContextMenu.Items.Add(mi);
+            nodeUI.MainContextMenu.Items.Add(mi);
 
             //take out the left and right margins and make this so it's not so wide
             //NodeUI.inputGrid.Margin = new Thickness(10, 10, 10, 10);
@@ -105,8 +105,8 @@ namespace Dynamo.Nodes
             backgroundRect.StrokeThickness = 1;
             SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
             backgroundRect.Fill = backgroundBrush;
-            NodeUI.inputGrid.Children.Add(backgroundRect);
-            NodeUI.inputGrid.Children.Add(_watchView);
+            nodeUI.inputGrid.Children.Add(backgroundRect);
+            nodeUI.inputGrid.Children.Add(_watchView);
 
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
         }

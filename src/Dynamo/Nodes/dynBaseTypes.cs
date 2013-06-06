@@ -166,7 +166,7 @@ namespace Dynamo.Nodes
             
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             System.Windows.Controls.Button addButton = new System.Windows.Controls.Button();
             addButton.Content = "+";
@@ -182,13 +182,13 @@ namespace Dynamo.Nodes
             subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             subButton.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
 
-            NodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            NodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
-            NodeUI.inputGrid.Children.Add(addButton);
+            nodeUI.inputGrid.Children.Add(addButton);
             System.Windows.Controls.Grid.SetColumn(addButton, 0);
 
-            NodeUI.inputGrid.Children.Add(subButton);
+            nodeUI.inputGrid.Children.Add(subButton);
             System.Windows.Controls.Grid.SetColumn(subButton, 1);
 
             addButton.Click += delegate { AddInput(); RegisterAllPorts(); };
@@ -904,14 +904,14 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Longest;
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             TextBox tb = new dynTextBox();
 
-            NodeUI.inputGrid.Children.Add(tb);
-            System.Windows.Controls.Grid.SetColumn(tb, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 0);
+            nodeUI.inputGrid.Children.Add(tb);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
@@ -939,62 +939,72 @@ namespace Dynamo.Nodes
             //For a list 1,2,3,4,5,6,7,8,9,10, this will give us
             //1,2,5,8,2,3,6,9
 
-            string[] chunks = Value.Split(new string[]{","}, StringSplitOptions.RemoveEmptyEntries);
-            if (chunks.Count() == 0)
+            string[] chunks = Value.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
+            if (!chunks.Any())
                 throw new Exception("Sub-list expression could not be parsed.");
 
-            List<Tuple<int,int>> ranges = new List<Tuple<int,int>>();
+            var ranges = new List<Tuple<int, int, int>>();
 
             foreach (string chunk in chunks)
             {
-                string[] valueRange = chunk.Split(new string[]{".."}, StringSplitOptions.RemoveEmptyEntries);
+                string[] valueRange = chunk.Split(new[] {"..", "-"}, StringSplitOptions.RemoveEmptyEntries);
                 
-                int start=0;
+                int start = 0;
+                int step = 1;
                 
-                if(!int.TryParse(valueRange[0],out start))
+                if(!int.TryParse(valueRange[0], out start))
                     throw new Exception("Range start could not be parsed.");
+
                 int end = start;
-                if(valueRange.Count() > 1)
+
+                if (valueRange.Length > 1)
                 {
-                    if(!int.TryParse(valueRange[1], out end))
+                    if (!int.TryParse(valueRange[1], out end))
                         throw new Exception("Only one range can be specified within a jump. Ex. 1..2,3..4 is fine, but 1..2..3,3..4 is bad!");
                 }
 
-                if (start < 0 || end < 0)
+                if (valueRange.Length > 2)
+                {
+                    step = end;
+                    if (!int.TryParse(valueRange[2], out end))
+                        throw new Exception("Only one range can be specified within a jump. Ex. 1..2,3..4 is fine, but 1..2..3,3..4 is bad!");
+                }
+
+                if (start < 0 || end < 0 || step <= 0)
                     throw new Exception("Range values must be greater than zero.");
 
                 //if any values are greater than the length of the list - fail
-                if (start > list.Count<Value>() - 1 || end > list.Count<Value>() - 1)
+                if (start > list.Count() - 1 || end > list.Count() - 1)
                     throw new Exception("The start or end of a range is greater than the number of available elements in the list.");
 
-                ranges.Add(new Tuple<int, int>(start, end));
+                ranges.Add(Tuple.Create(start, end, step));
             }
 
             //move through the list, creating sublists
-            List<Value> finalList = new List<Value>();
+            var finalList = new List<Value>();
 
-            for (int j = 0; j < list.Count<Value>(); j+=offset)
+            for (int j = 0; j < list.Count(); j+=offset)
             {
-                List<Value> currList = new List<Value>();
-                foreach (Tuple<int, int> range in ranges)
+                var currList = new List<Value>();
+                foreach (Tuple<int, int, int> range in ranges)
                 {
-                    if (range.Item1 + j > list.Count<Value>() - 1 ||
-                        range.Item2 + j > list.Count<Value>() - 1)
+                    if (range.Item1 + j > list.Count() - 1 ||
+                        range.Item2 + j > list.Count() - 1)
                     {
                         continue;
                     }
 
-                    for (int i = range.Item1 + j; i <= range.Item2 + j; i++)
+                    for (int i = range.Item1 + j; i <= range.Item2 + j; i += range.Item3)
                     {
-                        currList.Add(list.ElementAt<Value>(i));
+                        currList.Add(list.ElementAt(i));
                     }
                 }
 
-                if(currList.Count<Value>() > 0)
-                    finalList.Add(Dynamo.FScheme.Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                if(currList.Any())
+                    finalList.Add(FScheme.Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
             }
 
-            return Dynamo.FScheme.Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
+            return FScheme.Value.NewList(Utils.MakeFSharpList(finalList.ToArray()));
 
         }
 
@@ -1025,12 +1035,10 @@ namespace Dynamo.Nodes
                 throw new Exception("A list is required to flatten.");
 
             FSharpList<Value> list = ((Value.List)args[0]).Item;
-            var vals = list.ToList<Value>().SelectMany(x=>((Value.List)x).Item);
+            var vals = list.ToList().SelectMany(x => ((Value.List)x).Item);
 
-            return Dynamo.FScheme.Value.NewList(Utils.MakeFSharpList<Value>(vals.ToArray<Value>()));
-
+            return Value.NewList(Utils.SequenceToFSharpList(vals));
         }
-
     }
 
     #endregion
@@ -1181,7 +1189,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
 
         }
@@ -1853,14 +1861,14 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             button = new System.Windows.Controls.Button();
             button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             button.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             //inputGrid.RowDefinitions.Add(new RowDefinition());
-            NodeUI.inputGrid.Children.Add(button);
+            nodeUI.inputGrid.Children.Add(button);
             System.Windows.Controls.Grid.SetColumn(button, 0);
             System.Windows.Controls.Grid.SetRow(button, 0);
             button.Content = "Continue";
@@ -2060,7 +2068,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", type.Name, type));
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add an edit window option to the 
             //main context window
@@ -2068,7 +2076,7 @@ namespace Dynamo.Nodes
             editWindowItem.Header = "Edit...";
             editWindowItem.IsCheckable = false;
 
-            NodeUI.MainContextMenu.Items.Add(editWindowItem);
+            nodeUI.MainContextMenu.Items.Add(editWindowItem);
 
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
         }
@@ -2232,13 +2240,13 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             var tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            NodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = true;
@@ -2298,13 +2306,13 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             var tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            NodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = true;
@@ -2374,13 +2382,13 @@ namespace Dynamo.Nodes
             Max = 100.0;
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a slider control to the input grid of the control
             tb_slider = new System.Windows.Controls.Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            NodeUI.inputGrid.Children.Add(tb_slider);
+            nodeUI.inputGrid.Children.Add(tb_slider);
             System.Windows.Controls.Grid.SetColumn(tb_slider, 1);
             System.Windows.Controls.Grid.SetRow(tb_slider, 0);
 
@@ -2390,25 +2398,25 @@ namespace Dynamo.Nodes
 
             tb_slider.ValueChanged += delegate
             {
-                var pos = Mouse.GetPosition(NodeUI.elementCanvas);
+                var pos = Mouse.GetPosition(nodeUI.elementCanvas);
                 Canvas.SetLeft(displayBox, pos.X);
                 Canvas.SetTop(displayBox, Height);
             };
 
             tb_slider.PreviewMouseDown += delegate
             {
-                if (NodeUI.IsEnabled && !NodeUI.elementCanvas.Children.Contains(displayBox))
+                if (nodeUI.IsEnabled && !nodeUI.elementCanvas.Children.Contains(displayBox))
                 {
-                    NodeUI.elementCanvas.Children.Add(displayBox);
-                    var pos = Mouse.GetPosition(NodeUI.elementCanvas);
+                    nodeUI.elementCanvas.Children.Add(displayBox);
+                    var pos = Mouse.GetPosition(nodeUI.elementCanvas);
                     Canvas.SetLeft(displayBox, pos.X);
                 }
             };
 
             tb_slider.PreviewMouseUp += delegate
             {
-                if (NodeUI.elementCanvas.Children.Contains(displayBox))
-                    NodeUI.elementCanvas.Children.Remove(displayBox);
+                if (nodeUI.elementCanvas.Children.Contains(displayBox))
+                    nodeUI.elementCanvas.Children.Remove(displayBox);
 
                 dynSettings.ReturnFocusToSearch();
             };
@@ -2452,12 +2460,12 @@ namespace Dynamo.Nodes
                 }
             };
 
-            NodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            NodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            NodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
-            NodeUI.inputGrid.Children.Add(mintb);
-            NodeUI.inputGrid.Children.Add(maxtb);
+            nodeUI.inputGrid.Children.Add(mintb);
+            nodeUI.inputGrid.Children.Add(maxtb);
 
             System.Windows.Controls.Grid.SetColumn(mintb, 0);
             System.Windows.Controls.Grid.SetColumn(maxtb, 2);
@@ -2469,7 +2477,7 @@ namespace Dynamo.Nodes
                 Foreground = Brushes.Black
             };
 
-            Canvas.SetTop(displayBox, NodeUI.Height);
+            Canvas.SetTop(displayBox, nodeUI.Height);
             Canvas.SetZIndex(displayBox, int.MaxValue);
 
             displayBox.DataContext = this;
@@ -2612,7 +2620,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             rbTrue = new System.Windows.Controls.RadioButton();
@@ -2632,12 +2640,12 @@ namespace Dynamo.Nodes
             RowDefinition rd = new RowDefinition();
             ColumnDefinition cd1 = new ColumnDefinition();
             ColumnDefinition cd2 = new ColumnDefinition();
-            NodeUI.inputGrid.ColumnDefinitions.Add(cd1);
-            NodeUI.inputGrid.ColumnDefinitions.Add(cd2);
-            NodeUI.inputGrid.RowDefinitions.Add(rd);
+            nodeUI.inputGrid.ColumnDefinitions.Add(cd1);
+            nodeUI.inputGrid.ColumnDefinitions.Add(cd2);
+            nodeUI.inputGrid.RowDefinitions.Add(rd);
 
-            NodeUI.inputGrid.Children.Add(rbTrue);
-            NodeUI.inputGrid.Children.Add(rbFalse);
+            nodeUI.inputGrid.Children.Add(rbTrue);
+            nodeUI.inputGrid.Children.Add(rbFalse);
 
             System.Windows.Controls.Grid.SetColumn(rbTrue, 0);
             System.Windows.Controls.Grid.SetRow(rbTrue, 0);
@@ -2704,12 +2712,12 @@ namespace Dynamo.Nodes
             Value = "";
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             tb = new dynTextBox();
 
-            NodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
 
@@ -2780,7 +2788,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
             System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();
@@ -2806,11 +2814,11 @@ namespace Dynamo.Nodes
             tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); dynSettings.ReturnFocusToSearch(); };
 
             //NodeUI.SetRowAmount(2);
-            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
-            NodeUI.inputGrid.Children.Add(tb);
-            NodeUI.inputGrid.Children.Add(readFileButton);
+            nodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(readFileButton);
 
             System.Windows.Controls.Grid.SetRow(readFileButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
