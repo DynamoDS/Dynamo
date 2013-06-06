@@ -259,7 +259,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ -> X")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the X value of the given XYZ")]
-    public class dynXYZGetX: dynNodeWithOneOutput
+    public class dynXYZGetX: dynGeometryBase
     { 
         public dynXYZGetX()
         {
@@ -278,7 +278,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ -> Y")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the Y value of the given XYZ")]
-    public class dynXYZGetY: dynNodeWithOneOutput
+    public class dynXYZGetY : dynGeometryBase
     {
         public dynXYZGetY()
         {
@@ -297,7 +297,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ -> Z")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the Z value of the given XYZ")]
-    public class dynXYZGetZ: dynNodeWithOneOutput
+    public class dynXYZGetZ : dynGeometryBase
     {
         public dynXYZGetZ()
         {
@@ -335,7 +335,7 @@ namespace Dynamo.Nodes
     [NodeName("X Axis")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the X basis (1,0,0).")]
-    public class dynXYZBasisX : dynXYZBase
+    public class dynXYZBasisX : dynGeometryBase
     {
         public dynXYZBasisX()
         {
@@ -347,7 +347,6 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             XYZ pt = XYZ.BasisX;
-            pts.Add(pt);
             return Value.NewContainer(pt);
         }
     }
@@ -355,7 +354,7 @@ namespace Dynamo.Nodes
     [NodeName("Y Axis")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the Y basis (0,1,0).")]
-    public class dynXYZBasisY : dynXYZBase
+    public class dynXYZBasisY : dynGeometryBase
     {
         public dynXYZBasisY()
         {
@@ -367,7 +366,6 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             XYZ pt = XYZ.BasisY;
-            pts.Add(pt);
             return Value.NewContainer(pt);
         }
     }
@@ -375,7 +373,7 @@ namespace Dynamo.Nodes
     [NodeName("Z Axis")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the Z basis (0,0,1).")]
-    public class dynXYZBasisZ: dynXYZBase
+    public class dynXYZBasisZ : dynGeometryBase
     {
         public dynXYZBasisZ()
         {
@@ -388,7 +386,6 @@ namespace Dynamo.Nodes
         {
 
             XYZ pt = XYZ.BasisZ;
-            pts.Add(pt);
             return Value.NewContainer(pt);
         }
     }
@@ -501,7 +498,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Cross Product")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Calculate the cross product of two XYZs.")]
-    public class dynXYZCrossProduct : dynXYZBase
+    public class dynXYZCrossProduct : dynGeometryBase
     {
         public dynXYZCrossProduct()
         {
@@ -524,7 +521,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Start End Vector")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Calculate the normalized vector from one xyz to another.")]
-    public class dynXYZStartEndVector : dynXYZBase
+    public class dynXYZStartEndVector : dynGeometryBase
     {
         public dynXYZStartEndVector()
         {
