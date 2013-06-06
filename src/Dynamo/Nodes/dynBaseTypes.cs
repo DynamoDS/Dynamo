@@ -3155,8 +3155,19 @@ namespace Dynamo.Nodes
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return string.IsNullOrEmpty(value.ToString())?
-                 "No file selected.": value.ToString();
+            var maxChars = 30;
+            var str = value.ToString();
+
+            if (string.IsNullOrEmpty(str))
+            {
+                return "No file selected.";
+            }
+            else if (str.Length > maxChars)
+            {
+                return str.Substring(0, 10 ) + "..." + str.Substring(str.Length - maxChars+10, maxChars-10);
+            }
+
+            return str;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
