@@ -162,6 +162,7 @@ namespace Dynamo
                 // use this to pass into the python script a list of previously created elements from dynamo
                 //TODO: ADD BACK IN
                 //bindings.Add(new Binding("DynStoredElements", this.Elements));
+
             }
             catch (Exception e)
             {
