@@ -170,7 +170,7 @@ namespace Dynamo.Nodes
     [NodeName("Bounding Box XYZ")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Create a bounding box.")]
-    public class dynBoundingBoxXYZ : dynRevitTransactionNodeWithOneOutput
+    public class dynBoundingBoxXYZ : dynNodeWithOneOutput
     {
         public dynBoundingBoxXYZ()
         {
