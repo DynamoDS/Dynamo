@@ -1466,12 +1466,6 @@ namespace Dynamo.Controls
             var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspaceModel)inputs["workspace"];
 
             ws.Notes.Add(n);
-            
-            if (!ViewingHomespace)
-            {
-                _model.CurrentSpace.Modified();
-            }
-            
         }
 
         private bool CanAddNote(object parameters)
@@ -2580,7 +2574,6 @@ namespace Dynamo.Controls
             _model.CurrentSpace.Connectors.Clear();
             _model.CurrentSpace.Nodes.Clear();
             _model.CurrentSpace.Notes.Clear();
-            _model.CurrentSpace.Modified();
         }
 
         internal FunctionDefinition NewFunction(Guid id,
