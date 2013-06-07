@@ -448,6 +448,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("seq", "New sequence", typeof(Value.List)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
     }
 
