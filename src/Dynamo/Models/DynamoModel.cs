@@ -83,7 +83,10 @@ namespace Dynamo
         /// <param name="workspace"></param>
         public void AddHomeWorkspace()
         {
-            var workspace = new HomeWorkspace();
+            var workspace = new HomeWorkspace()
+            {
+                WatchChanges = true
+            };
             HomeSpace = workspace;
             _workSpaces.Insert(0, workspace); // to front
         }
