@@ -28,7 +28,7 @@ Known Issues
 
 Fixes
 - Can now run Python scripts from disk location and embedded
-- Autocomplete now works in Vasari
+- Autocomplete for Python now works in Vasari
 - Deluany Tessellation node is working 
 - Preview 3d geometry in the view background refreshing properly
 - Formula node can now copy paste
@@ -40,6 +40,7 @@ Fixes
 - Better crash handling
 - Fixed multiple crash issues around deleting elements created by graph
 - Auto-Mapping (lacing)improvments
+- Selection nodes improved save/open fidelity
 
 New
 - Iron Python 2.7.3 bundled with install
@@ -53,10 +54,12 @@ New
 - UI improvements and cleanup
 - Cache previous position of Dynamo window, do not maximize on startup
 - Add XYZStartEndVector, CrossProduct, Negate, and Average
-- Add section view, iso view, and bounding box
 - Normalize the vectors when creating a transform
 - Lacing is set to "Longest" by default
+- Angle Node that takes degree inputs
 - Updates, fixes, and culling of Samples
+- Nodes for CurveLoop from Curves, Curve List from Curve Loop
+- Nodes for Revolve and Sweep for Solid Creation
 
 
 ###0.3.4###
