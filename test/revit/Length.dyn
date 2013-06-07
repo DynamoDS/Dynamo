@@ -1,0 +1,38 @@
+<dynWorkspace X="0" Y="0">
+  <dynElements>
+    <Dynamo.Nodes.dynLengthInput type="Dynamo.Nodes.dynLengthInput" guid="2cd81df5-d8e3-4278-bcad-87c40f811ec1" nickname="Length" x="227.370212128558" y="148.223954938428" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.dynLengthInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="702af4e5-c859-4d49-9456-f939cb93d8da" nickname="Watch" x="394.410367675317" y="155.333781429228" lacing="Disabled" />
+    <Dynamo.Nodes.dynLengthInput type="Dynamo.Nodes.dynLengthInput" guid="b2525b56-94b8-44d3-8921-cb2332238af3" nickname="Length" x="231.370212128558" y="282.223954938429" lacing="Disabled">
+      <System.Double value="1.16666666666667" />
+    </Dynamo.Nodes.dynLengthInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="523b524d-8714-4a7d-b386-3960b7e3be71" nickname="Watch" x="396.410367675317" y="273.333781429228" lacing="Disabled" />
+    <Dynamo.Nodes.dynLengthInput type="Dynamo.Nodes.dynLengthInput" guid="73d1f9c1-1c93-4b6c-bb36-4ba171c23ce6" nickname="Length" x="218.706177795169" y="390.152190346779" lacing="Disabled">
+      <System.Double value="1.18229166666667" />
+    </Dynamo.Nodes.dynLengthInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="b340b797-3ea6-4e4f-bcaa-d25ce5d19b5c" nickname="Watch" x="392.410367675317" y="383.333781429228" lacing="Disabled" />
+    <Dynamo.Nodes.dynLengthInput type="Dynamo.Nodes.dynLengthInput" guid="5c75e03c-3c87-4f03-a857-b6b5e3f826de" nickname="Length" x="231.906352672217" y="521.818603033553" lacing="Disabled">
+      <System.Double value="-8.0078125" />
+    </Dynamo.Nodes.dynLengthInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="568b522d-d69f-448b-8ee8-0a74eeb3bc1a" nickname="Watch" x="402.410367675317" y="515.333781429228" lacing="Disabled" />
+    <Dynamo.Nodes.dynLengthInput type="Dynamo.Nodes.dynLengthInput" guid="9311b424-7887-4332-be51-82795d3e3ce6" nickname="Length" x="229.906352672217" y="640.818603033553" lacing="Disabled">
+      <System.Double value="-8.33333333333333" />
+    </Dynamo.Nodes.dynLengthInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="0ba0e2ab-4f5a-40da-9a01-f25b2c585202" nickname="Watch" x="403.410367675317" y="613.333781429228" lacing="Disabled" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="2cd81df5-d8e3-4278-bcad-87c40f811ec1" start_index="0" end="702af4e5-c859-4d49-9456-f939cb93d8da" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="b2525b56-94b8-44d3-8921-cb2332238af3" start_index="0" end="523b524d-8714-4a7d-b386-3960b7e3be71" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="73d1f9c1-1c93-4b6c-bb36-4ba171c23ce6" start_index="0" end="b340b797-3ea6-4e4f-bcaa-d25ce5d19b5c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="5c75e03c-3c87-4f03-a857-b6b5e3f826de" start_index="0" end="568b522d-d69f-448b-8ee8-0a74eeb3bc1a" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="9311b424-7887-4332-be51-82795d3e3ce6" start_index="0" end="0ba0e2ab-4f5a-40da-9a01-f25b2c585202" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes>
+    <Dynamo.Nodes.dynNoteModel text="0&quot;" x="236" y="122" />
+    <Dynamo.Nodes.dynNoteModel text="1' 2&quot;" x="229" y="253" />
+    <Dynamo.Nodes.dynNoteModel text="1' 2 3/16&quot;" x="231" y="362" />
+    <Dynamo.Nodes.dynNoteModel text="-8' 3/32&quot;" x="231" y="490" />
+    <Dynamo.Nodes.dynNoteModel text="-8' 4 0/16&quot; BAD!!!" x="231" y="606" />
+  </dynNotes>
+</dynWorkspace>
