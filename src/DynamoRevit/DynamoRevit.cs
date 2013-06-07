@@ -255,7 +255,6 @@ namespace Dynamo.Applications
             MessageBox.Show(message, "Dynamo Error", MessageBoxButtons.OK, MessageBoxIcon.Error,
                             MessageBoxDefaultButton.Button1);
 
-           
             try
             {
                 DynamoLogger.Instance.Log("Dynamo Unhandled Exception");

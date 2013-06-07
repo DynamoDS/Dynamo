@@ -494,6 +494,12 @@ namespace Dynamo.Controls
 
         private void ShowOpenDialogAndOpenResult()
         {
+
+            if ( this.Model.HomeSpace.HasUnsavedChanges && !AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
+            {
+                return;
+            }
+
             FileDialog _fileDialog = null;
 
             if (_fileDialog == null)
