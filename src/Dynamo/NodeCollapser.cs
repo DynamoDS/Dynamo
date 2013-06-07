@@ -58,8 +58,10 @@ namespace Dynamo.Utilities
             } while (!error.Equals(""));
 
             var newNodeWorkspace = new FuncWorkspace(newNodeName, newNodeCategory, 0, 0);
-            var newNodeDefinition = new FunctionDefinition(Guid.NewGuid());
-            newNodeDefinition.Workspace = newNodeWorkspace;
+            var newNodeDefinition = new FunctionDefinition(Guid.NewGuid())
+            {
+                Workspace = newNodeWorkspace
+            };
 
             #endregion
 
@@ -508,6 +510,7 @@ namespace Dynamo.Utilities
             newlyPlacedCollapsedNode.EnableReporting();
             currentWorkspace.EnableReporting();
 
+            newNodeWorkspace.WatchChanges = true;
         }
 
     }

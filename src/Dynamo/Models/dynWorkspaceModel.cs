@@ -56,8 +56,28 @@ namespace Dynamo
             }
         }
 
-        public ObservableCollection<dynNodeModel> Nodes { get; internal set; }
-        public ObservableCollection<dynConnectorModel> Connectors { get; internal set; }
+        public ObservableCollection<dynNodeModel> Nodes
+        {
+            get { return _nodes; }
+            internal set
+            {
+                if (Equals(value, _nodes)) return;
+                _nodes = value;
+                RaisePropertyChanged("Nodes");
+            }
+        }
+
+        public ObservableCollection<dynConnectorModel> Connectors
+        {
+            get { return _connectors; }
+            internal set
+            {
+                if (Equals(value, _connectors)) return;
+                _connectors = value;
+                RaisePropertyChanged("Connectors");
+            }
+        }
+
         public ObservableCollection<dynNoteModel> Notes { get; internal set; }
 
         public string FilePath
@@ -150,6 +170,9 @@ namespace Dynamo
         /// </summary>
         private bool _isCurrentSpace;
 
+        private ObservableCollection<dynNodeModel> _nodes;
+        private ObservableCollection<dynConnectorModel> _connectors;
+
         private dynWorkspaceModel() { }
 
         protected dynWorkspaceModel(
@@ -159,18 +182,33 @@ namespace Dynamo
 
             Nodes = new TrulyObservableCollection<dynNodeModel>(e);
             Connectors = new TrulyObservableCollection<dynConnectorModel>(c);
-            Notes = new TrulyObservableCollection<dynNoteModel>();
+            Notes = new ObservableCollection<dynNoteModel>();
             X = x;
             Y = y;
-
-            Nodes.CollectionChanged += MarkUnsaved;
-            Notes.CollectionChanged += MarkUnsaved;
-            Connectors.CollectionChanged += MarkUnsaved;
 
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 
             WorkspaceSaved += OnWorkspaceSaved;
+        }
+
+        public bool WatchChanges
+        {
+            set
+            {
+                if (value)
+                {
+                    Nodes.CollectionChanged += MarkUnsavedAndModified;
+                    Notes.CollectionChanged += MarkUnsaved;
+                    Connectors.CollectionChanged += MarkUnsavedAndModified;
+                }
+                else
+                {
+                    Nodes.CollectionChanged -= MarkUnsavedAndModified;
+                    Notes.CollectionChanged -= MarkUnsaved;
+                    Connectors.CollectionChanged -= MarkUnsavedAndModified;
+                }
+            }
         }
 
         public bool IsCurrentSpace
@@ -212,9 +250,16 @@ namespace Dynamo
             object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             HasUnsavedChanges = true;
+        }
+
+        private void MarkUnsavedAndModified(
+            object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            HasUnsavedChanges = true;
             Modified();
         }
 
+        //TODO: Replace all Modified calls with RaisePropertyChanged-stlye system, that way observable collections can catch any changes
         public void DisableReporting()
         {
             Nodes.ToList().ForEach(x => x.DisableReporting());
@@ -235,9 +280,8 @@ namespace Dynamo
         {
             return Nodes.Where(
                 x =>
-                x.OutPortData.Any()
-                && x.OutPorts.All(y => y.Connectors.All(c => c.End.Owner is dynOutput))
-                );
+                    x.OutPortData.Any()
+                    && x.OutPorts.All(y => y.Connectors.All(c => c.End.Owner is dynOutput)));
         }
 
         #region static methods
