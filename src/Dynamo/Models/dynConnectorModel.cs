@@ -107,7 +107,7 @@ namespace Dynamo.Connectors
             //already has other connectors
             if (p.PortType == PortType.INPUT && p.Connectors.Count > 0)
             {
-                return false;
+                p.Disconnect(p.Connectors[0]);
             }
 
             //turn the line solid
@@ -115,13 +115,7 @@ namespace Dynamo.Connectors
 
             if (pEnd != null)
             {
-                //set the start and end values to equal so this 
-                //starts evaulating immediately
-                //pEnd.Owner.InPortData[p.Index].Object = pStart.Owner.OutPortData.Object;
                 p.Connect(this);
-
-                Debug.WriteLine("Ports no longer call update....is it still working?");
-                //pEnd.Update();
             }
 
             return true;

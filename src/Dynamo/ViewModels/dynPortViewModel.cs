@@ -147,8 +147,6 @@ namespace Dynamo.Connectors
                     //remove the view model
                     var successfulRemoval = dynSettings.Controller.DynamoViewModel.CurrentSpace.Connectors.Remove(_port.Connectors[0]);
                     _port.Connectors[0].NotifyConnectedPortsOfDeletion();
-                    Console.WriteLine(successfulRemoval);
-
 
                 }
                 else
@@ -171,10 +169,13 @@ namespace Dynamo.Connectors
             }
             else  // attempt to complete the connection
             {
-                //don't attempt connection to a port which
-                //is already connected
+                //remove connector if one already exists
                 if (_port.Connectors.Count > 0)
-                    return;
+                {
+                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Model.Connectors.Remove(
+                        _port.Connectors[0]);
+                    _port.Disconnect(_port.Connectors[0]);
+                }
 
                 try
                 {
