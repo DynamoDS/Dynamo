@@ -2009,13 +2009,13 @@ namespace Dynamo.Nodes
     {
         public event Action OnChangeCommitted;
 
-        private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+        private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255,255,255));
 
         public dynTextBox()
         {
             //turn off the border
             Background = clear;
-            BorderThickness = new Thickness(0);
+            BorderThickness = new Thickness(1);
         }
 
         private bool numeric;
@@ -2108,10 +2108,10 @@ namespace Dynamo.Nodes
 
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == Key.Return || e.Key == Key.Enter)
-            {
-                dynSettings.ReturnFocusToSearch();
-            }
+            //if (e.Key == Key.Return || e.Key == Key.Enter)
+            //{
+            //    dynSettings.ReturnFocusToSearch();
+            //}
         }
 
         protected override void OnLostFocus(RoutedEventArgs e)
@@ -2797,6 +2797,10 @@ namespace Dynamo.Nodes
         {
             //add a text box to the input grid of the control
             tb = new dynTextBox();
+            tb.AcceptsReturn = true;
+            tb.AcceptsTab = true;
+            tb.TextWrapping = TextWrapping.Wrap;
+            tb.MaxWidth = 120;
 
             nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
