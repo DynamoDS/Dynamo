@@ -1063,238 +1063,238 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Select XYZ on element")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
-    [NodeDescription("Select a XYZ location on model face or edge of the element.")]
-    public class dynXYZBySelection : dynElementSelectionBase, IDrawable
-    {
-        Reference refXYZ;
-        double param0;
-        double param1;
-        bool init;
+    //[NodeName("Select XYZ on element")]
+    //[NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    //[NodeDescription("Select a XYZ location on model face or edge of the element.")]
+    //public class dynXYZBySelection : dynElementSelectionBase, IDrawable
+    //{
+    //    Reference refXYZ;
+    //    double param0;
+    //    double param1;
+    //    bool init;
 
-        public RenderDescription RenderDescription { get; set; }
+    //    public RenderDescription RenderDescription { get; set; }
 
-        public dynXYZBySelection() :
-            base(new PortData("XYZ", "The XYZ location on element", typeof(Value.Container)))
-        {
-        }
+    //    public dynXYZBySelection() :
+    //        base(new PortData("XYZ", "The XYZ location on element", typeof(Value.Container)))
+    //    {
+    //    }
 
-        protected override void OnSelectClick()
-        {
-            this.refXYZ = dynRevitSettings.SelectionHelper.RequestReferenceXYZSelection(
-               dynRevitSettings.Doc, "Select a XYZ location on face or edge of the element."
-            );
-            if (this.refXYZ != null)
-               this.SelectedElement = dynRevitSettings.Doc.Document.GetElement(refXYZ.ElementId);
-            this.init = false;
+    //    protected override void OnSelectClick()
+    //    {
+    //        this.refXYZ = dynRevitSettings.SelectionHelper.RequestReferenceXYZSelection(
+    //           dynRevitSettings.Doc, "Select a XYZ location on face or edge of the element."
+    //        );
+    //        if (this.refXYZ != null)
+    //           this.SelectedElement = dynRevitSettings.Doc.Document.GetElement(refXYZ.ElementId);
+    //        this.init = false;
 
-            RaisePropertyChanged("SelectionText");
-        }
+    //        RaisePropertyChanged("SelectionText");
+    //    }
 
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            if (refXYZ.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_SURFACE &&
-                 refXYZ.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR)
-                throw new Exception("Could not use face or edge which is not part of the model");
+    //    public override Value Evaluate(FSharpList<Value> args)
+    //    {
+    //        if (refXYZ.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_SURFACE &&
+    //             refXYZ.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR)
+    //            throw new Exception("Could not use face or edge which is not part of the model");
 
-            GeometryObject thisObject = this.SelectedElement.GetGeometryObjectFromReference(refXYZ);
-            Autodesk.Revit.DB.Transform thisTrf = null;
+    //        GeometryObject thisObject = this.SelectedElement.GetGeometryObjectFromReference(refXYZ);
+    //        Autodesk.Revit.DB.Transform thisTrf = null;
 
        
-            {
-               GeometryObject geomObj = this.SelectedElement.get_Geometry(new Autodesk.Revit.DB.Options());
-               GeometryElement geomElement = geomObj as GeometryElement;
+    //        {
+    //           GeometryObject geomObj = this.SelectedElement.get_Geometry(new Autodesk.Revit.DB.Options());
+    //           GeometryElement geomElement = geomObj as GeometryElement;
 
-               // ugly code to detect if transform for geometry object is needed or not
-               // filed request to provide this info via API, but meanwhile ...
-               foreach (GeometryObject geob in geomElement)
-               {
-                   if (!(geob is GeometryInstance))
-                       continue;
+    //           // ugly code to detect if transform for geometry object is needed or not
+    //           // filed request to provide this info via API, but meanwhile ...
+    //           foreach (GeometryObject geob in geomElement)
+    //           {
+    //               if (!(geob is GeometryInstance))
+    //                   continue;
                   
-                   GeometryInstance ginsta = geob as GeometryInstance;
-                   GeometryElement gSymbolElement = ginsta.GetSymbolGeometry();
-                   List <GeometryElement> geometryElements = new List <GeometryElement>();
-                   geometryElements.Add(gSymbolElement);
-                   bool found = false;
-                   for (; geometryElements.Count > 0 && !found;)
-                   {
-                       GeometryElement thisGeometryElement = geometryElements[0];
-                       geometryElements.Remove(thisGeometryElement);
+    //               GeometryInstance ginsta = geob as GeometryInstance;
+    //               GeometryElement gSymbolElement = ginsta.GetSymbolGeometry();
+    //               List <GeometryElement> geometryElements = new List <GeometryElement>();
+    //               geometryElements.Add(gSymbolElement);
+    //               bool found = false;
+    //               for (; geometryElements.Count > 0 && !found;)
+    //               {
+    //                   GeometryElement thisGeometryElement = geometryElements[0];
+    //                   geometryElements.Remove(thisGeometryElement);
 
-                       foreach (GeometryObject geobSym in thisGeometryElement)
-                       {
-                           if (geobSym is GeometryElement)
-                           {
-                               geometryElements.Add((GeometryElement)geobSym);
-                               continue;
-                           }
-                           if ((thisObject is Curve) && (geobSym is Curve) && (thisObject == geobSym))
-                           {
-                               found = true;
-                               break;
-                           }
+    //                   foreach (GeometryObject geobSym in thisGeometryElement)
+    //                   {
+    //                       if (geobSym is GeometryElement)
+    //                       {
+    //                           geometryElements.Add((GeometryElement)geobSym);
+    //                           continue;
+    //                       }
+    //                       if ((thisObject is Curve) && (geobSym is Curve) && (thisObject == geobSym))
+    //                       {
+    //                           found = true;
+    //                           break;
+    //                       }
 
-                           if (thisObject is Curve)
-                               continue;
+    //                       if (thisObject is Curve)
+    //                           continue;
 
-                           if ((thisObject is Face) && (geobSym is Face) && (thisObject == geobSym))
-                           {
-                               found = true;
-                               break;
-                           }
+    //                       if ((thisObject is Face) && (geobSym is Face) && (thisObject == geobSym))
+    //                       {
+    //                           found = true;
+    //                           break;
+    //                       }
 
-                           if ((thisObject is Edge) && (geobSym is Face))
-                           {
-                               Edge edge = (Edge)thisObject;
-                               if (geobSym == edge.GetFace(0) || geobSym == edge.GetFace(1))
-                               {
-                                   found = true;
-                                   break;
-                               }
-                           }
-                           if (!(geobSym is Solid))
-                               continue;
+    //                       if ((thisObject is Edge) && (geobSym is Face))
+    //                       {
+    //                           Edge edge = (Edge)thisObject;
+    //                           if (geobSym == edge.GetFace(0) || geobSym == edge.GetFace(1))
+    //                           {
+    //                               found = true;
+    //                               break;
+    //                           }
+    //                       }
+    //                       if (!(geobSym is Solid))
+    //                           continue;
 
-                           FaceArray solidFaces = ((Solid)geobSym).Faces;
-                           int numFaces = solidFaces.Size;
-                           for (int index = 0; index < numFaces && !found; index++)
-                           {
-                               Face faceAt = solidFaces.get_Item(index);
-                               if ((thisObject is Face) && (thisObject == faceAt))
-                               {
-                                   found = true;
-                                   break;
-                               }
-                               if (thisObject is Edge)
-                               {
-                                   Edge edge = (Edge)thisObject;
-                                   if (faceAt == edge.GetFace(0) || faceAt == edge.GetFace(1))
-                                   {
-                                       found = true;
-                                       break;
-                                   }
-                               }
-                           }
-                       }
-                   }
+    //                       FaceArray solidFaces = ((Solid)geobSym).Faces;
+    //                       int numFaces = solidFaces.Size;
+    //                       for (int index = 0; index < numFaces && !found; index++)
+    //                       {
+    //                           Face faceAt = solidFaces.get_Item(index);
+    //                           if ((thisObject is Face) && (thisObject == faceAt))
+    //                           {
+    //                               found = true;
+    //                               break;
+    //                           }
+    //                           if (thisObject is Edge)
+    //                           {
+    //                               Edge edge = (Edge)thisObject;
+    //                               if (faceAt == edge.GetFace(0) || faceAt == edge.GetFace(1))
+    //                               {
+    //                                   found = true;
+    //                                   break;
+    //                               }
+    //                           }
+    //                       }
+    //                   }
+    //               }
 
-                   if (found)
-                   {
-                       thisTrf = ginsta.Transform;
-                       break;
-                   }
-               }
-               if (thisObject == null)
-                   throw new Exception("could not resolve reference for XYZ on Element");
-            }
-            XYZ thisXYZ = null;
+    //               if (found)
+    //               {
+    //                   thisTrf = ginsta.Transform;
+    //                   break;
+    //               }
+    //           }
+    //           if (thisObject == null)
+    //               throw new Exception("could not resolve reference for XYZ on Element");
+    //        }
+    //        XYZ thisXYZ = null;
             
-            if (refXYZ.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_SURFACE && thisObject is Face)
-            {
-                Face face = thisObject as Face;
-                if (!init)
-                {
-                   param0 = refXYZ.UVPoint[0];
-                   param1 = refXYZ.UVPoint[1];
-                   init = true;
-                }
-                UV uv = new UV(param0, param1);
-                thisXYZ = face.Evaluate(uv);
-                if (thisTrf != null)
-                    thisXYZ = thisTrf.OfPoint(thisXYZ);
-            }
-            else if (refXYZ.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_LINEAR )
-            {
-                Curve curve = null;
-                if (thisObject is Edge)
-                {
-                    Edge edge = (Edge)this.SelectedElement.GetGeometryObjectFromReference(refXYZ);
-                    curve = edge.AsCurve();
-                }
-                else
-                    curve = (Curve)this.SelectedElement.GetGeometryObjectFromReference(refXYZ);
-                if (curve != null)
-                {
-                    if (init)
-                        thisXYZ = curve.Evaluate(param0, true);
-                    else
-                    {
-                        XYZ curPoint = refXYZ.GlobalPoint;
-                        if (thisTrf != null)
-                        {
-                            Autodesk.Revit.DB.Transform inverseTrf = thisTrf.Inverse;
-                            curPoint = inverseTrf.OfPoint(refXYZ.GlobalPoint);
-                        }
-                        IntersectionResult thisResult = curve.Project(curPoint);
-                        param0 = curve.ComputeNormalizedParameter(thisResult.Parameter);
-                        init = true;
-                    }
-                    thisXYZ = curve.Evaluate(param0, true);
-                    param1 = -1.0;
-                }
-                else
-                    throw new Exception("could not evaluate point on face or edge of the element");
-                if (thisTrf != null)
-                    thisXYZ = thisTrf.OfPoint(thisXYZ);
-            }
-            else 
-                throw new Exception ("could not evaluate point on face or edge of the element");
+    //        if (refXYZ.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_SURFACE && thisObject is Face)
+    //        {
+    //            Face face = thisObject as Face;
+    //            if (!init)
+    //            {
+    //               param0 = refXYZ.UVPoint[0];
+    //               param1 = refXYZ.UVPoint[1];
+    //               init = true;
+    //            }
+    //            UV uv = new UV(param0, param1);
+    //            thisXYZ = face.Evaluate(uv);
+    //            if (thisTrf != null)
+    //                thisXYZ = thisTrf.OfPoint(thisXYZ);
+    //        }
+    //        else if (refXYZ.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_LINEAR )
+    //        {
+    //            Curve curve = null;
+    //            if (thisObject is Edge)
+    //            {
+    //                Edge edge = (Edge)this.SelectedElement.GetGeometryObjectFromReference(refXYZ);
+    //                curve = edge.AsCurve();
+    //            }
+    //            else
+    //                curve = (Curve)this.SelectedElement.GetGeometryObjectFromReference(refXYZ);
+    //            if (curve != null)
+    //            {
+    //                if (init)
+    //                    thisXYZ = curve.Evaluate(param0, true);
+    //                else
+    //                {
+    //                    XYZ curPoint = refXYZ.GlobalPoint;
+    //                    if (thisTrf != null)
+    //                    {
+    //                        Autodesk.Revit.DB.Transform inverseTrf = thisTrf.Inverse;
+    //                        curPoint = inverseTrf.OfPoint(refXYZ.GlobalPoint);
+    //                    }
+    //                    IntersectionResult thisResult = curve.Project(curPoint);
+    //                    param0 = curve.ComputeNormalizedParameter(thisResult.Parameter);
+    //                    init = true;
+    //                }
+    //                thisXYZ = curve.Evaluate(param0, true);
+    //                param1 = -1.0;
+    //            }
+    //            else
+    //                throw new Exception("could not evaluate point on face or edge of the element");
+    //            if (thisTrf != null)
+    //                thisXYZ = thisTrf.OfPoint(thisXYZ);
+    //        }
+    //        else 
+    //            throw new Exception ("could not evaluate point on face or edge of the element");
            
-            return Value.NewContainer(thisXYZ);
-        }
+    //        return Value.NewContainer(thisXYZ);
+    //    }
 
-        public override string SelectionText
-        {
-            get
-            {
-                return _selectionText = this.refXYZ == null ?
-                    "Nothing Selected" :
-                    "Point on element" + " (" + refXYZ.ElementId + ")";
-            }
-            set
-            {
-                _selectionText = value;
-                RaisePropertyChanged("SelectionText");
-            }
-        }
+    //    public override string SelectionText
+    //    {
+    //        get
+    //        {
+    //            return _selectionText = this.refXYZ == null ?
+    //                "Nothing Selected" :
+    //                "Point on element" + " (" + refXYZ.ElementId + ")";
+    //        }
+    //        set
+    //        {
+    //            _selectionText = value;
+    //            RaisePropertyChanged("SelectionText");
+    //        }
+    //    }
 
-        public void Draw()
-        {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new RenderDescription();
-            else
-                this.RenderDescription.ClearAll();
+    //    public void Draw()
+    //    {
+    //        if (this.RenderDescription == null)
+    //            this.RenderDescription = new RenderDescription();
+    //        else
+    //            this.RenderDescription.ClearAll();
 
-            XYZ thisXYZ = refXYZ.GlobalPoint;
+    //        XYZ thisXYZ = refXYZ.GlobalPoint;
 
-            dynRevitTransactionNode.DrawXYZ(this.RenderDescription, thisXYZ);
-        }
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-        {
+    //        dynRevitTransactionNode.DrawXYZ(this.RenderDescription, thisXYZ);
+    //    }
+    //    public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+    //    {
 
-            dynEl.SetAttribute("refXYZ", this.refXYZ.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
-            dynEl.SetAttribute("refXYZparam0", this.param0.ToString());
-            dynEl.SetAttribute("refXYZparam1", this.param1.ToString());
-        }
+    //        dynEl.SetAttribute("refXYZ", this.refXYZ.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+    //        dynEl.SetAttribute("refXYZparam0", this.param0.ToString());
+    //        dynEl.SetAttribute("refXYZparam1", this.param1.ToString());
+    //    }
 
-        public override void LoadElement(XmlNode elNode)
-        {
-            try
-            {
-                this.refXYZ = Reference.ParseFromStableRepresentation(dynRevitSettings.Doc.Document, elNode.Attributes["refXYZ"].Value.ToString());
-                if (refXYZ != null)
-                {
-                    this.SelectedElement = dynRevitSettings.Doc.Document.GetElement(refXYZ.ElementId);
-                }
-                param0 = Convert.ToDouble(elNode.Attributes["refXYZparam0"].Value);
-                param1 = Convert.ToDouble(elNode.Attributes["refXYZparam1"].Value);
-                init = true;
-            }
-            catch { }
-        }
-    }
+    //    public override void LoadElement(XmlNode elNode)
+    //    {
+    //        try
+    //        {
+    //            this.refXYZ = Reference.ParseFromStableRepresentation(dynRevitSettings.Doc.Document, elNode.Attributes["refXYZ"].Value.ToString());
+    //            if (refXYZ != null)
+    //            {
+    //                this.SelectedElement = dynRevitSettings.Doc.Document.GetElement(refXYZ.ElementId);
+    //            }
+    //            param0 = Convert.ToDouble(elNode.Attributes["refXYZparam0"].Value);
+    //            param1 = Convert.ToDouble(elNode.Attributes["refXYZparam1"].Value);
+    //            init = true;
+    //        }
+    //        catch { }
+    //    }
+    //}
 }
 
 
