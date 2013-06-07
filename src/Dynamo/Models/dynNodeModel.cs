@@ -515,6 +515,7 @@ namespace Dynamo.Nodes
                 else //othwise, remember that this is a partial application
                 {
                     partial = true;
+                    node.ConnectInput(data.Name, new SymbolNode(data.Name));
                     partialSymList.Add(data.Name);
                 }
             }
@@ -523,9 +524,6 @@ namespace Dynamo.Nodes
 
             if (OutPortData.Count > 1)
             {
-                foreach (var data in partialSymList)
-                    node.ConnectInput(data, new SymbolNode(data));
-
                 InputNode prev = node;
                 int prevIndex = 0;
 
@@ -564,7 +562,10 @@ namespace Dynamo.Nodes
             }
             else
             {
-                nodes[outPort] = node;
+                if (partial)
+                    nodes[outPort] = new AnonymousFunctionNode(partialSymList, node);
+                else
+                    nodes[outPort] = node;
             }
 
             //If this is a partial application, then remember not to re-eval.

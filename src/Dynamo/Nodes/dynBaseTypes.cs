@@ -962,6 +962,7 @@ namespace Dynamo.Nodes
         }
 
         static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|{(?<id>\w(?:[^}\\]|(?:\\}))*)}");
+        static readonly string[] RangeSeparatorTokens = new[] { "..", "-", ":" };
 
         private static List<Tuple<int, int, int>> processText(string text, int maxVal, Func<string, int> idFoundCallback)
         {
@@ -975,7 +976,7 @@ namespace Dynamo.Nodes
 
             foreach (string chunk in chunks)
             {
-                string[] valueRange = chunk.Split(new[] { "..", "-" }, StringSplitOptions.RemoveEmptyEntries);
+                string[] valueRange = chunk.Split(RangeSeparatorTokens, StringSplitOptions.RemoveEmptyEntries);
 
                 int start = 0;
                 int step = 1;
@@ -1082,11 +1083,11 @@ namespace Dynamo.Nodes
                     }
                 }
 
-                if(currList.Any())
-                    finalList.Add(FScheme.Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                if (currList.Any())
+                    finalList.Add(FScheme.Value.NewList(Utils.SequenceToFSharpList(currList)));
             }
 
-            return FScheme.Value.NewList(Utils.MakeFSharpList(finalList.ToArray()));
+            return FScheme.Value.NewList(Utils.SequenceToFSharpList(finalList));
 
         }
 
