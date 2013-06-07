@@ -89,7 +89,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    /*
     [NodeName("Isometric View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
     [NodeDescription("Creates a drafting view.")]
@@ -251,5 +250,5 @@ namespace Dynamo.Nodes
             ViewSection view = ViewSection.CreateSection(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id, bbox);
             return view;
         }
-    }*/
+    }
 }
