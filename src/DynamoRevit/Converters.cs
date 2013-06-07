@@ -21,7 +21,7 @@ namespace Dynamo.Controls
     public class RevitProjectUnitsConverter : IValueConverter
     {
         /// <summary>
-        /// Convert the incoming value to decimal feet.
+        /// Convert the value to project units.
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
@@ -57,7 +57,7 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Convert the decimal feet value back to project units.
+        /// Convert the value to decimal feet.       
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
