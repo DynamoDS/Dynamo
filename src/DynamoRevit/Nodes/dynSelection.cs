@@ -70,7 +70,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            selectButton = new System.Windows.Controls.Button();
+            selectButton = new dynNodeButton();
             selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             selectButton.Click += new System.Windows.RoutedEventHandler(selectButton_Click);
@@ -301,7 +301,7 @@ namespace Dynamo.Nodes
         {
 
             //add a button to the inputGrid on the dynElement
-            selectButton = new System.Windows.Controls.Button();
+            selectButton = new dynNodeButton();
             selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             selectButton.Click += new System.Windows.RoutedEventHandler(selectButton_Click);

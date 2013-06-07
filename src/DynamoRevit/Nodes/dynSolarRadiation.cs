@@ -82,7 +82,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            Button analysisResultButt = new Button();
+            Button analysisResultButt = new dynNodeButton();
             nodeUI.inputGrid.Children.Add(analysisResultButt);
             analysisResultButt.Margin = new Thickness(0, 0, 0, 0);
             analysisResultButt.HorizontalAlignment = HorizontalAlignment.Center;
@@ -171,7 +171,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            sunPathButt = new System.Windows.Controls.Button();
+            sunPathButt = new dynNodeButton();
 
             sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;

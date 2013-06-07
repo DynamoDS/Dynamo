@@ -169,14 +169,14 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            System.Windows.Controls.Button addButton = new System.Windows.Controls.Button();
+            System.Windows.Controls.Button addButton = new dynNodeButton();
             addButton.Content = "+";
             addButton.Width = 20;
             addButton.Height = 20;
             addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             addButton.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
 
-            System.Windows.Controls.Button subButton = new System.Windows.Controls.Button();
+            System.Windows.Controls.Button subButton = new dynNodeButton();
             subButton.Content = "-";
             subButton.Width = 20;
             subButton.Height = 20;
@@ -1946,7 +1946,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            button = new System.Windows.Controls.Button();
+            button = new dynNodeButton();
             button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             button.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             //inputGrid.RowDefinitions.Add(new RowDefinition());
@@ -2872,12 +2872,26 @@ namespace Dynamo.Nodes
         }
     }
 
+    public class dynNodeButton : System.Windows.Controls.Button
+    {
+        public dynNodeButton() : base()
+        {
+            var dict = new ResourceDictionary();
+            var uri = new Uri("/DynamoElements;component/Themes/DynamoModern.xaml", UriKind.Relative);
+            dict.Source = uri;
+            Style = (Style)dict["SNodeTextButton"];
+
+            this.Margin = new Thickness(1);
+        }
+
+    }
+
     [NodeName("Filename")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Allows you to select a file on the system to get its filename.")]
     public class dynStringFilename : dynBasicInteractive<string>
     {
-        System.Windows.Controls.TextBox tb;
+        TextBox tb;
 
         public dynStringFilename()
         {
@@ -2887,8 +2901,9 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();
-            //readFileButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+            var readFileButton = new dynNodeButton();
+
+            readFileButton.Margin = new System.Windows.Thickness(4);
             readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             readFileButton.Click += new System.Windows.RoutedEventHandler(readFileButton_Click);
@@ -2902,7 +2917,7 @@ namespace Dynamo.Nodes
 
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            var backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
             tb.Background = backgroundBrush;
             tb.BorderThickness = new Thickness(0);
             tb.IsReadOnly = true;
