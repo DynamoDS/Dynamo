@@ -252,6 +252,7 @@ namespace Dynamo.Nodes
         }
     }
 
+    /*
     [NodeName("Length")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Enter a length in project units.")]
@@ -315,7 +316,7 @@ namespace Dynamo.Nodes
                 return 0;
             }
         }
-    }
+    }*/
 }
 
 
