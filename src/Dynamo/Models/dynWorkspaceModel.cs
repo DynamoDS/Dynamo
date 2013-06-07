@@ -19,22 +19,16 @@ namespace Dynamo
         #region Properties
 
         private string _filePath;
-
-        /// <summary>
-        ///     Are there unsaved changes in the workspace?
-        /// </summary>
-        private bool _hasUnsavedChanges;
-
-        /// <summary>
-        ///     The date of the last save.
-        /// </summary>
-        private DateTime _lastSaved;
-
         private string _name;
         private double _height = 100;
         private double _width = 100;
         private double _x;
         private double _y;
+
+        /// <summary>
+        ///     The date of the last save.
+        /// </summary>
+        private DateTime _lastSaved;
 
         public DateTime LastSaved
         {
@@ -45,6 +39,11 @@ namespace Dynamo
                 RaisePropertyChanged("LastSaved");
             }
         }
+
+        /// <summary>
+        ///     Are there unsaved changes in the workspace?
+        /// </summary>
+        private bool _hasUnsavedChanges;
 
         public bool HasUnsavedChanges
         {
@@ -101,7 +100,7 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Get or set the X position of the workspace.
+        ///     Get or set the X position of the workspace.
         /// </summary>
         public double X
         {
@@ -114,7 +113,7 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Get or set the Y position of the workspace
+        ///     Get or set the Y position of the workspace
         /// </summary>
         public double Y
         {
@@ -127,7 +126,7 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Get the height of the workspace's bounds.
+        ///     Get the height of the workspace's bounds.
         /// </summary>
         public double Height
         {
@@ -140,7 +139,7 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Get the width of the workspace's bounds.
+        ///     Get the width of the workspace's bounds.
         /// </summary>
         public double Width
         {
@@ -153,7 +152,7 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Get the bounds of the workspace.
+        ///     Get the bounds of the workspace.
         /// </summary>
         public Rect Rect
         {
@@ -162,7 +161,6 @@ namespace Dynamo
 
         #endregion
 
-        //Hide default constructor.
         public delegate void WorkspaceSavedEvent(dynWorkspaceModel model);
 
         /// <summary>
@@ -172,8 +170,6 @@ namespace Dynamo
 
         private ObservableCollection<dynNodeModel> _nodes;
         private ObservableCollection<dynConnectorModel> _connectors;
-
-        private dynWorkspaceModel() { }
 
         protected dynWorkspaceModel(
             String name, IEnumerable<dynNodeModel> e, IEnumerable<dynConnectorModel> c, double x, double y)
@@ -297,7 +293,7 @@ namespace Dynamo
             dynSettings.Controller.DynamoViewModel.Log("Saving " + xmlPath + "...");
             try
             {
-                XmlDocument xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace is HomeWorkspace);
+                var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace is HomeWorkspace);
                 xmlDoc.Save(xmlPath);
                 workSpace.FilePath = xmlPath;
 
@@ -330,16 +326,16 @@ namespace Dynamo
                 var xmlDoc = new XmlDocument();
                 xmlDoc.CreateXmlDeclaration("1.0", null, null);
 
-                XmlElement root = xmlDoc.CreateElement("dynWorkspace"); //write the root element
+                var root = xmlDoc.CreateElement("dynWorkspace"); //write the root element
                 root.SetAttribute("X", workSpace.X.ToString());
                 root.SetAttribute("Y", workSpace.Y.ToString());
 
                 if (!savingHomespace) //If we are not saving the home space
                 {
                     root.SetAttribute("Name", workSpace.Name);
-                    root.SetAttribute("Category", ((FuncWorkspace)workSpace).Category);
+                    root.SetAttribute("Category", ((FuncWorkspace) workSpace).Category);
 
-                    Guid guid =
+                    var guid =
                         dynSettings.Controller.CustomNodeLoader.GetGuidFromName(workSpace.Name);
 
                     //friends don't let friends save an empty GUID
@@ -351,15 +347,15 @@ namespace Dynamo
 
                 xmlDoc.AppendChild(root);
 
-                XmlElement elementList = xmlDoc.CreateElement("dynElements");
-                    //write the root element
+                var elementList = xmlDoc.CreateElement("dynElements");
+                //write the root element
                 root.AppendChild(elementList);
 
-                foreach (dynNodeModel el in workSpace.Nodes)
+                foreach (var el in workSpace.Nodes)
                 {
-                    string typeName = el.GetType().ToString();
+                    var typeName = el.GetType().ToString();
 
-                    XmlElement dynEl = xmlDoc.CreateElement(typeName);
+                    var dynEl = xmlDoc.CreateElement(typeName);
                     elementList.AppendChild(dynEl);
 
                     //set the type attribute
@@ -374,19 +370,19 @@ namespace Dynamo
                 }
 
                 //write only the output connectors
-                XmlElement connectorList = xmlDoc.CreateElement("dynConnectors");
-                    //write the root element
+                var connectorList = xmlDoc.CreateElement("dynConnectors");
+                //write the root element
                 root.AppendChild(connectorList);
 
-                foreach (dynNodeModel el in workSpace.Nodes)
+                foreach (var el in workSpace.Nodes)
                 {
-                    foreach (dynPortModel port in el.OutPorts)
+                    foreach (var port in el.OutPorts)
                     {
                         foreach (
-                            dynConnectorModel c in
+                            var c in
                                 port.Connectors.Where(c => c.Start != null && c.End != null))
                         {
-                            XmlElement connector = xmlDoc.CreateElement(c.GetType().ToString());
+                            var connector = xmlDoc.CreateElement(c.GetType().ToString());
                             connectorList.AppendChild(connector);
                             connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
                             connector.SetAttribute("start_index", c.Start.Index.ToString());
@@ -400,11 +396,11 @@ namespace Dynamo
                 }
 
                 //save the notes
-                XmlElement noteList = xmlDoc.CreateElement("dynNotes"); //write the root element
+                var noteList = xmlDoc.CreateElement("dynNotes"); //write the root element
                 root.AppendChild(noteList);
-                foreach (dynNoteModel n in workSpace.Notes)
+                foreach (var n in workSpace.Notes)
                 {
-                    XmlElement note = xmlDoc.CreateElement(n.GetType().ToString());
+                    var note = xmlDoc.CreateElement(n.GetType().ToString());
                     noteList.AppendChild(note);
                     note.SetAttribute("text", n.Text);
                     note.SetAttribute("x", n.X.ToString());
@@ -436,13 +432,19 @@ namespace Dynamo
         #region Contructors
 
         public FuncWorkspace()
-            : this("", "", new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0) { }
+            : this("", "", new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
+        {
+        }
 
         public FuncWorkspace(String name, String category)
-            : this(name, category, new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0) { }
+            : this(name, category, new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
+        {
+        }
 
         public FuncWorkspace(String name, String category, double x, double y)
-            : this(name, category, new List<dynNodeModel>(), new List<dynConnectorModel>(), x, y) { }
+            : this(name, category, new List<dynNodeModel>(), new List<dynConnectorModel>(), x, y)
+        {
+        }
 
         public FuncWorkspace(
             String name, String category, IEnumerable<dynNodeModel> e, IEnumerable<dynConnectorModel> c, double x,
@@ -458,14 +460,14 @@ namespace Dynamo
         {
             base.Modified();
 
-            FunctionDefinition def =
+            var def =
                 dynSettings.Controller.CustomNodeLoader
-                                      .GetLoadedDefinitions()
-                                      .First(x => x.Workspace == this);
+                           .GetLoadedDefinitions()
+                           .First(x => x.Workspace == this);
 
             def.RequiresRecalc = true;
 
-            FScheme.Expression expression = CustomNodeLoader.CompileFunction(def);
+            var expression = CustomNodeLoader.CompileFunction(def);
 
             dynSettings.Controller.FSchemeEnvironment.DefineSymbol(
                 def.FunctionId.ToString(), expression);
@@ -495,19 +497,25 @@ namespace Dynamo
     public class HomeWorkspace : dynWorkspaceModel
     {
         public HomeWorkspace()
-            : this(new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0) { }
+            : this(new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
+        {
+        }
 
         public HomeWorkspace(double x, double y)
-            : this(new List<dynNodeModel>(), new List<dynConnectorModel>(), x, y) { }
+            : this(new List<dynNodeModel>(), new List<dynConnectorModel>(), x, y)
+        {
+        }
 
         public HomeWorkspace(IEnumerable<dynNodeModel> e, IEnumerable<dynConnectorModel> c, double x, double y)
-            : base("Home", e, c, x, y) { }
+            : base("Home", e, c, x, y)
+        {
+        }
 
         public override void Modified()
         {
             base.Modified();
 
-            DynamoController controller = dynSettings.Controller;
+            var controller = dynSettings.Controller;
             if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)
             {
                 if (!controller.Running)

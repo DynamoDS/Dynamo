@@ -169,14 +169,14 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            System.Windows.Controls.Button addButton = new System.Windows.Controls.Button();
+            System.Windows.Controls.Button addButton = new dynNodeButton();
             addButton.Content = "+";
             addButton.Width = 20;
             addButton.Height = 20;
             addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             addButton.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
 
-            System.Windows.Controls.Button subButton = new System.Windows.Controls.Button();
+            System.Windows.Controls.Button subButton = new dynNodeButton();
             subButton.Content = "-";
             subButton.Width = 20;
             subButton.Height = 20;
@@ -964,6 +964,7 @@ namespace Dynamo.Nodes
         }
 
         static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|{(?<id>\w(?:[^}\\]|(?:\\}))*)}");
+        static readonly string[] RangeSeparatorTokens = new[] { "..", "-", ":" };
 
         private static List<Tuple<int, int, int>> processText(string text, int maxVal, Func<string, int> idFoundCallback)
         {
@@ -977,7 +978,7 @@ namespace Dynamo.Nodes
 
             foreach (string chunk in chunks)
             {
-                string[] valueRange = chunk.Split(new[] { "..", "-" }, StringSplitOptions.RemoveEmptyEntries);
+                string[] valueRange = chunk.Split(RangeSeparatorTokens, StringSplitOptions.RemoveEmptyEntries);
 
                 int start = 0;
                 int step = 1;
@@ -1084,11 +1085,11 @@ namespace Dynamo.Nodes
                     }
                 }
 
-                if(currList.Any())
-                    finalList.Add(FScheme.Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                if (currList.Any())
+                    finalList.Add(FScheme.Value.NewList(Utils.SequenceToFSharpList(currList)));
             }
 
-            return FScheme.Value.NewList(Utils.MakeFSharpList(finalList.ToArray()));
+            return FScheme.Value.NewList(Utils.SequenceToFSharpList(finalList));
 
         }
 
@@ -1948,7 +1949,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            button = new System.Windows.Controls.Button();
+            button = new dynNodeButton();
             button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             button.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             //inputGrid.RowDefinitions.Add(new RowDefinition());
@@ -2011,13 +2012,26 @@ namespace Dynamo.Nodes
     {
         public event Action OnChangeCommitted;
 
-        private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+        private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255,255,255));
+        private static Brush highlighted = new SolidColorBrush(System.Windows.Media.Color.FromArgb(200, 255, 255, 255));
 
         public dynTextBox()
         {
             //turn off the border
             Background = clear;
-            BorderThickness = new Thickness(0);
+            BorderThickness = new Thickness(1);
+            GotFocus += OnGotFocus;
+            LostFocus += OnLostFocus;
+        }
+
+        private void OnLostFocus(object sender, RoutedEventArgs routedEventArgs)
+        {
+            Background = clear;
+        }
+
+        private void OnGotFocus(object sender, RoutedEventArgs routedEventArgs)
+        {
+            Background = highlighted;
         }
 
         private bool numeric;
@@ -2047,13 +2061,11 @@ namespace Dynamo.Nodes
             {
                 if (value)
                 {
-                    FontStyle = FontStyles.Italic;
-                    FontWeight = FontWeights.Bold;
+                    Background = highlighted;
                 }
                 else
                 {
-                    FontStyle = FontStyles.Normal;
-                    FontWeight = FontWeights.Normal;
+                    Background = clear;
                 }
                 pending = value;
             }
@@ -2110,10 +2122,10 @@ namespace Dynamo.Nodes
 
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == Key.Return || e.Key == Key.Enter)
-            {
-                dynSettings.ReturnFocusToSearch();
-            }
+            //if (e.Key == Key.Return || e.Key == Key.Enter)
+            //{
+            //    dynSettings.ReturnFocusToSearch();
+            //}
         }
 
         protected override void OnLostFocus(RoutedEventArgs e)
@@ -2799,6 +2811,10 @@ namespace Dynamo.Nodes
         {
             //add a text box to the input grid of the control
             tb = new dynTextBox();
+            tb.AcceptsReturn = true;
+            tb.AcceptsTab = true;
+            tb.TextWrapping = TextWrapping.Wrap;
+            tb.MaxWidth = 120;
 
             nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
@@ -2859,12 +2875,26 @@ namespace Dynamo.Nodes
         }
     }
 
+    public class dynNodeButton : System.Windows.Controls.Button
+    {
+        public dynNodeButton() : base()
+        {
+            var dict = new ResourceDictionary();
+            var uri = new Uri("/DynamoElements;component/Themes/DynamoModern.xaml", UriKind.Relative);
+            dict.Source = uri;
+            Style = (Style)dict["SNodeTextButton"];
+
+            this.Margin = new Thickness(1);
+        }
+
+    }
+
     [NodeName("Filename")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Allows you to select a file on the system to get its filename.")]
     public class dynStringFilename : dynBasicInteractive<string>
     {
-        System.Windows.Controls.TextBox tb;
+        TextBox tb;
 
         public dynStringFilename()
         {
@@ -2874,8 +2904,9 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();
-            //readFileButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+            var readFileButton = new dynNodeButton();
+
+            readFileButton.Margin = new System.Windows.Thickness(4);
             readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             readFileButton.Click += new System.Windows.RoutedEventHandler(readFileButton_Click);
@@ -2889,7 +2920,7 @@ namespace Dynamo.Nodes
 
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            var backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
             tb.Background = backgroundBrush;
             tb.BorderThickness = new Thickness(0);
             tb.IsReadOnly = true;

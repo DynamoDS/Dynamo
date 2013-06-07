@@ -39,8 +39,8 @@ namespace Dynamo.FSchemeInterop.Node
         /// <returns></returns>
         public Expression Compile()
         {
-            var symbols = new Dictionary<INode, string>();
-            var letEntries = new Dictionary<INode, List<INode>>();
+            Dictionary<INode, string> symbols;
+            Dictionary<INode, List<INode>> letEntries;
 
             if (!GraphAnalysis.LetOptimizations(this, out symbols, out letEntries))
                 throw new Exception("Can't compile INode, graph is not a DAG.");
@@ -108,8 +108,10 @@ namespace Dynamo.FSchemeInterop.Node
             Dictionary<INode, List<INode>> letEntries,
             HashSet<string> initializedIds);
 
+// ReSharper disable InconsistentNaming
         protected internal List<INode> children = new List<INode>();
         protected internal List<INode> parents = new List<INode>();
+// ReSharper restore InconsistentNaming
 
         /// <summary>
         /// All inputs to this node.
@@ -541,13 +543,50 @@ namespace Dynamo.FSchemeInterop.Node
             Dictionary<INode, List<INode>> letEntries,
             HashSet<string> initializedIds)
         {
-            return Utils.MakeAnon(Inputs, EntryPoint.compile(symbols, letEntries, initializedIds));
+            var uninitialized = new HashSet<INode>();
+            GatherUninitializedIds(EntryPoint, symbols, initializedIds, uninitialized);
+
+            var initialized = new List<Expression>();
+
+            foreach (var node in uninitialized)
+            {
+                var symbol = symbols[node];
+
+                symbols.Remove(node);
+                var binding = node.compile(symbols, letEntries, initializedIds);
+                symbols[node] = symbol;
+                initialized.Add(Expression.NewSetId(symbol, binding));
+                initializedIds.Add(symbol);
+            }
+
+            initialized.Add(Utils.MakeAnon(Inputs, EntryPoint.compile(symbols, letEntries, initializedIds)));
+
+            return Expression.NewBegin(Utils.SequenceToFSharpList(initialized));
+        }
+
+        private static void GatherUninitializedIds(INode entryPoint, Dictionary<INode, string> symbols, HashSet<string> initializedIds, HashSet<INode> uninitialized)
+        {
+            string symbol;
+            if (symbols.TryGetValue(entryPoint, out symbol))
+            {
+                if (!initializedIds.Contains(symbol))
+                {
+                    uninitialized.Add(entryPoint);
+                }
+            }
+
+            foreach (var c in entryPoint.Children)
+            {
+                GatherUninitializedIds(c, symbols, initializedIds, uninitialized);
+            }
         }
 
         public AnonymousFunctionNode(IEnumerable<string> inputList, INode entryPoint)
             : base(inputList)
         {
             EntryPoint = entryPoint;
+            children.Add(entryPoint);
+            entryPoint.parents.Add(this);
         }
 
         public AnonymousFunctionNode(INode entryPoint)

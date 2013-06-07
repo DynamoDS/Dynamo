@@ -30,16 +30,34 @@ namespace Dynamo.Nodes
         
         public dynNoteViewModel ViewModel
         {
-            get { return (dynNoteViewModel)DataContext; }
+            get
+            {
+                if (this.DataContext is dynNoteViewModel)
+                    return (dynNoteViewModel)this.DataContext;
+                else
+                    return null;
+            }
         }
 
         public dynNoteView()
         {
             InitializeComponent();
 
+            // for debugging purposes
+            this.DataContextChanged += OnDataContextChanged;
+
             // update the size of the element when the text changes
-            noteText.SizeChanged += (sender, args) => ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
+            noteText.SizeChanged += (sender, args) =>
+                {
+                    if (ViewModel != null)
+                        ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
+                };
             noteText.PreviewMouseDown += new MouseButtonEventHandler(noteText_PreviewMouseDown);
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            
         }
 
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)

@@ -307,6 +307,47 @@
         </Setter>
     </Style>
 
+    <Style x:Key="SNodeTextButton" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+
+                    <Grid x:Name="container" Background="Transparent">
+                        <Grid x:Name="inner">
+
+                            <Grid.Background>
+                                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                                    <GradientStop Color="#CCFFFFFF" Offset="0.0" />
+                                    <GradientStop Color="#55FFFFFF" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Grid.Background>
+
+                            <TextBlock x:Name="text" HorizontalAlignment="Center" Foreground="Black" Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Margin}" FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" Padding="1"></TextBlock>
+                        </Grid>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="Button.IsMouseOver" Value="true">
+                            <Setter TargetName="inner" Property = "Background" Value="#CCFFFFFF"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="text" Property = "Foreground" Value="DarkGray"/>
+                            <Setter TargetName="inner" Property = "Background" Value="#CCFFFFFF"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="true">
+                            <Setter TargetName="text" Property = "Foreground" Value="Black"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="SSearchButton" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>

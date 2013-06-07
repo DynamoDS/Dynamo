@@ -255,14 +255,31 @@ namespace Dynamo.Applications
             MessageBox.Show(message, "Dynamo Error", MessageBoxButtons.OK, MessageBoxIcon.Error,
                             MessageBoxDefaultButton.Button1);
 
-            args.Handled = true;
+            try
+            {
+                DynamoLogger.Instance.Log("Dynamo Unhandled Exception");
+                DynamoLogger.Instance.Log(exceptionMessage);
+            }
+            catch
+            {
 
-            DynamoLogger.Instance.Log("Dynamo Unhandled Exception");
-            DynamoLogger.Instance.Log(exceptionMessage);
+            }
 
-            dynamoController.DynamoViewModel.ExitCommand.Execute();
-            dynamoController.DynamoViewModel.ReportABugCommand.Execute();
+            try
+            {
+                dynamoController.DynamoViewModel.ExitCommand.Execute();
+                dynamoController.DynamoViewModel.ReportABugCommand.Execute();
+            }
+            catch
+            {
 
+            }
+            finally
+            {
+
+                args.Handled = true;
+            }
+            
         }
 
         /// <summary>

@@ -47,8 +47,18 @@ namespace Dynamo
         /// <param name="message"></param>
         public void Log(string message)
         {
-            if(Writer!=null)
-                Writer.WriteLine(string.Format("{0} : {1}", DateTime.Now, message));
+            if (Writer != null)
+            {
+                try
+                {
+                    Writer.WriteLine(string.Format("{0} : {1}", DateTime.Now, message));
+                }
+                catch
+                {
+                    // likely caught if the writer is closed
+                }
+            }
+                
         }
 
         public void Log(dynNodeModel node)
@@ -90,7 +100,7 @@ namespace Dynamo
             {
                 try
                 {
-                    Writer.WriteLine("Goodbye.");
+                    this.Log("Goodbye");
                     Writer.Close();
                 }
                 catch

@@ -147,9 +147,7 @@ namespace Dynamo
             if (dynSettings.Controller.IsProcessingCommandQueue)
                 return;
 
-            // rerun everthyng to make the objects appear
-            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null));
-            dynSettings.Controller.ProcessCommandQueue();
+            dynSettings.Controller.RunCommand( dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null );
         }
 
         public bool FullscreenWatchVisible
@@ -291,15 +289,14 @@ namespace Dynamo
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
             //connector view models are added during connection
-            _model.Nodes.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Nodes_CollectionChanged);
-            _model.Notes.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Notes_CollectionChanged);
-            _model.Connectors.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Connectors_CollectionChanged);
+            _model.Nodes.CollectionChanged += Nodes_CollectionChanged;
+            _model.Notes.CollectionChanged += Notes_CollectionChanged;
+            _model.Connectors.CollectionChanged += Connectors_CollectionChanged;
             _model.PropertyChanged += ModelPropertyChanged;
 
             HideCommand = new DelegateCommand<object>(Hide, CanHide);
             CrossSelectCommand = new DelegateCommand<object>(CrossingSelect, CanCrossSelect);
             ContainSelectCommand = new DelegateCommand<object>(ContainSelect, CanContainSelect);
-            UpdateSelectedConnectorsCommand = new DelegateCommand(UpdateSelectedConnectors, CanUpdateSelectedConnectors);
             SetCurrentOffsetCommand = new DelegateCommand<object>(SetCurrentOffset, CanSetCurrentOffset);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
@@ -333,7 +330,7 @@ namespace Dynamo
             }
         }
 
-        void Notes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
@@ -427,9 +424,6 @@ namespace Dynamo
 
             foreach (dynNodeModel n in Model.Nodes)
             {
-                //check if the node is within the boundary
-                //double x0 = Canvas.GetLeft(n);
-                //double y0 = Canvas.GetTop(n);
                 double x0 = n.X;
                 double y0 = n.Y;
                 double x1 = x0 + n.Width;
@@ -475,29 +469,6 @@ namespace Dynamo
         {
             return true;
         } 
-
-        private void UpdateSelectedConnectors()
-        {
-
-            var allConnectors = DynamoSelection.Instance.Selection.OfType<dynNodeModel>()
-                                                               .SelectMany(
-                                                                   el => el.OutPorts
-                                                                           .SelectMany(x => x.Connectors)
-                                                                           .Concat(
-                                                                               el.InPorts.SelectMany(
-                                                                                   x => x.Connectors))).Distinct();
-
-            foreach (dynConnectorModel connector in allConnectors)
-            {
-                Debug.WriteLine("Connectors no longer call redraw....is it still working?");
-                //connector.Redraw();
-            }
-        }
-
-        private bool CanUpdateSelectedConnectors()
-        {
-            return true;
-        }
 
         private void SetCurrentOffset(object parameter)
         {
@@ -545,7 +516,7 @@ namespace Dynamo
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         internal void CollapseNodes(IEnumerable<dynNodeModel> selectedNodes)
         {
-            Dynamo.Utilities.NodeCollapser.Collapse(selectedNodes, dynSettings.Controller.DynamoViewModel.CurrentSpace);
+            NodeCollapser.Collapse(selectedNodes, dynSettings.Controller.DynamoViewModel.CurrentSpace);
         }
     }
 
