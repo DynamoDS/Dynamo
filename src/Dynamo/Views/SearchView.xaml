@@ -90,17 +90,17 @@ Source="..\Images\search_24.png" Opacity="1">
                             <ControlTemplate TargetType="{x:Type ToggleButton}">
 
                                 <Border Width="32" Background="Transparent">
-                                    <Border SnapsToDevicePixels="true" Width="24" Height="8" Background="{TemplateBinding Background}" x:Name="border">
+                                    <Border SnapsToDevicePixels="true" Width="24" Height="10" Background="{TemplateBinding Background}" x:Name="border">
                                         <Path HorizontalAlignment="Center" 
                                               Margin="1,1,1,1" x:Name="ExpandPath" Fill="{TemplateBinding Foreground}" 
-                                              Data="M 0 8 L 4 4 L 0 0 Z"/>
+                                              Data="M 0 10 L 5 5 L 0 0 Z"/>
                                     </Border>
                                 </Border> 
                                 
                                 <ControlTemplate.Triggers>
                                     
                                     <Trigger Property="IsChecked" Value="True">
-                                        <Setter Property="Data" TargetName="ExpandPath" Value="M 0 0 L 4 4 L 8 0 Z"/>
+                                        <Setter Property="Data" TargetName="ExpandPath" Value="M 0 0 L 5 5 L 10 0 Z"/>
                                         <Setter Property="Foreground" Value="White"/>
                                     </Trigger>
                                     
