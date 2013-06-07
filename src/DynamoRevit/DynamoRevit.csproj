@@ -88,6 +88,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters.cs" />
     <Compile Include="DynamoController_Revit.cs" />
     <Compile Include="dynFunctionWithRevit.cs" />
     <Compile Include="dynRevitAPINode.cs" />

@@ -16,13 +16,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Data;
+
 using Autodesk.Revit.DB;
+
+using Microsoft.FSharp.Collections;
+
+using Dynamo.Utilities;
+using Dynamo.Revit;
 using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
-using Microsoft.FSharp.Collections;
-using Dynamo.Utilities;
-using Dynamo.Revit;
+using Dynamo.Controls;
 
 namespace Dynamo.Nodes
 {
@@ -243,6 +251,72 @@ namespace Dynamo.Nodes
             return Value.NewNumber(ptA.DistanceTo(ptB));
         }
     }
+
+    /*
+    [NodeName("Length")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Enter a length in project units.")]
+    public class dynLengthInput : dynDouble
+    {
+        public dynLengthInput()
+        {
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        {
+            //add a text box to the input grid of the control
+            var tb = new dynTextBox();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            NodeUI.inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+            tb.IsNumeric = false;
+            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+
+            tb.DataContext = this;
+            var bindingVal = new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new RevitProjectUnitsConverter(),
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, bindingVal);
+
+            tb.Text = "0.0";
+        }
+
+        public override double Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                if (base.Value == value)
+                    return;
+
+                base.Value = value;
+                //RaisePropertyChanged("Value");
+            }
+        }
+
+        protected override double DeserializeValue(string val)
+        {
+            try
+            {
+                return Convert.ToDouble(val);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+    }*/
 }
 
 

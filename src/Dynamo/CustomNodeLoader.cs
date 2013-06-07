@@ -505,14 +505,17 @@ namespace Dynamo.Utilities
 
                 DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
-                var workSpace = new FuncWorkspace(
+                var ws = new FuncWorkspace(
                     funName, category.Length > 0
                     ? category
-                    : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES, cx, cy);
+                    : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES, cx, cy)
+                {
+                    WatchChanges = false
+                };
 
                 def = new FunctionDefinition(Guid.Parse(id))
                     {
-                        Workspace = workSpace
+                        Workspace = ws
                     };
 
                 // load a dummy version, so any nodes depending on this node
@@ -520,8 +523,6 @@ namespace Dynamo.Utilities
                 FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
                 this.loadedNodes.Add(def.FunctionId, def);
-
-                dynWorkspaceModel ws = def.Workspace;
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
@@ -533,7 +534,7 @@ namespace Dynamo.Utilities
 
                 #region instantiate nodes
 
-                List<Guid> badNodes = new List<Guid>();
+                var badNodes = new List<Guid>();
 
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
@@ -551,7 +552,7 @@ namespace Dynamo.Utilities
 
                     string typeName = typeAttrib.Value;
 
-                    string oldNamespace = "Dynamo.Elements.";
+                    const string oldNamespace = "Dynamo.Elements.";
                     if (typeName.StartsWith(oldNamespace))
                         typeName = "Dynamo.Nodes." + typeName.Remove(0, oldNamespace.Length);
 
@@ -586,7 +587,7 @@ namespace Dynamo.Utilities
                             foreach (KeyValuePair<string, TypeLoadData> kvp in controller.BuiltInTypesByName)
                             {
                                 var akaAttribs = kvp.Value.Type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), false);
-                                if (akaAttribs.Count() > 0)
+                                if (akaAttribs.Any())
                                 {
                                     if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
                                     {
@@ -766,6 +767,8 @@ namespace Dynamo.Utilities
 
                 var expression = CompileFunction(def);
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), expression);
+
+                ws.WatchChanges = true;
 
             }
             catch (Exception ex)

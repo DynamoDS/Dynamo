@@ -2005,7 +2005,7 @@ namespace Dynamo.Nodes
 
     #region Base Classes
 
-    class dynTextBox : TextBox
+    public class dynTextBox : TextBox
     {
         public event Action OnChangeCommitted;
 
