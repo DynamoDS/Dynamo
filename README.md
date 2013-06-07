@@ -28,6 +28,7 @@ Known Issues
 
 Fixes
 - Can now run Python scripts from disk location and embedded
+- Autocomplete now works in Vasari
 - Deluany Tessellation node is working 
 - Preview 3d geometry in the view background refreshing properly
 - Formula node can now copy paste
@@ -41,8 +42,9 @@ Fixes
 - Auto-Mapping (lacing)improvments
 
 New
-- OffsetCurves node.
-- Update CurveByPoints node to allow for creation of reference lines.
+- Iron Python 2.7.3 bundled with install
+- OffsetCurves node
+- Update CurveByPoints node to allow for creation of reference lines
 - Reference Curve Node
 - More list management nodes: sublist, slice,  flatten
 - Preview geometry is now controlled on a per-node basis (right click menu)
@@ -50,9 +52,9 @@ New
 - Open file defaults to sample directory
 - UI improvements and cleanup
 - Cache previous position of Dynamo window, do not maximize on startup
-- Add XYZStartEndVector, CrossProduct, Negate, and Average.
-- Add section view, iso view, and bounding box.
-- Normalize the vectors when creating a transform.
+- Add XYZStartEndVector, CrossProduct, Negate, and Average
+- Add section view, iso view, and bounding box
+- Normalize the vectors when creating a transform
 - Lacing is set to "Longest" by default
 - Updates, fixes, and culling of Samples
 
