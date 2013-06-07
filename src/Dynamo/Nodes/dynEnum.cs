@@ -29,7 +29,7 @@ namespace Dynamo.Nodes
             SelectedIndex = 0;
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             var comboBox = new ComboBox
                 {
@@ -39,7 +39,7 @@ namespace Dynamo.Nodes
                     VerticalAlignment = VerticalAlignment.Center
                 };
 
-            NodeUI.inputGrid.Children.Add(comboBox);
+            nodeUI.inputGrid.Children.Add(comboBox);
 
             Grid.SetColumn(comboBox, 0);
             Grid.SetRow(comboBox, 0);

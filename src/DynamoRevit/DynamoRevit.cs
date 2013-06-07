@@ -258,7 +258,7 @@ namespace Dynamo.Applications
             args.Handled = true;
 
             DynamoLogger.Instance.Log("Dynamo Unhandled Exception");
-            DynamoLogger.Instance.Log(message);
+            DynamoLogger.Instance.Log(exceptionMessage);
 
             dynamoController.DynamoViewModel.ExitCommand.Execute();
             dynamoController.DynamoViewModel.ReportABugCommand.Execute();

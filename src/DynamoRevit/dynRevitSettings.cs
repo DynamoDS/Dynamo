@@ -598,6 +598,27 @@ namespace Dynamo.Utilities
                     return null;
                 }
             }
+       
+            public static Reference RequestReferenceXYZSelection(UIDocument doc, string message)
+            {
+                try
+                {
+                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                    choices.Elements.Clear();
+
+                    dynSettings.Controller.DynamoViewModel.Log(message);
+
+                    Reference xyzRef = doc.Selection.PickObject(ObjectType.PointOnElement);
+
+
+                    return xyzRef;
+                }
+                catch (Exception ex)
+                {
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
+                    return null;
+                }
+            }
         }
 
         public static DynamoController_Revit Controller { get; internal set; }

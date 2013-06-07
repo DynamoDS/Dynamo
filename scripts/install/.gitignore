@@ -1,6 +1,7 @@
 # override specific installer exes#
 ###################
 !Extra/fsharp_redist.exe
+!Extra/IronPython*.msi
 /bin
 /definitions
 /sample

@@ -90,11 +90,11 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             watchTree = new WatchTree();
 
-            NodeUI.inputGrid.Children.Add(watchTree);
+            nodeUI.inputGrid.Children.Add(watchTree);
 
             watchTreeBranch = watchTree.FindResource("Tree") as WatchTreeBranch;
         }

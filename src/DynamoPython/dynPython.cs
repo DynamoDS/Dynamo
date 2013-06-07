@@ -20,233 +20,18 @@ using System.Windows.Input;
 using System.Xml;
 
 using Dynamo.Connectors;
-using Dynamo.Utilities;
 using DynamoPython;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using IronPython.Hosting;
 
-using Microsoft.Scripting;
-using Microsoft.Scripting.Hosting;
-using Microsoft.FSharp.Core;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-    internal static class Converters
-    {
-        internal static Value convertPyFunction(Func<IList<dynamic>, dynamic> pyf)
-        {
-            return Value.NewFunction(
-                FSharpFunc<FSharpList<Value>, Value>.FromConverter(
-                    args =>
-                        convertToValue(
-                            pyf(args.Select(ex => convertFromValue(ex)).ToList()))));
-        }
-
-        internal static Value convertToValue(dynamic data)
-        {
-            if (data is Value)
-                return data;
-            else if (data is string)
-                return Value.NewString(data);
-            else if (data is double)
-                return Value.NewNumber(data);
-            else if (data is IEnumerable<dynamic>)
-            {
-                FSharpList<Value> result = FSharpList<Value>.Empty;
-
-                data.reverse();
-
-                foreach (var x in data)
-                {
-                    result = FSharpList<Value>.Cons(convertToValue(x), result);
-                }
-
-                return Value.NewList(result);
-            }
-            //else if (data is PythonFunction)
-            //{
-            //   return FuncContainer.MakeFunction(
-            //      new FScheme.ExternFunc(
-            //         args =>
-            //            convertToValue(
-            //               data(args.Select(ex => convertFromValue(ex)))
-            //            )
-            //      )
-            //   );
-            //}
-            //else if (data is Func<dynamic, dynamic>)
-            //{
-            //   return Value.NewCurrent(FuncContainer.MakeContinuation(
-            //      new Continuation(
-            //         exp =>
-            //            convertToValue(
-            //               data(convertFromValue(exp))
-            //            )
-            //      )
-            //   ));
-            //}
-            else
-                return Value.NewContainer(data);
-        }
-
-        internal static dynamic convertFromValue(Value exp)
-        {
-            if (exp.IsList)
-                return ((Value.List)exp).Item.Select(x => convertFromValue(x)).ToList();
-            else if (exp.IsNumber)
-                return ((Value.Number)exp).Item;
-            else if (exp.IsString)
-                return ((Value.String)exp).Item;
-            else if (exp.IsContainer)
-                return ((Value.Container)exp).Item;
-            //else if (exp.IsFunction)
-            //{
-            //   return new Func<IList<dynamic>, dynamic>(
-            //      args =>
-            //         ((Value.Function)exp).Item
-            //            .Invoke(ExecutionEnvironment.IDENT)
-            //            .Invoke(Utils.convertSequence(args.Select(
-            //               x => (Value)Converters.convertToValue(x)
-            //            )))
-            //   );
-            //}
-            //else if (exp.IsSpecial)
-            //{
-            //   return new Func<IList<dynamic>, dynamic>(
-            //      args =>
-            //         ((Value.Special)exp).Item
-            //            .Invoke(ExecutionEnvironment.IDENT)
-            //            .Invoke(
-            //}
-            //else if (exp.IsCurrent)
-            //{
-            //   return new Func<dynamic, dynamic>(
-            //      ex => 
-            //         Converters.convertFromValue(
-            //            ((Value.Current)exp).Item.Invoke(Converters.convertToValue(ex))
-            //         )
-            //   );
-            //}
-            else
-                throw new Exception("Not allowed to pass Functions into a Python Script.");
-        }
-    }
-
-    internal class DynPythonEngine
-    {
-        private ScriptEngine engine;
-        private ScriptSource source;
-
-        public DynPythonEngine()
-        {
-            this.engine = Python.CreateEngine();
-        }
-
-        public void ProcessCode(string code)
-        {
-            code = "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n" + code;
-            this.source = engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
-        }
-
-        public Value Evaluate(IEnumerable<Binding> bindings)
-        {
-            var scope = this.engine.CreateScope();
-
-            foreach (var bind in bindings)
-            {
-                scope.SetVariable(bind.Symbol, bind.Value);
-            }
-
-            try
-            {
-                this.source.Execute(scope);
-            }
-            catch (SyntaxErrorException ex)
-            {
-                throw new Exception(
-                    ex.Message
-                    + " at Line " + (ex.Line - 4)
-                    + ", Column " + ex.Column
-                    );
-            }
-            catch(Exception e)
-            {
-                dynSettings.Controller.DynamoViewModel.Log("Unable to execute python script:");
-                dynSettings.Controller.DynamoViewModel.Log(e.Message);
-                dynSettings.Controller.DynamoViewModel.Log(e.StackTrace);
-
-                return Value.NewNumber(0);
-            }
-
-            Value result = Value.NewNumber(1);
-
-            if (scope.ContainsVariable("OUT"))
-            {
-                dynamic output = scope.GetVariable("OUT");
-
-                result = Converters.convertToValue(output);
-            }
-
-            return result;
-        }
-    }
-
-    public struct Binding
-    {
-        public string Symbol;
-        public dynamic Value;
-
-        public Binding(string sym, dynamic val)
-        {
-            this.Symbol = sym;
-            this.Value = val;
-        }
-    }
-
-    public static class PythonBindings
-    {
-        static PythonBindings()
-        {
-            Bindings = new HashSet<Binding>();
-            Bindings.Add(new Binding("__dynamo__", dynSettings.Controller));
-        }
-
-        public static HashSet<Binding> Bindings { get; private set; }
-    }
-
-    public static class PythonEngine
-    {
-        public delegate Value EvaluationDelegate(bool dirty, string script, IEnumerable<Binding> bindings);
-        public delegate void DrawDelegate(Value val, RenderDescription rd);
-
-        public static EvaluationDelegate Evaluator;
-
-        public static DrawDelegate Drawing;
-
-        private static DynPythonEngine engine = new DynPythonEngine();
-
-        static PythonEngine()
-        {
-            Evaluator = delegate(bool dirty, string script, IEnumerable<Binding> bindings)
-            {
-                if (dirty)
-                {
-                    engine.ProcessCode(script);
-                    dirty = false;
-                }
-
-                return engine.Evaluate(PythonBindings.Bindings.Concat(bindings));
-            };
-
-            Drawing = delegate(Value val, RenderDescription rd) {};
-        }
-    }
-
+    
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs an embedded IronPython script")]
@@ -255,6 +40,9 @@ namespace Dynamo.Nodes
         private bool dirty = true;
         private Value lastEvalValue;
 
+        /// <summary>
+        /// Allows a scripter to have a persistent reference to previous runs.
+        /// </summary>
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
         private string script = "#The input to this node will be stored in the IN variable.\ndataEnteringNode = IN\n\n#Assign your output to the OUT variable\nOUT = 0";
@@ -271,7 +59,7 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             //topControl.Height = 200;
             //topControl.Width = 300;
@@ -281,9 +69,9 @@ namespace Dynamo.Nodes
             var editWindowItem = new System.Windows.Controls.MenuItem();
             editWindowItem.Header = "Edit...";
             editWindowItem.IsCheckable = false;
-            NodeUI.MainContextMenu.Items.Add(editWindowItem);
+            nodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
-            NodeUI.UpdateLayout();
+            nodeUI.UpdateLayout();
         }
 
         //TODO: Make this smarter
@@ -323,7 +111,7 @@ namespace Dynamo.Nodes
                .Concat(PythonBindings.Bindings)
                .ToList();
 
-            bindings.Add(new Binding("__persistant__", this.stateDict));
+            bindings.Add(new Binding("__persistent__", this.stateDict));
 
             return bindings;
         }
@@ -347,7 +135,7 @@ namespace Dynamo.Nodes
                 editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
                 editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
 
-                var pythonHighlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
+                const string pythonHighlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
                 var elem = GetType().Assembly.GetManifestResourceStream("DynamoPython.Resources." + pythonHighlighting);
 
                 editWindow.editText.SyntaxHighlighting =
@@ -445,13 +233,15 @@ namespace Dynamo.Nodes
         }
     }
 
-
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs a IronPython script from a string")]
     public class dynPythonString : dynNodeWithOneOutput
     {
-        private DynPythonEngine engine = new DynPythonEngine();
+
+        /// <summary>
+        /// Allows a scripter to have a persistent reference to previous runs.
+        /// </summary>
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
         public dynPythonString()
@@ -468,23 +258,24 @@ namespace Dynamo.Nodes
         private List<Binding> makeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
-            var bindings = this.InPortData
+            var bindings = 
+               this.InPortData
                .Select(x => x.NickName)
                .Zip(args, (s, v) => new Binding(s, Converters.convertFromValue(v)))
                .Concat(PythonBindings.Bindings)
                .ToList();
 
-            bindings.Add(new Binding("__persistant__", this.stateDict));
+            bindings.Add(new Binding("__persistent__", this.stateDict));
 
             return bindings;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return PythonEngine.Evaluator(
-                RequiresRecalc, 
-                ((Value.String)args[0]).Item, 
-                makeBindings(args.Skip(1)));
+            var script = ((Value.String) args[0]).Item;
+            var bindings = makeBindings(args);
+            var value = PythonEngine.Evaluator( RequiresRecalc, script, bindings);
+            return value;
         }
     }
 }

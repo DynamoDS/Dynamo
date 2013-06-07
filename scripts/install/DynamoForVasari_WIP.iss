@@ -1,6 +1,6 @@
 [Setup]
 AppName=Dynamo
-AppVerName=Dynamo WIP 0.3.4 for Vasari Beta 2 
+AppVerName=Dynamo WIP 0.4.0 for Vasari Beta 2 
 AppPublisher=Autodesk, Inc.
 AppID={{5F61EC1C-39EF-4E21-80DA-55621BB20B2A}
 AppCopyright=
@@ -26,7 +26,7 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\Nodes_32_32.ico
-UninstallDisplayName=Dynamo WIP for Vasari Beta 2
+UninstallDisplayName=Dynamo WIP 0.4.0 for Vasari Beta 2
 PrivilegesRequired=none
 UsePreviousAppDir=no
 
@@ -49,6 +49,8 @@ Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Comp
 Source: Extra\Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForVasariWIP
 Source: Extra\README.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoForVasariWIP
 Source: Extra\fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForVasariWIP
+Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
+
 ;Training Files
 Source: temp\samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 Source: temp\definitions\*.dyf; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
@@ -58,6 +60,7 @@ Type: files; Name: "{userappdata}\Autodesk\Vasari\Addins\2013\Dynamo.addin"
 
 [Run]
 Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
+Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
 
 [Code]
 { HANDLE INSTALL PROCESS STEPS }

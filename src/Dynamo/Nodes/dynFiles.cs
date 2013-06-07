@@ -107,7 +107,7 @@ namespace Dynamo.Nodes
 
         public dynFileReader()
         {
-            handler = new FileSystemEventHandler(watcher_FileChanged);
+            handler = watcher_FileChanged;
 
             InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
             OutPortData.Add(new PortData("contents", "File contents", typeof(string)));
@@ -136,15 +136,7 @@ namespace Dynamo.Nodes
             {
                 string contents;
 
-                using (var fs = new FileStream(storedPath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    using (var reader = new StreamReader(fs))
-                    {
-                        contents = reader.ReadToEnd();
-                    }
-                }
-
-                //reader.Close();
+                contents = File.ReadAllText(storedPath);
 
                 return Value.NewString(contents);
             }
@@ -173,7 +165,7 @@ namespace Dynamo.Nodes
 
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             image1 = new System.Windows.Controls.Image();
             image1.Width = 320;
@@ -185,7 +177,7 @@ namespace Dynamo.Nodes
 
             //image1.Margin = new Thickness(0, 0, 0, 0);
 
-            NodeUI.inputGrid.Children.Add(image1);
+            nodeUI.inputGrid.Children.Add(image1);
             //NodeUI.Width = 450;
             //NodeUI.Height = 240 + 5;
         }

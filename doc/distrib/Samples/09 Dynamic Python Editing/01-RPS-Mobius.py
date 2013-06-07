@@ -6,12 +6,22 @@ import math
 app = __revit__.Application
 doc = __revit__.ActiveUIDocument.Document
 
+# The __persistent__ dictionary gives you a persistent
+# dictionary between runs.  Here we use it to store elements
+# we wish to clean up later.
 
-if DynStoredElements.Count>0:
+# Initialize if it's not already created.
+if 'oldElements' not in __persistent__:
+	__persistent__['oldElements'] = []
+
+#delete old elements
+if __persistent__['oldElements'].Count > 0:
      count = 0
-     for eID in DynStoredElements:
-          e = doc.get_Element(DynStoredElements[count])
-          doc.Delete(e)
+     for eID in __persistent__['oldElements']:
+          doc.Delete( __persistent__['oldElements'][count] )
+
+# Clear the dictionary as we've deleted those old elements
+__persistent__['oldElements'] = []
 		  
 #Declare surface parameters
 R = 4.0
@@ -69,5 +79,5 @@ while (u <= (u1)):
  
 #create surface
 loft = doc.FamilyCreate.NewLoftForm(True, refarar)
-DynStoredElements.Add(loft.Id)
+__persistent__['oldElements'].Add(loft.Id)
 OUT = loft

@@ -166,9 +166,6 @@ namespace Dynamo.Views
             if (e.Key != Key.LeftCtrl && e.Key != Key.RightCtrl)
                 return;
 
-
-            System.Console.WriteLine("Hello World");
-
         }
 
         private void dynWorkspaceView_KeyUp(object sender, KeyEventArgs e)
@@ -332,22 +329,24 @@ namespace Dynamo.Views
 
         internal void CenterViewOnElement(object sender, EventArgs e)
         {
-            dynWorkspaceViewModel vm = (DataContext as dynWorkspaceViewModel);
+            this.Dispatcher.BeginInvoke((Action) delegate
+                {
 
-            //double left = Canvas.GetLeft(e);
-            //double top = Canvas.GetTop(e);
-            dynNodeModel n = (e as NodeEventArgs).Node;
+                    var vm = (DataContext as dynWorkspaceViewModel);
 
-            double left = n.X;
-            double top = n.Y;
+                    var n = (e as NodeEventArgs).Node;
 
-            //MVVM:can't access the logscroller here - we'll have to just center the node for now.
-            double x = left + n.Width / 2 - outerCanvas.ActualWidth / 2;
-            double y = top + n.Height/2 - outerCanvas.ActualHeight/2;  // - LogScroller.ActualHeight);
+                    double left = n.X;
+                    double top = n.Y;
 
-            //MVVM : replaced direct set with command call on view model
-            //CurrentOffset = new Point(-x, -y);
-            vm.SetCurrentOffsetCommand.Execute(new Point(-x, -y));
+                    double x = left + n.Width/2 - outerCanvas.ActualWidth/2;
+                    double y = top + n.Height/2 - outerCanvas.ActualHeight/2;
+
+                    var offset = new Point(-x, -y);
+
+                    vm.CurrentOffset = offset;
+
+                });
         }
 
         private void DrawGrid()

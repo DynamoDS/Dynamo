@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Reflection;
-using System.IO;
 using System.Diagnostics;
-using Autodesk.Revit.Attributes;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Autodesk.Revit.DB;
+using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Revit;
-using Dynamo.Controls;
 using Dynamo.Utilities;
-
-using Autodesk.Revit.DB;
-
-using Microsoft.FSharp.Core;
-using Microsoft.FSharp.Collections;
-
 using Value = Dynamo.FScheme.Value;
-
 
 namespace Dynamo
 {
@@ -38,8 +29,8 @@ namespace Dynamo
             AddPythonBindings();
             AddWatchNodeHandler();
 
-            dynRevitSettings.Revit.Application.DocumentClosed += new EventHandler<Autodesk.Revit.DB.Events.DocumentClosedEventArgs>(Application_DocumentClosed);
-            dynRevitSettings.Revit.Application.DocumentOpened += new EventHandler<Autodesk.Revit.DB.Events.DocumentOpenedEventArgs>(Application_DocumentOpened);
+            dynRevitSettings.Revit.Application.DocumentClosed += Application_DocumentClosed;
+            dynRevitSettings.Revit.Application.DocumentOpened += Application_DocumentOpened;
 
         }
 
@@ -94,28 +85,28 @@ namespace Dynamo
                 if (ironPythonAssembly == null)
                     throw new Exception();
 
-                var PythonBindings = ironPythonAssembly.GetType("Dynamo.Nodes.PythonBindings");
+                var PythonBindings = ironPythonAssembly.GetType("DynamoPython.PythonBindings");
 
                 var pyBindingsProperty = PythonBindings.GetProperty("Bindings");
                 var pyBindings = pyBindingsProperty.GetValue(null, null);
 
-                var Binding = ironPythonAssembly.GetType("Dynamo.Nodes.Binding");
+                var Binding = ironPythonAssembly.GetType("DynamoPython.Binding");
 
                 Func<string, object, object> CreateBinding = delegate(string name, object boundObject)
                 {
                     return Activator.CreateInstance(Binding, new object[] { name, boundObject });
                 };
 
-                Action<string, object> AddToBindings = delegate(string name, object boundObject)
+                Action<string, object> addToBindings = delegate(string name, object boundObject)
                 {
                     pyBindings.GetType().InvokeMember("Add", BindingFlags.InvokeMethod, null, pyBindings, new object[] { CreateBinding(name, boundObject) });
                 };
 
-                AddToBindings("DynLog", new LogDelegate(dynSettings.Controller.DynamoViewModel.Log)); //Logging
+                addToBindings("DynLog", new LogDelegate(dynSettings.Controller.DynamoViewModel.Log)); //Logging
 
-                AddToBindings(
+                addToBindings(
                    "DynTransaction",
-                   new Func<Autodesk.Revit.DB.SubTransaction>(
+                   new Func<SubTransaction>(
                       delegate
                       {
                           if (!dynRevitSettings.Controller.IsTransactionActive())
@@ -125,10 +116,10 @@ namespace Dynamo
                           return new Autodesk.Revit.DB.SubTransaction(dynRevitSettings.Doc.Document);
                       }));
 
-                AddToBindings("__revit__", dynRevitSettings.Doc.Application);
-                AddToBindings("__doc__", dynRevitSettings.Doc.Application.ActiveUIDocument.Document);
+                addToBindings("__revit__", dynRevitSettings.Doc.Application);
+                addToBindings("__doc__", dynRevitSettings.Doc.Application.ActiveUIDocument.Document);
 
-                var PythonEngine = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine");
+                var PythonEngine = ironPythonAssembly.GetType("DynamoPython.PythonEngine");
                 var evaluatorField = PythonEngine.GetField("Evaluator");
 
                 oldPyEval = (dynamic)evaluatorField.GetValue(null);
@@ -137,7 +128,7 @@ namespace Dynamo
                 //foreach (var y in x)
                 //    Console.WriteLine(y);
 
-                var evalDelegateType = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine+EvaluationDelegate");
+                var evalDelegateType = ironPythonAssembly.GetType("DynamoPython.PythonEngine+EvaluationDelegate");
 
                 Delegate d = Delegate.CreateDelegate(
                     evalDelegateType,
@@ -150,7 +141,7 @@ namespace Dynamo
                     d);
 
                 var drawingField = PythonEngine.GetField("Drawing");
-                var drawDelegateType = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine+DrawDelegate");
+                var drawDelegateType = ironPythonAssembly.GetType("DynamoPython.PythonEngine+DrawDelegate");
                 Delegate draw = Delegate.CreateDelegate(
                     drawDelegateType,
                     this,
@@ -162,6 +153,7 @@ namespace Dynamo
                 // use this to pass into the python script a list of previously created elements from dynamo
                 //TODO: ADD BACK IN
                 //bindings.Add(new Binding("DynStoredElements", this.Elements));
+
             }
             catch (Exception e)
             {

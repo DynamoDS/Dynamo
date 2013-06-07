@@ -79,11 +79,11 @@ namespace Dynamo.Nodes
 
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
             Button analysisResultButt = new Button();
-            NodeUI.inputGrid.Children.Add(analysisResultButt);
+            nodeUI.inputGrid.Children.Add(analysisResultButt);
             analysisResultButt.Margin = new Thickness(0, 0, 0, 0);
             analysisResultButt.HorizontalAlignment = HorizontalAlignment.Center;
             analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
@@ -168,7 +168,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();  
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
             sunPathButt = new System.Windows.Controls.Button();
@@ -190,11 +190,11 @@ namespace Dynamo.Nodes
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
 
-            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
-            NodeUI.inputGrid.Children.Add(tb);
-            NodeUI.inputGrid.Children.Add(sunPathButt);
+            nodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(sunPathButt);
 
             System.Windows.Controls.Grid.SetRow(sunPathButt, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
