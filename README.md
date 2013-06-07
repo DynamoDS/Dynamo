@@ -17,6 +17,46 @@ The current version will run on top of Revit 2013 and Project Vasari Beta 2 and 
 
 ## Releases ##
 
+###0.4.0###
+
+June 2013
+
+Known Issues
+- Cannot use comma as a decimal separator
+- Node Preview state is not saved with dyn file
+- Transform Point does not respond to rotation input
+
+Fixes
+- Can now run Python scripts from disk location and embedded
+- Deluany Tessellation node is working 
+- Preview 3d geometry in the view background refreshing properly
+- Formula node can now copy paste
+- Fixed crash bug with connecting node to itself. This also corrects the double click crash on a port.
+- Fix XYZFromReferencePoint so that it returns an XYZ.
+- Fixed behavior where lacing and element count would not coincide, sometimes leaving an element behind.
+- CurveByPointsByLine no longer duplicates points.
+- Fixes for Adaptive Component placement
+- Better crash handling
+- Fixed multiple crash issues around deleting elements created by graph
+- Auto-Mapping (lacing)improvments
+
+New
+- OffsetCurves node.
+- Update CurveByPoints node to allow for creation of reference lines.
+- Reference Curve Node
+- More list management nodes: sublist, slice,  flatten
+- Preview geometry is now controlled on a per-node basis (right click menu)
+- Compute curve derivatives
+- Open file defaults to sample directory
+- UI improvements and cleanup
+- Cache previous position of Dynamo window, do not maximize on startup
+- Add XYZStartEndVector, CrossProduct, Negate, and Average.
+- Add section view, iso view, and bounding box.
+- Normalize the vectors when creating a transform.
+- Lacing is set to "Longest" by default
+- Updates, fixes, and culling of Samples
+
+
 ###0.3.4###
 
 May2013
