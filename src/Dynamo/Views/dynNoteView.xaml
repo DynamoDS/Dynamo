@@ -24,20 +24,19 @@
             VerticalAlignment="Center" 
             Text="{Binding Path=Text, Mode=OneWay}" 
             FontFamily="Trebuchet" 
-            FontSize="14" 
-            Foreground="#FFEAD871"
-            Padding="2" >
+            FontSize="12" 
+            Foreground="#888"
+            Padding="10" >
             
         <TextBlock.Style>
             <Style TargetType="TextBlock">
 
-                <!--<Setter Property="Background" Value="Yellow"/>-->
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
-                        <Setter Property="Background" Value="DarkGray"/>
+                        <Setter Property="Background" Value="PowderBlue"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="False">
-                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Background" Value="#DDD"/>
                     </DataTrigger>
                 </Style.Triggers>
 

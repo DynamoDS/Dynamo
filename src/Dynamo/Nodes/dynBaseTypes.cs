@@ -2010,12 +2010,25 @@ namespace Dynamo.Nodes
         public event Action OnChangeCommitted;
 
         private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255,255,255));
+        private static Brush highlighted = new SolidColorBrush(System.Windows.Media.Color.FromArgb(200, 255, 255, 255));
 
         public dynTextBox()
         {
             //turn off the border
             Background = clear;
             BorderThickness = new Thickness(1);
+            GotFocus += OnGotFocus;
+            LostFocus += OnLostFocus;
+        }
+
+        private void OnLostFocus(object sender, RoutedEventArgs routedEventArgs)
+        {
+            Background = clear;
+        }
+
+        private void OnGotFocus(object sender, RoutedEventArgs routedEventArgs)
+        {
+            Background = highlighted;
         }
 
         private bool numeric;
@@ -2045,13 +2058,11 @@ namespace Dynamo.Nodes
             {
                 if (value)
                 {
-                    FontStyle = FontStyles.Italic;
-                    FontWeight = FontWeights.Bold;
+                    Background = highlighted;
                 }
                 else
                 {
-                    FontStyle = FontStyles.Normal;
-                    FontWeight = FontWeights.Normal;
+                    Background = clear;
                 }
                 pending = value;
             }
