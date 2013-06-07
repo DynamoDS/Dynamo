@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200"
-             Height="Auto" Width="Auto" Visibility="{Binding NoteVisibility}"
+             Height="Auto" Width="Auto" Visibility="Visible"
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">
     
@@ -34,7 +34,7 @@
                 <!--<Setter Property="Background" Value="Yellow"/>-->
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
-                        <Setter Property="Background" Value="WhiteSmoke"/>
+                        <Setter Property="Background" Value="DarkGray"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="False">
                         <Setter Property="Background" Value="Transparent"/>

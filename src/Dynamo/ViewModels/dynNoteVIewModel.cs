@@ -51,7 +51,7 @@ namespace Dynamo.Nodes
 
         public double ZIndex
         {
-            get { return 2; }
+            get { return 3; }
         }
 
         public string Text
@@ -84,7 +84,7 @@ namespace Dynamo.Nodes
             _model = model;
             model.PropertyChanged += note_PropertyChanged;
 
-            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
+            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             SelectCommand = new DelegateCommand(Select, CanSelect);
         }
 
