@@ -46,7 +46,9 @@
       <HintPath>..\..\extern\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.core">
       <HintPath>..\..\extern\NUnit\nunit.core.dll</HintPath>
     </Reference>
@@ -67,12 +69,10 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\Program Files\Autodesk\Revit Vasari FormIt FormIt Desktop New Platform 2014\Program\RevitAPI.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\Program Files\Autodesk\Revit Vasari FormIt FormIt Desktop New Platform 2014\Program\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -136,6 +136,7 @@
       <DependentUpon>Resource_en_us.resx</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
+    <Compile Include="ViewModels\GeometryKeeperViewModel.cs" />
     <Compile Include="Views\DynamoRevitTestResultsView.xaml.cs">
       <DependentUpon>DynamoRevitTestResultsView.xaml</DependentUpon>
     </Compile>
