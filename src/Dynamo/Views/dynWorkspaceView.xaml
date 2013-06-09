@@ -63,7 +63,7 @@
                                 />
                     </Canvas>
 
-                    <ItemsControl ItemsSource="{Binding WorkspaceElements}">
+                    <ItemsControl ItemsSource="{Binding WorkspaceElements}" Name="WorkspaceElements">
 
                         <ItemsControl.Resources>
 
@@ -85,6 +85,7 @@
                                 <controls:DragCanvas
                                     Width="100000" 
                                     Height="100000" 
+                                    x:Name="DragCanvas"
                                     Visibility="Visible"
                                     ContextMenuOpening="WorkBench_ContextMenuOpening" 
                                     Loaded="WorkBench_OnLoaded" IsItemsHost="True">
