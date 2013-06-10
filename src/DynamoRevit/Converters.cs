@@ -6,12 +6,15 @@ using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Text.RegularExpressions;
 
 using Autodesk.Revit.DB;
 
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+
+
 
 namespace Dynamo.Controls
 {
@@ -104,13 +107,26 @@ namespace Dynamo.Controls
             double wholeInches = Math.Floor(inches); //12
             double remainder = inches - wholeInches; //.25
 
+            //due to rounding, you might have a very small remainder,
+            //but we don't want this rounded up to 1, so set
+            //it to zero
+            if (remainder > 0 - 0.000001 && remainder < 0 + 0.000001)
+                remainder = 0;
+
             //1/64" = 0.015625"
             double precision = 0.015625;
-            double fractionalPart = Math.Floor(remainder / precision);
+            double fractionalPart = Math.Ceiling(remainder / precision);
 
             string fraction = "";
+            //avoid the case where the remainder is very close to
+            //one so you get a fraction part which would result in 64/64
             if (fractionalPart != 0.0)
-                fraction = string.Format("{0}/64\"", fractionalPart);
+            {
+                if (fractionalPart != 64.0)
+                    fraction = string.Format("{0}/64\"", fractionalPart);
+                else
+                    wholeInches += 1.0;
+            }
 
             //if there is no fraction, return the whole inches
             if (string.IsNullOrEmpty(fraction))
@@ -285,47 +301,57 @@ namespace Dynamo.Controls
         /// <returns></returns>
         private double FromFeetAndFractionalInches(string value)
         {
-            //ex. 27' 3 3/4"
-            string[] parts = value.Split(' ');
+            //for decimals in the length
+            //http://stackoverflow.com/questions/308122/simple-regular-expression-for-a-decimal-with-a-precision-of-2
 
-            if (parts.Length > 3)
+            //to test .net regex
+            //http://regexhero.net/tester/
+
+            //The following pattern will accept imperial units specified in
+            //any of the following ways:
+            //1' -> only fee specified
+            //1' 2" -> feet and inches specified
+            //1' 2 3/32" -> feet, inches, and fractional inches specified
+            //2 3/32" -> inches and fractional inches specified
+            //3/32" -> only fractional inches specified
+
+            //string pattern = "(((?<feet>[\-\+]?[0-9])')*\s*("+
+            //    "(?<inches>(?<num>[\-\+]?[0-9]+)/(?<den>[0-9]+)*\")|"+
+            //    "(?<inches>(?<whole_inch>[\-\+]?[0-9]+)*\s*(?<num>[\-\+]?[0-9]+)/(?<den>[0-9]+)*\")|"+
+            //    "(?<inches>(?<whole_inch>[\-\+]?[0-9]+)\"))?)*";
+
+            //unescaped form
+            //(((?<feet>[\-\+]?\d+(\.\d{1,2})?)')*\s*((?<inches>(?<num>[\-\+]?\d+(\.\d{1,2})?)/(?<den>\d+(\.\d{1,2})?)*\")|(?<inches>(?<whole_inch>[\-\+]?\d+(\.\d{1,2})?)*\s*(?<num>[\-\+]?\d+(\.\d{1,2})?)/(?<den>\d+(\.\d{1,2})?)*\")|(?<inches>(?<whole_inch>[\-\+]?\d+(\.\d{1,2})?)\"))?)*
+
+            //modified to allow decimals as well
+            string pattern = "(((?<feet>[\\-\\+]?\\d+(\\.\\d{1,2})?)')*\\s*("+
+                "(?<inches>(?<num>[\\-\\+]?\\d+(\\.\\d{1,2})?)/(?<den>\\d+(\\.\\d{1,2})?)*\")|"+
+                "(?<inches>(?<whole_inch>[\\-\\+]?\\d+(\\.\\d{1,2})?)*\\s*(?<num>[\\-\\+]?\\d+(\\.\\d{1,2})?)/(?<den>\\d+(\\.\\d{1,2})?)*\")|"+
+                "(?<inches>(?<whole_inch>[\\-\\+]?\\d+(\\.\\d{1,2})?)\"))?)*";
+
+            Regex regex = new Regex(pattern);
+            Match match = regex.Match(value);
+            if (match.Success)
             {
-                //we don't know what to do with
-                //this value
-                return 0.0;
+                int feet = 0;
+                int.TryParse(match.Groups["feet"].Value, out feet);
+                int inch = 0;
+                int.TryParse(match.Groups["whole_inch"].Value, out inch);
+
+                double fractionalInch = 0.0;
+                double numerator = 0.0;
+                double denominator = 0.0;
+                double.TryParse(match.Groups["num"].Value, out numerator);
+                double.TryParse(match.Groups["den"].Value, out denominator);
+                if (denominator != 0)
+                    fractionalInch = numerator / denominator;
+
+                if (feet < 0)
+                    return feet - inch / 12.0 - fractionalInch / 12.0;
+                else
+                    return feet + inch/12.0 + fractionalInch/12.0;
             }
-
-            double feet = 0.0;
-
-            if (parts.Length == 1)
-            {
-                //you might have inches or feet here
-                if(parts[0].Contains("\""))
-                {
-                    //you only have one part and it is inches
-                    //so just return the inches
-                    return FromFractionalInches(parts[0]);
-                }
-            }
-
-            string cleanFeet = parts[0].Replace("'", "");
-            if (!double.TryParse(cleanFeet, out feet))
-            {
-                return 0.0;
-            }
-
-            string fractionalInches = "";
-            if (parts.Length == 2)
-                fractionalInches = parts[1];
-            else if(parts.Length == 3)
-                fractionalInches = string.Format("{0} {1}", parts[1], parts[2]);
-
-            //if you have 1' 6" you should get 1.5
-            if(feet >= 0)
-                return feet + FromFractionalInches(fractionalInches);
-            //if you have -1' 6" you should get -1.5 NOT -.5
-            else
-                return feet - FromFractionalInches(fractionalInches);
+            else return 0.0;
         }
 
         /// <summary>
