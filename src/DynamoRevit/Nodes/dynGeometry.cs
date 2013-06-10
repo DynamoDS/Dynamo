@@ -1335,6 +1335,18 @@ namespace Dynamo.Nodes
             GeometryObject geomObj = thisElement.get_Geometry(new Autodesk.Revit.DB.Options());
             GeometryElement geomElement = geomObj as GeometryElement;
 
+            if ((thisElement is GenericForm) && (geomElement.Count() < 1))
+            {
+                GenericForm gF = (GenericForm)thisElement;
+                if (!gF.Combinations.IsEmpty)
+                {
+                    Autodesk.Revit.DB.Options geoOptions = new Autodesk.Revit.DB.Options();
+                    geoOptions.IncludeNonVisibleObjects = true;
+                    geomObj = thisElement.get_Geometry(geoOptions);
+                    geomElement = geomObj as GeometryElement;
+                }
+            }
+ 
             foreach (GeometryObject geob in geomElement)
             {
                 GeometryInstance ginsta = geob as GeometryInstance;
@@ -1396,24 +1408,58 @@ namespace Dynamo.Nodes
             }
             else
             {
-
-                GeometryObject geomObj = thisElement.get_Geometry(new Autodesk.Revit.DB.Options());
-                GeometryElement geomElement = geomObj as GeometryElement;
-
-                if (geomElement != null)
+                bool bNotVisibleOption = false;
+                if (thisElement is GenericForm)
                 {
-                    foreach (GeometryObject geob in geomElement)
+                    GenericForm gF = (GenericForm) thisElement;
+                    if (!gF.Combinations.IsEmpty)
+                       bNotVisibleOption = true;
+                }
+                int nTry = (bNotVisibleOption) ? 2 : 1;
+                for (int iTry = 0; iTry < nTry && (mySolid == null); iTry++)
+                {
+                    Autodesk.Revit.DB.Options geoOptions = new Autodesk.Revit.DB.Options();
+                    if (bNotVisibleOption && (iTry == 1))
+                        geoOptions.IncludeNonVisibleObjects = true;
+
+                    GeometryObject geomObj = thisElement.get_Geometry(geoOptions);
+                    GeometryElement geomElement = geomObj as GeometryElement;
+
+                    if (geomElement != null)
                     {
-                        GeometryInstance ginsta = geob as GeometryInstance;
-                        if (ginsta != null && thisId != ElementId.InvalidElementId)
+                        foreach (GeometryObject geob in geomElement)
                         {
-                            GeometryElement instanceGeom = ginsta.GetInstanceGeometry();
-
-                            instanceSolids[thisId].Add(instanceGeom);
-
-                            foreach (GeometryObject geobInst in instanceGeom)
+                            GeometryInstance ginsta = geob as GeometryInstance;
+                            if (ginsta != null && thisId != ElementId.InvalidElementId)
                             {
-                                mySolid = geobInst as Solid;
+                                GeometryElement instanceGeom = ginsta.GetInstanceGeometry();
+
+                                instanceSolids[thisId].Add(instanceGeom);
+
+                                foreach (GeometryObject geobInst in instanceGeom)
+                                {
+                                    mySolid = geobInst as Solid;
+                                    if (mySolid != null)
+                                    {
+                                        FaceArray faceArr = mySolid.Faces;
+                                        var thisEnum = faceArr.GetEnumerator();
+                                        bool hasFace = false;
+                                        for (; thisEnum.MoveNext(); )
+                                        {
+                                            hasFace = true;
+                                        }
+                                        if (!hasFace)
+                                            mySolid = null;
+                                        else
+                                            break;
+                                    }
+                                }
+                                if (mySolid != null)
+                                    break;
+                            }
+                            else
+                            {
+                                mySolid = geob as Solid;
                                 if (mySolid != null)
                                 {
                                     FaceArray faceArr = mySolid.Faces;
@@ -1428,28 +1474,8 @@ namespace Dynamo.Nodes
                                     else
                                         break;
                                 }
-                            }
-                            if (mySolid != null)
-                                break;
-                        }
-                        else
-                        {
-                            mySolid = geob as Solid;
-                            if (mySolid != null)
-                            {
-                                FaceArray faceArr = mySolid.Faces;
-                                var thisEnum = faceArr.GetEnumerator();
-                                bool hasFace = false;
-                                for (; thisEnum.MoveNext(); )
-                                {
-                                    hasFace = true;
-                                }
-                                if (!hasFace)
-                                    mySolid = null;
-                                else
-                                    break;
-                            }
 
+                            }
                         }
                     }
                 }
