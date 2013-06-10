@@ -955,6 +955,8 @@ namespace Dynamo.Nodes
                     p.PortDisconnected += p_PortDisconnected;
 
                     return p;
+                default:
+                    return null;
             }
         }
 
