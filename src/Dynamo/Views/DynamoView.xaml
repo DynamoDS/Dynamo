@@ -87,6 +87,11 @@
                 Modifiers="Ctrl"
                     Command="{Binding Path=DataContext.ShowPackageManagerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
+
+        <KeyBinding Key="L"
+                Modifiers="Ctrl+Shift"
+                    Command="{Binding Path=DataContext.LayoutAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        
     </Window.InputBindings>
 
     <Grid Name="mainGrid" FocusManager.IsFocusScope="True">
@@ -202,7 +207,7 @@
                   ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
-                            <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path= DataContext.DisplayFunctionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                            <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path=DataContext.GoToWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
                 </MenuItem>
