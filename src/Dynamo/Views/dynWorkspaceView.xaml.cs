@@ -110,8 +110,11 @@ namespace Dynamo.Views
             // Transform dropPt from outerCanvas space into zoomCanvas space
             if (transformFromOuterCanvas)
             {
-                var a = outerCanvas.TransformToDescendant(WorkBench);
-                dropPt = a.Transform(dropPt);
+                if (WorkBench != null)
+                {
+                    var a = outerCanvas.TransformToDescendant(WorkBench);
+                    dropPt = a.Transform(dropPt);
+                } 
             }
             
             // center the node at the drop point

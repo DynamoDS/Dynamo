@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Xml;
@@ -930,6 +931,9 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
+
+            if (Value != "")
+                tb.Commit();
         }
 
         private void processTextForNewInputs()
@@ -2022,6 +2026,7 @@ namespace Dynamo.Nodes
             BorderThickness = new Thickness(1);
             GotFocus += OnGotFocus;
             LostFocus += OnLostFocus;
+            LostKeyboardFocus += OnLostFocus;
         }
 
         private void OnLostFocus(object sender, RoutedEventArgs routedEventArgs)
@@ -2061,17 +2066,17 @@ namespace Dynamo.Nodes
             {
                 if (value)
                 {
-                    Background = highlighted;
+                    FontStyle = FontStyles.Italic;
                 }
                 else
                 {
-                    Background = clear;
+                    FontStyle = FontStyles.Normal;
                 }
                 pending = value;
             }
         }
 
-        private void commit()
+        public void Commit()
         {
             var expr = GetBindingExpression(TextBox.TextProperty);
             if (expr != null)
@@ -2092,7 +2097,7 @@ namespace Dynamo.Nodes
             set
             {
                 //base.Text = value;
-                commit();
+                Commit();
             }
         }
 
@@ -2122,17 +2127,37 @@ namespace Dynamo.Nodes
 
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
+            if (e.Key == Key.Return || e.Key == Key.Enter)
+            {
+                dynSettings.ReturnFocusToSearch();
+            }
+        }
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            Commit();
+        }
+    }
+
+    public class dynStringTextBox : dynTextBox
+    {
+
+        public dynStringTextBox()
+        {
+            this.Commit();
+            this.Pending = false;
+        }
+
+        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        {
             //if (e.Key == Key.Return || e.Key == Key.Enter)
             //{
             //    dynSettings.ReturnFocusToSearch();
             //}
         }
 
-        protected override void OnLostFocus(RoutedEventArgs e)
-        {
-            commit();
-        }
     }
+
 
     [IsInteractive(true)]
     public abstract class dynBasicInteractive<T> : dynNodeWithOneOutput
@@ -2730,7 +2755,9 @@ namespace Dynamo.Nodes
             rbFalse.GroupName = groupName;
 
             rbTrue.Content = "1";
+            rbTrue.Padding = new Thickness(5, 0, 12, 0);
             rbFalse.Content = "0";
+            rbFalse.Padding = new Thickness(5,0,0,0);
 
             RowDefinition rd = new RowDefinition();
             ColumnDefinition cd1 = new ColumnDefinition();
@@ -2810,7 +2837,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            tb = new dynTextBox();
+            tb = new dynStringTextBox();
             tb.AcceptsReturn = true;
             tb.AcceptsTab = true;
             tb.TextWrapping = TextWrapping.Wrap;

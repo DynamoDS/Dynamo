@@ -9,9 +9,11 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using System.Xml;
 using Dynamo.Commands;
 using Dynamo.Connectors;
@@ -19,6 +21,7 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
+using Dynamo.Views;
 
 namespace Dynamo.Controls
 {
@@ -1134,40 +1137,62 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void SaveImage(object parameters)
+        public void SaveImage(object parameters)
         {
             string imagePath = parameters as string;
 
             if (!string.IsNullOrEmpty(imagePath))
             {
-                Transform trans = dynSettings.Workbench.LayoutTransform;
-                dynSettings.Workbench.LayoutTransform = null;
-                Size size = new Size(dynSettings.Workbench.Width, dynSettings.Workbench.Height);
-                dynSettings.Workbench.Measure(size);
-                dynSettings.Workbench.Arrange(new Rect(size));
+                var bench = dynSettings.Bench;
 
-                //calculate the necessary width and height
-                double width = 0;
-                double height = 0;
-                foreach (dynNodeModel n in _model.Nodes)
+                if (bench == null)
+                {
+                    DynamoLogger.Instance.Log("Cannot export bench as image without UI.  No image wil be exported.");
+                    return;
+                }
+
+                var control = WPF.FindChild<DragCanvas>(bench, null);
+
+                double width = 1;
+                double height = 1;
+
+                // connectors are most often within the bounding box of the nodes and notes
+
+                foreach (dynNodeModel n in _model.CurrentSpace.Nodes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                Rect rect = VisualTreeHelper.GetDescendantBounds(dynSettings.Bench.border);
+                foreach (dynNoteModel n in _model.CurrentSpace.Notes)
+                {
+                    width = Math.Max(n.X + n.Width, width);
+                    height = Math.Max(n.Y + n.Height, height);
+                }
 
-                RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right + 50,
-                  (int)rect.Bottom + 50, 96, 96, System.Windows.Media.PixelFormats.Default);
-                rtb.Render(dynSettings.Workbench);
+                var rtb = new RenderTargetBitmap((int) width,
+                                                 (int) height, 96, 96,
+                                                 System.Windows.Media.PixelFormats.Default);
+
+                rtb.Render(control);
+
                 //endcode as PNG
-                BitmapEncoder pngEncoder = new PngBitmapEncoder();
+                var pngEncoder = new PngBitmapEncoder();
                 pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
 
-                using (var stm = File.Create(imagePath))
+                try
                 {
-                    pngEncoder.Save(stm);
+                    using (var stm = File.Create(imagePath))
+                    {
+                        pngEncoder.Save(stm);
+                    }
                 }
+                catch
+                {
+                    DynamoLogger.Instance.Log("Failed to save the Workspace an image.");
+                }
+                
+
             }
         }
 

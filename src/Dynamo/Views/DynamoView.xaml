@@ -140,7 +140,9 @@
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <MenuItem Focusable="False" Header="_Save Image..." Command="{Binding Path=ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage"/>
+                <MenuItem Focusable="False" Header="_Export Workspace As Image..." Command="{Binding Path=ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage"/>
+                
+                
                 <Separator />
                 <MenuItem Focusable="False" Header="_Clear" Command="{Binding Path=ClearCommand}" Name="clearButton" 
                           InputGestureText="Ctrl+Shift+C" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">

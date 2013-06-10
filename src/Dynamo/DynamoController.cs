@@ -162,28 +162,19 @@ namespace Dynamo
 
             FSchemeEnvironment = env;
 
-            //MVVM : moved to proper view constructor on dyndynSettings.Bench
-            //DynamoViewModel.Model.CurrentSpace.CurrentOffset = new Point(DynamoView.CANVAS_OFFSET_X, DynamoView.CANVAS_OFFSET_Y);
             DynamoViewModel.Model.CurrentSpace.X = DynamoView.CANVAS_OFFSET_X;
             DynamoViewModel.Model.CurrentSpace.Y = DynamoView.CANVAS_OFFSET_Y;
-
-            //dynSettings.Bench.CurrentOffset = new Point(dyndynSettings.Bench.CANVAS_OFFSET_X, dyndynSettings.Bench.CANVAS_OFFSET_Y);
-            //dynSettings.Bench.InitializeComponent();
 
             dynSettings.Controller.DynamoViewModel.Log(String.Format(
                 "Dynamo -- Build {0}.",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
-            //MVVM : removed parameter dynSettings.Bench
-            DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);//, dynSettings.Bench);
+            DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);
 
             if(dynSettings.Bench != null)
                 DynamoLoader.LoadSamplesMenu(dynSettings.Bench);
 
-            //dynSettings.Bench.settings_curves.IsChecked = true;
-            //dynSettings.Bench.settings_curves.IsChecked = false;
-
-            if (dynSettings.Bench != null)
+            if (dynSettings.Bench != null && withUI)
             {
                 //dynSettings.Bench.LockUI();
 

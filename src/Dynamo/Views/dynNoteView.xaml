@@ -25,7 +25,7 @@
             Text="{Binding Path=Text, Mode=OneWay}" 
             FontFamily="Trebuchet" 
             FontSize="12" 
-            Foreground="#888"
+            Foreground="#222"
             Padding="10" >
             
         <TextBlock.Style>
@@ -33,7 +33,7 @@
 
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
-                        <Setter Property="Background" Value="PowderBlue"/>
+                        <Setter Property="Background" Value="LightBlue"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="False">
                         <Setter Property="Background" Value="#DDD"/>
