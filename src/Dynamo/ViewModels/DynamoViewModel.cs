@@ -1253,6 +1253,9 @@ namespace Dynamo.Controls
         private void DisplayFunction(object parameters)
         {
             Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameters);
+
+
+
         }
 
         private bool CanDisplayFunction(object parameters)
@@ -1393,9 +1396,10 @@ namespace Dynamo.Controls
                 int startIndex = (int)connectionData["port_start"];
                 int endIndex = (int)connectionData["port_end"];
 
-                dynConnectorModel c = new dynConnectorModel(start, end, startIndex, endIndex, 0);
+                var c = dynConnectorModel.Make(start, end, startIndex, endIndex, 0);
 
-                _model.CurrentSpace.Connectors.Add(c);
+                if (c != null)
+                    _model.CurrentSpace.Connectors.Add(c);
             }
             catch (Exception e)
             {
@@ -1880,11 +1884,10 @@ namespace Dynamo.Controls
                     {
                         if (start != null && end != null && start != end)
                         {
-                            var newConnector = new dynConnectorModel(
+                            var newConnector = dynConnectorModel.Make(
                                 start, end,
                                 startIndex, endIndex,
-                                portType, false
-                                );
+                                portType );
 
                             ws.Connectors.Add(newConnector);
                         }
@@ -2505,13 +2508,11 @@ namespace Dynamo.Controls
                         }
                     }
 
-                    if (start != null && end != null && start != end)
-                    {
-                        var newConnector = new dynConnectorModel(start, end,
-                                                            startIndex, endIndex, portType);
-
+                    var newConnector = dynConnectorModel.Make(start, end,
+                                                        startIndex, endIndex, portType);
+                    if (newConnector != null)
                         _model.CurrentSpace.Connectors.Add(newConnector);
-                    }
+
                 }
 
                 #region instantiate notes

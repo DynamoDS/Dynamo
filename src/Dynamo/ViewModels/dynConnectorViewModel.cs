@@ -308,7 +308,9 @@ namespace Dynamo.Connectors
             //make the connector model
             var end = parameters as dynPortModel;
 
-            _model = new dynConnectorModel(_activeStartPort.Owner, end.Owner, _activeStartPort.Index, end.Index, 0);
+            _model = dynConnectorModel.Make(_activeStartPort.Owner, end.Owner, _activeStartPort.Index, end.Index, 0);
+            if (_model == null) return;
+
             _model.Connected += ModelConnected;
 
             _model.Start.PropertyChanged += Start_PropertyChanged;

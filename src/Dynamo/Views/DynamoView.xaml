@@ -207,7 +207,7 @@
                   ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
-                            <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path= DataContext.DisplayFunctionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                            <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path=DataContext.GoToWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
                 </MenuItem>

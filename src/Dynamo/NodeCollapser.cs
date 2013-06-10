@@ -308,34 +308,36 @@ namespace Dynamo.Utilities
 
                 if (curriedNode == null)
                 {
-                    //Connect it (new dynConnector)
-                    newNodeWorkspace.Connectors.Add(new dynConnectorModel(
-                                                        node,
-                                                        inputReceiverNode,
-                                                        0,
-                                                        inputReceiverData,
-                                                        0,
-                                                        false));
+                    var conn1 = dynConnectorModel.Make(node,
+                                                  inputReceiverNode,
+                                                  0,
+                                                  inputReceiverData,
+                                                  0 );
+
+                    if (conn1 != null)
+                        newNodeWorkspace.Connectors.Add(conn1);
                 }
                 else
                 {
                     //Connect it to the applier
-                    newNodeWorkspace.Connectors.Add(new dynConnectorModel(
-                                                        node,
-                                                        curriedNode.InnerNode,
-                                                        0,
-                                                        0,
-                                                        0,
-                                                        false));
+                    var conn = dynConnectorModel.Make(node,
+                                                     curriedNode.InnerNode,
+                                                     0,
+                                                     0,
+                                                     0);
+                    if (conn != null)
+                        newNodeWorkspace.Connectors.Add(conn);
 
-                    //Connect applier to the inner input receiver
-                    newNodeWorkspace.Connectors.Add(new dynConnectorModel(
-                                                        curriedNode.InnerNode,
-                                                        inputReceiverNode,
-                                                        0,
-                                                        inputReceiverData,
-                                                        0,
-                                                        false));
+                    //Connect applier to the inner input receive
+                    var conn2 = dynConnectorModel.Make(
+                        curriedNode.InnerNode,
+                        inputReceiverNode,
+                        0,
+                        inputReceiverData,
+                        0);
+
+                    if (conn2 != null)
+                        newNodeWorkspace.Connectors.Add(conn2);
                 }
             }
 
@@ -397,15 +399,15 @@ namespace Dynamo.Utilities
                     node.X = rightMost + 75 - leftShift;
                     node.Y = i*(50 + node.Height);
 
-                    newNodeWorkspace.Connectors.Add(new dynConnectorModel(
-                                                        outputSenderNode,
-                                                        node,
-                                                        outputSenderData,
-                                                        0,
-                                                        0,
-                                                        false));
-
-
+                    var conn = dynConnectorModel.Make(
+                                outputSenderNode,
+                                node,
+                                outputSenderData,
+                                0,
+                                0 );
+                    
+                    if (conn != null)
+                        newNodeWorkspace.Connectors.Add(conn);
 
                     i++;
                 }
@@ -444,12 +446,16 @@ namespace Dynamo.Utilities
                     int targetPortIndex = curriedNode.OuterNodePortDataList.IndexOf(targetPort);
                     
                     //Connect it (new dynConnector)
-                    newNodeWorkspace.Connectors.Add(new dynConnectorModel(
-                                                        outputSenderNode,
-                                                        curriedNode.InnerNode,
-                                                        outputSenderData,
-                                                        targetPortIndex + 1,
-                                                        0));
+
+                    var conn = dynConnectorModel.Make(
+                        outputSenderNode,
+                        curriedNode.InnerNode,
+                        outputSenderData,
+                        targetPortIndex + 1,
+                        0);
+
+                    if (conn != null)
+                        newNodeWorkspace.Connectors.Add(conn);
                 }
             }
 
@@ -485,26 +491,28 @@ namespace Dynamo.Utilities
 
             foreach (var nodeTuple in inConnectors)
             {
-                currentWorkspace.Connectors.Add(
-                    new dynConnectorModel(
-                        nodeTuple.Item1,
-                        newlyPlacedCollapsedNode,
-                        nodeTuple.Item2,
-                        nodeTuple.Item3,
-                        0,
-                        true));
+                var conn = dynConnectorModel.Make(
+                                    nodeTuple.Item1,
+                                    newlyPlacedCollapsedNode,
+                                    nodeTuple.Item2,
+                                    nodeTuple.Item3,
+                                    0 );
+
+                if (conn != null)
+                    currentWorkspace.Connectors.Add(conn);
             }
 
             foreach (var nodeTuple in outConnectors)
             {
-                currentWorkspace.Connectors.Add(
-                    new dynConnectorModel(
-                        newlyPlacedCollapsedNode,
-                        nodeTuple.Item1,
-                        nodeTuple.Item2,
-                        nodeTuple.Item3,
-                        0,
-                        true));
+                var conn = dynConnectorModel.Make(
+                                    newlyPlacedCollapsedNode,
+                                    nodeTuple.Item1,
+                                    nodeTuple.Item2,
+                                    nodeTuple.Item3,
+                                    0 );
+
+                if (conn != null)
+                    currentWorkspace.Connectors.Add(conn);
             }
 
             newlyPlacedCollapsedNode.EnableReporting();

@@ -711,16 +711,12 @@ namespace Dynamo.Utilities
 
                     try
                     {
-                        if (start != null && end != null && start != end)
-                        {
-                            var newConnector = new dynConnectorModel(
-                                start, end,
-                                startIndex, endIndex,
-                                portType, false
-                                );
-
+                        var newConnector = dynConnectorModel.Make(
+                            start, end,
+                            startIndex, endIndex,
+                            portType );
+                        if ( newConnector != null ) 
                             ws.Connectors.Add(newConnector);
-                        }
                     }
                     catch
                     {
