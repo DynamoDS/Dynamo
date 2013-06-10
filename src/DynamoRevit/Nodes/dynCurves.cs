@@ -522,6 +522,8 @@ namespace Dynamo.Nodes
                     pts, Enumerable.Repeat(1.0, pts.Count).ToList());
 
             crvs.Add(ns);
+
+            GeometryObjects.Add(ns);
             
             return Value.NewContainer(ns);
         }

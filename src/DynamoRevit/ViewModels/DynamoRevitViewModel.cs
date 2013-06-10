@@ -48,6 +48,8 @@ namespace Dynamo.Controls
             }
         }
 
+        
+
         public DynamoRevitViewModel(DynamoController controller):base(controller)
         {
             Predicate<dynNodeModel> requiresTransactionPredicate = delegate(dynNodeModel node)

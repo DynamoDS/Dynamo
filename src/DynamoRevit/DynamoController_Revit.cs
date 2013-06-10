@@ -15,6 +15,8 @@ namespace Dynamo
 {
     public class DynamoController_Revit : DynamoController
     {
+        private GeometryKeeperViewModel _geometryKeeperViewModel;
+
         public DynamoUpdater Updater { get; private set; }
 
         dynamic oldPyEval;
@@ -32,6 +34,7 @@ namespace Dynamo
             dynRevitSettings.Revit.Application.DocumentClosed += Application_DocumentClosed;
             dynRevitSettings.Revit.Application.DocumentOpened += Application_DocumentOpened;
 
+            _geometryKeeperViewModel = new GeometryKeeperViewModel();
         }
 
         void Application_DocumentOpened(object sender, Autodesk.Revit.DB.Events.DocumentOpenedEventArgs e)

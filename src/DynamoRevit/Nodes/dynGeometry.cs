@@ -35,6 +35,14 @@ namespace Dynamo.Nodes
 {
     public abstract class dynGeometryBase : dynNodeWithOneOutput
     {
+        private List<GeometryObject> _geometryObjects = new List<GeometryObject>();
+
+        public List<GeometryObject> GeometryObjects
+        {
+            get { return _geometryObjects; }
+            set { _geometryObjects = value; }
+        }
+
         protected dynGeometryBase()
         {
             ArgumentLacing = LacingStrategy.Longest;

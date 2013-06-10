@@ -279,10 +279,6 @@ namespace Dynamo
             var notesColl = new CollectionContainer();
             notesColl.Collection = Notes;
             WorkspaceElements.Add(notesColl);
-
-            //var watch3DColl = new CollectionContainer();
-            //watch3DColl.Collection = Watch3DViewModels;
-            //WorkspaceElements.Add(watch3DColl);
             
             Watch3DViewModels.Add(new Watch3DFullscreenViewModel(this));
 
