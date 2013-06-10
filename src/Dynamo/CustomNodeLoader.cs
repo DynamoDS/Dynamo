@@ -860,7 +860,17 @@ namespace Dynamo.Utilities
                 foreach (var topNode in topMost)
                 {
                     string inputName = i.ToString();
-                    node.ConnectInput(inputName, topNode.Item2.Build(buildDict, topNode.Item1));
+                    
+                    try
+                    {
+                        var exp = topNode.Item2.Build(buildDict, topNode.Item1);
+                        node.ConnectInput(inputName, exp);
+                    }
+                    catch
+                    {
+                        
+                    }
+
                     i++;
                 }
 
