@@ -914,22 +914,23 @@ namespace Dynamo.Nodes
         /// <returns></returns>
         public dynPortModel AddPort(PortType portType, string name, int index)
         {
-            if (portType == PortType.INPUT)
+            dynPortModel p;
+            switch (portType)
             {
-                if (inPorts.Count > index)
-                {
-                    dynPortModel p = inPorts[index];
+                case PortType.INPUT:
+                    if (inPorts.Count > index)
+                    {
+                        p = inPorts[index];
 
-                    //update the name on the node
-                    //e.x. when the node is being re-registered during a custom
-                    //node save
-                    p.PortName = name;
+                        //update the name on the node
+                        //e.x. when the node is being re-registered during a custom
+                        //node save
+                        p.PortName = name;
 
-                    return p;
-                }
-                else
-                {
-                    dynPortModel p = new dynPortModel(index, portType, this, name);
+                        return p;
+                    }
+
+                    p = new dynPortModel(index, portType, this, name);
 
                     InPorts.Add(p);
 
@@ -938,28 +939,23 @@ namespace Dynamo.Nodes
                     p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
 
                     return p;
-                }
-            }
-            else if (portType == PortType.OUTPUT)
-            {
-                if (outPorts.Count > index)
-                {
-                    return outPorts[index];
-                }
-                else
-                {
-                    dynPortModel p = new dynPortModel(index, portType, this, name);
+
+                case PortType.OUTPUT:
+                    if (outPorts.Count > index)
+                    {
+                        return outPorts[index];
+                    }
+
+                    p = new dynPortModel(index, portType, this, name);
 
                     OutPorts.Add(p);
 
                     //register listeners on the port
-                    p.PortConnected += new PortConnectedHandler(p_PortConnected);
-                    p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
+                    p.PortConnected += p_PortConnected;
+                    p.PortDisconnected += p_PortDisconnected;
 
                     return p;
-                }
             }
-            return null;
         }
 
         //TODO: call connect and disconnect for dynNode

@@ -74,7 +74,7 @@ namespace Dynamo.Utilities
         /// <returns>A list of tuples with the name as first element and guid as second</returns>
         public IEnumerable<Tuple<string, string, Guid>> GetNodeNameCategoryAndGuidList()
         {
-            return this.NodeNames.AsEnumerable().Select( (first) => new Tuple<string, string, Guid>(first.Key, NodeCategories[first.Value], first.Value));
+            return this.NodeNames.AsEnumerable().Select(first => new Tuple<string, string, Guid>(first.Key, NodeCategories[first.Value], first.Value));
         }
 
         /// <summary>
@@ -635,37 +635,38 @@ namespace Dynamo.Utilities
                     el.DisableReporting();
                     el.LoadElement(elNode); // inject the node properties from the xml
 
-                    // it has no 
-                    if (el is dynFunction)
-                    {
-                        var fun = el as dynFunction;
+                    // moved this logic to LoadElement in dynFunction --SJE
 
-                        // we've found a custom node, we need to attempt to load its guid.  
-                        // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
-                        // deterministically
-                        Guid funId;
-                        try
-                        {
-                            funId = Guid.Parse(fun.Symbol);
-                        }
-                        catch
-                        {
-                            funId = GuidUtility.Create(GuidUtility.UrlNamespace, nicknameAttrib.Value);
-                            fun.Symbol = funId.ToString();
-                        }
+                    //if (el is dynFunction)
+                    //{
+                    //    var fun = el as dynFunction;
 
-                        // if it's not a recurisve node and it's not yet loaded, load it
-                        if (funcDefGuid != funId && !this.loadedNodes.ContainsKey(funId))
-                        {
-                            dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
-                            fun.Definition = this.loadedNodes[funId];
-                        }  
-                        else if ( this.loadedNodes.ContainsKey(funId ))
-                        {
-                            fun.Definition = this.loadedNodes[funId];
-                        }
+                    //    // we've found a custom node, we need to attempt to load its guid.  
+                    //    // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
+                    //    // deterministically
+                    //    Guid funId;
+                    //    try
+                    //    {
+                    //        funId = Guid.Parse(fun.Symbol);
+                    //    }
+                    //    catch
+                    //    {
+                    //        funId = GuidUtility.Create(GuidUtility.UrlNamespace, nicknameAttrib.Value);
+                    //        fun.Symbol = funId.ToString();
+                    //    }
+
+                    //    // if it's not a recurisve node and it's not yet loaded, load it
+                    //    if (funcDefGuid != funId && !this.loadedNodes.ContainsKey(funId))
+                    //    {
+                    //        dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
+                    //        fun.Definition = this.loadedNodes[funId];
+                    //    }  
+                    //    else if ( this.loadedNodes.ContainsKey(funId ))
+                    //    {
+                    //        fun.Definition = this.loadedNodes[funId];
+                    //    }
                         
-                    }
+                    //}
                 }
 
                 #endregion
