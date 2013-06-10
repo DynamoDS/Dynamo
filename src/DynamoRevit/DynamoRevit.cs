@@ -249,11 +249,14 @@ namespace Dynamo.Applications
         private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
         {
 
+            // only handle a single crash per Dynamo sesh, this should be reset in the initial command
             if (handledCrash)
             {
                 args.Handled = true;
                 return;
             }
+
+            handledCrash = true;
 
             var exceptionMessage = args.Exception.Message;
             var stackTrace = args.Exception.StackTrace;
@@ -286,7 +289,7 @@ namespace Dynamo.Applications
             }
             finally
             {
-
+                
                 args.Handled = true;
             }
             
