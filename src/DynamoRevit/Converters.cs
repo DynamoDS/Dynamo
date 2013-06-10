@@ -107,13 +107,26 @@ namespace Dynamo.Controls
             double wholeInches = Math.Floor(inches); //12
             double remainder = inches - wholeInches; //.25
 
+            //due to rounding, you might have a very small remainder,
+            //but we don't want this rounded up to 1, so set
+            //it to zero
+            if (remainder > 0 - 0.000001 && remainder < 0 + 0.000001)
+                remainder = 0;
+
             //1/64" = 0.015625"
             double precision = 0.015625;
             double fractionalPart = Math.Ceiling(remainder / precision);
 
             string fraction = "";
+            //avoid the case where the remainder is very close to
+            //one so you get a fraction part which would result in 64/64
             if (fractionalPart != 0.0)
-                fraction = string.Format("{0}/64\"", fractionalPart);
+            {
+                if (fractionalPart != 64.0)
+                    fraction = string.Format("{0}/64\"", fractionalPart);
+                else
+                    wholeInches += 1.0;
+            }
 
             //if there is no fraction, return the whole inches
             if (string.IsNullOrEmpty(fraction))
