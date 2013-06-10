@@ -132,6 +132,7 @@ namespace Dynamo.Nodes
     [NodeName("Free Form")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates a free form <FreeFormElement.Create>")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     public class dynFreeForm : dynRevitTransactionNodeWithOneOutput
     {
         public static Dictionary <ElementId, Solid> freeFormSolids = null;

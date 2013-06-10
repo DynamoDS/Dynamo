@@ -931,6 +931,15 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
+
+            if (Value != "")
+                tb.Commit();
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            base.LoadElement(elNode);
+            processTextForNewInputs();
         }
 
         private void processTextForNewInputs()
@@ -2073,7 +2082,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected void Commit()
+        public void Commit()
         {
             var expr = GetBindingExpression(TextBox.TextProperty);
             if (expr != null)
@@ -2141,8 +2150,8 @@ namespace Dynamo.Nodes
 
         public dynStringTextBox()
         {
-            this.Commit();
-            this.Pending = false;
+            Commit();
+            Pending = false;
         }
 
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
@@ -2179,7 +2188,7 @@ namespace Dynamo.Nodes
 
         protected abstract T DeserializeValue(string val);
 
-        public dynBasicInteractive()
+        protected dynBasicInteractive()
         {
             Type type = typeof(T);
             OutPortData.Add(new PortData("", type.Name, type));
@@ -2189,13 +2198,15 @@ namespace Dynamo.Nodes
         {
             //add an edit window option to the 
             //main context window
-            System.Windows.Controls.MenuItem editWindowItem = new System.Windows.Controls.MenuItem();
-            editWindowItem.Header = "Edit...";
-            editWindowItem.IsCheckable = false;
+            var editWindowItem = new System.Windows.Controls.MenuItem
+            {
+                Header = "Edit...",
+                IsCheckable = false
+            };
 
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
 
-            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
+            editWindowItem.Click += editWindowItem_Click;
         }
 
         public virtual void editWindowItem_Click(object sender, RoutedEventArgs e)
@@ -2834,11 +2845,13 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            tb = new dynStringTextBox();
-            tb.AcceptsReturn = true;
-            tb.AcceptsTab = true;
-            tb.TextWrapping = TextWrapping.Wrap;
-            tb.MaxWidth = 120;
+            tb = new dynStringTextBox
+            {
+                AcceptsReturn = true,
+                AcceptsTab = true,
+                TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 120
+            };
 
             nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);

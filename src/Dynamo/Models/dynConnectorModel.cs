@@ -57,20 +57,31 @@ namespace Dynamo.Connectors
 
         #region constructors
         
-        public dynConnectorModel(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType, bool visible)
+
+        /// <summary>
+        /// Factory method to create a connector.  Checks to make sure that the start and end ports are valid, 
+        /// otherwise returns null.
+        /// </summary>
+        /// <param name="start">The port where the connector starts</param>
+        /// <param name="end">The port where the connector ends</param>
+        /// <param name="startIndex"></param>
+        /// <param name="endIndex"></param>
+        /// <param name="portType"></param>
+        /// <returns>The valid connector model or null if the connector is invalid</returns>
+        public static dynConnectorModel Make(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType)
         {
-            //don't try to create a connector with a bad start,
-            //end, or if we're trying to connector the same
-            //port to itself.
-            if (start == null)
-                throw new Exception("Can not create a connection with a null start port.");
+            if (start != null && end != null && start != end && startIndex >= 0
+                && endIndex >= 0 && start.OutPorts.Count > startIndex && end.InPorts.Count > endIndex)
+            {
+                return new dynConnectorModel(start, end, startIndex, endIndex, portType);
+            }
+            
+            return null;
 
-            if (end == null)
-                throw new Exception("Can not create a connection will a null end port.");
+        }
 
-            if (start == end)
-                throw new Exception("Can not connect a node to iteself.");
-
+        private dynConnectorModel(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType )
+        {
             pStart = start.OutPorts[startIndex];
 
             dynPortModel endPort = null;
@@ -82,9 +93,6 @@ namespace Dynamo.Connectors
             this.Connect(endPort);
         }
 
-        public dynConnectorModel(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType)
-            : this(start, end, startIndex, endIndex, portType, true)
-        { }
         #endregion
         
         public bool Connect(dynPortModel p)

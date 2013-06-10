@@ -10,7 +10,6 @@ using System.Reflection;
 using System.Runtime.Remoting;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml;
 using Dynamo.Commands;
@@ -971,7 +970,7 @@ namespace Dynamo.Controls
         {
             //make a lookup table to store the guids of the
             //old nodes and the guids of their pasted versions
-            Hashtable nodeLookup = new Hashtable();
+            var nodeLookup = new Dictionary<Guid, Guid>();
 
             //clear the selection so we can put the
             //paste contents in
@@ -993,7 +992,7 @@ namespace Dynamo.Controls
                 if(node is dynFunction)
                     nodeData.Add("name", (node as dynFunction).Definition.FunctionId);
                 else
-                    nodeData.Add("name", node.NickName);
+                    nodeData.Add("name", node.GetType() );
                 nodeData.Add("guid", newGuid);
 
                 if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.GetType()))
@@ -1030,35 +1029,32 @@ namespace Dynamo.Controls
 
             foreach (dynConnectorModel c in connectors)
             {
-                Dictionary<string, object> connectionData = new Dictionary<string, object>();
+                var connectionData = new Dictionary<string, object>();
 
-                dynNodeModel startNode = null;
+                // if in nodeLookup, the node is paste.  otherwise, use the existing node guid
+                Guid startGuid = Guid.Empty;
+                Guid endGuid = Guid.Empty;
 
-                try
+                startGuid = nodeLookup.TryGetValue(c.Start.Owner.GUID, out startGuid) ? startGuid : c.Start.Owner.GUID;
+                endGuid = nodeLookup.TryGetValue(c.End.Owner.GUID, out endGuid) ? endGuid : c.End.Owner.GUID;
+
+                var startNode = _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == startGuid );
+                var endNode = _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == endGuid );
+
+                // do not form connector if the end nodes are null
+                if (startNode == null || endNode == null)
                 {
-                    var connectorStart = c.Start;
-                    var guidLookup = (Guid)nodeLookup[connectorStart.Owner.GUID];
-
-                    startNode = _model.CurrentSpace.Nodes
-                        .Where(x => x.GUID == guidLookup).FirstOrDefault();
+                    continue;
                 }
-                catch
-                {
-                    //don't let users paste connectors between workspaces
-                    if (c.Start.Owner.WorkSpace == _model.CurrentSpace)
-                    {
-                        startNode = c.Start.Owner;
-                    }
-                    else
-                    {
-                        continue;
-                    }
 
+                //don't let users paste connectors between workspaces
+                if (startNode.WorkSpace != _model.CurrentSpace)
+                {
+                    continue;
                 }
 
                 connectionData.Add("start", startNode);
-
-                connectionData.Add("end", _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == (Guid)nodeLookup[c.End.Owner.GUID]));
+                connectionData.Add("end", endNode);
 
                 connectionData.Add("port_start", c.Start.Index);
                 connectionData.Add("port_end", c.End.Index);
@@ -1069,15 +1065,13 @@ namespace Dynamo.Controls
             //process the queue again to create the connectors
             dynSettings.Controller.ProcessCommandQueue();
 
-            foreach (DictionaryEntry de in nodeLookup)
+            foreach (var de in nodeLookup)
             {
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(AddToSelectionCommand,
                     _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == (Guid)de.Value)));
             }
 
             dynSettings.Controller.ProcessCommandQueue();
-
-            //dynSettings.ViewModel.ClipBoard.Clear();
         }
 
         private bool CanPaste(object parameters)
@@ -1134,40 +1128,62 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void SaveImage(object parameters)
+        public void SaveImage(object parameters)
         {
             string imagePath = parameters as string;
 
             if (!string.IsNullOrEmpty(imagePath))
             {
-                Transform trans = dynSettings.Workbench.LayoutTransform;
-                dynSettings.Workbench.LayoutTransform = null;
-                Size size = new Size(dynSettings.Workbench.Width, dynSettings.Workbench.Height);
-                dynSettings.Workbench.Measure(size);
-                dynSettings.Workbench.Arrange(new Rect(size));
+                var bench = dynSettings.Bench;
 
-                //calculate the necessary width and height
-                double width = 0;
-                double height = 0;
-                foreach (dynNodeModel n in _model.Nodes)
+                if (bench == null)
+                {
+                    DynamoLogger.Instance.Log("Cannot export bench as image without UI.  No image wil be exported.");
+                    return;
+                }
+
+                var control = WPF.FindChild<DragCanvas>(bench, null);
+
+                double width = 1;
+                double height = 1;
+
+                // connectors are most often within the bounding box of the nodes and notes
+
+                foreach (dynNodeModel n in _model.CurrentSpace.Nodes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                Rect rect = VisualTreeHelper.GetDescendantBounds(dynSettings.Bench.border);
+                foreach (dynNoteModel n in _model.CurrentSpace.Notes)
+                {
+                    width = Math.Max(n.X + n.Width, width);
+                    height = Math.Max(n.Y + n.Height, height);
+                }
 
-                RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right + 50,
-                  (int)rect.Bottom + 50, 96, 96, System.Windows.Media.PixelFormats.Default);
-                rtb.Render(dynSettings.Workbench);
+                var rtb = new RenderTargetBitmap((int) width,
+                                                 (int) height, 96, 96,
+                                                 System.Windows.Media.PixelFormats.Default);
+
+                rtb.Render(control);
+
                 //endcode as PNG
-                BitmapEncoder pngEncoder = new PngBitmapEncoder();
+                var pngEncoder = new PngBitmapEncoder();
                 pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
 
-                using (var stm = File.Create(imagePath))
+                try
                 {
-                    pngEncoder.Save(stm);
+                    using (var stm = File.Create(imagePath))
+                    {
+                        pngEncoder.Save(stm);
+                    }
                 }
+                catch
+                {
+                    DynamoLogger.Instance.Log("Failed to save the Workspace an image.");
+                }
+                
+
             }
         }
 
@@ -1237,6 +1253,9 @@ namespace Dynamo.Controls
         private void DisplayFunction(object parameters)
         {
             Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameters);
+
+
+
         }
 
         private bool CanDisplayFunction(object parameters)
@@ -1377,9 +1396,10 @@ namespace Dynamo.Controls
                 int startIndex = (int)connectionData["port_start"];
                 int endIndex = (int)connectionData["port_end"];
 
-                dynConnectorModel c = new dynConnectorModel(start, end, startIndex, endIndex, 0);
+                var c = dynConnectorModel.Make(start, end, startIndex, endIndex, 0);
 
-                _model.CurrentSpace.Connectors.Add(c);
+                if (c != null)
+                    _model.CurrentSpace.Connectors.Add(c);
             }
             catch (Exception e)
             {
@@ -1864,11 +1884,10 @@ namespace Dynamo.Controls
                     {
                         if (start != null && end != null && start != end)
                         {
-                            var newConnector = new dynConnectorModel(
+                            var newConnector = dynConnectorModel.Make(
                                 start, end,
                                 startIndex, endIndex,
-                                portType, false
-                                );
+                                portType );
 
                             ws.Connectors.Add(newConnector);
                         }
@@ -2489,13 +2508,11 @@ namespace Dynamo.Controls
                         }
                     }
 
-                    if (start != null && end != null && start != end)
-                    {
-                        var newConnector = new dynConnectorModel(start, end,
-                                                            startIndex, endIndex, portType);
-
+                    var newConnector = dynConnectorModel.Make(start, end,
+                                                        startIndex, endIndex, portType);
+                    if (newConnector != null)
                         _model.CurrentSpace.Connectors.Add(newConnector);
-                    }
+
                 }
 
                 #region instantiate notes

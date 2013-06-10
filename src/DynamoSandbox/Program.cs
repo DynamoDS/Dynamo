@@ -16,7 +16,7 @@ namespace DynamoSandbox
             try
             {
                 new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), true, typeof(DynamoViewModel), Context.NONE);
-                dynSettings.Bench.ShowDialog(); // ewwy ewwy ewwy!!
+                dynSettings.Bench.ShowDialog();
             }
             catch (Exception e)
             {
