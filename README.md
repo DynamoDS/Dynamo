@@ -42,8 +42,10 @@ Fixes
 - Auto-Mapping (lacing)improvments
 - Selection nodes improved save/open fidelity
 - Experimental nodes for Isometric View and Section Box generation
+- Fixed Crash Saving Image
 
 New
+- Wiring new inputs will push out old inputs
 - Iron Python 2.7.3 bundled with install
 - OffsetCurves node
 - Update CurveByPoints node to allow for creation of reference lines

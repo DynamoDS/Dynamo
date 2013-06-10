@@ -931,6 +931,9 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
+
+            if (Value != "")
+                tb.Commit();
         }
 
         private void processTextForNewInputs()
@@ -2073,7 +2076,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected void Commit()
+        public void Commit()
         {
             var expr = GetBindingExpression(TextBox.TextProperty);
             if (expr != null)
