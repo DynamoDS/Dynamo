@@ -13,15 +13,12 @@
 //limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Data;
 using System.Xml;
+using System.Web;
+
 using Autodesk.Revit.DB;
 
 using Microsoft.FSharp.Collections;
@@ -30,7 +27,6 @@ using Dynamo.Utilities;
 using Dynamo.Revit;
 using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
-using Dynamo.FSchemeInterop;
 using Dynamo.Controls;
 using Dynamo.Measure;
 
@@ -345,8 +341,8 @@ namespace Dynamo.Nodes
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement(Measure.GetType().FullName);
-            outEl.SetAttribute("value", Measure.Item.Length.ToString());
+            XmlElement outEl = xmlDoc.CreateElement(Measure.Item.GetType().FullName);
+            outEl.SetAttribute("value",  Measure.Item.Length.ToString());
             dynEl.AppendChild(outEl);
         }
 
@@ -354,7 +350,7 @@ namespace Dynamo.Nodes
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
-                if (subNode.Name.Equals(Measure.GetType().FullName))
+                if (subNode.Name.Equals(Measure.Item.GetType().FullName))
                 {
                     Measure.Item.Length = DeserializeValue(subNode.Attributes[0].Value);
                 }
