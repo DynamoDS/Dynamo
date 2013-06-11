@@ -197,20 +197,12 @@
                 
             </MenuItem>
 
-            <MenuItem Header="_Workspaces" Name="workspacesMenu">
-                <MenuItem Header="_Home" Command="{Binding Path=HomeCommand}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
-                    <MenuItem.Icon>
-                        <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Focusable="False" Header="_Custom Nodes" Name="userFunctions" 
-                  ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
-                    <MenuItem.ItemTemplate>
-                        <DataTemplate>
-                            <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path=DataContext.GoToWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-                        </DataTemplate>
-                    </MenuItem.ItemTemplate>
-                </MenuItem>
+            <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
+                <MenuItem.ItemTemplate>
+                    <DataTemplate>
+                        <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path=DataContext.GoToWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    </DataTemplate>
+                </MenuItem.ItemTemplate>
             </MenuItem>
 
             <MenuItem Header="Help" Focusable="False">

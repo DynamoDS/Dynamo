@@ -2245,17 +2245,20 @@ namespace Dynamo.Controls
         /// <param name="y"> The x coordinate where the dynNodeView will be placed</param>
         /// <returns> The newly instantiate dynNode</returns>
         public dynNodeModel CreateInstanceAndAddNodeToWorkspace(Type elementType, string nickName, Guid guid,
-            double x, double y, dynWorkspaceModel ws)    //Visibility vis = Visibility.Visible)
+            double x, double y, dynWorkspaceModel ws, bool isVisible = true, bool isUpstreamVisible = true)    //Visibility vis = Visibility.Visible)
         {
             try
             {
-                var node = CreateNodeInstance(elementType, nickName, guid);
+                dynNodeModel node = CreateNodeInstance(elementType, nickName, guid);
 
                 ws.Nodes.Add(node);
                 node.WorkSpace = ws;
 
                 node.X = x;
                 node.Y = y;
+
+                node.IsVisible = isVisible;
+                node.IsUpstreamVisible = isUpstreamVisible;
 
                 return node;
             }
@@ -2380,12 +2383,9 @@ namespace Dynamo.Controls
                     XmlAttribute nicknameAttrib = elNode.Attributes["nickname"];
                     XmlAttribute xAttrib = elNode.Attributes["x"];
                     XmlAttribute yAttrib = elNode.Attributes["y"];
-
-                    XmlAttribute lacingAttrib = null;
-                    if (elNode.Attributes.Count > 5)
-                    {
-                        lacingAttrib = elNode.Attributes["lacing"];
-                    }
+                    XmlAttribute isVisAttrib = elNode.Attributes["isVisible"];
+                    XmlAttribute isUpstreamVisAttrib = elNode.Attributes["isUpstreamVisible"];
+                    XmlAttribute lacingAttrib = elNode.Attributes["lacing"];
 
                     string typeName = typeAttrib.Value;
 
@@ -2446,9 +2446,17 @@ namespace Dynamo.Controls
                     else
                         t = tData.Type;
 
+                    bool isVisible = true;
+                    if (isVisAttrib != null)
+                        isVisible = isVisAttrib.Value == "true" ? true : false;
+
+                    bool isUpstreamVisible = true;
+                    if (isUpstreamVisAttrib != null)
+                        isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
+
                     dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(
                         t, nickname, guid, x, y,
-                        _model.CurrentSpace
+                        _model.CurrentSpace, isVisible, isUpstreamVisible
                         );
 
                     if (lacingAttrib != null)

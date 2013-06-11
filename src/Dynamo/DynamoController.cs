@@ -166,7 +166,7 @@ namespace Dynamo
             DynamoViewModel.Model.CurrentSpace.Y = DynamoView.CANVAS_OFFSET_Y;
 
             dynSettings.Controller.DynamoViewModel.Log(String.Format(
-                "Dynamo -- Build {0}.",
+                "Dynamo -- Build {0}",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
             DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);
