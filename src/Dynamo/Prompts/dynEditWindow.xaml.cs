@@ -13,6 +13,8 @@
 //limitations under the License.
 
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
@@ -32,6 +34,10 @@ namespace Dynamo.Nodes
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
+            var expr = editText.GetBindingExpression(TextBox.TextProperty);
+            if (expr != null)
+                expr.UpdateSource();
+
             this.DialogResult = true;
         }
 
