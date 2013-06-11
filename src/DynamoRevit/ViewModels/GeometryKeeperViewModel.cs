@@ -19,7 +19,7 @@ namespace Dynamo.Controls
         private ElementId _keeperId = ElementId.InvalidElementId;
         public GeometryKeeperViewModel()
         {
-            dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(GeometryKeeperViewModel_RunCompleted);
+            //dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(GeometryKeeperViewModel_RunCompleted);
         }
 
         public void GeometryKeeperViewModel_RunCompleted(object controller, bool success)
@@ -29,7 +29,6 @@ namespace Dynamo.Controls
 
         public void DisplayTransientObjects() 
         {
-            List<IDrawable> drawables = new List<IDrawable>();
             List<GeometryObject> geometryObjects = new List<GeometryObject>();
 
             dynWorkspaceModel currentSpace = dynSettings.Controller.DynamoViewModel.CurrentSpace;
