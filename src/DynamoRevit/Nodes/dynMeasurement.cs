@@ -324,30 +324,22 @@ namespace Dynamo.Nodes
         {
             var editWindow = new dynEditWindow();
 
-            //set the text of the edit window to begin
-            //editWindow.editText.Text = base.Value.ToString();
-
             editWindow.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Measure.Item.Length")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new RevitProjectUnitsConverter(),
+                ConverterParameter = Measure,
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            editWindow.SetBinding(System.Windows.Controls.TextBox.TextProperty, bindingVal);
+            editWindow.editText.SetBinding(System.Windows.Controls.TextBox.TextProperty, bindingVal);
 
             if (editWindow.ShowDialog() != true)
             {
                 return;
             }
-
-            //use a binding to set the value of the 
-            //length based on the edit box's text
-
-            //set the value from the text in the box
-            //Value = DeserializeValue(editWindow.editText.Text);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)

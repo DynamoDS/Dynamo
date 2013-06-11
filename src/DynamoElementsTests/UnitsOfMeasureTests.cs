@@ -23,6 +23,9 @@ namespace DynamoElementsTests
             foot.FromDisplayString("1' 3\"", DynamoUnitDisplayType.FRACTIONAL_FEET_INCHES);
             Assert.AreEqual(1.25, foot.Item.Length);
 
+            foot.Item.Length = 1.16667;
+            Assert.AreEqual("1' 2\"", foot.ToDisplayString(DynamoUnitDisplayType.FRACTIONAL_FEET_INCHES));
+
             //inch tests
             var inch = new DynamoLength<Inch>(12.0);
             Assert.AreEqual("30.48 cm", inch.ToDisplayString(DynamoUnitDisplayType.CENTIMETERS));
@@ -33,11 +36,12 @@ namespace DynamoElementsTests
             Assert.AreEqual("0.30 m", inch.ToDisplayString(DynamoUnitDisplayType.METERS));
             Assert.AreEqual("304.80 mm", inch.ToDisplayString(DynamoUnitDisplayType.MILLIMETERS));
 
+            //test inches internal unit storage
             inch.FromDisplayString("1' 2 1/2\"", DynamoUnitDisplayType.FRACTIONAL_INCHES);
-            Assert.AreEqual(1.2083, inch.Item.Length, 0.0001);
+            Assert.AreEqual(14.5, inch.Item.Length, 0.0001);
 
             inch.FromDisplayString("14 1/2\"", DynamoUnitDisplayType.FRACTIONAL_INCHES);
-            Assert.AreEqual(1.2083, inch.Item.Length, 0.0001);
+            Assert.AreEqual(14.5, inch.Item.Length, 0.0001);
         }
 
         [Test]

@@ -589,7 +589,7 @@ namespace Dynamo.Measure
 
 
 
-            string fractionalInches = ToFractionalInches(partialFeet * 12.0);
+            string fractionalInches = ToFractionalInches(Math.Round(partialFeet * 12.0,4));
 
             if (fractionalInches == "11 1\"")
             {

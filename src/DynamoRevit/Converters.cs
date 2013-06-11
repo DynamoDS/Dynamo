@@ -97,6 +97,7 @@ namespace Dynamo.Controls
             }
             return new DisplayUnitType();
         }
+        
         /// <summary>
         /// Convert the value to project units.
         /// </summary>
