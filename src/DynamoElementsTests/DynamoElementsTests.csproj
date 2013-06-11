@@ -54,6 +54,7 @@
     <Compile Include="DynamoSampleTests.cs" />
     <Compile Include="SearchTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitsOfMeasureTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
