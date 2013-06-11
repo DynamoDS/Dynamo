@@ -538,17 +538,15 @@ namespace Dynamo.Utilities
 
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
-                    XmlAttribute typeAttrib = elNode.Attributes[0];
-                    XmlAttribute guidAttrib = elNode.Attributes[1];
-                    XmlAttribute nicknameAttrib = elNode.Attributes[2];
-                    XmlAttribute xAttrib = elNode.Attributes[3];
-                    XmlAttribute yAttrib = elNode.Attributes[4];
+                    XmlAttribute typeAttrib = elNode.Attributes["type"];
+                    XmlAttribute guidAttrib = elNode.Attributes["guid"];
+                    XmlAttribute nicknameAttrib = elNode.Attributes["nickname"];
+                    XmlAttribute xAttrib = elNode.Attributes["x"];
+                    XmlAttribute yAttrib = elNode.Attributes["y"];
+                    XmlAttribute lacingAttrib = elNode.Attributes["lacing"];
+                    XmlAttribute isVisAttrib = elNode.Attributes["isVisible"];
+                    XmlAttribute isUpstreamVisAttrib = elNode.Attributes["isUpstreamVisible"];
 
-                    XmlAttribute lacingAttrib = null;
-                    if (elNode.Attributes.Count > 5)
-                    {
-                        lacingAttrib = elNode.Attributes[5];
-                    }
 
                     string typeName = typeAttrib.Value;
 
@@ -570,6 +568,14 @@ namespace Dynamo.Utilities
 
                     double x = Convert.ToDouble(xAttrib.Value);
                     double y = Convert.ToDouble(yAttrib.Value);
+
+                    bool isVisible = true;
+                    if (isVisAttrib != null)
+                        isVisible = isVisAttrib.Value == "true" ? true : false;
+
+                    bool isUpstreamVisible = true;
+                    if (isUpstreamVisAttrib != null)
+                        isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
                     //Type t = Type.GetType(typeName);
                     TypeLoadData tData;
@@ -619,6 +625,9 @@ namespace Dynamo.Utilities
                         Enum.TryParse(lacingAttrib.Value, out lacing);
                         el.ArgumentLacing = lacing;
                     }
+
+                    el.IsVisible = isVisible;
+                    el.IsUpstreamVisible = isUpstreamVisible;
 
                     // note - this is because the connectors fail to be created if there's not added
                     // to the canvas

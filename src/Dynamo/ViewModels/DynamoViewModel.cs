@@ -2446,16 +2446,12 @@ namespace Dynamo.Controls
                     else
                         t = tData.Type;
 
-                    bool isVisible;
-                    if (isVisAttrib == null)
-                        isVisible = true;
-                    else
+                    bool isVisible = true;
+                    if (isVisAttrib != null)
                         isVisible = isVisAttrib.Value == "true" ? true : false;
 
-                    bool isUpstreamVisible;
-                    if (isUpstreamVisAttrib == null)
-                        isUpstreamVisible = true;
-                    else
+                    bool isUpstreamVisible = true;
+                    if (isUpstreamVisAttrib != null)
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
                     dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(
