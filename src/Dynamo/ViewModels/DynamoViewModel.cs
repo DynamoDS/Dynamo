@@ -12,11 +12,14 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Xml;
+using System.Globalization;
+
 using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+
 using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Controls
@@ -1645,9 +1648,9 @@ namespace Dynamo.Controls
                     foreach (XmlAttribute att in node.Attributes)
                     {
                         if (att.Name.Equals("X"))
-                            cx = Convert.ToDouble(att.Value);
+                            cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("Y"))
-                            cy = Convert.ToDouble(att.Value);
+                            cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("Name"))
                             funName = att.Value;
                         else if (att.Name.Equals("Category"))
@@ -1748,8 +1751,8 @@ namespace Dynamo.Controls
 
                     string nickname = nicknameAttrib.Value;
 
-                    double x = Convert.ToDouble(xAttrib.Value);
-                    double y = Convert.ToDouble(yAttrib.Value);
+                    double x = double.Parse(xAttrib.Value,CultureInfo.InvariantCulture);
+                    double y = double.Parse(yAttrib.Value,CultureInfo.InvariantCulture);
 
                     //Type t = Type.GetType(typeName);
                     TypeLoadData tData;
@@ -1911,8 +1914,8 @@ namespace Dynamo.Controls
                         XmlAttribute yAttrib = note.Attributes[2];
 
                         string text = textAttrib.Value;
-                        double x = Convert.ToDouble(xAttrib.Value);
-                        double y = Convert.ToDouble(yAttrib.Value);
+                        double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
+                        double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
                         var paramDict = new Dictionary<string, object>();
                         paramDict.Add("x", x);
@@ -2354,11 +2357,11 @@ namespace Dynamo.Controls
                     {
                         if (att.Name.Equals("X"))
                         {
-                            _model.CurrentSpace.X = Convert.ToDouble(att.Value);
+                            _model.CurrentSpace.X = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
                         else if (att.Name.Equals("Y"))
                         {
-                            _model.CurrentSpace.Y = Convert.ToDouble(att.Value);
+                            _model.CurrentSpace.Y = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
                     }
                 }
@@ -2401,8 +2404,8 @@ namespace Dynamo.Controls
 
                     string nickname = nicknameAttrib.Value;
 
-                    double x = Convert.ToDouble(xAttrib.Value);
-                    double y = Convert.ToDouble(yAttrib.Value);
+                    double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
+                    double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
                     if (typeName.StartsWith("Dynamo.Elements."))
                         typeName = "Dynamo.Nodes." + typeName.Remove(0, 16);
@@ -2534,8 +2537,8 @@ namespace Dynamo.Controls
                         XmlAttribute yAttrib = note.Attributes[2];
 
                         string text = textAttrib.Value;
-                        double x = Convert.ToDouble(xAttrib.Value);
-                        double y = Convert.ToDouble(yAttrib.Value);
+                        double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
+                        double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
                         //dynNoteView n = Bench.AddNote(text, x, y, this.CurrentSpace);
                         //Bench.AddNote(text, x, y, this.CurrentSpace);
