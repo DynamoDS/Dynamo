@@ -201,8 +201,8 @@ namespace Dynamo
             get
             {
                 if (_model == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
-                    return Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B);
-                return Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A);
+                    return Color.FromRgb(220, 220, 220);
+                return Color.FromRgb(255, 255, 220);
             }
         }
 
