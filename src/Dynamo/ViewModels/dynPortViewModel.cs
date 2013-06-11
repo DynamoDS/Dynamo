@@ -130,6 +130,7 @@ namespace Dynamo.Connectors
 
         private void Connect()
         {
+            // if this is a 
             if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting)
             {
                 //test if port already has a connection if so grab it
@@ -169,6 +170,11 @@ namespace Dynamo.Connectors
             }
             else  // attempt to complete the connection
             {
+                if (_port.PortType != PortType.INPUT)
+                {
+                    return;
+                }
+
                 //remove connector if one already exists
                 if (_port.Connectors.Count > 0)
                 {
@@ -177,21 +183,20 @@ namespace Dynamo.Connectors
                     _port.Disconnect(_port.Connectors[0]);
                 }
 
-                try
-                {
-                    // create the new connector model
-                    var start = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ActiveStartPort;
-                    var end = _port;
-                    var newConnectorModel = new dynConnectorModel(start.Owner, end.Owner, start.Index, end.Index, 0);
+                // create the new connector model
+                var start = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ActiveStartPort;
+                var end = _port;
 
-                    // Add to the current workspace
-                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Model.Connectors.Add(newConnectorModel);
-                }
-                catch (Exception e)
+                var newConnectorModel = dynConnectorModel.Make(start.Owner, end.Owner, start.Index, end.Index, 0);
+
+                // the connector is invalid
+                if (newConnectorModel == null)
                 {
-                    DynamoLogger.Instance.Log(e.Message);
-                    dynSettings.Controller.DynamoViewModel.Log(e.Message);
+                    return;
                 }
+
+                // Add to the current workspace
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Model.Connectors.Add(newConnectorModel);
 
                 // Cleanup
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = false;

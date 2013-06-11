@@ -164,6 +164,7 @@ namespace Dynamo.Applications
         public static double? dynamoViewY = null;
         public static double? dynamoViewWidth = null;
         public static double? dynamoViewHeight = null;
+        private bool handledCrash = false;
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
@@ -207,6 +208,8 @@ namespace Dynamo.Applications
                         //set window handle and show dynamo
                         new WindowInteropHelper(dynamoView).Owner = mwHandle;
 
+                        handledCrash = false;
+
                         dynamoView.WindowStartupLocation = WindowStartupLocation.Manual;
 
                         Rectangle bounds = Screen.PrimaryScreen.Bounds;
@@ -245,6 +248,16 @@ namespace Dynamo.Applications
         /// <param name="args">Info about the exception</param>
         private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
         {
+
+            // only handle a single crash per Dynamo sesh, this should be reset in the initial command
+            if (handledCrash)
+            {
+                args.Handled = true;
+                return;
+            }
+
+            handledCrash = true;
+
             var exceptionMessage = args.Exception.Message;
             var stackTrace = args.Exception.StackTrace;
 
@@ -276,7 +289,7 @@ namespace Dynamo.Applications
             }
             finally
             {
-
+                
                 args.Handled = true;
             }
             

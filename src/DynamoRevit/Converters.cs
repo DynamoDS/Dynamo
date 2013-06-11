@@ -13,7 +13,10 @@ using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+
 using Dynamo.Measure;
+
+using System.Reflection;
 
 namespace Dynamo.Controls
 {
@@ -22,6 +25,78 @@ namespace Dynamo.Controls
     /// </summary>
     public class RevitProjectUnitsConverter : IValueConverter
     {
+        DisplayUnitType getDisplayUnitTypeOfFormatUnits()
+        {
+            Type RevitDoc = typeof(Autodesk.Revit.DB.Document);
+
+            var propertyInfo = RevitDoc.GetProperties();
+
+            Object unitObject = null;
+            Type ProjectUnitType = null;
+
+            foreach (PropertyInfo propertyInfoItem in propertyInfo)
+            {
+                if (propertyInfoItem.Name == "ProjectUnit")
+                {
+                    //r2013
+                    System.Reflection.Assembly revitAPIAssembly = System.Reflection.Assembly.GetAssembly(RevitDoc);
+                    ProjectUnitType = revitAPIAssembly.GetType("Autodesk.Revit.DB.ProjectUnit", false);
+                    unitObject = (Object)propertyInfoItem.GetValue((Object)dynRevitSettings.Doc.Document, null);
+                    break;
+                }
+            }
+            if (unitObject == null)
+            {
+                MethodInfo[] docMethods =  RevitDoc.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                foreach (MethodInfo ds in docMethods)
+                {
+                    if (ds.Name == "GetUnits")
+                    {
+                        //r2014
+                        object[] argsM = new object[0];
+                        unitObject = ds.Invoke(dynRevitSettings.Doc.Document, argsM);
+                        System.Reflection.Assembly revitAPIAssembly = System.Reflection.Assembly.GetAssembly(RevitDoc);
+                        ProjectUnitType = revitAPIAssembly.GetType("Autodesk.Revit.DB.Units", false);
+                        break;
+                    }
+                }
+            }
+
+            if (unitObject != null)
+            {
+                MethodInfo[] unitsMethods = ProjectUnitType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+ 
+                foreach (MethodInfo ms in unitsMethods)
+                {
+                    if (ms.Name == "GetFormatOptions" || ms.Name == "get_FormatOptions")
+                    {
+                        object[] argsM = new object[1];
+                        argsM[0] = UnitType.UT_Length;
+
+                        FormatOptions LengthFormatOptions = (FormatOptions)ms.Invoke(unitObject, argsM);
+                        if (LengthFormatOptions != null)
+                        {
+                            Type FormatOptionsType = typeof(Autodesk.Revit.DB.FormatOptions);
+                            var FormatOptionsPropertyInfo = FormatOptionsType.GetProperties();
+                            foreach (PropertyInfo propertyInfoItem2 in FormatOptionsPropertyInfo)
+                            {
+                                if (propertyInfoItem2.Name == "Units")
+                                {
+                                    //r2013
+                                    return (DisplayUnitType)propertyInfoItem2.GetValue((Object)LengthFormatOptions, null);
+                                }
+                                else if (propertyInfoItem2.Name == "DisplayUnits")
+                                {
+                                    //r2014
+                                    return (DisplayUnitType)propertyInfoItem2.GetValue((Object)LengthFormatOptions, null);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return new DisplayUnitType();
+        }
         /// <summary>
         /// Convert the value to project units.
         /// </summary>
@@ -40,7 +115,9 @@ namespace Dynamo.Controls
             Autodesk.Revit.DB.ProjectUnit projectUnit = dynRevitSettings.Doc.Document.ProjectUnit;
             FormatOptions formatOptions = projectUnit.get_FormatOptions(UnitType.UT_Length);
 
-            switch (formatOptions.Units)
+            DisplayUnitType displayUnit = getDisplayUnitTypeOfFormatUnits();
+
+            switch (displayUnit)
             {
                 case DisplayUnitType.DUT_CENTIMETERS:
                     return lengthObj.ToDisplayString(DynamoUnitDisplayType.CENTIMETERS);
@@ -86,10 +163,9 @@ namespace Dynamo.Controls
             //The data binding engine calls this method when it propagates a value from the binding target to the binding source.
             var lengthObj = (DynamoLength<Foot>)parameter;
 
-            Autodesk.Revit.DB.ProjectUnit projectUnit = dynRevitSettings.Doc.Document.ProjectUnit;
-            FormatOptions formatOptions = projectUnit.get_FormatOptions(UnitType.UT_Length);
+            DisplayUnitType displayUnit = getDisplayUnitTypeOfFormatUnits();
 
-            switch (formatOptions.Units)
+            switch (displayUnit)
             {
                 case DisplayUnitType.DUT_CENTIMETERS:
                     lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.CENTIMETERS);

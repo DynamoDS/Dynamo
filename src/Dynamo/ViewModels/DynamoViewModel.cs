@@ -9,11 +9,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using System.Xml;
 using Dynamo.Commands;
 using Dynamo.Connectors;
@@ -21,7 +18,6 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
-using Dynamo.Views;
 
 namespace Dynamo.Controls
 {
@@ -974,7 +970,7 @@ namespace Dynamo.Controls
         {
             //make a lookup table to store the guids of the
             //old nodes and the guids of their pasted versions
-            Hashtable nodeLookup = new Hashtable();
+            var nodeLookup = new Dictionary<Guid, Guid>();
 
             //clear the selection so we can put the
             //paste contents in
@@ -996,7 +992,7 @@ namespace Dynamo.Controls
                 if(node is dynFunction)
                     nodeData.Add("name", (node as dynFunction).Definition.FunctionId);
                 else
-                    nodeData.Add("name", node.NickName);
+                    nodeData.Add("name", node.GetType() );
                 nodeData.Add("guid", newGuid);
 
                 if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.GetType()))
@@ -1033,35 +1029,32 @@ namespace Dynamo.Controls
 
             foreach (dynConnectorModel c in connectors)
             {
-                Dictionary<string, object> connectionData = new Dictionary<string, object>();
+                var connectionData = new Dictionary<string, object>();
 
-                dynNodeModel startNode = null;
+                // if in nodeLookup, the node is paste.  otherwise, use the existing node guid
+                Guid startGuid = Guid.Empty;
+                Guid endGuid = Guid.Empty;
 
-                try
+                startGuid = nodeLookup.TryGetValue(c.Start.Owner.GUID, out startGuid) ? startGuid : c.Start.Owner.GUID;
+                endGuid = nodeLookup.TryGetValue(c.End.Owner.GUID, out endGuid) ? endGuid : c.End.Owner.GUID;
+
+                var startNode = _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == startGuid );
+                var endNode = _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == endGuid );
+
+                // do not form connector if the end nodes are null
+                if (startNode == null || endNode == null)
                 {
-                    var connectorStart = c.Start;
-                    var guidLookup = (Guid)nodeLookup[connectorStart.Owner.GUID];
-
-                    startNode = _model.CurrentSpace.Nodes
-                        .Where(x => x.GUID == guidLookup).FirstOrDefault();
+                    continue;
                 }
-                catch
-                {
-                    //don't let users paste connectors between workspaces
-                    if (c.Start.Owner.WorkSpace == _model.CurrentSpace)
-                    {
-                        startNode = c.Start.Owner;
-                    }
-                    else
-                    {
-                        continue;
-                    }
 
+                //don't let users paste connectors between workspaces
+                if (startNode.WorkSpace != _model.CurrentSpace)
+                {
+                    continue;
                 }
 
                 connectionData.Add("start", startNode);
-
-                connectionData.Add("end", _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == (Guid)nodeLookup[c.End.Owner.GUID]));
+                connectionData.Add("end", endNode);
 
                 connectionData.Add("port_start", c.Start.Index);
                 connectionData.Add("port_end", c.End.Index);
@@ -1072,15 +1065,13 @@ namespace Dynamo.Controls
             //process the queue again to create the connectors
             dynSettings.Controller.ProcessCommandQueue();
 
-            foreach (DictionaryEntry de in nodeLookup)
+            foreach (var de in nodeLookup)
             {
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(AddToSelectionCommand,
                     _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == (Guid)de.Value)));
             }
 
             dynSettings.Controller.ProcessCommandQueue();
-
-            //dynSettings.ViewModel.ClipBoard.Clear();
         }
 
         private bool CanPaste(object parameters)
@@ -1262,6 +1253,9 @@ namespace Dynamo.Controls
         private void DisplayFunction(object parameters)
         {
             Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameters);
+
+
+
         }
 
         private bool CanDisplayFunction(object parameters)
@@ -1402,9 +1396,10 @@ namespace Dynamo.Controls
                 int startIndex = (int)connectionData["port_start"];
                 int endIndex = (int)connectionData["port_end"];
 
-                dynConnectorModel c = new dynConnectorModel(start, end, startIndex, endIndex, 0);
+                var c = dynConnectorModel.Make(start, end, startIndex, endIndex, 0);
 
-                _model.CurrentSpace.Connectors.Add(c);
+                if (c != null)
+                    _model.CurrentSpace.Connectors.Add(c);
             }
             catch (Exception e)
             {
@@ -1889,11 +1884,10 @@ namespace Dynamo.Controls
                     {
                         if (start != null && end != null && start != end)
                         {
-                            var newConnector = new dynConnectorModel(
+                            var newConnector = dynConnectorModel.Make(
                                 start, end,
                                 startIndex, endIndex,
-                                portType, false
-                                );
+                                portType );
 
                             ws.Connectors.Add(newConnector);
                         }
@@ -2251,17 +2245,20 @@ namespace Dynamo.Controls
         /// <param name="y"> The x coordinate where the dynNodeView will be placed</param>
         /// <returns> The newly instantiate dynNode</returns>
         public dynNodeModel CreateInstanceAndAddNodeToWorkspace(Type elementType, string nickName, Guid guid,
-            double x, double y, dynWorkspaceModel ws)    //Visibility vis = Visibility.Visible)
+            double x, double y, dynWorkspaceModel ws, bool isVisible = true, bool isUpstreamVisible = true)    //Visibility vis = Visibility.Visible)
         {
             try
             {
-                var node = CreateNodeInstance(elementType, nickName, guid);
+                dynNodeModel node = CreateNodeInstance(elementType, nickName, guid);
 
                 ws.Nodes.Add(node);
                 node.WorkSpace = ws;
 
                 node.X = x;
                 node.Y = y;
+
+                node.IsVisible = isVisible;
+                node.IsUpstreamVisible = isUpstreamVisible;
 
                 return node;
             }
@@ -2386,12 +2383,9 @@ namespace Dynamo.Controls
                     XmlAttribute nicknameAttrib = elNode.Attributes["nickname"];
                     XmlAttribute xAttrib = elNode.Attributes["x"];
                     XmlAttribute yAttrib = elNode.Attributes["y"];
-
-                    XmlAttribute lacingAttrib = null;
-                    if (elNode.Attributes.Count > 5)
-                    {
-                        lacingAttrib = elNode.Attributes["lacing"];
-                    }
+                    XmlAttribute isVisAttrib = elNode.Attributes["isVisible"];
+                    XmlAttribute isUpstreamVisAttrib = elNode.Attributes["isUpstreamVisible"];
+                    XmlAttribute lacingAttrib = elNode.Attributes["lacing"];
 
                     string typeName = typeAttrib.Value;
 
@@ -2452,9 +2446,17 @@ namespace Dynamo.Controls
                     else
                         t = tData.Type;
 
+                    bool isVisible = true;
+                    if (isVisAttrib != null)
+                        isVisible = isVisAttrib.Value == "true" ? true : false;
+
+                    bool isUpstreamVisible = true;
+                    if (isUpstreamVisAttrib != null)
+                        isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
+
                     dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(
                         t, nickname, guid, x, y,
-                        _model.CurrentSpace
+                        _model.CurrentSpace, isVisible, isUpstreamVisible
                         );
 
                     if (lacingAttrib != null)
@@ -2514,13 +2516,11 @@ namespace Dynamo.Controls
                         }
                     }
 
-                    if (start != null && end != null && start != end)
-                    {
-                        var newConnector = new dynConnectorModel(start, end,
-                                                            startIndex, endIndex, portType);
-
+                    var newConnector = dynConnectorModel.Make(start, end,
+                                                        startIndex, endIndex, portType);
+                    if (newConnector != null)
                         _model.CurrentSpace.Connectors.Add(newConnector);
-                    }
+
                 }
 
                 #region instantiate notes

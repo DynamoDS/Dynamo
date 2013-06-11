@@ -364,6 +364,8 @@ namespace Dynamo
                     dynEl.SetAttribute("nickname", el.NickName);
                     dynEl.SetAttribute("x", el.X.ToString());
                     dynEl.SetAttribute("y", el.Y.ToString());
+                    dynEl.SetAttribute("isVisible", el.IsVisible.ToString().ToLower());
+                    dynEl.SetAttribute("isUpstreamVisible", el.IsUpstreamVisible.ToString().ToLower());
                     dynEl.SetAttribute("lacing", el.ArgumentLacing.ToString());
 
                     el.SaveElement(xmlDoc, dynEl);
