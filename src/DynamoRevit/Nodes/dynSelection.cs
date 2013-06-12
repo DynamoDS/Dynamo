@@ -311,8 +311,8 @@ namespace Dynamo.Nodes
 
             _tb = new TextBox
             {
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-                VerticalAlignment = System.Windows.VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
                 BorderThickness = new Thickness(0),
                 IsReadOnly = true,
@@ -351,7 +351,7 @@ namespace Dynamo.Nodes
             _selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
         }
 
-        private void selectButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void selectButton_Click(object sender, RoutedEventArgs e)
         {
             _selectButton.IsEnabled = false;
             IdlePromise.ExecuteOnIdle(
