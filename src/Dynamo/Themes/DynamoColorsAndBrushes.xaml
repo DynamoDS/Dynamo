@@ -9,12 +9,14 @@
     <Color x:Key="WorkspaceBackgroundHome">#DCDCDC</Color>
     <Color x:Key="WorkspaceBackgroundCustom">#FFFFDC</Color>
     <SolidColorBrush Color="#757575" x:Key="WorkspaceTabHeaderTextBrush"></SolidColorBrush>
-    <SolidColorBrush Color="{StaticResource WorkspaceBackgroundHome}" x:Key="WorkspaceTabBorderBrush"></SolidColorBrush>
+    <SolidColorBrush Color="{StaticResource WorkspaceBackgroundHome}" x:Key="WorkspaceBackgroundHomeBrush"></SolidColorBrush>
+    <SolidColorBrush Color="{StaticResource WorkspaceBackgroundCustom}" x:Key="WorkspaceBackgroundCustomBrush"></SolidColorBrush>
+    
     <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1" x:Key="WorkspaceTabBorderSelectedTrue">
         <GradientStop Color="#E9E9E9" Offset="0.0" />
-        <!--<GradientStop Color="#4B4B4B" Offset="1.0" />-->
         <GradientStop Color="{StaticResource WorkspaceBackgroundHome}" Offset="1.0"/>
     </LinearGradientBrush>
+    
     <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1" x:Key="WorkspaceTabBorderSelectedFalse">
         <GradientStop Color="#333" Offset="0.0" />
         <GradientStop Color="#111" Offset="1.0" />

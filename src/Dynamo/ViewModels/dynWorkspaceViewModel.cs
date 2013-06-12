@@ -399,6 +399,7 @@ namespace Dynamo
                     break;
                 case "IsCurrentSpace":
                     RaisePropertyChanged("IsCurrentSpace");
+                    RaisePropertyChanged("IsHomeSpace");
                     break;
                 case "HasUnsavedChanges":
                     RaisePropertyChanged("HasUnsavedChanges");

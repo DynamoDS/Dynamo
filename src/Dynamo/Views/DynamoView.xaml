@@ -251,7 +251,7 @@
                                             Background="Transparent" />
                                         <Border x:Name="Border"
                                           Grid.Row="1" 
-                                          BorderBrush="{StaticResource WorkspaceTabBorderBrush}"
+                                          BorderBrush="{Binding Path=ViewingHomespace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"
                                           BorderThickness="0,4,0,0">
                                             <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
                                         </Border>
@@ -275,7 +275,7 @@
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                            <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedTrue}"/>
+                                                            <Setter Property="Background" Value="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"/>
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
                                                             <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedFalse}"/>

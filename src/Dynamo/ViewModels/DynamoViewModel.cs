@@ -372,6 +372,7 @@ namespace Dynamo.Controls
                 RaisePropertyChanged("CurrentSpace");
                 RaisePropertyChanged("BackgroundColor");
                 RaisePropertyChanged("CurrentWorkspaceIndex");
+                RaisePropertyChanged("ViewingHomespace");
             } 
         }
 
