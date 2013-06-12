@@ -1558,13 +1558,19 @@ namespace Dynamo.Nodes
             CurveLoop firstLoop = (CurveLoop)((Value.Container)args[0]).Item;
             CurveLoop secondLoop = (CurveLoop)((Value.Container)args[1]).Item;
 
-            List<VertexPair> vertPairs = new List<VertexPair>();
+            List<VertexPair> vertPairs = null;
+
+            /* this code produces rather arbitrary correspondence, while null promised by Revit API declaration to compute "geometrically reasonable blend"
+            List<VertexPair> vertPairs =  new List<VertexPair>();  
+             
             int i = 0;
-            foreach (Curve c in firstLoop)
+            int nCurves1 = firstLoop.Count();
+            int secondLoop = secondLoop.Count();
+            for (; i < nCurves1 && i < nCurves2; i++)
             {
                 vertPairs.Add(new VertexPair(i, i));
-                i++;
             }
+            */
 
             var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop, secondLoop, vertPairs);
 
