@@ -310,7 +310,7 @@ namespace Dynamo.Nodes
     {
         public dynNewList()
         {
-            InPortData.Add(new PortData("item(s)", "Item(s) to build a list out of", typeof(object)));
+            InPortData.Add(new PortData("index0", "First item", typeof(object)));
             OutPortData.Add(new PortData("list", "A list", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -325,17 +325,8 @@ namespace Dynamo.Nodes
 
         protected internal override void RemoveInput()
         {
-            if (InPortData.Count == 2)
-                InPortData[0] = new PortData("item(s)", "Item(s) to build a list out of", typeof(object));
             if (InPortData.Count > 1)
                 base.RemoveInput();
-        }
-
-        protected internal override void AddInput()
-        {
-            if (InPortData.Count == 1)
-                InPortData[0] = new PortData("index0", "First item", typeof(object));
-            base.AddInput();
         }
 
         protected override InputNode Compile(IEnumerable<string> portNames)
