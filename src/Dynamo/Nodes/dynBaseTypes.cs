@@ -35,7 +35,7 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
-
+using Microsoft.FSharp.Core;
 using Value = Dynamo.FScheme.Value;
 using TextBox = System.Windows.Controls.TextBox;
 using System.Diagnostics.Contracts;
@@ -310,7 +310,7 @@ namespace Dynamo.Nodes
     {
         public dynNewList()
         {
-            InPortData.Add(new PortData("item(s)", "Item(s) to build a list out of", typeof(object)));
+            InPortData.Add(new PortData("index0", "First item", typeof(object)));
             OutPortData.Add(new PortData("list", "A list", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -325,17 +325,8 @@ namespace Dynamo.Nodes
 
         protected internal override void RemoveInput()
         {
-            if (InPortData.Count == 2)
-                InPortData[0] = new PortData("item(s)", "Item(s) to build a list out of", typeof(object));
             if (InPortData.Count > 1)
                 base.RemoveInput();
-        }
-
-        protected internal override void AddInput()
-        {
-            if (InPortData.Count == 1)
-                InPortData[0] = new PortData("index0", "First item", typeof(object));
-            base.AddInput();
         }
 
         protected override InputNode Compile(IEnumerable<string> portNames)
@@ -890,6 +881,30 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Transpose Lists")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Swaps rows and columns in a list of lists.")]
+    public class dynTranspose : dynNodeWithOneOutput
+    {
+        public dynTranspose()
+        {
+            InPortData.Add(new PortData("lists", "The list of lists to transpose.", typeof(Value.List)));
+            OutPortData.Add(new PortData("", "Transposed list of lists.", typeof(Value.List)));
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var lists = ((Value.List)args[0]).Item;
+
+            return FScheme.Map(
+                FSharpList<Value>.Cons(
+                    Value.NewFunction(
+                        FSharpFunc<FSharpList<Value>, Value>.FromConverter(Value.NewList)),
+                    lists));
+        }
+    }
+
     [NodeName("Build Sublists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Build sublists from a list using a list-building syntax.")]
@@ -1061,6 +1076,9 @@ namespace Dynamo.Nodes
 
             FSharpList<Value> list = ((Value.List)args[0]).Item;
             int offset = Convert.ToInt32(((Value.Number)args[1]).Item);
+
+            if (offset <= 0)
+                throw new Exception(InPortData[1].NickName + " argument must be greater than zero.");
 
             //sublist creation semantics are as follows:
             //EX. 1..2,5..8
