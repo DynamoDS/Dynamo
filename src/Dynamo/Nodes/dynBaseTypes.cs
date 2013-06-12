@@ -2403,7 +2403,7 @@ namespace Dynamo.Nodes
             //add a text box to the input grid of the control
             var tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
@@ -2469,7 +2469,7 @@ namespace Dynamo.Nodes
             //add a text box to the input grid of the control
             var tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
@@ -2546,9 +2546,6 @@ namespace Dynamo.Nodes
             tb_slider = new System.Windows.Controls.Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            nodeUI.inputGrid.Children.Add(tb_slider);
-            System.Windows.Controls.Grid.SetColumn(tb_slider, 1);
-            System.Windows.Controls.Grid.SetRow(tb_slider, 0);
 
             tb_slider.Width = 100;
 
@@ -2618,15 +2615,11 @@ namespace Dynamo.Nodes
                 }
             };
 
-            nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-            nodeUI.inputGrid.Children.Add(mintb);
-            nodeUI.inputGrid.Children.Add(maxtb);
-
-            System.Windows.Controls.Grid.SetColumn(mintb, 0);
-            System.Windows.Controls.Grid.SetColumn(maxtb, 2);
+            WrapPanel wp = new WrapPanel();
+            wp.Children.Add(mintb);
+            wp.Children.Add(tb_slider);
+            wp.Children.Add(maxtb);
+            nodeUI.inputGrid.Children.Add(wp);
 
             displayBox = new TextBox()
             {
@@ -2880,7 +2873,8 @@ namespace Dynamo.Nodes
                 AcceptsReturn = true,
                 AcceptsTab = true,
                 TextWrapping = TextWrapping.Wrap,
-                MaxWidth = 120
+                MaxWidth = 120,
+                VerticalAlignment = VerticalAlignment.Top
             };
 
             nodeUI.inputGrid.Children.Add(tb);
