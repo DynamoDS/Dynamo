@@ -35,7 +35,7 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
-
+using Microsoft.FSharp.Core;
 using Value = Dynamo.FScheme.Value;
 using TextBox = System.Windows.Controls.TextBox;
 using System.Diagnostics.Contracts;
@@ -887,6 +887,30 @@ namespace Dynamo.Nodes
 
             return Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
 
+        }
+    }
+
+    [NodeName("Transpose Lists")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Swaps rows and columns in a list of lists.")]
+    public class dynTranspose : dynNodeWithOneOutput
+    {
+        public dynTranspose()
+        {
+            InPortData.Add(new PortData("lists", "The list of lists to transpose.", typeof(Value.List)));
+            OutPortData.Add(new PortData("", "Transposed list of lists.", typeof(Value.List)));
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var lists = ((Value.List)args[0]).Item;
+
+            return FScheme.Map(
+                FSharpList<Value>.Cons(
+                    Value.NewFunction(
+                        FSharpFunc<FSharpList<Value>, Value>.FromConverter(Value.NewList)),
+                    lists));
         }
     }
 
