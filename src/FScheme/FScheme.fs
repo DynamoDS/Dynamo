@@ -439,12 +439,19 @@ let IsEmpty = function [List(l)]            -> Number(if l.IsEmpty then 1. else 
 let rec private reduceLists = function
     | []     -> Seq.empty
     | [xs]   -> seq { for x in xs -> [x] }
-    | h :: t -> reduceLists t |> Seq.zip h |> Seq.map (fun (a,b) -> a::b)
+    | h :: t -> 
+        let t' = reduceLists t
+        let tcount = Seq.length t'
+        let hcount = Seq.length h
+        let tail = if tcount < hcount then Seq.skip tcount h |> Seq.map (fun x -> [x]) else Seq.skip hcount t'
+        Seq.append
+            (Seq.zip h t' |> Seq.map (fun (a,b) -> a::b))
+            tail
 
 let Map = function
     | Function(f) :: lists ->
-        List(List.map (function List(l) -> l | m -> failwith "bad map arg") lists
-                |> reduceLists |> Seq.map f |> Seq.toList)
+        List.map (function List(l) -> l | m -> failwith "bad map arg") lists
+            |> reduceLists |> Seq.map f |> Seq.toList |> List
     | m -> malformed "map" <| List(m)
 
 let FoldL = function
