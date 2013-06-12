@@ -290,6 +290,66 @@ namespace DynamoRevitTests
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
         }
 
+        [Test]
+        public void InstParamSample()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param end.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void InstParamEndSample()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param end.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void InstParam3Sample()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param 3.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void InstParam2MassesSample()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param 2 masses.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
+        [Test]
+        public void InstParam2MassesDrivingEachOtherSample()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param 2 masses driving each other.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        }
+
         #region Python samples
         /*
         [Test]
@@ -521,51 +581,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void SwitchDocuments()
-        {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
-
-            //open the workflow and run the expression
-            string testPath = Path.Combine(_testPath, "ReferencePointTest.dyn");
-            dynSettings.Controller.RunCommand(vm.OpenCommand,testPath);
-            Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
-            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
-
-            //verify we have a reference point
-            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-            fec.OfClass(typeof(ReferencePoint));
-            Assert.AreEqual(1, fec.ToElements().Count());
-
-            //open a new document and activate it
-            UIDocument initialDoc = dynRevitSettings.Revit.ActiveUIDocument;
-            string shellPath = Path.Combine(_testPath, @"empty1.rfa");
-            dynRevitSettings.Revit.OpenAndActivateDocument(shellPath);
-            initialDoc.Document.Close(false);
-            
-            //assert that the doc is set on the controller
-            Assert.IsNotNull(dynRevitSettings.Doc.Document);
-
-            //update the double node so the graph reevaluates
-            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynBasicInteractive<double>);
-            dynBasicInteractive<double> node = doubleNodes.First() as dynBasicInteractive<double>;
-            node.Value = node.Value + .1;
-
-            //run the expression again
-            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
-            fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-            fec.OfClass(typeof(ReferencePoint));
-            Assert.AreEqual(1, fec.ToElements().Count());
-
-            //finish out by restoring the original
-            initialDoc = dynRevitSettings.Revit.ActiveUIDocument;
-            shellPath = Path.Combine(_testPath, @"empty.rfa");
-            dynRevitSettings.Revit.OpenAndActivateDocument(shellPath);
-            initialDoc.Document.Close(false);
-
-        }
-
-        [Test]
-        public void CurveByPoints()
+        public void CurveByPointsNode()
         {
             DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
@@ -622,7 +638,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void XYZFromReferencePoint()
+        public void XYZFromReferencePointNode()
         {
             DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
@@ -652,7 +668,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void CurveByPointsByLine()
+        public void CurveByPointsByLineNode()
         {
             //this sample creates a geometric line
             //then creates a curve by points from that line
@@ -681,6 +697,84 @@ namespace DynamoRevitTests
             fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(2, fec.ToElements().Count);
+        }
+
+        [Test]
+        public void AdaptiveComponentsNode()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string path = Path.Combine(_testPath, @".\AdaptiveComponents\AdaptiveComponentSample.rfa");
+            string modelPath = Path.GetFullPath(path);
+            SwapCurrentModel(modelPath);
+
+            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponents\AdaptiveComponents.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+
+            //the .dyn has the slider set at 5. let's make sure that
+            //if you set the slider to something else before running, that it get the correct number
+            var slider = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynDoubleSliderInput).First();
+            ((dynBasicInteractive<double>)slider).Value = 1;
+
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            //get all the family instances in the document
+            var acs = GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
+            Assert.AreEqual(1, acs.Count());
+
+            //change the number slider
+            ((dynBasicInteractive<double>)slider).Value = 3;
+
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            acs = GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
+            Assert.AreEqual(3, acs.Count());
+
+        }
+
+        [Test]
+        public void SwitchDocuments()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            //open the workflow and run the expression
+            string testPath = Path.Combine(_testPath, "ReferencePointTest.dyn");
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            //verify we have a reference point
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(1, fec.ToElements().Count());
+
+            //open a new document and activate it
+            UIDocument initialDoc = dynRevitSettings.Revit.ActiveUIDocument;
+            string shellPath = Path.Combine(_testPath, @"empty1.rfa");
+            dynRevitSettings.Revit.OpenAndActivateDocument(shellPath);
+            initialDoc.Document.Close(false);
+
+            //assert that the doc is set on the controller
+            Assert.IsNotNull(dynRevitSettings.Doc.Document);
+
+            //update the double node so the graph reevaluates
+            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynBasicInteractive<double>);
+            dynBasicInteractive<double> node = doubleNodes.First() as dynBasicInteractive<double>;
+            node.Value = node.Value + .1;
+
+            //run the expression again
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(1, fec.ToElements().Count());
+
+            //finish out by restoring the original
+            initialDoc = dynRevitSettings.Revit.ActiveUIDocument;
+            shellPath = Path.Combine(_testPath, @"empty.rfa");
+            dynRevitSettings.Revit.OpenAndActivateDocument(shellPath);
+            initialDoc.Document.Close(false);
+
         }
 
         [Test]
@@ -729,40 +823,6 @@ namespace DynamoRevitTests
             Assert.AreEqual(20, fec.ToElements().Count());
         }
 
-        [Test]
-        public void AdaptiveComponents()
-        {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
-
-            string path = Path.Combine(_testPath, @".\AdaptiveComponents\AdaptiveComponentSample.rfa");
-            string modelPath = Path.GetFullPath(path);
-            SwapCurrentModel(modelPath);
-
-            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponents\AdaptiveComponents.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
-
-            //the .dyn has the slider set at 5. let's make sure that
-            //if you set the slider to something else before running, that it get the correct number
-            var slider = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynDoubleSliderInput).First();
-            ((dynBasicInteractive<double>)slider).Value = 1;
-
-            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
-
-            //get all the family instances in the document
-            var acs = GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
-            Assert.AreEqual(1, acs.Count());
-
-            //change the number slider
-            ((dynBasicInteractive<double>)slider).Value = 3;
-
-            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
-            acs = GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
-            Assert.AreEqual(3, acs.Count());
-
-        }
-        
         /// <summary>
         /// Opens and activates a new model, and closes the old model.
         /// </summary>

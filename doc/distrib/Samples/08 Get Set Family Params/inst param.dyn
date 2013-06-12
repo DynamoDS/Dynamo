@@ -1,20 +1,22 @@
-<dynWorkspace X="10" Y="55">
+<dynWorkspace X="23.015" Y="162.77">
   <dynElements>
-    <Dynamo.Elements.dynFamilyInstanceParameterSelector type="Dynamo.Elements.dynFamilyInstanceParameterSelector" guid="7e63d9f5-e2c8-442e-8116-45ec7461e4c0" nickname="Family Instance Parameter Selector" x="29.5" y="428">
+    <Dynamo.Nodes.dynFamilyInstanceParameterGetter type="Dynamo.Nodes.dynFamilyInstanceParameterGetter" guid="d1ae2fd3-3827-4a6c-975a-885dd044db58" nickname="Get Instance Parameter" x="331.25" y="125.75" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <Run />
+    </Dynamo.Nodes.dynFamilyInstanceParameterGetter>
+    <Dynamo.Nodes.dynFamilyInstanceCreatorSelection type="Dynamo.Nodes.dynFamilyInstanceCreatorSelection" guid="0125cb4d-cb32-4f00-8607-c7547cfd281c" nickname="Family Instance by Selection" x="0" y="50.25" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="58787572-65da-4342-9998-357576050f4e-00039c63" />
+    </Dynamo.Nodes.dynFamilyInstanceCreatorSelection>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="4596a36c-40d1-4505-b3a8-9345d181ec04" nickname="Watch" x="499.25" y="131.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynFamilyInstanceParameterSelector type="Dynamo.Nodes.dynFamilyInstanceParameterSelector" guid="50093e0a-0116-4af8-82e4-5b62b42c2ac3" nickname="Select Fam Inst Param" x="89.5993426821169" y="236.684057797973" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <familyid value="236643" />
       <index value="4" />
-    </Dynamo.Elements.dynFamilyInstanceParameterSelector>
-    <Dynamo.Elements.dynFamilyInstanceParameterGetter type="Dynamo.Elements.dynFamilyInstanceParameterGetter" guid="d1ae2fd3-3827-4a6c-975a-885dd044db58" nickname="Get Instance Parameter" x="262.25" y="273.75" />
-    <Dynamo.Elements.dynFamilyInstanceParameterSetter type="Dynamo.Elements.dynFamilyInstanceParameterSetter" guid="feeb9c08-c9d4-4e50-8624-232012381639" nickname="Set Instance Parameter" x="402" y="246.25" />
-    <Dynamo.Elements.dynFamilyInstanceCreatorSelection type="Dynamo.Elements.dynFamilyInstanceCreatorSelection" guid="0125cb4d-cb32-4f00-8607-c7547cfd281c" nickname="Family Instance by Selection" x="0" y="50.25">
-      <instance id="236643" />
-    </Dynamo.Elements.dynFamilyInstanceCreatorSelection>
-    <Dynamo.Elements.dynWatch type="Dynamo.Elements.dynWatch" guid="4596a36c-40d1-4505-b3a8-9345d181ec04" nickname="Watch" x="360.25" y="340.75" />
+    </Dynamo.Nodes.dynFamilyInstanceParameterSelector>
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="7e63d9f5-e2c8-442e-8116-45ec7461e4c0" start_index="0" end="d1ae2fd3-3827-4a6c-975a-885dd044db58" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="d1ae2fd3-3827-4a6c-975a-885dd044db58" start_index="0" end="4596a36c-40d1-4505-b3a8-9345d181ec04" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="0125cb4d-cb32-4f00-8607-c7547cfd281c" start_index="0" end="7e63d9f5-e2c8-442e-8116-45ec7461e4c0" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="0125cb4d-cb32-4f00-8607-c7547cfd281c" start_index="0" end="d1ae2fd3-3827-4a6c-975a-885dd044db58" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="d1ae2fd3-3827-4a6c-975a-885dd044db58" start_index="0" end="4596a36c-40d1-4505-b3a8-9345d181ec04" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="0125cb4d-cb32-4f00-8607-c7547cfd281c" start_index="0" end="d1ae2fd3-3827-4a6c-975a-885dd044db58" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="0125cb4d-cb32-4f00-8607-c7547cfd281c" start_index="0" end="50093e0a-0116-4af8-82e4-5b62b42c2ac3" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="50093e0a-0116-4af8-82e4-5b62b42c2ac3" start_index="0" end="d1ae2fd3-3827-4a6c-975a-885dd044db58" end_index="1" portType="0" />
   </dynConnectors>
+  <dynNotes />
 </dynWorkspace>

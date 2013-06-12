@@ -1,26 +1,31 @@
-<dynWorkspace X="10" Y="55">
+<dynWorkspace X="13.3416666666667" Y="109.52">
   <dynElements>
-    <Dynamo.Elements.dynFamilyInstanceParameterSelector type="Dynamo.Elements.dynFamilyInstanceParameterSelector" guid="7e63d9f5-e2c8-442e-8116-45ec7461e4c0" nickname="Family Instance Parameter Selector" x="29.5" y="428">
+    <Dynamo.Nodes.dynFamilyInstanceParameterGetter type="Dynamo.Nodes.dynFamilyInstanceParameterGetter" guid="d1ae2fd3-3827-4a6c-975a-885dd044db58" nickname="Get Instance Parameter" x="640.5" y="165.75" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <Run />
+    </Dynamo.Nodes.dynFamilyInstanceParameterGetter>
+    <Dynamo.Nodes.dynFamilyInstanceParameterSetter type="Dynamo.Nodes.dynFamilyInstanceParameterSetter" guid="feeb9c08-c9d4-4e50-8624-232012381639" nickname="Set Instance Parameter" x="480.75" y="40" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <Run />
+    </Dynamo.Nodes.dynFamilyInstanceParameterSetter>
+    <Dynamo.Nodes.dynFamilyInstanceCreatorSelection type="Dynamo.Nodes.dynFamilyInstanceCreatorSelection" guid="0125cb4d-cb32-4f00-8607-c7547cfd281c" nickname="Family Instance by Selection" x="3.75" y="175.25" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="58787572-65da-4342-9998-357576050f4e-00039c63" />
+    </Dynamo.Nodes.dynFamilyInstanceCreatorSelection>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="4596a36c-40d1-4505-b3a8-9345d181ec04" nickname="Watch" x="877.75" y="49.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="00369bad-a1e3-4fbd-832a-5ed25ff5a258" nickname="Number Slider" x="2" y="44.25" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0.3" min="0" max="1" />
+    </Dynamo.Nodes.dynDoubleSliderInput>
+    <Dynamo.Nodes.dynFamilyInstanceParameterSelector type="Dynamo.Nodes.dynFamilyInstanceParameterSelector" guid="e86c7a1e-f73d-4523-bbd5-681a433e4150" nickname="Select Fam Inst Param" x="250.871654295906" y="219.001536691795" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <familyid value="236643" />
       <index value="1" />
-    </Dynamo.Elements.dynFamilyInstanceParameterSelector>
-    <Dynamo.Elements.dynFamilyInstanceParameterGetter type="Dynamo.Elements.dynFamilyInstanceParameterGetter" guid="d1ae2fd3-3827-4a6c-975a-885dd044db58" nickname="Get Instance Parameter" x="262.25" y="273.75" />
-    <Dynamo.Elements.dynFamilyInstanceParameterSetter type="Dynamo.Elements.dynFamilyInstanceParameterSetter" guid="feeb9c08-c9d4-4e50-8624-232012381639" nickname="Set Instance Parameter" x="352" y="66.25" />
-    <Dynamo.Elements.dynFamilyInstanceCreatorSelection type="Dynamo.Elements.dynFamilyInstanceCreatorSelection" guid="0125cb4d-cb32-4f00-8607-c7547cfd281c" nickname="Family Instance by Selection" x="0" y="50.25">
-      <instance id="236643" />
-    </Dynamo.Elements.dynFamilyInstanceCreatorSelection>
-    <Dynamo.Elements.dynWatch type="Dynamo.Elements.dynWatch" guid="4596a36c-40d1-4505-b3a8-9345d181ec04" nickname="Watch" x="360.25" y="340.75" />
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="00369bad-a1e3-4fbd-832a-5ed25ff5a258" nickname="Number Slider" x="9.5" y="157.25">
-      <System.Double value="0.3" min="0" max="1" />
-    </Dynamo.Elements.dynDoubleSliderInput>
+    </Dynamo.Nodes.dynFamilyInstanceParameterSelector>
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="7e63d9f5-e2c8-442e-8116-45ec7461e4c0" start_index="0" end="d1ae2fd3-3827-4a6c-975a-885dd044db58" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="7e63d9f5-e2c8-442e-8116-45ec7461e4c0" start_index="0" end="feeb9c08-c9d4-4e50-8624-232012381639" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="d1ae2fd3-3827-4a6c-975a-885dd044db58" start_index="0" end="4596a36c-40d1-4505-b3a8-9345d181ec04" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="feeb9c08-c9d4-4e50-8624-232012381639" start_index="0" end="d1ae2fd3-3827-4a6c-975a-885dd044db58" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="0125cb4d-cb32-4f00-8607-c7547cfd281c" start_index="0" end="7e63d9f5-e2c8-442e-8116-45ec7461e4c0" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="0125cb4d-cb32-4f00-8607-c7547cfd281c" start_index="0" end="feeb9c08-c9d4-4e50-8624-232012381639" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="00369bad-a1e3-4fbd-832a-5ed25ff5a258" start_index="0" end="feeb9c08-c9d4-4e50-8624-232012381639" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="d1ae2fd3-3827-4a6c-975a-885dd044db58" start_index="0" end="4596a36c-40d1-4505-b3a8-9345d181ec04" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="feeb9c08-c9d4-4e50-8624-232012381639" start_index="0" end="d1ae2fd3-3827-4a6c-975a-885dd044db58" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="0125cb4d-cb32-4f00-8607-c7547cfd281c" start_index="0" end="feeb9c08-c9d4-4e50-8624-232012381639" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="0125cb4d-cb32-4f00-8607-c7547cfd281c" start_index="0" end="e86c7a1e-f73d-4523-bbd5-681a433e4150" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="00369bad-a1e3-4fbd-832a-5ed25ff5a258" start_index="0" end="feeb9c08-c9d4-4e50-8624-232012381639" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e86c7a1e-f73d-4523-bbd5-681a433e4150" start_index="0" end="feeb9c08-c9d4-4e50-8624-232012381639" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e86c7a1e-f73d-4523-bbd5-681a433e4150" start_index="0" end="d1ae2fd3-3827-4a6c-975a-885dd044db58" end_index="1" portType="0" />
   </dynConnectors>
+  <dynNotes />
 </dynWorkspace>
