@@ -1062,6 +1062,9 @@ namespace Dynamo.Nodes
             FSharpList<Value> list = ((Value.List)args[0]).Item;
             int offset = Convert.ToInt32(((Value.Number)args[1]).Item);
 
+            if (offset <= 0)
+                throw new Exception(InPortData[1].NickName + " argument must be greater than zero.");
+
             //sublist creation semantics are as follows:
             //EX. 1..2,5..8
             //This expression says give me elements 1-2 then jump 3 and give me elements 5-8
