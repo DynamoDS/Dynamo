@@ -20,12 +20,13 @@ namespace DynamoRevitTests
     [TestFixture]
     internal class DynamoRevitTests
     {
-        Transaction _trans;
-        List<Element> _elements = new List<Element>();
-        string _testPath;
-        string _samplesPath;
-        string _defsPath;
-        string _emptyModelPath;
+        private Transaction _trans;
+        private List<Element> _elements = new List<Element>();
+        private string _testPath;
+        private string _samplesPath;
+        private string _defsPath;
+        private string _emptyModelPath;
+        private string _emptyModelPath1;
 
         [TestFixtureSetUp]
         public void InitFixture()
@@ -61,6 +62,10 @@ namespace DynamoRevitTests
             _defsPath = Path.GetFullPath(defsLoc);
 
             _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
+            _emptyModelPath1 = Path.Combine(_testPath, "empty1.rfa");
+
+            //open an empty model before every test
+            OpenEmptyModel();
         }
 
         [TearDown]
@@ -70,68 +75,68 @@ namespace DynamoRevitTests
             //dynRevitSettings.Controller.ShutDown();
 
             //delete all the elements in the document
-            using (_trans = _trans = new Transaction(dynRevitSettings.Doc.Document))
-            {
-                _trans.Start("Cleanup test geometry.");
+            //using (_trans = _trans = new Transaction(dynRevitSettings.Doc.Document))
+            //{
+            //    _trans.Start("Cleanup test geometry.");
 
-                //get all the generic forms and dissolve them
-                //if you don't dissolve them, you don't get the original
-                //points back
-                FilteredElementCollector fecForms = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-                fecForms.OfClass(typeof(GenericForm));
+            //    //get all the generic forms and dissolve them
+            //    //if you don't dissolve them, you don't get the original
+            //    //points back
+            //    FilteredElementCollector fecForms = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            //    fecForms.OfClass(typeof(GenericForm));
 
-                if (FormUtils.CanBeDissolved(dynRevitSettings.Doc.Document, fecForms.ToElementIds()))
-                {
-                    FormUtils.DissolveForms(dynRevitSettings.Doc.Document, fecForms.ToElementIds());
-                }
+            //    if (FormUtils.CanBeDissolved(dynRevitSettings.Doc.Document, fecForms.ToElementIds()))
+            //    {
+            //        FormUtils.DissolveForms(dynRevitSettings.Doc.Document, fecForms.ToElementIds());
+            //    }
 
-                //TODO: can we reset the collector instead of 
-                //instantiating anew each time?
-                //this is the only way I could get this to work so
-                //that it would allow deletion of things like curves with sub-points
+            //    //TODO: can we reset the collector instead of 
+            //    //instantiating anew each time?
+            //    //this is the only way I could get this to work so
+            //    //that it would allow deletion of things like curves with sub-points
 
-                FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-                //delete curves
-                fec.OfClass(typeof(CurveElement));
-                IList<Element> elements = fec.ToElements();
-                if (elements.Count > 0)
-                    DynamoLogger.Instance.Log(string.Format("Cleaning up {0} curve elements.", elements.Count));
+            //    FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            //    //delete curves
+            //    fec.OfClass(typeof(CurveElement));
+            //    IList<Element> elements = fec.ToElements();
+            //    if (elements.Count > 0)
+            //        DynamoLogger.Instance.Log(string.Format("Cleaning up {0} curve elements.", elements.Count));
 
-                for (int i = elements.Count-1; i >= 0; i--)
-                {
-                    dynRevitSettings.Doc.Document.Delete(elements[i]);
-                }
+            //    for (int i = elements.Count-1; i >= 0; i--)
+            //    {
+            //        dynRevitSettings.Doc.Document.Delete(elements[i]);
+            //    }
 
-                fec = null;
-                fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-                //delete ref points
-                elements.Clear();
-                fec.OfClass(typeof(ReferencePoint));
-                elements = fec.ToElements();
-                if (elements.Count > 0)
-                    DynamoLogger.Instance.Log(string.Format("Cleaning up {0} reference points.", elements.Count));
+            //    fec = null;
+            //    fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            //    //delete ref points
+            //    elements.Clear();
+            //    fec.OfClass(typeof(ReferencePoint));
+            //    elements = fec.ToElements();
+            //    if (elements.Count > 0)
+            //        DynamoLogger.Instance.Log(string.Format("Cleaning up {0} reference points.", elements.Count));
 
-                for (int i = elements.Count - 1; i >= 0; i--)
-                {
-                    dynRevitSettings.Doc.Document.Delete(elements[i]);
-                }
+            //    for (int i = elements.Count - 1; i >= 0; i--)
+            //    {
+            //        dynRevitSettings.Doc.Document.Delete(elements[i]);
+            //    }
 
-                fec = null;
-                fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-                //delete forms
-                elements.Clear();
-                fec.OfClass(typeof(GenericForm));
-                elements = fec.ToElements();
-                if (elements.Count > 0)
-                    DynamoLogger.Instance.Log(string.Format("Cleaning up {0} generic forms.", elements.Count));
+            //    fec = null;
+            //    fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            //    //delete forms
+            //    elements.Clear();
+            //    fec.OfClass(typeof(GenericForm));
+            //    elements = fec.ToElements();
+            //    if (elements.Count > 0)
+            //        DynamoLogger.Instance.Log(string.Format("Cleaning up {0} generic forms.", elements.Count));
 
-                for (int i = elements.Count - 1; i >= 0; i--)
-                {
-                    dynRevitSettings.Doc.Document.Delete(elements[i]);
-                }
+            //    for (int i = elements.Count - 1; i >= 0; i--)
+            //    {
+            //        dynRevitSettings.Doc.Document.Delete(elements[i]);
+            //    }
 
-                _trans.Commit();
-            }
+            //    _trans.Commit();
+            //}
         }
 
         [Test]
@@ -821,19 +826,26 @@ namespace DynamoRevitTests
             acs = GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
             Assert.AreEqual(3, acs.Count());
 
-            //reset the original model
-            SwapCurrentModel(_emptyModelPath);
         }
         
         /// <summary>
         /// Opens and activates a new model, and closes the old model.
         /// </summary>
-        private static void SwapCurrentModel(string modelPath)
+        private void SwapCurrentModel(string modelPath)
         {
             Document initialDoc = dynRevitSettings.Doc.Document;
             dynRevitSettings.Revit.OpenAndActivateDocument(modelPath);
             initialDoc.Close(false);
-       
+        }
+
+        private void OpenEmptyModel()
+        {
+            Document initialDoc = dynRevitSettings.Doc.Document;
+            UIDocument empty1 = dynRevitSettings.Revit.OpenAndActivateDocument(_emptyModelPath1);
+            initialDoc.Close(false);
+
+            dynRevitSettings.Revit.OpenAndActivateDocument(_emptyModelPath);
+            empty1.Document.Close(false);
         }
 
         /// <summary>
