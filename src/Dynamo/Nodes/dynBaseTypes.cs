@@ -44,6 +44,7 @@ using System.Windows.Input;
 using System.Windows.Data;
 using System.Globalization;
 using Binding = System.Windows.Forms.Binding;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
 
 namespace Dynamo.Nodes
 {
@@ -173,25 +174,33 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Button addButton = new dynNodeButton();
             addButton.Content = "+";
             addButton.Width = 20;
-            addButton.Height = 20;
+            //addButton.Height = 20;
             addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            addButton.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+            addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
             System.Windows.Controls.Button subButton = new dynNodeButton();
             subButton.Content = "-";
             subButton.Width = 20;
-            subButton.Height = 20;
+            //subButton.Height = 20;
             subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            subButton.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+            subButton.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            
+            WrapPanel wp = new WrapPanel();
+            wp.VerticalAlignment = VerticalAlignment.Top;
+            wp.HorizontalAlignment = HorizontalAlignment.Center;
+            wp.Children.Add(addButton);
+            wp.Children.Add(subButton);
 
-            nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            nodeUI.inputGrid.Children.Add(wp);
 
-            nodeUI.inputGrid.Children.Add(addButton);
-            System.Windows.Controls.Grid.SetColumn(addButton, 0);
+            //nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            //nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
-            nodeUI.inputGrid.Children.Add(subButton);
-            System.Windows.Controls.Grid.SetColumn(subButton, 1);
+            //nodeUI.inputGrid.Children.Add(addButton);
+            //System.Windows.Controls.Grid.SetColumn(addButton, 0);
+
+            //nodeUI.inputGrid.Children.Add(subButton);
+            //System.Windows.Controls.Grid.SetColumn(subButton, 1);
 
             addButton.Click += delegate { AddInput(); RegisterAllPorts(); };
             subButton.Click += delegate { RemoveInput(); RegisterAllPorts(); };
@@ -932,6 +941,9 @@ namespace Dynamo.Nodes
             };
 
             tb.OnChangeCommitted += processTextForNewInputs;
+
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
 
             nodeUI.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
@@ -1979,7 +1991,7 @@ namespace Dynamo.Nodes
             //add a text box to the input grid of the control
             button = new dynNodeButton();
             button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            button.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            button.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             //inputGrid.RowDefinitions.Add(new RowDefinition());
             nodeUI.inputGrid.Children.Add(button);
             System.Windows.Controls.Grid.SetColumn(button, 0);
@@ -2939,7 +2951,7 @@ namespace Dynamo.Nodes
             dict.Source = uri;
             Style = (Style)dict["SNodeTextButton"];
 
-            this.Margin = new Thickness(1);
+            this.Margin = new Thickness(1,0,1,0);
         }
 
     }
@@ -2960,10 +2972,10 @@ namespace Dynamo.Nodes
         {
             //add a button to the inputGrid on the dynElement
             var readFileButton = new dynNodeButton();
-
-            readFileButton.Margin = new System.Windows.Thickness(4);
-            readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            
+            //readFileButton.Margin = new System.Windows.Thickness(4);
+            readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             readFileButton.Click += new System.Windows.RoutedEventHandler(readFileButton_Click);
             readFileButton.Content = "Browse...";
             readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -2982,15 +2994,20 @@ namespace Dynamo.Nodes
             tb.IsReadOnlyCaretVisible = false;
             tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); dynSettings.ReturnFocusToSearch(); };
 
+            StackPanel sp = new StackPanel();
+            sp.Children.Add(readFileButton);
+            sp.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(sp);
+
             //NodeUI.SetRowAmount(2);
-            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            //nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            //nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
-            nodeUI.inputGrid.Children.Add(tb);
-            nodeUI.inputGrid.Children.Add(readFileButton);
+            //nodeUI.inputGrid.Children.Add(tb);
+            //nodeUI.inputGrid.Children.Add(readFileButton);
 
-            System.Windows.Controls.Grid.SetRow(readFileButton, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 1);
+            //System.Windows.Controls.Grid.SetRow(readFileButton, 0);
+            //System.Windows.Controls.Grid.SetRow(tb, 1);
 
             //NodeUI.topControl.Height = 60;
             //NodeUI.UpdateLayout();
