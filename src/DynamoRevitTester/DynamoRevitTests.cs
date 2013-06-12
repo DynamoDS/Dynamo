@@ -804,7 +804,7 @@ namespace DynamoRevitTests
             dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
 
             //the .dyn has the slider set at 5. let's make sure that
-            //if you set the slider to somethin else before running, that it get the correct number
+            //if you set the slider to something else before running, that it get the correct number
             var slider = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynDoubleSliderInput).First();
             ((dynBasicInteractive<double>)slider).Value = 1;
 
@@ -833,6 +833,7 @@ namespace DynamoRevitTests
             Document initialDoc = dynRevitSettings.Doc.Document;
             dynRevitSettings.Revit.OpenAndActivateDocument(modelPath);
             initialDoc.Close(false);
+       
         }
 
         /// <summary>

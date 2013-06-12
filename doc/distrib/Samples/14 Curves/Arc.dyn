@@ -1,44 +1,38 @@
-<dynWorkspace X="10" Y="55">
+<dynWorkspace X="435.031851851852" Y="169.635221323517">
   <dynElements>
-    <Dynamo.Elements.dynArcStartMiddleEnd type="Dynamo.Elements.dynArcStartMiddleEnd" guid="f927b0e4-58ec-49be-a624-73c2910a760f" nickname="Arc by Center Point" x="370.75" y="92.5" />
-    <Dynamo.Elements.dynModelCurve type="Dynamo.Elements.dynModelCurve" guid="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" nickname="Model Curve" x="502.75" y="202.5" />
-    <Dynamo.Elements.dynSketchPlane type="Dynamo.Elements.dynSketchPlane" guid="2d6cb241-3689-43f3-8204-2cb76a68d7d0" nickname="Sketch Plane" x="243.5" y="372" />
-    <Dynamo.Elements.dynPlane type="Dynamo.Elements.dynPlane" guid="56c0b63e-7592-4125-8587-93633cadf15d" nickname="Plane" x="120" y="360.5" />
-    <Dynamo.Elements.dynXYZZero type="Dynamo.Elements.dynXYZZero" guid="d967888f-3c59-4ca5-8a05-05c500fa661a" nickname="XYZ Zero" x="4" y="418.5" />
-    <Dynamo.Elements.dynXYZBasisZ type="Dynamo.Elements.dynXYZBasisZ" guid="cc395951-0e17-47e5-991e-a08c5fee1404" nickname="XYZ BasisZ" x="1" y="356.5" />
-    <Dynamo.Elements.dynPointBySelection type="Dynamo.Elements.dynPointBySelection" guid="1a7bae91-b174-4f37-b85c-96b1452d6f3f" nickname="Point by Selection" x="0" y="7.75">
-      <instance id="30556" />
-    </Dynamo.Elements.dynPointBySelection>
-    <Dynamo.Elements.dynPointBySelection type="Dynamo.Elements.dynPointBySelection" guid="d2acb082-8c19-42a5-82c7-6edfe3667d7e" nickname="Point by Selection" x="0" y="96.25">
-      <instance id="30566" />
-    </Dynamo.Elements.dynPointBySelection>
-    <Dynamo.Elements.dynPointBySelection type="Dynamo.Elements.dynPointBySelection" guid="07e2b716-29f4-4d13-b4a1-c990c34dd82a" nickname="Point by Selection" x="1.25" y="171.5">
-      <instance id="30561" />
-    </Dynamo.Elements.dynPointBySelection>
-    <Dynamo.Elements.dynXYZFromReferencePoint type="Dynamo.Elements.dynXYZFromReferencePoint" guid="bad31750-c7b6-4fa9-a022-17f81818f6ed" nickname="XYZ From Ref Point" x="226" y="29.75" />
-    <Dynamo.Elements.dynXYZFromReferencePoint type="Dynamo.Elements.dynXYZFromReferencePoint" guid="b671e597-f5e3-4fa4-ad29-3160febe9163" nickname="XYZ From Ref Point" x="230.25" y="112.75" />
-    <Dynamo.Elements.dynXYZFromReferencePoint type="Dynamo.Elements.dynXYZFromReferencePoint" guid="2ce4097b-07a2-464b-be89-deaff11b434b" nickname="XYZ From Ref Point" x="225.25" y="191.25" />
-    <Dynamo.Elements.dynWatch type="Dynamo.Elements.dynWatch" guid="d06cd90b-d3c7-4fd3-b530-21e981a1b710" nickname="Watch" x="497.5" y="321.25" />
-    <Dynamo.Elements.dynWatch3D type="Dynamo.Elements.dynWatch3D" guid="383677d8-a594-4040-b14a-e7fa9e73bfab" nickname="Watch 3D" x="752.769230769231" y="0" />
-    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="6de77be2-fa0f-41ec-a494-151d47ad8274" nickname="List" x="508.519230769231" y="110">
+    <Dynamo.Nodes.dynArcStartMiddleEnd type="Dynamo.Nodes.dynArcStartMiddleEnd" guid="f927b0e4-58ec-49be-a624-73c2910a760f" nickname="Arc by Center Point" x="459.083333333333" y="111.666666666667" lacing="Longest" />
+    <Dynamo.Nodes.dynModelCurve type="Dynamo.Nodes.dynModelCurve" guid="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" nickname="Model Curve" x="591.083333333333" y="221.666666666667" lacing="Longest" />
+    <Dynamo.Nodes.dynSketchPlane type="Dynamo.Nodes.dynSketchPlane" guid="2d6cb241-3689-43f3-8204-2cb76a68d7d0" nickname="Sketch Plane" x="331.833333333333" y="391.166666666667" lacing="Longest" />
+    <Dynamo.Nodes.dynPlane type="Dynamo.Nodes.dynPlane" guid="56c0b63e-7592-4125-8587-93633cadf15d" nickname="Plane" x="120" y="360.5" lacing="Longest" />
+    <Dynamo.Nodes.dynXYZZero type="Dynamo.Nodes.dynXYZZero" guid="d967888f-3c59-4ca5-8a05-05c500fa661a" nickname="XYZ Zero" x="4" y="418.5" lacing="Longest" />
+    <Dynamo.Nodes.dynXYZFromReferencePoint type="Dynamo.Nodes.dynXYZFromReferencePoint" guid="bad31750-c7b6-4fa9-a022-17f81818f6ed" nickname="XYZ From Ref Point" x="246.833333333333" y="46.4166666666666" lacing="Longest" />
+    <Dynamo.Nodes.dynXYZFromReferencePoint type="Dynamo.Nodes.dynXYZFromReferencePoint" guid="b671e597-f5e3-4fa4-ad29-3160febe9163" nickname="XYZ From Ref Point" x="251.083333333333" y="129.416666666667" lacing="Longest" />
+    <Dynamo.Nodes.dynXYZFromReferencePoint type="Dynamo.Nodes.dynXYZFromReferencePoint" guid="2ce4097b-07a2-464b-be89-deaff11b434b" nickname="XYZ From Ref Point" x="246.083333333333" y="207.916666666667" lacing="Longest" />
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="d06cd90b-d3c7-4fd3-b530-21e981a1b710" nickname="Watch" x="585.833333333333" y="340.416666666667" lacing="Disabled" />
+    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="383677d8-a594-4040-b14a-e7fa9e73bfab" nickname="Watch 3D" x="752.769230769231" y="0" lacing="Disabled" />
+    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="6de77be2-fa0f-41ec-a494-151d47ad8274" nickname="List" x="596.852564102564" y="129.166666666667" lacing="Disabled">
       <Input name="item(s)" />
-    </Dynamo.Elements.dynNewList>
+    </Dynamo.Nodes.dynNewList>
+    <Dynamo.Nodes.dynPointBySelection type="Dynamo.Nodes.dynPointBySelection" guid="3d694eeb-8c6a-4454-be4a-0067ac0b2f74" nickname="Select Point" x="0" y="203.778726155278" lacing="Disabled" />
+    <Dynamo.Nodes.dynPointBySelection type="Dynamo.Nodes.dynPointBySelection" guid="7d6c8bf0-8175-49e1-8978-2ccdb84f5a18" nickname="Select Point" x="0" y="107.48990003987" lacing="Disabled" />
+    <Dynamo.Nodes.dynPointBySelection type="Dynamo.Nodes.dynPointBySelection" guid="1dc99fb9-5ca8-411d-9afd-1bcc2562a914" nickname="Select Point" x="0" y="19.7159519774533" lacing="Disabled" />
+    <Dynamo.Nodes.dynXYZBasisZ type="Dynamo.Nodes.dynXYZBasisZ" guid="1f03ab73-5bdf-4f17-b652-86a5c0b6ce77" nickname="Z Axis" x="0" y="318.843120073261" lacing="Longest" />
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="f927b0e4-58ec-49be-a624-73c2910a760f" start_index="0" end="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="f927b0e4-58ec-49be-a624-73c2910a760f" start_index="0" end="6de77be2-fa0f-41ec-a494-151d47ad8274" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" start_index="0" end="d06cd90b-d3c7-4fd3-b530-21e981a1b710" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="2d6cb241-3689-43f3-8204-2cb76a68d7d0" start_index="0" end="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="56c0b63e-7592-4125-8587-93633cadf15d" start_index="0" end="2d6cb241-3689-43f3-8204-2cb76a68d7d0" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="d967888f-3c59-4ca5-8a05-05c500fa661a" start_index="0" end="56c0b63e-7592-4125-8587-93633cadf15d" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="cc395951-0e17-47e5-991e-a08c5fee1404" start_index="0" end="56c0b63e-7592-4125-8587-93633cadf15d" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="1a7bae91-b174-4f37-b85c-96b1452d6f3f" start_index="0" end="bad31750-c7b6-4fa9-a022-17f81818f6ed" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="d2acb082-8c19-42a5-82c7-6edfe3667d7e" start_index="0" end="b671e597-f5e3-4fa4-ad29-3160febe9163" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="07e2b716-29f4-4d13-b4a1-c990c34dd82a" start_index="0" end="2ce4097b-07a2-464b-be89-deaff11b434b" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="bad31750-c7b6-4fa9-a022-17f81818f6ed" start_index="0" end="f927b0e4-58ec-49be-a624-73c2910a760f" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="b671e597-f5e3-4fa4-ad29-3160febe9163" start_index="0" end="f927b0e4-58ec-49be-a624-73c2910a760f" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="2ce4097b-07a2-464b-be89-deaff11b434b" start_index="0" end="f927b0e4-58ec-49be-a624-73c2910a760f" end_index="2" portType="0" />
-    <Dynamo.Connectors.dynConnector start="6de77be2-fa0f-41ec-a494-151d47ad8274" start_index="0" end="383677d8-a594-4040-b14a-e7fa9e73bfab" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="f927b0e4-58ec-49be-a624-73c2910a760f" start_index="0" end="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="f927b0e4-58ec-49be-a624-73c2910a760f" start_index="0" end="6de77be2-fa0f-41ec-a494-151d47ad8274" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" start_index="0" end="d06cd90b-d3c7-4fd3-b530-21e981a1b710" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="2d6cb241-3689-43f3-8204-2cb76a68d7d0" start_index="0" end="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="56c0b63e-7592-4125-8587-93633cadf15d" start_index="0" end="2d6cb241-3689-43f3-8204-2cb76a68d7d0" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="d967888f-3c59-4ca5-8a05-05c500fa661a" start_index="0" end="56c0b63e-7592-4125-8587-93633cadf15d" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="bad31750-c7b6-4fa9-a022-17f81818f6ed" start_index="0" end="f927b0e4-58ec-49be-a624-73c2910a760f" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="b671e597-f5e3-4fa4-ad29-3160febe9163" start_index="0" end="f927b0e4-58ec-49be-a624-73c2910a760f" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="2ce4097b-07a2-464b-be89-deaff11b434b" start_index="0" end="f927b0e4-58ec-49be-a624-73c2910a760f" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="6de77be2-fa0f-41ec-a494-151d47ad8274" start_index="0" end="383677d8-a594-4040-b14a-e7fa9e73bfab" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="3d694eeb-8c6a-4454-be4a-0067ac0b2f74" start_index="0" end="2ce4097b-07a2-464b-be89-deaff11b434b" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="7d6c8bf0-8175-49e1-8978-2ccdb84f5a18" start_index="0" end="b671e597-f5e3-4fa4-ad29-3160febe9163" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="1dc99fb9-5ca8-411d-9afd-1bcc2562a914" start_index="0" end="bad31750-c7b6-4fa9-a022-17f81818f6ed" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="1f03ab73-5bdf-4f17-b652-86a5c0b6ce77" start_index="0" end="56c0b63e-7592-4125-8587-93633cadf15d" end_index="0" portType="0" />
   </dynConnectors>
   <dynNotes />
 </dynWorkspace>
