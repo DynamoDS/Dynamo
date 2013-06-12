@@ -196,19 +196,24 @@ namespace Dynamo
             set { isConnecting = value; }
         }
 
-        public Color BackgroundColor
-        {
-            get
-            {
-                if (_model == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
-                    return Color.FromRgb(220, 220, 220);
-                return Color.FromRgb(255, 255, 220);
-            }
-        }
+        //public Color BackgroundColor
+        //{
+        //    get
+        //    {
+        //        if (_model == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
+        //            return Color.FromRgb(220, 220, 220);
+        //        return Color.FromRgb(255, 255, 220);
+        //    }
+        //}
 
         public bool IsCurrentSpace
         {
             get { return _model.IsCurrentSpace; }
+        }
+
+        public bool IsHomeSpace
+        {
+            get { return _model == dynSettings.Controller.DynamoModel.HomeSpace; }
         }
 
         public bool WatchEscapeIsDown
@@ -394,6 +399,7 @@ namespace Dynamo
                     break;
                 case "IsCurrentSpace":
                     RaisePropertyChanged("IsCurrentSpace");
+                    RaisePropertyChanged("IsHomeSpace");
                     break;
                 case "HasUnsavedChanges":
                     RaisePropertyChanged("HasUnsavedChanges");

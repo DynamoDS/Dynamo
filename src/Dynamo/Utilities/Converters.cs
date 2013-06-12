@@ -91,6 +91,52 @@ namespace Dynamo.Controls
         }
     }
 
+    public class WorkspaceBackgroundColorConverter : IValueConverter
+    {
+        public Color HomeBackgroundColor { get; set; }
+        public Color CustomBackgroundColor { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter,CultureInfo culture)
+        {
+            //parameter will contain a true or false
+            //whether this is the home space
+            if ((bool)value)
+                return HomeBackgroundColor;
+
+            return CustomBackgroundColor;
+
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class WorkspaceBackgroundBrushConverter : IValueConverter
+    {
+        public SolidColorBrush HomeBackgroundBrush { get; set; }
+        public SolidColorBrush CustomBackgroundBrush { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            //parameter will contain a true or false
+            //whether this is the home space
+            if ((bool)value)
+                return HomeBackgroundBrush;
+
+            return CustomBackgroundBrush;
+
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class BooleanToBrushConverter : IValueConverter
     {
         public SolidColorBrush TrueBrush{get;set;}

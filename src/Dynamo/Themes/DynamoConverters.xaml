@@ -7,6 +7,15 @@
     </ResourceDictionary.MergedDictionaries>
 
     <controls:WorkspaceTypeConverter x:Key="WorkspaceTypeConverter" />
+    <controls:WorkspaceBackgroundColorConverter x:Key="WorkspaceBackgroundColorConverter" 
+                                                HomeBackgroundColor="{StaticResource WorkspaceBackgroundHome}"
+                                                CustomBackgroundColor="{StaticResource WorkspaceBackgroundCustom}">
+    </controls:WorkspaceBackgroundColorConverter>
+    <controls:WorkspaceBackgroundBrushConverter x:Key="WorkspaceBackgroundBrushConverter" 
+                                                HomeBackgroundBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
+                                                CustomBackgroundBrush="{StaticResource WorkspaceBackgroundCustomBrush}">
+    </controls:WorkspaceBackgroundBrushConverter>
+    
     <controls:MarginConverter x:Key="MarginConverter" />
     <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter" 
                                       TrueBrush="Cyan" 

@@ -232,10 +232,8 @@
                 <TabControl.Resources>
 
                     <Style  TargetType="{x:Type TabControl}">
-                        <Setter Property="OverridesDefaultStyle"
-          Value="True" />
-                        <Setter Property="SnapsToDevicePixels"
-          Value="True" />
+                        <Setter Property="OverridesDefaultStyle" Value="True" />
+                        <Setter Property="SnapsToDevicePixels" Value="True" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type TabControl}">
@@ -253,7 +251,7 @@
                                             Background="Transparent" />
                                         <Border x:Name="Border"
                                           Grid.Row="1" 
-                                          BorderBrush="#4B4B4B"
+                                          BorderBrush="{Binding Path=ViewingHomespace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"
                                           BorderThickness="0,4,0,0">
                                             <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
                                         </Border>
@@ -277,24 +275,10 @@
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                            <Setter Property="Background">
-                                                                <Setter.Value>
-                                                                    <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                                                                        <GradientStop Color="#555" Offset="0.0" />
-                                                                        <GradientStop Color="#4B4B4B" Offset="1.0" />
-                                                                    </LinearGradientBrush>
-                                                                </Setter.Value>
-                                                            </Setter>
+                                                            <Setter Property="Background" Value="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"/>
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
-                                                            <Setter Property="Background">
-                                                                <Setter.Value>
-                                                                    <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                                                                        <GradientStop Color="#333" Offset="0.0" />
-                                                                        <GradientStop Color="#111" Offset="1.0" />
-                                                                    </LinearGradientBrush>
-                                                                </Setter.Value>
-                                                            </Setter>
+                                                            <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedFalse}"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -373,7 +357,7 @@
                                         <Style.Triggers>
                                             
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                <Setter Property="Foreground" Value="GhostWhite"></Setter>
+                                                <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderTextBrush}"></Setter>
                                             </DataTrigger>
                                             
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
@@ -400,7 +384,7 @@
                                         <Style.Triggers>
                                             
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                <Setter Property="Foreground" Value="GhostWhite"></Setter>
+                                                <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderTextBrush}"></Setter>
                                             </DataTrigger>
                                             
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
@@ -418,7 +402,7 @@
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                <Setter Property="Foreground" Value="GhostWhite"></Setter>
+                                                <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderTextBrush}"></Setter>
                                             </DataTrigger>
                                             
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">

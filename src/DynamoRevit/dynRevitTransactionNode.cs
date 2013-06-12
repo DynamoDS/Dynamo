@@ -314,6 +314,10 @@ namespace Dynamo.Revit
 
         public static void DrawGeometryObject(RenderDescription description, object obj)
         {
+
+            if (obj == null)
+                return;
+
             // Debugging code
             //string path = @"C:\Temp\" + System.Guid.NewGuid().ToString() + ".txt";
             //System.IO.File.WriteAllText(path, obj.GetType().Name);
@@ -343,6 +347,9 @@ namespace Dynamo.Revit
         // Elements can cantain many Geometry
         public static void DrawElement(RenderDescription description, object obj)
         {
+            if (obj == null)
+                return;
+
             if (typeof(Autodesk.Revit.DB.CurveElement).IsAssignableFrom(obj.GetType()))
             {
                 DrawCurveElement(description, obj);

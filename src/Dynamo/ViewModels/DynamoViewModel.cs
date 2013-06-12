@@ -73,7 +73,7 @@ namespace Dynamo.Controls
         public DelegateCommand ReportABugCommand { get; set; }
         public DelegateCommand GoToWikiCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
-        public DelegateCommand ExitCommand { get; set; }
+        public DelegateCommand<object> ExitCommand { get; set; }
         public DelegateCommand CleanupCommand { get; set; }
         public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
@@ -327,7 +327,7 @@ namespace Dynamo.Controls
             ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode,  CanGoToSourceCode);
             CleanupCommand = new DelegateCommand(Cleanup, CanCleanup);
-            ExitCommand = new DelegateCommand(Exit, CanExit);
+            ExitCommand = new DelegateCommand<object>(Exit, CanExit);
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
@@ -372,6 +372,7 @@ namespace Dynamo.Controls
                 RaisePropertyChanged("CurrentSpace");
                 RaisePropertyChanged("BackgroundColor");
                 RaisePropertyChanged("CurrentWorkspaceIndex");
+                RaisePropertyChanged("ViewingHomespace");
             } 
         }
 
@@ -714,7 +715,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="workspace">The workspace for which to show the dialog</param>
         /// <returns>False if the user cancels, otherwise true</returns>
-        public bool AskUserToSaveWorkspaceOrCancel(dynWorkspaceModel workspace)
+        public bool AskUserToSaveWorkspaceOrCancel(dynWorkspaceModel workspace, bool allowCancel = true)
         {
             var dialogText = "";
             if (workspace is FuncWorkspace)
@@ -736,7 +737,9 @@ namespace Dynamo.Controls
                 }
             }
 
-            var result = System.Windows.MessageBox.Show(dialogText, "Confirmation", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            var buttons = allowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
+            var result = System.Windows.MessageBox.Show(dialogText, "Confirmation", buttons, MessageBoxImage.Question);
+
             if (result == MessageBoxResult.Yes)
             {
                 this.ShowSaveDialogIfNeededAndSave(workspace);
@@ -751,12 +754,13 @@ namespace Dynamo.Controls
         /// <summary>
         ///     Ask the user if they want to save any unsaved changes, return false if the user cancels.
         /// </summary>
+        /// <param name="allowCancel">Whether to show cancel button to user. </param>
         /// <returns>Whether the cleanup was completed or cancelled.</returns>
-        public bool AskUserToSaveWorkspacesOrCancel()
+        public bool AskUserToSaveWorkspacesOrCancel(bool allowCancel = true)
         {
             foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
             {
-                if (!AskUserToSaveWorkspaceOrCancel(wvm.Model))
+                if (!AskUserToSaveWorkspaceOrCancel(wvm.Model, allowCancel))
                     return false;
             }
             return true;
@@ -765,6 +769,7 @@ namespace Dynamo.Controls
         public void Cleanup()
         {
             DynamoLogger.Instance.FinishLogging();
+            
         }
 
         private bool CanCleanup()
@@ -772,17 +777,24 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void Exit()
+        private void Exit(object allowCancel)
         {
-            if (!AskUserToSaveWorkspacesOrCancel())
+            bool allowCancelBool = true;
+            if (allowCancel != null)
+            {
+                allowCancelBool = (bool)allowCancel;
+            }
+            if (!AskUserToSaveWorkspacesOrCancel(allowCancelBool))
                 return;
             this.Cleanup();
+            exitInvoked = true;
             dynSettings.Bench.Close();
         }
 
-        private bool CanExit()
+        public bool exitInvoked = false;
+        private bool CanExit(object allowCancel)
         {
-            return true;
+            return !exitInvoked;
         }
 
         private void SaveAs(object parameters)
@@ -998,25 +1010,12 @@ namespace Dynamo.Controls
                     nodeData.Add("name", node.GetType() );
                 nodeData.Add("guid", newGuid);
 
-                if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.GetType()))
-                {
-                    nodeData.Add("value", (node as dynBasicInteractive<double>).Value);
-                }
-                else if (typeof(dynBasicInteractive<string>).IsAssignableFrom(node.GetType()))
-                {
-                    nodeData.Add("value", (node as dynBasicInteractive<string>).Value);
-                }
-                else if (typeof(dynBasicInteractive<bool>).IsAssignableFrom(node.GetType()))
-                {
-                    nodeData.Add("value", (node as dynBasicInteractive<bool>).Value);
-                }
-                else if (typeof(dynVariableInput).IsAssignableFrom(node.GetType()))
-                {
-                    //for list type nodes send the number of ports
-                    //as the value - so we can setup the new node with
-                    //the right number of ports
-                    nodeData.Add("value", node.InPorts.Count);
-                }
+                var xmlDoc = new XmlDocument();
+                var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
+                xmlDoc.AppendChild(dynEl);
+                node.SaveElement(xmlDoc, dynEl);
+
+                nodeData.Add("data", dynEl);
 
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(CreateNodeCommand, nodeData));
             }
@@ -1313,34 +1312,9 @@ namespace Dynamo.Controls
 
             //if we've received a value in the dictionary
             //try to set the value on the node
-            if (data.ContainsKey("value"))
+            if (data.ContainsKey("data"))
             {
-                if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.GetType()))
-                {
-                    (node as dynBasicInteractive<double>).Value = (double)data["value"];
-                }
-                else if (typeof(dynBasicInteractive<string>).IsAssignableFrom(node.GetType()))
-                {
-                    (node as dynBasicInteractive<string>).Value = data["value"].ToString();
-                }
-                else if (typeof(dynBasicInteractive<bool>).IsAssignableFrom(node.GetType()))
-                {
-                    (node as dynBasicInteractive<bool>).Value = (bool)data["value"];
-                }
-                else if (typeof(dynVariableInput).IsAssignableFrom(node.GetType()))
-                {
-                    int desiredPortCount = (int)data["value"];
-                    if (node.InPortData.Count < desiredPortCount)
-                    {
-                        int portsToCreate = desiredPortCount - node.InPortData.Count;
-
-                        for (int i = 0; i < portsToCreate; i++)
-                        {
-                            (node as dynVariableInput).AddInput();
-                        }
-                        (node as dynVariableInput).RegisterAllPorts();
-                    }
-                }
+                node.LoadElement(data["data"] as XmlNode);
             }
 
             //override the guid so we can store
