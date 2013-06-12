@@ -1009,25 +1009,12 @@ namespace Dynamo.Controls
                     nodeData.Add("name", node.GetType() );
                 nodeData.Add("guid", newGuid);
 
-                if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.GetType()))
-                {
-                    nodeData.Add("value", (node as dynBasicInteractive<double>).Value);
-                }
-                else if (typeof(dynBasicInteractive<string>).IsAssignableFrom(node.GetType()))
-                {
-                    nodeData.Add("value", (node as dynBasicInteractive<string>).Value);
-                }
-                else if (typeof(dynBasicInteractive<bool>).IsAssignableFrom(node.GetType()))
-                {
-                    nodeData.Add("value", (node as dynBasicInteractive<bool>).Value);
-                }
-                else if (typeof(dynVariableInput).IsAssignableFrom(node.GetType()))
-                {
-                    //for list type nodes send the number of ports
-                    //as the value - so we can setup the new node with
-                    //the right number of ports
-                    nodeData.Add("value", node.InPorts.Count);
-                }
+                var xmlDoc = new XmlDocument();
+                var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
+                xmlDoc.AppendChild(dynEl);
+                node.SaveElement(xmlDoc, dynEl);
+
+                nodeData.Add("data", dynEl);
 
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(CreateNodeCommand, nodeData));
             }
@@ -1324,34 +1311,9 @@ namespace Dynamo.Controls
 
             //if we've received a value in the dictionary
             //try to set the value on the node
-            if (data.ContainsKey("value"))
+            if (data.ContainsKey("data"))
             {
-                if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.GetType()))
-                {
-                    (node as dynBasicInteractive<double>).Value = (double)data["value"];
-                }
-                else if (typeof(dynBasicInteractive<string>).IsAssignableFrom(node.GetType()))
-                {
-                    (node as dynBasicInteractive<string>).Value = data["value"].ToString();
-                }
-                else if (typeof(dynBasicInteractive<bool>).IsAssignableFrom(node.GetType()))
-                {
-                    (node as dynBasicInteractive<bool>).Value = (bool)data["value"];
-                }
-                else if (typeof(dynVariableInput).IsAssignableFrom(node.GetType()))
-                {
-                    int desiredPortCount = (int)data["value"];
-                    if (node.InPortData.Count < desiredPortCount)
-                    {
-                        int portsToCreate = desiredPortCount - node.InPortData.Count;
-
-                        for (int i = 0; i < portsToCreate; i++)
-                        {
-                            (node as dynVariableInput).AddInput();
-                        }
-                        (node as dynVariableInput).RegisterAllPorts();
-                    }
-                }
+                node.LoadElement(data["data"] as XmlNode);
             }
 
             //override the guid so we can store
