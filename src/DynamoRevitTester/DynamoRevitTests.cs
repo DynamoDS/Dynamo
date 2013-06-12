@@ -293,33 +293,12 @@ namespace DynamoRevitTests
         [Test]
         public void InstParamSample()
         {
+            string modelPath = Path.GetFullPath(Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param.rvt"));
+            SwapCurrentModel(modelPath);
+
             DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param end.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
-        }
-
-        [Test]
-        public void InstParamEndSample()
-        {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
-
-            string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param end.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
-        }
-
-        [Test]
-        public void InstParam3Sample()
-        {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
-
-            string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param 3.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -329,6 +308,9 @@ namespace DynamoRevitTests
         [Test]
         public void InstParam2MassesSample()
         {
+            string modelPath = Path.GetFullPath(Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param mass families.rvt"));
+            SwapCurrentModel(modelPath);
+
             DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param 2 masses.dyn");

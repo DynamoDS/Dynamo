@@ -399,7 +399,11 @@ namespace Dynamo.Nodes
                 }
             }
             if (this.storedId != null)
+            {
                 this.paramBox.SelectedIndex = selection;
+                this.value = this.values[this.paramBox.SelectedIndex];
+            }
+                
         }
     }
 
