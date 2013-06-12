@@ -113,8 +113,8 @@ namespace Dynamo.Controls
             var lengthObj = (DynamoLength<Foot>)parameter;
             lengthObj.Item.Length = length;
 
-            Autodesk.Revit.DB.ProjectUnit projectUnit = dynRevitSettings.Doc.Document.ProjectUnit;
-            FormatOptions formatOptions = projectUnit.get_FormatOptions(UnitType.UT_Length);
+            //Autodesk.Revit.DB.ProjectUnit projectUnit = dynRevitSettings.Doc.Document.ProjectUnit;
+            //FormatOptions formatOptions = projectUnit.get_FormatOptions(UnitType.UT_Length);
 
             DisplayUnitType displayUnit = getDisplayUnitTypeOfFormatUnits();
 
