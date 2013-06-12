@@ -4,7 +4,7 @@ free here:
 
 Tasks to create an install:
 
-	1) Open the iss files and increment the version numbers.  Currently at 0.3.0
+	1) Open the iss files and increment the version numbers. 
 		These are under the Setup section as follows:
 			[Setup]
 			...

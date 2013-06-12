@@ -3,23 +3,23 @@
 
 [Setup]
 AppName=Dynamo
-AppVerName=Dynamo WIP 0.4.0 for Revit 2013
+AppVerName=Dynamo 0.5.0
 AppPublisher=Autodesk, Inc.
 AppID={{12A2BEA3-7641-4AEC-B344-9B49C8DDFF1A}
 AppCopyright=
-AppPublisherURL=http://labs.autodesk.com/utilities/vasari
+AppPublisherURL=http://www.dynamobim.com
 AppSupportURL=
 AppUpdatesURL=
-AppVersion=0.4.0
-VersionInfoVersion=0.4.0
+AppVersion=0.5.0
+VersionInfoVersion=0.5.0
 VersionInfoCompany=Autodesk 
-VersionInfoDescription=Dynamo WIP for Revit 2013
-VersionInfoTextVersion=Dynamo WIP for Revit 2013
+VersionInfoDescription=Dynamo 0.5.0
+VersionInfoTextVersion=Dynamo 0.5.0
 VersionInfoCopyright=
-DefaultDirName=C:\Autodesk\Revit_2013\DynamoWIP
+DefaultDirName=C:\Autodesk\Dynamo\Core
 DefaultGroupName=
 OutputDir=Installers
-OutputBaseFilename=DynamoWIPForRevit
+OutputBaseFilename=InstallDynamo0.5.0
 SetupIconFile=Extra\Nodes_32_32.ico
 Compression=lzma
 SolidCompression=true
@@ -29,8 +29,7 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\Nodes_32_32.ico
-UninstallDisplayName=Dynamo WIP for Revit 2013
-PrivilegesRequired=none
+UninstallDisplayName=Dynamo 0.5.0
 UsePreviousAppDir=no
 
 [Types]
@@ -43,15 +42,19 @@ Name: "{app}\definitions"
 Name: "{app}\samples"
 
 [Components]
-Name: "DynamoWIPForRevit2013"; Description: "Dynamo WIP For Revit 2013"; Types: full compact custom; Flags: fixed
+Name: "DynamoCore"; Description: "Dynamo Core Functionality"; Types: full compact custom; Flags: fixed
+Name: "DynamoForRevit2013"; Description: "Dynamo For Revit 2013"; Types: full compact custom;
+Name: "DynamoForRevit2014"; Description: "Dynamo For Revit 2014"; Types: full compact custom;
+Name: "DynamoForVasariBeta2"; Description: "Dynamo For Vasari Beta 2"; Types: full compact custom; 
+Name: "DynamoForVasariBeta2"; Description: "Dynamo For Vasari Beta 3"; Types: full compact custom; 
 Name: "DynamoTrainingFiles"; Description: "Dynamo Training Files"; Types: full
 
 [Files]
 ;Core Files
-Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
-Source: Extra\Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
-Source: Extra\README.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
-Source: Extra\fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
+Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: Extra\Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: Extra\README.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoCore
+Source: Extra\fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
 ;Training Files
 Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
@@ -59,11 +62,15 @@ Source: temp\Definitions\*.dyf; DestDir: {app}\definitions; Flags: ignoreversion
 
 [UninstallDelete]
 Type: files; Name: "{userappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin"
+Type: files; Name: "{userappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin"
+Type: files; Name: "{userappdata}\Autodesk\Vasari\Addins\2013\Dynamo.addin"
+Type: files; Name: "{userappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin"
 
 [Run]
 Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
 ;Filename: "del"; Parameters: "/q {app}\fsharp_redist.exe"; Flags: postinstall runascurrentuser runhidden
+
 
 [Code]
 { HANDLE INSTALL PROCESS STEPS }
@@ -116,9 +123,34 @@ begin
     Result := 1;
 end;
 
+// check if the components exists, if they do enable the component for installation
+procedure CurPageChanged(CurPageID: Integer);
+begin
+  if CurPageID = wpSelectComponents then
+    if not FileOrDirExists(ExpandConstant('{userappdata}\Autodesk\Revit\Addins\2013')) then
+    begin
+      WizardForm.ComponentsList.Checked[1] := False;
+      WizardForm.ComponentsList.ItemEnabled[1] := False;
+    end;
+        if not FileOrDirExists(ExpandConstant('{userappdata}\Autodesk\Revit\Addins\2014')) then
+    begin
+      WizardForm.ComponentsList.Checked[2] := False;
+      WizardForm.ComponentsList.ItemEnabled[2] := False;
+    end;
+        if not FileOrDirExists(ExpandConstant('{userappdata}\Autodesk\Vasari\Addins\2013')) then
+    begin
+      WizardForm.ComponentsList.Checked[3] := False;
+      WizardForm.ComponentsList.ItemEnabled[3] := False;
+    end;
+        if not FileOrDirExists(ExpandConstant('{userappdata}\Autodesk\Vasari\Addins\2014')) then
+    begin
+      WizardForm.ComponentsList.Checked[4] := False;
+      WizardForm.ComponentsList.ItemEnabled[4] := False;
+    end;
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 var
-  AddInFilePath: String;
   AddInFileContents: String;
 begin
   if (CurStep=ssInstall) then
@@ -132,14 +164,11 @@ begin
   if CurStep = ssPostInstall then
   begin
 
-	{ GET LOCATION OF USER AppData (Roaming) }
-	AddInFilePath := ExpandConstant('{userappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin');
-
 	{ CREATE NEW ADDIN FILE }
 	AddInFileContents := '<?xml version="1.0" encoding="utf-8" standalone="no"?>' + #13#10;
 	AddInFileContents := AddInFileContents + '<RevitAddIns>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <AddIn Type="Application">' + #13#10;
-    AddInFileContents := AddInFileContents + '    <Name>Dynamo For Revit</Name>' + #13#10;
+  AddInFileContents := AddInFileContents + '    <Name>Dynamo</Name>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevit.dll</Assembly>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <AddInId>188B9080-EEBE-40C3-865A-8FC31DEEC12F</AddInId>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>' + #13#10;
@@ -152,11 +181,30 @@ begin
 	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevit</FullClassName>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorId>ADSK</VendorId>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
-    AddInFileContents := AddInFileContents + '    <Text>Dynamo For Revit</Text>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <Description>Visual programming for Revit.</Description>' + #13#10;
+  AddInFileContents := AddInFileContents + '    <Text>Dynamo</Text>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <Description>Visual programming for BIM.</Description>' + #13#10;
 	AddInFileContents := AddInFileContents + '  </AddIn>' + #13#10;
-    AddInFileContents := AddInFileContents + '</RevitAddIns>' + #13#10;
-	SaveStringToFile(AddInFilePath, AddInFileContents, False);
+  AddInFileContents := AddInFileContents + '</RevitAddIns>' + #13#10;
+	
+    if (WizardForm.ComponentsList.Checked[1]) then
+    begin
+      SaveStringToFile(ExpandConstant('{userappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin'), AddInFileContents, False);
+    end;
+  
+    if (WizardForm.ComponentsList.Checked[2]) then
+    begin
+      SaveStringToFile(ExpandConstant('{userappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin'), AddInFileContents, False);
+    end;
+
+    if (WizardForm.ComponentsList.Checked[3]) then
+    begin
+      SaveStringToFile(ExpandConstant('{userappdata}\Autodesk\Vasari\Addins\2013\Dynamo.addin'), AddInFileContents, False);
+    end;
+
+    if (WizardForm.ComponentsList.Checked[4]) then
+    begin
+      SaveStringToFile(ExpandConstant('{userappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin'), AddInFileContents, False);
+    end;
 
   end;
 end;
