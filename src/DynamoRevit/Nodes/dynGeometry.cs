@@ -1565,7 +1565,7 @@ namespace Dynamo.Nodes
              
             int i = 0;
             int nCurves1 = firstLoop.Count();
-            int secondLoop = firstLoop.Count();
+            int secondLoop = secondLoop.Count();
             for (; i < nCurves1 && i < nCurves2; i++)
             {
                 vertPairs.Add(new VertexPair(i, i));
