@@ -73,7 +73,7 @@ namespace Dynamo.Controls
         public DelegateCommand ReportABugCommand { get; set; }
         public DelegateCommand GoToWikiCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
-        public DelegateCommand ExitCommand { get; set; }
+        public DelegateCommand<object> ExitCommand { get; set; }
         public DelegateCommand CleanupCommand { get; set; }
         public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
@@ -327,7 +327,7 @@ namespace Dynamo.Controls
             ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode,  CanGoToSourceCode);
             CleanupCommand = new DelegateCommand(Cleanup, CanCleanup);
-            ExitCommand = new DelegateCommand(Exit, CanExit);
+            ExitCommand = new DelegateCommand<object>(Exit, CanExit);
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
@@ -714,7 +714,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="workspace">The workspace for which to show the dialog</param>
         /// <returns>False if the user cancels, otherwise true</returns>
-        public bool AskUserToSaveWorkspaceOrCancel(dynWorkspaceModel workspace)
+        public bool AskUserToSaveWorkspaceOrCancel(dynWorkspaceModel workspace, bool allowCancel = true)
         {
             var dialogText = "";
             if (workspace is FuncWorkspace)
@@ -736,7 +736,9 @@ namespace Dynamo.Controls
                 }
             }
 
-            var result = System.Windows.MessageBox.Show(dialogText, "Confirmation", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            var buttons = allowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
+            var result = System.Windows.MessageBox.Show(dialogText, "Confirmation", buttons, MessageBoxImage.Question);
+
             if (result == MessageBoxResult.Yes)
             {
                 this.ShowSaveDialogIfNeededAndSave(workspace);
@@ -751,12 +753,13 @@ namespace Dynamo.Controls
         /// <summary>
         ///     Ask the user if they want to save any unsaved changes, return false if the user cancels.
         /// </summary>
+        /// <param name="allowCancel">Whether to show cancel button to user. </param>
         /// <returns>Whether the cleanup was completed or cancelled.</returns>
-        public bool AskUserToSaveWorkspacesOrCancel()
+        public bool AskUserToSaveWorkspacesOrCancel(bool allowCancel = true)
         {
             foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
             {
-                if (!AskUserToSaveWorkspaceOrCancel(wvm.Model))
+                if (!AskUserToSaveWorkspaceOrCancel(wvm.Model, allowCancel))
                     return false;
             }
             return true;
@@ -765,6 +768,7 @@ namespace Dynamo.Controls
         public void Cleanup()
         {
             DynamoLogger.Instance.FinishLogging();
+            
         }
 
         private bool CanCleanup()
@@ -772,17 +776,24 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void Exit()
+        private void Exit(object allowCancel)
         {
-            if (!AskUserToSaveWorkspacesOrCancel())
+            bool allowCancelBool = true;
+            if (allowCancel != null)
+            {
+                allowCancelBool = (bool)allowCancel;
+            }
+            if (!AskUserToSaveWorkspacesOrCancel(allowCancelBool))
                 return;
             this.Cleanup();
+            exitInvoked = true;
             dynSettings.Bench.Close();
         }
 
-        private bool CanExit()
+        public bool exitInvoked = false;
+        private bool CanExit(object allowCancel)
         {
-            return true;
+            return !exitInvoked;
         }
 
         private void SaveAs(object parameters)

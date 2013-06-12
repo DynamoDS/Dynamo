@@ -60,6 +60,9 @@ namespace Dynamo.Controls
 
         private void WindowClosing(object sender, CancelEventArgs  e)
         {
+            if (_vm.exitInvoked)
+                return;
+
             var res = _vm.AskUserToSaveWorkspacesOrCancel();
             if (!res)
                 e.Cancel = true;

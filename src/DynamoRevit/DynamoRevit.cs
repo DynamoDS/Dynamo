@@ -280,7 +280,7 @@ namespace Dynamo.Applications
 
             try
             {
-                dynamoController.DynamoViewModel.ExitCommand.Execute();
+                dynamoController.DynamoViewModel.ExitCommand.Execute(false); // don't allow cancellation
                 dynamoController.DynamoViewModel.ReportABugCommand.Execute();
             }
             catch
