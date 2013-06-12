@@ -71,7 +71,7 @@ namespace Dynamo.Connectors
         public static dynConnectorModel Make(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType)
         {
             if (start != null && end != null && start != end && startIndex >= 0
-                && endIndex >= 0 && start.OutPorts.Count > startIndex && end.InPorts.Count > endIndex)
+                && endIndex >= 0 && start.OutPorts.Count > startIndex && end.InPorts.Count > endIndex )
             {
                 return new dynConnectorModel(start, end, startIndex, endIndex, portType);
             }

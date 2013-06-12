@@ -130,6 +130,7 @@ namespace Dynamo.Connectors
 
         private void Connect()
         {
+            // if this is a 
             if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting)
             {
                 //test if port already has a connection if so grab it
@@ -169,12 +170,20 @@ namespace Dynamo.Connectors
             }
             else  // attempt to complete the connection
             {
+                if (_port.PortType != PortType.INPUT)
+                {
+                    return;
+                }
+
                 //remove connector if one already exists
                 if (_port.Connectors.Count > 0)
                 {
+                    var connToRemove = _port.Connectors[0];
                     dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Model.Connectors.Remove(
-                        _port.Connectors[0]);
-                    _port.Disconnect(_port.Connectors[0]);
+                       connToRemove);
+                    _port.Disconnect(connToRemove);
+                    var startPort = connToRemove.Start;
+                    startPort.Disconnect(connToRemove);
                 }
 
                 // create the new connector model

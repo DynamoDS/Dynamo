@@ -6,10 +6,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Xml;
+using System.Globalization;
+
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -327,8 +330,8 @@ namespace Dynamo
                 xmlDoc.CreateXmlDeclaration("1.0", null, null);
 
                 var root = xmlDoc.CreateElement("dynWorkspace"); //write the root element
-                root.SetAttribute("X", workSpace.X.ToString());
-                root.SetAttribute("Y", workSpace.Y.ToString());
+                root.SetAttribute("X", workSpace.X.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Y", workSpace.Y.ToString(CultureInfo.InvariantCulture));
 
                 if (!savingHomespace) //If we are not saving the home space
                 {
@@ -362,8 +365,10 @@ namespace Dynamo
                     dynEl.SetAttribute("type", el.GetType().ToString());
                     dynEl.SetAttribute("guid", el.GUID.ToString());
                     dynEl.SetAttribute("nickname", el.NickName);
-                    dynEl.SetAttribute("x", el.X.ToString());
-                    dynEl.SetAttribute("y", el.Y.ToString());
+                    dynEl.SetAttribute("x", el.X.ToString(CultureInfo.InvariantCulture));
+                    dynEl.SetAttribute("y", el.Y.ToString(CultureInfo.InvariantCulture));
+                    dynEl.SetAttribute("isVisible", el.IsVisible.ToString().ToLower());
+                    dynEl.SetAttribute("isUpstreamVisible", el.IsUpstreamVisible.ToString().ToLower());
                     dynEl.SetAttribute("lacing", el.ArgumentLacing.ToString());
 
                     el.SaveElement(xmlDoc, dynEl);
@@ -403,8 +408,8 @@ namespace Dynamo
                     var note = xmlDoc.CreateElement(n.GetType().ToString());
                     noteList.AppendChild(note);
                     note.SetAttribute("text", n.Text);
-                    note.SetAttribute("x", n.X.ToString());
-                    note.SetAttribute("y", n.Y.ToString());
+                    note.SetAttribute("x", n.X.ToString(CultureInfo.InvariantCulture));
+                    note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
                 }
 
                 return xmlDoc;
