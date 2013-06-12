@@ -2723,8 +2723,8 @@ namespace Dynamo.Nodes
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString());
-            outEl.SetAttribute("min", tb_slider.Minimum.ToString());
-            outEl.SetAttribute("max", tb_slider.Maximum.ToString());
+            outEl.SetAttribute("min", Min.ToString());
+            outEl.SetAttribute("max", Max.ToString());
             dynEl.AppendChild(outEl);
         }
 
