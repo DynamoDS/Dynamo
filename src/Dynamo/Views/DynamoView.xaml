@@ -224,7 +224,7 @@
         </Menu>
 
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
-                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="Black">
+                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#999">
             
             <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs" 
                         SelectedIndex="{Binding CurrentWorkspaceIndex}" Background="#222" Padding ="0">
@@ -268,9 +268,9 @@
                                     <Grid>
                                         <Border 
                                           Name="Border"
-                                          BorderBrush="Black" 
+                                          BorderBrush="#999" 
                                           CornerRadius="4,4,0,0"
-                                          BorderThickness="2,1,1,0" >
+                                          BorderThickness="0,1,3,0" >
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>

@@ -1,10 +1,10 @@
 <dynWorkspace X="0" Y="0">
   <dynElements>
     <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="db105fd7-4e6a-4341-8ed7-5eded47417e6" nickname="Select Curve" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <instance id="33124" />
+      <instance id="d9596259-d2dd-4b0b-ae7e-1a644a21775e-00008164" />
     </Dynamo.Nodes.dynCurvesBySelection>
     <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="333352de-e456-4523-99a9-613555049e5b" nickname="Select Curve" x="0" y="88" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <instance id="33346" />
+      <instance id="d9596259-d2dd-4b0b-ae7e-1a644a21775e-00008242" />
     </Dynamo.Nodes.dynCurvesBySelection>
     <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="91b7e7ef-9db3-4aa2-8762-6a863188e7ec" nickname="Number Slider" x="0" y="291.418290272358" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="5" min="0" max="5" />
@@ -28,11 +28,11 @@
     </Dynamo.Nodes.dynAdaptiveComponentByPoints>
     <Dynamo.Nodes.dynFamilyTypeSelector type="Dynamo.Nodes.dynFamilyTypeSelector" guid="7355a862-74db-4c34-b9c2-e63ac7cfe000" nickname="Select Fam" x="572" y="351.376275268211" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="7" />
     <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="cf140582-0aee-44a2-8144-04458cf2e77a" nickname="Select Curve" x="0" y="184" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <instance id="33464" />
+      <instance id="d9596259-d2dd-4b0b-ae7e-1a644a21775e-000082b8" />
     </Dynamo.Nodes.dynCurvesBySelection>
     <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="39c0705f-b286-4435-ad6b-58c7e136f475" nickname="Watch" x="984.27447206726" y="91.038270042035" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="a0db6e8b-b99e-40ba-a830-f63b4c5f37c3" nickname="List" x="408.782095444753" y="31" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <Input name="item(s)" />
+      <Input name="index0" />
       <Input name="index1" />
       <Input name="index2" />
     </Dynamo.Nodes.dynNewList>

@@ -365,6 +365,11 @@ namespace Dynamo.Applications
                 Results = new DynamoTestResultSummary();
                 DynamoRevitTestResultsView resultsView = new DynamoRevitTestResultsView();
                 resultsView.DataContext = Results;
+
+                Stopwatch sw = new Stopwatch();
+                Results.Timer = sw;
+                sw.Start();
+
                 resultsView.Show();
 
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
@@ -385,7 +390,7 @@ namespace Dynamo.Applications
                 FindFixtureByName(out fixture, suite, "DynamoRevitTests");
                 if (fixture == null)
                     throw new Exception("Could not find DynamoRevitTests fixture.");
-                
+
                 foreach (TestMethod t in fixture.Tests)
                 {
                     Debug.WriteLine(string.Format("Running test {0}", t.TestName));
@@ -403,6 +408,8 @@ namespace Dynamo.Applications
                         DynamoLogger.Instance.Log(string.Format("Failed to run test : {0}", t.TestName));
                     }
                 }
+
+                sw.Stop();
 
                 IdlePromise.ExecuteOnIdle(delegate
                 {
@@ -455,6 +462,9 @@ namespace Dynamo.Applications
     public class DynamoRevitTestResult:NotificationObject
     {
         DynamoRevitTestResultType _resultType;
+        private string _testName;
+        private string _message;
+
         public DynamoRevitTestResultType ResultType 
         {
             get { return _resultType; }
@@ -464,8 +474,26 @@ namespace Dynamo.Applications
                 RaisePropertyChanged("ResultType");
             }
         }
-        public string Message { get; set; }
-        public string TestName { get; set; }
+        public string Message
+        {
+            get { return _message; }
+            set
+            {
+                _message = value;
+                RaisePropertyChanged("Message");
+            }
+        }
+
+        public string TestName
+        {
+            get { return _testName; }
+            set
+            {
+                _testName = value;
+                RaisePropertyChanged("TestName");
+            }
+        }
+
         public DynamoRevitTestResult(){}
     }
 
@@ -533,6 +561,8 @@ namespace Dynamo.Applications
             }
         }
 
+        public Stopwatch Timer { get; set; }
+
         public string TestSummary
         {
             get
@@ -545,8 +575,8 @@ namespace Dynamo.Applications
                 int errorCount = list.Where(x => x.ResultType == DynamoRevitTestResultType.ERROR).Count();
                 int exceptionCount = list.Where(x => x.ResultType == DynamoRevitTestResultType.EXCEPTION).Count();
 
-                return (string.Format("{0} tests run. {1} passed. {2} failed. {3} exceptions.",
-                    new object[] { Results.Count, passCount, failCount, exceptionCount }));
+                return (string.Format("{0} tests run. {1} passed. {2} failed. {3} exceptions. {4} total time ellapsed.",
+                    new object[] { Results.Count, passCount, failCount, exceptionCount, Timer.Elapsed.ToString() }));
             }
         }
 

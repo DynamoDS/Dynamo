@@ -6,19 +6,35 @@
              xmlns:revit="clr-namespace:Dynamo.Applications"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-        Width="800" Height="400">
+        Width="600" Height="800" Topmost="True">
     <Grid>
         <Grid.Resources>
             <revit:ResultTypeToColorConverter x:Key="ResultTypeToColorConverter"/>
         </Grid.Resources>
-        <TextBox VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,5,5,35" Text="{Binding TestSummary, Mode=OneWay}" BorderBrush="{x:Null}" />
+        
+        <TextBox VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,5,5,35" Text="{Binding TestSummary, Mode=OneWay}" BorderBrush="{x:Null}" >
+        </TextBox>
+        
         <ListBox Margin="5,5,5,55" Name="listBox1" ItemsSource="{Binding Results}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel HorizontalAlignment="Stretch" Background="{Binding ResultType, Converter={StaticResource ResourceKey=ResultTypeToColorConverter}}">
                         <TextBlock Text="{Binding Path=TestName}" />
-                        <TextBlock Text="{Binding Path=ResultType}"/>
-                        <TextBlock Text="{Binding Path=Message}"/>
+                        <!--<TextBlock Text="{Binding Path=ResultType}"/>-->
+                        <TextBlock Text="{Binding Path=Message}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <Trigger Property="Text" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </Trigger>
+                                        <Trigger Property="Text" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
