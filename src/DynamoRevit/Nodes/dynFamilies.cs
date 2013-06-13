@@ -162,8 +162,6 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public class dynFamilyTypeSelector : dynDropDrownBase
     {
-        Dictionary<string, FamilySymbol> comboHash = new Dictionary<string, FamilySymbol>();
-
         public dynFamilyTypeSelector()
         {
             OutPortData.Add(new PortData("", "Family type", typeof(Value.Container)));
@@ -202,12 +200,10 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a parameter as a string.")]
     [IsInteractive(true)]
-    public class dynFamilyInstanceParameterSelector: dynNodeWithOneOutput
+    public class dynFamilyInstanceParameterSelector : dynDropDrownBase
     {
-        ComboBox paramBox = new ComboBox();
         ElementId storedId = null;
-        Definition value;
-        List<Definition> values = new List<Definition>();
+        private Element element;
 
         public dynFamilyInstanceParameterSelector()
         {
@@ -215,30 +211,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", "Parameter Name", typeof(Value.String)));
 
             RegisterAllPorts();
-        }
-
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
-        {
-
-            //add a drop down list to the window
-            paramBox.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            paramBox.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            paramBox.Width = 175;
-
-            nodeUI.inputGrid.Children.Add(paramBox);
-            System.Windows.Controls.Grid.SetColumn(paramBox, 0);
-            System.Windows.Controls.Grid.SetRow(paramBox, 0);
-
-            paramBox.SelectionChanged += delegate
-            {
-                if (paramBox.SelectedIndex != -1)
-                {
-                    this.value = this.values[this.paramBox.SelectedIndex];
-                    this.RequiresRecalc = true;
-                }
-            };
-
-            paramBox.IsEnabled = false;
         }
 
         private static string getStorageTypeString(StorageType st)
@@ -257,77 +229,78 @@ namespace Dynamo.Nodes
             }
         }
 
-        private void PopulateComboBox(IEnumerable set, bool readOnly)
+        public override void PopulateItems() //(IEnumerable set, bool readOnly)
         {
-            this.values.Clear();
+            var doc = dynRevitSettings.Doc.Document;
 
-            SortedList<string, dynamic> paramList = new SortedList<string, dynamic>();
+            this.Items.Clear();
 
-            foreach (dynamic p in set)
+            if (element is FamilySymbol)
             {
-                if ((readOnly && p.IsReadOnly) || p.StorageType == StorageType.None)
-                    continue;
+                var paramDict = new Dictionary<string, dynamic>();
 
-                var val = p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")";
-                paramList.Add(val, p);
+                var fs = element as FamilySymbol;
+
+                foreach (dynamic p in fs.Parameters)
+                {
+                    if (p.IsReadOnly || p.StorageType == StorageType.None)
+                        continue;
+                    Items.Add(
+                            new DynamoDropDownItem(p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")", p));
+                }
+
+                var fd = doc.EditFamily(fs.Family);
+                var ps = fd.FamilyManager.Parameters;
+
+                foreach (dynamic p in ps)
+                {
+                    if (p.IsReadOnly || p.StorageType == StorageType.None)
+                        continue;
+                    Items.Add(
+                            new DynamoDropDownItem(p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")", p));
+                }
+
+            }
+            else if (element is FamilyInstance)
+            {
+                var fi = element as FamilyInstance;
+
+                foreach (dynamic p in fi.Parameters)
+                {
+                    if (p.IsReadOnly || p.StorageType == StorageType.None)
+                        continue;
+                    Items.Add(
+                            new DynamoDropDownItem(p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")", p));
+                }
+            }
+            else
+            {
+                this.storedId = null;
             }
 
-            foreach (dynamic p in paramList.Values)
-            {
-                this.values.Add(p.Definition);
-            }
-
-            this.paramBox.Dispatcher.Invoke(new Action(
-               delegate
-               {
-                   this.paramBox.IsEnabled = true;
-                   this.paramBox.Items.Clear();
-                   foreach (string val in paramList.Keys)
-                   {
-                       this.paramBox.Items.Add(val);
-                   }
-               }
-            ));
+            this.Items = this.Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var input = (Element)((Value.Container)args[0]).Item;
+            element = (Element)((Value.Container)args[0]).Item;
 
-            if (input.GetType() != typeof(FamilyInstance))
+            if (element.GetType() != typeof(FamilyInstance))
             {
                 throw new Exception("The input is not a Family Instance.");
             }
 
-            if (!input.Id.Equals(this.storedId))
+            if (!element.Id.Equals(this.storedId))
             {
-                this.storedId = input.Id;
-                if (input is FamilySymbol)
-                {
-                    var paramDict = new Dictionary<Definition, dynamic>();
+                this.storedId = element.Id;
 
-                    var fs = input as FamilySymbol;
-
-                    foreach (dynamic p in fs.Parameters)
-                        paramDict[p.Definition] = p;
-
-                    var fd = dynRevitSettings.Doc.Document.EditFamily(fs.Family);
-                    var ps = fd.FamilyManager.Parameters;
-
-                    foreach (dynamic p in ps)
-                        paramDict[p.Definition] = p;
-
-                    //this.PopulateComboBox(fs.Parameters, false);
-                    this.PopulateComboBox(paramDict.Values, false);
-                }
-                else
-                {
-                    var fi = (FamilyInstance)input;
-                    this.PopulateComboBox(fi.Parameters, true);
-                }
+                PopulateItems();
             }
 
-            return Value.NewContainer(this.value);
+            if(SelectedIndex == -1)
+                throw new Exception("Please select a parameter.");
+
+            return Value.NewContainer(((Parameter)Items[SelectedIndex].Item).Definition);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -337,7 +310,7 @@ namespace Dynamo.Nodes
             dynEl.AppendChild(outEl);
 
             XmlElement param = xmlDoc.CreateElement("index");
-            param.SetAttribute("value", this.paramBox.SelectedIndex.ToString());
+            param.SetAttribute("value", SelectedIndex.ToString());
             dynEl.AppendChild(param);
         }
 
@@ -345,7 +318,8 @@ namespace Dynamo.Nodes
         {
             var doc = dynRevitSettings.Doc.Document;
 
-            int selection = -1;
+            int index = -1;
+
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
                 if (subNode.Name.Equals("familyid"))
@@ -360,50 +334,27 @@ namespace Dynamo.Nodes
                         continue;
                     }
                     this.storedId = new ElementId(id);
-                    Element e = doc.GetElement(this.storedId);
-                    if (e is FamilySymbol)
-                    {
-                        var paramDict = new Dictionary<string, dynamic>();
 
-                        var fs = e as FamilySymbol;
+                    element = doc.GetElement(this.storedId);
 
-                        foreach (dynamic p in fs.Parameters)
-                            paramDict[p.Definition.Name] = p;
-
-                        var fd = doc.EditFamily(fs.Family);
-                        var ps = fd.FamilyManager.Parameters;
-
-                        foreach (dynamic p in ps)
-                            paramDict[p.Definition.Name] = p;
-
-                        //this.PopulateComboBox(fs.Parameters, false);
-                        this.PopulateComboBox(paramDict.Values, false);
-                    }
-                    else if (e is FamilyInstance)
-                    {
-                        this.PopulateComboBox((e as FamilyInstance).Parameters, true);
-                    }
-                    else
-                    {
-                        this.storedId = null;
-                        continue;
-                    }
                 }
                 else if (subNode.Name.Equals("index"))
                 {
                     try
                     {
-                        selection = Convert.ToInt32(subNode.Attributes[0].Value);
+                        index = Convert.ToInt32(subNode.Attributes[0].Value);
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                 }
             }
-            if (this.storedId != null)
+
+            if (element != null)
             {
-                this.paramBox.SelectedIndex = selection;
-                this.value = this.values[this.paramBox.SelectedIndex];
-            }
-                
+                PopulateItems();
+                SelectedIndex = index;
+            }  
         }
     }
 

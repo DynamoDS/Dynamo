@@ -1,28 +1,135 @@
-<dynWorkspace X="22.0000000000001" Y="92.5635555555554">
+<dynWorkspace X="138" Y="58">
   <dynElements>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="7be50967-1b3f-4a3f-aebe-52034e116c08" nickname="Number" x="0" y="149.65" lacing="First">
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="7be50967-1b3f-4a3f-aebe-52034e116c08" nickname="Number" x="0" y="149.65" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="0" />
     </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="dc4c9232-66e8-490a-91d1-8fc06ea19e36" nickname="Number" x="0" y="55.55" lacing="First">
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="dc4c9232-66e8-490a-91d1-8fc06ea19e36" nickname="Number" x="0" y="55.55" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="1" />
     </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="7c008670-bbce-40be-8a71-c9c245229a75" nickname="Number" x="0" y="354.65" lacing="First">
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="7c008670-bbce-40be-8a71-c9c245229a75" nickname="Number" x="0" y="354.65" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="0" />
     </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="f989e14c-b8e8-4c6d-8ee2-a04adf967a64" nickname="Number Slider" x="0" y="0" lacing="First">
-      <System.Double value="18" min="0" max="20" />
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="f989e14c-b8e8-4c6d-8ee2-a04adf967a64" nickname="Number Slider" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="5.95505617977528" min="0" max="10" />
     </Dynamo.Nodes.dynDoubleSliderInput>
-    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="13996872-0afb-44ae-b2ea-f4bbb94c5a3e" nickname="Number Slider" x="0" y="247.9" lacing="First">
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="13996872-0afb-44ae-b2ea-f4bbb94c5a3e" nickname="Number Slider" x="0" y="247.9" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="30" min="0" max="50" />
     </Dynamo.Nodes.dynDoubleSliderInput>
-    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="d148890e-51c0-4ba0-b460-a14cb2076a50" nickname="Number Slider" x="0" y="302.15" lacing="First">
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="d148890e-51c0-4ba0-b460-a14cb2076a50" nickname="Number Slider" x="0" y="302.15" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="19" min="0" max="50" />
     </Dynamo.Nodes.dynDoubleSliderInput>
-    <Dynamo.Nodes.dynReferencePtGrid type="Dynamo.Nodes.dynReferencePtGrid" guid="ec86bd84-f1a5-4264-a300-34dce6076747" nickname="XYZ Grid" x="331.516666666667" y="69.85" lacing="First" />
-    <Dynamo.Nodes.dynFamilyInstanceCreatorXYZ type="Dynamo.Nodes.dynFamilyInstanceCreatorXYZ" guid="77ab90d3-72e7-4422-a327-45b383d1b96b" nickname="Create Fam Inst" x="579.180314929308" y="184.168259769044" lacing="Longest">
-      <Run />
+    <Dynamo.Nodes.dynReferencePtGrid type="Dynamo.Nodes.dynReferencePtGrid" guid="ec86bd84-f1a5-4264-a300-34dce6076747" nickname="XYZ Grid" x="331.516666666667" y="69.85" isVisible="true" isUpstreamVisible="true" lacing="First" />
+    <Dynamo.Nodes.dynFamilyInstanceCreatorXYZ type="Dynamo.Nodes.dynFamilyInstanceCreatorXYZ" guid="77ab90d3-72e7-4422-a327-45b383d1b96b" nickname="Create Fam Inst" x="579.180314929308" y="184.168259769044" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079dd</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079de</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079df</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079e0</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079e1</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079e2</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079e3</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079e4</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079e5</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079e6</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079e7</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079e8</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079e9</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079ea</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079eb</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-000079ec</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b21</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b22</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b23</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b24</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b25</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b26</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b27</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b28</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b29</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b2a</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b2b</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b2c</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b2d</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b2e</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b2f</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b30</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b31</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b32</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b33</Element>
+      </Run>
+      <Run>
+        <Element>57c1f308-3a8d-4b44-9b06-f6a45a148262-00007b34</Element>
+      </Run>
     </Dynamo.Nodes.dynFamilyInstanceCreatorXYZ>
-    <Dynamo.Nodes.dynFamilyTypeSelector type="Dynamo.Nodes.dynFamilyTypeSelector" guid="a9626172-1d32-4e92-b3dc-7a571769363d" nickname="Select Fam" x="100.192437986545" y="424.297879576032" lacing="First" index="-1" />
+    <Dynamo.Nodes.dynFamilyTypeSelector type="Dynamo.Nodes.dynFamilyTypeSelector" guid="a9626172-1d32-4e92-b3dc-7a571769363d" nickname="Select Fam" x="100.192437986545" y="424.297879576032" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="5" />
   </dynElements>
   <dynConnectors>
     <Dynamo.Connectors.dynConnectorModel start="7be50967-1b3f-4a3f-aebe-52034e116c08" start_index="0" end="ec86bd84-f1a5-4264-a300-34dce6076747" end_index="3" portType="0" />

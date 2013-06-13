@@ -323,6 +323,9 @@ namespace DynamoRevitTests
         [Test]
         public void InstParam2MassesDrivingEachOtherSample()
         {
+            string modelPath = Path.GetFullPath(Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param mass families.rvt"));
+            SwapCurrentModel(modelPath);
+
             DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param 2 masses driving each other.dyn");
@@ -469,7 +472,7 @@ namespace DynamoRevitTests
             Assert.AreEqual(typeSelNode.Items.Count, count);
 
             //assert that the selected index is correct
-            Assert.AreEqual(typeSelNode.SelectedIndex, count - 1);
+            Assert.AreEqual(typeSelNode.SelectedIndex, 3);
 
             //now try and set the selected index to something
             //greater than what is possible
