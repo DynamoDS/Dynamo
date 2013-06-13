@@ -472,10 +472,14 @@ namespace Dynamo
 
             def.RequiresRecalc = true;
 
-            var expression = CustomNodeLoader.CompileFunction(def);
+            try
+            {
+                var expression = CustomNodeLoader.CompileFunction(def);
 
-            dynSettings.Controller.FSchemeEnvironment.DefineSymbol(
-                def.FunctionId.ToString(), expression);
+                dynSettings.Controller.FSchemeEnvironment.DefineSymbol(
+                    def.FunctionId.ToString(), expression);
+            }
+            catch { }
         }
 
         public override void OnDisplayed()
