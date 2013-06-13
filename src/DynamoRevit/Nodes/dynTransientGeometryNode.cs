@@ -85,7 +85,12 @@ namespace Dynamo.Nodes
             GetUpstreamGeometryObjects(geometryObjects, Inputs);
 
             if (_keeperId != null)
+            {
+                GeometryElement.SetForTransientDisplay(
+                    dynRevitSettings.Doc.Document, ElementId.InvalidElementId,
+                    new List<GeometryObject>(), ElementId.InvalidElementId);
                 this.DeleteElement(_keeperId);
+            }
 
             _keeperId = GeometryElement.SetForTransientDisplay(
                 dynRevitSettings.Doc.Document, ElementId.InvalidElementId,
