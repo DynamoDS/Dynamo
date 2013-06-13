@@ -17,9 +17,9 @@ namespace Dynamo.Controls
     public class GeometryKeeperViewModel : dynViewModelBase
     {
         private ElementId _keeperId = ElementId.InvalidElementId;
+
         public GeometryKeeperViewModel()
         {
-            dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(GeometryKeeperViewModel_RunCompleted);
         }
 
         public void GeometryKeeperViewModel_RunCompleted(object controller, bool success)
@@ -43,43 +43,45 @@ namespace Dynamo.Controls
 
                 dynGeometryBase geometryNode = nodeModel as dynGeometryBase;
 
-                if (geometryNode == null)
+                if (geometryNode != null)
+                {
+                    dynCurveBase curveNode = geometryNode as dynCurveBase;
+                    dynSolidBase solidNode = geometryNode as dynSolidBase;
+                    dynXYZBase xyzBase = nodeModel as dynXYZBase;
+
+                    if (curveNode != null)
+                        geometryObjects.AddRange(curveNode.crvs);
+                    else if (solidNode != null)
+                        geometryObjects.AddRange(solidNode.solids);
+                    else if (xyzBase != null)
+                        geometryObjects.AddRange(PointListFromXYZList(xyzBase.pts));
+
                     continue;
-
-                //foreach (GeometryObject geomObject in geometryNode.GeometryObjects)
-                //{
-                //    geometryObjects.Add(geomObject);
-                //}
-
-                //if the node is function then get all the 
-                //drawables inside that node. only do this if the
-                //node's workspace is the home space to avoid infinite
-                //recursion in the case of custom nodes in custom nodes
-                //if (nodeModel is dynFunction && nodeModel.WorkSpace == dynSettings.Controller.DynamoModel.HomeSpace)
-                //{
-                //    dynFunction func = (dynFunction)nodeModel;
-                //    foreach (dynNodeModel innerNode in func.Definition.Workspace.Nodes)
-                //    {
-                //        if (innerNode is IDrawable)
-                //        {
-                //            drawables.Add(innerNode as IDrawable);
-                //        }
-                //    }
-                //}
+                }
             }
 
-            //if (_keeperId != ElementId.InvalidElementId)
-            //{
-            //    dynRevitSettings.Controller.InitTransaction();
+            dynRevitSettings.Controller.InitTransaction();
 
-            //    //dynRevitSettings.Doc.Document.Delete(_keeperId);
-
-            //    dynRevitSettings.Controller.EndTransaction();
-            //}
+            if (_keeperId != ElementId.InvalidElementId)
+                dynRevitSettings.Doc.Document.Delete(_keeperId);
 
             _keeperId = GeometryElement.SetForTransientDisplay(
                 dynRevitSettings.Doc.Document, ElementId.InvalidElementId,
                 geometryObjects, ElementId.InvalidElementId);
+
+            dynRevitSettings.Controller.EndTransaction();
+        }
+
+        private List<Point> PointListFromXYZList(List<XYZ> xyzs)
+        {
+            List<Point> points = new List<Point>();
+
+            foreach (XYZ xyz in xyzs)
+            {
+                points.Add(Point.CreatePoint(xyz.X, xyz.Y, xyz.Z));
+            }
+
+            return points;
         }
     }
 }

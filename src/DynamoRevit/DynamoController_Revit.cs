@@ -441,6 +441,12 @@ namespace Dynamo
                 cleanup();
         }
 
+        protected void RunIntercept(IEnumerable<dynNodeModel> topElements, FScheme.Expression runningExpression)
+        {
+            base.Run(topElements, runningExpression);
+            _geometryKeeperViewModel.DisplayTransientObjects();
+        }
+
         protected override void Run(IEnumerable<dynNodeModel> topElements, FScheme.Expression runningExpression)
         {
 
@@ -453,6 +459,9 @@ namespace Dynamo
                 //Can we avoid running everything in the Revit Idle thread?
                 bool noIdleThread = manualTrans || 
                     !topElements.Any((DynamoViewModel as DynamoRevitViewModel).CheckRequiresTransaction.TraverseUntilAny);
+
+                // The TransientGeometry API requires the Idle thread.
+                noIdleThread = false;
 
                 //If we don't need to be in the idle thread...
                 if (noIdleThread || this.Testing)
@@ -473,8 +482,11 @@ namespace Dynamo
 
                     Debug.WriteLine("Adding a run to the idle stack.");
                     this.InIdleThread = true; //Now in the idle thread.
+                    //IdlePromise.ExecuteOnIdle(new Action(
+                    //        () => base.Run(topElements, runningExpression)),
+                    //        false); //Execute the Run Delegate in the Idle thread.
                     IdlePromise.ExecuteOnIdle(new Action(
-                            () => base.Run(topElements, runningExpression)),
+                            () => RunIntercept(topElements, runningExpression)),
                             false); //Execute the Run Delegate in the Idle thread.
                     
                 }

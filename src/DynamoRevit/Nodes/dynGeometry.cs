@@ -43,7 +43,7 @@ namespace Dynamo.Nodes
 
     public abstract class dynXYZBase : dynGeometryBase, IDrawable, IClearable
     {
-        protected List<XYZ> pts = new List<XYZ>();
+        internal List<XYZ> pts = new List<XYZ>();
         public RenderDescription RenderDescription { get; set; }
         public void Draw()
         {

@@ -125,7 +125,6 @@
     <Compile Include="Nodes\dynTessellation.cs" />
     <Compile Include="Nodes\dynTransactions.cs" />
     <Compile Include="Nodes\dynTransforms.cs" />
-    <Compile Include="Nodes\dynTransientGeometryNode.cs" />
     <Compile Include="Nodes\dynViews.cs" />
     <Compile Include="IdlePromise.cs" />
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
