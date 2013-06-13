@@ -19,30 +19,27 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using Autodesk.Revit.DB;
-
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.Revit;
 using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
-
 using Microsoft.FSharp.Collections;
-using Microsoft.FSharp.Core;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class dynElementSelectionBase: dynNodeWithOneOutput
+    public abstract class dynElementSelectionBase : dynNodeWithOneOutput
     {
-        TextBox tb;
-        System.Windows.Controls.Button selectButton;
+        private TextBox _tb;
+        private Button _selectButton;
 
         protected string _selectButtonContent;
-        public string SelectButtonContent 
+
+        public string SelectButtonContent
         {
             get { return _selectButtonContent; }
             set
@@ -70,66 +67,65 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            selectButton = new dynNodeButton();
-            selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            selectButton.Click += new System.Windows.RoutedEventHandler(selectButton_Click);
-            //selectButton.Content = "Select Instance";
-            selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            _selectButton = new dynNodeButton
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            _selectButton.Click += selectButton_Click;
 
-            tb = new TextBox();
+            _tb = new TextBox
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
+                BorderThickness = new Thickness(0),
+                IsReadOnly = true,
+                IsReadOnlyCaretVisible = false
+            };
+
             //tb.Text = "Nothing Selected";
-            if (this.SelectedElement == null || SelectionText.Count() < 1 || SelectButtonContent.Count() < 1 )
+            if (SelectedElement == null || !SelectionText.Any() || !SelectButtonContent.Any())
             {
                 SelectionText = "Nothing Selected";
                 SelectButtonContent = "Select Instance";
             }
 
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-            tb.Background = backgroundBrush;
-            tb.BorderThickness = new Thickness(0);
-            tb.IsReadOnly = true;
-            tb.IsReadOnlyCaretVisible = false;
-
             //NodeUI.SetRowAmount(2);
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
-            nodeUI.inputGrid.Children.Add(tb);
-            nodeUI.inputGrid.Children.Add(selectButton);
+            nodeUI.inputGrid.Children.Add(_tb);
+            nodeUI.inputGrid.Children.Add(_selectButton);
 
-            System.Windows.Controls.Grid.SetRow(selectButton, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 1);
+            System.Windows.Controls.Grid.SetRow(_selectButton, 0);
+            System.Windows.Controls.Grid.SetRow(_tb, 1);
 
-            tb.DataContext = this;
-            selectButton.DataContext = this;
+            _tb.DataContext = this;
+            _selectButton.DataContext = this;
 
             var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
             {
                 Mode = BindingMode.TwoWay,
             };
-            tb.SetBinding(TextBox.TextProperty, selectTextBinding);
+            _tb.SetBinding(TextBox.TextProperty, selectTextBinding);
 
             var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
             {
                 Mode = BindingMode.TwoWay,
             };
-            selectButton.SetBinding(Button.ContentProperty, buttonTextBinding);
+            _selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
         }
 
-        private void selectButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void selectButton_Click(object sender, RoutedEventArgs e)
         {
-            this.selectButton.IsEnabled = false;
-            IdlePromise.ExecuteOnIdle(new Action(
+            _selectButton.IsEnabled = false;
+            IdlePromise.ExecuteOnIdle(
                 delegate
                 {
-                    this.OnSelectClick();
-                    this.selectButton.IsEnabled = true;
-                }
-            ));
+                    OnSelectClick();
+                    _selectButton.IsEnabled = true;
+                });
         }
 
         /// <summary>
@@ -139,37 +135,40 @@ namespace Dynamo.Nodes
         /// 
         protected abstract void OnSelectClick();
 
-        private Element selected;
+        private Element _selected;
+
         /// <summary>
         /// The Element which is selected. Setting this property will automatically register the Element
         /// for proper updating, and will update this node's IsDirty value.
         /// </summary>
         public virtual Element SelectedElement
         {
-            get { return selected; }
+            get { return _selected; }
             set
             {
-                var dirty = false;
-                if (this.selected != null)
+                bool dirty;
+                if (_selected != null)
                 {
-                    if (value != null && value.Id.Equals(this.selected.Id))
+                    if (value != null && value.Id.Equals(_selected.Id))
                         return;
 
                     dirty = true;
-                    this.UnregisterEvalOnModified(this.selected.Id);
+                    this.UnregisterEvalOnModified(_selected.Id);
                 }
                 else
-                {
                     dirty = value != null;
-                }
 
-                this.selected = value;
+                _selected = value;
                 if (value != null)
                 {
                     this.RegisterEvalOnModified(
-                       value.Id,
-                       delAction: delegate { this.selected = null; this.SelectedElement = null; }
-                    );
+                        value.Id,
+                        delAction: delegate
+                        {
+                            _selected = null;
+                            SelectedElement = null;
+                        }
+                        );
 
                     //this.tb.Text = this.SelectionText;
                     //this.selectButton.Content = "Change";
@@ -184,13 +183,13 @@ namespace Dynamo.Nodes
                 }
 
                 if (dirty)
-                    this.RequiresRecalc = true;
+                    RequiresRecalc = true;
             }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            if (this.SelectedElement == null)
+            if (SelectedElement == null)
             {
                 //if (dynSettings.Controller.Testing)
                 //{
@@ -227,19 +226,19 @@ namespace Dynamo.Nodes
                 //    }
                 //}
                 //else
-                    throw new Exception("Nothing selected.");
+                throw new Exception("Nothing selected.");
             }
 
-            return Value.NewContainer(this.SelectedElement);
+            return Value.NewContainer(SelectedElement);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            if (this.SelectedElement != null)
+            if (SelectedElement != null)
             {
                 XmlElement outEl = xmlDoc.CreateElement("instance");
-                outEl.SetAttribute("id", this.SelectedElement.Id.ToString());
+                outEl.SetAttribute("id", SelectedElement.UniqueId);
                 dynEl.AppendChild(outEl);
             }
         }
@@ -251,28 +250,30 @@ namespace Dynamo.Nodes
                 if (subNode.Name.Equals("instance"))
                 {
                     Element saved = null;
-                    var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
+                    var id = subNode.Attributes[0].Value;
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id) as Element; // FamilyInstance;
+                        saved = dynRevitSettings.Doc.Document.GetElement(id); // FamilyInstance;
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log("Unable to find element with ID: " + id.IntegerValue);
+                        dynSettings.Controller.DynamoViewModel.Log(
+                            "Unable to find element with ID: " + id);
                     }
-                    this.SelectedElement = saved;
+                    SelectedElement = saved;
                 }
             }
         }
     }
 
     [IsInteractive(true)]
-    public abstract class dynMultipleElementSelectionBase: dynNodeWithOneOutput
+    public abstract class dynMultipleElementSelectionBase : dynNodeWithOneOutput
     {
-        TextBox tb;
-        System.Windows.Controls.Button selectButton;
+        private TextBox _tb;
+        private Button _selectButton;
 
         protected string _selectButtonContent;
+
         public string SelectButtonContent
         {
             get { return _selectButtonContent; }
@@ -289,6 +290,7 @@ namespace Dynamo.Nodes
         /// </summary>
         //protected abstract string SelectionText { get; }
         protected string _selectionText;
+
         public abstract string SelectionText { get; set; }
 
         protected dynMultipleElementSelectionBase(PortData outData)
@@ -299,69 +301,65 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
-
             //add a button to the inputGrid on the dynElement
-            selectButton = new dynNodeButton();
-            selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            selectButton.Click += new System.Windows.RoutedEventHandler(selectButton_Click);
-            //selectButton.Content = "Select Instances";
-            selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            _selectButton = new dynNodeButton
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            _selectButton.Click += selectButton_Click;
 
-            tb = new TextBox();
-            //tb.Text = "Nothing Selected";
+            _tb = new TextBox
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
+                BorderThickness = new Thickness(0),
+                IsReadOnly = true,
+                IsReadOnlyCaretVisible = false
+            };
 
-            if (this.SelectedElements == null || this.SelectedElements.Count() < 1 ||
-                SelectionText.Count() < 1 || SelectButtonContent.Count() < 1)
+            if (SelectedElements == null || !SelectedElements.Any() || !SelectionText.Any() || !SelectButtonContent.Any())
             {
                 SelectionText = "Nothing Selected";
                 SelectButtonContent = "Select Instances";
             }
 
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-            tb.Background = backgroundBrush;
-            tb.BorderThickness = new Thickness(0);
-            tb.IsReadOnly = true;
-            tb.IsReadOnlyCaretVisible = false;
 
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
-            nodeUI.inputGrid.Children.Add(tb);
-            nodeUI.inputGrid.Children.Add(selectButton);
+            nodeUI.inputGrid.Children.Add(_tb);
+            nodeUI.inputGrid.Children.Add(_selectButton);
 
-            System.Windows.Controls.Grid.SetRow(selectButton, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 1);
+            System.Windows.Controls.Grid.SetRow(_selectButton, 0);
+            System.Windows.Controls.Grid.SetRow(_tb, 1);
 
-            tb.DataContext = this;
-            selectButton.DataContext = this;
+            _tb.DataContext = this;
+            _selectButton.DataContext = this;
 
             var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
             {
                 Mode = BindingMode.TwoWay,
             };
-            tb.SetBinding(TextBox.TextProperty, selectTextBinding);
+            _tb.SetBinding(TextBox.TextProperty, selectTextBinding);
 
             var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
             {
                 Mode = BindingMode.TwoWay,
             };
-            selectButton.SetBinding(Button.ContentProperty, buttonTextBinding);
+            _selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
         }
 
-        private void selectButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void selectButton_Click(object sender, RoutedEventArgs e)
         {
-            this.selectButton.IsEnabled = false;
-            IdlePromise.ExecuteOnIdle(new Action(
+            _selectButton.IsEnabled = false;
+            IdlePromise.ExecuteOnIdle(
                 delegate
                 {
-                    this.OnSelectClick();
-                    this.selectButton.IsEnabled = true;
-                }
-            ));
+                    OnSelectClick();
+                    _selectButton.IsEnabled = true;
+                });
         }
 
         /// <summary>
@@ -371,25 +369,26 @@ namespace Dynamo.Nodes
         /// 
         protected abstract void OnSelectClick();
 
-        private IList<Element> selected;
+        private IList<Element> _selected;
+
         /// <summary>
         /// The Element which is selected. Setting this property will automatically register the Element
         /// for proper updating, and will update this node's IsDirty value.
         /// </summary>
         public virtual IList<Element> SelectedElements
         {
-            get { return selected; }
+            get { return _selected; }
             set
             {
                 var dirty = false;
-                if (this.selected != null)
+                if (_selected != null)
                 {
-                    foreach (Element selectedElement in this.selected)
+                    foreach (Element selectedElement in _selected)
                     {
                         foreach (Element previousElement in value)
                         {
-
-                            if (previousElement != null && previousElement.Id.Equals(selectedElement.Id))
+                            if (previousElement != null
+                                && previousElement.Id.Equals(selectedElement.Id))
                                 return;
 
                             dirty = true;
@@ -398,19 +397,20 @@ namespace Dynamo.Nodes
                     }
                 }
                 else
-                {
                     dirty = value != null;
-                }
 
-                this.selected = value;
+                _selected = value;
                 if (value != null)
                 {
                     foreach (Element previousElement in value)
                     {
                         this.RegisterEvalOnModified(
-                           previousElement.Id,
-                           delAction: delegate { this.selected = null; this.SelectedElements = null; }
-                        );
+                            previousElement.Id,
+                            delAction: delegate
+                            {
+                                _selected = null;
+                                SelectedElements = null;
+                            });
                     }
 
                     //this.tb.Text = this.SelectionText;
@@ -425,22 +425,16 @@ namespace Dynamo.Nodes
                 }
 
                 if (dirty)
-                    this.RequiresRecalc = true;
+                    RequiresRecalc = true;
             }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            if (this.SelectedElements == null)
+            if (SelectedElements == null)
                 throw new Exception("Nothing selected.");
 
-            FSharpList<Value> result = FSharpList<Value>.Empty;
-
-            var els = new List<Value>();
-            foreach (Element el in this.SelectedElements)
-            {
-                els.Add(Value.NewContainer(el));
-            }
+            var els = SelectedElements.Select(Value.NewContainer).ToList();
 
             return Value.NewList(Utils.SequenceToFSharpList(els));
         }
@@ -448,12 +442,12 @@ namespace Dynamo.Nodes
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            if (this.SelectedElements != null)
+            if (SelectedElements != null)
             {
-                foreach (Element selectedElement in this.SelectedElements)
+                foreach (Element selectedElement in SelectedElements)
                 {
                     XmlElement outEl = xmlDoc.CreateElement("instance");
-                    outEl.SetAttribute("id", selectedElement.Id.ToString());
+                    outEl.SetAttribute("id", selectedElement.UniqueId);
                     dynEl.AppendChild(outEl);
                 }
             }
@@ -466,18 +460,19 @@ namespace Dynamo.Nodes
                 if (subNode.Name.Equals("instance"))
                 {
                     Element saved = null;
-                    var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
+                    var id = subNode.Attributes[0].Value;
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id) as Element;
+                        saved = dynRevitSettings.Doc.Document.GetElement(id);
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log("Unable to find element with ID: " + id.IntegerValue);
+                        dynSettings.Controller.DynamoViewModel.Log(
+                            "Unable to find element with ID: " + id);
                     }
-                    if (this.SelectedElements == null)
-                        this.SelectedElements = new List<Element>();
-                    this.SelectedElements.Add(saved);
+                    if (SelectedElements == null)
+                        SelectedElements = new List<Element>();
+                    SelectedElements.Add(saved);
                 }
             }
         }
@@ -489,14 +484,14 @@ namespace Dynamo.Nodes
     public class dynFamilyInstanceCreatorSelection : dynElementSelectionBase
     {
         public dynFamilyInstanceCreatorSelection()
-            : base(new PortData("fi", "Family instances created by this operation.", typeof(Value.Container)))
-        { }
+            : base(
+                new PortData(
+                    "fi", "Family instances created by this operation.", typeof(Value.Container))) { }
 
         protected override void OnSelectClick()
         {
-            this.SelectedElement = dynRevitSettings.SelectionHelper.RequestFamilyInstanceSelection(
-               dynRevitSettings.Doc, "Select Massing Family Instance"
-            );
+            SelectedElement = dynRevitSettings.SelectionHelper.RequestFamilyInstanceSelection(
+                dynRevitSettings.Doc, "Select Massing Family Instance");
             RaisePropertyChanged("SelectionText");
         }
 
@@ -504,9 +499,9 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selectionText = this.SelectedElement == null ?
-                    "Nothing Selected" :
-                    this.SelectedElement.Name;
+                return _selectionText = SelectedElement == null
+                                            ? "Nothing Selected"
+                                            : SelectedElement.Name;
             }
             set
             {
@@ -521,11 +516,12 @@ namespace Dynamo.Nodes
     [NodeDescription("Select a divided surface from the document.")]
     public class dynDividedSurfaceBySelection : dynElementSelectionBase
     {
-        Value data;
+        private Value _data;
 
         public dynDividedSurfaceBySelection()
-            : base(new PortData("srf", "The divided surface family instance(s)", typeof(Value.Container)))
-        { }
+            : base(
+                new PortData(
+                    "srf", "The divided surface family instance(s)", typeof(Value.Container))) { }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -534,7 +530,7 @@ namespace Dynamo.Nodes
             //"Get an interface to the divided surfaces on this element."
             //TODO: do we want to select a face instead and try to get
             //the divided surface that way?
-            DividedSurfaceData dsd = this.SelectedElement.GetDividedSurfaceData();
+            DividedSurfaceData dsd = SelectedElement.GetDividedSurfaceData();
 
             if (dsd != null)
             {
@@ -542,12 +538,11 @@ namespace Dynamo.Nodes
                 {
                     DividedSurface ds = dsd.GetDividedSurfaceForReference(r);
 
-                    GridNode gn = new GridNode();
+                    var gn = new GridNode();
 
                     int u = 0;
                     while (u < ds.NumberOfUGridlines)
                     {
-
                         var lst = new List<FamilyInstance>();
 
                         gn.UIndex = u;
@@ -561,7 +556,7 @@ namespace Dynamo.Nodes
                             if (ds.IsSeedNode(gn))
                             {
                                 FamilyInstance fi
-                                  = ds.GetTileFamilyInstance(gn, 0);
+                                    = ds.GetTileFamilyInstance(gn, 0);
 
                                 //put the family instance into the tree
                                 lst.Add(fi);
@@ -570,36 +565,31 @@ namespace Dynamo.Nodes
                         }
 
                         //don't add list if it's empty
-                        if(lst.Count() > 0)
+                        if (lst.Any())
                             result.Add(lst);
 
                         u = u + 1;
                     }
                 }
 
-                this.data = Value.NewList(
-                   Utils.SequenceToFSharpList(
-                      result.Select(
-                         row => Value.NewList(
-                            Utils.SequenceToFSharpList(
-                               row.Select(Value.NewContainer)
-                            )
-                         )
-                      )
-                   )
-                );
+                _data = Value.NewList(
+                    Utils.SequenceToFSharpList(
+                        result.Select(
+                            row => Value.NewList(
+                                Utils.SequenceToFSharpList(
+                                    row.Select(Value.NewContainer))))));
             }
 
-            return data;
+            return _data;
         }
 
         public override string SelectionText
         {
             get
             {
-                return _selectionText = this.SelectedElement == null ?
-                    "Nothing Selected" :
-                    "Element ID: " + this.SelectedElement.Id;
+                return _selectionText = SelectedElement == null
+                                            ? "Nothing Selected"
+                                            : "Element ID: " + SelectedElement.Id;
             }
             set
             {
@@ -679,10 +669,9 @@ namespace Dynamo.Nodes
 
         protected override void OnSelectClick()
         {
-            this.SelectedElement = null;
-            this.SelectedElement = dynRevitSettings.SelectionHelper.RequestFormSelection(
-               dynRevitSettings.Doc, "Select a form element."
-            );
+            SelectedElement = null;
+            SelectedElement = dynRevitSettings.SelectionHelper.RequestFormSelection(
+                dynRevitSettings.Doc, "Select a form element.");
             RaisePropertyChanged("SelectionText");
         }
     }
@@ -692,28 +681,27 @@ namespace Dynamo.Nodes
     [NodeDescription("Select a face from the document.")]
     public class dynFormElementBySelection : dynElementSelectionBase, IDrawable
     {
-        Reference f;
+        private Reference _f;
 
         public RenderDescription RenderDescription { get; set; }
 
         public dynFormElementBySelection()
-            : base(new PortData("face", "The face", typeof(Value.Container)))
-        {}
+            : base(new PortData("face", "The face", typeof(Value.Container))) { }
 
         protected override void OnSelectClick()
         {
             var doc = dynRevitSettings.Doc;
 
-            f = dynRevitSettings.SelectionHelper.RequestFaceReferenceSelection(
-               doc, "Select a face."
-            );
-            this.SelectedElement = doc.Document.GetElement(f);
+            _f = dynRevitSettings.SelectionHelper.RequestFaceReferenceSelection(
+                doc, "Select a face.");
+            SelectedElement = doc.Document.GetElement(_f);
             RaisePropertyChanged("SelectionText");
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Face face = (Face)dynRevitSettings.Doc.Document.GetElement(f).GetGeometryObjectFromReference(f);
+            var face =
+                (Face)dynRevitSettings.Doc.Document.GetElement(_f).GetGeometryObjectFromReference(_f);
             return Value.NewContainer(face);
         }
 
@@ -721,9 +709,9 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selectionText = this.SelectedElement == null ?
-                    "Nothing Selected" :
-                    "Face ID: " + this.SelectedElement.Id;
+                return _selectionText = SelectedElement == null
+                                            ? "Nothing Selected"
+                                            : "Face ID: " + SelectedElement.Id;
             }
             set
             {
@@ -734,30 +722,31 @@ namespace Dynamo.Nodes
 
         public void Draw()
         {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new RenderDescription();
+            if (RenderDescription == null)
+                RenderDescription = new RenderDescription();
             else
-                this.RenderDescription.ClearAll();
+                RenderDescription.ClearAll();
 
-            Face face = (Face)dynRevitSettings.Doc.Document.GetElement(f).GetGeometryObjectFromReference(f);
+            var face =
+                (Face)dynRevitSettings.Doc.Document.GetElement(_f).GetGeometryObjectFromReference(_f);
 
-            dynRevitTransactionNode.DrawFace(this.RenderDescription, face);
-
+            dynRevitTransactionNode.DrawFace(RenderDescription, face);
         }
-        
+
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-
-            dynEl.SetAttribute("faceRef", this.f.ConvertToStableRepresentation( dynRevitSettings.Doc.Document));
+            dynEl.SetAttribute(
+                "faceRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
         public override void LoadElement(XmlNode elNode)
         {
             try
             {
-                this.f = Reference.ParseFromStableRepresentation(dynRevitSettings.Doc.Document, elNode.Attributes["faceRef"].Value.ToString());
-                if (f != null)
-                   this.SelectedElement = dynRevitSettings.Doc.Document.GetElement(f.ElementId);
+                _f = Reference.ParseFromStableRepresentation(
+                    dynRevitSettings.Doc.Document, elNode.Attributes["faceRef"].Value);
+                if (_f != null)
+                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_f.ElementId);
             }
             catch { }
         }
@@ -768,36 +757,34 @@ namespace Dynamo.Nodes
     [NodeDescription("Select an edge from the document.")]
     public class dynEdgeOnElementBySelection : dynElementSelectionBase, IDrawable
     {
-        Reference f;
+        private Reference _f;
         public RenderDescription RenderDescription { get; set; }
 
         public dynEdgeOnElementBySelection()
-            : base(new PortData("edge", "The edge", typeof(Value.Container)))
-        {}
+            : base(new PortData("edge", "The edge", typeof(Value.Container))) { }
 
         protected override void OnSelectClick()
         {
             var doc = dynRevitSettings.Doc;
 
-            f = dynRevitSettings.SelectionHelper.RequestEdgeReferenceSelection(
-               doc, "Select an edge."
-            );
-            this.SelectedElement = doc.Document.GetElement(f);
+            _f = dynRevitSettings.SelectionHelper.RequestEdgeReferenceSelection(
+                doc, "Select an edge.");
+            SelectedElement = doc.Document.GetElement(_f);
             RaisePropertyChanged("SelectionText");
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewContainer(f);
+            return Value.NewContainer(_f);
         }
 
         public override string SelectionText
         {
             get
             {
-                return _selectionText = this.SelectedElement == null ?
-                    "Nothing Selected" :
-                    "Element of Edge  ID: " + this.SelectedElement.Id;
+                return _selectionText = SelectedElement == null
+                                            ? "Nothing Selected"
+                                            : "Element of Edge  ID: " + SelectedElement.Id;
             }
             set
             {
@@ -808,34 +795,34 @@ namespace Dynamo.Nodes
 
         public void Draw()
         {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new RenderDescription();
+            if (RenderDescription == null)
+                RenderDescription = new RenderDescription();
             else
-                this.RenderDescription.ClearAll();
+                RenderDescription.ClearAll();
 
-            Edge edge = (Edge)dynRevitSettings.Doc.Document.GetElement(f).GetGeometryObjectFromReference(f);
+            var edge =
+                (Edge)dynRevitSettings.Doc.Document.GetElement(_f).GetGeometryObjectFromReference(_f);
 
-            dynRevitTransactionNode.DrawGeometryElement(this.RenderDescription, edge);
-
+            dynRevitTransactionNode.DrawGeometryElement(RenderDescription, edge);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-
-            dynEl.SetAttribute("edgeRef", this.f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+            dynEl.SetAttribute(
+                "edgeRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
         public override void LoadElement(XmlNode elNode)
         {
             try
             {
-                this.f = Reference.ParseFromStableRepresentation(dynRevitSettings.Doc.Document, elNode.Attributes["edgeRef"].Value.ToString());
-                if (f != null)
-                    this.SelectedElement = dynRevitSettings.Doc.Document.GetElement(f.ElementId);
+                _f = Reference.ParseFromStableRepresentation(
+                    dynRevitSettings.Doc.Document, elNode.Attributes["edgeRef"].Value);
+                if (_f != null)
+                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_f.ElementId);
             }
             catch { }
         }
-
     }
 
     [NodeName("Select Curve")]
@@ -844,15 +831,12 @@ namespace Dynamo.Nodes
     public class dynCurvesBySelection : dynElementSelectionBase, IDrawable
     {
         public dynCurvesBySelection()
-            : base(new PortData("curve", "The curve", typeof(Value.Container)))
-        { 
-        }
+            : base(new PortData("curve", "The curve", typeof(Value.Container))) { }
 
         protected override void OnSelectClick()
         {
-            this.SelectedElement = dynRevitSettings.SelectionHelper.RequestCurveElementSelection(
-               dynRevitSettings.Doc, "Select a curve."
-            );
+            SelectedElement = dynRevitSettings.SelectionHelper.RequestCurveElementSelection(
+                dynRevitSettings.Doc, "Select a curve.");
             RaisePropertyChanged("SelectionText");
         }
 
@@ -860,13 +844,13 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selectionText = this.SelectedElement == null ?
-                    "Nothing Selected" :
-                    "Curve ID: " + this.SelectedElement.Id;
+                return _selectionText = SelectedElement == null
+                                            ? "Nothing Selected"
+                                            : "Curve ID: " + SelectedElement.Id;
             }
             set
             {
-                _selectionText = value;   
+                _selectionText = value;
                 RaisePropertyChanged("SelectionText");
             }
         }
@@ -878,38 +862,41 @@ namespace Dynamo.Nodes
                 if (subNode.Name.Equals("instance"))
                 {
                     Element saved = null;
-                    var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
+                    var id = subNode.Attributes[0].Value;
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id) as Element; // FamilyInstance;
+                        saved = dynRevitSettings.Doc.Document.GetElement(id);
+                            // FamilyInstance;
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log("Unable to find element with ID: " + id.IntegerValue);
+                        dynSettings.Controller.DynamoViewModel.Log(
+                            "Unable to find element with ID: " + id);
                     }
 
                     //only set the selected element if the element
                     //returned is of the type required by this node
-                    if(saved is CurveElement)
-                        this.SelectedElement = saved;
-
+                    if (saved is CurveElement)
+                        SelectedElement = saved;
                 }
             }
         }
 
         #region IDrawable Interface
+
         public RenderDescription RenderDescription { get; set; }
+
         public void Draw()
         {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new RenderDescription();
+            if (RenderDescription == null)
+                RenderDescription = new RenderDescription();
             else
-                this.RenderDescription.ClearAll();
+                RenderDescription.ClearAll();
 
-            CurveElement ce = this.SelectedElement as CurveElement;
-            dynRevitTransactionNode.DrawCurve(this.RenderDescription, ce.GeometryCurve);
-
+            var ce = SelectedElement as CurveElement;
+            dynRevitTransactionNode.DrawCurve(RenderDescription, ce.GeometryCurve);
         }
+
         #endregion
     }
 
@@ -919,41 +906,35 @@ namespace Dynamo.Nodes
     public class dynMultipleCurvesBySelection : dynMultipleElementSelectionBase
     {
         public dynMultipleCurvesBySelection()
-            : base(new PortData("curves", "The curves", typeof(Value.Container)))
-        { }
+            : base(new PortData("curves", "The curves", typeof(Value.Container))) { }
 
         protected override void OnSelectClick()
         {
-            if (this.SelectedElements != null)
+            if (SelectedElements != null)
             {
                 SelectedElements.Clear();
                 SelectedElements = null;
             }
 
-            SelectedElements = dynRevitSettings.SelectionHelper.RequestMultipleCurveElementsSelection(
-               dynRevitSettings.Doc, "Select a set of curves."
-            );
+            SelectedElements = dynRevitSettings.SelectionHelper
+                                               .RequestMultipleCurveElementsSelection(
+                                                   dynRevitSettings.Doc, "Select a set of curves.");
 
             RaisePropertyChanged("SelectionText");
         }
 
-        string formatSelectionText(IList<Element> elements)
+        private static string formatSelectionText(IEnumerable<Element> elements)
         {
-            string selectionText = "";
-            foreach (Element e in elements)
-            {
-                selectionText = selectionText + " " + e.Id.ToString();
-            }
-            return selectionText;
+            return String.Join(" ", elements.Select(x => x.Id.ToString()));
         }
 
         public override string SelectionText
         {
             get
             {
-                return _selectionText = (this.SelectedElements != null && this.SelectedElements.Count > 0) ?
-                      "Curve IDs:" + formatSelectionText(this.SelectedElements) :
-                      "Nothing Selected";
+                return _selectionText = (SelectedElements != null && SelectedElements.Count > 0)
+                                            ? "Curve IDs:" + formatSelectionText(SelectedElements)
+                                            : "Nothing Selected";
             }
             set
             {
@@ -969,14 +950,12 @@ namespace Dynamo.Nodes
     public class dynPointBySelection : dynElementSelectionBase
     {
         public dynPointBySelection() :
-            base(new PortData("pt", "The point", typeof(Value.Container)))
-        { }
+            base(new PortData("pt", "The point", typeof(Value.Container))) { }
 
         protected override void OnSelectClick()
         {
-            this.SelectedElement = dynRevitSettings.SelectionHelper.RequestReferencePointSelection(
-               dynRevitSettings.Doc, "Select a reference point."
-            );
+            SelectedElement = dynRevitSettings.SelectionHelper.RequestReferencePointSelection(
+                dynRevitSettings.Doc, "Select a reference point.");
 
             RaisePropertyChanged("SelectionText");
         }
@@ -985,9 +964,10 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selectionText = this.SelectedElement == null ?
-                    "Nothing Selected" :
-                    this.SelectedElement.Name + " (" + this.SelectedElement.Id + ")";
+                return _selectionText = SelectedElement == null
+                                            ? "Nothing Selected"
+                                            : SelectedElement.Name + " ("
+                                              + SelectedElement.Id + ")";
             }
             set
             {
@@ -1003,14 +983,12 @@ namespace Dynamo.Nodes
     public class dynLevelBySelection : dynElementSelectionBase
     {
         public dynLevelBySelection() :
-            base(new PortData("lvl", "The selected level", typeof(Value.Container)))
-        { }
+            base(new PortData("lvl", "The selected level", typeof(Value.Container))) { }
 
         protected override void OnSelectClick()
         {
-            this.SelectedElement = dynRevitSettings.SelectionHelper.RequestLevelSelection(
-               dynRevitSettings.Doc, "Select a level."
-            );
+            SelectedElement = dynRevitSettings.SelectionHelper.RequestLevelSelection(
+                dynRevitSettings.Doc, "Select a level.");
             RaisePropertyChanged("SelectionText");
         }
 
@@ -1018,9 +996,10 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selectionText = this.SelectedElement == null ?
-                    "Nothing Selected" :
-                    this.SelectedElement.Name + " (" + this.SelectedElement.Id + ")";
+                return _selectionText = SelectedElement == null
+                                            ? "Nothing Selected"
+                                            : SelectedElement.Name + " ("
+                                              + SelectedElement.Id + ")";
             }
             set
             {
@@ -1036,14 +1015,15 @@ namespace Dynamo.Nodes
     public class dynModelElementSelection : dynElementSelectionBase
     {
         public dynModelElementSelection()
-            : base(new PortData("me", "Model element reference created by this operation.", typeof(Value.Container)))
-        { }
+            : base(
+                new PortData(
+                    "me", "Model element reference created by this operation.",
+                    typeof(Value.Container))) { }
 
         protected override void OnSelectClick()
         {
-            this.SelectedElement = dynRevitSettings.SelectionHelper.RequestModelElementSelection(
-               dynRevitSettings.Doc, "Select Model Element"
-            );
+            SelectedElement = dynRevitSettings.SelectionHelper.RequestModelElementSelection(
+                dynRevitSettings.Doc, "Select Model Element");
             RaisePropertyChanged("SelectionText");
         }
 
@@ -1051,9 +1031,9 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selectionText = this.SelectedElement == null ?
-                    "Nothing Selected" :
-                    this.SelectedElement.Name;
+                return _selectionText = SelectedElement == null
+                                            ? "Nothing Selected"
+                                            : SelectedElement.Name;
             }
             set
             {
@@ -1068,182 +1048,183 @@ namespace Dynamo.Nodes
     [NodeDescription("Select a XYZ location on model face or edge of the element.")]
     public class dynXYZBySelection : dynElementSelectionBase, IDrawable
     {
-        Reference refXYZ;
-        double param0;
-        double param1;
-        bool init;
+        private Reference _refXyz;
+        private double _param0;
+        private double _param1;
+        private bool _init;
 
         public RenderDescription RenderDescription { get; set; }
 
         public dynXYZBySelection() :
-            base(new PortData("XYZ", "The XYZ location on element", typeof(Value.Container)))
-        {
-        }
+            base(new PortData("XYZ", "The XYZ location on element", typeof(Value.Container))) { }
 
         protected override void OnSelectClick()
         {
-            this.refXYZ = dynRevitSettings.SelectionHelper.RequestReferenceXYZSelection(
-               dynRevitSettings.Doc, "Select a XYZ location on face or edge of the element."
-            );
-            if (this.refXYZ != null)
-               this.SelectedElement = dynRevitSettings.Doc.Document.GetElement(refXYZ.ElementId);
-           this.init = false;
+            _refXyz = dynRevitSettings.SelectionHelper.RequestReferenceXYZSelection(
+                dynRevitSettings.Doc, "Select a XYZ location on face or edge of the element."
+                );
+            if (_refXyz != null)
+                SelectedElement = dynRevitSettings.Doc.Document.GetElement(_refXyz.ElementId);
+            _init = false;
 
             RaisePropertyChanged("SelectionText");
         }
 
-       public override Value Evaluate(FSharpList<Value> args)
-       {
-           if (refXYZ.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_SURFACE &&
-                 refXYZ.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR)
-               throw new Exception("Could not use face or edge which is not part of the model");
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (_refXyz.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_SURFACE &&
+                _refXyz.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR)
+                throw new Exception("Could not use face or edge which is not part of the model");
 
-            GeometryObject thisObject = this.SelectedElement.GetGeometryObjectFromReference(refXYZ);
+            GeometryObject thisObject = SelectedElement.GetGeometryObjectFromReference(_refXyz);
             Autodesk.Revit.DB.Transform thisTrf = null;
 
-       
-           {
-               GeometryObject geomObj = this.SelectedElement.get_Geometry(new Autodesk.Revit.DB.Options());
-               GeometryElement geomElement = geomObj as GeometryElement;
 
-               // ugly code to detect if transform for geometry object is needed or not
-               // filed request to provide this info via API, but meanwhile ...
-               foreach (GeometryObject geob in geomElement)
-               {
-                   if (!(geob is GeometryInstance))
-                       continue;
-                  
-                   GeometryInstance ginsta = geob as GeometryInstance;
-                   GeometryElement gSymbolElement = ginsta.GetSymbolGeometry();
-                   List <GeometryElement> geometryElements = new List <GeometryElement>();
-                  geometryElements.Add(gSymbolElement);
-                  bool found = false;
-                  for (; geometryElements.Count > 0 && !found;)
-                  {
-                       GeometryElement thisGeometryElement = geometryElements[0];
-                       geometryElements.Remove(thisGeometryElement);
-
-                     foreach (GeometryObject geobSym in thisGeometryElement)
-                     {
-                           if (geobSym is GeometryElement)
-                           {
-                               geometryElements.Add((GeometryElement)geobSym);
-                               continue;
-                           }
-                           if ((thisObject is Curve) && (geobSym is Curve) && (thisObject == geobSym))
-                           {
-                               found = true;
-                               break;
-                           }
-
-                           if (thisObject is Curve)
-                               continue;
-
-                           if ((thisObject is Face) && (geobSym is Face) && (thisObject == geobSym))
-                           {
-                               found = true;
-                               break;
-                           }
-
-                           if ((thisObject is Edge) && (geobSym is Face))
-                           {
-                               Edge edge = (Edge)thisObject;
-                               //use GetFace after r2013 support is dropped
-                               if (geobSym == edge.get_Face(0) || geobSym == edge.get_Face(1))
-                               {
-                                   found = true;
-                                   break;
-                               }
-                           }
-                           if (!(geobSym is Solid))
-                               continue;
-
-                           FaceArray solidFaces = ((Solid)geobSym).Faces;
-                           int numFaces = solidFaces.Size;
-                           for (int index = 0; index < numFaces && !found; index++)
-                           {
-                               Face faceAt = solidFaces.get_Item(index);
-                               if ((thisObject is Face) && (thisObject == faceAt))
-                               {
-                                   found = true;
-                                   break;
-                               }
-                               if (thisObject is Edge)
-                               {
-                                   Edge edge = (Edge)thisObject;
-                                   //use GetFace after r2013 support is dropped
-                                   if (faceAt == edge.get_Face(0) || faceAt == edge.get_Face(1))
-                                   {
-                                       found = true;
-                                       break;
-                                   }
-                               }
-                           }
-                       }
-                   }
-
-                   if (found)
-                   {
-                       thisTrf = ginsta.Transform;
-                       break;
-                   }
-               }
-               if (thisObject == null)
-                   throw new Exception("could not resolve reference for XYZ on Element");
-            }
-            XYZ thisXYZ = null;
-            
-            if (refXYZ.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_SURFACE && thisObject is Face)
             {
-                Face face = thisObject as Face;
-                if (!init)
+                GeometryObject geomObj =
+                    SelectedElement.get_Geometry(new Options());
+                var geomElement = geomObj as GeometryElement;
+
+                // ugly code to detect if transform for geometry object is needed or not
+                // filed request to provide this info via API, but meanwhile ...
+                foreach (GeometryObject geob in geomElement)
                 {
-                   param0 = refXYZ.UVPoint[0];
-                   param1 = refXYZ.UVPoint[1];
-                   init = true;
+                    if (!(geob is GeometryInstance))
+                        continue;
+
+                    var ginsta = geob as GeometryInstance;
+                    GeometryElement gSymbolElement = ginsta.GetSymbolGeometry();
+                    var geometryElements = new List<GeometryElement> { gSymbolElement };
+                    bool found = false;
+                    for (; geometryElements.Count > 0 && !found;)
+                    {
+                        GeometryElement thisGeometryElement = geometryElements[0];
+                        geometryElements.Remove(thisGeometryElement);
+
+                        foreach (GeometryObject geobSym in thisGeometryElement)
+                        {
+                            if (geobSym is GeometryElement)
+                            {
+                                geometryElements.Add(geobSym as GeometryElement);
+                                continue;
+                            }
+                            if ((thisObject is Curve) && (geobSym is Curve)
+                                && (thisObject == geobSym))
+                            {
+                                found = true;
+                                break;
+                            }
+
+                            if (thisObject is Curve)
+                                continue;
+
+                            if ((thisObject is Face) && (geobSym is Face) && (thisObject == geobSym))
+                            {
+                                found = true;
+                                break;
+                            }
+
+                            if ((thisObject is Edge) && (geobSym is Face))
+                            {
+                                var edge = thisObject as Edge;
+                                //use GetFace after r2013 support is dropped
+                                if (geobSym == edge.get_Face(0) || geobSym == edge.get_Face(1))
+                                {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!(geobSym is Solid))
+                                continue;
+
+                            FaceArray solidFaces = ((Solid)geobSym).Faces;
+                            int numFaces = solidFaces.Size;
+                            for (int index = 0; index < numFaces && !found; index++)
+                            {
+                                Face faceAt = solidFaces.get_Item(index);
+                                if ((thisObject is Face) && (thisObject == faceAt))
+                                {
+                                    found = true;
+                                    break;
+                                }
+                                if (thisObject is Edge)
+                                {
+                                    var edge = thisObject as Edge;
+                                    //use GetFace after r2013 support is dropped
+                                    if (faceAt == edge.get_Face(0) || faceAt == edge.get_Face(1))
+                                    {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (found)
+                    {
+                        thisTrf = ginsta.Transform;
+                        break;
+                    }
                 }
-                UV uv = new UV(param0, param1);
+                if (thisObject == null)
+                    throw new Exception("could not resolve reference for XYZ on Element");
+            }
+
+            XYZ thisXYZ;
+
+            if (_refXyz.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_SURFACE
+                && thisObject is Face)
+            {
+                var face = thisObject as Face;
+                if (!_init)
+                {
+                    _param0 = _refXyz.UVPoint[0];
+                    _param1 = _refXyz.UVPoint[1];
+                    _init = true;
+                }
+                var uv = new UV(_param0, _param1);
                 thisXYZ = face.Evaluate(uv);
                 if (thisTrf != null)
                     thisXYZ = thisTrf.OfPoint(thisXYZ);
             }
-            else if (refXYZ.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_LINEAR )
+            else if (_refXyz.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_LINEAR)
             {
-                Curve curve = null;
+                Curve curve;
                 if (thisObject is Edge)
                 {
-                    Edge edge = (Edge)this.SelectedElement.GetGeometryObjectFromReference(refXYZ);
+                    var edge = (Edge)SelectedElement.GetGeometryObjectFromReference(_refXyz);
                     curve = edge.AsCurve();
                 }
                 else
-                    curve = (Curve)this.SelectedElement.GetGeometryObjectFromReference(refXYZ);
+                    curve = (Curve)SelectedElement.GetGeometryObjectFromReference(_refXyz);
                 if (curve != null)
                 {
-                    if (init)
-                        thisXYZ = curve.Evaluate(param0, true);
+                    if (_init)
+                        thisXYZ = curve.Evaluate(_param0, true);
                     else
                     {
-                        XYZ curPoint = refXYZ.GlobalPoint;
+                        XYZ curPoint = _refXyz.GlobalPoint;
                         if (thisTrf != null)
                         {
                             Autodesk.Revit.DB.Transform inverseTrf = thisTrf.Inverse;
-                            curPoint = inverseTrf.OfPoint(refXYZ.GlobalPoint);
+                            curPoint = inverseTrf.OfPoint(_refXyz.GlobalPoint);
                         }
                         IntersectionResult thisResult = curve.Project(curPoint);
-                        param0 = curve.ComputeNormalizedParameter(thisResult.Parameter);
-                        init = true;
+                        _param0 = curve.ComputeNormalizedParameter(thisResult.Parameter);
+                        _init = true;
                     }
-                    thisXYZ = curve.Evaluate(param0, true);
-                    param1 = -1.0;
+                    thisXYZ = curve.Evaluate(_param0, true);
+                    _param1 = -1.0;
                 }
                 else
                     throw new Exception("could not evaluate point on face or edge of the element");
                 if (thisTrf != null)
                     thisXYZ = thisTrf.OfPoint(thisXYZ);
             }
-            else 
-                throw new Exception ("could not evaluate point on face or edge of the element");
-           
+            else
+                throw new Exception("could not evaluate point on face or edge of the element");
+
             return Value.NewContainer(thisXYZ);
         }
 
@@ -1251,9 +1232,9 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selectionText = this.refXYZ == null ?
-                    "Nothing Selected" :
-                    "Point on element" + " (" + refXYZ.ElementId + ")";
+                return _selectionText = _refXyz == null
+                                            ? "Nothing Selected"
+                                            : "Point on element" + " (" + _refXyz.ElementId + ")";
             }
             set
             {
@@ -1264,39 +1245,38 @@ namespace Dynamo.Nodes
 
         public void Draw()
         {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new RenderDescription();
+            if (RenderDescription == null)
+                RenderDescription = new RenderDescription();
             else
-                this.RenderDescription.ClearAll();
+                RenderDescription.ClearAll();
 
-            XYZ thisXYZ = refXYZ.GlobalPoint;
+            XYZ thisXYZ = _refXyz.GlobalPoint;
 
-            dynRevitTransactionNode.DrawXYZ(this.RenderDescription, thisXYZ);
+            dynRevitTransactionNode.DrawXYZ(RenderDescription, thisXYZ);
         }
+
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-
-            dynEl.SetAttribute("refXYZ", this.refXYZ.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
-            dynEl.SetAttribute("refXYZparam0", this.param0.ToString());
-            dynEl.SetAttribute("refXYZparam1", this.param1.ToString());
+            dynEl.SetAttribute(
+                "refXYZ", _refXyz.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+            dynEl.SetAttribute("refXYZparam0", _param0.ToString());
+            dynEl.SetAttribute("refXYZparam1", _param1.ToString());
         }
 
         public override void LoadElement(XmlNode elNode)
         {
             try
             {
-                this.refXYZ = Reference.ParseFromStableRepresentation(dynRevitSettings.Doc.Document, elNode.Attributes["refXYZ"].Value.ToString());
-                if (refXYZ != null)
-                {
-                    this.SelectedElement = dynRevitSettings.Doc.Document.GetElement(refXYZ.ElementId);
-                }
-                param0 = Convert.ToDouble(elNode.Attributes["refXYZparam0"].Value);
-                param1 = Convert.ToDouble(elNode.Attributes["refXYZparam1"].Value);
-                init = true;
+                _refXyz = Reference.ParseFromStableRepresentation(
+                    dynRevitSettings.Doc.Document, elNode.Attributes["refXYZ"].Value);
+                if (_refXyz != null)
+                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(
+                        _refXyz.ElementId);
+                _param0 = Convert.ToDouble(elNode.Attributes["refXYZparam0"].Value);
+                _param1 = Convert.ToDouble(elNode.Attributes["refXYZparam1"].Value);
+                _init = true;
             }
             catch { }
         }
     }
 }
-
-

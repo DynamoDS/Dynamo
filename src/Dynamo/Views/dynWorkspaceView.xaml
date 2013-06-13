@@ -14,10 +14,19 @@
              MouseMove="DynWorkspaceView_OnMouseMove" 
              KeyDown="dynWorkspaceView_KeyDown" KeyUp="dynWorkspaceView_KeyUp" 
              IsHitTestVisible="{Binding IsCurrentSpace}">
-    
     <UserControl.Resources>
-        <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoConverters.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
+    
+    <!--<UserControl.Resources>
+        <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter"/>
+    </UserControl.Resources>-->
         
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
         <Canvas Name="backgroundCanvas" 
@@ -27,7 +36,7 @@
                  Grid.Column="2"
                  IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
             <Canvas.Background>
-                <SolidColorBrush Color="{Binding BackgroundColor}" />
+                <SolidColorBrush Color="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
             </Canvas.Background>
         </Canvas>
 

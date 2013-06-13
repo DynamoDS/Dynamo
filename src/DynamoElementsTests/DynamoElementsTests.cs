@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -677,6 +678,39 @@ namespace Dynamo.Tests
 
                 Assert.AreEqual(numNodes, DynamoSelection.Instance.Selection.Count);
             }
+        }
+
+        [Test]
+        public void NodesHaveCorrectLocationsIndpendentOfCulture()
+        {
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string openPath = Path.Combine(directory, @"..\..\test\good_dyns\nodeLocationTest.dyn");
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-AR");
+            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.OpenCommand, openPath));
+            controller.ProcessCommandQueue();
+            Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
+            var node = dynSettings.Controller.DynamoModel.Nodes.First();
+            Assert.AreEqual(217.952067513811, node.X);
+            Assert.AreEqual(177.041832898393, node.Y);
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("zu-ZA");
+            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.OpenCommand, openPath));
+            controller.ProcessCommandQueue();
+            Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
+            node = dynSettings.Controller.DynamoModel.Nodes.First();
+            Assert.AreEqual(217.952067513811, node.X);
+            Assert.AreEqual(177.041832898393, node.Y);
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ja-JP");
+            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.OpenCommand, openPath));
+            controller.ProcessCommandQueue();
+            Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
+            node = dynSettings.Controller.DynamoModel.Nodes.First();
+            Assert.AreEqual(217.952067513811, node.X);
+            Assert.AreEqual(177.041832898393, node.Y);
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
         }
 
         //// CancelRunCommand

@@ -178,9 +178,12 @@ namespace Dynamo.Connectors
                 //remove connector if one already exists
                 if (_port.Connectors.Count > 0)
                 {
+                    var connToRemove = _port.Connectors[0];
                     dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Model.Connectors.Remove(
-                        _port.Connectors[0]);
-                    _port.Disconnect(_port.Connectors[0]);
+                       connToRemove);
+                    _port.Disconnect(connToRemove);
+                    var startPort = connToRemove.Start;
+                    startPort.Disconnect(connToRemove);
                 }
 
                 // create the new connector model

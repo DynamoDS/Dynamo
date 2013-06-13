@@ -13,13 +13,12 @@
 //limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
+using System.Windows.Media;
 using System.Windows.Data;
+using System.Xml;
+using System.Web;
 
 using Autodesk.Revit.DB;
 
@@ -29,8 +28,8 @@ using Dynamo.Utilities;
 using Dynamo.Revit;
 using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
-using Dynamo.FSchemeInterop;
 using Dynamo.Controls;
+using Dynamo.Measure;
 
 namespace Dynamo.Nodes
 {
@@ -255,15 +254,44 @@ namespace Dynamo.Nodes
     [NodeName("Length")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Enter a length in project units.")]
-    public class dynLengthInput : dynDouble
+    public class dynLengthInput : dynNodeWithOneOutput
     {
+        private DynamoLength<Foot> _measure;
+        public DynamoLength<Foot> Measure
+        {
+            get { return _measure; }
+            set
+            {
+                _measure = value;
+                RaisePropertyChanged("Measure");
+            }
+        }
+
         public dynLengthInput()
         {
+            //Create a measure to coincide with Revit's internal project units
+            _measure = new DynamoLength<Foot>(0.0);
+
+            OutPortData.Add(new PortData("length", "The length. Stored internally as decimal feet.", typeof(Value.Number)));
             RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewNumber(Measure.Item.Length);
         }
 
         public override void SetupCustomUIElements(dynNodeView NodeUI)
         {
+            //add an edit window option to the 
+            //main context window
+            var editWindowItem = new System.Windows.Controls.MenuItem();
+            editWindowItem.Header = "Edit...";
+            editWindowItem.IsCheckable = false;
+
+            NodeUI.MainContextMenu.Items.Add(editWindowItem);
+
+            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
             //add a text box to the input grid of the control
             var tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -275,10 +303,11 @@ namespace Dynamo.Nodes
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             tb.DataContext = this;
-            var bindingVal = new System.Windows.Data.Binding("Value")
+            var bindingVal = new System.Windows.Data.Binding("Measure.Item.Length")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new RevitProjectUnitsConverter(),
+                ConverterParameter = Measure,
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
@@ -288,23 +317,53 @@ namespace Dynamo.Nodes
             tb.Text = "0.0";
         }
 
-        public override double Value
+        private void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            get
-            {
-                return base.Value;
-            }
-            set
-            {
-                if (base.Value == value)
-                    return;
+            var editWindow = new dynEditWindow();
 
-                base.Value = value;
-                //RaisePropertyChanged("Value");
+            editWindow.DataContext = this;
+            var bindingVal = new System.Windows.Data.Binding("Measure.Item.Length")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new RevitProjectUnitsConverter(),
+                ConverterParameter = Measure,
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            editWindow.editText.SetBinding(System.Windows.Controls.TextBox.TextProperty, bindingVal);
+
+            if (editWindow.ShowDialog() != true)
+            {
+                return;
             }
         }
 
-        protected override double DeserializeValue(string val)
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            XmlElement outEl = xmlDoc.CreateElement(Measure.Item.GetType().FullName);
+            outEl.SetAttribute("value",  Measure.Item.Length.ToString());
+            dynEl.AppendChild(outEl);
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name.Equals(Measure.Item.GetType().FullName))
+                {
+                    Measure.Item.Length = DeserializeValue(subNode.Attributes[0].Value);
+                }
+            }
+        }
+
+        public override string PrintExpression()
+        {
+            return Measure.Item.ToString();
+        }
+        
+        protected double DeserializeValue(string val)
         {
             try
             {

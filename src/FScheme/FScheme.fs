@@ -439,12 +439,19 @@ let IsEmpty = function [List(l)]            -> Number(if l.IsEmpty then 1. else 
 let rec private reduceLists = function
     | []     -> Seq.empty
     | [xs]   -> seq { for x in xs -> [x] }
-    | h :: t -> reduceLists t |> Seq.zip h |> Seq.map (fun (a,b) -> a::b)
+    | h :: t -> 
+        let t' = reduceLists t
+        let tcount = Seq.length t'
+        let hcount = Seq.length h
+        let tail = if tcount < hcount then Seq.skip tcount h |> Seq.map (fun x -> [x]) else Seq.skip hcount t'
+        Seq.append
+            (Seq.zip h t' |> Seq.map (fun (a,b) -> a::b))
+            tail
 
 let Map = function
     | Function(f) :: lists ->
-        List(List.map (function List(l) -> l | m -> failwith "bad map arg") lists
-                |> reduceLists |> Seq.map f |> Seq.toList)
+        List.map (function List(l) -> l | m -> failwith "bad map arg") lists
+            |> reduceLists |> Seq.map f |> Seq.toList |> List
     | m -> malformed "map" <| List(m)
 
 let FoldL = function
@@ -1093,6 +1100,7 @@ let RunTests (log : ErrorLog) =
     //Map
     case "(map (λ (x) x) '(1 2 3))" "(1 2 3)"
     case "(map append '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
+    case "(map list '(1 2 3) '(4 5 6) '(7 8) '(9 10 11 12))" "((1 4 7 9) (2 5 8 10) (3 6 11) (12))"
 
     //Filter
     case "(filter (λ (x) (< x 2)) '(0 2 3 4 1 6 5))" "(0 1)"

@@ -322,7 +322,13 @@
                                 </LinearGradientBrush>
                             </Grid.Background>
 
-                            <TextBlock x:Name="text" HorizontalAlignment="Center" Foreground="Black" Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Margin}" FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" Padding="1"></TextBlock>
+                            <TextBlock x:Name="text" 
+                                       HorizontalAlignment="Center" 
+                                       Foreground="Black" 
+                                       Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Margin}" 
+                                       FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" 
+                                       Padding="1"></TextBlock>
                         </Grid>
                     </Grid>
 

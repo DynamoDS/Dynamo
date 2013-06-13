@@ -120,6 +120,7 @@ limitations under the License.
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Search\SearchElements\TopSearchElement.cs" />
     <Compile Include="Nodes\dynEquation.cs" />
+    <Compile Include="Units.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\TrulyObservableCollection.cs" />

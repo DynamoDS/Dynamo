@@ -1455,6 +1455,7 @@ namespace Dynamo.Nodes
                                         for (; thisEnum.MoveNext(); )
                                         {
                                             hasFace = true;
+                                            break;
                                         }
                                         if (!hasFace)
                                             mySolid = null;
@@ -1476,6 +1477,7 @@ namespace Dynamo.Nodes
                                     for (; thisEnum.MoveNext(); )
                                     {
                                         hasFace = true;
+                                        break;
                                     }
                                     if (!hasFace)
                                         mySolid = null;
@@ -1564,13 +1566,19 @@ namespace Dynamo.Nodes
             CurveLoop firstLoop = (CurveLoop)((Value.Container)args[0]).Item;
             CurveLoop secondLoop = (CurveLoop)((Value.Container)args[1]).Item;
 
-            List<VertexPair> vertPairs = new List<VertexPair>();
+            List<VertexPair> vertPairs = null;
+
+            /* this code produces rather arbitrary correspondence, while null promised by Revit API declaration to compute "geometrically reasonable blend"
+            List<VertexPair> vertPairs =  new List<VertexPair>();  
+             
             int i = 0;
-            foreach (Curve c in firstLoop)
+            int nCurves1 = firstLoop.Count();
+            int secondLoop = secondLoop.Count();
+            for (; i < nCurves1 && i < nCurves2; i++)
             {
                 vertPairs.Add(new VertexPair(i, i));
-                i++;
             }
+            */
 
             var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop, secondLoop, vertPairs);
 
@@ -2277,6 +2285,117 @@ namespace Dynamo.Nodes
             Solid result = GeometryCreationUtilities.CreateSweptGeometry(pathLoop, attachementIndex, attachementPar, loopList);
 
             return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("List Onesided Edges")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
+    [NodeDescription("List onesided edges of solid as CurveLoops")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynOnesidedEdgesAsCurveLoops : dynNodeWithOneOutput
+    {
+
+        public dynOnesidedEdgesAsCurveLoops()
+        {
+            InPortData.Add(new PortData("Incomplete Solid", "Geoemtry to check for being Solid", typeof(object)));
+            InPortData.Add(new PortData("CurveLoops", "Additional curve loops ready for patching", typeof(Value.List)));
+            OutPortData.Add(new PortData("Onesided boundaries", "Onesided Edges as CurveLoops", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Solid thisSolid = (Solid)((Value.Container)args[0]).Item;
+            var listIn = ((Value.List)args[1]).Item.Select(
+                    x => ((CurveLoop)((Value.Container)x).Item)
+                       ).ToList();
+
+            Type SolidType = typeof(Autodesk.Revit.DB.Solid);
+
+            MethodInfo[] solidTypeMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodCreate = "oneSidedEdgesAsCurveLoops";
+            List <CurveLoop> oneSidedAsLoops = null;
+
+            foreach (MethodInfo m in solidTypeMethods)
+            {
+                if (m.Name == nameOfMethodCreate)
+                {
+                    object[] argsM = new object[1];
+                    argsM[0] = listIn;
+
+                    oneSidedAsLoops = (List<CurveLoop>)m.Invoke(thisSolid, argsM);
+
+                    break;
+                }
+            }
+
+            var result = FSharpList<Value>.Empty;
+            var thisEnum = oneSidedAsLoops.GetEnumerator();
+        
+            for (; thisEnum.MoveNext(); )
+            {
+                result = FSharpList<Value>.Cons(Value.NewContainer((CurveLoop) thisEnum.Current), result);
+            }
+
+
+            return Value.NewList(result);
+        }
+    }
+
+    [NodeName("Patch Solid")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
+    [NodeDescription("Patch set of faces as Solid ")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynPatchSolid : dynNodeWithOneOutput
+    {
+
+        public dynPatchSolid()
+        {
+            InPortData.Add(new PortData("Incomplete Solid", "Geoemtry to check for being Solid", typeof(object)));
+            InPortData.Add(new PortData("CurveLoops", "Additional curve loops ready for patching", typeof(Value.List)));
+            InPortData.Add(new PortData("Faces", "Faces to exclude", typeof(Value.List)));
+            OutPortData.Add(new PortData("Result", "Computed Solid", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Solid thisSolid = (Solid)((Value.Container)args[0]).Item;
+            var listInCurveLoops = ((Value.List)args[1]).Item.Select(
+                    x => ((CurveLoop)((Value.Container)x).Item)
+                       ).ToList();
+            var listInFacesToExclude = ((Value.List)args[2]).Item.Select(
+                    x => ((Face)((Value.Container)x).Item)
+                       ).ToList();
+
+            Type SolidType = typeof(Autodesk.Revit.DB.Solid);
+
+            MethodInfo[] solidTypeMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodCreate = "patchSolid";
+            Solid resultSolid = null;
+
+            foreach (MethodInfo m in solidTypeMethods)
+            {
+                if (m.Name == nameOfMethodCreate)
+                {
+                    object[] argsM = new object[2];
+                    argsM[0] = listInCurveLoops;
+                    argsM[1] = listInFacesToExclude;
+
+                    resultSolid = (Solid)m.Invoke(thisSolid, argsM);
+
+                    break;
+                }
+            }
+            if (resultSolid == null)
+                throw new Exception("Could not make patched solid, list Onesided Edges to investigate");
+
+            return Value.NewContainer(resultSolid);
         }
     }
 }
