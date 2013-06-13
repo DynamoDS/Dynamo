@@ -55,7 +55,15 @@ namespace Dynamo.Nodes
                 dynGeometryBase geometryNode = node as dynGeometryBase;
 
                 if (node.IsVisible && geometryNode != null)
-                    geometryObjects.AddRange(geometryNode.GeometryObjects);
+                {
+                    dynCurveBase curveNode = geometryNode as dynCurveBase;
+                    dynSolidBase solidNode = geometryNode as dynSolidBase;
+
+                    if (curveNode != null)
+                        geometryObjects.AddRange(curveNode.crvs);
+                    else if (solidNode != null)
+                        geometryObjects.AddRange(solidNode.solids);
+                }
 
                 if (node.IsUpstreamVisible)
                     GetUpstreamGeometryObjects(geometryObjects, node.Inputs);

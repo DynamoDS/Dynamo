@@ -19,7 +19,7 @@ namespace Dynamo.Controls
         private ElementId _keeperId = ElementId.InvalidElementId;
         public GeometryKeeperViewModel()
         {
-            //dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(GeometryKeeperViewModel_RunCompleted);
+            dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(GeometryKeeperViewModel_RunCompleted);
         }
 
         public void GeometryKeeperViewModel_RunCompleted(object controller, bool success)
@@ -46,10 +46,10 @@ namespace Dynamo.Controls
                 if (geometryNode == null)
                     continue;
 
-                foreach (GeometryObject geomObject in geometryNode.GeometryObjects)
-                {
-                    geometryObjects.Add(geomObject);
-                }
+                //foreach (GeometryObject geomObject in geometryNode.GeometryObjects)
+                //{
+                //    geometryObjects.Add(geomObject);
+                //}
 
                 //if the node is function then get all the 
                 //drawables inside that node. only do this if the

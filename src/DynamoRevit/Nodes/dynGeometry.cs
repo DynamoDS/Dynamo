@@ -35,14 +35,6 @@ namespace Dynamo.Nodes
 {
     public abstract class dynGeometryBase : dynNodeWithOneOutput
     {
-        private List<GeometryObject> _geometryObjects = new List<GeometryObject>();
-
-        public List<GeometryObject> GeometryObjects
-        {
-            get { return _geometryObjects; }
-            set { _geometryObjects = value; }
-        }
-
         protected dynGeometryBase()
         {
             ArgumentLacing = LacingStrategy.Longest;
@@ -72,7 +64,7 @@ namespace Dynamo.Nodes
 
     public abstract class dynCurveBase : dynGeometryBase, IDrawable, IClearable
     {
-        protected List<Curve> crvs = new List<Curve>();
+        public List<Curve> crvs = new List<Curve>();
         public RenderDescription RenderDescription { get; set; }
 
         public void Draw()
@@ -111,7 +103,7 @@ namespace Dynamo.Nodes
 
     public abstract class dynSolidBase : dynGeometryBase, IDrawable, IClearable
     {
-        protected List<Solid> solids = new List<Solid>();
+        public List<Solid> solids = new List<Solid>();
         public RenderDescription RenderDescription { get; set; }
 
         public void Draw()

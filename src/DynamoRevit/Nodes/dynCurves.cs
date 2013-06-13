@@ -500,8 +500,6 @@ namespace Dynamo.Nodes
     [NodeDescription("Node to create a planar nurbs spline curve.")]
     public class dynGeometryCurveNurbSpline : dynCurveBase
     {
-        private NurbSpline _ns = null;
-
         public dynGeometryCurveNurbSpline()
         {
             InPortData.Add(new PortData("xyzs", "The xyzs from which to create the nurbs curve", typeof(Value.List)));
@@ -520,16 +518,12 @@ namespace Dynamo.Nodes
                 throw new Exception("Not enough reference points to make a curve.");
             }
 
-            GeometryObjects.Remove(_ns);
-
-            _ns = dynRevitSettings.Revit.Application.Create.NewNurbSpline(
+            NurbSpline ns = dynRevitSettings.Revit.Application.Create.NewNurbSpline(
                     pts, Enumerable.Repeat(1.0, pts.Count).ToList());
 
-            crvs.Add(_ns);
-
-            GeometryObjects.Add(_ns);
+            crvs.Add(ns);
             
-            return Value.NewContainer(_ns);
+            return Value.NewContainer(ns);
         }
     }
      
