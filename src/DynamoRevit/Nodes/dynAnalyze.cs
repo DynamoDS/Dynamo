@@ -97,7 +97,7 @@ namespace Dynamo.Nodes
     {
         public dynComputeFaceDerivatives()
         {
-            InPortData.Add(new PortData("f", "The face to evaluate(Cell)", typeof(Value.Container)));
+            InPortData.Add(new PortData("f", "The face to evaluate(Face)", typeof(Value.Container)));
             InPortData.Add(new PortData("uv", "The parameter to evaluate(UV)", typeof(Value.Container)));
             OutPortData.Add(new PortData("t", "Transform describing the face at the parameter(Transform)", typeof(Value.Container)));
 

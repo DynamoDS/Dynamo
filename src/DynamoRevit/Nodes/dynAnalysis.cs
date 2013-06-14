@@ -375,7 +375,7 @@ namespace Dynamo.Nodes
             Reference reference = ((Value.Container)args[3]).Item as Reference;
             idx = sfm.AddSpatialFieldPrimitive(reference);
 
-            Cell face = dynRevitSettings.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Cell;
+            Face face = dynRevitSettings.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Cell;
 
             //unwrap the sample locations
             IEnumerable<UV> pts = ((Value.List)args[1]).Item.Select(
