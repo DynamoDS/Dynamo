@@ -1280,7 +1280,7 @@ namespace Dynamo.Nodes
         public dynHermiteSpline()
         {
             InPortData.Add(new PortData("xyzs", "List of pts.(List XYZ)", typeof(Value.List)));
-            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Value.Container)));
+            OutPortData.Add(new PortData("spline", "Spline", typeof(Value.Container)));
 
             RegisterAllPorts();
         }

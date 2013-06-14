@@ -800,7 +800,7 @@ namespace Dynamo.Nodes
             for (int index = 0; CLiter.MoveNext(); index++)
             {
                 if (index == 2)
-                    result = CLiter.Current;
+                    result = CLiter.Current.Clone();
             }
 
             if (result == null)
