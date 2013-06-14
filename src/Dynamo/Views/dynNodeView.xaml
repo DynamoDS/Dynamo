@@ -51,6 +51,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         
         <Grid.ColumnDefinitions>
@@ -144,12 +145,14 @@
               Margin="5,0,5,0"
               Canvas.ZIndex="5"  
               IsEnabled="{Binding Path=IsInteractionEnabled}" Grid.Column="1" Grid.Row="0"/>
+            
         </Grid>
+        
         <TextBlock Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}" 
                        ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}" 
-                       FontFamily="Tahoma" FontSize="8" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="2" 
-                       HorizontalAlignment="right" Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
-                       Foreground="#99000000" FontWeight="Bold" />
+                       FontFamily="Tahoma" FontSize="8" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" 
+                       HorizontalAlignment="right" VerticalAlignment="Bottom" Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
+                       Foreground="#99000000" FontWeight="Bold" Canvas.ZIndex="6"/>
         
         <TextBlock  Name="nickNameBlock" 
                          VerticalAlignment="Top" 

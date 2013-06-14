@@ -761,6 +761,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("element", "Extracted element", typeof(object)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
     }
 
