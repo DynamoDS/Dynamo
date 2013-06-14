@@ -975,7 +975,7 @@ namespace Dynamo.Nodes
         public dynSublists()
         {
             InPortData.Add(new PortData("list", "The list from which to create sublists.", typeof(Value.List)));
-            InPortData.Add(new PortData("shift", "The shift to apply to the sub-list.", typeof(Value.List)));
+            InPortData.Add(new PortData("offset", "The offset to apply to the sub-list. Ex. \"0..3\" with an offset of 1 will yield {0,1,2,3}{1,2,3,4}{2,3,4,5}...", typeof(Value.List)));
 
             OutPortData.RemoveAt(0); //remove the existing blank output
             OutPortData.Add(new PortData("list", "The sublists.", typeof(Value.List)));
@@ -2407,6 +2407,7 @@ namespace Dynamo.Nodes
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Creates a number.")]
+    [NodeTypeId("100308c5-3b62-406d-8b2c-df7c6221fe4e")]
     public class dynDoubleInput : dynDouble
     {
 

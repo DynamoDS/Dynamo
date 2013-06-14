@@ -735,8 +735,9 @@ namespace Dynamo.Nodes
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-            dynEl.SetAttribute(
-                "faceRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+            if(_f != null)
+                dynEl.SetAttribute(
+                    "faceRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
         public override void LoadElement(XmlNode elNode)
