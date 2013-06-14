@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -343,7 +344,7 @@ namespace Dynamo.Nodes
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(Measure.Item.GetType().FullName);
-            outEl.SetAttribute("value",  Measure.Item.Length.ToString());
+            outEl.SetAttribute("value",  Measure.Item.Length.ToString(CultureInfo.InvariantCulture));
             dynEl.AppendChild(outEl);
         }
 
@@ -367,7 +368,7 @@ namespace Dynamo.Nodes
         {
             try
             {
-                return Convert.ToDouble(val);
+                return Convert.ToDouble(val, CultureInfo.InvariantCulture);
             }
             catch
             {
