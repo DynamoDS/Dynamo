@@ -600,6 +600,7 @@ namespace Dynamo.Controls
             {
                 var fi = new FileInfo(_model.CurrentSpace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
+                _fileDialog.FileName = fi.Name; // see https://github.com/ikeough/Dynamo/issues/144 suggest adding this line to use the filename from the loaded workspace instead of the default "home"
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
