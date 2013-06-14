@@ -2359,7 +2359,7 @@ namespace Dynamo.Nodes
         {
 
             dynEditWindow editWindow = new dynEditWindow();
-
+            
             editWindow.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
             {
@@ -2878,16 +2878,6 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
-        }
-
-        public override string Value
-        {
-            get { return base.Value; }
-            set
-            {
-                if (base.Value != value)
-                    base.Value = value;
-            }
         }
 
         protected override string DeserializeValue(string val)
