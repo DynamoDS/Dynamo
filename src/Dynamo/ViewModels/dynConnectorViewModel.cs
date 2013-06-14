@@ -300,7 +300,7 @@ namespace Dynamo.Connectors
 
         void ModelConnected(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         private void Connect(object parameters)

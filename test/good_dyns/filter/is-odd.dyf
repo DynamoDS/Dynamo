@@ -1,0 +1,22 @@
+<dynWorkspace X="23" Y="6" Name="is-odd" Category="Math" ID="64262edc-7005-4b63-8177-b496bf4d353e">
+  <dynElements>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="4658070d-1b5d-4f7d-8b16-a3679061a1e4" nickname="Input" x="0" y="117.879175078272" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="n" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynEqual type="Dynamo.Nodes.dynEqual" guid="7c8d0f68-60ed-4adc-b8f7-c8b7b4a69645" nickname="Equal" x="519.608988405489" y="120.832254259508" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynModulo type="Dynamo.Nodes.dynModulo" guid="ff9f8e9a-1323-47ae-96ba-2c262e661cd0" nickname="Modulo" x="210.3985954809" y="118.238990710899" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="915435df-3556-426f-a47d-033e0b6e2f1f" nickname="Number" x="349.076344949695" y="282.957402712385" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="8942fd72-d3ea-4c9b-988a-a9dfa03f6485" nickname="Number" x="56.2128197561078" y="216.008423315104" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.dynDoubleInput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="4658070d-1b5d-4f7d-8b16-a3679061a1e4" start_index="0" end="ff9f8e9a-1323-47ae-96ba-2c262e661cd0" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="ff9f8e9a-1323-47ae-96ba-2c262e661cd0" start_index="0" end="7c8d0f68-60ed-4adc-b8f7-c8b7b4a69645" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="915435df-3556-426f-a47d-033e0b6e2f1f" start_index="0" end="7c8d0f68-60ed-4adc-b8f7-c8b7b4a69645" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="8942fd72-d3ea-4c9b-988a-a9dfa03f6485" start_index="0" end="ff9f8e9a-1323-47ae-96ba-2c262e661cd0" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

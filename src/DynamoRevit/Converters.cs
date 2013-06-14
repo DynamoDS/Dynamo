@@ -1,19 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
-using System.IO;
-using System.Windows;
 using System.Windows.Data;
-using System.Windows.Media;
-using System.Text.RegularExpressions;
 
 using Autodesk.Revit.DB;
 
-using Dynamo.Connectors;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
-
 using Dynamo.Measure;
 
 using System.Reflection;
@@ -108,13 +99,10 @@ namespace Dynamo.Controls
         /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            double length = System.Convert.ToDouble(value);
+            double length = System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
 
             var lengthObj = (DynamoLength<Foot>)parameter;
             lengthObj.Item.Length = length;
-
-            //Autodesk.Revit.DB.ProjectUnit projectUnit = dynRevitSettings.Doc.Document.ProjectUnit;
-            //FormatOptions formatOptions = projectUnit.get_FormatOptions(UnitType.UT_Length);
 
             DisplayUnitType displayUnit = getDisplayUnitTypeOfFormatUnits();
 

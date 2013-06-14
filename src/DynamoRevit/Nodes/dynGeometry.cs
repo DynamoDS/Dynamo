@@ -121,6 +121,12 @@ namespace Dynamo.Nodes
         {
             solids.Clear();
         }
+
+        //use this only for test run
+        public List<Solid> resultingSolidForTestRun()
+        {
+            return solids;
+        }
     }
 
     public abstract class dynTransformBase : dynGeometryBase, IDrawable, IClearable
@@ -1560,19 +1566,21 @@ namespace Dynamo.Nodes
 
             List<VertexPair> vertPairs = null;
 
-            /* this code produces rather arbitrary correspondence, while null promised by Revit API declaration to compute "geometrically reasonable blend"
-            List<VertexPair> vertPairs =  new List<VertexPair>();  
-             
-            int i = 0;
-            int nCurves1 = firstLoop.Count();
-            int secondLoop = secondLoop.Count();
-            for (; i < nCurves1 && i < nCurves2; i++)
+            if (dynRevitSettings.Revit.Application.VersionName.Contains("2013"))
             {
-                vertPairs.Add(new VertexPair(i, i));
+                vertPairs = new List<VertexPair>();
+
+                int i = 0;
+                int nCurves1 = firstLoop.Count();
+                int nCurves2 = secondLoop.Count();
+                for (; i < nCurves1 && i < nCurves2; i++)
+                {
+                    vertPairs.Add(new VertexPair(i, i));
+                }
             }
-            */
 
             var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop, secondLoop, vertPairs);
+
 
             solids.Add(result);
 
@@ -1756,7 +1764,7 @@ namespace Dynamo.Nodes
     [NodeName("Boolean Geometric Operation")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates solid by union, intersection or difference of two solids.")]
-    public class dynBooleanOperation : dynNodeWithOneOutput
+    public class dynBooleanOperation : dynSolidBase
     {
         ComboBox combo;
         int selectedItem = -1;
@@ -1850,6 +1858,7 @@ namespace Dynamo.Nodes
 
             Solid result = BooleanOperationsUtils.ExecuteBooleanOperation(firstSolid, secondSolid, opType);
 
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -1936,7 +1945,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates solid by transforming solid")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynTransformSolid : dynNodeWithOneOutput
+    public class dynTransformSolid : dynSolidBase
     {
         public dynTransformSolid()
         {
@@ -1993,6 +2002,7 @@ namespace Dynamo.Nodes
                     break;
                 }
             }
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -2002,7 +2012,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Build solid replacing faces of input solid by supplied faces")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynReplaceFacesOfSolid : dynNodeWithOneOutput
+    public class dynReplaceFacesOfSolid : dynSolidBase
     {
         public dynReplaceFacesOfSolid()
         {
@@ -2046,6 +2056,8 @@ namespace Dynamo.Nodes
             }
             if (result == null)
                 throw new Exception(" could not make solid by replacement of face or faces");
+            
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -2055,7 +2067,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Build solid by replace edges with round blends")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynBlendEdges : dynNodeWithOneOutput
+    public class dynBlendEdges : dynSolidBase
     {
         public dynBlendEdges()
         {
@@ -2127,6 +2139,8 @@ namespace Dynamo.Nodes
             }
             if (result == null)
                 throw new Exception(" could not make solid by blending requested edges with given radius");
+            
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -2136,7 +2150,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Build solid by replace edges with chamfers")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynChamferEdges : dynNodeWithOneOutput
+    public class dynChamferEdges : dynSolidBase
     {
         public dynChamferEdges()
         {
@@ -2208,6 +2222,8 @@ namespace Dynamo.Nodes
             }
             if (result == null)
                 throw new Exception(" could not make solid by chamfering requested edges with given chamfer size");
+            
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -2244,6 +2260,7 @@ namespace Dynamo.Nodes
 
             Solid result = GeometryCreationUtilities.CreateRevolvedGeometry(thisFrame, loopList, sAngle, eAngle);
 
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -2275,6 +2292,8 @@ namespace Dynamo.Nodes
             loopList.Add(profileLoop);
 
             Solid result = GeometryCreationUtilities.CreateSweptGeometry(pathLoop, attachementIndex, attachementPar, loopList);
+
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -2341,7 +2360,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Patch set of faces as Solid ")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynPatchSolid : dynNodeWithOneOutput
+    public class dynPatchSolid : dynSolidBase
     {
 
         public dynPatchSolid()
@@ -2386,6 +2405,8 @@ namespace Dynamo.Nodes
             }
             if (resultSolid == null)
                 throw new Exception("Could not make patched solid, list Onesided Edges to investigate");
+            
+            solids.Add(resultSolid);
 
             return Value.NewContainer(resultSolid);
         }
