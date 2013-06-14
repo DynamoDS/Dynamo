@@ -121,6 +121,12 @@ namespace Dynamo.Nodes
         {
             solids.Clear();
         }
+
+        //use this only for test run
+        public List<Solid> resultingSolidForTestRun()
+        {
+            return solids;
+        }
     }
 
     public abstract class dynTransformBase : dynGeometryBase, IDrawable, IClearable
@@ -1560,19 +1566,21 @@ namespace Dynamo.Nodes
 
             List<VertexPair> vertPairs = null;
 
-            /* this code produces rather arbitrary correspondence, while null promised by Revit API declaration to compute "geometrically reasonable blend"
-            List<VertexPair> vertPairs =  new List<VertexPair>();  
-             
-            int i = 0;
-            int nCurves1 = firstLoop.Count();
-            int secondLoop = secondLoop.Count();
-            for (; i < nCurves1 && i < nCurves2; i++)
+            if (dynRevitSettings.Revit.Application.VersionName.Contains("2013"))
             {
-                vertPairs.Add(new VertexPair(i, i));
+                vertPairs = new List<VertexPair>();
+
+                int i = 0;
+                int nCurves1 = firstLoop.Count();
+                int nCurves2 = secondLoop.Count();
+                for (; i < nCurves1 && i < nCurves2; i++)
+                {
+                    vertPairs.Add(new VertexPair(i, i));
+                }
             }
-            */
 
             var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop, secondLoop, vertPairs);
+
 
             solids.Add(result);
 

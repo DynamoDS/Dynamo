@@ -62,7 +62,16 @@ namespace DynamoRevitTests
             _defsPath = Path.GetFullPath(defsLoc);
 
             _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
-            _emptyModelPath1 = Path.Combine(_testPath, "empty1.rfa");
+            if (dynRevitSettings.Revit.Application.VersionName.Contains("2013"))
+            {
+                _emptyModelPath = Path.Combine(_testPath, "empty2013A.rfa");
+                _emptyModelPath1 = Path.Combine(_testPath, "empty2013.rfa");
+            }
+            else
+            {
+                _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
+                _emptyModelPath1 = Path.Combine(_testPath, "empty1.rfa");
+            }
 
             //open an empty model before every test
             OpenEmptyModel();
@@ -682,6 +691,27 @@ namespace DynamoRevitTests
             fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(2, fec.ToElements().Count);
+        }
+
+        [Test]
+        public void BlendSolid()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\BlendSolid.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            var blendNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateBlendGeometry).First();
+            dynSolidBase nodeAsSolidBase = (dynSolidBase)blendNode;
+            Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
+            double volumeMin = 3700000.0;
+            double volumeMax = 3900000.0;
+            double actualVolume = result.Volume;
+            Assert.Greater(actualVolume, volumeMin);
+            Assert.Less(actualVolume, volumeMax);
         }
 
         [Test]
