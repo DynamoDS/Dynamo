@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Dynamo.Measure
@@ -73,22 +71,22 @@ namespace Dynamo.Measure
                     return Utils.ToFractionalInches(Item.ConvertTo(DynamoUnitType.INCHES));
 
                 case DynamoUnitDisplayType.DECIMAL_INCHES:
-                    return Item.ConvertTo(DynamoUnitType.INCHES).ToString("F2") + " in";
+                    return Item.ConvertTo(DynamoUnitType.INCHES).ToString("0.00", CultureInfo.InvariantCulture) + " in";
 
                 case DynamoUnitDisplayType.DECIMAL_FEET:
-                    return Item.ConvertTo(DynamoUnitType.FEET).ToString("F2") + " ft";
+                    return Item.ConvertTo(DynamoUnitType.FEET).ToString("0.00", CultureInfo.InvariantCulture) + " ft";
 
                 case DynamoUnitDisplayType.FRACTIONAL_FEET_INCHES:
                     return Utils.ToFeetAndFractionalInches(Item.ConvertTo(DynamoUnitType.FEET));
 
                 case DynamoUnitDisplayType.MILLIMETERS:
-                    return Item.ConvertTo(DynamoUnitType.MILLIMETERS).ToString("F2") + " mm";
+                    return Item.ConvertTo(DynamoUnitType.MILLIMETERS).ToString("0.00", CultureInfo.InvariantCulture) + " mm";
 
                 case DynamoUnitDisplayType.CENTIMETERS:
-                    return Item.ConvertTo(DynamoUnitType.CENTIMETERS).ToString("F2") + " cm";
+                    return Item.ConvertTo(DynamoUnitType.CENTIMETERS).ToString("0.00", CultureInfo.InvariantCulture) + " cm";
 
                 case DynamoUnitDisplayType.METERS:
-                    return Item.ConvertTo(DynamoUnitType.METERS).ToString("F2") + " m";
+                    return Item.ConvertTo(DynamoUnitType.METERS).ToString("0.00", CultureInfo.InvariantCulture) + " m";
 
                 default:
                     return ToString();
@@ -305,7 +303,7 @@ namespace Dynamo.Measure
 
         public override string ToString()
         {
-            return Length.ToString("F2") + " mm";
+            return Length.ToString("0.00", CultureInfo.InvariantCulture) + " mm";
         }
     }
 
@@ -363,7 +361,7 @@ namespace Dynamo.Measure
 
         public override string ToString()
         {
-            return Length.ToString("F2") + " cm";
+            return Length.ToString("0.00", CultureInfo.InvariantCulture) + " cm";
         }
     }
 
@@ -421,7 +419,7 @@ namespace Dynamo.Measure
 
         public override string ToString()
         {
-            return Length.ToString("F2") + " m";
+            return Length.ToString("0.00", CultureInfo.InvariantCulture) + " m";
         }
     }
 
@@ -500,6 +498,7 @@ namespace Dynamo.Measure
             {
                 return 0.0;
             }
+
             return m;
         }
 

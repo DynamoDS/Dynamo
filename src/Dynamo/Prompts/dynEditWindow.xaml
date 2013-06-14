@@ -30,7 +30,8 @@
                  AcceptsReturn="True"
                  HorizontalScrollBarVisibility="Disabled"
                  VerticalScrollBarVisibility="Auto"
-                 TextWrapping="Wrap" />
+                 TextWrapping="Wrap"
+                 AcceptsTab="True"/>
             
         </Border>
 
