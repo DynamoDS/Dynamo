@@ -248,7 +248,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("vals", "List of values.", typeof(Value.List)));
             InPortData.Add(new PortData("pts", "Sample locations as a list of UVs.", typeof(Value.List)));
             InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Value.Container)));
-            InPortData.Add(new PortData("face", "Cell", typeof(Value.Container)));
+            InPortData.Add(new PortData("face", "face", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(Value.Container)));
 
             RegisterAllPorts();

@@ -72,7 +72,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Project Point On Cell")]
+    [NodeName("Project Point On Face")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Project a point onto a face.")]
     public class dynProjectPointOnFace : dynRevitTransactionNode, IDrawable, IClearable

@@ -90,7 +90,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Compute Cell Derivatives")]
+    [NodeName("Compute Face Derivatives")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
     public class dynComputeFaceDerivatives : dynTransformBase

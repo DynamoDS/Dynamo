@@ -383,7 +383,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Create Particle System on Cell")]
+    [NodeName("Create Particle System on Face")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
     class dynDynamicRelaxationOnFace : dynParticleSystemBase
