@@ -90,8 +90,8 @@
                 <DropShadowEffect
                     ShadowDepth="0"
                     Color="#222"
-                    Opacity="0.25"
-                    BlurRadius="9.0" />
+                    Opacity="0.45"
+                    BlurRadius="12.0" />
             </Border.Effect>
         </Border>
         
