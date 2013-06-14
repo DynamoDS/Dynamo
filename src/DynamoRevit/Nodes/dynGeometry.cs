@@ -121,6 +121,12 @@ namespace Dynamo.Nodes
         {
             solids.Clear();
         }
+
+        //use this only for test run
+        public List<Solid> resultingSolidForTestRun()
+        {
+            return solids;
+        }
     }
 
     public abstract class dynTransformBase : dynGeometryBase, IDrawable, IClearable
@@ -1274,7 +1280,7 @@ namespace Dynamo.Nodes
         public dynHermiteSpline()
         {
             InPortData.Add(new PortData("xyzs", "List of pts.(List XYZ)", typeof(Value.List)));
-            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Value.Container)));
+            OutPortData.Add(new PortData("spline", "Spline", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -1560,19 +1566,21 @@ namespace Dynamo.Nodes
 
             List<VertexPair> vertPairs = null;
 
-            /* this code produces rather arbitrary correspondence, while null promised by Revit API declaration to compute "geometrically reasonable blend"
-            List<VertexPair> vertPairs =  new List<VertexPair>();  
-             
-            int i = 0;
-            int nCurves1 = firstLoop.Count();
-            int secondLoop = secondLoop.Count();
-            for (; i < nCurves1 && i < nCurves2; i++)
+            if (dynRevitSettings.Revit.Application.VersionName.Contains("2013"))
             {
-                vertPairs.Add(new VertexPair(i, i));
+                vertPairs = new List<VertexPair>();
+
+                int i = 0;
+                int nCurves1 = firstLoop.Count();
+                int nCurves2 = secondLoop.Count();
+                for (; i < nCurves1 && i < nCurves2; i++)
+                {
+                    vertPairs.Add(new VertexPair(i, i));
+                }
             }
-            */
 
             var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop, secondLoop, vertPairs);
+
 
             solids.Add(result);
 
@@ -1655,11 +1663,11 @@ namespace Dynamo.Nodes
             FaceArray faceArr = thisSolid.Faces;
             var thisEnum = faceArr.GetEnumerator();
 
-            SortedList<double, Face> intersectingFaces = new SortedList<double, Face>();
+            SortedList<double, Autodesk.Revit.DB.Face> intersectingFaces = new SortedList<double, Autodesk.Revit.DB.Face>();
 
             for (; thisEnum.MoveNext(); )
             {
-                Face thisFace = (Face) thisEnum.Current;
+                Autodesk.Revit.DB.Face thisFace = (Autodesk.Revit.DB.Face) thisEnum.Current;
                 IntersectionResultArray resultArray = null;
 
                 SetComparisonResult resultIntersect = thisFace.Intersect(selectLine, out resultArray);
@@ -1686,7 +1694,7 @@ namespace Dynamo.Nodes
             var intersectingFacesEnum = intersectingFaces.Reverse().GetEnumerator();
             for (; intersectingFacesEnum.MoveNext(); )
             {
-                Face faceObj = intersectingFacesEnum.Current.Value;
+                Autodesk.Revit.DB.Face faceObj = intersectingFacesEnum.Current.Value;
                 result = FSharpList<Value>.Cons(Value.NewContainer(faceObj), result);      
             }
 
@@ -1715,7 +1723,7 @@ namespace Dynamo.Nodes
             if (((Value.Container)args[0]).Item is Solid)
                 thisSolid = (Solid)((Value.Container)args[0]).Item;
 
-            Face thisFace = thisSolid == null ? (Face)(((Value.Container)args[0]).Item) : null;
+            Autodesk.Revit.DB.Face thisFace = thisSolid == null ? (Autodesk.Revit.DB.Face)(((Value.Container)args[0]).Item) : null;
 
             var result = FSharpList<Value>.Empty;
 
@@ -1725,7 +1733,7 @@ namespace Dynamo.Nodes
                 var thisEnum = faceArr.GetEnumerator();
                 for (; thisEnum.MoveNext(); )
                 {
-                    Face curFace = (Face) thisEnum.Current;
+                    Autodesk.Revit.DB.Face curFace = (Autodesk.Revit.DB.Face) thisEnum.Current;
                     if (curFace != null)
                         result = FSharpList<Value>.Cons(Value.NewContainer(curFace), result);   
                  }
@@ -1756,7 +1764,7 @@ namespace Dynamo.Nodes
     [NodeName("Boolean Geometric Operation")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates solid by union, intersection or difference of two solids.")]
-    public class dynBooleanOperation : dynNodeWithOneOutput
+    public class dynBooleanOperation : dynSolidBase
     {
         ComboBox combo;
         int selectedItem = -1;
@@ -1850,12 +1858,13 @@ namespace Dynamo.Nodes
 
             Solid result = BooleanOperationsUtils.ExecuteBooleanOperation(firstSolid, secondSolid, opType);
 
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
     }
 
-    [NodeName("Face Through Points")]
+    [NodeName("Cell Through Points")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates face on grid of points")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
@@ -1866,7 +1875,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Points", "Points to create face, list or list of lists", typeof(Value.List)));
             InPortData.Add(new PortData("NumberOfRows", "Number of rows in the grid of the face", typeof(object)));
-            OutPortData.Add(new PortData("Face", "Face", typeof(object)));
+            OutPortData.Add(new PortData("Cell", "Cell", typeof(object)));
 
             RegisterAllPorts();
 
@@ -1883,7 +1892,7 @@ namespace Dynamo.Nodes
             List<List<XYZ>> listOfListsIn = (listIn != null) ? null : (in1 as List<List<XYZ>>);
 
             if (listIn == null && listOfListsIn == null)
-                throw new Exception("no XYZ list or list of XYZ lists in Face Through Points node");
+                throw new Exception("no XYZ list or list of XYZ lists in Cell Through Points node");
 
             if (listOfListsIn != null)
             {
@@ -1897,7 +1906,7 @@ namespace Dynamo.Nodes
 
             int numberOfRows = (int)((Value.Number)args[1]).Item;
             if (numberOfRows < 2 || listIn.Count % numberOfRows != 0)
-                throw new Exception("number of rows should  match number of points Face Through Points node");
+                throw new Exception("number of rows should  match number of points Cell Through Points node");
 
             bool periodicU = false;
             bool periodicV = false;
@@ -1907,7 +1916,7 @@ namespace Dynamo.Nodes
             MethodInfo[] hermiteFaceStaticMethods = HermiteFaceType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
             String nameOfMethodCreate = "Create";
-            Face result = null;
+            Autodesk.Revit.DB.Face result = null;
 
             foreach (MethodInfo m in hermiteFaceStaticMethods)
             {
@@ -1922,7 +1931,7 @@ namespace Dynamo.Nodes
                     argsM[5] = periodicU;
                     argsM[6] = periodicV;
 
-                    result = (Face) m.Invoke(null, argsM);
+                    result = (Autodesk.Revit.DB.Face) m.Invoke(null, argsM);
 
                     break;
                 }
@@ -1936,7 +1945,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates solid by transforming solid")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynTransformSolid : dynNodeWithOneOutput
+    public class dynTransformSolid : dynSolidBase
     {
         public dynTransformSolid()
         {
@@ -1993,6 +2002,7 @@ namespace Dynamo.Nodes
                     break;
                 }
             }
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -2002,7 +2012,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Build solid replacing faces of input solid by supplied faces")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynReplaceFacesOfSolid : dynNodeWithOneOutput
+    public class dynReplaceFacesOfSolid : dynSolidBase
     {
         public dynReplaceFacesOfSolid()
         {
@@ -2046,6 +2056,8 @@ namespace Dynamo.Nodes
             }
             if (result == null)
                 throw new Exception(" could not make solid by replacement of face or faces");
+            
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -2055,7 +2067,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Build solid by replace edges with round blends")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynBlendEdges : dynNodeWithOneOutput
+    public class dynBlendEdges : dynSolidBase
     {
         public dynBlendEdges()
         {
@@ -2127,6 +2139,8 @@ namespace Dynamo.Nodes
             }
             if (result == null)
                 throw new Exception(" could not make solid by blending requested edges with given radius");
+            
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -2136,7 +2150,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Build solid by replace edges with chamfers")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynChamferEdges : dynNodeWithOneOutput
+    public class dynChamferEdges : dynSolidBase
     {
         public dynChamferEdges()
         {
@@ -2208,6 +2222,8 @@ namespace Dynamo.Nodes
             }
             if (result == null)
                 throw new Exception(" could not make solid by chamfering requested edges with given chamfer size");
+            
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -2244,6 +2260,7 @@ namespace Dynamo.Nodes
 
             Solid result = GeometryCreationUtilities.CreateRevolvedGeometry(thisFrame, loopList, sAngle, eAngle);
 
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -2275,6 +2292,8 @@ namespace Dynamo.Nodes
             loopList.Add(profileLoop);
 
             Solid result = GeometryCreationUtilities.CreateSweptGeometry(pathLoop, attachementIndex, attachementPar, loopList);
+
+            solids.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -2341,7 +2360,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Patch set of faces as Solid ")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynPatchSolid : dynNodeWithOneOutput
+    public class dynPatchSolid : dynSolidBase
     {
 
         public dynPatchSolid()
@@ -2361,7 +2380,7 @@ namespace Dynamo.Nodes
                     x => ((CurveLoop)((Value.Container)x).Item)
                        ).ToList();
             var listInFacesToExclude = ((Value.List)args[2]).Item.Select(
-                    x => ((Face)((Value.Container)x).Item)
+                    x => ((Autodesk.Revit.DB.Face)((Value.Container)x).Item)
                        ).ToList();
 
             Type SolidType = typeof(Autodesk.Revit.DB.Solid);
@@ -2386,6 +2405,8 @@ namespace Dynamo.Nodes
             }
             if (resultSolid == null)
                 throw new Exception("Could not make patched solid, list Onesided Edges to investigate");
+            
+            solids.Add(resultSolid);
 
             return Value.NewContainer(resultSolid);
         }

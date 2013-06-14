@@ -18,6 +18,7 @@ namespace Dynamo
 {
     public delegate void PointEventHandler(object sender, EventArgs e);
     public delegate void NodeEventHandler(object sender, EventArgs e);
+    public delegate void NoteEventHandler(object sender, EventArgs e);
     public delegate void ViewEventHandler(object sender, EventArgs e);
 
     public class dynWorkspaceViewModel: dynViewModelBase
@@ -34,6 +35,7 @@ namespace Dynamo
         //public event EventHandler UILocked;
         //public event EventHandler UIUnlocked;
         public event NodeEventHandler RequestNodeCentered;
+        public event NoteEventHandler RequestNoteCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
 
         private bool _watchEscapeIsDown = false;
@@ -68,6 +70,13 @@ namespace Dynamo
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
         }
+
+        public virtual void OnRequestNoteCentered(object sender, NoteEventArgs e)
+        {
+            if (RequestNoteCentered != null)
+                RequestNoteCentered(this, e);
+        }
+
         public virtual void OnRequestAddViewToOuterCanvas(object sender, ViewEventArgs e)
         {
             if (RequestAddViewToOuterCanvas != null)
@@ -442,6 +451,21 @@ namespace Dynamo
                         DynamoSelection.Instance.Selection.Add(n);
                 }
             }
+
+            foreach (var n in Model.Notes)
+            {
+                double x0 = n.X;
+                double y0 = n.Y;
+                double x1 = x0 + n.Width;
+                double y1 = y0 + n.Height;
+
+                bool contains = rect.Contains(x0, y0) && rect.Contains(x1, y1);
+                if (contains)
+                {
+                    if (!DynamoSelection.Instance.Selection.Contains(n))
+                        DynamoSelection.Instance.Selection.Add(n);
+                }
+            }
         }
 
         private bool CanContainSelect(object parameters)
@@ -455,10 +479,19 @@ namespace Dynamo
 
             foreach (dynNodeModel n in Model.Nodes)
             {
-                //check if the node is within the boundary
-                //double x0 = Canvas.GetLeft(n);
-                //double y0 = Canvas.GetTop(n);
+                double x0 = n.X;
+                double y0 = n.Y;
 
+                bool intersects = rect.IntersectsWith(new Rect(x0, y0, n.Width, n.Height));
+                if (intersects)
+                {
+                    if (!DynamoSelection.Instance.Selection.Contains(n))
+                        DynamoSelection.Instance.Selection.Add(n);
+                }
+            }
+
+            foreach (var n in Model.Notes)
+            {
                 double x0 = n.X;
                 double y0 = n.Y;
 

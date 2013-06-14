@@ -72,7 +72,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Project Point On Face")]
+    [NodeName("Project Point On Cell")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Project a point onto a face.")]
     public class dynProjectPointOnFace : dynRevitTransactionNode, IDrawable, IClearable
@@ -94,7 +94,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var xyz = (XYZ)((Value.Container)args[0]).Item;
-            var face = (Face)((Value.Container)args[1]).Item;
+            var face = (Autodesk.Revit.DB.Face)((Value.Container)args[1]).Item;
 
             IntersectionResult ir = face.Project(xyz);
             XYZ pt = ir.XYZPoint;

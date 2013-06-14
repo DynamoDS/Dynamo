@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve By Pts")]
+    [NodeName("Curve By Points")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create a new Curve by Points by passing in a list of Reference Points")]
     public class dynCurveByPoints : dynRevitTransactionNodeWithOneOutput
@@ -800,7 +800,7 @@ namespace Dynamo.Nodes
             for (int index = 0; CLiter.MoveNext(); index++)
             {
                 if (index == 2)
-                    result = CLiter.Current;
+                    result = CLiter.Current.Clone();
             }
 
             if (result == null)
