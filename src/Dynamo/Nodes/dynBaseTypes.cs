@@ -2276,21 +2276,11 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewNumber(Value);
         }
 
-        public override void editWindowItem_Click(object sender, RoutedEventArgs e)
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-
-            dynEditWindow editWindow = new dynEditWindow();
-
-            //set the text of the edit window to begin
-            editWindow.editText.Text = base.Value.ToString();
-
-            if (editWindow.ShowDialog() != true)
-            {
-                return;
-            }
-
-            //set the value from the text in the box
-            Value = DeserializeValue(editWindow.editText.Text);
+            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            outEl.SetAttribute("value", ((double)Value).ToString(CultureInfo.InvariantCulture));
+            dynEl.AppendChild(outEl);
         }
     }
 
@@ -2444,7 +2434,7 @@ namespace Dynamo.Nodes
         {
             try
             {
-                return Convert.ToDouble(val);
+                return Convert.ToDouble(val, CultureInfo.InvariantCulture);
             }
             catch
             {
