@@ -15,6 +15,7 @@ using Dynamo.FSchemeInterop;
 
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
+using Face = Autodesk.Revit.DB.Face;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Utilities

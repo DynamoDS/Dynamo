@@ -61,13 +61,13 @@ namespace Dynamo.Nodes
 
             object arg0 = ((Value.Container)args[0]).Item;
 
-            Face f;
+            Autodesk.Revit.DB.Face f;
 
             Reference faceRef = arg0 as Reference;
             if (faceRef != null)
-                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             else
-                f = arg0 as Face;
+                f = arg0 as Autodesk.Revit.DB.Face;
 
             if (f != null)
             {
@@ -99,13 +99,13 @@ namespace Dynamo.Nodes
 
             object arg0 = ((Value.Container)args[0]).Item;
 
-            Face f;
+            Autodesk.Revit.DB.Face f;
 
             Reference faceRef = arg0 as Reference;
             if (faceRef != null)
-                f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+                f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             else
-                f = arg0 as Face;
+                f = arg0 as Autodesk.Revit.DB.Face;
 
             if (f != null)
             {
@@ -206,8 +206,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Ref Point Dist")]
+    [NodeName("Reference Point Distance")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeSearchTags("Distance", "dist", "norm")]
     [NodeDescription("Measures a distance between point(s).")]
     public class dynDistanceBetweenPoints : dynMeasurementBase
     {

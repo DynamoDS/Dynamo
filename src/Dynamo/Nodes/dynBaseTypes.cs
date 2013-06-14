@@ -1677,6 +1677,28 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Random With Seed")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Generates a uniform random number in the range [0.0, 1.0).")]
+    public class dynRandomSeed : dynNodeWithOneOutput
+    {
+        public dynRandomSeed()
+        {
+            InPortData.Add(new PortData("num", "A number to function as a seed", typeof(Value.Number)));
+            OutPortData.Add(new PortData("rand", "Random number between 0.0 and 1.0.", typeof(Value.Number)));
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        private static Random random = new Random();
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            random = new Random((int) ( (Value.Number) args[0] ).Item );
+            return Value.NewNumber(random.NextDouble());
+        }
+    }
+
     [NodeName("Random")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Generates a uniform random number in the range [0.0, 1.0).")]

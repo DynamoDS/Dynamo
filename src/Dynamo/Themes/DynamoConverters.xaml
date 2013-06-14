@@ -18,7 +18,7 @@
     
     <controls:MarginConverter x:Key="MarginConverter" />
     <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter" 
-                                      TrueBrush="Cyan" 
+                                      TrueBrush="#38D7FF" 
                                       FalseBrush="Black">
     </controls:BooleanToBrushConverter>
     <controls:BooleanToBrushConverter x:Key="PortConnectedBooleanToBrushConverter"
@@ -26,7 +26,7 @@
                                       FalseBrush="White">
     </controls:BooleanToBrushConverter>
     <controls:BooleanToSelectionColorConverter x:Key="BooleanToSelectionColorConverter" 
-                                True="Cyan" 
+                                True="#38D7FF" 
                                 False="#444">
     </controls:BooleanToSelectionColorConverter>
     <controls:StateToColorConverter x:Key="StateToColorConverter"
