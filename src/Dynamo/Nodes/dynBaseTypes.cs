@@ -2294,59 +2294,6 @@ namespace Dynamo.Nodes
 
     public abstract class dynString : dynBasicInteractive<string>
     {
-        public override string Value
-        {
-            get
-            {
-                return base.Value;
-            }
-            set
-            {
-                base.Value = EscapeString(value);
-            }
-        }
-
-        // Taken from:
-        // http://stackoverflow.com/questions/6378681/how-can-i-use-net-style-escape-sequences-in-runtime-values
-        private static string EscapeString(string s)
-        {
-            if (s == null)
-                return "";
-
-            Contract.Requires(s != null);
-            Contract.Ensures(Contract.Result<string>() != null);
-
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < s.Length; i++)
-            {
-                if (s[i] == '\\')
-                {
-                    i++;
-                    if (i == s.Length)
-                        throw new ArgumentException("Escape sequence starting at end of string", s);
-                    switch (s[i])
-                    {
-                        case '\\':
-                            sb.Append('\\');
-                            break;
-                        case 't':
-                            sb.Append('\t');
-                            break;
-                        case 'n':
-                            sb.Append('\n');
-                            break;
-                        case 'r':
-                            sb.Append('\r');
-                            break;
-                        //TODO: ADD MORE CASES HERE
-                    }
-                }
-                else
-                    sb.Append(s[i]);
-            }
-            return sb.ToString();
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
             return FScheme.Value.NewString(Value);
@@ -2362,16 +2309,21 @@ namespace Dynamo.Nodes
 
             dynEditWindow editWindow = new dynEditWindow();
 
-            //set the text of the edit window to begin
-            editWindow.editText.Text = base.Value.ToString();
+            editWindow.DataContext = this;
+            var bindingVal = new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new StringDisplay(),
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
 
             if (editWindow.ShowDialog() != true)
             {
                 return;
             }
-
-            //set the value from the text in the box
-            Value = DeserializeValue(editWindow.editText.Text);
         }
     }
 
@@ -2841,7 +2793,6 @@ namespace Dynamo.Nodes
     public class dynStringInput : dynString
     {
         dynTextBox tb;
-        //TextBlock tb;
 
         public dynStringInput()
         {
@@ -2851,13 +2802,15 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
+            base.SetupCustomUIElements(nodeUI);
+
             //add a text box to the input grid of the control
             tb = new dynStringTextBox
             {
                 AcceptsReturn = true,
                 AcceptsTab = true,
                 TextWrapping = TextWrapping.Wrap,
-                MaxWidth = 120,
+                MaxWidth = 200,
                 VerticalAlignment = VerticalAlignment.Top
             };
 
@@ -2869,7 +2822,7 @@ namespace Dynamo.Nodes
             var bindingVal = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                //Converter = new StringDisplay(),
+                Converter = new StringDisplay(),
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
@@ -2881,10 +2834,8 @@ namespace Dynamo.Nodes
             get { return base.Value; }
             set
             {
-                if (base.Value == value)
-                    return;
-
-                base.Value = value;
+                if (base.Value != value)
+                    base.Value = value;
             }
         }
 
@@ -2896,7 +2847,7 @@ namespace Dynamo.Nodes
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(string).FullName);
-            outEl.SetAttribute("value", System.Web.HttpUtility.UrlEncode(Value.ToString()));
+            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             dynEl.AppendChild(outEl);
         }
 
@@ -2910,10 +2861,8 @@ namespace Dynamo.Nodes
                     {
                         if (attr.Name.Equals("value"))
                         {
-                            Value = DeserializeValue(System.Web.HttpUtility.UrlDecode(attr.Value));
-                            //tb.Text = Utilities.Ellipsis(Value, 30);
+                            Value = DeserializeValue(attr.Value);
                         }
-
                     }
                 }
             }
@@ -2977,19 +2926,6 @@ namespace Dynamo.Nodes
             sp.Children.Add(tb);
             nodeUI.inputGrid.Children.Add(sp);
 
-            //NodeUI.SetRowAmount(2);
-            //nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-            //nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-
-            //nodeUI.inputGrid.Children.Add(tb);
-            //nodeUI.inputGrid.Children.Add(readFileButton);
-
-            //System.Windows.Controls.Grid.SetRow(readFileButton, 0);
-            //System.Windows.Controls.Grid.SetRow(tb, 1);
-
-            //NodeUI.topControl.Height = 60;
-            //NodeUI.UpdateLayout();
-
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
             {
@@ -2997,22 +2933,6 @@ namespace Dynamo.Nodes
                 Converter = new FilePathDisplay()
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
-        }
-
-        public override string Value
-        {
-            get
-            {
-                return base.Value;
-            }
-            set
-            {
-                base.Value = value;
-
-                //tb.Text = string.IsNullOrEmpty(Value)
-                //   ? "No file selected."
-                //   : Value;
-            }
         }
 
         protected override string DeserializeValue(string val)
@@ -3314,12 +3234,14 @@ namespace Dynamo.Nodes
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value==null?"": value.ToString();
+            //source -> target
+            return value==null?"": HttpUtility.UrlDecode(value.ToString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            //target -> source
+            return HttpUtility.UrlEncode(value.ToString());
         }
     }
 
@@ -3327,8 +3249,11 @@ namespace Dynamo.Nodes
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            //source->target
+
             var maxChars = 30;
-            var str = value.ToString();
+            //var str = value.ToString();
+            var str = HttpUtility.UrlDecode(value.ToString());
 
             if (string.IsNullOrEmpty(str))
             {
@@ -3344,7 +3269,8 @@ namespace Dynamo.Nodes
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            //target->source
+            return HttpUtility.UrlEncode(value.ToString());
         }
     }
 
