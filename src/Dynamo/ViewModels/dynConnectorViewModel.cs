@@ -401,7 +401,7 @@ namespace Dynamo.Connectors
             if ( this.BezVisibility == Visibility.Visible )
             {
                 distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
-                offset = .3 * distance;
+                offset = .45 * distance;
             }
             else
             {

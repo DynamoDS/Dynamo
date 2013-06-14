@@ -51,6 +51,7 @@ namespace Dynamo.Views
             vm.StopDragging += new EventHandler(vm_StopDragging);
             vm.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             vm.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
+            vm.RequestNoteCentered += vm_RequestNoteCentered;
             //vm.UILocked += new EventHandler(LockUI);
             //vm.UIUnlocked += new EventHandler(UnlockUI);
             vm.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
@@ -124,10 +125,6 @@ namespace Dynamo.Views
             if (!Double.IsNaN(node.Height))
                 dropPt.Y -= (node.Height / 2.0);
 
-            //MVVM: Don't do direct canvas manipulation here
-            //Canvas.SetLeft(node, dropPt.X);
-            //Canvas.SetTop(node, dropPt.Y);
-
             if (!Double.IsNaN(node.Width))
                 dropPt.X -= (node.Height / 2.0);
 
@@ -136,6 +133,54 @@ namespace Dynamo.Views
 
             node.X = dropPt.X;
             node.Y = dropPt.Y;
+        }
+
+        void vm_RequestNoteCentered(object sender, EventArgs e)
+        {
+            double x = 0;
+            double y = 0;
+            dynNoteModel note = (e as NoteEventArgs).Note;
+            Dictionary<string, object> data = (e as NoteEventArgs).Data;
+
+            x = outerCanvas.ActualWidth / 2.0;
+            y = outerCanvas.ActualHeight / 2.0;
+
+            // apply small perturbation
+            // so node isn't right on top of last placed node
+            var r = new Random();
+            x += (r.NextDouble() - 0.5) * 50;
+            y += (r.NextDouble() - 0.5) * 50;
+
+            if (data.ContainsKey("x"))
+                x = (double)data["x"];
+
+            if (data.ContainsKey("y"))
+                y = (double)data["y"];
+
+            var dropPt = new Point(x, y);
+
+            // Transform dropPt from outerCanvas space into zoomCanvas space
+            if (WorkBench != null)
+            {
+                var a = outerCanvas.TransformToDescendant(WorkBench);
+                dropPt = a.Transform(dropPt);
+            }
+
+            // center the node at the drop point
+            if (!Double.IsNaN(note.Width))
+                dropPt.X -= (note.Width / 2.0);
+
+            if (!Double.IsNaN(note.Height))
+                dropPt.Y -= (note.Height / 2.0);
+
+            if (!Double.IsNaN(note.Width))
+                dropPt.X -= (note.Height / 2.0);
+
+            if (!Double.IsNaN(note.Height))
+                dropPt.Y -= (note.Height / 2.0);
+
+            note.X = dropPt.X;
+            note.Y = dropPt.Y;
         }
 
         void vm_StopDragging(object sender, EventArgs e)

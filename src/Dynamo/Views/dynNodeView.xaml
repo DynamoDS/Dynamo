@@ -48,6 +48,7 @@
 
     <Grid Name="grid" Canvas.ZIndex="3" Margin="0">
         
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -84,6 +85,16 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="2" Background="White" CornerRadius="5">
+            <Border.Effect>
+                <DropShadowEffect
+                    ShadowDepth="0"
+                    Color="#222"
+                    Opacity="0.25"
+                    BlurRadius="9.0" />
+            </Border.Effect>
+        </Border>
+        
         <Grid Canvas.ZIndex="4" Grid.Row="1" Margin="3,5,3,5" Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -97,7 +108,8 @@
             
         <!-- INPUT PORTS -->
 
-        <StackPanel Name="gridLeft" 
+        
+            <StackPanel Name="gridLeft" 
             HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
             IsHitTestVisible="True" 
@@ -186,7 +198,11 @@
             </Rectangle>
 
         </Canvas>
+
+        
+        
     </Grid>
+
 </UserControl>
 
     

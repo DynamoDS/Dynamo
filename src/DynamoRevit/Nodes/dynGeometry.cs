@@ -1655,11 +1655,11 @@ namespace Dynamo.Nodes
             FaceArray faceArr = thisSolid.Faces;
             var thisEnum = faceArr.GetEnumerator();
 
-            SortedList<double, Face> intersectingFaces = new SortedList<double, Face>();
+            SortedList<double, Autodesk.Revit.DB.Face> intersectingFaces = new SortedList<double, Autodesk.Revit.DB.Face>();
 
             for (; thisEnum.MoveNext(); )
             {
-                Face thisFace = (Face) thisEnum.Current;
+                Autodesk.Revit.DB.Face thisFace = (Autodesk.Revit.DB.Face) thisEnum.Current;
                 IntersectionResultArray resultArray = null;
 
                 SetComparisonResult resultIntersect = thisFace.Intersect(selectLine, out resultArray);
@@ -1686,7 +1686,7 @@ namespace Dynamo.Nodes
             var intersectingFacesEnum = intersectingFaces.Reverse().GetEnumerator();
             for (; intersectingFacesEnum.MoveNext(); )
             {
-                Face faceObj = intersectingFacesEnum.Current.Value;
+                Autodesk.Revit.DB.Face faceObj = intersectingFacesEnum.Current.Value;
                 result = FSharpList<Value>.Cons(Value.NewContainer(faceObj), result);      
             }
 
@@ -1715,7 +1715,7 @@ namespace Dynamo.Nodes
             if (((Value.Container)args[0]).Item is Solid)
                 thisSolid = (Solid)((Value.Container)args[0]).Item;
 
-            Face thisFace = thisSolid == null ? (Face)(((Value.Container)args[0]).Item) : null;
+            Autodesk.Revit.DB.Face thisFace = thisSolid == null ? (Autodesk.Revit.DB.Face)(((Value.Container)args[0]).Item) : null;
 
             var result = FSharpList<Value>.Empty;
 
@@ -1725,7 +1725,7 @@ namespace Dynamo.Nodes
                 var thisEnum = faceArr.GetEnumerator();
                 for (; thisEnum.MoveNext(); )
                 {
-                    Face curFace = (Face) thisEnum.Current;
+                    Autodesk.Revit.DB.Face curFace = (Autodesk.Revit.DB.Face) thisEnum.Current;
                     if (curFace != null)
                         result = FSharpList<Value>.Cons(Value.NewContainer(curFace), result);   
                  }
@@ -1855,7 +1855,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Face Through Points")]
+    [NodeName("Cell Through Points")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates face on grid of points")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
@@ -1866,7 +1866,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Points", "Points to create face, list or list of lists", typeof(Value.List)));
             InPortData.Add(new PortData("NumberOfRows", "Number of rows in the grid of the face", typeof(object)));
-            OutPortData.Add(new PortData("Face", "Face", typeof(object)));
+            OutPortData.Add(new PortData("Cell", "Cell", typeof(object)));
 
             RegisterAllPorts();
 
@@ -1883,7 +1883,7 @@ namespace Dynamo.Nodes
             List<List<XYZ>> listOfListsIn = (listIn != null) ? null : (in1 as List<List<XYZ>>);
 
             if (listIn == null && listOfListsIn == null)
-                throw new Exception("no XYZ list or list of XYZ lists in Face Through Points node");
+                throw new Exception("no XYZ list or list of XYZ lists in Cell Through Points node");
 
             if (listOfListsIn != null)
             {
@@ -1897,7 +1897,7 @@ namespace Dynamo.Nodes
 
             int numberOfRows = (int)((Value.Number)args[1]).Item;
             if (numberOfRows < 2 || listIn.Count % numberOfRows != 0)
-                throw new Exception("number of rows should  match number of points Face Through Points node");
+                throw new Exception("number of rows should  match number of points Cell Through Points node");
 
             bool periodicU = false;
             bool periodicV = false;
@@ -1907,7 +1907,7 @@ namespace Dynamo.Nodes
             MethodInfo[] hermiteFaceStaticMethods = HermiteFaceType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
             String nameOfMethodCreate = "Create";
-            Face result = null;
+            Autodesk.Revit.DB.Face result = null;
 
             foreach (MethodInfo m in hermiteFaceStaticMethods)
             {
@@ -1922,7 +1922,7 @@ namespace Dynamo.Nodes
                     argsM[5] = periodicU;
                     argsM[6] = periodicV;
 
-                    result = (Face) m.Invoke(null, argsM);
+                    result = (Autodesk.Revit.DB.Face) m.Invoke(null, argsM);
 
                     break;
                 }
@@ -2361,7 +2361,7 @@ namespace Dynamo.Nodes
                     x => ((CurveLoop)((Value.Container)x).Item)
                        ).ToList();
             var listInFacesToExclude = ((Value.List)args[2]).Item.Select(
-                    x => ((Face)((Value.Container)x).Item)
+                    x => ((Autodesk.Revit.DB.Face)((Value.Container)x).Item)
                        ).ToList();
 
             Type SolidType = typeof(Autodesk.Revit.DB.Solid);

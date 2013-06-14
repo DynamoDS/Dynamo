@@ -3,41 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="New Custom Node..." Height="290" Width="238" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" >
        
-    <StackPanel Background="Black">
+    <StackPanel>
 
-        <Label Content="New custom node..." FontSize="16" Foreground="WhiteSmoke" HorizontalAlignment="Stretch" Name="title" Padding="10">
-            <Label.Background>
-                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                    <GradientStop Color="#444" Offset="0.0" />
-                    <GradientStop Color="#333" Offset="1.0" />
-                </LinearGradientBrush>
-            </Label.Background>
-        </Label>
-        
+        <StackPanel.Background>
+            <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                <GradientStop Color="#444" Offset="0.0" />
+                <GradientStop Color="#222" Offset="1.0" />
+            </LinearGradientBrush>
+        </StackPanel.Background>
+
+        <Label Content="New custom node..." FontSize="16" Foreground="#CCC" HorizontalAlignment="Stretch" FontWeight="DemiBold"  Name="title" Padding="10"></Label>
         <Label Content="Name:" Foreground="WhiteSmoke" HorizontalAlignment="Stretch" Margin="11,10,12,0" Name="label1"  />
 
-        <Border Margin="15,5,15,15">
-
-            <Border.Style>
-
-                <Style TargetType="Border">
-
-                    <Setter Property="Background" Value="#333" />
-
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsFocused, ElementName=nameBox}" Value="true">
-                            <Setter Property="Background" Value="#555" />
-                            <Setter Property="Effect" >
-                                <Setter.Value>
-                                    <DropShadowEffect Color="Cyan" ShadowDepth="0" BlurRadius ="7" />
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-
-                    </Style.Triggers>
-                </Style>
-
-            </Border.Style>
+        <Border Margin="15,5,15,15" Background="#222">
 
             <TextBox x:FieldModifier="public"
                  HorizontalAlignment="Stretch" 

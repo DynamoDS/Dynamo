@@ -1452,6 +1452,8 @@ namespace Dynamo.Controls
         {
             var inputs = (Dictionary<string, object>)parameters;
 
+            inputs = inputs ?? new Dictionary<string, object>();
+
             // by default place note at center
             var x = 0.0;
             var y = 0.0;
@@ -1464,6 +1466,8 @@ namespace Dynamo.Controls
 
 
             var n = new dynNoteModel(x, y);
+
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNoteCentered( this, new NoteEventArgs(n, inputs) );
 
             n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
             var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspaceModel)inputs["workspace"];
@@ -2748,6 +2752,17 @@ namespace Dynamo.Controls
         public NodeEventArgs(dynNodeModel n, Dictionary<string, object> d )
         {
             Node = n;
+            Data = d;
+        }
+    }
+
+    public class NoteEventArgs : EventArgs
+    {
+        public dynNoteModel Note { get; set; }
+        public Dictionary<string, object> Data { get; set; }
+        public NoteEventArgs(dynNoteModel n, Dictionary<string, object> d)
+        {
+            Note = n;
             Data = d;
         }
     }

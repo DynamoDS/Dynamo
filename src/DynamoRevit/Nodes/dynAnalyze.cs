@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             Reference faceRef = (args[1] as Value.Container).Item as Reference;
-            Face f = (faceRef == null)? ((args[1] as Value.Container).Item as Face) : dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
+            Autodesk.Revit.DB.Face f = (faceRef == null)? ((args[1] as Value.Container).Item as Autodesk.Revit.DB.Face) : dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
 
             XYZ norm = null;
             
@@ -73,7 +73,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             Reference faceRef = (args[1] as Value.Container).Item as Reference;
-            Face f = (faceRef == null) ? ((args[1] as Value.Container).Item as Face) : dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
+            Autodesk.Revit.DB.Face f = (faceRef == null) ? ((args[1] as Value.Container).Item as Autodesk.Revit.DB.Face) : dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
 
             XYZ face_point = null;
 
@@ -90,14 +90,14 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Compute Face Derivatives")]
+    [NodeName("Compute Cell Derivatives")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
     public class dynComputeFaceDerivatives : dynTransformBase
     {
         public dynComputeFaceDerivatives()
         {
-            InPortData.Add(new PortData("f", "The face to evaluate(Face)", typeof(Value.Container)));
+            InPortData.Add(new PortData("f", "The face to evaluate(Cell)", typeof(Value.Container)));
             InPortData.Add(new PortData("uv", "The parameter to evaluate(UV)", typeof(Value.Container)));
             OutPortData.Add(new PortData("t", "Transform describing the face at the parameter(Transform)", typeof(Value.Container)));
 
@@ -111,9 +111,9 @@ namespace Dynamo.Nodes
 
             Transform t = Transform.Identity;
 
-            Face f = (faceRef == null) ? 
-                ((Face)((Value.Container)args[0]).Item) : 
-                (dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face);
+            Autodesk.Revit.DB.Face f = (faceRef == null) ? 
+                ((Autodesk.Revit.DB.Face)((Value.Container)args[0]).Item) : 
+                (dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face);
 
             if (f != null)
             {
