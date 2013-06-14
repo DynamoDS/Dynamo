@@ -2607,7 +2607,7 @@ namespace Dynamo.Nodes
             {
                 try
                 {
-                    Max = Convert.ToDouble(maxtb.Text);
+                    Max = Convert.ToDouble(maxtb.Text, CultureInfo.InvariantCulture);
                 }
                 catch
                 {
@@ -2711,7 +2711,7 @@ namespace Dynamo.Nodes
         {
             try
             {
-                return Convert.ToDouble(val);
+                return Convert.ToDouble(val, CultureInfo.InvariantCulture);
             }
             catch
             {
@@ -2722,9 +2722,9 @@ namespace Dynamo.Nodes
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
-            outEl.SetAttribute("value", Value.ToString());
-            outEl.SetAttribute("min", Min.ToString());
-            outEl.SetAttribute("max", Max.ToString());
+            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
             dynEl.AppendChild(outEl);
         }
 
@@ -2742,13 +2742,13 @@ namespace Dynamo.Nodes
                         {
                             //tb_slider.Minimum = Convert.ToDouble(attr.Value);
                             //mintb.Text = attr.Value;
-                            Min = Convert.ToDouble(attr.Value);
+                            Min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                         }
                         else if (attr.Name.Equals("max"))
                         {
                             //tb_slider.Maximum = Convert.ToDouble(attr.Value);
                             //maxtb.Text = attr.Value;
-                            Max = Convert.ToDouble(attr.Value);
+                            Max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                         }
                     }
                 }
@@ -3302,7 +3302,7 @@ namespace Dynamo.Nodes
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value==null?"":((double)value).ToString("F4");
+            return value==null?"":((double)value).ToString("0.0000", culture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -3315,13 +3315,13 @@ namespace Dynamo.Nodes
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double radians = System.Convert.ToDouble(value) * 180.0 / Math.PI;
+            double radians = System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
             return radians;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double degrees = System.Convert.ToDouble(value) * Math.PI / 180.0;
+            double degrees = System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
             return degrees;
         }
     }
