@@ -2639,7 +2639,7 @@ namespace Dynamo.Nodes
             var bindingValue = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new StringDisplay(),
+                Converter = new DoubleDisplay(),
             };
             displayBox.SetBinding(TextBox.TextProperty, bindingValue);
 
@@ -2680,17 +2680,16 @@ namespace Dynamo.Nodes
             }
             set
             {
-                Debug.WriteLine("Setting Value...");
                 base.Value = value;
                 RaisePropertyChanged("Value");
             }
         }
+        
         public double Max
         {
             get { return max; }
             set
             {
-                Debug.WriteLine("Setting Max...");
                 max = value;
                 RaisePropertyChanged("Max");
             }
@@ -2701,7 +2700,6 @@ namespace Dynamo.Nodes
             get { return min; }
             set
             {
-                Debug.WriteLine("Setting Min...");
                 min = value;
                 RaisePropertyChanged("Min");
             } 
@@ -2740,14 +2738,10 @@ namespace Dynamo.Nodes
                             Value = DeserializeValue(attr.Value);
                         else if (attr.Name.Equals("min"))
                         {
-                            //tb_slider.Minimum = Convert.ToDouble(attr.Value);
-                            //mintb.Text = attr.Value;
                             Min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                         }
                         else if (attr.Name.Equals("max"))
                         {
-                            //tb_slider.Maximum = Convert.ToDouble(attr.Value);
-                            //maxtb.Text = attr.Value;
                             Max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                         }
                     }
