@@ -64,6 +64,7 @@ namespace Dynamo.Nodes
         public const string CORE_SELECTION = "Revit.Selection";
         public const string CORE_EVALUATE = "Core.Evaluate";
         public const string CORE_TIME = "Core.Time";
+        public const string CORE_FUNCTIONS = "Core.Functions";
 
         public const string LOGIC = "Logic";
         public const string LOGIC_MATH = "Logic.Math";
@@ -295,6 +296,33 @@ namespace Dynamo.Nodes
         }
     }
 
+    #region Functions
+
+    [NodeName("Compose Functions")]
+    [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
+    [NodeDescription("Composes two single parameter functions into one function.")]
+    public class dynComposeFunctions : dynNodeWithOneOutput
+    { 
+        public dynComposeFunctions()
+        {
+            InPortData.Add(new PortData("f", "A Function", typeof(Value.Function)));
+            InPortData.Add(new PortData("g", "A Function", typeof(Value.Function)));
+            OutPortData.Add(new PortData("g ∘ f", "Composed function: g(f(x))", typeof(Value.Function)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var f = ((Value.Function)args[0]).Item;
+            var g = ((Value.Function)args[1]).Item;
+
+            return Value.NewFunction(Utils.ConvertToFSchemeFunc(x => g.Invoke(Utils.MakeFSharpList(f.Invoke(x)))));
+        }
+    }
+
+    #endregion
+
     #region Lists
 
     [NodeName("Reverse")]
@@ -420,7 +448,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Filter")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Filters a sequence by a given predicate")]
+    [NodeDescription("Filters a sequence by a given predicate \"p\" such that for an arbitrary element \"x\" p(x) = True.")]
     public class dynFilter : dynBuiltinFunction
     {
         public dynFilter()
@@ -428,9 +456,32 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("p(x)", "Predicate", typeof(object)));
             InPortData.Add(new PortData("seq", "Sequence to filter", typeof(Value.List)));
-            OutPortData.Add(new PortData("filtered", "Filtered Sequence", typeof(Value.List)));
+            OutPortData.Add(new PortData("filtered", "Sequence containing all elements \"x\" where p(x) = True", typeof(Value.List)));
 
             RegisterAllPorts();
+        }
+    }
+
+    [NodeName("Filter Out")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Filters a sequence by a given predicate \"p\" such that for an arbitrary element \"x\" p(x) = False.")]
+    public class dynFilterOut : dynNodeWithOneOutput
+    {
+        public dynFilterOut()
+        {
+            InPortData.Add(new PortData("p(x)", "Predicate", typeof(Value.Function)));
+            InPortData.Add(new PortData("seq", "Sequence to filter", typeof(Value.List)));
+            OutPortData.Add(new PortData("filtered", "Sequence containing all elements \"x\" where p(x) = False", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var p = ((Value.Function)args[0]).Item;
+            var seq = ((Value.List)args[1]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(seq.Where(x => !FScheme.ValueToBool(p.Invoke(Utils.MakeFSharpList(x))))));
         }
     }
 
