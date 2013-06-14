@@ -92,7 +92,7 @@ type Value =
 
 
 ///Converts an expression to a boolean value
-let private exprToBool = function
+let ValueToBool = function
     //Empty list or empty string is false, evaluate else branch.
     | List([]) | String("") -> false
     //Zero is false, evaluate else branch.
@@ -407,15 +407,15 @@ let GT =  boolMath (>) "greater-than"
 let EQ =  boolMath (=) "equals"
 
 let Not = function
-    | [expr] -> if exprToBool expr then Number(0.) else Number(1.)
+    | [expr] -> if ValueToBool expr then Number(0.) else Number(1.)
     | m -> malformed "not" <| List(m)
 
 let Xor = function
     | [a; b] ->
-        if exprToBool a then
-            if exprToBool b then Number(0.) else Number(1.)
+        if ValueToBool a then
+            if ValueToBool b then Number(0.) else Number(1.)
         else
-            if exprToBool b then Number(1.) else Number(0.)
+            if ValueToBool b then Number(1.) else Number(0.)
     | m -> malformed "xor" <| List(m)
 
 //Random Number
@@ -471,7 +471,7 @@ let FoldR = function
 
 let Filter = function
     | [Function(p); List(l)] ->
-        List(List.filter (fun x -> [x] |> p |> exprToBool) l)
+        List(List.filter (fun x -> [x] |> p |> ValueToBool) l)
     | m -> malformed "filter" <| List(m)
 
 let CartProd = function
@@ -809,7 +809,7 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
         ///Compiled else branch
         let celse = compile' else_expr
         //At runtime, evaluate the expression and select the correct branch
-        fun env -> if ccond env |> exprToBool then cthen env else celse env
+        fun env -> if ccond env |> ValueToBool then cthen env else celse env
 
     //An empty begin statement is valid, but returns a dummy
     | Begin([]) -> wrap <| Dummy("empty begin")
