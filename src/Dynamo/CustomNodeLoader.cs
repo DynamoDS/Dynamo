@@ -198,6 +198,15 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
+        /// Return the default search path
+        /// </summary>
+        /// <returns>A string representing a path</returns>
+        public string GetDefaultSearchPath()
+        {
+            return SearchPath;
+        }
+
+        /// <summary>
         ///     Get the function definition from a guid
         /// </summary>
         /// <param name="id">The unique id for the node.</param>

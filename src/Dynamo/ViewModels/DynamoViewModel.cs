@@ -604,6 +604,10 @@ namespace Dynamo.Controls
                 var fi = new FileInfo(_model.CurrentSpace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
+            else if (_model.CurrentSpace is FuncWorkspace)
+            {
+                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath;
+            }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
