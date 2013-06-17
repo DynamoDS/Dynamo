@@ -207,8 +207,6 @@ namespace Dynamo
 
             public override void LoadElement(XmlNode elNode)
             {
-
-
                 foreach (XmlNode subNode in elNode.ChildNodes)
                 {
                     if (subNode.Name.Equals("Name"))

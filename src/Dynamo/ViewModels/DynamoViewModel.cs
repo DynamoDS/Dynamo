@@ -603,6 +603,7 @@ namespace Dynamo.Controls
             {
                 var fi = new FileInfo(_model.CurrentSpace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
+                _fileDialog.FileName = fi.Name;
             }
             else if (_model.CurrentSpace is FuncWorkspace)
             {
