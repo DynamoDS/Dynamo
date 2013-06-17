@@ -457,6 +457,7 @@ namespace Dynamo.Applications
         private string _message;
         private TestMethod _test;
         private readonly RevitTestEventListener _listener;
+        private string _testName="";
 
         [XmlIgnore]
         public DelegateCommand RunCommand { get; set; }
@@ -484,7 +485,8 @@ namespace Dynamo.Applications
         [XmlAttribute]
         public string TestName
         {
-            get { return _test.TestName.Name; }
+            get { return _testName; }
+            set { _testName = value; }
         }
 
         [XmlIgnoreAttribute]
@@ -504,6 +506,7 @@ namespace Dynamo.Applications
             _listener = new RevitTestEventListener(this);
             RunCommand = new DelegateCommand(Run, CanRun);
             _resultType = DynamoRevitTestResultType.Unknown;
+            _testName = _test.TestName.Name;
         }
 
         public void Run()
