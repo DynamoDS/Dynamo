@@ -486,6 +486,24 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void OpeningDynWithDyfMissingIsOkayAndRunsOkay()
+        {
+            Assert.DoesNotThrow(delegate
+                {
+                    var vm = controller.DynamoViewModel;
+                    var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\CASE");
+                    string openPath = Path.Combine(examplePath, "case_flip_matrix.dyn");
+
+                    controller.RunCommand(vm.OpenCommand, openPath);
+
+                    Assert.AreEqual( controller.DynamoModel.CurrentSpace.Nodes.Count, 11);
+
+                    controller.RunCommand(vm.RunExpressionCommand);
+                    Thread.Sleep(100);
+                });
+        }
+
+        [Test]
         public void Tangent()
         {
             var vm = controller.DynamoViewModel;
