@@ -604,6 +604,10 @@ namespace Dynamo.Controls
                 var fi = new FileInfo(_model.CurrentSpace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
+            else if (_model.CurrentSpace is FuncWorkspace)
+            {
+                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath;
+            }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -1309,6 +1313,12 @@ namespace Dynamo.Controls
                 DynamoCommands.WriteToLogCmd.Execute("Failed to create the node");
                 return;
             } 
+
+            if ( (node is dynSymbol || node is dynOutput) && _model.CurrentSpace is HomeWorkspace)
+            {
+                DynamoCommands.WriteToLogCmd.Execute("Cannot place dynSymbol or dynOutput in HomeWorkspace");
+                return;
+            }
 
             _model.CurrentSpace.Nodes.Add(node);
             node.WorkSpace = dynSettings.Controller.DynamoViewModel.CurrentSpace;
@@ -2440,30 +2450,11 @@ namespace Dynamo.Controls
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
                     dynNodeModel el = CreateNodeInstance( t, nickname, guid );
+                    el.WorkSpace = _model.CurrentSpace;
                     el.LoadElement(elNode);
 
-                    if (el is dynFunction)
-                    {
-                        var dynFunc = (dynFunction) el;
-                        if (!this.Controller.CustomNodeLoader.Contains(dynFunc.Definition.FunctionId))
-                        {
-                            var user_msg = "Failed to load custom node: " + dynFunc.NickName +
-                                           ".  Is the node's .dyf folder in the definitions folder?  \n\nDynamo will " +
-                                           "load the definition without this node.";
-
-                            System.Windows.MessageBox.Show(user_msg,
-                                                            "Error loading definition",
-                                                            MessageBoxButton.OK,
-                                                            MessageBoxImage.Warning);
-
-                            DynamoLogger.Instance.Log(user_msg);
-                            continue;
-                        }
-                    }
-
                     _model.CurrentSpace.Nodes.Add(el);
-                    el.WorkSpace = _model.CurrentSpace;
-
+                    
                     el.X = x;
                     el.Y = y;
 

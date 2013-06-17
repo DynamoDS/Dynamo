@@ -323,14 +323,11 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
+            string menuValue = "Preview Background";
             if ((bool)value == true)
-            {
-                return "Disable preview geometry";
-            }
+                return menuValue;
             else
-            {
-                return "Enable preview geometry";
-            }
+                return menuValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,

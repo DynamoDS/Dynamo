@@ -983,6 +983,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Longest;
+            Value = "";
         }
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)

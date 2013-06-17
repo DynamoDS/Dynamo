@@ -136,12 +136,18 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Update a FunctionDefinition amongst the loaded FunctionDefinitions
+        ///     Update a FunctionDefinition amongst the loaded FunctionDefinitions, without
+        ///     settings its path
         /// </summary>
-        /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public bool SetFunctionDefinition(Guid guid, FunctionDefinition def)
+        /// <param name="guid">The custom node id</param>
+        /// <param name="def">The definition for the function</param>
+        public void SetFunctionDefinition(Guid guid, FunctionDefinition def)
         {
-            return false;
+            if (this.loadedNodes.ContainsKey(guid))
+            {
+                this.loadedNodes.Remove(guid);
+            }
+            this.loadedNodes.Add(guid, def);
         }
 
         /// <summary>
@@ -165,14 +171,11 @@ namespace Dynamo.Utilities
         /// <param name="path">The path for the node.</param>
         public void SetNodeInfo(string name, string category, Guid id, string path)
         {
-            if ( this.Contains(name) )
+            if ( this.NodeNames.ContainsKey(name) )
             {
-                this.NodeNames[name] = id;
+                this.NodeNames.Remove(name);
             }
-            else
-            {
-                this.NodeNames.Add(name, id);
-            }
+            this.NodeNames.Add(name, id);
             this.SetNodeCategory(id, category);
             this.SetNodePath(id, path);
         }
@@ -192,6 +195,15 @@ namespace Dynamo.Utilities
             {
                 this.NodeCategories.Add(id, category);
             }
+        }
+
+        /// <summary>
+        /// Return the default search path
+        /// </summary>
+        /// <returns>A string representing a path</returns>
+        public string GetDefaultSearchPath()
+        {
+            return SearchPath;
         }
 
         /// <summary>
