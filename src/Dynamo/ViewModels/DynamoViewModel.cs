@@ -582,7 +582,7 @@ namespace Dynamo.Controls
             else
             {
                 ext = ".dyf";
-                fltr = "Dynamo Function (*.dyf)|*.dyf";
+                fltr = "Dynamo Custom Node (*.dyf)|*.dyf";
             }
             fltr += "|All files (*.*)|*.*";
 
