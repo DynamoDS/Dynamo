@@ -230,7 +230,8 @@ namespace Dynamo
                         if (!dynSettings.Controller.CustomNodeLoader.Contains(funcId))
                         {
                             var proxyDef = new FunctionDefinition(funcId);
-                            proxyDef.Workspace = new FuncWorkspace("Symbol", BuiltinNodeCategories.SCRIPTING_CUSTOMNODES);
+                            proxyDef.Workspace = new FuncWorkspace(NickName, BuiltinNodeCategories.SCRIPTING_CUSTOMNODES);
+                            proxyDef.Workspace.FilePath = null;
 
                             this.SetInputs(new List<string>());
                             this.SetOutputs(new List<string>());
