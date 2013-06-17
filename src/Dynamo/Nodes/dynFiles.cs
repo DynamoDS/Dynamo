@@ -302,7 +302,7 @@ namespace Dynamo.Nodes
 
             try
             {
-                StreamWriter writer = new StreamWriter(new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write));
+                StreamWriter writer = new StreamWriter(new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Write));
 
                 foreach (Value line in data)
                 {
