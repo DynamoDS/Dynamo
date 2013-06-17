@@ -194,9 +194,10 @@
                        Name="elementRectangle" 
                        Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}" 
                        StrokeThickness="2"
-                       Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" RadiusX="2" RadiusY="2">
+                       Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" 
+                       RadiusX="2" RadiusY="2">
                 <Rectangle.Effect>
-                    <DropShadowEffect Opacity="{Binding Path=DropShadowOpacity}" />
+                    <DropShadowEffect Opacity="{Binding Path=DropShadowOpacity}"/>
                 </Rectangle.Effect>
             </Rectangle>
 
