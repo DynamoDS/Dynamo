@@ -207,19 +207,53 @@ namespace Dynamo
 
             public override void LoadElement(XmlNode elNode)
             {
+
+
+                foreach (XmlNode subNode in elNode.ChildNodes)
+                {
+                    if (subNode.Name.Equals("Name"))
+                    {
+                        NickName = subNode.Attributes[0].Value;
+                    }
+                }
+
                 foreach (XmlNode subNode in elNode.ChildNodes)
                 {
                     if (subNode.Name.Equals("ID"))
                     {
                         Symbol = subNode.Attributes[0].Value;
-                        //Definition = dynSettings.FunctionDict.Values.FirstOrDefault(
-                        //    x => x.Workspace.Name == subNode.Attributes[0].Value);
+
+                        Guid funcId;
+                        Guid.TryParse(Symbol, out funcId);
+
+                        // if the dyf does not exist on the search path...
+                        if (!dynSettings.Controller.CustomNodeLoader.Contains(funcId))
+                        {
+                            var proxyDef = new FunctionDefinition(funcId);
+                            proxyDef.Workspace = new FuncWorkspace("Symbol", BuiltinNodeCategories.SCRIPTING_CUSTOMNODES);
+
+                            this.SetInputs(new List<string>());
+                            this.SetOutputs(new List<string>());
+                            this.RegisterAllPorts();
+                            this.State = ElementState.ERROR;
+
+                            var user_msg = "Failed to load custom node: " + NickName +
+                                           ".  Replacing with proxy custom node.";
+
+                            DynamoLogger.Instance.Log(user_msg);
+
+                            // tell custom node loader, but don't provide path, forcing user to resave explicitly
+                            dynSettings.Controller.CustomNodeLoader.SetFunctionDefinition(funcId, proxyDef);
+                            Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funcId);
+                            ArgumentLacing = LacingStrategy.Disabled;
+                            return;
+                        }
                     }
-                    else if (subNode.Name.Equals("Name"))
-                    {
-                        NickName = subNode.Attributes[0].Value;
-                    }
-                    else if (subNode.Name.Equals("Outputs"))
+                }
+
+                foreach (XmlNode subNode in elNode.ChildNodes)
+                {
+                    if (subNode.Name.Equals("Outputs"))
                     {
                         int i = 0;
                         foreach (XmlNode outputNode in subNode.ChildNodes)
