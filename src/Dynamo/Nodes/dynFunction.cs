@@ -58,7 +58,7 @@ namespace Dynamo
             public override void SetupCustomUIElements(dynNodeView nodeUI)
             {
                 ((DropShadowEffect) nodeUI.elementRectangle.Effect).Opacity = 1;
-                ((DropShadowEffect) nodeUI.elementRectangle.Effect).Color = Colors.WhiteSmoke;
+                ((DropShadowEffect)nodeUI.elementRectangle.Effect).Color = (Color)ColorConverter.ConvertFromString("#38D7FF");
                 ((DropShadowEffect) nodeUI.elementRectangle.Effect).BlurRadius = 20;
                 ((DropShadowEffect) nodeUI.elementRectangle.Effect).ShadowDepth = 0;
 
