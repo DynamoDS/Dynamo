@@ -22,6 +22,9 @@ using Dynamo.Utilities;
 
 using Microsoft.Practices.Prism.Commands;
 
+using NUnit.Core;
+using NUnit.Framework;
+
 namespace Dynamo.Controls
 {
 
@@ -1943,6 +1946,10 @@ namespace Dynamo.Controls
                 Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
                 CleanWorkbench();
+
+                if (controller.Testing)
+                    Assert.Fail(ex.Message);
+
                 return false;
             }
 

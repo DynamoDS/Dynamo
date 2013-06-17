@@ -28,6 +28,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Linq;
 using System.Windows.Threading;
+using System.Xml.Serialization;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -393,10 +394,7 @@ namespace Dynamo.Applications
 
                 resultsView.Show();
 
-                IdlePromise.ExecuteOnIdle(delegate
-                {
-                    DynamoLogger.Instance.FinishLogging();
-                });
+                
 
             }
             catch (Exception ex)
@@ -460,6 +458,7 @@ namespace Dynamo.Applications
         private TestMethod _test;
         private readonly RevitTestEventListener _listener;
 
+        [XmlIgnore]
         public DelegateCommand RunCommand { get; set; }
 
         public DynamoRevitTestResultType ResultType 
@@ -482,15 +481,21 @@ namespace Dynamo.Applications
             }
         }
 
+        [XmlAttribute]
         public string TestName
         {
             get { return _test.TestName.Name; }
         }
 
+        [XmlIgnoreAttribute]
         public TestMethod Test
         {
             get { return _test; } 
             set { _test = value; }
+        }
+
+        public DynamoRevitTest()
+        {
         }
 
         public DynamoRevitTest(TestMethod test)
@@ -645,6 +650,7 @@ namespace Dynamo.Applications
         {
             Timer.Stop();
             RaisePropertyChanged("TestSummary");
+            Save();
         }
 
         public void RunAllTests()
@@ -667,13 +673,21 @@ namespace Dynamo.Applications
 
         public void Save()
         {
-            //serialize the test results to a file
-            System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(Results.GetType());
-            string resultsDir = Path.GetDirectoryName(DynamoLogger.Instance.LogPath);
-            string resultsPath = Path.Combine(resultsDir, string.Format("dynamoRevitTests_{0}.xml", Guid.NewGuid().ToString()));
-            using (TextWriter tw = new StreamWriter(resultsPath))
+            try
             {
-                x.Serialize(tw, Results);
+                //serialize the test results to a file
+                System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(Results.GetType());
+                string resultsDir = Path.GetDirectoryName(DynamoLogger.Instance.LogPath);
+                string resultsPath = Path.Combine(resultsDir,
+                                                  string.Format("dynamoRevitTests_{0}.xml", Guid.NewGuid().ToString()));
+                using (TextWriter tw = new StreamWriter(resultsPath))
+                {
+                    x.Serialize(tw, Results);
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e.Message);   
             }
         }
 
