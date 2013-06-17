@@ -92,6 +92,7 @@
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <controls:DragCanvas
+                                    UseLayoutRounding="True"
                                     Width="100000" 
                                     Height="100000" 
                                     x:Name="DragCanvas"

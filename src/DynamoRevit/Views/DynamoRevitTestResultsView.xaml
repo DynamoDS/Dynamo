@@ -19,6 +19,9 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel HorizontalAlignment="Stretch" Background="{Binding ResultType, Converter={StaticResource ResourceKey=ResultTypeToColorConverter}}">
+                        <!--<ContextMenu>
+                            <MenuItem Header="Run" Command="{Binding Path=RunCommand}"/>
+                        </ContextMenu>-->
                         <TextBlock Text="{Binding Path=TestName}" />
                         <!--<TextBlock Text="{Binding Path=ResultType}"/>-->
                         <TextBlock Text="{Binding Path=Message}">
@@ -40,10 +43,18 @@
             </ListBox.ItemTemplate>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="Run" Command="{Binding RunCommand}"/>
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-        <Button Content="Ok" Height="23" HorizontalAlignment="Right" Margin="5" Name="button1" VerticalAlignment="Bottom" Width="75" IsDefault="True" Click="button1_Click" />
+        <Button Content="Cancel" Height="23" HorizontalAlignment="Right" Margin="5" Name="CancelButt" VerticalAlignment="Bottom" Width="75" IsDefault="True" Click="button1_Click" />
+        <Button Content="Run All" Height="23" HorizontalAlignment="Right" Margin="85,5" Name="RunButt" VerticalAlignment="Bottom" Width="75" IsDefault="True" Command="{Binding Path=RunAllCommand}" />
     </Grid>
 </Window>

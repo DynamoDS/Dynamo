@@ -16,7 +16,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Curve Cell Intersection")]
+    [NodeName("Curve Face Intersection")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of the specified curve with this face.")]
     public class dynCurveFaceIntersection : dynRevitTransactionNode

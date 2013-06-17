@@ -1566,7 +1566,7 @@ namespace Dynamo.Controls
 
             dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
 
-            if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
+            if (UnlockLoadPath != null && !OpenWorkspace(UnlockLoadPath))
             {
                 dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
 
@@ -1656,7 +1656,7 @@ namespace Dynamo.Controls
                     //View the home workspace, then open the bench file
                     if (!ViewingHomespace)
                         ViewHomeWorkspace(); //TODO: Refactor
-                    return OpenWorkbench(xmlPath);
+                    return OpenWorkspace(xmlPath);
                 }
                 else if (Controller.CustomNodeLoader.Contains(funName))
                 {
@@ -1785,9 +1785,6 @@ namespace Dynamo.Controls
                             el.ArgumentLacing = lacing;
                         }
                     }
-
-                    if (el == null)
-                        return false;
 
                     el.DisableReporting();
                     el.LoadElement(elNode);
@@ -2317,7 +2314,7 @@ namespace Dynamo.Controls
             _model.CurrentSpace.OnDisplayed();
         }
 
-        public bool OpenWorkbench(string xmlPath)
+        public bool OpenWorkspace(string xmlPath)
         {
             Log("Opening home workspace " + xmlPath + "...");
             CleanWorkbench();
@@ -2435,10 +2432,36 @@ namespace Dynamo.Controls
                     if (isUpstreamVisAttrib != null)
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
-                    dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(
-                        t, nickname, guid, x, y,
-                        _model.CurrentSpace, isVisible, isUpstreamVisible
-                        );
+                    dynNodeModel el = CreateNodeInstance( t, nickname, guid );
+                    el.LoadElement(elNode);
+
+                    if (el is dynFunction)
+                    {
+                        var dynFunc = (dynFunction) el;
+                        if (!this.Controller.CustomNodeLoader.Contains(dynFunc.Definition.FunctionId))
+                        {
+                            var user_msg = "Failed to load custom node: " + dynFunc.NickName +
+                                           ".  Is the node's .dyf folder in the definitions folder?  \n\nDynamo will " +
+                                           "load the definition without this node.";
+
+                            System.Windows.MessageBox.Show(user_msg,
+                                                            "Error loading definition",
+                                                            MessageBoxButton.OK,
+                                                            MessageBoxImage.Warning);
+
+                            DynamoLogger.Instance.Log(user_msg);
+                            continue;
+                        }
+                    }
+
+                    _model.CurrentSpace.Nodes.Add(el);
+                    el.WorkSpace = _model.CurrentSpace;
+
+                    el.X = x;
+                    el.Y = y;
+
+                    el.IsVisible = isVisible;
+                    el.IsUpstreamVisible = isUpstreamVisible;
 
                     if (lacingAttrib != null)
                     {
@@ -2455,7 +2478,7 @@ namespace Dynamo.Controls
                     if (ViewingHomespace)
                         el.SaveResult = true;
 
-                    el.LoadElement(elNode);
+                    //el.LoadElement(elNode);
                 }
 
                 OnRequestLayoutUpdate(this, EventArgs.Empty);

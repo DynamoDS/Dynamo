@@ -1337,6 +1337,21 @@ namespace Dynamo.Nodes
         }
     }
 
+    [AttributeUsage(AttributeTargets.All)]
+    public class NodeTypeIdAttribute : System.Attribute
+    {
+        public string Id
+        {
+            get;
+            set;
+        }
+
+        public NodeTypeIdAttribute(string description)
+        {
+            Id = description;
+        }
+    }
+
     /// <summary>
     /// The DoNotLoadOnPlatforms attribute allows the node implementor
     /// to define an array of contexts in which the node will not

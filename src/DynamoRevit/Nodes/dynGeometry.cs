@@ -1864,7 +1864,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Cell Through Points")]
+    [NodeName("Face Through Points")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates face on grid of points")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
@@ -1875,7 +1875,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Points", "Points to create face, list or list of lists", typeof(Value.List)));
             InPortData.Add(new PortData("NumberOfRows", "Number of rows in the grid of the face", typeof(object)));
-            OutPortData.Add(new PortData("Cell", "Cell", typeof(object)));
+            OutPortData.Add(new PortData("face", "Face", typeof(object)));
 
             RegisterAllPorts();
 
@@ -1892,7 +1892,7 @@ namespace Dynamo.Nodes
             List<List<XYZ>> listOfListsIn = (listIn != null) ? null : (in1 as List<List<XYZ>>);
 
             if (listIn == null && listOfListsIn == null)
-                throw new Exception("no XYZ list or list of XYZ lists in Cell Through Points node");
+                throw new Exception("no XYZ list or list of XYZ lists in Face Through Points node");
 
             if (listOfListsIn != null)
             {
@@ -1906,7 +1906,7 @@ namespace Dynamo.Nodes
 
             int numberOfRows = (int)((Value.Number)args[1]).Item;
             if (numberOfRows < 2 || listIn.Count % numberOfRows != 0)
-                throw new Exception("number of rows should  match number of points Cell Through Points node");
+                throw new Exception("number of rows should  match number of points Face Through Points node");
 
             bool periodicU = false;
             bool periodicV = false;

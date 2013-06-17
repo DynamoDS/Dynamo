@@ -676,7 +676,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Select Cell")]
+    [NodeName("Select Face")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a face from the document.")]
     public class dynFormElementBySelection : dynElementSelectionBase, IDrawable
@@ -711,7 +711,7 @@ namespace Dynamo.Nodes
             {
                 return _selectionText = SelectedElement == null
                                             ? "Nothing Selected"
-                                            : "Cell ID: " + SelectedElement.Id;
+                                            : "Face ID: " + SelectedElement.Id;
             }
             set
             {
@@ -735,8 +735,9 @@ namespace Dynamo.Nodes
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-            dynEl.SetAttribute(
-                "faceRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+            if(_f != null)
+                dynEl.SetAttribute(
+                    "faceRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
         public override void LoadElement(XmlNode elNode)
