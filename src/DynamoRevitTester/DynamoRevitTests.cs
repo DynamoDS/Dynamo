@@ -715,6 +715,27 @@ namespace DynamoRevitTests
         }
 
         [Test]
+        public void RevolveSolid()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\RevolveSolid.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            var revolveNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateRevolvedGeometry).First();
+            dynSolidBase nodeAsSolidBase = (dynSolidBase)revolveNode;
+            Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
+            double volumeMin = 13300.0;
+            double volumeMax = 13550.0;
+            double actualVolume = result.Volume;
+            Assert.Greater(actualVolume, volumeMin);
+            Assert.Less(actualVolume, volumeMax);
+        }
+
+        [Test]
         public void AdaptiveComponentsNode()
         {
             DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;

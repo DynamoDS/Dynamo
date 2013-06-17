@@ -37,6 +37,7 @@
       <System.Double value="2" />
     </Dynamo.Nodes.dynDoubleInput>
     <Dynamo.Nodes.dynXYZ type="Dynamo.Nodes.dynXYZ" guid="04d39e60-461e-4f69-8e25-d3142cb3b54b" nickname="XYZ" x="162.755162083157" y="200.74898653137" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="2fc4520a-a014-4198-827d-a2be229efaf8" nickname="Watch" x="562.041665601098" y="558.972461858491" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </dynElements>
   <dynConnectors>
     <Dynamo.Connectors.dynConnectorModel start="1e7da081-9a8f-4186-808b-9a5bee7ce92a" start_index="0" end="e09a467f-674e-4b39-8777-73dcebd0d953" end_index="0" portType="0" />
@@ -50,7 +51,6 @@
     <Dynamo.Connectors.dynConnectorModel start="daf4f3b9-8a7e-4279-b17f-63c3da8bd2b3" start_index="0" end="04d39e60-461e-4f69-8e25-d3142cb3b54b" end_index="2" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="b3bbf9db-276e-4b5b-b848-0507abcd9133" start_index="0" end="50b5bd1c-f36a-4dd1-aa55-36ebee0c3c6a" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="b3bbf9db-276e-4b5b-b848-0507abcd9133" start_index="0" end="50b5bd1c-f36a-4dd1-aa55-36ebee0c3c6a" end_index="2" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="b3bbf9db-276e-4b5b-b848-0507abcd9133" start_index="0" end="cbecac11-e503-4b7d-9c64-9f2e0d48e782" end_index="3" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="42871b21-fd8d-4d4a-a262-da8212a68723" start_index="0" end="1e7da081-9a8f-4186-808b-9a5bee7ce92a" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="033eee3f-504a-4334-b0b9-f5999d9e950c" start_index="0" end="1e7da081-9a8f-4186-808b-9a5bee7ce92a" end_index="2" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="f2fab3db-c1c2-4ec9-97bd-469a57b4ff3e" start_index="0" end="17552e36-97a1-4187-a8b5-69085465a7dc" end_index="0" portType="0" />
@@ -61,12 +61,14 @@
     <Dynamo.Connectors.dynConnectorModel start="67b533b6-8220-48ad-8c72-bf03f7713fb3" start_index="0" end="dc22e5d6-a56d-48e7-a1a8-f0286cc74a1c" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="67b533b6-8220-48ad-8c72-bf03f7713fb3" start_index="0" end="04d39e60-461e-4f69-8e25-d3142cb3b54b" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="17552e36-97a1-4187-a8b5-69085465a7dc" start_index="0" end="cbecac11-e503-4b7d-9c64-9f2e0d48e782" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="cbecac11-e503-4b7d-9c64-9f2e0d48e782" start_index="0" end="2fc4520a-a014-4198-827d-a2be229efaf8" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="77a69b8a-73c8-4aa1-87e8-a67727c317f2" start_index="0" end="cbecac11-e503-4b7d-9c64-9f2e0d48e782" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="3d77d1e1-19d5-48ee-afe7-72e8b5398ec9" start_index="0" end="1e7da081-9a8f-4186-808b-9a5bee7ce92a" end_index="4" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="4b07dc53-c1ed-43e7-ad56-17d0f68bd964" start_index="0" end="e09a467f-674e-4b39-8777-73dcebd0d953" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="e09a467f-674e-4b39-8777-73dcebd0d953" start_index="0" end="f2fab3db-c1c2-4ec9-97bd-469a57b4ff3e" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="f07c94a7-9644-4aa2-b07d-f7ad144c4ca5" start_index="0" end="4b07dc53-c1ed-43e7-ad56-17d0f68bd964" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="f9e72b17-eef9-4664-83df-1d3b995384c4" start_index="0" end="a6bb16e4-c489-45b3-ae78-3de2eee5f1ef" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="f9e72b17-eef9-4664-83df-1d3b995384c4" start_index="0" end="cbecac11-e503-4b7d-9c64-9f2e0d48e782" end_index="3" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="a6bb16e4-c489-45b3-ae78-3de2eee5f1ef" start_index="0" end="4b07dc53-c1ed-43e7-ad56-17d0f68bd964" end_index="2" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="ab928705-19bf-4035-8679-0df64675346f" start_index="0" end="a6bb16e4-c489-45b3-ae78-3de2eee5f1ef" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="04d39e60-461e-4f69-8e25-d3142cb3b54b" start_index="0" end="4b07dc53-c1ed-43e7-ad56-17d0f68bd964" end_index="1" portType="0" />
