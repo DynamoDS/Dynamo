@@ -2708,6 +2708,9 @@ namespace Dynamo.Nodes
             get { return max; }
             set
             {
+                if (max < Value)
+                    Value = max;
+
                 max = value;
                 RaisePropertyChanged("Max");
             }
@@ -2718,6 +2721,9 @@ namespace Dynamo.Nodes
             get { return min; }
             set
             {
+                if (min > Value)
+                    Value = min;
+
                 min = value;
                 RaisePropertyChanged("Min");
             } 
