@@ -171,6 +171,7 @@
             <MenuItem Header="_View" Name="viewMenu">
                 
                 <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
+                          IsChecked="{Binding Path=FullscreenWatchShowing}"
                           Command="{Binding Path=ToggleFullscreenWatchShowingCommand}" />
                 
                 <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
