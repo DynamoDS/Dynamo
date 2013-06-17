@@ -62,6 +62,7 @@ namespace DynamoRevitTests
             _defsPath = Path.GetFullPath(defsLoc);
 
             _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
+            /*
             if (dynRevitSettings.Revit.Application.VersionName.Contains("2013"))
             {
                 _emptyModelPath = Path.Combine(_testPath, "empty2013A.rfa");
@@ -72,6 +73,10 @@ namespace DynamoRevitTests
                 _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
                 _emptyModelPath1 = Path.Combine(_testPath, "empty1.rfa");
             }
+            */
+
+            _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
+            _emptyModelPath1 = Path.Combine(_testPath, "empty1.rfa");
 
             //open an empty model before every test
             OpenEmptyModel();

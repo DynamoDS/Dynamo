@@ -754,7 +754,7 @@ namespace Dynamo.Nodes
             List<Curve> listCurves = new List<Curve>();
             for (; CLiter.MoveNext(); )
             {
-                listCurves.Add(CLiter.Current);
+                listCurves.Add(CLiter.Current.Clone());
             }
 
             var result = FSharpList<Value>.Empty;

@@ -992,7 +992,7 @@ namespace Dynamo.Nodes
     {
         public dynArcCenter()
         {
-            InPortData.Add(new PortData("center", "Center XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("center", "Center XYZ or Coordinate System", typeof(Value.Container)));
             InPortData.Add(new PortData("radius", "Radius", typeof(Value.Number)));
             InPortData.Add(new PortData("start", "Start Param", typeof(Value.Number)));
             InPortData.Add(new PortData("end", "End Param", typeof(Value.Number)));
@@ -1020,6 +1020,14 @@ namespace Dynamo.Nodes
             {
                 a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
                    (XYZ)((ReferencePoint)ptA).Position, radius, start, end, XYZ.BasisX, XYZ.BasisY
+                );
+            }
+            else if (ptA is Transform)
+            {
+                Transform trf = ptA as Transform;
+                XYZ center = trf.Origin;
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
+                             center, radius, start, end, trf.BasisX, trf.BasisY
                 );
             }
 
@@ -1103,7 +1111,7 @@ namespace Dynamo.Nodes
     {
         public dynEllipse()
         {
-            InPortData.Add(new PortData("center", "Center XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("center", "Center XYZ or Coordinate System", typeof(Value.Container)));
             InPortData.Add(new PortData("radX", "Major Radius", typeof(Value.Number)));
             InPortData.Add(new PortData("radY", "Minor Radius", typeof(Value.Number)));
             OutPortData.Add(new PortData("ell", "Ellipse", typeof(Value.Container)));
@@ -1136,6 +1144,15 @@ namespace Dynamo.Nodes
                (XYZ)((ReferencePoint)ptA).Position, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * RevitPI
                 );
             }
+            else if (ptA is Transform)
+            {
+                Transform trf = ptA as Transform;
+                XYZ center = trf.Origin;
+                ell = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(
+                    //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+                     center, radX, radY, trf.BasisX, trf.BasisY, 0, 2 * RevitPI
+                  );
+            }
 
             crvs.Add(ell);
 
@@ -1150,7 +1167,7 @@ namespace Dynamo.Nodes
     {
         public dynEllipticalArc()
         {
-            InPortData.Add(new PortData("center", "Center XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("center", "Center XYZ or Coordinate System", typeof(Value.Container)));
             InPortData.Add(new PortData("radX", "Major Radius", typeof(Value.Number)));
             InPortData.Add(new PortData("radY", "Minor Radius", typeof(Value.Number)));
             InPortData.Add(new PortData("start", "Start Param", typeof(Value.Number)));
@@ -1184,6 +1201,15 @@ namespace Dynamo.Nodes
                     //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
                (XYZ)((ReferencePoint)ptA).Position, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
                 );
+            }
+            else if (ptA is Transform)
+            {
+                Transform trf = ptA as Transform;
+                XYZ center = trf.Origin;
+                ell = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(
+                    //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+                     center, radX, radY, trf.BasisX, trf.BasisY, start, end
+                  );
             }
 
             crvs.Add(ell);
