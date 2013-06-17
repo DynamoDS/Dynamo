@@ -1991,9 +1991,11 @@ namespace Dynamo.Controls
                 {
                     var def = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(workspace);
                     def.Workspace.FilePath = path;
+
                     if (def != null)
                     {
                         this.SaveFunction(def, true);
+                        workspace.FilePath = path;
                     }
                     return;
                 }
@@ -2112,15 +2114,24 @@ namespace Dynamo.Controls
             // If asked to, write the definition to file
             if (writeDefinition)
             {
-                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string pluginsPath = Path.Combine(directory, "definitions");
-
-                try
+                string path = "";
+                if (String.IsNullOrEmpty(definition.Workspace.FilePath))
                 {
+                    var pluginsPath = this.Controller.CustomNodeLoader.GetDefaultSearchPath();
+
                     if (!Directory.Exists(pluginsPath))
                         Directory.CreateDirectory(pluginsPath);
 
-                    string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
+                    path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
+                }
+                else
+                {
+                    path = definition.Workspace.FilePath;
+                }
+                
+                try
+                {
+                
                     dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
 
                     if (addToSearch)

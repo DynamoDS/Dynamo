@@ -232,7 +232,7 @@ namespace Dynamo
                             var proxyDef = new FunctionDefinition(funcId);
                             proxyDef.Workspace = new FuncWorkspace(NickName, BuiltinNodeCategories.SCRIPTING_CUSTOMNODES);
                             proxyDef.Workspace.FilePath = null;
-
+                            
                             this.SetInputs(new List<string>());
                             this.SetOutputs(new List<string>());
                             this.RegisterAllPorts();
