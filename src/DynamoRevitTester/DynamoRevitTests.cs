@@ -307,7 +307,7 @@ namespace DynamoRevitTests
 
             DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
-            string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param end.dyn");
+            string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);

@@ -9,6 +9,8 @@ using Dynamo.Controls;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 using Dynamo.Commands;
+using NUnit.Core;
+using NUnit.Framework;
 
 namespace Dynamo.Utilities
 {
@@ -781,6 +783,10 @@ namespace Dynamo.Utilities
             {
                 DynamoCommands.WriteToLogCmd.Execute("There was an error opening the workbench.");
                 DynamoCommands.WriteToLogCmd.Execute(ex);
+
+                if (controller.Testing)
+                    Assert.Fail(ex.Message);
+
                 def = null;
                 return false;
             }
