@@ -27,6 +27,7 @@ namespace Dynamo
 
         public dynWorkspaceModel _model;
         
+        
         private bool isConnecting = false;
 
         public event EventHandler StopDragging;
@@ -281,6 +282,8 @@ namespace Dynamo
         public dynWorkspaceViewModel(dynWorkspaceModel model, DynamoViewModel vm)
         {
             _model = model;
+
+            this.CurrentOffset = new Point(10,10);
 
             var nodesColl = new CollectionContainer();
             nodesColl.Collection = Nodes;

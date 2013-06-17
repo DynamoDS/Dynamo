@@ -465,9 +465,7 @@
         </ScrollViewer>
 
         <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
-              Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black">
-            
-        </Grid>
+              Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black"/>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
 
@@ -534,7 +532,7 @@
                         Height="2" 
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Stretch" 
-                        Margin="0" Background="#FF646464"/>
+                        Margin="0" Background="#999"/>
 
         <GridSplitter ResizeDirection="Auto" 
                           Grid.Column="1" 
@@ -544,7 +542,7 @@
                           Width="2"
                           HorizontalAlignment="Stretch" 
                           VerticalAlignment="Stretch" 
-                          Margin="0" Background="#FF646464"/>
+                          Margin="0" Background="#999"/>
 
     </Grid>
     

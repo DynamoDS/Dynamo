@@ -210,7 +210,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reference Point On Cell by UV")]
+    [NodeName("Reference Point On Face by UV")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an element which owns a reference point on a selected face.")]
     [NodeSearchTags("ref", "pt")]
