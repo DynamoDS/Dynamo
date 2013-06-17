@@ -2407,7 +2407,6 @@ namespace Dynamo.Nodes
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Creates a number.")]
-    [NodeTypeId("100308c5-3b62-406d-8b2c-df7c6221fe4e")]
     public class dynDoubleInput : dynDouble
     {
 
