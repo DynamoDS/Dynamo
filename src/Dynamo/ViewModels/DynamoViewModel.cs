@@ -22,6 +22,9 @@ using Dynamo.Utilities;
 
 using Microsoft.Practices.Prism.Commands;
 
+using NUnit.Core;
+using NUnit.Framework;
+
 namespace Dynamo.Controls
 {
 
@@ -579,7 +582,7 @@ namespace Dynamo.Controls
             else
             {
                 ext = ".dyf";
-                fltr = "Dynamo Function (*.dyf)|*.dyf";
+                fltr = "Dynamo Custom Node (*.dyf)|*.dyf";
             }
             fltr += "|All files (*.*)|*.*";
 
@@ -600,6 +603,11 @@ namespace Dynamo.Controls
             {
                 var fi = new FileInfo(_model.CurrentSpace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
+                _fileDialog.FileName = fi.Name;
+            }
+            else if (_model.CurrentSpace is FuncWorkspace)
+            {
+                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath;
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -1307,6 +1315,12 @@ namespace Dynamo.Controls
                 return;
             } 
 
+            if ( (node is dynSymbol || node is dynOutput) && _model.CurrentSpace is HomeWorkspace)
+            {
+                DynamoCommands.WriteToLogCmd.Execute("Cannot place dynSymbol or dynOutput in HomeWorkspace");
+                return;
+            }
+
             _model.CurrentSpace.Nodes.Add(node);
             node.WorkSpace = dynSettings.Controller.DynamoViewModel.CurrentSpace;
 
@@ -1943,6 +1957,10 @@ namespace Dynamo.Controls
                 Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
                 CleanWorkbench();
+
+                if (controller.Testing)
+                    Assert.Fail(ex.Message);
+
                 return false;
             }
 
@@ -1974,9 +1992,11 @@ namespace Dynamo.Controls
                 {
                     var def = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(workspace);
                     def.Workspace.FilePath = path;
+
                     if (def != null)
                     {
                         this.SaveFunction(def, true);
+                        workspace.FilePath = path;
                     }
                     return;
                 }
@@ -2095,15 +2115,24 @@ namespace Dynamo.Controls
             // If asked to, write the definition to file
             if (writeDefinition)
             {
-                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string pluginsPath = Path.Combine(directory, "definitions");
-
-                try
+                string path = "";
+                if (String.IsNullOrEmpty(definition.Workspace.FilePath))
                 {
+                    var pluginsPath = this.Controller.CustomNodeLoader.GetDefaultSearchPath();
+
                     if (!Directory.Exists(pluginsPath))
                         Directory.CreateDirectory(pluginsPath);
 
-                    string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
+                    path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
+                }
+                else
+                {
+                    path = definition.Workspace.FilePath;
+                }
+                
+                try
+                {
+                
                     dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
 
                     if (addToSearch)
@@ -2433,30 +2462,11 @@ namespace Dynamo.Controls
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
                     dynNodeModel el = CreateNodeInstance( t, nickname, guid );
+                    el.WorkSpace = _model.CurrentSpace;
                     el.LoadElement(elNode);
 
-                    if (el is dynFunction)
-                    {
-                        var dynFunc = (dynFunction) el;
-                        if (!this.Controller.CustomNodeLoader.Contains(dynFunc.Definition.FunctionId))
-                        {
-                            var user_msg = "Failed to load custom node: " + dynFunc.NickName +
-                                           ".  Is the node's .dyf folder in the definitions folder?  \n\nDynamo will " +
-                                           "load the definition without this node.";
-
-                            System.Windows.MessageBox.Show(user_msg,
-                                                            "Error loading definition",
-                                                            MessageBoxButton.OK,
-                                                            MessageBoxImage.Warning);
-
-                            DynamoLogger.Instance.Log(user_msg);
-                            continue;
-                        }
-                    }
-
                     _model.CurrentSpace.Nodes.Add(el);
-                    el.WorkSpace = _model.CurrentSpace;
-
+                    
                     el.X = x;
                     el.Y = y;
 

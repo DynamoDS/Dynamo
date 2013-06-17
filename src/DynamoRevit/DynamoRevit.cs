@@ -28,6 +28,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Linq;
 using System.Windows.Threading;
+using System.Xml.Serialization;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -389,38 +390,11 @@ namespace Dynamo.Applications
                 foreach (TestMethod t in fixture.Tests)
                 {
                     Results.Results.Add(new DynamoRevitTest(t));
-
-                    //Debug.WriteLine(string.Format("Running test {0}", t.TestName));
-                    //try
-                    //{
-                    //    TestName testName = t.TestName;
-                    //    TestFilter filter = new NameFilter(testName);
-                    //    TestResult result = t.Run(new RevitTestEventListener(t, Results), filter);
-                    //    ResultSummarizer summ = new ResultSummarizer(result);
-                    //    Assert.AreEqual(1, summ.ResultCount);
-                    //}
-                    //catch (Exception e)
-                    //{
-                    //    DynamoLogger.Instance.Log(e.Message);
-                    //    DynamoLogger.Instance.Log(string.Format("Failed to run test : {0}", t.TestName));
-                    //}
                 }
 
                 resultsView.Show();
 
-                IdlePromise.ExecuteOnIdle(delegate
-                {
-                    DynamoLogger.Instance.FinishLogging();
-                });
-
-                //serialize the test results to a file
-                System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(Results.GetType());
-                string resultsDir = Path.GetDirectoryName(DynamoLogger.Instance.LogPath);
-                string resultsPath = Path.Combine(resultsDir, string.Format("dynamoRevitTests_{0}.xml", Guid.NewGuid().ToString()));
-                using(TextWriter tw = new StreamWriter(resultsPath))
-                {
-                    x.Serialize(tw, Results);
-                }
+                
 
             }
             catch (Exception ex)
@@ -456,16 +430,36 @@ namespace Dynamo.Applications
         }
     }
 
+    public delegate void TestStartedHandler(object sender, EventArgs e);
+
+    public delegate void TestCompletedHandler(object sender, EventArgs e);
+
     /// <summary>
     /// A wrapper to an NUnit test.
     /// </summary>
     public class DynamoRevitTest:NotificationObject
     {
+        public event TestStartedHandler TestStarted;
+        protected virtual void OnTestStarted(EventArgs e)
+        {
+            if (TestStarted != null)
+                TestStarted(this, e);
+        }
+
+        public event TestCompletedHandler TestCompleted;
+        protected virtual void OnTestCompleted(EventArgs e)
+        {
+            if (TestCompleted != null)
+                TestCompleted(this, e);
+        }
+
         DynamoRevitTestResultType _resultType;
         private string _message;
         private TestMethod _test;
         private readonly RevitTestEventListener _listener;
-        
+        private string _testName="";
+
+        [XmlIgnore]
         public DelegateCommand RunCommand { get; set; }
 
         public DynamoRevitTestResultType ResultType 
@@ -488,15 +482,22 @@ namespace Dynamo.Applications
             }
         }
 
+        [XmlAttribute]
         public string TestName
         {
-            get { return _test.TestName.Name; }
+            get { return _testName; }
+            set { _testName = value; }
         }
 
+        [XmlIgnoreAttribute]
         public TestMethod Test
         {
             get { return _test; } 
             set { _test = value; }
+        }
+
+        public DynamoRevitTest()
+        {
         }
 
         public DynamoRevitTest(TestMethod test)
@@ -505,10 +506,13 @@ namespace Dynamo.Applications
             _listener = new RevitTestEventListener(this);
             RunCommand = new DelegateCommand(Run, CanRun);
             _resultType = DynamoRevitTestResultType.Unknown;
+            _testName = _test.TestName.Name;
         }
 
         public void Run()
         {
+            OnTestStarted(EventArgs.Empty);
+
             Debug.WriteLine(string.Format("Running test {0}", _test.TestName));
             try
             {
@@ -523,6 +527,8 @@ namespace Dynamo.Applications
                 DynamoLogger.Instance.Log(e.Message);
                 DynamoLogger.Instance.Log(string.Format("Failed to run test : {0}", _test.TestName));
             }
+
+            OnTestCompleted(EventArgs.Empty);
         }
 
         public bool CanRun()
@@ -582,6 +588,7 @@ namespace Dynamo.Applications
     public class DynamoRevitTestRunner:NotificationObject
     {
         ObservableCollection<DynamoRevitTest> _tests;
+
         public ObservableCollection<DynamoRevitTest> Results
         {
             get { return _tests; }
@@ -590,7 +597,10 @@ namespace Dynamo.Applications
                 _tests = value;
             }
         }
+        
         public DelegateCommand RunAllCommand { get; set; }
+
+        public DelegateCommand SaveCommand { get; set; }
 
         public Stopwatch Timer { get; set; }
 
@@ -605,9 +615,10 @@ namespace Dynamo.Applications
                 int passCount = list.Count(x => x.ResultType == DynamoRevitTestResultType.Pass);
                 int errorCount = list.Count(x => x.ResultType == DynamoRevitTestResultType.Error);
                 int exceptionCount = list.Count(x => x.ResultType == DynamoRevitTestResultType.Exception);
+                int runCount = list.Count(x => x.ResultType != DynamoRevitTestResultType.Unknown);
 
                 return (string.Format("{0} tests run. {1} passed. {2} failed. {3} exceptions. {4} total time ellapsed.",
-                    new object[] { Results.Count, passCount, failCount, exceptionCount, Timer.Elapsed.ToString() }));
+                    new object[] { runCount, passCount, failCount, exceptionCount, Timer.Elapsed.ToString() }));
             }
         }
 
@@ -615,29 +626,75 @@ namespace Dynamo.Applications
         {
             _tests = new ObservableCollection<DynamoRevitTest>();
             _tests.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_results_CollectionChanged);
-            RunAllCommand = new DelegateCommand(RunAllTests, CanRunAllTests);
             Timer = new Stopwatch();
+            RunAllCommand = new DelegateCommand(RunAllTests, CanRunAllTests);
+            SaveCommand = new DelegateCommand(Save, CanSave);
         }
 
         void _results_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            foreach (DynamoRevitTest t in e.NewItems)
+            {
+                t.TestStarted += new TestStartedHandler(t_TestStarted);
+                t.TestCompleted += new TestCompletedHandler(t_TestCompleted);
+            }
             RaisePropertyChanged("Results");
+        }
+
+        void t_TestStarted(object sender, EventArgs e)
+        {
+            if (!Timer.IsRunning)
+            {
+                Timer.Start();
+            }
+        }
+
+        void t_TestCompleted(object sender, EventArgs e)
+        {
+            Timer.Stop();
+            RaisePropertyChanged("TestSummary");
+            Save();
         }
 
         public void RunAllTests()
         {
             Timer.Reset();
 
-            Timer.Start();
             foreach (DynamoRevitTest t in _tests)
             {
                 t.Run();
                 RaisePropertyChanged("TestSummary");
             }
-            Timer.Stop();
+
+            Save();
         }
 
         public bool CanRunAllTests()
+        {
+            return true;
+        }
+
+        public void Save()
+        {
+            try
+            {
+                //serialize the test results to a file
+                System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(Results.GetType());
+                string resultsDir = Path.GetDirectoryName(DynamoLogger.Instance.LogPath);
+                string resultsPath = Path.Combine(resultsDir,
+                                                  string.Format("dynamoRevitTests_{0}.xml", Guid.NewGuid().ToString()));
+                using (TextWriter tw = new StreamWriter(resultsPath))
+                {
+                    x.Serialize(tw, Results);
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e.Message);   
+            }
+        }
+
+        public bool CanSave()
         {
             return true;
         }
