@@ -121,10 +121,14 @@ namespace Dynamo.Controls
                 st.ScaleX += zoom;
                 st.ScaleY += zoom;
 
-                Debug.WriteLine(st.ScaleX);
+                //Debug.WriteLine(st.ScaleX);
 
                 tt.X = abosuluteX - relative.X * st.ScaleX;
                 tt.Y = abosuluteY - relative.Y * st.ScaleY;
+
+                dynWorkspaceViewModel viewModel = DataContext as dynWorkspaceViewModel;
+                if (viewModel.SetZoomCommand.CanExecute(st.ScaleX))
+                    viewModel.SetZoomCommand.Execute(st.ScaleX);
             }
         }
 
