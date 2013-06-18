@@ -307,6 +307,46 @@
         </Setter>
     </Style>
 
+    <Style x:Key="SErrorTextButton" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+
+                    <Grid x:Name="container" Background="Transparent">
+                        <Border x:Name="inner" BorderBrush="#FF4747" BorderThickness="1">
+
+                            <Border.Background>
+                                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                                    <GradientStop Color="#FF4747" Offset="1.5" />
+                                    <GradientStop Color="#FF7575" Offset="0.25" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <TextBlock x:Name="text" HorizontalAlignment="Center" Foreground="WhiteSmoke" Margin="7,10,7,7" FontSize="14" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
+                        </Border>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="Button.IsMouseOver" Value="true">
+                            <Setter TargetName="inner" Property = "Background" Value="LightBlue"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="true">
+                            <Setter TargetName="text" Property = "Foreground" Value="WhiteSmoke"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="text" Property = "Foreground" Value="DarkGray"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <Style x:Key="SNodeTextButton" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>
