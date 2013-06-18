@@ -318,6 +318,7 @@ namespace Dynamo.Controls
                 RaisePropertyChanged("IsShowingConnectors");
             }
         }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller)
@@ -2363,13 +2364,17 @@ namespace Dynamo.Controls
 
             Stopwatch sw = new Stopwatch();
            
-
             try
             {
                 #region read xml file
 
+                sw.Start();
+
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(xmlPath);
+                sw.Stop();
+                Log(string.Format("{0} elapsed for loading xml.", sw.Elapsed));
+                sw.Reset();
 
                 foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
                 {
@@ -2512,10 +2517,14 @@ namespace Dynamo.Controls
                 sw.Stop();
                 Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed));
                 sw.Reset();
+
+                //sw.Start();
+                //OnRequestLayoutUpdate(this, EventArgs.Empty);
+                //sw.Stop();
+                //Log(string.Format("{0} ellapsed for updating layout.", sw.Elapsed));
+                //sw.Reset();
+
                 sw.Start();
-
-                OnRequestLayoutUpdate(this, EventArgs.Empty);
-
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
                     XmlAttribute guidStartAttrib = connector.Attributes[0];
@@ -2555,8 +2564,13 @@ namespace Dynamo.Controls
 
                     var newConnector = dynConnectorModel.Make(start, end,
                                                         startIndex, endIndex, portType);
+
+                    Stopwatch addTimer = new Stopwatch();
+                    addTimer.Start();
                     if (newConnector != null)
                         _model.CurrentSpace.Connectors.Add(newConnector);
+                    addTimer.Stop();
+                    Debug.WriteLine(string.Format("{0} elapsed for add connector to collection.", addTimer.Elapsed));
 
                 }
 

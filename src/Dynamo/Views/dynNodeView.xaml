@@ -179,7 +179,7 @@
                          IsHitTestVisible="False" 
                          Canvas.ZIndex="5" 
                          Height ="25"
-                         Background="#FFB4B4B4" FontStyle="Normal" Foreground="LightGray" 
+                         Background="#FF6E6E6E" FontStyle="Normal" Foreground="LightGray" 
             Grid.Row="0" Grid.Column="0">
         </TextBlock>
         

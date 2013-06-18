@@ -82,6 +82,8 @@ namespace Dynamo.Connectors
 
         private dynConnectorModel(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType )
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             pStart = start.OutPorts[startIndex];
 
             dynPortModel endPort = null;
@@ -91,6 +93,8 @@ namespace Dynamo.Connectors
 
             pStart.Connect(this);
             this.Connect(endPort);
+            sw.Stop();
+            Debug.WriteLine(string.Format("{0} elapsed for constructing connector.", sw.Elapsed));
         }
 
         #endregion
