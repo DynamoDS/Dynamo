@@ -213,6 +213,13 @@
                           Command="{Binding Path=ShowHideConnectorsCommand}">
                 </MenuItem>
                 
+                <MenuItem Focusable="False" Header="_Find Node By Id" IsCheckable="False" Name="FindNodeById">
+                    <WrapPanel HorizontalAlignment="Stretch">
+                        <TextBox Name="id_tb" Width="100"></TextBox>
+                        <Button Content="Find" Name="id_butt" Click="Id_butt_OnClick"></Button>
+                    </WrapPanel>
+                </MenuItem>
+                
             </MenuItem>
 
             <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
