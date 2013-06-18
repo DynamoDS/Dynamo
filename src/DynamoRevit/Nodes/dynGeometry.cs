@@ -2452,4 +2452,53 @@ namespace Dynamo.Nodes
             return Value.NewContainer(resultSolid);
         }
     }
+
+    [NodeName("Solid On Curve Loops")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
+    [NodeDescription("Skin Solid by patch faces on set of curve loops.")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynSkinCurveLoops : dynSolidBase
+    {
+
+        public dynSkinCurveLoops()
+        {
+            InPortData.Add(new PortData("CurveLoops", "Additional curve loops ready for patching", typeof(Value.List)));
+            OutPortData.Add(new PortData("Result", "Computed Solid", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var listInCurveLoops = ((Value.List)args[0]).Item.Select(
+                    x => ((CurveLoop)((Value.Container)x).Item)
+                       ).ToList();
+
+            Type SolidType = typeof(Autodesk.Revit.DB.Solid);
+
+            MethodInfo[] solidTypeMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodCreate = "skinCurveLoopsIntoSolid";
+            Solid resultSolid = null;
+
+            foreach (MethodInfo m in solidTypeMethods)
+            {
+                if (m.Name == nameOfMethodCreate)
+                {
+                    object[] argsM = new object[1];
+                    argsM[0] = listInCurveLoops;
+
+                    resultSolid = (Solid)m.Invoke(null, argsM);
+
+                    break;
+                }
+            }
+            if (resultSolid == null)
+                throw new Exception("Could not make patched solid, list Onesided Edges to investigate");
+
+            solids.Add(resultSolid);
+
+            return Value.NewContainer(resultSolid);
+        }
+    }
 }
