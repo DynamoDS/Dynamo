@@ -2361,6 +2361,9 @@ namespace Dynamo.Controls
             Log("Opening home workspace " + xmlPath + "...");
             CleanWorkbench();
 
+            Stopwatch sw = new Stopwatch();
+           
+
             try
             {
                 #region read xml file
@@ -2395,6 +2398,8 @@ namespace Dynamo.Controls
                 //add the node's guid to the bad nodes collection
                 //so we can avoid attempting to make connections to it
                 List<Guid> badNodes = new List<Guid>();
+
+                sw.Start();
 
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
@@ -2504,6 +2509,11 @@ namespace Dynamo.Controls
                     //el.LoadElement(elNode);
                 }
 
+                sw.Stop();
+                Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed));
+                sw.Reset();
+                sw.Start();
+
                 OnRequestLayoutUpdate(this, EventArgs.Empty);
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
@@ -2550,6 +2560,11 @@ namespace Dynamo.Controls
 
                 }
 
+                sw.Stop();
+                Log(string.Format("{0} ellapsed for loading connectors.", sw.Elapsed));
+                sw.Reset();
+                sw.Start();
+
                 #region instantiate notes
 
                 if (nNodesList != null)
@@ -2577,6 +2592,10 @@ namespace Dynamo.Controls
                 }
 
                 #endregion
+
+                sw.Stop();
+                Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed));
+                sw.Reset();
 
                 foreach (dynNodeModel e in _model.CurrentSpace.Nodes)
                     e.EnableReporting();
