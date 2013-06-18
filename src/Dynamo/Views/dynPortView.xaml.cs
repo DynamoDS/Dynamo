@@ -46,8 +46,9 @@ namespace Dynamo.Connectors
             //Debug.WriteLine("Port loaded.");
             canvas = WPF.FindUpVisualTree<Dynamo.Controls.DragCanvas>(this);
 
-            //after the port is loaded, update its center point
-            ViewModel.UpdateCenter(CalculateCenter());
+            if (ViewModel != null)
+                ViewModel.UpdateCenter(CalculateCenter());
+
         }
 
         #endregion constructors
