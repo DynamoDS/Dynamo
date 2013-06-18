@@ -341,6 +341,7 @@ namespace Dynamo.Connectors
                         BezVisibility = Visibility.Hidden;
                         PlineVisibility = Visibility.Visible;
                     }
+                    Redraw();
                     break;
                 case "IsShowingConnectors":
                     RaisePropertyChanged("BezVisibility");
