@@ -55,6 +55,10 @@
                                 Modifiers="Control"
                                 Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
+        <KeyBinding Key="G"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.ToggleCanNavigateBackgroundCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+
         <KeyBinding Key="W"
                                 Modifiers="Control"
                                 Command="{Binding Path=DataContext.AddNoteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
@@ -175,7 +179,9 @@
                           Command="{Binding Path=ToggleFullscreenWatchShowingCommand}" />
 
                 <MenuItem Header="Navigate Background"
+                          IsEnabled="{Binding Path=FullscreenWatchShowing}"
                           IsChecked="{Binding Path=CanNavigateBackground}"
+                          InputGestureText="Ctrl+G"
                           Command="{Binding Path=ToggleCanNavigateBackgroundCommand}" />
 
                 <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"

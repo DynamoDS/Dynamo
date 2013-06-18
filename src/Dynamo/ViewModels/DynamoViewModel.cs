@@ -182,6 +182,9 @@ namespace Dynamo.Controls
                 {
                     workspace.FullscreenChanged();
                 }
+
+                if (!fullscreenWatchShowing && canNavigateBackground)
+                    CanNavigateBackground = false;
             }
         }
 
@@ -193,12 +196,11 @@ namespace Dynamo.Controls
                 canNavigateBackground = value;
                 RaisePropertyChanged("CanNavigateBackground");
 
-                //// NOTE: I couldn't get the binding to work in the XAML so
-                ////       this is a temporary hack
-                //foreach (dynWorkspaceViewModel workspace in Workspaces)
-                //{
-                //    workspace.FullscreenChanged();
-                //}
+                int workspace_index = CurrentWorkspaceIndex;
+
+                dynWorkspaceViewModel view_model = Workspaces[workspace_index];
+
+                view_model.WatchEscapeIsDown = value;
             }
         }
 
@@ -1145,13 +1147,16 @@ namespace Dynamo.Controls
 
         private void ToggleCanNavigateBackground()
         {
-            if (FullscreenWatchShowing)
+            if (!FullscreenWatchShowing)
+                return;
+
+            if (CanNavigateBackground)
             {
-                FullscreenWatchShowing = false;
+                CanNavigateBackground = false;
             }
             else
             {
-                FullscreenWatchShowing = true;
+                CanNavigateBackground = true;
             }
         }
 
