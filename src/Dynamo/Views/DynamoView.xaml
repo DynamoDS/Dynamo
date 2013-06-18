@@ -173,7 +173,11 @@
                 <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
                           IsChecked="{Binding Path=FullscreenWatchShowing}"
                           Command="{Binding Path=ToggleFullscreenWatchShowingCommand}" />
-                
+
+                <MenuItem Header="Navigate Background"
+                          IsChecked="{Binding Path=CanNavigateBackground}"
+                          Command="{Binding Path=ToggleCanNavigateBackgroundCommand}" />
+
                 <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
                           Command="{Binding Path=ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
 

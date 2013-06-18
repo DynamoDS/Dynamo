@@ -57,6 +57,7 @@ namespace Dynamo.Controls
         private Point transformOrigin;
         private bool consoleShowing;
         private bool fullscreenWatchShowing = false;
+        private bool canNavigateBackground = false;
         private DynamoController controller;
         public StringWriter sw;
         private bool runEnabled = true;
@@ -94,6 +95,7 @@ namespace Dynamo.Controls
         public DelegateCommand<object> PasteCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
+        public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
         public DelegateCommand CancelRunCommand { get; set; }
         public DelegateCommand<object> SaveImageCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
@@ -180,6 +182,23 @@ namespace Dynamo.Controls
                 {
                     workspace.FullscreenChanged();
                 }
+            }
+        }
+
+        public bool CanNavigateBackground
+        {
+            get { return canNavigateBackground; }
+            set
+            {
+                canNavigateBackground = value;
+                RaisePropertyChanged("CanNavigateBackground");
+
+                //// NOTE: I couldn't get the binding to work in the XAML so
+                ////       this is a temporary hack
+                //foreach (dynWorkspaceViewModel workspace in Workspaces)
+                //{
+                //    workspace.FullscreenChanged();
+                //}
             }
         }
 
@@ -347,6 +366,7 @@ namespace Dynamo.Controls
             PasteCommand = new DelegateCommand<object>(Paste, CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
+            ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             SaveImageCommand = new DelegateCommand<object>(SaveImage, CanSaveImage);
             ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
@@ -1119,6 +1139,23 @@ namespace Dynamo.Controls
         }
 
         private bool CanToggleFullscreenWatchShowing()
+        {
+            return true;
+        }
+
+        private void ToggleCanNavigateBackground()
+        {
+            if (FullscreenWatchShowing)
+            {
+                FullscreenWatchShowing = false;
+            }
+            else
+            {
+                FullscreenWatchShowing = true;
+            }
+        }
+
+        private bool CanToggleCanNavigateBackground()
         {
             return true;
         }
