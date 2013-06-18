@@ -43,15 +43,19 @@ namespace Dynamo.Connectors
         void dynPort_Loaded(object sender, RoutedEventArgs e)
         {
             canvas = WPF.FindUpVisualTree<Dynamo.Controls.DragCanvas>(this);
-            ViewModel.UpdateCenter(CalculateCenter());
+
+            if (ViewModel != null)
+                ViewModel.UpdateCenter(CalculateCenter());
 
             //an event handler for the port's node updated event
-            ViewModel.PortModel.Owner.Updated += new EventHandler(Owner_Updated);
+            if (ViewModel != null)
+                ViewModel.PortModel.Owner.Updated += new EventHandler(Owner_Updated);
         }
 
         void Owner_Updated(object sender, EventArgs e)
         {
-            ViewModel.UpdateCenter(CalculateCenter());
+            if (ViewModel != null)
+                ViewModel.UpdateCenter(CalculateCenter());
         }
 
         #endregion constructors

@@ -120,10 +120,12 @@
 
             <MenuItem Header="_File" Name="fileMenu" Focusable="False">
 
-                <MenuItem Header="_New Home Workspace..." Command="{Binding Path=NewHomeWorkspaceCommand}"  Name="newHomeWorkspace" InputGestureText="Ctrl+N">
-                </MenuItem>
-                
-                <MenuItem Header="_New Custom Node..." Command="{Binding Path=ShowNewFunctionDialogCommand}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
+                <MenuItem Header="_New" Name="newMenu">
+                    <MenuItem Header="_Home Workspace..." Command="{Binding Path=NewHomeWorkspaceCommand}"  Name="newHomeWorkspace" InputGestureText="Ctrl+N">
+                    </MenuItem>
+
+                    <MenuItem Header="_Custom Node..." Command="{Binding Path=ShowNewFunctionDialogCommand}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
+                    </MenuItem>
                 </MenuItem>
 
                 <MenuItem Header="_Open..." Command="{Binding Path=ShowOpenDialogAndOpenResultCommand}" Name="openButton" InputGestureText="Ctrl+O">
