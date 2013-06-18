@@ -279,7 +279,7 @@ namespace Dynamo
                 RaisePropertyChanged("Zoom");
             }
         }
-        
+
         #endregion
 
         public dynWorkspaceViewModel(dynWorkspaceModel model, DynamoViewModel vm)
@@ -304,7 +304,7 @@ namespace Dynamo
             //watch3DColl.Collection = Watch3DViewModels;
             //WorkspaceElements.Add(watch3DColl);
             
-            Watch3DViewModels.Add(new Watch3DFullscreenViewModel(this));
+            //Watch3DViewModels.Add(new Watch3DFullscreenViewModel(this));
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
@@ -321,6 +321,7 @@ namespace Dynamo
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             SetZoomCommand = new DelegateCommand<object>(SetZoom, CanSetZoom);
             FindByIdCommand = new DelegateCommand<object>(FindById, CanFindById);
+
             DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
 
             // sync collections
@@ -524,8 +525,12 @@ namespace Dynamo
             //set the current offset without triggering
             //any property change notices.
             //_model.CurrentOffset = new Point(p.X, p.Y);
-            _model.X = p.X;
-            _model.Y = p.Y;
+            if (_model.X != p.X && _model.Y != p.Y)
+            {
+                //Debug.WriteLine("Setting workspace offset.");
+                _model.X = p.X;
+                _model.Y = p.Y;
+            }
         }
 
         private bool CanSetCurrentOffset(object parameter)

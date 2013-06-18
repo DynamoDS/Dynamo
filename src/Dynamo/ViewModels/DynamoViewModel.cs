@@ -50,26 +50,22 @@ namespace Dynamo.Controls
         }
         
         private DynamoModel _model;
-
         private string logText;
         private ConnectorType connectorType;
-
         private Point transformOrigin;
         private bool consoleShowing;
-        private bool fullscreenWatchShowing = false;
-        private bool canNavigateBackground = false;
         private DynamoController controller;
         public StringWriter sw;
         private bool runEnabled = true;
         protected bool canRunDynamically = true;
         protected bool debug = false;
         protected bool dynamicRun = false;
-        
         private string UnlockLoadPath;
         private bool uiLocked = true;
-        
         private string editName = "";
         private bool isShowingConnectors = true;
+        private bool fullscreenWatchShowing = false;
+        private bool canNavigateBackground = false;
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -95,8 +91,6 @@ namespace Dynamo.Controls
         public DelegateCommand<object> CopyCommand { get; set; }
         public DelegateCommand<object> PasteCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
-        public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
-        public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
         public DelegateCommand CancelRunCommand { get; set; }
         public DelegateCommand<object> SaveImageCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
@@ -114,6 +108,8 @@ namespace Dynamo.Controls
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand RefactorCustomNodeCommand { get; set; }
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
+        public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
+        public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -167,42 +163,6 @@ namespace Dynamo.Controls
             {
                 consoleShowing = value;
                 RaisePropertyChanged("ConsoleShowing");
-            }
-        }
-
-        public bool FullscreenWatchShowing
-        {
-            get { return fullscreenWatchShowing; }
-            set
-            {
-                fullscreenWatchShowing = value;
-                RaisePropertyChanged("FullscreenWatchShowing");
-
-                // NOTE: I couldn't get the binding to work in the XAML so
-                //       this is a temporary hack
-                foreach (dynWorkspaceViewModel workspace in Workspaces)
-                {
-                    workspace.FullscreenChanged();
-                }
-
-                if (!fullscreenWatchShowing && canNavigateBackground)
-                    CanNavigateBackground = false;
-            }
-        }
-
-        public bool CanNavigateBackground
-        {
-            get { return canNavigateBackground; }
-            set
-            {
-                canNavigateBackground = value;
-                RaisePropertyChanged("CanNavigateBackground");
-
-                int workspace_index = CurrentWorkspaceIndex;
-
-                dynWorkspaceViewModel view_model = Workspaces[workspace_index];
-
-                view_model.WatchEscapeIsDown = value;
             }
         }
 
@@ -340,6 +300,42 @@ namespace Dynamo.Controls
             }
         }
 
+        public bool FullscreenWatchShowing
+        {
+            get { return fullscreenWatchShowing; }
+            set
+            {
+                fullscreenWatchShowing = value;
+                RaisePropertyChanged("FullscreenWatchShowing");
+
+                // NOTE: I couldn't get the binding to work in the XAML so
+                //       this is a temporary hack
+                foreach (dynWorkspaceViewModel workspace in dynSettings.Controller.DynamoViewModel.Workspaces)
+                {
+                    workspace.FullscreenChanged();
+                }
+
+                if (!fullscreenWatchShowing && canNavigateBackground)
+                    CanNavigateBackground = false;
+            }
+        }
+
+        public bool CanNavigateBackground
+        {
+            get { return canNavigateBackground; }
+            set
+            {
+                canNavigateBackground = value;
+                RaisePropertyChanged("CanNavigateBackground");
+
+                int workspace_index = CurrentWorkspaceIndex;
+
+                dynWorkspaceViewModel view_model = Workspaces[workspace_index];
+
+                view_model.WatchEscapeIsDown = value;
+            }
+        }
+        
         #endregion
 
         public DynamoViewModel(DynamoController controller)
@@ -380,8 +376,6 @@ namespace Dynamo.Controls
             CopyCommand = new DelegateCommand<object>(Copy, CanCopy);
             PasteCommand = new DelegateCommand<object>(Paste, CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
-            ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
-            ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             SaveImageCommand = new DelegateCommand<object>(SaveImage, CanSaveImage);
             ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
@@ -399,6 +393,8 @@ namespace Dynamo.Controls
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
             RefactorCustomNodeCommand = new DelegateCommand(RefactorCustomNode, CanRefactorCustomNode);
             ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
+            ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
+            ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             #endregion
         }
 
@@ -1143,43 +1139,6 @@ namespace Dynamo.Controls
         }
 
         private bool CanToggleConsoleShowing()
-        {
-            return true;
-        }
-
-        private void ToggleFullscreenWatchShowing()
-        {
-            if (FullscreenWatchShowing)
-            {
-                FullscreenWatchShowing = false;
-            }
-            else
-            {
-                FullscreenWatchShowing = true;
-            }
-        }
-
-        private bool CanToggleFullscreenWatchShowing()
-        {
-            return true;
-        }
-
-        private void ToggleCanNavigateBackground()
-        {
-            if (!FullscreenWatchShowing)
-                return;
-
-            if (CanNavigateBackground)
-            {
-                CanNavigateBackground = false;
-            }
-            else
-            {
-                CanNavigateBackground = true;
-            }
-        }
-
-        private bool CanToggleCanNavigateBackground()
         {
             return true;
         }
@@ -2557,11 +2516,9 @@ namespace Dynamo.Controls
                 Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
-                //sw.Start();
                 //OnRequestLayoutUpdate(this, EventArgs.Empty);
-                //sw.Stop();
-                //Log(string.Format("{0} ellapsed for updating layout.", sw.Elapsed));
-                //sw.Reset();
+                //Log(string.Format("{0} ellapsed for updating layout.", sw.Elapsed - previousElapsed));
+                //previousElapsed = sw.Elapsed;
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
@@ -2844,6 +2801,61 @@ namespace Dynamo.Controls
         }
 
         private bool CanShowConnectors()
+        {
+            return true;
+        }
+
+        private void ToggleFullscreenWatchShowing()
+        {
+            if (FullscreenWatchShowing)
+            {
+                //delete the watches
+                foreach (dynWorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
+                {
+                    vm.Watch3DViewModels.Clear();
+                }
+
+                FullscreenWatchShowing = false;
+            }
+            else
+            {
+                //construct a watch
+                foreach (dynWorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
+                {
+                    vm.Watch3DViewModels.Add(new Watch3DFullscreenViewModel(vm));
+                }
+
+                //run the expression to refresh
+                if (dynSettings.Controller.IsProcessingCommandQueue)
+                    return;
+
+                dynSettings.Controller.RunCommand(dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null);
+
+                FullscreenWatchShowing = true;
+            }
+        }
+
+        private bool CanToggleFullscreenWatchShowing()
+        {
+            return true;
+        }
+
+        private void ToggleCanNavigateBackground()
+        {
+            if (!FullscreenWatchShowing)
+                return;
+
+            if (CanNavigateBackground)
+            {
+                CanNavigateBackground = false;
+            }
+            else
+            {
+                CanNavigateBackground = true;
+            }
+        }
+
+        private bool CanToggleCanNavigateBackground()
         {
             return true;
         }

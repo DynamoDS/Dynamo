@@ -31,13 +31,18 @@ namespace Dynamo.Views
             selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
             DataContextChanged += new DependencyPropertyChangedEventHandler(dynWorkspaceView_DataContextChanged);
 
-            // Make new Watch3DFullscreenViewModel
-            // Make new Watch3DFullscreenView(input: viewmodel)
-            // attach to bench through mainGrid
+            this.Loaded += new RoutedEventHandler(dynWorkspaceView_Loaded);
+            this.LayoutUpdated += new EventHandler(dynWorkspaceView_LayoutUpdated);
+        }
 
-            
+        void dynWorkspaceView_LayoutUpdated(object sender, EventArgs e)
+        {
+            //Debug.WriteLine("Workspace layout updated.");
+        }
 
-            // dynSettings.Bench.sidebarGrid.Children.Add(search);
+        void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Workspace loaded.");
         }
 
         /// <summary>

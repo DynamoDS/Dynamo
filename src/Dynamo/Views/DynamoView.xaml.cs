@@ -48,6 +48,12 @@ namespace Dynamo.Controls
             InitializeComponent();
 
             this.Loaded += dynBench_Activated;
+            this.LayoutUpdated += new EventHandler(DynamoView_LayoutUpdated);
+        }
+
+        void DynamoView_LayoutUpdated(object sender, EventArgs e)
+        {
+            //Debug.WriteLine("Dynamo view layout updated.");
         }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)

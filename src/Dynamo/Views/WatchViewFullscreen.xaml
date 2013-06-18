@@ -6,7 +6,6 @@
              xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
              Name="topControl" 
              mc:Ignorable="d" 
-
              Height="{Binding RelativeSource={RelativeSource FindAncestor, 
                 AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}"
              d:DesignHeight="300" d:DesignWidth="300">
