@@ -229,7 +229,8 @@ namespace Dynamo.Nodes
             else
                 this.RenderDescription.ClearAll();
 
-            PythonEngine.Drawing(lastEvalValue, this.RenderDescription);
+            if(lastEvalValue != null)
+                PythonEngine.Drawing(lastEvalValue, this.RenderDescription);
         }
     }
 
