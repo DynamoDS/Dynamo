@@ -165,7 +165,7 @@
                        FontFamily="Tahoma" FontSize="8" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" 
                        HorizontalAlignment="right" VerticalAlignment="Bottom" Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
                        Foreground="#99000000" FontWeight="Bold" Canvas.ZIndex="6"/>
-        <Border Background="#646E6E6E" 
+        <Border Background="#C8505050" 
                 VerticalAlignment="Stretch" 
                 HorizontalAlignment="Stretch" 
                 IsHitTestVisible="False" Canvas.ZIndex="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="2,2,2,0"></Border>
