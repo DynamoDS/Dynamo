@@ -116,6 +116,9 @@ namespace Dynamo.Connectors
 
         private void DynPortView_OnLayoutUpdated(object sender, EventArgs e)
         {
+            if (ViewModel == null)
+                return;
+
             Point p = CalculateCenter();
             if (p != ViewModel.Center)
             {

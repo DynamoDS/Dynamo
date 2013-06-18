@@ -86,14 +86,14 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
-        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="2" Background="White" CornerRadius="5">
-            <!--<Border.Effect>
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="White" CornerRadius="5">
+            <Border.Effect>
                 <DropShadowEffect
                     ShadowDepth="0"
                     Color="#222"
                     Opacity="0.45"
                     BlurRadius="12.0" />
-            </Border.Effect>-->
+            </Border.Effect>
         </Border>
         
         <Grid Canvas.ZIndex="4" Grid.Row="1" Margin="3,5,3,5" Grid.Column="0">
