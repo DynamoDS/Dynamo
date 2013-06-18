@@ -43,7 +43,19 @@ namespace Dynamo.Connectors
         void dynPort_Loaded(object sender, RoutedEventArgs e)
         {
             canvas = WPF.FindUpVisualTree<Dynamo.Controls.DragCanvas>(this);
-            ViewModel.UpdateCenter(CalculateCenter());
+
+            if (ViewModel != null)
+                ViewModel.UpdateCenter(CalculateCenter());
+
+            //an event handler for the port's node updated event
+            if (ViewModel != null)
+                ViewModel.PortModel.Owner.Updated += new EventHandler(Owner_Updated);
+        }
+
+        void Owner_Updated(object sender, EventArgs e)
+        {
+            if (ViewModel != null)
+                ViewModel.UpdateCenter(CalculateCenter());
         }
 
         #endregion constructors
@@ -68,15 +80,6 @@ namespace Dynamo.Connectors
     
             //set the handled flag so that the element doesn't get dragged
             e.Handled = true;
-        }
-
-        private void Ellipse1Dot_OnLayoutUpdated(object sender, EventArgs e)
-        {
-            if (ViewModel != null)
-            {
-                //set the center property on the view model
-                ViewModel.UpdateCenter(CalculateCenter());
-            }
         }
 
         Point CalculateCenter()

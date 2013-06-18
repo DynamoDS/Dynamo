@@ -17,6 +17,8 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Diagnostics;
+using Dynamo.Utilities;
 
 namespace Dynamo.Controls
 {
@@ -31,6 +33,7 @@ namespace Dynamo.Controls
         private Point dragOffset;
         private dynNodeView draggedNode;
         private DynamoViewModel _vm;
+        private Stopwatch _timer;
 
         public bool ConsoleShowing
         {
@@ -39,6 +42,9 @@ namespace Dynamo.Controls
 
         public DynamoView()
         {
+            _timer = new Stopwatch();
+            _timer.Start();
+
             InitializeComponent();
 
             this.Loaded += dynBench_Activated;
@@ -49,13 +55,17 @@ namespace Dynamo.Controls
             UpdateLayout();
         }
 
-        void dynBench_Activated(object sender, EventArgs e)
+        private void dynBench_Activated(object sender, EventArgs e)
         {
 
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.RequestLayoutUpdate += vm_RequestLayoutUpdate;
             _vm.PostUIActivationCommand.Execute();
+
+            _timer.Stop();
+            dynSettings.Controller.DynamoViewModel.Log(string.Format("{0} elapsed for loading Dynamo main window.",
+                                                                     _timer.Elapsed));
         }
 
         private void WindowClosing(object sender, CancelEventArgs  e)
@@ -116,6 +126,17 @@ namespace Dynamo.Controls
             dynWorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
             view_model.WatchEscapeIsDown = false;
+        }
+
+        private void Id_butt_OnClick(object sender, RoutedEventArgs e)
+        {
+            //get the value of the id field 
+            //and trigger the command
+            string id = id_tb.Text;
+            int workspace_index = _vm.CurrentWorkspaceIndex;
+            dynWorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
+            if (view_model.FindByIdCommand.CanExecute(id))
+                view_model.FindByIdCommand.Execute(id);
         }
     }
 

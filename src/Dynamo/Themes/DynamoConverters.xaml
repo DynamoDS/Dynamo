@@ -51,4 +51,6 @@
     <controls:LacingToVisibilityConverter x:Key="LacingToVisibilityConverter"/>
     <controls:LacingToAbbreviationConverter x:Key="LacingToAbbreviationConverter"/>
     <controls:LacingToTooltipConverter x:Key="LacingToTooltipConverter"/>
+    <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter"/>
 </ResourceDictionary>

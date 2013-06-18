@@ -5,7 +5,7 @@ The intent of this project is to provide a visual interface for building interes
 
 ## Contributors ##
 
-This project was started by Ian Keough. A complete rewrite of the underlying Dynamo engine was done by Stephen Elliott. Matt Jezyk contributed a ton of nodes as well as a wealth of input on pretty much all other aspects of Dynamo's design. Prior to Ian's joining Autodesk, others on the Autodesk team including Zach Kron, Tom Vollaro, and Lillian Smith provided a lot of very useful feedback.
+This project was started by Ian Keough. A complete rewrite of the underlying Dynamo engine was done by Stephen Elliott and made more perfect by Peter Boyer. Matt Jezyk contributed a ton of nodes as well as a wealth of input on pretty much all other aspects of Dynamo's design. Prior to Ian's joining Autodesk, others on the Autodesk team including Zach Kron, Tom Vollaro, and Lillian Smith provided a lot of very useful feedback.
 
 
 Dynamo has been developed based on feedback from several parties inlcuding Buro Happold Engineers, Autodesk, and students and faculty at the USC School of Architecture.
@@ -13,9 +13,21 @@ Dynamo has been developed based on feedback from several parties inlcuding Buro 
 
 ## Running Dynamo ##
 
-The current version will run on top of Revit 2013 and Project Vasari Beta 2 and 3. It will be released as a new Project Vasari WIP soon but is available now experimental form on github.
+The current version will run on top of Revit 2013, Revit 2014, Project Vasari Beta 2, and Project Vasari Beta 3. 
 
 ## Releases ##
+
+###0.5.0###
+
+June 2013
+
+Known Issues
+- Transform Point does not respond to rotation input
+- Concatenate Strings node is not working.  Issue #160
+- Watch Node results disappear when switching views to a different workspace tab. Issue #156
+- Cannot cancel out of a face selection operation.  Issue # 155
+- Noise Field and Color Brightness Nodes Cannot Recieve List Inputs #150
+- "XYZ Array on Curve" Node does not create point on end of curve.  #138
 
 ###0.4.0###
 

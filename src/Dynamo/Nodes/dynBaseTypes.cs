@@ -2876,6 +2876,18 @@ namespace Dynamo.Nodes
     {
         dynTextBox tb;
 
+        public override string Value
+        {
+            get
+            {
+                return HttpUtility.UrlDecode(base.Value);
+            }
+            set
+            {
+                base.Value = value;
+            }
+        }
+
         public dynStringInput()
         {
             RegisterAllPorts();

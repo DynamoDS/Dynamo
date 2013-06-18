@@ -57,6 +57,7 @@ namespace Dynamo.Controls
         private Point transformOrigin;
         private bool consoleShowing;
         private bool fullscreenWatchShowing = false;
+        private bool canNavigateBackground = false;
         private DynamoController controller;
         public StringWriter sw;
         private bool runEnabled = true;
@@ -68,6 +69,7 @@ namespace Dynamo.Controls
         private bool uiLocked = true;
         
         private string editName = "";
+        private bool isShowingConnectors = true;
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -94,6 +96,7 @@ namespace Dynamo.Controls
         public DelegateCommand<object> PasteCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
+        public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
         public DelegateCommand CancelRunCommand { get; set; }
         public DelegateCommand<object> SaveImageCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
@@ -110,6 +113,7 @@ namespace Dynamo.Controls
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand RefactorCustomNodeCommand { get; set; }
+        public DelegateCommand ShowHideConnectorsCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -180,6 +184,25 @@ namespace Dynamo.Controls
                 {
                     workspace.FullscreenChanged();
                 }
+
+                if (!fullscreenWatchShowing && canNavigateBackground)
+                    CanNavigateBackground = false;
+            }
+        }
+
+        public bool CanNavigateBackground
+        {
+            get { return canNavigateBackground; }
+            set
+            {
+                canNavigateBackground = value;
+                RaisePropertyChanged("CanNavigateBackground");
+
+                int workspace_index = CurrentWorkspaceIndex;
+
+                dynWorkspaceViewModel view_model = Workspaces[workspace_index];
+
+                view_model.WatchEscapeIsDown = value;
             }
         }
 
@@ -306,6 +329,17 @@ namespace Dynamo.Controls
                 RaisePropertyChanged("IsUILocked");
             }
         }
+        
+        public bool IsShowingConnectors
+        {
+            get { return isShowingConnectors; }
+            set
+            {
+                isShowingConnectors = value;
+                RaisePropertyChanged("IsShowingConnectors");
+            }
+        }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller)
@@ -347,6 +381,7 @@ namespace Dynamo.Controls
             PasteCommand = new DelegateCommand<object>(Paste, CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
+            ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             SaveImageCommand = new DelegateCommand<object>(SaveImage, CanSaveImage);
             ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
@@ -363,6 +398,7 @@ namespace Dynamo.Controls
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
             RefactorCustomNodeCommand = new DelegateCommand(RefactorCustomNode, CanRefactorCustomNode);
+            ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             #endregion
         }
 
@@ -1124,6 +1160,26 @@ namespace Dynamo.Controls
         }
 
         private bool CanToggleFullscreenWatchShowing()
+        {
+            return true;
+        }
+
+        private void ToggleCanNavigateBackground()
+        {
+            if (!FullscreenWatchShowing)
+                return;
+
+            if (CanNavigateBackground)
+            {
+                CanNavigateBackground = false;
+            }
+            else
+            {
+                CanNavigateBackground = true;
+            }
+        }
+
+        private bool CanToggleCanNavigateBackground()
         {
             return true;
         }
@@ -2348,12 +2404,19 @@ namespace Dynamo.Controls
             Log("Opening home workspace " + xmlPath + "...");
             CleanWorkbench();
 
+            Stopwatch sw = new Stopwatch();
+           
             try
             {
                 #region read xml file
 
+                sw.Start();
+
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(xmlPath);
+                sw.Stop();
+                Log(string.Format("{0} elapsed for loading xml.", sw.Elapsed));
+                sw.Reset();
 
                 foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
                 {
@@ -2382,6 +2445,8 @@ namespace Dynamo.Controls
                 //add the node's guid to the bad nodes collection
                 //so we can avoid attempting to make connections to it
                 List<Guid> badNodes = new List<Guid>();
+
+                sw.Start();
 
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
@@ -2491,8 +2556,17 @@ namespace Dynamo.Controls
                     //el.LoadElement(elNode);
                 }
 
-                OnRequestLayoutUpdate(this, EventArgs.Empty);
+                sw.Stop();
+                Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed));
+                sw.Reset();
 
+                //sw.Start();
+                //OnRequestLayoutUpdate(this, EventArgs.Empty);
+                //sw.Stop();
+                //Log(string.Format("{0} ellapsed for updating layout.", sw.Elapsed));
+                //sw.Reset();
+
+                sw.Start();
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
                     XmlAttribute guidStartAttrib = connector.Attributes[0];
@@ -2532,10 +2606,20 @@ namespace Dynamo.Controls
 
                     var newConnector = dynConnectorModel.Make(start, end,
                                                         startIndex, endIndex, portType);
+
+                    Stopwatch addTimer = new Stopwatch();
+                    addTimer.Start();
                     if (newConnector != null)
                         _model.CurrentSpace.Connectors.Add(newConnector);
+                    addTimer.Stop();
+                    Debug.WriteLine(string.Format("{0} elapsed for add connector to collection.", addTimer.Elapsed));
 
                 }
+
+                sw.Stop();
+                Log(string.Format("{0} ellapsed for loading connectors.", sw.Elapsed));
+                sw.Reset();
+                sw.Start();
 
                 #region instantiate notes
 
@@ -2564,6 +2648,10 @@ namespace Dynamo.Controls
                 }
 
                 #endregion
+
+                sw.Stop();
+                Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed));
+                sw.Reset();
 
                 foreach (dynNodeModel e in _model.CurrentSpace.Nodes)
                     e.EnableReporting();
@@ -2753,6 +2841,17 @@ namespace Dynamo.Controls
 
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new NodeEventArgs(e,null));
             
+        }
+
+        private void ShowConnectors()
+        {
+            if (isShowingConnectors == false)
+                isShowingConnectors = true;
+        }
+
+        private bool CanShowConnectors()
+        {
+            return true;
         }
     }
 

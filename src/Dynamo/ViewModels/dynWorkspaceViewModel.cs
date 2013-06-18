@@ -26,9 +26,9 @@ namespace Dynamo
         #region Properties and Fields
 
         public dynWorkspaceModel _model;
-        
-        
+
         private bool isConnecting = false;
+        private double zoom = 1.0;
 
         public event EventHandler StopDragging;
         public event PointEventHandler CurrentOffsetChanged;
@@ -56,16 +56,7 @@ namespace Dynamo
             if (RequestCenterViewOnElement != null)
                 RequestCenterViewOnElement(this, e);
         }
-        //public virtual void OnUILocked(object sender, EventArgs e)
-        //{
-        //    if (UILocked != null)
-        //        UILocked(this, e);
-        //}
-        //public virtual void OnUIUnlocked(object sender, EventArgs e)
-        //{
-        //    if (UIUnlocked != null)
-        //        UIUnlocked(this, e);
-        //}
+
         public virtual void OnRequestNodeCentered(object sender, NodeEventArgs e)
         {
             if (RequestNodeCentered != null)
@@ -134,6 +125,8 @@ namespace Dynamo
         public DelegateCommand UpdateSelectedConnectorsCommand { get; set; }
         public DelegateCommand<object> SetCurrentOffsetCommand { get; set; }
         public DelegateCommand NodeFromSelectionCommand { get; set; }
+        public DelegateCommand<object> SetZoomCommand { get; set; }
+        public DelegateCommand<object> FindByIdCommand { get; set; }
 
         public string Name
         {
@@ -277,6 +270,16 @@ namespace Dynamo
             }
         }
 
+        public double Zoom
+        {
+            get { return zoom; }
+            set 
+            { 
+                zoom = value;
+                RaisePropertyChanged("Zoom");
+            }
+        }
+        
         #endregion
 
         public dynWorkspaceViewModel(dynWorkspaceModel model, DynamoViewModel vm)
@@ -316,6 +319,8 @@ namespace Dynamo
             ContainSelectCommand = new DelegateCommand<object>(ContainSelect, CanContainSelect);
             SetCurrentOffsetCommand = new DelegateCommand<object>(SetCurrentOffset, CanSetCurrentOffset);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
+            SetZoomCommand = new DelegateCommand<object>(SetZoom, CanSetZoom);
+            FindByIdCommand = new DelegateCommand<object>(FindById, CanFindById);
             DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
 
             // sync collections
@@ -546,6 +551,45 @@ namespace Dynamo
             {
                 return true;
             }
+            return false;
+        }
+
+        private void SetZoom(object zoom)
+        {
+            Zoom = Convert.ToDouble(zoom);
+        }
+
+        private bool CanSetZoom(object zoom)
+        {
+            return true;
+        }
+
+        private void FindById(object id)
+        {
+            try
+            {
+                var node = dynSettings.Controller.DynamoModel.Nodes.First(x => x.GUID.ToString() == id.ToString());
+                if (node != null)
+                {
+                    //select the element
+                    DynamoSelection.Instance.ClearSelection();
+                    DynamoSelection.Instance.Selection.Add(node);
+
+                    //focus on the element
+                    dynSettings.Controller.DynamoViewModel.ShowElement(node);
+                }
+            }
+            catch
+            {
+                dynSettings.Controller.DynamoViewModel.Log("No node could be found with that Id.");
+                return;
+            }
+        }
+
+        private bool CanFindById(object id)
+        {
+            if (!string.IsNullOrEmpty(id.ToString()))
+                return true;
             return false;
         }
 

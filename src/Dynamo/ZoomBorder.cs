@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Controls
 {
@@ -104,8 +106,9 @@ namespace Dynamo.Controls
                 var st = GetScaleTransform(child);
                 var tt = GetTranslateTransform(child);
 
-                double zoom = e.Delta > 0 ? .2 : -.2;
-                if (!(e.Delta > 0) && (st.ScaleX < .4 || st.ScaleY < .4))
+                double zoom = e.Delta > 0 ? .1 : -.1;
+
+                if (!(e.Delta > 0) && (st.ScaleX <= .2 || st.ScaleY <= .2))
                     return;
 
                 Point relative = e.GetPosition(child);
@@ -118,8 +121,14 @@ namespace Dynamo.Controls
                 st.ScaleX += zoom;
                 st.ScaleY += zoom;
 
+                //Debug.WriteLine(st.ScaleX);
+
                 tt.X = abosuluteX - relative.X * st.ScaleX;
                 tt.Y = abosuluteY - relative.Y * st.ScaleY;
+
+                dynWorkspaceViewModel viewModel = DataContext as dynWorkspaceViewModel;
+                if (viewModel.SetZoomCommand.CanExecute(st.ScaleX))
+                    viewModel.SetZoomCommand.Execute(st.ScaleX);
             }
         }
 

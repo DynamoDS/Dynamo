@@ -392,9 +392,7 @@ namespace Dynamo.Applications
                     Results.Results.Add(new DynamoRevitTest(t));
                 }
 
-                resultsView.Show();
-
-                
+                resultsView.ShowDialog();
 
             }
             catch (Exception ex)
@@ -653,7 +651,6 @@ namespace Dynamo.Applications
         {
             Timer.Stop();
             RaisePropertyChanged("TestSummary");
-            Save();
         }
 
         public void RunAllTests()
