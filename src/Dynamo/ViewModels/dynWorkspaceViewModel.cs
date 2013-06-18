@@ -126,6 +126,7 @@ namespace Dynamo
         public DelegateCommand<object> SetCurrentOffsetCommand { get; set; }
         public DelegateCommand NodeFromSelectionCommand { get; set; }
         public DelegateCommand<object> SetZoomCommand { get; set; }
+        public DelegateCommand<object> FindByIdCommand { get; set; }
 
         public string Name
         {
@@ -319,7 +320,7 @@ namespace Dynamo
             SetCurrentOffsetCommand = new DelegateCommand<object>(SetCurrentOffset, CanSetCurrentOffset);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             SetZoomCommand = new DelegateCommand<object>(SetZoom, CanSetZoom);
-
+            FindByIdCommand = new DelegateCommand<object>(FindById, CanFindById);
             DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
 
             // sync collections
@@ -561,6 +562,35 @@ namespace Dynamo
         private bool CanSetZoom(object zoom)
         {
             return true;
+        }
+
+        private void FindById(object id)
+        {
+            try
+            {
+                var node = dynSettings.Controller.DynamoModel.Nodes.First(x => x.GUID.ToString() == id.ToString());
+                if (node != null)
+                {
+                    //select the element
+                    DynamoSelection.Instance.ClearSelection();
+                    DynamoSelection.Instance.Selection.Add(node);
+
+                    //focus on the element
+                    dynSettings.Controller.DynamoViewModel.ShowElement(node);
+                }
+            }
+            catch
+            {
+                dynSettings.Controller.DynamoViewModel.Log("No node could be found with that Id.");
+                return;
+            }
+        }
+
+        private bool CanFindById(object id)
+        {
+            if (!string.IsNullOrEmpty(id.ToString()))
+                return true;
+            return false;
         }
 
         /// <summary>
