@@ -16,7 +16,9 @@
                     <GradientStop Color="#222" Offset="1.0" />
                 </LinearGradientBrush>
             </StackPanel.Background>
-        
+
+      <TextBlock Name ="Indicator" Foreground="DarkGray" Padding="10,15,10,10" Width ="350" FontSize="10" Text="PUBLISH A CUSTOM NODE"/>
+    
       <TextBlock Name ="Title" Padding="10,15,10,10" Width ="350" Foreground="White" FontSize="18" Text="{Binding Path=Name}"/>
 
       <Label Content="Description" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" />

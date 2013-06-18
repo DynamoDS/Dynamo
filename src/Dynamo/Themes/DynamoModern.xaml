@@ -272,7 +272,7 @@
             <Setter.Value>
                 <ControlTemplate>
 
-                    <Grid x:Name="container" Background="Transparent">
+                    <Border x:Name="container" Background="Transparent" BorderBrush="#333" BorderThickness="1">
                         <Grid x:Name="inner">
 
                             <Grid.Background>
@@ -284,7 +284,7 @@
                             
                             <TextBlock x:Name="text" HorizontalAlignment="Center" Foreground="WhiteSmoke" Margin="7,10,7,7" FontSize="14" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
                         </Grid>
-                    </Grid>
+                    </Border>
 
                     <ControlTemplate.Triggers>
 
