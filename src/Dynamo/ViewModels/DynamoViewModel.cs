@@ -68,6 +68,7 @@ namespace Dynamo.Controls
         private bool uiLocked = true;
         
         private string editName = "";
+        private bool isShowingConnectors = true;
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -110,6 +111,7 @@ namespace Dynamo.Controls
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand RefactorCustomNodeCommand { get; set; }
+        public DelegateCommand ShowHideConnectorsCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -306,6 +308,16 @@ namespace Dynamo.Controls
                 RaisePropertyChanged("IsUILocked");
             }
         }
+        
+        public bool IsShowingConnectors
+        {
+            get { return isShowingConnectors; }
+            set
+            {
+                isShowingConnectors = value;
+                RaisePropertyChanged("IsShowingConnectors");
+            }
+        }
         #endregion
 
         public DynamoViewModel(DynamoController controller)
@@ -363,6 +375,7 @@ namespace Dynamo.Controls
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
             RefactorCustomNodeCommand = new DelegateCommand(RefactorCustomNode, CanRefactorCustomNode);
+            ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             #endregion
         }
 
@@ -2753,6 +2766,17 @@ namespace Dynamo.Controls
 
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new NodeEventArgs(e,null));
             
+        }
+
+        private void ShowConnectors()
+        {
+            if (isShowingConnectors == false)
+                isShowingConnectors = true;
+        }
+
+        private bool CanShowConnectors()
+        {
+            return true;
         }
     }
 

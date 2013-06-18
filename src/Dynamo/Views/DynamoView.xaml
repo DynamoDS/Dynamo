@@ -195,6 +195,11 @@
 
                     <MenuItem Focusable="False" Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
                 </MenuItem>
+
+                <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem"
+                          IsChecked="{Binding Path=IsShowingConnectors}" 
+                          Command="{Binding Path=ShowHideConnectorsCommand}">
+                </MenuItem>
                 
             </MenuItem>
 

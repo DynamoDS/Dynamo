@@ -208,7 +208,8 @@ namespace Dynamo.Connectors
         {
             get
             {
-                if (dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
+                if (dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.BEZIER &&
+                    dynSettings.Controller.DynamoViewModel.IsShowingConnectors)
                     return Visibility.Visible;
                 return Visibility.Hidden;
             }
@@ -226,7 +227,8 @@ namespace Dynamo.Connectors
         {
             get
             {
-                if (dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.POLYLINE)
+                if (dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.POLYLINE && 
+                    dynSettings.Controller.DynamoViewModel.IsShowingConnectors)
                     return Visibility.Visible;
                 return Visibility.Hidden;
             }
@@ -339,6 +341,10 @@ namespace Dynamo.Connectors
                         BezVisibility = Visibility.Hidden;
                         PlineVisibility = Visibility.Visible;
                     }
+                    break;
+                case "IsShowingConnectors":
+                    RaisePropertyChanged("BezVisibility");
+                    RaisePropertyChanged("PlineVisibility");
                 break;
             }
         }
