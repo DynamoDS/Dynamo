@@ -57,13 +57,7 @@ namespace Dynamo
 
             public override void SetupCustomUIElements(dynNodeView nodeUI)
             {
-                ((DropShadowEffect) nodeUI.elementRectangle.Effect).Opacity = 1;
-                ((DropShadowEffect)nodeUI.elementRectangle.Effect).Color = (Color)ColorConverter.ConvertFromString("#38D7FF");
-                ((DropShadowEffect) nodeUI.elementRectangle.Effect).BlurRadius = 20;
-                ((DropShadowEffect) nodeUI.elementRectangle.Effect).ShadowDepth = 0;
-
                 nodeUI.MouseDoubleClick += new System.Windows.Input.MouseButtonEventHandler(ui_MouseDoubleClick);
-
             }
 
             void ui_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)

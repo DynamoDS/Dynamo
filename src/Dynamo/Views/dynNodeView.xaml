@@ -189,18 +189,24 @@
                 Canvas.Top="0" 
                 Name="elementCanvas" 
                 Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
+            <Rectangle Canvas.Left="5" Canvas.Top="5" Canvas.ZIndex="1"  Width="{Binding ElementName=topControl, Path=ActualWidth}"
+                       Height="{Binding ElementName=topControl, Path=ActualHeight}"
+                       Name="customNodeRectangle" 
+                       Stroke="DarkGray" 
+                       StrokeThickness="1"
+                       Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" 
+                       RadiusX="2" RadiusY="2"
+                       Visibility="{Binding Path=IsCustomFunction, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+            </Rectangle>
+            
             <Rectangle Width="{Binding ElementName=topControl, Path=ActualWidth}"
                        Height="{Binding ElementName=topControl, Path=ActualHeight}"
                        Name="elementRectangle" 
                        Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}" 
                        StrokeThickness="2"
                        Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" 
-                       RadiusX="2" RadiusY="2">
-                <Rectangle.Effect>
-                    <DropShadowEffect Opacity="{Binding Path=DropShadowOpacity}"/>
-                </Rectangle.Effect>
+                       RadiusX="2" RadiusY="2" Canvas.ZIndex="2">
             </Rectangle>
-
         </Canvas>
 
         
