@@ -309,6 +309,9 @@ namespace Dynamo.Applications
             dynamoViewY = dynamoView.Top;
             dynamoViewWidth = dynamoView.ActualWidth;
             dynamoViewHeight = dynamoView.ActualHeight;
+
+            dynRevitSettings.Controller.OnClose();
+
             IdlePromise.ClearPromises();
         }
 

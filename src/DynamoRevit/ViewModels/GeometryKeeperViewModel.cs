@@ -17,6 +17,7 @@ namespace Dynamo.Controls
     public class GeometryKeeperViewModel : dynViewModelBase
     {
         private ElementId _keeperId = ElementId.InvalidElementId;
+        private bool _clearOnNextRun = false;
 
         public GeometryKeeperViewModel()
         {
@@ -25,6 +26,11 @@ namespace Dynamo.Controls
         public void GeometryKeeperViewModel_RunCompleted(object controller, bool success)
         {
             DisplayTransientObjects();
+        }
+
+        public void ClearOnNextRun()
+        {
+            _clearOnNextRun = true;
         }
 
         public void DisplayTransientObjects() 
@@ -63,11 +69,17 @@ namespace Dynamo.Controls
             dynRevitSettings.Controller.InitTransaction();
 
             if (_keeperId != ElementId.InvalidElementId)
+            {
                 dynRevitSettings.Doc.Document.Delete(_keeperId);
+                _keeperId = ElementId.InvalidElementId;
+            }
 
-            _keeperId = GeometryElement.SetForTransientDisplay(
-                dynRevitSettings.Doc.Document, ElementId.InvalidElementId,
-                geometryObjects, ElementId.InvalidElementId);
+            if (_clearOnNextRun)
+                _clearOnNextRun = false;
+            else
+                _keeperId = GeometryElement.SetForTransientDisplay(
+                    dynRevitSettings.Doc.Document, ElementId.InvalidElementId,
+                    geometryObjects, ElementId.InvalidElementId);
 
             dynRevitSettings.Controller.EndTransaction();
         }

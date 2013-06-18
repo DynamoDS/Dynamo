@@ -408,6 +408,12 @@ namespace Dynamo
             this.CancelTransaction();
         }
 
+        public void OnClose()
+        {
+            _geometryKeeperViewModel.ClearOnNextRun();
+            dynSettings.Controller.RunCommand(dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null);
+        }
+
         protected override void OnEvaluationCompleted()
         {
             base.OnEvaluationCompleted();
