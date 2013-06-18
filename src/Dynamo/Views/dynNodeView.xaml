@@ -193,9 +193,10 @@
                 Canvas.Top="0" 
                 Name="elementCanvas" 
                 Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
-            <Rectangle Canvas.Left="5" Canvas.Top="5" Canvas.ZIndex="1"  Width="{Binding ElementName=topControl, Path=ActualWidth}"
+
+            <Rectangle Canvas.Left="10" Canvas.Top="10" Canvas.ZIndex="1"  Width="{Binding ElementName=topControl, Path=ActualWidth}"
                        Height="{Binding ElementName=topControl, Path=ActualHeight}"
-                       Name="customNodeRectangle" 
+                       Name="customNodeRectangle2" 
                        Stroke="DarkGray" 
                        StrokeThickness="1"
                        Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" 
@@ -203,6 +204,16 @@
                        Visibility="{Binding Path=IsCustomFunction, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
             </Rectangle>
             
+            <Rectangle Canvas.Left="5" Canvas.Top="5" Canvas.ZIndex="1"  Width="{Binding ElementName=topControl, Path=ActualWidth}"
+                       Height="{Binding ElementName=topControl, Path=ActualHeight}"
+                       Name="customNodeRectangle1" 
+                       Stroke="DarkGray" 
+                       StrokeThickness="1"
+                       Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" 
+                       RadiusX="2" RadiusY="2"
+                       Visibility="{Binding Path=IsCustomFunction, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+            </Rectangle>
+
             <Rectangle Width="{Binding ElementName=topControl, Path=ActualWidth}"
                        Height="{Binding ElementName=topControl, Path=ActualHeight}"
                        Name="elementRectangle" 
