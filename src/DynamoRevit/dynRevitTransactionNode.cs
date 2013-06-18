@@ -164,6 +164,10 @@ namespace Dynamo.Revit
         public static void DrawReferencePoint(RenderDescription description, object obj)
         {
             ReferencePoint point = obj as ReferencePoint;
+
+            if (point == null)
+                return;
+
             description.points.Add(new Point3D(point.GetCoordinateSystem().Origin.X,
                 point.GetCoordinateSystem().Origin.Y,
                 point.GetCoordinateSystem().Origin.Z));
@@ -172,12 +176,18 @@ namespace Dynamo.Revit
         public static void DrawXYZ(RenderDescription description, object obj)
         {
             XYZ point = obj as XYZ;
+            if (point == null)
+                return;
+
             description.points.Add(new Point3D(point.X, point.Y, point.Z));
         }
 
         public static void DrawCurve(RenderDescription description, object obj)
         {
             Autodesk.Revit.DB.Curve curve = obj as Autodesk.Revit.DB.Curve;
+
+            if (curve == null)
+                return;
 
             IList<XYZ> points = curve.Tessellate();
 
@@ -198,12 +208,18 @@ namespace Dynamo.Revit
         {
             Autodesk.Revit.DB.CurveElement elem = obj as Autodesk.Revit.DB.CurveElement;
 
+            if (elem == null)
+                return;
+
             DrawCurve(description, elem.GeometryCurve);
         }
 
         public static void DrawSolid(RenderDescription description, object obj)
         {
             Autodesk.Revit.DB.Solid solid = obj as Autodesk.Revit.DB.Solid;
+
+            if (solid == null)
+                return;
 
             foreach (Face f in solid.Faces)
             {
@@ -275,6 +291,9 @@ namespace Dynamo.Revit
         {
             Autodesk.Revit.DB.Face face = obj as Autodesk.Revit.DB.Face;
 
+            if (face == null)
+                return;
+
             Mesh3D[] meshes = RevitMeshToHelixMesh(face.Triangulate(0.2));
 
             foreach (Mesh3D mesh in meshes)
@@ -286,6 +305,9 @@ namespace Dynamo.Revit
         public static void DrawForm(RenderDescription description, object obj)
         {
             Autodesk.Revit.DB.Form form = obj as Autodesk.Revit.DB.Form;
+
+            if (form == null)
+                return;
 
             DrawGeometryElement(description, form.get_Geometry(new Options()));
         }
@@ -317,10 +339,6 @@ namespace Dynamo.Revit
 
             if (obj == null)
                 return;
-
-            // Debugging code
-            //string path = @"C:\Temp\" + System.Guid.NewGuid().ToString() + ".txt";
-            //System.IO.File.WriteAllText(path, obj.GetType().Name);
 
             if (typeof(Autodesk.Revit.DB.XYZ).IsAssignableFrom(obj.GetType()))
             {
@@ -389,9 +407,6 @@ namespace Dynamo.Revit
 
         public void Draw(RenderDescription description, object obj)
         {
-            //string path = @"C:\Temp\" + System.Guid.NewGuid().ToString() + ".txt";
-            //System.IO.File.WriteAllText(path, obj.GetType().Name);
-
             DrawElement(description, obj);
         }
 
