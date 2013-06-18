@@ -12,29 +12,26 @@
             </LinearGradientBrush>
         </StackPanel.Background>
 
-        <TextBlock Name ="Indicator" Foreground="DarkGray" HorizontalAlignment="Left" Margin="15,10,10,5" FontSize="10" Text="INPUT"/>
+        <TextBlock Name ="Indicator" Foreground="WhiteSmoke" HorizontalAlignment="Left" Margin="15,10,10,5" FontSize="10" Text="INPUT"/>
         
-        <Border BorderBrush="#444" BorderThickness="1" Margin="10">
-            
-            <TextBox x:FieldModifier="public"
-                    HorizontalAlignment="Stretch" 
-                    Name="editText" 
-                    Padding="10"
-                    Background="#222"
-                    Foreground="AliceBlue"
-                    FontSize="20"
-                    MinLines="2"
-                    CaretBrush="White"
-                    VerticalAlignment="Stretch" 
-                    BorderThickness="0"
-                    AcceptsReturn="True"
-                    HorizontalScrollBarVisibility="Disabled"
-                    VerticalScrollBarVisibility="Auto"
-                    Height="80"
-                    TextWrapping="Wrap"
-                    AcceptsTab="True"/>
-
-        </Border>
+        <TextBox 
+                Margin="10"
+                x:FieldModifier="public" 
+                Style="{DynamicResource ResourceKey=SDarkTextBox}"
+                HorizontalAlignment="Stretch" 
+                Name="editText" 
+                Padding="10"
+                FontSize="20"
+                MinLines="2"
+                CaretBrush="White"
+                VerticalAlignment="Stretch" 
+                BorderThickness="0"
+                AcceptsReturn="True"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto"
+                Height="80"
+                TextWrapping="Wrap"
+                AcceptsTab="True"/>
 
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
             <Button Content="Cancel" Style="{DynamicResource ResourceKey=STextButton}"  Margin="10" Name="button1" VerticalAlignment="Bottom" Click="button1_Click" />

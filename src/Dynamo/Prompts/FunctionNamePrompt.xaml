@@ -12,10 +12,10 @@
             </LinearGradientBrush>
         </StackPanel.Background>
 
-        <Label Content="New custom node..." FontSize="16" Foreground="#CCC" HorizontalAlignment="Stretch" FontWeight="DemiBold"  Name="title" Padding="10"></Label>
-        <Label Content="Name:" Foreground="WhiteSmoke" HorizontalAlignment="Stretch" Margin="11,10,12,0" Name="label1"  />
+        <TextBlock Name ="Indicator" Foreground="WhiteSmoke" HorizontalAlignment="Left" Margin="15,10,10,5" FontSize="10" Text="NEW CUSTOM NODE"/>
+        <Label Content="Name:" Foreground="DarkGray" HorizontalAlignment="Stretch" Margin="11,10,12,0" Name="label1"  />
 
-        <Border Margin="15,5,15,15" Background="#222">
+        <Border Margin="15,5,15,15" Background="#222" BorderThickness="1px" BorderBrush="#444">
 
             <TextBox x:FieldModifier="public"
                  HorizontalAlignment="Stretch" 
@@ -33,7 +33,7 @@
 
         </Border>
 
-        <Label Content="Category:" Foreground="WhiteSmoke" HorizontalAlignment="Stretch" Name="label2" Margin="11,1,12,0" />
+        <Label Content="Category:" Foreground="DarkGray" HorizontalAlignment="Stretch" Name="label2" Margin="11,1,12,0" />
         
         <ComboBox FontSize="14" Style="{DynamicResource ResourceKey=SComboBox}" Background="Black" Foreground="White" HorizontalAlignment="Stretch" Name="categoryBox" VerticalAlignment="Top" Margin="15,5,15,15" IsEditable="True" TabIndex="1" />
 

@@ -23,7 +23,7 @@ limitations under the License.
     <ProjectGuid>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dynamo.Nodes</RootNamespace>
+    <RootNamespace>Dynamo</RootNamespace>
     <AssemblyName>DynamoElements</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -116,6 +116,10 @@ limitations under the License.
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
+    <Compile Include="PackageManager\PackageElements\PackageDependencyElement.cs" />
+    <Compile Include="PackageManager\PackageElements\PackageDependencyItem.cs" />
+    <Compile Include="PackageManager\PackageElements\PackageDependencyLeaf.cs" />
+    <Compile Include="PackageManager\PackageElements\PackageDependencyRoot.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Search\SearchElements\TopSearchElement.cs" />
