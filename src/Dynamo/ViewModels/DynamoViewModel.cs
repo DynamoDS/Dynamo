@@ -2405,7 +2405,7 @@ namespace Dynamo.Controls
             CleanWorkbench();
 
             Stopwatch sw = new Stopwatch();
-           
+            
             try
             {
                 #region read xml file
@@ -2414,9 +2414,9 @@ namespace Dynamo.Controls
 
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(xmlPath);
-                sw.Stop();
+
+                TimeSpan previousElapsed = sw.Elapsed;
                 Log(string.Format("{0} elapsed for loading xml.", sw.Elapsed));
-                sw.Reset();
 
                 foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
                 {
@@ -2445,8 +2445,6 @@ namespace Dynamo.Controls
                 //add the node's guid to the bad nodes collection
                 //so we can avoid attempting to make connections to it
                 List<Guid> badNodes = new List<Guid>();
-
-                sw.Start();
 
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
@@ -2556,9 +2554,8 @@ namespace Dynamo.Controls
                     //el.LoadElement(elNode);
                 }
 
-                sw.Stop();
-                Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed));
-                sw.Reset();
+                Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed - previousElapsed));
+                previousElapsed = sw.Elapsed;
 
                 //sw.Start();
                 //OnRequestLayoutUpdate(this, EventArgs.Empty);
@@ -2566,7 +2563,6 @@ namespace Dynamo.Controls
                 //Log(string.Format("{0} ellapsed for updating layout.", sw.Elapsed));
                 //sw.Reset();
 
-                sw.Start();
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
                     XmlAttribute guidStartAttrib = connector.Attributes[0];
@@ -2616,10 +2612,8 @@ namespace Dynamo.Controls
 
                 }
 
-                sw.Stop();
-                Log(string.Format("{0} ellapsed for loading connectors.", sw.Elapsed));
-                sw.Reset();
-                sw.Start();
+                Log(string.Format("{0} ellapsed for loading connectors.", sw.Elapsed - previousElapsed));
+                previousElapsed = sw.Elapsed;
 
                 #region instantiate notes
 
@@ -2649,16 +2643,16 @@ namespace Dynamo.Controls
 
                 #endregion
 
-                sw.Stop();
-                Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed));
-                sw.Reset();
-
+                Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
+                
                 foreach (dynNodeModel e in _model.CurrentSpace.Nodes)
                     e.EnableReporting();
 
                 #endregion
 
                 _model.HomeSpace.FilePath = xmlPath;
+
+                Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
             }
             catch (Exception ex)
             {
