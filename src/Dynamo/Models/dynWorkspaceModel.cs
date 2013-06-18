@@ -283,6 +283,13 @@ namespace Dynamo
                     && x.OutPorts.All(y => y.Connectors.All(c => c.End.Owner is dynOutput)));
         }
 
+        public event EventHandler Updated;
+        public void OnUpdated(EventArgs e)
+        {
+            if (Updated != null)
+                Updated(this, e);
+        }
+
         #region static methods
 
         /// <summary>

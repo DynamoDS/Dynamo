@@ -26,7 +26,7 @@
                 </ToolTip>
             </Grid.ToolTip>
             <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                    Name="portRect" IsHitTestVisible="True" LayoutUpdated="Ellipse1Dot_OnLayoutUpdated">
+                    Name="portRect" IsHitTestVisible="True"> 
                 <Canvas.Style>
                     <Style TargetType="{x:Type Canvas}">
                         <Style.Triggers>

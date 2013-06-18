@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Linq;
 using System.Text;
@@ -276,6 +277,9 @@ namespace Dynamo.Connectors
             _model.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
 
             dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+
+            //make sure we have valid curve points
+            Redraw();
         }
 
         void StartOwner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -394,6 +398,8 @@ namespace Dynamo.Connectors
         /// <param name="p2">The position of the end point</param>
         public void Redraw(Point p2 )
         {
+            //Debug.WriteLine("Redrawing...");
+
             CurvePoint3 = p2;
 
             var offset = 0.0;
