@@ -701,7 +701,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var face =
-                (Face)dynRevitSettings.Doc.Document.GetElement(_f).GetGeometryObjectFromReference(_f);
+                (Autodesk.Revit.DB.Face)dynRevitSettings.Doc.Document.GetElement(_f).GetGeometryObjectFromReference(_f);
             return Value.NewContainer(face);
         }
 
@@ -728,15 +728,16 @@ namespace Dynamo.Nodes
                 RenderDescription.ClearAll();
 
             var face =
-                (Face)dynRevitSettings.Doc.Document.GetElement(_f).GetGeometryObjectFromReference(_f);
+                (Autodesk.Revit.DB.Face)dynRevitSettings.Doc.Document.GetElement(_f).GetGeometryObjectFromReference(_f);
 
             dynRevitTransactionNode.DrawFace(RenderDescription, face);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-            dynEl.SetAttribute(
-                "faceRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+            if(_f != null)
+                dynEl.SetAttribute(
+                    "faceRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
         public override void LoadElement(XmlNode elNode)
@@ -1118,13 +1119,13 @@ namespace Dynamo.Nodes
                             if (thisObject is Curve)
                                 continue;
 
-                            if ((thisObject is Face) && (geobSym is Face) && (thisObject == geobSym))
+                            if ((thisObject is Autodesk.Revit.DB.Face) && (geobSym is Autodesk.Revit.DB.Face) && (thisObject == geobSym))
                             {
                                 found = true;
                                 break;
                             }
 
-                            if ((thisObject is Edge) && (geobSym is Face))
+                            if ((thisObject is Edge) && (geobSym is Autodesk.Revit.DB.Face))
                             {
                                 var edge = thisObject as Edge;
                                 //use GetFace after r2013 support is dropped
@@ -1141,8 +1142,8 @@ namespace Dynamo.Nodes
                             int numFaces = solidFaces.Size;
                             for (int index = 0; index < numFaces && !found; index++)
                             {
-                                Face faceAt = solidFaces.get_Item(index);
-                                if ((thisObject is Face) && (thisObject == faceAt))
+                                Autodesk.Revit.DB.Face faceAt = solidFaces.get_Item(index);
+                                if ((thisObject is Autodesk.Revit.DB.Face) && (thisObject == faceAt))
                                 {
                                     found = true;
                                     break;
@@ -1174,9 +1175,9 @@ namespace Dynamo.Nodes
             XYZ thisXYZ;
 
             if (_refXyz.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_SURFACE
-                && thisObject is Face)
+                && thisObject is Autodesk.Revit.DB.Face)
             {
-                var face = thisObject as Face;
+                var face = thisObject as Autodesk.Revit.DB.Face;
                 if (!_init)
                 {
                     _param0 = _refXyz.UVPoint[0];

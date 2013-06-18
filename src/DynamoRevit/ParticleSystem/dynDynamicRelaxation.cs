@@ -405,7 +405,7 @@ namespace Dynamo.Nodes
             particleSystem = new ParticleSystem();
         }
 
-        void setupParticleSystem(Face f, int uDiv, int vDiv, double springDampening, double springRestLength, double springConstant, double mass)
+        void setupParticleSystem(Autodesk.Revit.DB.Face f, int uDiv, int vDiv, double springDampening, double springRestLength, double springConstant, double mass)
         {
             BoundingBoxUV bbox = f.GetBoundingBox();
             double uStep = (bbox.Max.U - bbox.Min.U)/uDiv;
@@ -442,11 +442,11 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             object arg0 = ((Value.Container)args[0]).Item;
-            Face f = null;
+            Autodesk.Revit.DB.Face f = null;
             if (arg0 is Reference)
             {
                 Reference faceRef = arg0 as Reference;
-                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             }
 
             double d = ((Value.Number)args[1]).Item;//dampening

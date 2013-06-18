@@ -26,9 +26,10 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Ref Point")]
+    [NodeName("Reference Point")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a reference point.")]
+    [NodeSearchTags("pt","ref")]
     public class dynReferencePointByXYZ : dynRevitTransactionNodeWithOneOutput
     {
         public dynReferencePointByXYZ()
@@ -154,9 +155,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Ref Point On Edge")]
+    [NodeName("Reference Point On Edge")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an element which owns a reference point on a selected edge.")]
+    [NodeSearchTags("ref", "pt")]
     public class dynPointOnEdge : dynRevitTransactionNodeWithOneOutput
     {
         public dynPointOnEdge()
@@ -208,9 +210,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Ref Point On Face by UV")]
+    [NodeName("Reference Point On Face by UV")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an element which owns a reference point on a selected face.")]
+    [NodeSearchTags("ref", "pt")]
     public class dynPointOnFaceUV : dynRevitTransactionNodeWithOneOutput
     {
         public dynPointOnFaceUV()
@@ -228,12 +231,12 @@ namespace Dynamo.Nodes
 
             object arg0 = ((Value.Container)args[0]).Item;
 
-            Face f;
+            Autodesk.Revit.DB.Face f;
             Reference r = arg0 as Reference;
             if (r != null)
-                f = dynRevitSettings.Doc.Document.GetElement(r.ElementId).GetGeometryObjectFromReference(r) as Face;
+                f = dynRevitSettings.Doc.Document.GetElement(r.ElementId).GetGeometryObjectFromReference(r) as Autodesk.Revit.DB.Face;
             else
-                f = arg0 as Face;
+                f = arg0 as Autodesk.Revit.DB.Face;
 
             //PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, uv);
             XYZ facePoint = f.Evaluate(uv);
@@ -272,9 +275,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Ref Point By Normal")]
+    [NodeName("Reference Point By Normal")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Owns a reference point which is projected from a point by normal and distance.")]
+    [NodeSearchTags("normal", "ref")]
     public class dynPointNormalDistance : dynRevitTransactionNodeWithOneOutput
     {
         public dynPointNormalDistance()
@@ -311,7 +315,7 @@ namespace Dynamo.Nodes
                 //gather information about the point
                 PointOnFace pof = per as PointOnFace;
                 Reference faceRef = pof.GetFaceReference();
-                Face f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+                Autodesk.Revit.DB.Face f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
                 location = f.Evaluate(pof.UV);
 
                 p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(location + norm.Normalize().Multiply(dist));
@@ -324,9 +328,10 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Plane from Ref Point")]
+    [NodeName("Plane from Reference Point")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Extracts one of the primary Reference Planes from a Reference Point.")]
+    [NodeSearchTags("ref")]
     public class dynPlaneFromRefPoint : dynRevitTransactionNodeWithOneOutput
     {
         ComboBox combo;

@@ -48,7 +48,9 @@
 
     <Grid Name="grid" Canvas.ZIndex="3" Margin="0">
         
+        
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
@@ -84,6 +86,16 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="2" Background="White" CornerRadius="5">
+            <Border.Effect>
+                <DropShadowEffect
+                    ShadowDepth="0"
+                    Color="#222"
+                    Opacity="0.45"
+                    BlurRadius="12.0" />
+            </Border.Effect>
+        </Border>
+        
         <Grid Canvas.ZIndex="4" Grid.Row="1" Margin="3,5,3,5" Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -97,7 +109,8 @@
             
         <!-- INPUT PORTS -->
 
-        <StackPanel Name="gridLeft" 
+        
+            <StackPanel Name="gridLeft" 
             HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
             IsHitTestVisible="True" 
@@ -144,12 +157,14 @@
               Margin="5,0,5,0"
               Canvas.ZIndex="5"  
               IsEnabled="{Binding Path=IsInteractionEnabled}" Grid.Column="1" Grid.Row="0"/>
+            
         </Grid>
+        
         <TextBlock Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}" 
                        ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}" 
-                       FontFamily="Tahoma" FontSize="8" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="2" 
-                       HorizontalAlignment="right" Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
-                       Foreground="#99000000" FontWeight="Bold" />
+                       FontFamily="Tahoma" FontSize="8" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" 
+                       HorizontalAlignment="right" VerticalAlignment="Bottom" Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
+                       Foreground="#99000000" FontWeight="Bold" Canvas.ZIndex="6"/>
         
         <TextBlock  Name="nickNameBlock" 
                          VerticalAlignment="Top" 
@@ -179,14 +194,19 @@
                        Name="elementRectangle" 
                        Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}" 
                        StrokeThickness="2"
-                       Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" RadiusX="2" RadiusY="2">
+                       Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" 
+                       RadiusX="2" RadiusY="2">
                 <Rectangle.Effect>
-                    <DropShadowEffect Opacity="{Binding Path=DropShadowOpacity}" />
+                    <DropShadowEffect Opacity="{Binding Path=DropShadowOpacity}"/>
                 </Rectangle.Effect>
             </Rectangle>
 
         </Canvas>
+
+        
+        
     </Grid>
+
 </UserControl>
 
     

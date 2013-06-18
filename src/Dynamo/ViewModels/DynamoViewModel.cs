@@ -22,6 +22,9 @@ using Dynamo.Utilities;
 
 using Microsoft.Practices.Prism.Commands;
 
+using NUnit.Core;
+using NUnit.Framework;
+
 namespace Dynamo.Controls
 {
 
@@ -579,7 +582,7 @@ namespace Dynamo.Controls
             else
             {
                 ext = ".dyf";
-                fltr = "Dynamo Function (*.dyf)|*.dyf";
+                fltr = "Dynamo Custom Node (*.dyf)|*.dyf";
             }
             fltr += "|All files (*.*)|*.*";
 
@@ -600,6 +603,11 @@ namespace Dynamo.Controls
             {
                 var fi = new FileInfo(_model.CurrentSpace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
+                _fileDialog.FileName = fi.Name;
+            }
+            else if (_model.CurrentSpace is FuncWorkspace)
+            {
+                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath;
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -1307,6 +1315,12 @@ namespace Dynamo.Controls
                 return;
             } 
 
+            if ( (node is dynSymbol || node is dynOutput) && _model.CurrentSpace is HomeWorkspace)
+            {
+                DynamoCommands.WriteToLogCmd.Execute("Cannot place dynSymbol or dynOutput in HomeWorkspace");
+                return;
+            }
+
             _model.CurrentSpace.Nodes.Add(node);
             node.WorkSpace = dynSettings.Controller.DynamoViewModel.CurrentSpace;
 
@@ -1452,6 +1466,8 @@ namespace Dynamo.Controls
         {
             var inputs = (Dictionary<string, object>)parameters;
 
+            inputs = inputs ?? new Dictionary<string, object>();
+
             // by default place note at center
             var x = 0.0;
             var y = 0.0;
@@ -1464,6 +1480,8 @@ namespace Dynamo.Controls
 
 
             var n = new dynNoteModel(x, y);
+
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNoteCentered( this, new NoteEventArgs(n, inputs) );
 
             n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
             var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspaceModel)inputs["workspace"];
@@ -1562,7 +1580,7 @@ namespace Dynamo.Controls
 
             dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
 
-            if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
+            if (UnlockLoadPath != null && !OpenWorkspace(UnlockLoadPath))
             {
                 dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
 
@@ -1652,7 +1670,7 @@ namespace Dynamo.Controls
                     //View the home workspace, then open the bench file
                     if (!ViewingHomespace)
                         ViewHomeWorkspace(); //TODO: Refactor
-                    return OpenWorkbench(xmlPath);
+                    return OpenWorkspace(xmlPath);
                 }
                 else if (Controller.CustomNodeLoader.Contains(funName))
                 {
@@ -1781,9 +1799,6 @@ namespace Dynamo.Controls
                             el.ArgumentLacing = lacing;
                         }
                     }
-
-                    if (el == null)
-                        return false;
 
                     el.DisableReporting();
                     el.LoadElement(elNode);
@@ -1942,6 +1957,10 @@ namespace Dynamo.Controls
                 Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
                 CleanWorkbench();
+
+                if (controller.Testing)
+                    Assert.Fail(ex.Message);
+
                 return false;
             }
 
@@ -1973,9 +1992,11 @@ namespace Dynamo.Controls
                 {
                     var def = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(workspace);
                     def.Workspace.FilePath = path;
+
                     if (def != null)
                     {
                         this.SaveFunction(def, true);
+                        workspace.FilePath = path;
                     }
                     return;
                 }
@@ -2094,15 +2115,24 @@ namespace Dynamo.Controls
             // If asked to, write the definition to file
             if (writeDefinition)
             {
-                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string pluginsPath = Path.Combine(directory, "definitions");
-
-                try
+                string path = "";
+                if (String.IsNullOrEmpty(definition.Workspace.FilePath))
                 {
+                    var pluginsPath = this.Controller.CustomNodeLoader.GetDefaultSearchPath();
+
                     if (!Directory.Exists(pluginsPath))
                         Directory.CreateDirectory(pluginsPath);
 
-                    string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
+                    path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
+                }
+                else
+                {
+                    path = definition.Workspace.FilePath;
+                }
+                
+                try
+                {
+                
                     dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
 
                     if (addToSearch)
@@ -2313,7 +2343,7 @@ namespace Dynamo.Controls
             _model.CurrentSpace.OnDisplayed();
         }
 
-        public bool OpenWorkbench(string xmlPath)
+        public bool OpenWorkspace(string xmlPath)
         {
             Log("Opening home workspace " + xmlPath + "...");
             CleanWorkbench();
@@ -2431,10 +2461,17 @@ namespace Dynamo.Controls
                     if (isUpstreamVisAttrib != null)
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
-                    dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(
-                        t, nickname, guid, x, y,
-                        _model.CurrentSpace, isVisible, isUpstreamVisible
-                        );
+                    dynNodeModel el = CreateNodeInstance( t, nickname, guid );
+                    el.WorkSpace = _model.CurrentSpace;
+                    el.LoadElement(elNode);
+
+                    _model.CurrentSpace.Nodes.Add(el);
+                    
+                    el.X = x;
+                    el.Y = y;
+
+                    el.IsVisible = isVisible;
+                    el.IsUpstreamVisible = isUpstreamVisible;
 
                     if (lacingAttrib != null)
                     {
@@ -2451,7 +2488,7 @@ namespace Dynamo.Controls
                     if (ViewingHomespace)
                         el.SaveResult = true;
 
-                    el.LoadElement(elNode);
+                    //el.LoadElement(elNode);
                 }
 
                 OnRequestLayoutUpdate(this, EventArgs.Empty);
@@ -2748,6 +2785,17 @@ namespace Dynamo.Controls
         public NodeEventArgs(dynNodeModel n, Dictionary<string, object> d )
         {
             Node = n;
+            Data = d;
+        }
+    }
+
+    public class NoteEventArgs : EventArgs
+    {
+        public dynNoteModel Note { get; set; }
+        public Dictionary<string, object> Data { get; set; }
+        public NoteEventArgs(dynNoteModel n, Dictionary<string, object> d)
+        {
+            Note = n;
             Data = d;
         }
     }
