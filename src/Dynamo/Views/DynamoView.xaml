@@ -87,11 +87,6 @@
                                 Modifiers="Control+Shift"
                                 Command="{Binding Path=DataContext.ClearCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
-        <KeyBinding Key="R"
-                Modifiers="Ctrl"
-                    Command="{Binding Path=DataContext.ShowPackageManagerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-
-
         <KeyBinding Key="L"
                 Modifiers="Ctrl+Shift"
                     Command="{Binding Path=DataContext.LayoutAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
@@ -198,7 +193,7 @@
                               Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
                 </MenuItem>
 
-                <MenuItem Focusable="False" Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >
+                <MenuItem Focusable="False" Header="_Package Manager" Name="PackageManagerMenu" IsEnabled="True" >
                     <MenuItem Focusable="False" Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
                     <MenuItem Focusable="False" Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
                     <MenuItem Focusable="False" Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
@@ -516,7 +511,7 @@
             
         </WrapPanel>
         
-        <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" Visibility ="Hidden" HorizontalAlignment="Right">
+        <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" HorizontalAlignment="Right">
 
             <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
             <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>

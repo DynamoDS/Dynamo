@@ -39,6 +39,12 @@ namespace Dynamo.PackageManager
     /// </summary>
     public class PackageManagerClient
     {
+
+        /// <summary>
+        /// Indicates whether we should look for login information
+        /// </summary>
+        public static bool DEBUG_MODE = true;
+
         #region Properties
 
         /// <summary>

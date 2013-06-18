@@ -27,11 +27,6 @@ namespace Dynamo.Commands
 {
     public class LoginCommand : ICommand
     {
-        public LoginCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             
@@ -62,7 +57,7 @@ namespace Dynamo.Commands
         public void Execute(object funcDef)
         {
 
-            if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false)
+            if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false && !PackageManagerClient.DEBUG_MODE)
             {
                 DynamoCommands.ShowLoginCmd.Execute(null);
                 dynSettings.Controller.DynamoViewModel.Log("Must login first to publish a node.");
@@ -72,15 +67,6 @@ namespace Dynamo.Commands
             if (!init)
             {
                 _view = new PackageManagerPublishView(dynSettings.Controller.PackageManagerPublishViewModel);
-
-                //MVVM: we now have an event called on the current workspace view model to 
-                //add the view to its outer canvas
-                //dynSettings.Bench.outerCanvas.Children.Add(_view);
-                //Canvas.SetBottom(_view, 0);
-                //Canvas.SetRight(_view, 0);
-
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(_view));
-
                 init = true;
             }
             
@@ -126,19 +112,17 @@ namespace Dynamo.Commands
         {
             if (!_init)
             {
-                var loginView = new PackageManagerLoginView(dynSettings.Controller.PackageManagerLoginViewModel);
+                //var loginView = new PackageManagerLoginView(dynSettings.Controller.PackageManagerLoginViewModel);
 
-                //MVVM: event on current workspace model view now adds views to canvas
-                //dynSettings.Bench.outerCanvas.Children.Add(loginView);
-                //Canvas.SetBottom(loginView, 0);
-                //Canvas.SetRight(loginView, 0);
+                ////MVVM: event on current workspace model view now adds views to canvas
+                ////dynSettings.Bench.outerCanvas.Children.Add(loginView);
+                ////Canvas.SetBottom(loginView, 0);
+                ////Canvas.SetRight(loginView, 0);
 
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(loginView));
+                //dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(loginView));
 
                 _init = true;
             }
-
-            dynSettings.Controller.PackageManagerLoginViewModel.Visible = Visibility.Visible;
         }
 
         public event EventHandler CanExecuteChanged

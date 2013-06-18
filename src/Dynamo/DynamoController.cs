@@ -51,7 +51,6 @@ namespace Dynamo
 
         public CustomNodeLoader CustomNodeLoader { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
-        public PackageManagerLoginViewModel PackageManagerLoginViewModel { get; internal set; }
         public PackageManagerPublishViewModel PackageManagerPublishViewModel { get; internal set; }
         public PackageManagerClient PackageManagerClient { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; internal set; }
@@ -157,7 +156,6 @@ namespace Dynamo
 
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);
-            PackageManagerLoginViewModel = new PackageManagerLoginViewModel(PackageManagerClient);
             PackageManagerPublishViewModel = new PackageManagerPublishViewModel(PackageManagerClient);
 
             FSchemeEnvironment = env;

@@ -7,7 +7,7 @@ using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism;
+
 using Microsoft.Practices.Prism.Commands;
 using Brush = System.Windows.Media.Brush;
 
