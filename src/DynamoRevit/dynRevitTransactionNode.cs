@@ -636,15 +636,17 @@ namespace Dynamo.Revit
             //create a zip of the incoming args and the port data
             //to be used for type comparison
             var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
+            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
 
             //if any value is a list whose expectation is a single
             //do an auto map
             //TODO: figure out a better way to do this than using a lot
             //of specific excludes
-            if (args.Count() > 0 &&
+            if ((args.Count() > 0 &&
                 portComparison.Any(x => x.Item1 == typeof(Value.List) &&
                 x.Item2 != typeof(Value.List)) &&
-                !(this.ArgumentLacing == LacingStrategy.Disabled))
+                !(this.ArgumentLacing == LacingStrategy.Disabled)) ||
+                listOfListComparison.Any(x=>x.Item1 ==true && x.Item2 == typeof(Value.List)))
             {
                 //if the argument is of the expected type, then
                 //leave it alone otherwise, wrap it in a list
@@ -661,8 +663,13 @@ namespace Dynamo.Revit
                     //incoming value is list and expecting list
                     else
                     {
-                        //wrap in list
-                        argSets.Add(Utils.MakeFSharpList(arg));
+                        //check if we have a list of lists, if so, then don't wrap
+                        if (Utils.IsListOfLists(arg))
+                            //leave as list
+                            argSets.Add(((Value.List)arg).Item);
+                        else
+                            //wrap in list
+                            argSets.Add(Utils.MakeFSharpList(arg));
                     }
                     j++;
                 }
@@ -768,15 +775,17 @@ namespace Dynamo.Revit
             //create a zip of the incoming args and the port data
             //to be used for type comparison
             var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
+            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
 
             //if any value is a list whose expectation is a single
             //do an auto map
             //TODO: figure out a better way to do this than using a lot
             //of specific excludes
-            if (args.Count() > 0 &&
+            if ((args.Count() > 0 &&
                 portComparison.Any(x => x.Item1 == typeof(Value.List) &&
                 x.Item2 != typeof(Value.List)) &&
-                !(this.ArgumentLacing == LacingStrategy.Disabled))
+                !(this.ArgumentLacing == LacingStrategy.Disabled)) ||
+                listOfListComparison.Any(x => x.Item1 == true && x.Item2 == typeof(Value.List)))
             {
                 //if the argument is of the expected type, then
                 //leave it alone otherwise, wrap it in a list
@@ -793,8 +802,13 @@ namespace Dynamo.Revit
                     //incoming value is list and expecting list
                     else
                     {
-                        //wrap in list
-                        argSets.Add(Utils.MakeFSharpList(arg));
+                        //check if we have a list of lists, if so, then don't wrap
+                        if (Utils.IsListOfLists(arg))
+                            //leave as list
+                            argSets.Add(((Value.List)arg).Item);
+                        else
+                            //wrap in list
+                            argSets.Add(Utils.MakeFSharpList(arg));
                     }
                     j++;
                 }
