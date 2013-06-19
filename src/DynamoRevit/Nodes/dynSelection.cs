@@ -232,7 +232,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(SelectedElement);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElement != null)
@@ -439,7 +439,7 @@ namespace Dynamo.Nodes
             return Value.NewList(Utils.SequenceToFSharpList(els));
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElements != null)
@@ -733,7 +733,7 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawFace(RenderDescription, face);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             if(_f != null)
                 dynEl.SetAttribute(
@@ -807,7 +807,7 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawGeometryElement(RenderDescription, edge);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute(
                 "edgeRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
@@ -1260,7 +1260,7 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawXYZ(RenderDescription, thisXYZ);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute(
                 "refXYZ", _refXyz.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));

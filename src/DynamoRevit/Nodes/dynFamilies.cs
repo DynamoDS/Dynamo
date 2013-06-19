@@ -126,7 +126,7 @@ namespace Dynamo.Nodes
             combo.SetBinding(ComboBox.SelectedIndexProperty, indexBinding);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("index", SelectedIndex.ToString());
         }
@@ -304,7 +304,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(((Parameter)Items[SelectedIndex].Item).Definition);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             if (this.storedId != null)
             {
