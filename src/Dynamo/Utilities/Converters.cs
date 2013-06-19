@@ -692,4 +692,21 @@ namespace Dynamo.Controls
             throw new NotSupportedException();
         }
     }
+
+    public class PortNameToWidthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            //if the port name is null or empty
+            if (string.IsNullOrEmpty(value.ToString()))
+                return 20;
+
+            return double.NaN;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
 }

@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 //using Autodesk.Revit.DB;
+using System.Windows.Controls;
 using Dynamo.Connectors;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -94,8 +95,11 @@ namespace Dynamo.Nodes
         {
             watchTree = new WatchTree();
 
-            nodeUI.inputGrid.Children.Add(watchTree);
-
+            //nodeUI.inputGrid.Children.Add(watchTree);
+            nodeUI.grid.Children.Add(watchTree);
+            watchTree.SetValue(Grid.RowProperty,2);
+            watchTree.SetValue(Grid.ColumnSpanProperty,3);
+            watchTree.Margin = new Thickness(5,0,5,5);
             watchTreeBranch = watchTree.FindResource("Tree") as WatchTreeBranch;
         }
 

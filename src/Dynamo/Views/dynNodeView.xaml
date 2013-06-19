@@ -101,8 +101,8 @@
 
         
             <StackPanel Name="gridLeft" 
-            HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Stretch"
             IsHitTestVisible="True" 
             Margin="0"
             Background="Transparent"
