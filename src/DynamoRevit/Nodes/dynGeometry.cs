@@ -1857,7 +1857,7 @@ namespace Dynamo.Nodes
             dynEl.SetAttribute("index", this.combo.SelectedIndex.ToString());
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             try
             {

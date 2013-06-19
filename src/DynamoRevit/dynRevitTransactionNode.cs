@@ -68,8 +68,12 @@ namespace Dynamo.Revit
             RegisterAllElementsDeleteHook();
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
+            //Don't copy over stored references
+            if (context == SaveContext.Copy)
+                return;
+
             //Only save elements in the home workspace
             if (WorkSpace is FuncWorkspace)
                 return;
@@ -92,7 +96,7 @@ namespace Dynamo.Revit
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             var del = new DynElementUpdateDelegate(onDeleted);
 

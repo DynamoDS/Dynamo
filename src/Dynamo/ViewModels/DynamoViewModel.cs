@@ -1053,7 +1053,7 @@ namespace Dynamo.Controls
                 var xmlDoc = new XmlDocument();
                 var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
                 xmlDoc.AppendChild(dynEl);
-                node.SaveElement(xmlDoc, dynEl);
+                node.SaveNode(xmlDoc, dynEl, SaveContext.Copy);
 
                 nodeData.Add("data", dynEl);
 
@@ -1343,7 +1343,7 @@ namespace Dynamo.Controls
             //try to set the value on the node
             if (data.ContainsKey("data"))
             {
-                node.LoadElement(data["data"] as XmlNode);
+                node.LoadNode(data["data"] as XmlNode);
             }
 
             //override the guid so we can store
@@ -1819,7 +1819,7 @@ namespace Dynamo.Controls
                     }
 
                     el.DisableReporting();
-                    el.LoadElement(elNode);
+                    el.LoadNode(elNode);
 
                     if (el is dynFunction)
                     {
@@ -2488,7 +2488,7 @@ namespace Dynamo.Controls
 
                     dynNodeModel el = CreateNodeInstance( t, nickname, guid );
                     el.WorkSpace = _model.CurrentSpace;
-                    el.LoadElement(elNode);
+                    el.LoadNode(elNode);
 
                     _model.CurrentSpace.Nodes.Add(el);
                     
@@ -2513,7 +2513,7 @@ namespace Dynamo.Controls
                     if (ViewingHomespace)
                         el.SaveResult = true;
 
-                    //el.LoadElement(elNode);
+                    //el.LoadNode(elNode);
                 }
 
                 Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed - previousElapsed));

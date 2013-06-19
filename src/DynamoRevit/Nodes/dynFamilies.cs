@@ -131,7 +131,7 @@ namespace Dynamo.Nodes
             dynEl.SetAttribute("index", SelectedIndex.ToString());
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -319,7 +319,7 @@ namespace Dynamo.Nodes
 
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             var doc = dynRevitSettings.Doc.Document;
 

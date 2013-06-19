@@ -29,9 +29,12 @@ namespace Dynamo.Nodes
             return result;
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            base.SaveElement(xmlDoc, dynEl);
+            base.SaveNode(xmlDoc, dynEl, context);
+
+            if (context == SaveContext.Copy)
+                return;
 
             foreach (var node in ElementsContainer.Nodes)
             {
@@ -60,9 +63,9 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
-            base.LoadElement(elNode);
+            base.LoadNode(elNode);
 
             ElementsContainer.Clear();
 

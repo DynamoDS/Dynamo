@@ -243,7 +243,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -453,7 +453,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -740,7 +740,7 @@ namespace Dynamo.Nodes
                     "faceRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -813,7 +813,7 @@ namespace Dynamo.Nodes
                 "edgeRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -856,7 +856,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -1268,7 +1268,7 @@ namespace Dynamo.Nodes
             dynEl.SetAttribute("refXYZparam1", _param1.ToString());
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             try
             {

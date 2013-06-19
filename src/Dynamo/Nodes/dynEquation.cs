@@ -80,12 +80,12 @@ namespace Dynamo.Nodes
             tb.SetBinding(TextBox.TextProperty, bindingVal);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("formula", Formula);
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             Formula = elNode.Attributes["formula"].Value ?? "";
             processFormula();
