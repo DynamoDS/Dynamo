@@ -119,12 +119,17 @@ namespace Dynamo.Controls
             get { return nodeLogic.State; }
         }
         
-        public double DropShadowOpacity
+        //public double DropShadowOpacity
+        //{
+        //    get
+        //    {
+        //        return nodeLogic.IsCustomFunction? 1:0;
+        //    }
+        //}
+
+        public bool IsCustomFunction
         {
-            get
-            {
-                return nodeLogic.IsCustomFunction? 1:0;
-            }
+            get { return nodeLogic.IsCustomFunction ? true : false; }
         }
 
         /// <summary>
@@ -247,7 +252,7 @@ namespace Dynamo.Controls
 
         void Controller_RequestNodeSelect(object sender, EventArgs e)
         {
-            dynNodeModel n = (e as NodeEventArgs).Node;
+            dynModelBase n = (e as ModelEventArgs).Model;
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(SelectCommand, n));
             dynSettings.Controller.ProcessCommandQueue();
         }

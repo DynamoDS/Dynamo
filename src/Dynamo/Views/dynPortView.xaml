@@ -1,13 +1,14 @@
 ﻿<UserControl x:Class="Dynamo.Connectors.dynPortView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:connectors="clr-namespace:Dynamo.Connectors"
+    xmlns:connectors="clr-namespace:Dynamo.Connectors" 
+    xmlns:controls="clr-namespace:Dynamo.Views"
     Height="20" 
     Width="Auto"
     MouseLeftButtonDown="UserControl_MouseLeftButtonDown" 
-             MouseEnter="DynPort_OnMouseEnter"
-             MouseLeave="DynPort_OnMouseLeave"
-    Background="{x:Null}">
+    MouseEnter="DynPort_OnMouseEnter"
+    MouseLeave="DynPort_OnMouseLeave"
+    Background="{x:Null}" LayoutUpdated="DynPortView_OnLayoutUpdated">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -17,8 +18,8 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <Grid Name="mainGrid" Margin="0,0,0,2">
+
+    <Grid Name="mainGrid" Margin="0,0,0,2" Width="{Binding Path=PortName, Converter={StaticResource PortNameToWidthConverter}}">
         <Grid Name="portGrid">
             <Grid.ToolTip>
                 <ToolTip Name="toolTip1">
@@ -26,7 +27,7 @@
                 </ToolTip>
             </Grid.ToolTip>
             <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                    Name="portRect" IsHitTestVisible="True" LayoutUpdated="Ellipse1Dot_OnLayoutUpdated">
+                    Name="portRect" IsHitTestVisible="True"> 
                 <Canvas.Style>
                     <Style TargetType="{x:Type Canvas}">
                         <Style.Triggers>
@@ -53,7 +54,8 @@
                    FontSize="12" FontFamily="Trebuchet"
                        Padding="6,7,6,7"
                    IsHitTestVisible="False" 
-                   Background="{x:Null}" Foreground="#FF505050"/>
+                   Background="{x:Null}" Foreground="#FF505050"
+                       Visibility="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynWorkspaceView}}, Converter={StaticResource ZoomToVisibilityConverter}}"/>
         </Grid>
     </Grid>
 </UserControl>

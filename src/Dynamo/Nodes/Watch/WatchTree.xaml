@@ -51,6 +51,10 @@
             <local:WatchNode NodeLabel="B"/>
             <local:WatchNode NodeLabel="C" Link="Blah Blah Blah"/>-->
         </local:WatchTreeBranch>
+        <Style TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsExpanded" Value="{Binding IsNodeExpanded}">
+            </Setter>
+        </Style>
     </UserControl.Resources>
     <Grid DataContext="{StaticResource Tree}">
         <TreeView Name="treeView1"

@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -42,8 +43,12 @@ namespace Dynamo.Connectors
 
         void dynPort_Loaded(object sender, RoutedEventArgs e)
         {
+            //Debug.WriteLine("Port loaded.");
             canvas = WPF.FindUpVisualTree<Dynamo.Controls.DragCanvas>(this);
-            ViewModel.UpdateCenter(CalculateCenter());
+
+            if (ViewModel != null)
+                ViewModel.UpdateCenter(CalculateCenter());
+
         }
 
         #endregion constructors
@@ -68,15 +73,6 @@ namespace Dynamo.Connectors
     
             //set the handled flag so that the element doesn't get dragged
             e.Handled = true;
-        }
-
-        private void Ellipse1Dot_OnLayoutUpdated(object sender, EventArgs e)
-        {
-            if (ViewModel != null)
-            {
-                //set the center property on the view model
-                ViewModel.UpdateCenter(CalculateCenter());
-            }
         }
 
         Point CalculateCenter()
@@ -115,6 +111,19 @@ namespace Dynamo.Connectors
                     return (dynPortViewModel) this.DataContext;
                 else
                     return null;
+            }
+        }
+
+        private void DynPortView_OnLayoutUpdated(object sender, EventArgs e)
+        {
+            if (ViewModel == null)
+                return;
+
+            Point p = CalculateCenter();
+            if (p != ViewModel.Center)
+            {
+                //Debug.WriteLine("Port layout updated.");
+                ViewModel.UpdateCenter(p);
             }
         }
     }

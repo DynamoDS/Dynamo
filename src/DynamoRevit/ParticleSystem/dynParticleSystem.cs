@@ -51,7 +51,7 @@ namespace Dynamo.Nodes
         protected bool hasDeadParticles;
 
         protected bool isFaceConstrained = false;
-        protected Face constraintFace;
+        protected Autodesk.Revit.DB.Face constraintFace;
 
         double maxResidualForce = -1000000000.0;
         double maxNodalVelocity = -1000000000.0;
@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
             gravity = new XYZ(0, 0, g);
         }
 
-        public void setConstraintFace(Face f)
+        public void setConstraintFace(Autodesk.Revit.DB.Face f)
         {
             constraintFace = f;
         }

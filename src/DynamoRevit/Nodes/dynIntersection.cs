@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var crv = (Curve)((Value.Container)args[0]).Item;
-            var face = (Face)((Value.Container)args[1]).Item;
+            var face = (Autodesk.Revit.DB.Face)((Value.Container)args[1]).Item;
 
             IntersectionResultArray xsects = new IntersectionResultArray();
             SetComparisonResult result = face.Intersect(crv, out xsects);

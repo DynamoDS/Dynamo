@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -60,13 +61,13 @@ namespace Dynamo.Nodes
 
             object arg0 = ((Value.Container)args[0]).Item;
 
-            Face f;
+            Autodesk.Revit.DB.Face f;
 
             Reference faceRef = arg0 as Reference;
             if (faceRef != null)
-                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             else
-                f = arg0 as Face;
+                f = arg0 as Autodesk.Revit.DB.Face;
 
             if (f != null)
             {
@@ -98,13 +99,13 @@ namespace Dynamo.Nodes
 
             object arg0 = ((Value.Container)args[0]).Item;
 
-            Face f;
+            Autodesk.Revit.DB.Face f;
 
             Reference faceRef = arg0 as Reference;
             if (faceRef != null)
-                f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+                f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             else
-                f = arg0 as Face;
+                f = arg0 as Autodesk.Revit.DB.Face;
 
             if (f != null)
             {
@@ -205,8 +206,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Ref Point Dist")]
+    [NodeName("Reference Point Distance")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeSearchTags("Distance", "dist", "norm")]
     [NodeDescription("Measures a distance between point(s).")]
     public class dynDistanceBetweenPoints : dynMeasurementBase
     {
@@ -339,15 +341,15 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(Measure.Item.GetType().FullName);
-            outEl.SetAttribute("value",  Measure.Item.Length.ToString());
+            outEl.SetAttribute("value",  Measure.Item.Length.ToString(CultureInfo.InvariantCulture));
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -367,7 +369,7 @@ namespace Dynamo.Nodes
         {
             try
             {
-                return Convert.ToDouble(val);
+                return Convert.ToDouble(val, CultureInfo.InvariantCulture);
             }
             catch
             {

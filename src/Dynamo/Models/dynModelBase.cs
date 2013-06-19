@@ -71,6 +71,13 @@ namespace Dynamo
             get{return new Rect(x,y,width,height);}
         }
 
+        public event EventHandler Updated; 
+        public void OnUpdated(EventArgs e)
+        {
+            if (Updated != null)
+                Updated(this, e);
+        }
+
         public bool IsSelected
         {
             get { return _isSelected; }

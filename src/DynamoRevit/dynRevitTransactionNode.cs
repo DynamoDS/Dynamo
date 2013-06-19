@@ -41,7 +41,7 @@ namespace Dynamo.Revit
         {
             get
             {
-                return dynRevitSettings.ElementsContainers.Peek()[this];
+                return dynRevitSettings.ElementsContainers.Peek()[GUID];
             }
         }
 
@@ -65,10 +65,15 @@ namespace Dynamo.Revit
         protected dynRevitTransactionNode()
         {
             ArgumentLacing = LacingStrategy.Longest;
+            RegisterAllElementsDeleteHook();
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
+            //Don't copy over stored references
+            if (context == SaveContext.Copy)
+                return;
+
             //Only save elements in the home workspace
             if (WorkSpace is FuncWorkspace)
                 return;
@@ -91,7 +96,7 @@ namespace Dynamo.Revit
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             var del = new DynElementUpdateDelegate(onDeleted);
 
@@ -164,6 +169,10 @@ namespace Dynamo.Revit
         public static void DrawReferencePoint(RenderDescription description, object obj)
         {
             ReferencePoint point = obj as ReferencePoint;
+
+            if (point == null)
+                return;
+
             description.points.Add(new Point3D(point.GetCoordinateSystem().Origin.X,
                 point.GetCoordinateSystem().Origin.Y,
                 point.GetCoordinateSystem().Origin.Z));
@@ -172,12 +181,18 @@ namespace Dynamo.Revit
         public static void DrawXYZ(RenderDescription description, object obj)
         {
             XYZ point = obj as XYZ;
+            if (point == null)
+                return;
+
             description.points.Add(new Point3D(point.X, point.Y, point.Z));
         }
 
         public static void DrawCurve(RenderDescription description, object obj)
         {
             Autodesk.Revit.DB.Curve curve = obj as Autodesk.Revit.DB.Curve;
+
+            if (curve == null)
+                return;
 
             IList<XYZ> points = curve.Tessellate();
 
@@ -198,12 +213,18 @@ namespace Dynamo.Revit
         {
             Autodesk.Revit.DB.CurveElement elem = obj as Autodesk.Revit.DB.CurveElement;
 
+            if (elem == null)
+                return;
+
             DrawCurve(description, elem.GeometryCurve);
         }
 
         public static void DrawSolid(RenderDescription description, object obj)
         {
             Autodesk.Revit.DB.Solid solid = obj as Autodesk.Revit.DB.Solid;
+
+            if (solid == null)
+                return;
 
             foreach (Face f in solid.Faces)
             {
@@ -275,6 +296,9 @@ namespace Dynamo.Revit
         {
             Autodesk.Revit.DB.Face face = obj as Autodesk.Revit.DB.Face;
 
+            if (face == null)
+                return;
+
             Mesh3D[] meshes = RevitMeshToHelixMesh(face.Triangulate(0.2));
 
             foreach (Mesh3D mesh in meshes)
@@ -286,6 +310,9 @@ namespace Dynamo.Revit
         public static void DrawForm(RenderDescription description, object obj)
         {
             Autodesk.Revit.DB.Form form = obj as Autodesk.Revit.DB.Form;
+
+            if (form == null)
+                return;
 
             DrawGeometryElement(description, form.get_Geometry(new Options()));
         }
@@ -317,10 +344,6 @@ namespace Dynamo.Revit
 
             if (obj == null)
                 return;
-
-            // Debugging code
-            //string path = @"C:\Temp\" + System.Guid.NewGuid().ToString() + ".txt";
-            //System.IO.File.WriteAllText(path, obj.GetType().Name);
 
             if (typeof(Autodesk.Revit.DB.XYZ).IsAssignableFrom(obj.GetType()))
             {
@@ -389,9 +412,6 @@ namespace Dynamo.Revit
 
         public void Draw(RenderDescription description, object obj)
         {
-            //string path = @"C:\Temp\" + System.Guid.NewGuid().ToString() + ".txt";
-            //System.IO.File.WriteAllText(path, obj.GetType().Name);
-
             DrawElement(description, obj);
         }
 
@@ -557,8 +577,8 @@ namespace Dynamo.Revit
                        var query = controller.DynamoViewModel.Model.HomeSpace.Nodes
                            .Where(x => x is dynFunctionWithRevit)
                            .Select(x => (x as dynFunctionWithRevit).ElementsContainer)
-                           .Where(c => c.HasElements(this))
-                           .SelectMany(c => c[this]);
+                           .Where(c => c.HasElements(GUID))
+                           .SelectMany(c => c[GUID]);
 
                        foreach (var els in query)
                        {
@@ -593,11 +613,7 @@ namespace Dynamo.Revit
 
         void onDeleted(List<ElementId> deleted)
         {
-            int count = 0;
-            foreach (var els in elements)
-            {
-                count += els.RemoveAll(deleted.Contains);
-            }
+            int count = elements.Sum(els => els.RemoveAll(deleted.Contains));
 
             if (!isDirty)
                 isDirty = count > 0;
@@ -621,15 +637,16 @@ namespace Dynamo.Revit
             //create a zip of the incoming args and the port data
             //to be used for type comparison
             var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
+            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
 
-            //if any value is a list whose expectation is a single
-            //do an auto map
-            //TODO: figure out a better way to do this than using a lot
-            //of specific excludes
+            //there are more than zero arguments
+            //and there is either an argument which does not match its expections 
+            //OR an argument which requires a list and gets a list of lists
+            //AND argument lacing is not disabled
             if (args.Count() > 0 &&
-                portComparison.Any(x => x.Item1 == typeof(Value.List) &&
-                x.Item2 != typeof(Value.List)) &&
-                !(this.ArgumentLacing == LacingStrategy.Disabled))
+                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
+                listOfListComparison.Any(x=>x.Item1 ==true && x.Item2 == typeof(Value.List))) &&
+                this.ArgumentLacing != LacingStrategy.Disabled )
             {
                 //if the argument is of the expected type, then
                 //leave it alone otherwise, wrap it in a list
@@ -646,8 +663,13 @@ namespace Dynamo.Revit
                     //incoming value is list and expecting list
                     else
                     {
-                        //wrap in list
-                        argSets.Add(Utils.MakeFSharpList(arg));
+                        //check if we have a list of lists, if so, then don't wrap
+                        if (Utils.IsListOfLists(arg))
+                            //leave as list
+                            argSets.Add(((Value.List)arg).Item);
+                        else
+                            //wrap in list
+                            argSets.Add(Utils.MakeFSharpList(arg));
                     }
                     j++;
                 }
@@ -753,15 +775,16 @@ namespace Dynamo.Revit
             //create a zip of the incoming args and the port data
             //to be used for type comparison
             var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
+            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
 
-            //if any value is a list whose expectation is a single
-            //do an auto map
-            //TODO: figure out a better way to do this than using a lot
-            //of specific excludes
+            //there are more than zero arguments
+            //and there is either an argument which does not match its expections 
+            //OR an argument which requires a list and gets a list of lists
+            //AND argument lacing is not disabled
             if (args.Count() > 0 &&
-                portComparison.Any(x => x.Item1 == typeof(Value.List) &&
-                x.Item2 != typeof(Value.List)) &&
-                !(this.ArgumentLacing == LacingStrategy.Disabled))
+                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
+                listOfListComparison.Any(x => x.Item1 == true && x.Item2 == typeof(Value.List))) &&
+                this.ArgumentLacing != LacingStrategy.Disabled)
             {
                 //if the argument is of the expected type, then
                 //leave it alone otherwise, wrap it in a list
@@ -778,8 +801,13 @@ namespace Dynamo.Revit
                     //incoming value is list and expecting list
                     else
                     {
-                        //wrap in list
-                        argSets.Add(Utils.MakeFSharpList(arg));
+                        //check if we have a list of lists, if so, then don't wrap
+                        if (Utils.IsListOfLists(arg))
+                            //leave as list
+                            argSets.Add(((Value.List)arg).Item);
+                        else
+                            //wrap in list
+                            argSets.Add(Utils.MakeFSharpList(arg));
                     }
                     j++;
                 }

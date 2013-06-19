@@ -9,6 +9,8 @@ using Dynamo.Controls;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 using Dynamo.Commands;
+using NUnit.Core;
+using NUnit.Framework;
 
 namespace Dynamo.Utilities
 {
@@ -134,12 +136,18 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Update a FunctionDefinition amongst the loaded FunctionDefinitions
+        ///     Update a FunctionDefinition amongst the loaded FunctionDefinitions, without
+        ///     settings its path
         /// </summary>
-        /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public bool SetFunctionDefinition(Guid guid, FunctionDefinition def)
+        /// <param name="guid">The custom node id</param>
+        /// <param name="def">The definition for the function</param>
+        public void SetFunctionDefinition(Guid guid, FunctionDefinition def)
         {
-            return false;
+            if (this.loadedNodes.ContainsKey(guid))
+            {
+                this.loadedNodes.Remove(guid);
+            }
+            this.loadedNodes.Add(guid, def);
         }
 
         /// <summary>
@@ -163,14 +171,11 @@ namespace Dynamo.Utilities
         /// <param name="path">The path for the node.</param>
         public void SetNodeInfo(string name, string category, Guid id, string path)
         {
-            if ( this.Contains(name) )
+            if ( this.NodeNames.ContainsKey(name) )
             {
-                this.NodeNames[name] = id;
+                this.NodeNames.Remove(name);
             }
-            else
-            {
-                this.NodeNames.Add(name, id);
-            }
+            this.NodeNames.Add(name, id);
             this.SetNodeCategory(id, category);
             this.SetNodePath(id, path);
         }
@@ -190,6 +195,15 @@ namespace Dynamo.Utilities
             {
                 this.NodeCategories.Add(id, category);
             }
+        }
+
+        /// <summary>
+        /// Return the default search path
+        /// </summary>
+        /// <returns>A string representing a path</returns>
+        public string GetDefaultSearchPath()
+        {
+            return SearchPath;
         }
 
         /// <summary>
@@ -642,9 +656,9 @@ namespace Dynamo.Utilities
                         return false;
 
                     el.DisableReporting();
-                    el.LoadElement(elNode); // inject the node properties from the xml
+                    el.LoadNode(elNode); // inject the node properties from the xml
 
-                    // moved this logic to LoadElement in dynFunction --SJE
+                    // moved this logic to LoadNode in dynFunction --SJE
 
                     //if (el is dynFunction)
                     //{
@@ -781,6 +795,10 @@ namespace Dynamo.Utilities
             {
                 DynamoCommands.WriteToLogCmd.Execute("There was an error opening the workbench.");
                 DynamoCommands.WriteToLogCmd.Execute(ex);
+
+                if (controller.Testing)
+                    Assert.Fail(ex.Message);
+
                 def = null;
                 return false;
             }

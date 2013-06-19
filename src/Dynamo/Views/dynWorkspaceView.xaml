@@ -40,11 +40,12 @@
             </Canvas.Background>
         </Canvas>
 
-        <ItemsControl ItemsSource="{Binding Watch3DViewModels}"
-            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-            Visibility="{Binding FullscreenWatchVisible, 
-            Converter={StaticResource BoolToFullscreenWatchVisibilityConverter}}">
-                      
+         <ItemsControl ItemsSource="{Binding Watch3DViewModels}"
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <!--OLD visibility code for full screen watch no longer required because we delete the watches-->
+            <!--HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            Visibility="{Binding FullScreenWatchVisible,-->
+             
             <ItemsControl.Resources>
                 <DataTemplate DataType="{x:Type controls:Watch3DFullscreenViewModel}">
                     <controls:WatchViewFullscreen></controls:WatchViewFullscreen>
@@ -92,6 +93,7 @@
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <controls:DragCanvas
+                                    UseLayoutRounding="True"
                                     Width="100000" 
                                     Height="100000" 
                                     x:Name="DragCanvas"

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Web;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Microsoft.FSharp.Collections;
@@ -485,6 +486,24 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void OpeningDynWithDyfMissingIsOkayAndRunsOkay()
+        {
+            Assert.DoesNotThrow(delegate
+                {
+                    var vm = controller.DynamoViewModel;
+                    var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\CASE");
+                    string openPath = Path.Combine(examplePath, "case_flip_matrix.dyn");
+
+                    controller.RunCommand(vm.OpenCommand, openPath);
+
+                    Assert.AreEqual( controller.DynamoModel.CurrentSpace.Nodes.Count, 11);
+
+                    controller.RunCommand(vm.RunExpressionCommand);
+                    Thread.Sleep(100);
+                });
+        }
+
+        [Test]
         public void Tangent()
         {
             var vm = controller.DynamoViewModel;
@@ -501,30 +520,19 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void AngleConverter()
+        public void StringInputNodeWorksWithSpecialCharacters()
         {
-            RadianToDegreesConverter converter = new RadianToDegreesConverter();
-            double radians = Convert.ToDouble(converter.ConvertBack(90.0, typeof(string), null, new System.Globalization.CultureInfo("en-US")));
-            Assert.AreEqual(1.57, radians, 0.01);
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns");
+            string openPath = Path.Combine(examplePath, "StringInputTest.dyn");
+            controller.RunCommand(vm.OpenCommand, openPath);
 
-            radians = Convert.ToDouble(converter.ConvertBack(180.0, typeof(string), null, new System.Globalization.CultureInfo("en-US")));
-            Assert.AreEqual(3.14, radians, 0.01);
+            dynStringInput strNode = (dynStringInput)controller.DynamoModel.Nodes.First(x => x is dynStringInput);
+            string expected =
+                "A node\twith tabs, and\r\ncarriage returns,\r\nand !@#$%^&* characters, and also something \"in quotes\".";
 
-            radians = Convert.ToDouble(converter.ConvertBack(360.0, typeof(string), null, new System.Globalization.CultureInfo("en-US")));
-            Assert.AreEqual(6.28, radians, 0.01);
-
-            radians = Convert.ToDouble(converter.ConvertBack(-90.0, typeof(string), null, new System.Globalization.CultureInfo("en-US")));
-            Assert.AreEqual(-1.57, radians, 0.01);
-
-            double degrees = Convert.ToDouble(converter.Convert(-1.570795, typeof(string), null, new System.Globalization.CultureInfo("en-US")));
-            Assert.AreEqual(-90.0, degrees, 0.01);
-
-            degrees = Convert.ToDouble(converter.Convert(6.28318, typeof(string), null, new System.Globalization.CultureInfo("en-US")));
-            Assert.AreEqual(360.0, degrees, 0.01);
-
-            degrees = Convert.ToDouble(converter.Convert(3.14159, typeof(string), null, new System.Globalization.CultureInfo("en-US")));
-            Assert.AreEqual(180.0, degrees, 0.01);
-
+            Assert.AreEqual(expected, strNode.Value.ToString());
+            
         }
 
     }

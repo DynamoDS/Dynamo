@@ -283,6 +283,13 @@ namespace Dynamo
                     && x.OutPorts.All(y => y.Connectors.All(c => c.End.Owner is dynOutput)));
         }
 
+        public event EventHandler Updated;
+        public void OnUpdated(EventArgs e)
+        {
+            if (Updated != null)
+                Updated(this, e);
+        }
+
         #region static methods
 
         /// <summary>
@@ -371,7 +378,7 @@ namespace Dynamo
                     dynEl.SetAttribute("isUpstreamVisible", el.IsUpstreamVisible.ToString().ToLower());
                     dynEl.SetAttribute("lacing", el.ArgumentLacing.ToString());
 
-                    el.SaveElement(xmlDoc, dynEl);
+                    el.SaveNode(xmlDoc, dynEl, SaveContext.File);
                 }
 
                 //write only the output connectors

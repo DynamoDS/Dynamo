@@ -281,7 +281,7 @@ namespace Dynamo.Utilities
                 if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
                     dynSettings.Controller.DynamoViewModel.ViewHomeWorkspace();
 
-                dynSettings.Controller.DynamoViewModel.OpenWorkbench(path);
+                dynSettings.Controller.DynamoViewModel.OpenWorkspace(path);
             }
         }
 

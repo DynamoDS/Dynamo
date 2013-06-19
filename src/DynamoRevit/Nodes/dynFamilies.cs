@@ -126,12 +126,12 @@ namespace Dynamo.Nodes
             combo.SetBinding(ComboBox.SelectedIndexProperty, indexBinding);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("index", SelectedIndex.ToString());
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -196,9 +196,10 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Select Fam Inst Param")]
+    [NodeName("Select Family Instance Parameter")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a parameter as a string.")]
+    [NodeSearchTags("fam")]
     [IsInteractive(true)]
     public class dynFamilyInstanceParameterSelector : dynDropDrownBase
     {
@@ -303,18 +304,22 @@ namespace Dynamo.Nodes
             return Value.NewContainer(((Parameter)Items[SelectedIndex].Item).Definition);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            XmlElement outEl = xmlDoc.CreateElement("familyid");
-            outEl.SetAttribute("value", this.storedId.IntegerValue.ToString());
-            dynEl.AppendChild(outEl);
+            if (this.storedId != null)
+            {
+                XmlElement outEl = xmlDoc.CreateElement("familyid");
+                outEl.SetAttribute("value", this.storedId.IntegerValue.ToString());
+                dynEl.AppendChild(outEl);
 
-            XmlElement param = xmlDoc.CreateElement("index");
-            param.SetAttribute("value", SelectedIndex.ToString());
-            dynEl.AppendChild(param);
+                XmlElement param = xmlDoc.CreateElement("index");
+                param.SetAttribute("value", SelectedIndex.ToString());
+                dynEl.AppendChild(param);
+            }
+
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             var doc = dynRevitSettings.Doc.Document;
 
@@ -730,7 +735,7 @@ namespace Dynamo.Nodes
 
     #endregion
 
-    [NodeName("Create Fam Inst")]
+    [NodeName("Create Family Instance")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
     [NodeDescription("Creates family instances at a given XYZ location.")]
     public class dynFamilyInstanceCreatorXYZ : dynRevitTransactionNodeWithOneOutput
@@ -840,7 +845,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Create Fam Inst By Level")]
+    [NodeName("Create Family Instance By Level")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
     [NodeDescription("Creates family instances in the given level.")]
     public class dynFamilyInstanceCreatorLevel : dynRevitTransactionNodeWithOneOutput
@@ -1154,7 +1159,7 @@ namespace Dynamo.Nodes
     }
 
     //TODO: In Destroy(), have code that resets Elements back to their default.
-    [NodeName("Set Fam Inst Param")]
+    [NodeName("Set Family Instance Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
     [NodeDescription("Modifies a parameter on a family instance.")]
     public class dynFamilyInstanceParameterSetter : dynRevitTransactionNodeWithOneOutput
@@ -1278,7 +1283,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get Fam Inst Param")]
+    [NodeName("Get Family Instance Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
     [NodeDescription("Fetches the value of a parameter of a Family Instance.")]
     public class dynFamilyInstanceParameterGetter : dynRevitTransactionNodeWithOneOutput
@@ -1393,7 +1398,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Set Fam Type Param")]
+    [NodeName("Set Family Type Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
     [NodeDescription("Modifies a parameter on a family type.")]
     public class dynFamilyTypeParameterSetter : dynRevitTransactionNodeWithOneOutput
@@ -1517,7 +1522,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get Fam Type Param")]
+    [NodeName("Get Family Type Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
     [NodeDescription("Fetches the value of a parameter of a Family Type.")]
     public class dynFamilyTypeParameterGetter : dynRevitTransactionNodeWithOneOutput

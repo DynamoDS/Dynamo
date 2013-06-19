@@ -22,6 +22,9 @@ using Dynamo.Utilities;
 
 using Microsoft.Practices.Prism.Commands;
 
+using NUnit.Core;
+using NUnit.Framework;
+
 namespace Dynamo.Controls
 {
 
@@ -47,24 +50,22 @@ namespace Dynamo.Controls
         }
         
         private DynamoModel _model;
-
         private string logText;
         private ConnectorType connectorType;
-
         private Point transformOrigin;
         private bool consoleShowing;
-        private bool fullscreenWatchShowing = false;
         private DynamoController controller;
         public StringWriter sw;
         private bool runEnabled = true;
         protected bool canRunDynamically = true;
         protected bool debug = false;
         protected bool dynamicRun = false;
-        
         private string UnlockLoadPath;
         private bool uiLocked = true;
-        
         private string editName = "";
+        private bool isShowingConnectors = true;
+        private bool fullscreenWatchShowing = false;
+        private bool canNavigateBackground = false;
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -90,7 +91,6 @@ namespace Dynamo.Controls
         public DelegateCommand<object> CopyCommand { get; set; }
         public DelegateCommand<object> PasteCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
-        public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand CancelRunCommand { get; set; }
         public DelegateCommand<object> SaveImageCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
@@ -107,6 +107,9 @@ namespace Dynamo.Controls
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand RefactorCustomNodeCommand { get; set; }
+        public DelegateCommand ShowHideConnectorsCommand { get; set; }
+        public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
+        public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -160,23 +163,6 @@ namespace Dynamo.Controls
             {
                 consoleShowing = value;
                 RaisePropertyChanged("ConsoleShowing");
-            }
-        }
-
-        public bool FullscreenWatchShowing
-        {
-            get { return fullscreenWatchShowing; }
-            set
-            {
-                fullscreenWatchShowing = value;
-                RaisePropertyChanged("FullscreenWatchShowing");
-
-                // NOTE: I couldn't get the binding to work in the XAML so
-                //       this is a temporary hack
-                foreach (dynWorkspaceViewModel workspace in Workspaces)
-                {
-                    workspace.FullscreenChanged();
-                }
             }
         }
 
@@ -303,6 +289,53 @@ namespace Dynamo.Controls
                 RaisePropertyChanged("IsUILocked");
             }
         }
+        
+        public bool IsShowingConnectors
+        {
+            get { return isShowingConnectors; }
+            set
+            {
+                isShowingConnectors = value;
+                RaisePropertyChanged("IsShowingConnectors");
+            }
+        }
+
+        public bool FullscreenWatchShowing
+        {
+            get { return fullscreenWatchShowing; }
+            set
+            {
+                fullscreenWatchShowing = value;
+                RaisePropertyChanged("FullscreenWatchShowing");
+
+                // NOTE: I couldn't get the binding to work in the XAML so
+                //       this is a temporary hack
+                foreach (dynWorkspaceViewModel workspace in dynSettings.Controller.DynamoViewModel.Workspaces)
+                {
+                    workspace.FullscreenChanged();
+                }
+
+                if (!fullscreenWatchShowing && canNavigateBackground)
+                    CanNavigateBackground = false;
+            }
+        }
+
+        public bool CanNavigateBackground
+        {
+            get { return canNavigateBackground; }
+            set
+            {
+                canNavigateBackground = value;
+                RaisePropertyChanged("CanNavigateBackground");
+
+                int workspace_index = CurrentWorkspaceIndex;
+
+                dynWorkspaceViewModel view_model = Workspaces[workspace_index];
+
+                view_model.WatchEscapeIsDown = value;
+            }
+        }
+        
         #endregion
 
         public DynamoViewModel(DynamoController controller)
@@ -343,7 +376,6 @@ namespace Dynamo.Controls
             CopyCommand = new DelegateCommand<object>(Copy, CanCopy);
             PasteCommand = new DelegateCommand<object>(Paste, CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
-            ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             SaveImageCommand = new DelegateCommand<object>(SaveImage, CanSaveImage);
             ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
@@ -360,6 +392,9 @@ namespace Dynamo.Controls
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
             RefactorCustomNodeCommand = new DelegateCommand(RefactorCustomNode, CanRefactorCustomNode);
+            ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
+            ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
+            ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             #endregion
         }
 
@@ -579,7 +614,7 @@ namespace Dynamo.Controls
             else
             {
                 ext = ".dyf";
-                fltr = "Dynamo Function (*.dyf)|*.dyf";
+                fltr = "Dynamo Custom Node (*.dyf)|*.dyf";
             }
             fltr += "|All files (*.*)|*.*";
 
@@ -600,7 +635,11 @@ namespace Dynamo.Controls
             {
                 var fi = new FileInfo(_model.CurrentSpace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
-                _fileDialog.FileName = fi.Name; // see https://github.com/ikeough/Dynamo/issues/144 suggest adding this line to use the filename from the loaded workspace instead of the default "home"
+                _fileDialog.FileName = fi.Name;
+            }
+            else if (_model.CurrentSpace is FuncWorkspace)
+            {
+                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath;
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -1014,7 +1053,7 @@ namespace Dynamo.Controls
                 var xmlDoc = new XmlDocument();
                 var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
                 xmlDoc.AppendChild(dynEl);
-                node.SaveElement(xmlDoc, dynEl);
+                node.SaveNode(xmlDoc, dynEl, SaveContext.Copy);
 
                 nodeData.Add("data", dynEl);
 
@@ -1100,23 +1139,6 @@ namespace Dynamo.Controls
         }
 
         private bool CanToggleConsoleShowing()
-        {
-            return true;
-        }
-
-        private void ToggleFullscreenWatchShowing()
-        {
-            if (FullscreenWatchShowing)
-            {
-                FullscreenWatchShowing = false;
-            }
-            else
-            {
-                FullscreenWatchShowing = true;
-            }
-        }
-
-        private bool CanToggleFullscreenWatchShowing()
         {
             return true;
         }
@@ -1308,6 +1330,12 @@ namespace Dynamo.Controls
                 return;
             } 
 
+            if ( (node is dynSymbol || node is dynOutput) && _model.CurrentSpace is HomeWorkspace)
+            {
+                DynamoCommands.WriteToLogCmd.Execute("Cannot place dynSymbol or dynOutput in HomeWorkspace");
+                return;
+            }
+
             _model.CurrentSpace.Nodes.Add(node);
             node.WorkSpace = dynSettings.Controller.DynamoViewModel.CurrentSpace;
 
@@ -1315,7 +1343,7 @@ namespace Dynamo.Controls
             //try to set the value on the node
             if (data.ContainsKey("data"))
             {
-                node.LoadElement(data["data"] as XmlNode);
+                node.LoadNode(data["data"] as XmlNode);
             }
 
             //override the guid so we can store
@@ -1329,7 +1357,7 @@ namespace Dynamo.Controls
                 node.GUID = Guid.NewGuid();
             }
 
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new NodeEventArgs(node, data));
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new ModelEventArgs(node, data));
 
             node.EnableInteraction();
 
@@ -1453,6 +1481,8 @@ namespace Dynamo.Controls
         {
             var inputs = (Dictionary<string, object>)parameters;
 
+            inputs = inputs ?? new Dictionary<string, object>();
+
             // by default place note at center
             var x = 0.0;
             var y = 0.0;
@@ -1465,6 +1495,11 @@ namespace Dynamo.Controls
 
 
             var n = new dynNoteModel(x, y);
+
+            //if we have null parameters, the note is being added
+            //from the menu, center the view on the note
+            if(parameters==null)
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered( this, new ModelEventArgs(n, inputs) );
 
             n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
             var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspaceModel)inputs["workspace"];
@@ -1563,7 +1598,7 @@ namespace Dynamo.Controls
 
             dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
 
-            if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
+            if (UnlockLoadPath != null && !OpenWorkspace(UnlockLoadPath))
             {
                 dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
 
@@ -1653,7 +1688,7 @@ namespace Dynamo.Controls
                     //View the home workspace, then open the bench file
                     if (!ViewingHomespace)
                         ViewHomeWorkspace(); //TODO: Refactor
-                    return OpenWorkbench(xmlPath);
+                    return OpenWorkspace(xmlPath);
                 }
                 else if (Controller.CustomNodeLoader.Contains(funName))
                 {
@@ -1783,11 +1818,8 @@ namespace Dynamo.Controls
                         }
                     }
 
-                    if (el == null)
-                        return false;
-
                     el.DisableReporting();
-                    el.LoadElement(elNode);
+                    el.LoadNode(elNode);
 
                     if (el is dynFunction)
                     {
@@ -1943,6 +1975,10 @@ namespace Dynamo.Controls
                 Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
                 CleanWorkbench();
+
+                if (controller.Testing)
+                    Assert.Fail(ex.Message);
+
                 return false;
             }
 
@@ -1974,9 +2010,11 @@ namespace Dynamo.Controls
                 {
                     var def = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(workspace);
                     def.Workspace.FilePath = path;
+
                     if (def != null)
                     {
                         this.SaveFunction(def, true);
+                        workspace.FilePath = path;
                     }
                     return;
                 }
@@ -2095,15 +2133,24 @@ namespace Dynamo.Controls
             // If asked to, write the definition to file
             if (writeDefinition)
             {
-                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string pluginsPath = Path.Combine(directory, "definitions");
-
-                try
+                string path = "";
+                if (String.IsNullOrEmpty(definition.Workspace.FilePath))
                 {
+                    var pluginsPath = this.Controller.CustomNodeLoader.GetDefaultSearchPath();
+
                     if (!Directory.Exists(pluginsPath))
                         Directory.CreateDirectory(pluginsPath);
 
-                    string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
+                    path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
+                }
+                else
+                {
+                    path = definition.Workspace.FilePath;
+                }
+                
+                try
+                {
+                
                     dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
 
                     if (addToSearch)
@@ -2314,17 +2361,24 @@ namespace Dynamo.Controls
             _model.CurrentSpace.OnDisplayed();
         }
 
-        public bool OpenWorkbench(string xmlPath)
+        public bool OpenWorkspace(string xmlPath)
         {
             Log("Opening home workspace " + xmlPath + "...");
             CleanWorkbench();
 
+            Stopwatch sw = new Stopwatch();
+            
             try
             {
                 #region read xml file
 
+                sw.Start();
+
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(xmlPath);
+
+                TimeSpan previousElapsed = sw.Elapsed;
+                Log(string.Format("{0} elapsed for loading xml.", sw.Elapsed));
 
                 foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
                 {
@@ -2432,10 +2486,17 @@ namespace Dynamo.Controls
                     if (isUpstreamVisAttrib != null)
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
-                    dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(
-                        t, nickname, guid, x, y,
-                        _model.CurrentSpace, isVisible, isUpstreamVisible
-                        );
+                    dynNodeModel el = CreateNodeInstance( t, nickname, guid );
+                    el.WorkSpace = _model.CurrentSpace;
+                    el.LoadNode(elNode);
+
+                    _model.CurrentSpace.Nodes.Add(el);
+                    
+                    el.X = x;
+                    el.Y = y;
+
+                    el.IsVisible = isVisible;
+                    el.IsUpstreamVisible = isUpstreamVisible;
 
                     if (lacingAttrib != null)
                     {
@@ -2452,10 +2513,15 @@ namespace Dynamo.Controls
                     if (ViewingHomespace)
                         el.SaveResult = true;
 
-                    el.LoadElement(elNode);
+                    //el.LoadNode(elNode);
                 }
 
-                OnRequestLayoutUpdate(this, EventArgs.Empty);
+                Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed - previousElapsed));
+                previousElapsed = sw.Elapsed;
+
+                //OnRequestLayoutUpdate(this, EventArgs.Empty);
+                //Log(string.Format("{0} ellapsed for updating layout.", sw.Elapsed - previousElapsed));
+                //previousElapsed = sw.Elapsed;
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
@@ -2496,10 +2562,18 @@ namespace Dynamo.Controls
 
                     var newConnector = dynConnectorModel.Make(start, end,
                                                         startIndex, endIndex, portType);
+
+                    Stopwatch addTimer = new Stopwatch();
+                    addTimer.Start();
                     if (newConnector != null)
                         _model.CurrentSpace.Connectors.Add(newConnector);
+                    addTimer.Stop();
+                    Debug.WriteLine(string.Format("{0} elapsed for add connector to collection.", addTimer.Elapsed));
 
                 }
+
+                Log(string.Format("{0} ellapsed for loading connectors.", sw.Elapsed - previousElapsed));
+                previousElapsed = sw.Elapsed;
 
                 #region instantiate notes
 
@@ -2529,12 +2603,16 @@ namespace Dynamo.Controls
 
                 #endregion
 
+                Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
+                
                 foreach (dynNodeModel e in _model.CurrentSpace.Nodes)
                     e.EnableReporting();
 
                 #endregion
 
                 _model.HomeSpace.FilePath = xmlPath;
+
+                Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
             }
             catch (Exception ex)
             {
@@ -2715,8 +2793,74 @@ namespace Dynamo.Controls
                 }
             }
 
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new NodeEventArgs(e,null));
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e,null));
             
+        }
+
+        private void ShowConnectors()
+        {
+            if (isShowingConnectors == false)
+                isShowingConnectors = true;
+        }
+
+        private bool CanShowConnectors()
+        {
+            return true;
+        }
+
+        private void ToggleFullscreenWatchShowing()
+        {
+            if (FullscreenWatchShowing)
+            {
+                //delete the watches
+                foreach (dynWorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
+                {
+                    vm.Watch3DViewModels.Clear();
+                }
+
+                FullscreenWatchShowing = false;
+            }
+            else
+            {
+                //construct a watch
+                foreach (dynWorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
+                {
+                    vm.Watch3DViewModels.Add(new Watch3DFullscreenViewModel(vm));
+                }
+
+                //run the expression to refresh
+                if (dynSettings.Controller.IsProcessingCommandQueue)
+                    return;
+
+                dynSettings.Controller.RunCommand(dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null);
+
+                FullscreenWatchShowing = true;
+            }
+        }
+
+        private bool CanToggleFullscreenWatchShowing()
+        {
+            return true;
+        }
+
+        private void ToggleCanNavigateBackground()
+        {
+            if (!FullscreenWatchShowing)
+                return;
+
+            if (CanNavigateBackground)
+            {
+                CanNavigateBackground = false;
+            }
+            else
+            {
+                CanNavigateBackground = true;
+            }
+        }
+
+        private bool CanToggleCanNavigateBackground()
+        {
+            return true;
         }
     }
 
@@ -2742,13 +2886,24 @@ namespace Dynamo.Controls
         }
     }
 
-    public class NodeEventArgs : EventArgs
+    public class ModelEventArgs : EventArgs
     {
-        public dynNodeModel Node { get; set; }
-        public Dictionary<string, object> Data { get; set; } 
-        public NodeEventArgs(dynNodeModel n, Dictionary<string, object> d )
+        public dynModelBase Model { get; set; }
+        public Dictionary<string, object> Data { get; set; }
+        public ModelEventArgs(dynModelBase n, Dictionary<string, object> d)
         {
-            Node = n;
+            Model = n;
+            Data = d;
+        }
+    }
+
+    public class NoteEventArgs : EventArgs
+    {
+        public dynNoteModel Note { get; set; }
+        public Dictionary<string, object> Data { get; set; }
+        public NoteEventArgs(dynNoteModel n, Dictionary<string, object> d)
+        {
+            Note = n;
             Data = d;
         }
     }

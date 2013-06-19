@@ -154,5 +154,26 @@ namespace Dynamo.FSchemeInterop
         {
             return FScheme.print(v);
         }
+
+        /// <summary>
+        /// Determine whether the given list is a list of lists.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsListOfLists(FScheme.Value value)
+        {
+            if (value.IsList)
+            {
+                FSharpList<Value> vals = ((Value.List) value).Item;
+
+                if (!vals.Any())
+                    return false;
+
+                if (vals[0].IsList)
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

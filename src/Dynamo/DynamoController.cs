@@ -113,7 +113,7 @@ namespace Dynamo
         /// An event which requests that a node be selected
         /// </summary>
         public event NodeEventHandler RequestNodeSelect;
-        public virtual void OnRequestSelect(object sender, NodeEventArgs e)
+        public virtual void OnRequestSelect(object sender, ModelEventArgs e)
         {
             if (RequestNodeSelect != null)
                 RequestNodeSelect(sender, e);

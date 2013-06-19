@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200"
-             Height="Auto" Width="Auto" Visibility="Visible"
+             Height="Auto" Width="Auto" MaxWidth="300" Visibility="Visible"
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">
     
@@ -18,15 +18,17 @@
         </Grid.ContextMenu>
         <Canvas Background="{x:Null}">
         </Canvas>
-        <TextBlock 
-            Name="noteText"
-            HorizontalAlignment="Center" 
-            VerticalAlignment="Center" 
-            Text="{Binding Path=Text, Mode=OneWay}" 
-            FontFamily="Trebuchet" 
+
+        <TextBlock
+          Foreground="White"
+          Text="{Binding Path=Text, Mode=OneWay}"
+          Grid.Column="0" Grid.Row="0" FontFamily="Trebuchet" 
             FontSize="12" 
-            Foreground="#222"
-            Padding="10" >
+            Padding="10" TextWrapping="Wrap">
+            
+          <TextBlock.RenderTransform>
+            <TranslateTransform X="0" Y="-0.4" />
+          </TextBlock.RenderTransform>
             
         <TextBlock.Style>
             <Style TargetType="TextBlock">
@@ -36,13 +38,31 @@
                         <Setter Property="Background" Value="LightBlue"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="False">
-                        <Setter Property="Background" Value="#DDD"/>
+                        <Setter Property="Background" Value="#EEE"/>
                     </DataTrigger>
                 </Style.Triggers>
 
             </Style>
         </TextBlock.Style>
-
+            
+        <TextBlock.Effect>
+            <DropShadowEffect
+                ShadowDepth="0"
+                Color="#222"
+                Opacity="0.25"
+                BlurRadius="9.0" />
+        </TextBlock.Effect>
+            
+        </TextBlock>
+        
+        <TextBlock 
+            Name="noteText"
+            Grid.Column="0" Grid.Row="0"
+            Text="{Binding Path=Text, Mode=OneWay}" 
+            FontFamily="Trebuchet" 
+            FontSize="12" 
+            Foreground="#222"
+            Padding="10" TextWrapping="Wrap" >
         </TextBlock>
     </Grid>
 </UserControl>

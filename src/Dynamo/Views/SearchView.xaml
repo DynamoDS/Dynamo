@@ -12,19 +12,19 @@
              d:DesignHeight="300"  
              x:Name="SearchControl" 
              MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}">
-  
-  <Grid Background="Black" >
 
-    <Grid.RowDefinitions>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
- 
-    <StackPanel Name="RSearchBoxStackPanel" Orientation="Horizontal" Grid.Row="0">
+    <Grid Background="Black" >
 
-        <Image  Margin="7,0,7,0"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Name="RSearchBoxStackPanel" Orientation="Horizontal" Grid.Row="0">
+
+            <Image  Margin="7,0,7,0"
 Source="..\Images\search_24.png" Opacity="1">
-        </Image>
+            </Image>
 
             <TextBox Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,15,5,10" Margin ="0"
                        IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Width="188" Text="{Binding Path=SearchText,Mode=TwoWay}">
@@ -33,29 +33,29 @@ Source="..\Images\search_24.png" Opacity="1">
             <Button Name="BackButton" Margin="1, 0, 1, 0" Width="42" FontSize="24" Foreground="White" ToolTip="Go Back" 
                       Style="{DynamicResource ResourceKey=SImageButton}" Click="Back_Click" Tag="..\Images\back_24.png"/>
 
-        <Button Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include extended Revit API" 
+            <Button Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include extended Revit API" 
                       Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\add_32_white.png" Click="ibtnServiceController_MouseLeftButtonUp">
 
-          <Button.ContextMenu>
+                <Button.ContextMenu>
 
-            <ContextMenu Name="RegionMenu" ItemsSource="{Binding Path=Regions}">
+                    <ContextMenu Name="RegionMenu" ItemsSource="{Binding Path=Regions}">
 
-              <ContextMenu.ItemTemplate>
-                <DataTemplate>
-                  <MenuItem Header="{Binding Key}" Command="{Binding Value}" IsChecked="{Binding Value.Loaded}" IsCheckable="True"/>
-                </DataTemplate>
-              </ContextMenu.ItemTemplate>
+                        <ContextMenu.ItemTemplate>
+                            <DataTemplate>
+                                <MenuItem Header="{Binding Key}" Command="{Binding Value}" IsChecked="{Binding Value.Loaded}" IsCheckable="True"/>
+                            </DataTemplate>
+                        </ContextMenu.ItemTemplate>
 
-            </ContextMenu>
+                    </ContextMenu>
 
-          </Button.ContextMenu>
+                </Button.ContextMenu>
 
-        </Button>
+            </Button>
 
-      </StackPanel>
+        </StackPanel>
 
         <ScrollViewer Visibility="{Binding BrowserVisibility}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
-                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Row="1" >
+                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" >
 
             <ScrollViewer.Resources>
 
@@ -66,7 +66,7 @@ Source="..\Images\search_24.png" Opacity="1">
                     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
                     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
                     <Setter Property="VerticalContentAlignment" Value="Center"/>
-                    
+
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeView}">
@@ -78,7 +78,7 @@ Source="..\Images\search_24.png" Opacity="1">
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                    
+
                 </Style>
 
                 <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
@@ -95,21 +95,21 @@ Source="..\Images\search_24.png" Opacity="1">
                                               Margin="1,1,1,1" x:Name="ExpandPath" Fill="{TemplateBinding Foreground}" 
                                               Data="M 0 10 L 5 5 L 0 0 Z"/>
                                     </Border>
-                                </Border> 
-                                
+                                </Border>
+
                                 <ControlTemplate.Triggers>
-                                    
+
                                     <Trigger Property="IsChecked" Value="True">
                                         <Setter Property="Data" TargetName="ExpandPath" Value="M 0 0 L 5 5 L 10 0 Z"/>
                                         <Setter Property="Foreground" Value="White"/>
                                     </Trigger>
-                                    
+
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
                 </Style>
-                
+
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="Focusable" Value="False"></Setter>
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded}"></Setter>
@@ -127,10 +127,10 @@ Source="..\Images\search_24.png" Opacity="1">
                                             <ContentPresenter />
                                         </ControlTemplate>
                                     </Button.Template>
-                                    
+
                                     <Border Name="ContainerLight" BorderThickness="3,0,0,0" BorderBrush="#222">
                                         <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" >
-                                            <Grid MinHeight="{Binding Height}">
+                                            <Grid Background="Transparent">
 
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition MinWidth="19" Width="Auto"/>
@@ -139,24 +139,23 @@ Source="..\Images\search_24.png" Opacity="1">
                                                 </Grid.ColumnDefinitions>
 
                                                 <Grid.RowDefinitions>
-                                                    <RowDefinition Height="{Binding Height}"/>
+                                                    <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
 
-                                                <ToggleButton VerticalAlignment="Center" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
+                                                <ToggleButton Margin="5,10,5,0" Grid.Row="0" VerticalAlignment="Top" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
+                                                <Rectangle Margin="5,10,5,0" Grid.Row="0" Width="7" Height="7" x:Name="whiteRect" VerticalAlignment="Top" Fill="#FFFFFF" HorizontalAlignment="Center" Visibility="Collapsed" />
 
-                                                <Rectangle Width="7" Height="7" x:Name="whiteRect" Margin="3,0" VerticalAlignment="Center" Fill="#FFFFFF" HorizontalAlignment="Center" Visibility="Collapsed" />
-
-                                                <Border Name="C" VerticalAlignment="Center" SnapsToDevicePixels="true" Grid.Column="1" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-                                                    <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" x:Name="PART_Header" ContentSource="Header"/>
+                                                <Border Margin="5,7,5,5" Grid.Column="1" Grid.ColumnSpan="2" Name="C" VerticalAlignment="Center" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ContentSource="Header"/>
                                                 </Border>
 
                                                 <ItemsPresenter Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"  x:Name="ItemsHost" />
-                                                
+
                                             </Grid>
 
                                         </Border>
-                                        
+
                                     </Border>
                                 </Button>
 
@@ -165,12 +164,12 @@ Source="..\Images\search_24.png" Opacity="1">
                                     <Trigger Property="IsExpanded" Value="false">
                                         <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
                                     </Trigger>
-                                    
+
                                     <Trigger Property="IsExpanded" Value="true">
-                                        
+
                                         <Setter Property="BorderBrush" TargetName="ContainerLight" Value="White"/>
                                     </Trigger>
-                                    
+
                                     <Trigger Property="HasItems" Value="false">
                                         <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
                                         <Setter Property="Visibility" TargetName="whiteRect" Value="Visible"/>
@@ -204,11 +203,11 @@ Source="..\Images\search_24.png" Opacity="1">
                                         <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
                                         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
                                     </MultiTrigger>-->
-                                    
+
                                     <Trigger Property="IsEnabled" Value="false">
                                         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                                     </Trigger>
-                                    
+
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
@@ -218,45 +217,71 @@ Source="..\Images\search_24.png" Opacity="1">
 
             <!--CATEGORIES-->
 
+            <TreeView ItemsSource="{Binding Path=BrowserRootCategories}" Style="{StaticResource SearchTreeView}" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="1" >
 
-            <TreeView ItemsSource="{Binding Path=BrowserRootCategories}" Style="{StaticResource SearchTreeView}" BorderThickness="0">
-                
                 <TreeView.Resources>
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
-                        
+
                         <TextBlock Foreground="WhiteSmoke" FontSize="14" Text="{Binding Path=Name}"/>
-                        
+
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
-                        
+
                         <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
-                        
+
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-                        
                         <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
+                        
+                        <!--<Grid>
+                            
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}, Path=ActualWidth}"></ColumnDefinition>
+                            </Grid.ColumnDefinitions> 
+                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            
+                            <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="20"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0">
+                                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
+                                </Border>
+                                <Border Grid.Column="1">
+                                    <Button Width="14" Height="16" Foreground="Black" Style="{DynamicResource ResourceKey=SBadgeButton}" Command="{Binding Path=ToggleDescriptionVisibilityCommand }">?</Button>
+                                </Border>
+                                
+                            </Grid>
+
+                            <TextBlock Padding="0,8,0,0" Grid.Row="1" Foreground="LightGray" FontSize="10" Text="{Binding Path=Description}" Visibility="{Binding Path=DescriptionVisibility}" TextWrapping="Wrap"/>
+                            
+                        </Grid>-->
                         
                     </HierarchicalDataTemplate>
 
                 </TreeView.Resources>
-                
-            </TreeView>
-            
-        </ScrollViewer>
 
+            </TreeView>
+
+        </ScrollViewer>
 
     </Grid>
 
-  <UserControl.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-  </UserControl.Resources>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
 </UserControl>
   
