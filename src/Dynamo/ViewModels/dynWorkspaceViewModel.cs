@@ -36,7 +36,7 @@ namespace Dynamo
         //public event EventHandler UILocked;
         //public event EventHandler UIUnlocked;
         public event NodeEventHandler RequestNodeCentered;
-        public event NoteEventHandler RequestNoteCentered;
+        //public event NoteEventHandler RequestNoteCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
 
         private bool _watchEscapeIsDown = false;
@@ -51,23 +51,23 @@ namespace Dynamo
             if (StopDragging != null)
                 StopDragging(this, e);
         }
-        public virtual void OnRequestCenterViewOnElement(object sender, NodeEventArgs e)
+        public virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
         {
             if (RequestCenterViewOnElement != null)
                 RequestCenterViewOnElement(this, e);
         }
 
-        public virtual void OnRequestNodeCentered(object sender, NodeEventArgs e)
+        public virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
         {
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
         }
 
-        public virtual void OnRequestNoteCentered(object sender, NoteEventArgs e)
-        {
-            if (RequestNoteCentered != null)
-                RequestNoteCentered(this, e);
-        }
+        //public virtual void OnRequestNoteCentered(object sender, NoteEventArgs e)
+        //{
+        //    if (RequestNoteCentered != null)
+        //        RequestNoteCentered(this, e);
+        //}
 
         public virtual void OnRequestAddViewToOuterCanvas(object sender, ViewEventArgs e)
         {
@@ -574,6 +574,7 @@ namespace Dynamo
             try
             {
                 var node = dynSettings.Controller.DynamoModel.Nodes.First(x => x.GUID.ToString() == id.ToString());
+
                 if (node != null)
                 {
                     //select the element
@@ -582,6 +583,28 @@ namespace Dynamo
 
                     //focus on the element
                     dynSettings.Controller.DynamoViewModel.ShowElement(node);
+
+                    return;
+                }
+            }
+            catch
+            {
+                dynSettings.Controller.DynamoViewModel.Log("No node could be found with that Id.");
+            }
+
+            try
+            {
+                var function =
+                    (dynFunction)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynFunction && ((dynFunction)x).Definition.FunctionId.ToString() == id.ToString());
+
+                if (function != null)
+                {
+                    //select the element
+                    DynamoSelection.Instance.ClearSelection();
+                    DynamoSelection.Instance.Selection.Add(function);
+
+                    //focus on the element
+                    dynSettings.Controller.DynamoViewModel.ShowElement(function);
                 }
             }
             catch

@@ -1357,7 +1357,7 @@ namespace Dynamo.Controls
                 node.GUID = Guid.NewGuid();
             }
 
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new NodeEventArgs(node, data));
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new ModelEventArgs(node, data));
 
             node.EnableInteraction();
 
@@ -1496,7 +1496,10 @@ namespace Dynamo.Controls
 
             var n = new dynNoteModel(x, y);
 
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNoteCentered( this, new NoteEventArgs(n, inputs) );
+            //if we have null parameters, the note is being added
+            //from the menu, center the view on the note
+            if(parameters==null)
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered( this, new ModelEventArgs(n, inputs) );
 
             n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
             var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspaceModel)inputs["workspace"];
@@ -2790,7 +2793,7 @@ namespace Dynamo.Controls
                 }
             }
 
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new NodeEventArgs(e,null));
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e,null));
             
         }
 
@@ -2883,13 +2886,13 @@ namespace Dynamo.Controls
         }
     }
 
-    public class NodeEventArgs : EventArgs
+    public class ModelEventArgs : EventArgs
     {
-        public dynNodeModel Node { get; set; }
-        public Dictionary<string, object> Data { get; set; } 
-        public NodeEventArgs(dynNodeModel n, Dictionary<string, object> d )
+        public dynModelBase Model { get; set; }
+        public Dictionary<string, object> Data { get; set; }
+        public ModelEventArgs(dynModelBase n, Dictionary<string, object> d)
         {
-            Node = n;
+            Model = n;
             Data = d;
         }
     }

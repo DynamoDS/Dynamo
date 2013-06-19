@@ -57,7 +57,7 @@ namespace Dynamo.Views
             vm.StopDragging += new EventHandler(vm_StopDragging);
             vm.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             vm.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
-            vm.RequestNoteCentered += vm_RequestNoteCentered;
+            //vm.RequestNoteCentered += vm_RequestNoteCentered;
             //vm.UILocked += new EventHandler(LockUI);
             //vm.UIUnlocked += new EventHandler(UnlockUI);
             vm.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
@@ -84,8 +84,8 @@ namespace Dynamo.Views
         {
             double x = 0;
             double y = 0;
-            dynNodeModel node = (e as NodeEventArgs).Node;
-            Dictionary<string, object> data = (e as NodeEventArgs).Data;
+            dynModelBase node = (e as ModelEventArgs).Model;
+            Dictionary<string, object> data = (e as ModelEventArgs).Data;
 
             x = outerCanvas.ActualWidth / 2.0;
             y = outerCanvas.ActualHeight / 2.0;
@@ -133,53 +133,53 @@ namespace Dynamo.Views
             node.Y = dropPt.Y;
         }
 
-        void vm_RequestNoteCentered(object sender, EventArgs e)
-        {
-            double x = 0;
-            double y = 0;
-            dynNoteModel note = (e as NoteEventArgs).Note;
-            Dictionary<string, object> data = (e as NoteEventArgs).Data;
+        //void vm_RequestNoteCentered(object sender, EventArgs e)
+        //{
+        //    double x = 0;
+        //    double y = 0;
+        //    dynNoteModel note = (e as NoteEventArgs).Note;
+        //    Dictionary<string, object> data = (e as NoteEventArgs).Data;
 
-            x = outerCanvas.ActualWidth / 2.0;
-            y = outerCanvas.ActualHeight / 2.0;
+        //    x = outerCanvas.ActualWidth / 2.0;
+        //    y = outerCanvas.ActualHeight / 2.0;
 
-            // apply small perturbation
-            // so node isn't right on top of last placed node
-            var r = new Random();
-            x += (r.NextDouble() - 0.5) * 50;
-            y += (r.NextDouble() - 0.5) * 50;
+        //    // apply small perturbation
+        //    // so node isn't right on top of last placed node
+        //    var r = new Random();
+        //    x += (r.NextDouble() - 0.5) * 50;
+        //    y += (r.NextDouble() - 0.5) * 50;
 
-            if (data.ContainsKey("x"))
-                x = (double)data["x"];
+        //    if (data.ContainsKey("x"))
+        //        x = (double)data["x"];
 
-            if (data.ContainsKey("y"))
-                y = (double)data["y"];
+        //    if (data.ContainsKey("y"))
+        //        y = (double)data["y"];
 
-            var dropPt = new Point(x, y);
+        //    var dropPt = new Point(x, y);
 
-            // Transform dropPt from outerCanvas space into zoomCanvas space
-            if (WorkBench != null)
-            {
-                var a = outerCanvas.TransformToDescendant(WorkBench);
-                dropPt = a.Transform(dropPt);
-            }
+        //    // Transform dropPt from outerCanvas space into zoomCanvas space
+        //    if (WorkBench != null)
+        //    {
+        //        var a = outerCanvas.TransformToDescendant(WorkBench);
+        //        dropPt = a.Transform(dropPt);
+        //    }
 
-            // center the node at the drop point
-            if (!Double.IsNaN(note.Width))
-                dropPt.X -= (note.Width / 2.0);
+        //    // center the node at the drop point
+        //    if (!Double.IsNaN(note.Width))
+        //        dropPt.X -= (note.Width / 2.0);
 
-            if (!Double.IsNaN(note.Height))
-                dropPt.Y -= (note.Height / 2.0);
+        //    if (!Double.IsNaN(note.Height))
+        //        dropPt.Y -= (note.Height / 2.0);
 
-            if (!Double.IsNaN(note.Width))
-                dropPt.X -= (note.Height / 2.0);
+        //    if (!Double.IsNaN(note.Width))
+        //        dropPt.X -= (note.Height / 2.0);
 
-            if (!Double.IsNaN(note.Height))
-                dropPt.Y -= (note.Height / 2.0);
+        //    if (!Double.IsNaN(note.Height))
+        //        dropPt.Y -= (note.Height / 2.0);
 
-            note.X = dropPt.X;
-            note.Y = dropPt.Y;
-        }
+        //    note.X = dropPt.X;
+        //    note.Y = dropPt.Y;
+        //}
 
         void vm_StopDragging(object sender, EventArgs e)
         {
@@ -380,7 +380,7 @@ namespace Dynamo.Views
 
                     var vm = (DataContext as dynWorkspaceViewModel);
 
-                    var n = (e as NodeEventArgs).Node;
+                    var n = (e as ModelEventArgs).Model;
 
                     double left = n.X;
                     double top = n.Y;

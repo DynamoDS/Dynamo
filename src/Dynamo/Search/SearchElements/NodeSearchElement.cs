@@ -174,7 +174,7 @@ namespace Dynamo.Search.SearchElements
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
-                dynSettings.Controller.OnRequestSelect(this, new NodeEventArgs(placedNode, null));
+                dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(placedNode, null));
             }
         }
 
