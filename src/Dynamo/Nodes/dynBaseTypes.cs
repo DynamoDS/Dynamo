@@ -2967,7 +2967,26 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Filename")]
+    [NodeName("Directory")]
+    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeDescription("Allows you to select a directory on the system to get its path.")]
+    public class dynStringDirectory : dynStringFilename
+    {
+        protected override void readFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var openDialog = new FolderBrowserDialog
+            {
+                ShowNewFolderButton = true
+            };
+
+            if (openDialog.ShowDialog() == DialogResult.OK)
+            {
+                Value = openDialog.SelectedPath;
+            }
+        }
+    }
+
+    [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Allows you to select a file on the system to get its filename.")]
     public class dynStringFilename : dynBasicInteractive<string>
@@ -3031,9 +3050,12 @@ namespace Dynamo.Nodes
             }
         }
 
-        void readFileButton_Click(object sender, RoutedEventArgs e)
+        protected virtual void readFileButton_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openDialog = new OpenFileDialog();
+            var openDialog = new OpenFileDialog
+            {
+                CheckFileExists = false
+            };
 
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
