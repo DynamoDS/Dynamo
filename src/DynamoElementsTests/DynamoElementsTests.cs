@@ -529,7 +529,7 @@ namespace Dynamo.Tests
             // select all of them one by one
             for (int i = 0; i < numNodes; i++)
             {
-                dynSettings.Controller.OnRequestSelect(this, new NodeEventArgs(null, null));
+                dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(null, null));
             }
         }
 
@@ -548,7 +548,7 @@ namespace Dynamo.Tests
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-                controller.OnRequestSelect(null, new NodeEventArgs( controller.DynamoViewModel.Model.Nodes[i], null) );
+                controller.OnRequestSelect(null, new ModelEventArgs( controller.DynamoViewModel.Model.Nodes[i], null) );
                 Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
             }
         }

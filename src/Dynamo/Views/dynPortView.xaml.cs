@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -42,18 +43,12 @@ namespace Dynamo.Connectors
 
         void dynPort_Loaded(object sender, RoutedEventArgs e)
         {
+            //Debug.WriteLine("Port loaded.");
             canvas = WPF.FindUpVisualTree<Dynamo.Controls.DragCanvas>(this);
+
             if (ViewModel != null)
                 ViewModel.UpdateCenter(CalculateCenter());
 
-                //an event handler for the port's node updated event
-                ViewModel.PortModel.Owner.Updated += new EventHandler(Owner_Updated);
-        }
-
-        void Owner_Updated(object sender, EventArgs e)
-        {
-            if (ViewModel != null)
-                ViewModel.UpdateCenter(CalculateCenter());
         }
 
         #endregion constructors
@@ -117,6 +112,19 @@ namespace Dynamo.Connectors
                     return (dynPortViewModel) this.DataContext;
                 else
                     return null;
+            }
+        }
+
+        private void DynPortView_OnLayoutUpdated(object sender, EventArgs e)
+        {
+            if (ViewModel == null)
+                return;
+
+            Point p = CalculateCenter();
+            if (p != ViewModel.Center)
+            {
+                //Debug.WriteLine("Port layout updated.");
+                ViewModel.UpdateCenter(p);
             }
         }
     }

@@ -1199,16 +1199,18 @@ namespace Dynamo.Nodes
             
             //create a zip of the incoming args and the port data
             //to be used for type comparison
-            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
+            var portComparison = args.Zip(InPortData,
+                                          (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
+            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
 
-            //if any value is a list whose expectation is a single
-            //do an auto map
-            //TODO: figure out a better way to do this than using a lot
-            //of specific excludes
-            if (args.Count()> 0 && 
-                portComparison.Any(x => x.Item1 == typeof (Value.List) && 
-                x.Item2 != typeof (Value.List)) && 
-                !(this.ArgumentLacing == LacingStrategy.Disabled))
+            //there are more than zero arguments
+            //and there is either an argument which does not match its expections 
+            //OR an argument which requires a list and gets a list of lists
+            //AND argument lacing is not disabled
+            if (args.Count() > 0 &&
+                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
+                listOfListComparison.Any(x => x.Item1 == true && x.Item2 == typeof(Value.List))) &&
+                this.ArgumentLacing != LacingStrategy.Disabled)
             {
                 //if the argument is of the expected type, then
                 //leave it alone otherwise, wrap it in a list
@@ -1225,8 +1227,13 @@ namespace Dynamo.Nodes
                     //incoming value is list and expecting list
                     else
                     {
-                        //wrap in list
-                        argSets.Add(Utils.MakeFSharpList(arg));
+                        //check if we have a list of lists, if so, then don't wrap
+                        if (Utils.IsListOfLists(arg))
+                            //leave as list
+                            argSets.Add(((Value.List)arg).Item);
+                        else
+                            //wrap in list
+                            argSets.Add(Utils.MakeFSharpList(arg));
                     }
                     j++;
                 }

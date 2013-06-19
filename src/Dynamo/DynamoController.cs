@@ -51,7 +51,7 @@ namespace Dynamo
 
         public CustomNodeLoader CustomNodeLoader { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
-        public PackageManagerPublishViewModel PackageManagerPublishViewModel { get; internal set; }
+        public PackageManagerPublishCustomNodeViewModel PackageManagerPublishCustomNodeViewModel { get; internal set; }
         public PackageManagerClient PackageManagerClient { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
@@ -112,7 +112,7 @@ namespace Dynamo
         /// An event which requests that a node be selected
         /// </summary>
         public event NodeEventHandler RequestNodeSelect;
-        public virtual void OnRequestSelect(object sender, NodeEventArgs e)
+        public virtual void OnRequestSelect(object sender, ModelEventArgs e)
         {
             if (RequestNodeSelect != null)
                 RequestNodeSelect(sender, e);
@@ -156,7 +156,7 @@ namespace Dynamo
 
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);
-            PackageManagerPublishViewModel = new PackageManagerPublishViewModel(PackageManagerClient);
+            PackageManagerPublishCustomNodeViewModel = new PackageManagerPublishCustomNodeViewModel(PackageManagerClient);
 
             FSchemeEnvironment = env;
 

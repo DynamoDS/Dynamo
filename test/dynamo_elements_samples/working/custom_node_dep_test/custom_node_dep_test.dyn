@@ -1,0 +1,12 @@
+<dynWorkspace X="0" Y="0">
+  <dynElements>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="333ed3ad-c786-4064-8203-e79ce7cb109f" nickname="RootNode" x="460.262196210801" y="200.523618362771" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="9c989a2a-a53b-4556-8972-cd2f66c1903e" />
+      <Name value="RootNode" />
+      <Inputs />
+      <Outputs />
+    </Dynamo.Nodes.dynFunction>
+  </dynElements>
+  <dynConnectors />
+  <dynNotes />
+</dynWorkspace>

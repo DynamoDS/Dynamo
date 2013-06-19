@@ -115,10 +115,12 @@
 
             <MenuItem Header="_File" Name="fileMenu" Focusable="False">
 
-                <MenuItem Header="_New Home Workspace..." Command="{Binding Path=NewHomeWorkspaceCommand}"  Name="newHomeWorkspace" InputGestureText="Ctrl+N">
-                </MenuItem>
-                
-                <MenuItem Header="_New Custom Node..." Command="{Binding Path=ShowNewFunctionDialogCommand}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
+                <MenuItem Header="_New" Name="newMenu">
+                    <MenuItem Header="_Home Workspace..." Command="{Binding Path=NewHomeWorkspaceCommand}"  Name="newHomeWorkspace" InputGestureText="Ctrl+N">
+                    </MenuItem>
+
+                    <MenuItem Header="_Custom Node..." Command="{Binding Path=ShowNewFunctionDialogCommand}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
+                    </MenuItem>
                 </MenuItem>
 
                 <MenuItem Header="_Open..." Command="{Binding Path=ShowOpenDialogAndOpenResultCommand}" Name="openButton" InputGestureText="Ctrl+O">
@@ -204,6 +206,13 @@
                 <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem"
                           IsChecked="{Binding Path=IsShowingConnectors}" 
                           Command="{Binding Path=ShowHideConnectorsCommand}">
+                </MenuItem>
+                
+                <MenuItem Focusable="False" Header="_Find Node By Id" IsCheckable="False" Name="FindNodeById">
+                    <WrapPanel HorizontalAlignment="Stretch">
+                        <TextBox Name="id_tb" Width="100"></TextBox>
+                        <Button Content="Find" Name="id_butt" Click="Id_butt_OnClick"></Button>
+                    </WrapPanel>
                 </MenuItem>
                 
             </MenuItem>

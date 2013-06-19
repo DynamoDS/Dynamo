@@ -48,6 +48,12 @@ namespace Dynamo.Controls
             InitializeComponent();
 
             this.Loaded += dynBench_Activated;
+            this.LayoutUpdated += new EventHandler(DynamoView_LayoutUpdated);
+        }
+
+        void DynamoView_LayoutUpdated(object sender, EventArgs e)
+        {
+            //Debug.WriteLine("Dynamo view layout updated.");
         }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
@@ -126,6 +132,17 @@ namespace Dynamo.Controls
             dynWorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
             view_model.WatchEscapeIsDown = false;
+        }
+
+        private void Id_butt_OnClick(object sender, RoutedEventArgs e)
+        {
+            //get the value of the id field 
+            //and trigger the command
+            string id = id_tb.Text;
+            int workspace_index = _vm.CurrentWorkspaceIndex;
+            dynWorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
+            if (view_model.FindByIdCommand.CanExecute(id))
+                view_model.FindByIdCommand.Execute(id);
         }
     }
 

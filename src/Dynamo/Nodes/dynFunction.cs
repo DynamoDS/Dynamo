@@ -23,6 +23,7 @@ using System.Xml;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop.Node;
+using Dynamo.PackageManager.UI;
 using Dynamo.Utilities;
 using System.Windows.Media.Effects;
 using Dynamo.Nodes;
@@ -563,6 +564,9 @@ namespace Dynamo
         public List<Tuple<int, dynNodeModel>> InPortMappings { get; internal set; }
         public bool RequiresRecalc { get; internal set; }
 
+        /// <summary>
+        /// A list of all dependencies with no duplicates
+        /// </summary>
         public IEnumerable<FunctionDefinition> Dependencies
         {
             get
@@ -571,12 +575,20 @@ namespace Dynamo
             }
         }
 
+        /// <summary>
+        /// A list of all direct dependencies without duplicates
+        /// </summary>
+        public IEnumerable<FunctionDefinition> DirectDependencies
+        {
+            get
+            {
+                return findDirectDependencies();
+            }
+        }
+
         private IEnumerable<FunctionDefinition> findAllDependencies(HashSet<FunctionDefinition> dependencySet)
         {
-            var query = Workspace.Nodes
-                .Where(node => node is dynFunction)
-                .Select(node => (node as dynFunction).Definition)
-                .Where(def => !dependencySet.Contains(def));
+            var query = this.DirectDependencies.Where(def => !dependencySet.Contains(def));
 
             foreach (var definition in query)
             {
@@ -586,5 +598,19 @@ namespace Dynamo
                     yield return def;
             }
         }
+
+        private IEnumerable<FunctionDefinition> findDirectDependencies()
+        {
+            var query = Workspace.Nodes
+                                 .Where(node => node is dynFunction)
+                                 .Select(node => (node as dynFunction).Definition)
+                                 .Distinct();
+
+            foreach (var definition in query)
+            {
+                yield return definition;
+            }
+        }
+
     }
 }

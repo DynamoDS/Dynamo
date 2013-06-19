@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Connectors;
@@ -16,6 +17,14 @@ namespace Dynamo.Nodes.Views
             InitializeComponent();
             Dynamo.Controls.DragCanvas.SetCanBeDragged(this, false);
             Canvas.SetZIndex(this, 1);
+
+            this.Loaded += new System.Windows.RoutedEventHandler(dynConnectorView_Loaded);
+        }
+
+        void dynConnectorView_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //post load
+            Debug.WriteLine("Connector loaded.");
         }
 
         void EndDot_OnMouseDown(object sender, MouseEventArgs e)

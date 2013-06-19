@@ -77,25 +77,15 @@
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CrossProduct,Mode=TwoWay}" 
                               Command="{Binding Path=SetLacingTypeCommand}" CommandParameter="CrossProduct" Header="Cross Product"/>
                 </MenuItem>
-                <MenuItem Name="isVisible_cm" Header="Display Output" 
+                <MenuItem Name="isVisible_cm" Header="Preview" 
                           IsChecked="{Binding Path=IsVisible}" 
                           Command="{Binding Path=ToggleIsVisibleCommand}"/>
-                <MenuItem Name="isUpstreamVisible_cm" Header="Display Upstream Output" 
+                <MenuItem Name="isUpstreamVisible_cm" Header="Preview Upstream" 
                           IsChecked="{Binding Path=IsUpstreamVisible}"
                           Command="{Binding Path=ToggleIsUpstreamVisibleCommand}"/>
             </ContextMenu>
         </Grid.ContextMenu>
 
-        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="2" Background="White" CornerRadius="5">
-            <!--<Border.Effect>
-                <DropShadowEffect
-                    ShadowDepth="0"
-                    Color="#222"
-                    Opacity="0.45"
-                    BlurRadius="12.0" />
-            </Border.Effect>-->
-        </Border>
-        
         <Grid Canvas.ZIndex="4" Grid.Row="1" Margin="3,5,3,5" Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -165,7 +155,7 @@
                        FontFamily="Tahoma" FontSize="8" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" 
                        HorizontalAlignment="right" VerticalAlignment="Bottom" Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
                        Foreground="#99000000" FontWeight="Bold" Canvas.ZIndex="6"/>
-        <Border Background="#646E6E6E" 
+        <Border Background="#C8505050" 
                 VerticalAlignment="Stretch" 
                 HorizontalAlignment="Stretch" 
                 IsHitTestVisible="False" Canvas.ZIndex="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="2,2,2,0"></Border>
@@ -221,6 +211,13 @@
                        StrokeThickness="2"
                        Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" 
                        RadiusX="2" RadiusY="2" Canvas.ZIndex="2">
+                <Rectangle.Effect>
+                    <DropShadowEffect
+                    ShadowDepth="0"
+                    Color="#222"
+                    Opacity="0.45"
+                    BlurRadius="12.0" />
+                </Rectangle.Effect>
             </Rectangle>
         </Canvas>
 

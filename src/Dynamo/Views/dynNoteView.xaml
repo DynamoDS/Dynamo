@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200"
-             Height="Auto" Width="Auto" Visibility="Visible"
+             Height="Auto" Width="Auto" MaxWidth="300" Visibility="Visible"
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">
     
@@ -24,7 +24,7 @@
           Text="{Binding Path=Text, Mode=OneWay}"
           Grid.Column="0" Grid.Row="0" FontFamily="Trebuchet" 
             FontSize="12" 
-            Padding="10" >
+            Padding="10" TextWrapping="Wrap">
             
           <TextBlock.RenderTransform>
             <TranslateTransform X="0" Y="-0.4" />
@@ -45,13 +45,13 @@
             </Style>
         </TextBlock.Style>
             
-        <!--<TextBlock.Effect>
+        <TextBlock.Effect>
             <DropShadowEffect
                 ShadowDepth="0"
                 Color="#222"
                 Opacity="0.25"
                 BlurRadius="9.0" />
-        </TextBlock.Effect>-->
+        </TextBlock.Effect>
             
         </TextBlock>
         
@@ -62,7 +62,7 @@
             FontFamily="Trebuchet" 
             FontSize="12" 
             Foreground="#222"
-            Padding="10" >
+            Padding="10" TextWrapping="Wrap" >
         </TextBlock>
     </Grid>
 </UserControl>
