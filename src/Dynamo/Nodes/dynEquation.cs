@@ -46,7 +46,8 @@ namespace Dynamo.Nodes
                         RaisePropertyChanged("Formula");
                         RequiresRecalc = true;
                         EnableReporting();
-                        WorkSpace.Modified();
+                        if (WorkSpace != null)
+                            WorkSpace.Modified();
                     }
                 }
             }
@@ -88,7 +89,6 @@ namespace Dynamo.Nodes
         public override void LoadNode(XmlNode elNode)
         {
             Formula = elNode.Attributes["formula"].Value ?? "";
-            processFormula();
         }
 
         private static HashSet<string> RESERVED_NAMES = new HashSet<string>() { 
