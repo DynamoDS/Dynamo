@@ -40,6 +40,9 @@ Fixes
 - Copy/Paste fixes
 - Evaluate curve or edge no longer crashes Watch 3d
 - Better handling of escape characters in string nodes
+- Better handling of localized handling of comma and period decimal delimiters
+- Nodes using selection remember associations after save and reopen
+- List not first input is now index0
  
 
 New
@@ -50,8 +53,9 @@ New
 - Background preview controls
 - More solid and curve creation nodes
 - String nodes now handle returns, tabs, and other escape characters
-- Compose Node
-- Filter Out Node
+- Compose Functions Node (combine two single parameter functions into one)
+- Filter Out Node (removes a given predicate from a list)
+- Transpose List Node (swaps rows and columns in a list of lists)
 
 
 
