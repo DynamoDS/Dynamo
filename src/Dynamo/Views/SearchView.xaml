@@ -55,7 +55,7 @@ Source="..\Images\search_24.png" Opacity="1">
       </StackPanel>
 
         <ScrollViewer Visibility="{Binding BrowserVisibility}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
-                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Row="1" >
+                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" >
 
             <ScrollViewer.Resources>
 
@@ -130,7 +130,7 @@ Source="..\Images\search_24.png" Opacity="1">
                                     
                                     <Border Name="ContainerLight" BorderThickness="3,0,0,0" BorderBrush="#222">
                                         <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" >
-                                            <Grid MinHeight="{Binding Height}">
+                                            <Grid MinHeight="{Binding Height}" Background="Transparent">
 
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition MinWidth="19" Width="Auto"/>
@@ -147,8 +147,8 @@ Source="..\Images\search_24.png" Opacity="1">
 
                                                 <Rectangle Width="7" Height="7" x:Name="whiteRect" Margin="3,0" VerticalAlignment="Center" Fill="#FFFFFF" HorizontalAlignment="Center" Visibility="Collapsed" />
 
-                                                <Border Name="C" VerticalAlignment="Center" SnapsToDevicePixels="true" Grid.Column="1" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-                                                    <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" x:Name="PART_Header" ContentSource="Header"/>
+                                                <Border Name="C" VerticalAlignment="Center" SnapsToDevicePixels="true" Background="Transparent" Grid.Column="2" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter Grid.Column="2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" x:Name="PART_Header" ContentSource="Header"/>
                                                 </Border>
 
                                                 <ItemsPresenter Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"  x:Name="ItemsHost" />
@@ -218,26 +218,25 @@ Source="..\Images\search_24.png" Opacity="1">
 
             <!--CATEGORIES-->
 
-
-            <TreeView ItemsSource="{Binding Path=BrowserRootCategories}" Style="{StaticResource SearchTreeView}" BorderThickness="0">
+            <TreeView ItemsSource="{Binding Path=BrowserRootCategories}" Style="{StaticResource SearchTreeView}" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="1" >
                 
                 <TreeView.Resources>
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
-                        
-                        <TextBlock Foreground="WhiteSmoke" FontSize="14" Text="{Binding Path=Name}"/>
-                        
+
+                       <TextBlock Foreground="WhiteSmoke" FontSize="14" Text="{Binding Path=Name}" Grid.Column="0"/>
+      
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
-                        
-                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
+
+                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" Width="300"/>
                         
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-                        
-                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
+
+                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" Width="300"/>
                         
                     </HierarchicalDataTemplate>
 

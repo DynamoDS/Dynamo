@@ -29,7 +29,7 @@
 
             <StackPanel Name="FieldArrangement" Orientation="Vertical" Margin="10">
                 
-                <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="10,15,10,10" FontSize="10" Text="PUBLISH A CUSTOM NODE"/>
+                <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,0,0,15" FontSize="10" Text="PUBLISH A CUSTOM NODE"/>
 
                 <Label Content="Title" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" />
                 <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="TitleInput" Padding="5" Text="{Binding Path=Title, Mode=TwoWay}" />
@@ -58,9 +58,8 @@
 
         <StackPanel Grid.Column="1" Grid.ColumnSpan="1">
 
-          <Label Content="Dependencies" Height="28" Margin="0,10,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-
-          <ScrollViewer HorizontalAlignment="Left" Margin="0" Name="BrowserScrollView" VerticalScrollBarVisibility="Auto" Background="Black" BorderThickness="0">
+            <Label Content="Dependencies" Height="28" Margin="0,10,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+            <ScrollViewer Margin="0" Grid.Column="1" Grid.ColumnSpan="1" VerticalScrollBarVisibility="Visible" Name="BrowserScrollView" Background="Black" BorderThickness="0">
 
                 <ScrollViewer.Resources>
 
@@ -134,7 +133,7 @@
                                         </Button.Template>
 
                                         <Border Name="ContainerLight" BorderThickness="3,0,0,0" BorderBrush="#222">
-                                            <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" >
+                                            <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" Background="Black">
                                                 <Grid MinHeight="{Binding Height}">
 
                                                     <Grid.ColumnDefinitions>
@@ -170,12 +169,7 @@
                                         <Trigger Property="IsExpanded" Value="false">
                                             <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
                                         </Trigger>
-
-                                        <Trigger Property="IsExpanded" Value="true">
-
-                                            <Setter Property="BorderBrush" TargetName="ContainerLight" Value="White"/>
-                                        </Trigger>
-
+                                        
                                         <Trigger Property="HasItems" Value="false">
                                             <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
                                             <Setter Property="Visibility" TargetName="whiteRect" Value="Visible"/>
@@ -184,22 +178,6 @@
                                         <Trigger Property="IsSelected" Value="true">
                                             <Setter Property="Background" TargetName="Bd" Value="#555"/>
                                         </Trigger>
-
-                                        <MultiTrigger>
-                                            <MultiTrigger.Conditions>
-                                                <Condition Property="IsMouseOver" Value="true"/>
-                                                <Condition Property="IsExpanded" Value="false"/>
-                                            </MultiTrigger.Conditions>
-                                            <Setter Property="Background" TargetName="Bd" Value="#333"/>
-                                        </MultiTrigger>
-
-                                        <MultiTrigger>
-                                            <MultiTrigger.Conditions>
-                                                <Condition Property="IsMouseOver" Value="true"/>
-                                                <Condition Property="HasItems" Value="false"/>
-                                            </MultiTrigger.Conditions>
-                                            <Setter Property="Background" TargetName="Bd" Value="#444"/>
-                                        </MultiTrigger>
 
                                         <Trigger Property="IsEnabled" Value="false">
                                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
@@ -210,9 +188,10 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
+                    
                 </ScrollViewer.Resources>
 
-                <TreeView ItemsSource="{Binding Path=Dependencies}" BorderThickness="0">
+                <TreeView ItemsSource="{Binding Path=Dependencies}" Style="{StaticResource SearchTreeView}" BorderThickness="0">
 
                     <TreeView.Resources>
 
