@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 
@@ -9,10 +8,10 @@ namespace Dynamo.Revit
 {
     public class ElementsContainer
     {
-        Dictionary<dynRevitTransactionNode, List<List<ElementId>>> storedElementIds =
-            new Dictionary<dynRevitTransactionNode,List<List<ElementId>>>();
+        Dictionary<Guid, List<List<ElementId>>> storedElementIds =
+            new Dictionary<Guid, List<List<ElementId>>>();
 
-        internal IEnumerable<dynRevitTransactionNode> Nodes 
+        internal IEnumerable<Guid> Nodes 
         {
             get { return storedElementIds.Keys; }
         }
@@ -22,7 +21,7 @@ namespace Dynamo.Revit
             storedElementIds.Clear();
         }
 
-        public List<List<ElementId>> this[dynRevitTransactionNode node]
+        public List<List<ElementId>> this[Guid node]
         {
             get
             {
@@ -53,7 +52,7 @@ namespace Dynamo.Revit
             storedElementIds.Clear();
         }
 
-        public bool HasElements(dynRevitTransactionNode node)
+        public bool HasElements(Guid node)
         {
             return storedElementIds.ContainsKey(node);
         }
