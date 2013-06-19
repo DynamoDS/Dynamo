@@ -43,9 +43,11 @@ Fixes
 - Better handling of localized handling of comma and period decimal delimiters
 - Nodes using selection remember associations after save and reopen
 - List not first input is now index0
+- Fixed Build Sequence node crash
  
 
 New
+- Combined installer for Revit 2013, 2014, and Vasari Beta 2 and 3
 - Better background contrast with node wires and other visibility improvements
 - Improved handling of lists by many nodes
 - Dyn file load time improvements
@@ -56,7 +58,10 @@ New
 - Compose Functions Node (combine two single parameter functions into one)
 - Filter Out Node (removes a given predicate from a list)
 - Transpose List Node (swaps rows and columns in a list of lists)
-
+- Combine operates on uneven lists
+- Copy/Paste copies node state
+- Length node that uses Project Units (metric and imperial)
+- Preview visibility controls in right click for each node
 
 
 
