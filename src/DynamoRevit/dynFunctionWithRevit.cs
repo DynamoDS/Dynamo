@@ -19,7 +19,7 @@ namespace Dynamo.Nodes
             : base(inputs, outputs, functionDefinition)
         { }
 
-        public dynFunctionWithRevit() : base() { }
+        public dynFunctionWithRevit() { }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
@@ -36,7 +36,7 @@ namespace Dynamo.Nodes
             foreach (var node in ElementsContainer.Nodes)
             {
                 var outEl = xmlDoc.CreateElement("InnerNode");
-                outEl.SetAttribute("id", node.GUID.ToString());
+                outEl.SetAttribute("id", node.ToString());
 
                 foreach (var run in ElementsContainer[node])
                 {
@@ -71,8 +71,7 @@ namespace Dynamo.Nodes
                 if (node.Name == "InnerNode")
                 {
                     var nodeId = new Guid(node.Attributes["id"].Value);
-                    var rNode = this.Definition.Workspace.Nodes.First(x => x.GUID == nodeId) as dynRevitTransactionNode;
-                    var runs = ElementsContainer[rNode];
+                    var runs = ElementsContainer[nodeId];
                     runs.Clear();
 
                     foreach (XmlNode run in node.ChildNodes)
@@ -99,8 +98,9 @@ namespace Dynamo.Nodes
                             }
                         }
                     }
-
-                    rNode.RegisterAllElementsDeleteHook();
+                    var rNode = Definition.Workspace.Nodes.FirstOrDefault(x => x.GUID == nodeId) as dynRevitTransactionNode;
+                    if (rNode != null)
+                        rNode.RegisterAllElementsDeleteHook();
                 }
             }
         }

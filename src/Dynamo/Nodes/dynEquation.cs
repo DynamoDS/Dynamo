@@ -26,7 +26,7 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public class dynFormula : dynMathBase
     {
-        private string _formula;
+        private string _formula = "";
         public string Formula
         {
             get

@@ -306,13 +306,17 @@ namespace Dynamo.Nodes
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-            XmlElement outEl = xmlDoc.CreateElement("familyid");
-            outEl.SetAttribute("value", this.storedId.IntegerValue.ToString());
-            dynEl.AppendChild(outEl);
+            if (this.storedId != null)
+            {
+                XmlElement outEl = xmlDoc.CreateElement("familyid");
+                outEl.SetAttribute("value", this.storedId.IntegerValue.ToString());
+                dynEl.AppendChild(outEl);
 
-            XmlElement param = xmlDoc.CreateElement("index");
-            param.SetAttribute("value", SelectedIndex.ToString());
-            dynEl.AppendChild(param);
+                XmlElement param = xmlDoc.CreateElement("index");
+                param.SetAttribute("value", SelectedIndex.ToString());
+                dynEl.AppendChild(param);
+            }
+
         }
 
         public override void LoadElement(XmlNode elNode)

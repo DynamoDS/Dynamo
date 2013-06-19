@@ -36,7 +36,7 @@ namespace Dynamo
         //public event EventHandler UILocked;
         //public event EventHandler UIUnlocked;
         public event NodeEventHandler RequestNodeCentered;
-        public event NoteEventHandler RequestNoteCentered;
+        //public event NoteEventHandler RequestNoteCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
 
         private bool _watchEscapeIsDown = false;
@@ -51,23 +51,23 @@ namespace Dynamo
             if (StopDragging != null)
                 StopDragging(this, e);
         }
-        public virtual void OnRequestCenterViewOnElement(object sender, NodeEventArgs e)
+        public virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
         {
             if (RequestCenterViewOnElement != null)
                 RequestCenterViewOnElement(this, e);
         }
 
-        public virtual void OnRequestNodeCentered(object sender, NodeEventArgs e)
+        public virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
         {
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
         }
 
-        public virtual void OnRequestNoteCentered(object sender, NoteEventArgs e)
-        {
-            if (RequestNoteCentered != null)
-                RequestNoteCentered(this, e);
-        }
+        //public virtual void OnRequestNoteCentered(object sender, NoteEventArgs e)
+        //{
+        //    if (RequestNoteCentered != null)
+        //        RequestNoteCentered(this, e);
+        //}
 
         public virtual void OnRequestAddViewToOuterCanvas(object sender, ViewEventArgs e)
         {
@@ -279,7 +279,7 @@ namespace Dynamo
                 RaisePropertyChanged("Zoom");
             }
         }
-        
+
         #endregion
 
         public dynWorkspaceViewModel(dynWorkspaceModel model, DynamoViewModel vm)
@@ -304,7 +304,7 @@ namespace Dynamo
             //watch3DColl.Collection = Watch3DViewModels;
             //WorkspaceElements.Add(watch3DColl);
             
-            Watch3DViewModels.Add(new Watch3DFullscreenViewModel(this));
+            //Watch3DViewModels.Add(new Watch3DFullscreenViewModel(this));
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
@@ -321,6 +321,7 @@ namespace Dynamo
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             SetZoomCommand = new DelegateCommand<object>(SetZoom, CanSetZoom);
             FindByIdCommand = new DelegateCommand<object>(FindById, CanFindById);
+
             DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
 
             // sync collections
@@ -524,8 +525,12 @@ namespace Dynamo
             //set the current offset without triggering
             //any property change notices.
             //_model.CurrentOffset = new Point(p.X, p.Y);
-            _model.X = p.X;
-            _model.Y = p.Y;
+            if (_model.X != p.X && _model.Y != p.Y)
+            {
+                //Debug.WriteLine("Setting workspace offset.");
+                _model.X = p.X;
+                _model.Y = p.Y;
+            }
         }
 
         private bool CanSetCurrentOffset(object parameter)
@@ -569,6 +574,7 @@ namespace Dynamo
             try
             {
                 var node = dynSettings.Controller.DynamoModel.Nodes.First(x => x.GUID.ToString() == id.ToString());
+
                 if (node != null)
                 {
                     //select the element
@@ -577,6 +583,28 @@ namespace Dynamo
 
                     //focus on the element
                     dynSettings.Controller.DynamoViewModel.ShowElement(node);
+
+                    return;
+                }
+            }
+            catch
+            {
+                dynSettings.Controller.DynamoViewModel.Log("No node could be found with that Id.");
+            }
+
+            try
+            {
+                var function =
+                    (dynFunction)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynFunction && ((dynFunction)x).Definition.FunctionId.ToString() == id.ToString());
+
+                if (function != null)
+                {
+                    //select the element
+                    DynamoSelection.Instance.ClearSelection();
+                    DynamoSelection.Instance.Selection.Add(function);
+
+                    //focus on the element
+                    dynSettings.Controller.DynamoViewModel.ShowElement(function);
                 }
             }
             catch

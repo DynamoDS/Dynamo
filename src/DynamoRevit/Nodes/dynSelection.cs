@@ -894,7 +894,11 @@ namespace Dynamo.Nodes
             else
                 RenderDescription.ClearAll();
 
-            var ce = SelectedElement as CurveElement;
+            CurveElement ce = SelectedElement as CurveElement;
+
+            if (ce == null)
+                return;
+
             dynRevitTransactionNode.DrawCurve(RenderDescription, ce.GeometryCurve);
         }
 

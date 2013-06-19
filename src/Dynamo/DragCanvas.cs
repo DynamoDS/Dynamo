@@ -477,8 +477,6 @@ namespace Dynamo.Controls
                               //Canvas.SetBottom(el, od.NewVerticalOffset);
                               el.Y = od.NewHorizontalOffset + el.Height;
                           count++;
-
-                          el.OnUpdated(EventArgs.Empty);
                       }
                   }
                ), DispatcherPriority.Render, null);
