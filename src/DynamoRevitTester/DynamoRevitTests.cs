@@ -764,10 +764,10 @@ namespace DynamoRevitTests
 
         [Test]
         public void SolidBySkeleton()
-         {
-             if (!dynRevitSettings.Revit.Application.VersionNumber.Contains("2013") &&
+        {
+            if (!dynRevitSettings.Revit.Application.VersionNumber.Contains("2013") &&
                              dynRevitSettings.Revit.Application.VersionName.Contains("Vasari"))
-             {
+            {
                  DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
                  string samplePath = Path.Combine(_testPath, @".\SolidBySkeleton.dyn");
@@ -785,7 +785,7 @@ namespace DynamoRevitTests
                  Assert.Greater(actualVolume, volumeMin);
                  Assert.Less(actualVolume, volumeMax);
              }
-         }
+        }
 
         [Test]
         public void AdaptiveComponentsNode()

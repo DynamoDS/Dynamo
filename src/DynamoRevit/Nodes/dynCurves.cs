@@ -707,7 +707,7 @@ namespace Dynamo.Nodes
                     if (thisDist > tolMax &&  thisEnd.DistanceTo(prevEnd) < tolMin && (c is Line))
                     {
                         prevEnd = thisStart;
-                        Curve flippedCurve = Line.CreateBound(thisEnd, thisStart);
+                        Curve flippedCurve = /* Line.CreateBound */ dynRevitSettings.Revit.Application.Create.NewLineBound(thisEnd, thisStart);
                         curvesWithFlip.Add(flippedCurve);
                         continue;
                     }
@@ -730,7 +730,7 @@ namespace Dynamo.Nodes
                                 {
                                     if (c is Line)
                                     {
-                                        Curve flippedCurve = Line.CreateBound(prevEnd, thisStart);
+                                        Curve flippedCurve = /* Line.CreateBound */ dynRevitSettings.Revit.Application.Create.NewLineBound(prevEnd, thisStart);
                                         prevEnd = thisStart;
                                         curvesWithFlip.Add(flippedCurve);
                                         continue;

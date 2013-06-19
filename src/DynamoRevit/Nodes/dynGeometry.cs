@@ -2480,6 +2480,7 @@ namespace Dynamo.Nodes
 
             String nameOfMethodCreate = "skinCurveLoopsIntoSolid";
             Solid resultSolid = null;
+            bool methodFound = false;
 
             foreach (MethodInfo m in solidTypeMethods)
             {
@@ -2489,12 +2490,16 @@ namespace Dynamo.Nodes
                     argsM[0] = listInCurveLoops;
 
                     resultSolid = (Solid)m.Invoke(null, argsM);
+                    methodFound = true;
 
                     break;
                 }
             }
+
+            if (!methodFound)
+                throw new Exception("This method uses later version of RevitAPI.dll with skinCurveLoopsIntoSolid method. Please use Patch Solid node instead.");
             if (resultSolid == null)
-                throw new Exception("Could not make patched solid, list Onesided Edges to investigate");
+                throw new Exception("Failed to make solid, please check the input.");
 
             solids.Add(resultSolid);
 
