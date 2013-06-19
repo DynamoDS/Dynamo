@@ -240,7 +240,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData(getInputRootName() + getNewInputIndex(), "", typeof(object)));
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             foreach (var inport in InPortData)
@@ -253,7 +253,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             int i = InPortData.Count;
             foreach (XmlNode subNode in elNode.ChildNodes)
@@ -547,12 +547,12 @@ namespace Dynamo.Nodes
             base.AddInput();
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             var inputAttr = elNode.Attributes["inputs"];
             int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
@@ -622,12 +622,12 @@ namespace Dynamo.Nodes
             base.AddInput();
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             var inputAttr = elNode.Attributes["inputs"];
             int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
@@ -1017,9 +1017,9 @@ namespace Dynamo.Nodes
                 tb.Commit();
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
-            base.LoadElement(elNode);
+            base.LoadNode(elNode);
             processTextForNewInputs();
         }
 
@@ -1988,7 +1988,7 @@ namespace Dynamo.Nodes
                 base.RemoveInput();
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             foreach (var inport in InPortData.Skip(1))
@@ -2001,7 +2001,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -2320,7 +2320,7 @@ namespace Dynamo.Nodes
             //override in child classes
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(typeof(T).FullName);
@@ -2328,7 +2328,7 @@ namespace Dynamo.Nodes
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -2352,7 +2352,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewNumber(Value);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", ((double)Value).ToString(CultureInfo.InvariantCulture));
@@ -2741,7 +2741,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
@@ -2750,7 +2750,7 @@ namespace Dynamo.Nodes
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -2928,14 +2928,14 @@ namespace Dynamo.Nodes
             return val;
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(string).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -3089,7 +3089,7 @@ namespace Dynamo.Nodes
                 base.RemoveInput();
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             foreach (var inport in InPortData.Skip(2))
@@ -3102,32 +3102,21 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
                 if (subNode.Name == "Input")
                 {
-                    var attr = subNode.Attributes["name"].Value;
-
                     InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
                 }
             }
             RegisterAllPorts();
         }
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
-        {
-            if (SaveResult)
-                return base.Compile(portNames);
-            else
-                return new FunctionNode("concat-strings", portNames);
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("concat-strings"))
-                .Item.Invoke(args);
+            return Value.NewString(string.Concat(args.Cast<Value.String>().Select(x => x.Item)));
         }
     }
 

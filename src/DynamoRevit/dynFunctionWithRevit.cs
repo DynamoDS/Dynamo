@@ -19,7 +19,7 @@ namespace Dynamo.Nodes
             : base(inputs, outputs, functionDefinition)
         { }
 
-        public dynFunctionWithRevit() : base() { }
+        public dynFunctionWithRevit() { }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
@@ -29,14 +29,17 @@ namespace Dynamo.Nodes
             return result;
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            base.SaveElement(xmlDoc, dynEl);
+            base.SaveNode(xmlDoc, dynEl, context);
+
+            if (context == SaveContext.Copy)
+                return;
 
             foreach (var node in ElementsContainer.Nodes)
             {
                 var outEl = xmlDoc.CreateElement("InnerNode");
-                outEl.SetAttribute("id", node.GUID.ToString());
+                outEl.SetAttribute("id", node.ToString());
 
                 foreach (var run in ElementsContainer[node])
                 {
@@ -60,9 +63,9 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
-            base.LoadElement(elNode);
+            base.LoadNode(elNode);
 
             ElementsContainer.Clear();
 
@@ -71,8 +74,7 @@ namespace Dynamo.Nodes
                 if (node.Name == "InnerNode")
                 {
                     var nodeId = new Guid(node.Attributes["id"].Value);
-                    var rNode = this.Definition.Workspace.Nodes.First(x => x.GUID == nodeId) as dynRevitTransactionNode;
-                    var runs = ElementsContainer[rNode];
+                    var runs = ElementsContainer[nodeId];
                     runs.Clear();
 
                     foreach (XmlNode run in node.ChildNodes)
@@ -99,8 +101,9 @@ namespace Dynamo.Nodes
                             }
                         }
                     }
-
-                    rNode.RegisterAllElementsDeleteHook();
+                    var rNode = Definition.Workspace.Nodes.FirstOrDefault(x => x.GUID == nodeId) as dynRevitTransactionNode;
+                    if (rNode != null)
+                        rNode.RegisterAllElementsDeleteHook();
                 }
             }
         }

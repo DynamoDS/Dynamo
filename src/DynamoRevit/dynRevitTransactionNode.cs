@@ -41,7 +41,7 @@ namespace Dynamo.Revit
         {
             get
             {
-                return dynRevitSettings.ElementsContainers.Peek()[this];
+                return dynRevitSettings.ElementsContainers.Peek()[GUID];
             }
         }
 
@@ -65,10 +65,15 @@ namespace Dynamo.Revit
         protected dynRevitTransactionNode()
         {
             ArgumentLacing = LacingStrategy.Longest;
+            RegisterAllElementsDeleteHook();
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
+            //Don't copy over stored references
+            if (context == SaveContext.Copy)
+                return;
+
             //Only save elements in the home workspace
             if (WorkSpace is FuncWorkspace)
                 return;
@@ -91,7 +96,7 @@ namespace Dynamo.Revit
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             var del = new DynElementUpdateDelegate(onDeleted);
 
@@ -572,8 +577,8 @@ namespace Dynamo.Revit
                        var query = controller.DynamoViewModel.Model.HomeSpace.Nodes
                            .Where(x => x is dynFunctionWithRevit)
                            .Select(x => (x as dynFunctionWithRevit).ElementsContainer)
-                           .Where(c => c.HasElements(this))
-                           .SelectMany(c => c[this]);
+                           .Where(c => c.HasElements(GUID))
+                           .SelectMany(c => c[GUID]);
 
                        foreach (var els in query)
                        {
@@ -608,11 +613,7 @@ namespace Dynamo.Revit
 
         void onDeleted(List<ElementId> deleted)
         {
-            int count = 0;
-            foreach (var els in elements)
-            {
-                count += els.RemoveAll(deleted.Contains);
-            }
+            int count = elements.Sum(els => els.RemoveAll(deleted.Contains));
 
             if (!isDirty)
                 isDirty = count > 0;

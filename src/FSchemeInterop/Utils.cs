@@ -165,6 +165,10 @@ namespace Dynamo.FSchemeInterop
             if (value.IsList)
             {
                 FSharpList<Value> vals = ((Value.List) value).Item;
+
+                if (!vals.Any())
+                    return false;
+
                 if (vals[0].IsList)
                     return true;
             }

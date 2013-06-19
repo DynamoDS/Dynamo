@@ -22,12 +22,48 @@ The current version will run on top of Revit 2013, Revit 2014, Project Vasari Be
 June 2013
 
 Known Issues
-- Transform Point does not respond to rotation input
 - Concatenate Strings node is not working.  Issue #160
 - Watch Node results disappear when switching views to a different workspace tab. Issue #156
 - Cannot cancel out of a face selection operation.  Issue # 155
 - Noise Field and Color Brightness Nodes Cannot Recieve List Inputs #150
 - "XYZ Array on Curve" Node does not create point on end of curve.  #138
+ 
+Fixes
+- Better crash handling
+- Fixed preview geometry crashes
+- Python script node crash fixes
+- Save as saves to new location properly
+- Custom node creation fixes (save as, reopen, recursive node issues)
+- Fixed Write CSV File node
+- Loading files with missing custom nodes creates a proxy node indicating the node they are replacing
+- Sliders update values properly when range is changed
+- Copy/Paste fixes
+- Evaluate curve or edge no longer crashes Watch 3d
+- Better handling of escape characters in string nodes
+- Better handling of localized handling of comma and period decimal delimiters
+- Nodes using selection remember associations after save and reopen
+- List not first input is now index0
+- Fixed Build Sequence node crash
+ 
+
+New
+- Combined installer for Revit 2013, 2014, and Vasari Beta 2 and 3
+- Better background contrast with node wires and other visibility improvements
+- Improved handling of lists by many nodes
+- Dyn file load time improvements
+- New Tessellate nodes:  Convex Hull 3d , Delaunay on Face and 3d, Voronoi on Face
+- Background preview controls
+- More solid and curve creation nodes
+- String nodes now handle returns, tabs, and other escape characters
+- Compose Functions Node (combine two single parameter functions into one)
+- Filter Out Node (removes a given predicate from a list)
+- Transpose List Node (swaps rows and columns in a list of lists)
+- Combine operates on uneven lists
+- Copy/Paste copies node state
+- Length node that uses Project Units (metric and imperial)
+- Preview visibility controls in right click for each node
+
+
 
 ###0.4.0###
 

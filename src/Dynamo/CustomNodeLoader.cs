@@ -656,9 +656,9 @@ namespace Dynamo.Utilities
                         return false;
 
                     el.DisableReporting();
-                    el.LoadElement(elNode); // inject the node properties from the xml
+                    el.LoadNode(elNode); // inject the node properties from the xml
 
-                    // moved this logic to LoadElement in dynFunction --SJE
+                    // moved this logic to LoadNode in dynFunction --SJE
 
                     //if (el is dynFunction)
                     //{
