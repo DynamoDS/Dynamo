@@ -3108,26 +3108,15 @@ namespace Dynamo.Nodes
             {
                 if (subNode.Name == "Input")
                 {
-                    var attr = subNode.Attributes["name"].Value;
-
                     InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
                 }
             }
             RegisterAllPorts();
         }
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
-        {
-            if (SaveResult)
-                return base.Compile(portNames);
-            else
-                return new FunctionNode("concat-strings", portNames);
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("concat-strings"))
-                .Item.Invoke(args);
+            return Value.NewString(string.Concat(args.Cast<Value.String>().Select(x => x.Item)));
         }
     }
 
