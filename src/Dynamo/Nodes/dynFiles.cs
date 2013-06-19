@@ -324,7 +324,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Write Image File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
-    [NodeDescription("Writes the given image to the given image file. Creates the file if it doesn't exist.")]
+    [NodeDescription("Writes the given image to an image file. Creates the file if it doesn't exist.")]
     public class dynImageFileWriter : dynNodeWithOneOutput
     {
         public dynImageFileWriter()

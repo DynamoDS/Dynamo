@@ -331,7 +331,7 @@ namespace Dynamo.Nodes
 
     }
 
-
+    /*
     [NodeName("Watch Image")]
     [NodeDescription("Previews an image")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
@@ -343,7 +343,7 @@ namespace Dynamo.Nodes
         System.Windows.Controls.Image image1 = null;
         public dynWatchImage()
         {
-            InPortData.Add(new PortData("image", "result image", typeof(object)));
+            InPortData.Add(new PortData("image", "image", typeof(object)));
             OutPortData.Add(new PortData("", "Success?", typeof(bool)));
 
             RegisterAllPorts();
@@ -485,5 +485,7 @@ namespace Dynamo.Nodes
             }
 
         }
+      
     }
+     */
 }
