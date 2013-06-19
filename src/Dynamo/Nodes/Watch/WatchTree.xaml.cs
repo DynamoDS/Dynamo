@@ -110,13 +110,17 @@ namespace Dynamo.Controls
             }
         }
 
+        public bool IsNodeExpanded { get; set; }
+
         public WatchNode()
         {
+            IsNodeExpanded = true;
         }
 
         public WatchNode(string label)
         {
             _label = label;
+            IsNodeExpanded = true;
         }
     }
 
