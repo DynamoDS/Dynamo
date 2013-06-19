@@ -130,7 +130,7 @@ Source="..\Images\search_24.png" Opacity="1">
 
                                     <Border Name="ContainerLight" BorderThickness="3,0,0,0" BorderBrush="#222">
                                         <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" >
-                                            <Grid MinHeight="{Binding Height}" Background="Transparent">
+                                            <Grid Background="Transparent">
 
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition MinWidth="19" Width="Auto"/>
@@ -139,16 +139,15 @@ Source="..\Images\search_24.png" Opacity="1">
                                                 </Grid.ColumnDefinitions>
 
                                                 <Grid.RowDefinitions>
-                                                    <RowDefinition Height="{Binding Height}"/>
+                                                    <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
 
-                                                <ToggleButton VerticalAlignment="Center" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
+                                                <ToggleButton Margin="5,10,5,0" Grid.Row="0" VerticalAlignment="Top" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
+                                                <Rectangle Margin="5,10,5,0" Grid.Row="0" Width="7" Height="7" x:Name="whiteRect" VerticalAlignment="Top" Fill="#FFFFFF" HorizontalAlignment="Center" Visibility="Collapsed" />
 
-                                                <Rectangle Width="7" Height="7" x:Name="whiteRect" Margin="3,0" VerticalAlignment="Center" Fill="#FFFFFF" HorizontalAlignment="Center" Visibility="Collapsed" />
-
-                                                <Border Name="C" VerticalAlignment="Center" SnapsToDevicePixels="true" Background="Transparent" Grid.Column="2" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-                                                    <ContentPresenter Grid.Column="2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" x:Name="PART_Header" ContentSource="Header"/>
+                                                <Border Margin="5,7,5,5" Grid.Column="1" Grid.ColumnSpan="2" Name="C" VerticalAlignment="Center" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ContentSource="Header"/>
                                                 </Border>
 
                                                 <ItemsPresenter Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"  x:Name="ItemsHost" />
@@ -224,20 +223,48 @@ Source="..\Images\search_24.png" Opacity="1">
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
 
-                        <TextBlock Foreground="WhiteSmoke" FontSize="14" Text="{Binding Path=Name}" Grid.Column="0"/>
+                        <TextBlock Foreground="WhiteSmoke" FontSize="14" Text="{Binding Path=Name}"/>
 
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
 
-                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" Width="300"/>
+                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
 
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
+                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
+                        
+                        <!--<Grid>
+                            
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}, Path=ActualWidth}"></ColumnDefinition>
+                            </Grid.ColumnDefinitions> 
+                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            
+                            <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="20"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0">
+                                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
+                                </Border>
+                                <Border Grid.Column="1">
+                                    <Button Width="14" Height="16" Foreground="Black" Style="{DynamicResource ResourceKey=SBadgeButton}" Command="{Binding Path=ToggleDescriptionVisibilityCommand }">?</Button>
+                                </Border>
+                                
+                            </Grid>
 
-                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" Width="300"/>
-
+                            <TextBlock Padding="0,8,0,0" Grid.Row="1" Foreground="LightGray" FontSize="10" Text="{Binding Path=Description}" Visibility="{Binding Path=DescriptionVisibility}" TextWrapping="Wrap"/>
+                            
+                        </Grid>-->
+                        
                     </HierarchicalDataTemplate>
 
                 </TreeView.Resources>
@@ -245,7 +272,6 @@ Source="..\Images\search_24.png" Opacity="1">
             </TreeView>
 
         </ScrollViewer>
-
 
     </Grid>
 
