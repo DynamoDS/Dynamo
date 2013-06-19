@@ -87,7 +87,7 @@ namespace Dynamo.Nodes
 
         public override void LoadElement(XmlNode elNode)
         {
-            Formula = elNode.Attributes["formula"].Value;
+            Formula = elNode.Attributes["formula"].Value ?? "";
             processFormula();
         }
 
