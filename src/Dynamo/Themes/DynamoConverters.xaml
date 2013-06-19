@@ -53,4 +53,5 @@
     <controls:LacingToTooltipConverter x:Key="LacingToTooltipConverter"/>
     <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter"/>
+    <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter"/>
 </ResourceDictionary>
