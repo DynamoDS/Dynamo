@@ -22,7 +22,6 @@ The current version will run on top of Revit 2013, Revit 2014, Project Vasari Be
 June 2013
 
 Known Issues
-- Concatenate Strings node is not working.  Issue #160
 - Watch Node results disappear when switching views to a different workspace tab. Issue #156
 - Cannot cancel out of a face selection operation.  Issue # 155
 - Noise Field and Color Brightness Nodes Cannot Recieve List Inputs #150
