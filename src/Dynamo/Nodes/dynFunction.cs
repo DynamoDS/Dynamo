@@ -324,7 +324,7 @@ namespace Dynamo
 
             public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
             {
-                if (OutPortData.Any())
+                if (OutPortData.Count > 1)
                 {
                     var query = (Evaluate(args) as FScheme.Value.List).Item.Zip(
                         OutPortData, (value, data) => new { value, data });
