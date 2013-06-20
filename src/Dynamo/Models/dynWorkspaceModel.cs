@@ -275,6 +275,11 @@ namespace Dynamo
                 OnModified();
         }
 
+        public IEnumerable<dynNodeModel> GetHangingNodes()
+        {
+            return Nodes.Where(x => x.OutPortData.Any() && x.OutPorts.Any(y => !y.Connectors.Any()));
+        }
+
         public IEnumerable<dynNodeModel> GetTopMostNodes()
         {
             return Nodes.Where(

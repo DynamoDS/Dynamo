@@ -7,9 +7,10 @@
              d:DesignHeight="100" d:DesignWidth="200"
              Height="Auto" Width="Auto" MaxWidth="300" Visibility="Visible"
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
-             Canvas.Top="{Binding Top, Mode=TwoWay}">
+             Canvas.Top="{Binding Top, Mode=TwoWay}" 
+             MouseDown="Note_MouseDown" >
     
-    <Grid>
+    <Grid Name="BaseGrid">
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Name="deleteItem" Header="Delete" Click="deleteItem_Click"  />
@@ -24,6 +25,7 @@
           Text="{Binding Path=Text, Mode=OneWay}"
           Grid.Column="0" Grid.Row="0" FontFamily="Trebuchet" 
             FontSize="12" 
+            
             Padding="10" TextWrapping="Wrap">
             
           <TextBlock.RenderTransform>
