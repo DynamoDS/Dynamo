@@ -375,9 +375,7 @@ namespace Dynamo.Controls
 
         private bool CanViewCustomNodeWorkspace()
         {
-            if (nodeLogic.IsCustomFunction)
-                return true;
-            return false;
+            return nodeLogic.IsCustomFunction;
         }
 
         private void SetLayout(object parameters)
