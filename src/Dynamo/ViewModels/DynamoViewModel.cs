@@ -1498,8 +1498,12 @@ namespace Dynamo.Controls
 
             //if we have null parameters, the note is being added
             //from the menu, center the view on the note
-            if(parameters==null)
+            if (parameters == null)
+            {
+                inputs.Add("transformFromOuterCanvasCoordinates", true);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered( this, new ModelEventArgs(n, inputs) );
+            }
+                
 
             n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
             var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspaceModel)inputs["workspace"];
