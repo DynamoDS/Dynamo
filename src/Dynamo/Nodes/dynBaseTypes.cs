@@ -2756,19 +2756,27 @@ namespace Dynamo.Nodes
             {
                 if (subNode.Name.Equals(typeof(double).FullName))
                 {
+                    double value = Value;
+                    double min = Min;
+                    double max = Max;
+
                     foreach (XmlAttribute attr in subNode.Attributes)
                     {
                         if (attr.Name.Equals("value"))
-                            Value = DeserializeValue(attr.Value);
+                            value = DeserializeValue(attr.Value);
                         else if (attr.Name.Equals("min"))
                         {
-                            Min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                            min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                         }
                         else if (attr.Name.Equals("max"))
                         {
-                            Max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                            max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                         }
                     }
+
+                    Min = min;
+                    Max = max;
+                    Value = value;
                 }
             }
         }
