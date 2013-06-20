@@ -26,6 +26,7 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 using System.Windows.Media.Effects;
 using Dynamo.Nodes;
+using Microsoft.FSharp.Collections;
 
 namespace Dynamo
 {
@@ -321,6 +322,19 @@ namespace Dynamo
                 Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
             }
 
+            public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
+            {
+                if (OutPortData.Any())
+                {
+                    var query = (Evaluate(args) as FScheme.Value.List).Item.Zip(
+                        OutPortData, (value, data) => new { value, data });
+
+                    foreach (var result in query)
+                        outPuts[result.data] = result.value;
+                }
+                else
+                    base.Evaluate(args, outPuts);
+            }
         }
 
         [NodeName("Output")]
