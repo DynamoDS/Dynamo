@@ -68,6 +68,7 @@ namespace Dynamo.Controls
                     ViewModel.NodeLogic.Width = this.ActualWidth;
                 }
             }
+
         }
 
         void dynNodeView_Loaded(object sender, RoutedEventArgs e)
