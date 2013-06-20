@@ -69,8 +69,10 @@ namespace Dynamo.Nodes
                 {
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
-                    var loc = mc.Location as LocationCurve;
-                    loc.Curve = c;
+
+                    var c2 = c.Clone();
+                    c2.MakeUnbound();
+                    mc.GeometryCurve = c2;
 
                 }
                 else
@@ -136,9 +138,10 @@ namespace Dynamo.Nodes
                 {
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
-                    var loc = mc.Location as LocationCurve;
-                    loc.Curve = c;
 
+                    var c2 = c.Clone();
+                    c2.MakeUnbound();
+                    mc.GeometryCurve = c2;
                 }
                 else
                 {
