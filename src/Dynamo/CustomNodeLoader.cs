@@ -929,7 +929,6 @@ namespace Dynamo.Utilities
                 beginNode.AddInput(hangingNodes.Count.ToString());
                 beginNode.ConnectInput(hangingNodes.Count.ToString(), top);
 
-
                 top = beginNode;
             }
 

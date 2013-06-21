@@ -362,8 +362,8 @@ namespace Dynamo.PackageManager
                                         if (auth)
                                         {
                                             // TODO: these elements should observe the package manager state
-                                            dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
-                                            dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
+                                            //dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
+                                            //dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
                                             IsLoggedIn = true;
                                         }
                                     }))));

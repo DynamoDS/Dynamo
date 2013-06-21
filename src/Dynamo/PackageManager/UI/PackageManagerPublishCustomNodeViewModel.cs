@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -50,7 +51,7 @@ namespace Dynamo.PackageManager
                     if (this._isNewVersion != value)
                     {
                         this._isNewVersion = value;
-                        this.RaisePropertyChanged(() => this.IsNewVersion);
+                        this.RaisePropertyChanged("IsNewVersion");
                     }
                 }
             }
@@ -73,6 +74,24 @@ namespace Dynamo.PackageManager
             }
 
             /// <summary>
+            /// AdditionalFiles property </summary>
+            /// <value>
+            /// Tells whether the publish UI is visible</value>
+            private ObservableCollection<string> _additionalFiles;
+            public ObservableCollection<string> AdditionalFiles
+            {
+                get { return _additionalFiles; }
+                set
+                {
+                    if (this._additionalFiles != value)
+                    {
+                        this._additionalFiles = value;
+                        this.RaisePropertyChanged("AdditionalFiles");
+                    }
+                }
+            }
+
+            /// <summary>
             /// Visible property </summary>
             /// <value>
             /// Tells whether the publish UI is visible</value>
@@ -85,7 +104,7 @@ namespace Dynamo.PackageManager
                     if (this._visible != value)
                     {
                         this._visible = value;
-                        this.RaisePropertyChanged(() => this.Visible);
+                        this.RaisePropertyChanged("Visible");
                     }
                 }
             }
@@ -109,7 +128,7 @@ namespace Dynamo.PackageManager
                     if (this._Description != value)
                     {
                         this._Description = value;
-                        this.RaisePropertyChanged(() => this.Description);
+                        this.RaisePropertyChanged("Description");
                         ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
                     }
                 }
@@ -128,7 +147,7 @@ namespace Dynamo.PackageManager
                     if (this._Keywords != value)
                     {
                         this._Keywords = value;
-                        this.RaisePropertyChanged(() => this.Keywords);
+                        this.RaisePropertyChanged("Keywords");
                         KeywordList = value.Split(' ').Where(x => x.Length > 0).ToList();
                         ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
                     }
@@ -160,7 +179,7 @@ namespace Dynamo.PackageManager
                     if (this._MinorVersion != value)
                     {
                         this._MinorVersion = value;
-                        this.RaisePropertyChanged(() => this.MinorVersion);
+                        this.RaisePropertyChanged("MinorVersion");
                         ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
                     }
                 }
@@ -179,7 +198,7 @@ namespace Dynamo.PackageManager
                     if (this._BuildVersion != value)
                     {
                         this._BuildVersion = value;
-                        this.RaisePropertyChanged(() => this.BuildVersion);
+                        this.RaisePropertyChanged("BuildVersion");
                         ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
                     }
                 }
@@ -198,7 +217,7 @@ namespace Dynamo.PackageManager
                     if (this._MajorVersion != value)
                     {
                         this._MajorVersion = value;
-                        this.RaisePropertyChanged(() => this.MajorVersion);
+                        this.RaisePropertyChanged("MajorVersion");
                         ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
                     }
                 }

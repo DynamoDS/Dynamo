@@ -5,20 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI"
         mc:Ignorable="d" 
-             Height="480" Width="700" Name="PublishInfoControl" Visibility="{Binding Path=Visible}">
+             Height="470" Width="700" Name="PublishInfoControl" Visibility="{Binding Path=Visible}">
   
   <Grid Background="Black">
       
       <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*"></ColumnDefinition>
           <ColumnDefinition Width="300"></ColumnDefinition>
+          <ColumnDefinition Width="*"></ColumnDefinition>
       </Grid.ColumnDefinitions>
       
       <Grid.RowDefinitions>
           <RowDefinition Height="*"></RowDefinition>
       </Grid.RowDefinitions>
 
-        <Border Grid.Column="0" Grid.ColumnSpan="1" Name="BrowserContainer" >
+        <Border Grid.Column="1" Grid.ColumnSpan="1" Name="BrowserContainer" >
 
                 <Border.Background>
                     <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
@@ -29,7 +29,7 @@
 
             <StackPanel Name="FieldArrangement" Orientation="Vertical" Margin="10">
                 
-                <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,0,0,15" FontSize="10" Text="PUBLISH A CUSTOM NODE"/>
+                <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,0,0,15" FontSize="10" Text="PUBLISH A PACKAGE"/>
 
                 <Label Content="Title" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" />
                 <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="TitleInput" Padding="5" Text="{Binding Path=Title, Mode=TwoWay}" />
@@ -56,171 +56,200 @@
             </StackPanel>
         </Border>
 
-        <StackPanel Grid.Column="1" Grid.ColumnSpan="1">
+        <Grid Grid.Column="0" Grid.ColumnSpan="1">
 
-            <Label Content="Dependencies" Height="28" Margin="0,10,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-            <ScrollViewer Margin="0" Grid.Column="1" Grid.ColumnSpan="1" VerticalScrollBarVisibility="Visible" Name="BrowserScrollView" Background="Black" BorderThickness="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="2"></RowDefinition>
+                <RowDefinition MaxHeight="200" Height="100"></RowDefinition>
+                <RowDefinition Height="40" MaxHeight="40"></RowDefinition>
+            </Grid.RowDefinitions>
 
-                <ScrollViewer.Resources>
+            <StackPanel Grid.Row="0" >
+                <Label Content="Dependencies" Height="28" Margin="0,10,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                <ScrollViewer Margin="0" VerticalScrollBarVisibility="Visible" Name="BrowserScrollView" Background="Black" BorderThickness="0">
 
-                    <Style x:Key="SearchTreeView" TargetType="{x:Type TreeView}">
-                        <Setter Property="Focusable" Value="False"></Setter>
-                        <Setter Property="Background" Value="Black"/>
-                        <Setter Property="Foreground" Value="WhiteSmoke"/>
-                        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
-                        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <ScrollViewer.Resources>
 
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type TreeView}">
-                                    <Border SnapsToDevicePixels="True" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                        <ScrollViewer Focusable="false" Background="Transparent" Padding="{TemplateBinding Padding}" CanContentScroll="false" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
-                                            <ItemsPresenter/>
-                                        </ScrollViewer>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
+                        <Style x:Key="SearchTreeView" TargetType="{x:Type TreeView}">
+                            <Setter Property="Focusable" Value="False"></Setter>
+                            <Setter Property="Background" Value="Black"/>
+                            <Setter Property="Foreground" Value="WhiteSmoke"/>
+                            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+                            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
 
-                    </Style>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TreeView}">
+                                        <Border SnapsToDevicePixels="True" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                            <ScrollViewer Focusable="false" Background="Transparent" Padding="{TemplateBinding Padding}" CanContentScroll="false" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+                                                <ItemsPresenter/>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
 
-                    <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
-                        <Setter Property="Focusable" Value="False"/>
-                        <Setter Property="Width" Value="32"/>
-                        <Setter Property="Foreground" Value="#888"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        </Style>
 
-                                    <Border Width="32" Background="Transparent">
-                                        <Border SnapsToDevicePixels="true" Width="24" Height="10" Background="{TemplateBinding Background}" x:Name="border">
-                                            <Path HorizontalAlignment="Center" 
+                        <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
+                            <Setter Property="Focusable" Value="False"/>
+                            <Setter Property="Width" Value="32"/>
+                            <Setter Property="Foreground" Value="#888"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+
+                                        <Border Width="32" Background="Transparent">
+                                            <Border SnapsToDevicePixels="true" Width="24" Height="10" Background="{TemplateBinding Background}" x:Name="border">
+                                                <Path HorizontalAlignment="Center" 
                                               Margin="1,1,1,1" x:Name="ExpandPath" Fill="{TemplateBinding Foreground}" 
                                               Data="M 0 10 L 5 5 L 0 0 Z"/>
+                                            </Border>
                                         </Border>
-                                    </Border>
 
-                                    <ControlTemplate.Triggers>
+                                        <ControlTemplate.Triggers>
 
-                                        <Trigger Property="IsChecked" Value="True">
-                                            <Setter Property="Data" TargetName="ExpandPath" Value="M 0 0 L 5 5 L 10 0 Z"/>
-                                            <Setter Property="Foreground" Value="White"/>
-                                        </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="Data" TargetName="ExpandPath" Value="M 0 0 L 5 5 L 10 0 Z"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
 
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
 
-                    <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="Focusable" Value="False"></Setter>
-                        <Setter Property="IsExpanded" Value="{Binding IsExpanded}"></Setter>
-                        <Setter Property="IsSelected" Value="{Binding IsSelected}"></Setter>
-                        <Setter Property="Visibility" Value="{Binding Visibility}"></Setter>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="Focusable" Value="False"></Setter>
+                            <Setter Property="IsExpanded" Value="{Binding IsExpanded}"></Setter>
+                            <Setter Property="IsSelected" Value="{Binding IsSelected}"></Setter>
+                            <Setter Property="Visibility" Value="{Binding Visibility}"></Setter>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TreeViewItem}">
 
-                                    <Button Command="{Binding ToggleIsExpanded}">
-                                        <Button.Focusable>False</Button.Focusable>
+                                        <Button Command="{Binding ToggleIsExpanded}">
+                                            <Button.Focusable>False</Button.Focusable>
 
-                                        <Button.Template>
-                                            <ControlTemplate TargetType="Button">
-                                                <ContentPresenter />
-                                            </ControlTemplate>
-                                        </Button.Template>
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <ContentPresenter />
+                                                </ControlTemplate>
+                                            </Button.Template>
 
-                                        <Border Name="ContainerLight" BorderThickness="3,0,0,0" BorderBrush="#222">
-                                            <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" Background="Black">
-                                                <Grid MinHeight="{Binding Height}">
+                                            <Border Name="ContainerLight" BorderThickness="3,0,0,0" BorderBrush="#222">
+                                                <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" Background="Black">
+                                                    <Grid MinHeight="{Binding Height}">
 
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition MinWidth="19" Width="Auto"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition MinWidth="19" Width="Auto"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
 
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="{Binding Height}"/>
-                                                        <RowDefinition Height="*" />
-                                                    </Grid.RowDefinitions>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="{Binding Height}"/>
+                                                            <RowDefinition Height="*" />
+                                                        </Grid.RowDefinitions>
 
-                                                    <ToggleButton VerticalAlignment="Center" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
+                                                        <ToggleButton VerticalAlignment="Center" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
 
-                                                    <Rectangle Width="7" Height="7" x:Name="whiteRect" Margin="3,0" VerticalAlignment="Center" Fill="#FFFFFF" HorizontalAlignment="Center" Visibility="Collapsed" />
+                                                        <Rectangle Width="7" Height="7" x:Name="whiteRect" Margin="3,0" VerticalAlignment="Center" Fill="#FFFFFF" HorizontalAlignment="Center" Visibility="Collapsed" />
 
-                                                    <Border Name="C" VerticalAlignment="Center" SnapsToDevicePixels="true" Grid.Column="1" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-                                                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" x:Name="PART_Header" ContentSource="Header"/>
-                                                    </Border>
+                                                        <Border Name="C" VerticalAlignment="Center" SnapsToDevicePixels="true" Grid.Column="1" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" x:Name="PART_Header" ContentSource="Header"/>
+                                                        </Border>
 
-                                                    <ItemsPresenter Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"  x:Name="ItemsHost" />
+                                                        <ItemsPresenter Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"  x:Name="ItemsHost" />
 
-                                                </Grid>
+                                                    </Grid>
+
+                                                </Border>
 
                                             </Border>
+                                        </Button>
 
-                                        </Border>
-                                    </Button>
+                                        <ControlTemplate.Triggers>
 
-                                    <ControlTemplate.Triggers>
+                                            <Trigger Property="IsExpanded" Value="false">
+                                                <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
+                                            </Trigger>
 
-                                        <Trigger Property="IsExpanded" Value="false">
-                                            <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
-                                        </Trigger>
-                                        
-                                        <Trigger Property="HasItems" Value="false">
-                                            <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
-                                            <Setter Property="Visibility" TargetName="whiteRect" Value="Visible"/>
-                                        </Trigger>
+                                            <Trigger Property="HasItems" Value="false">
+                                                <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
+                                                <Setter Property="Visibility" TargetName="whiteRect" Value="Visible"/>
+                                            </Trigger>
 
-                                        <Trigger Property="IsSelected" Value="true">
-                                            <Setter Property="Background" TargetName="Bd" Value="#555"/>
-                                        </Trigger>
+                                            <Trigger Property="IsSelected" Value="true">
+                                                <Setter Property="Background" TargetName="Bd" Value="#555"/>
+                                            </Trigger>
 
-                                        <Trigger Property="IsEnabled" Value="false">
-                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                        </Trigger>
+                                            <Trigger Property="IsEnabled" Value="false">
+                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                            </Trigger>
 
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    
-                </ScrollViewer.Resources>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
 
-                <TreeView ItemsSource="{Binding Path=Dependencies}" Style="{StaticResource SearchTreeView}" BorderThickness="0">
+                    </ScrollViewer.Resources>
 
-                    <TreeView.Resources>
+                    <TreeView ItemsSource="{Binding Path=Dependencies}" Style="{StaticResource SearchTreeView}" BorderThickness="0">
 
-                        <HierarchicalDataTemplate DataType = "{x:Type packagemanager:PackageDependencyRootViewModel}" ItemsSource="{Binding Path=Items}" >
+                        <TreeView.Resources>
 
-                            <TextBlock Foreground="WhiteSmoke" FontSize="14" Text="{Binding Path=Name}"/>
+                            <HierarchicalDataTemplate DataType = "{x:Type packagemanager:PackageDependencyRootViewModel}" ItemsSource="{Binding Path=Items}" >
 
-                        </HierarchicalDataTemplate>
+                                <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
 
-                        <HierarchicalDataTemplate DataType = "{x:Type packagemanager:PackageDependencyInternalViewModel}" ItemsSource="{Binding Path=Items}">
+                            </HierarchicalDataTemplate>
 
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
+                            <HierarchicalDataTemplate DataType = "{x:Type packagemanager:PackageDependencyInternalViewModel}" ItemsSource="{Binding Path=Items}">
 
-                        </HierarchicalDataTemplate>
+                                <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
 
-                        <HierarchicalDataTemplate DataType="{x:Type packagemanager:PackageDependencyLeafViewModel}">
+                            </HierarchicalDataTemplate>
 
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
+                            <HierarchicalDataTemplate DataType="{x:Type packagemanager:PackageDependencyLeafViewModel}">
 
-                        </HierarchicalDataTemplate>
+                                <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
 
-                    </TreeView.Resources>
+                            </HierarchicalDataTemplate>
 
-                </TreeView>
+                        </TreeView.Resources>
 
-            </ScrollViewer>
+                    </TreeView>
 
-        </StackPanel>
-        
+                </ScrollViewer>
+            </StackPanel>
+
+            <GridSplitter ResizeDirection="Rows" 
+                        Grid.Row="1" 
+                        Grid.RowSpan="1"
+                        Width="Auto" 
+                        Height="2" 
+                        HorizontalAlignment="Stretch" 
+                        Margin="0" 
+                        Background="#777"/>
+            
+            <StackPanel Name="AdditionalFiles" Grid.Row="2">
+                <Label Content="Additional Files" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="AdditionalFilesLabel" VerticalAlignment="Top" />
+                <ScrollViewer>
+                    <ListBox ItemsSource="{Binding AdditionalFiles}" Background="Transparent" BorderThickness="0">
+                       
+                    </ListBox>
+                </ScrollViewer>
+            </StackPanel>
+            
+            <Button Grid.Row="3" Style="{DynamicResource ResourceKey=STextButton}" >Add file...</Button>
+
+        </Grid>
+
     </Grid>
 
   <Window.Resources>
