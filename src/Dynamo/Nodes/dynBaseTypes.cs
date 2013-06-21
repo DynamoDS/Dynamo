@@ -1193,9 +1193,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Flatten")]
+    [NodeName("Flatten Completely")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Flatten a list of lists into one list.")]
+    [NodeDescription("Flatten nested lists into one list.")]
     public class dynFlattenList : dynNodeWithOneOutput
     {
         public dynFlattenList()
@@ -1208,15 +1208,79 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
+        internal static IEnumerable<Value> Flatten(IEnumerable<Value> list, ref int amt)
+        {
+            while (amt != 0)
+            {
+                bool keepFlattening = false;
+
+                list = list.SelectMany<Value, Value>(
+                    x =>
+                    {
+                        if (x is Value.List)
+                        {
+                            keepFlattening = true;
+                            return (x as Value.List).Item;
+                        }
+                        return new[] { x };
+                    }).ToList();
+
+                if (keepFlattening)
+                    amt--;
+                else
+                    break;
+            }
+            return list;
+        }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
             if (!args[0].IsList)
                 throw new Exception("A list is required to flatten.");
 
-            FSharpList<Value> list = ((Value.List)args[0]).Item;
-            var vals = list.ToList().SelectMany(x => ((Value.List)x).Item);
+            IEnumerable<Value> list = ((Value.List)args[0]).Item;
 
-            return Value.NewList(Utils.SequenceToFSharpList(vals));
+            int amt = -1;
+            return Value.NewList(Utils.SequenceToFSharpList(Flatten(list, ref amt)));
+        }
+    }
+
+    [NodeName("Flatten")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Flatten nested lists into one list.")]
+    public class dynFlattenListAmt : dynNodeWithOneOutput
+    {
+        public dynFlattenListAmt()
+        {
+            InPortData.Add(new PortData("list", "The list of lists to flatten.", typeof(Value.List)));
+            InPortData.Add(new PortData("amt", "Amount of nesting to remove.", typeof(Value.Number)));
+
+            OutPortData.Add(new PortData("list", "The flattened list.", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+                throw new Exception("A list is required to flatten.");
+
+            IEnumerable<Value> list = ((Value.List)args[0]).Item;
+
+            var oldAmt = Convert.ToInt32(((Value.Number)args[1]).Item);
+
+            if (oldAmt < 0)
+                throw new Exception("Cannot flatten a list by a negative amount.");
+
+            var amt = oldAmt;
+            var result = dynFlattenList.Flatten(list, ref amt);
+
+            if (amt > 0)
+                throw new Exception("List not nested enough to flatten by given amount. Nesting Amt = " + (oldAmt - amt) + ", Given Amt = " + oldAmt);
+
+            return Value.NewList(Utils.SequenceToFSharpList(result));
         }
     }
 
