@@ -373,10 +373,22 @@
                 <TabControl.ItemTemplate>
                     
                     <DataTemplate>
-                        
-                        <StackPanel Orientation="Horizontal" Margin="10,5,10,5">
 
-                            <TextBlock Name="WorkspaceName" Margin="0,2,0,0" >
+                        <!--<Button>
+
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter Content="{TemplateBinding Content}"/>
+                                </ControlTemplate>
+                            </Button.Template>
+
+                            <Button.InputBindings>
+                                <MouseBinding Gesture="MiddleClick" Command="{Binding HideCommand}" />
+                            </Button.InputBindings>-->
+
+                            <StackPanel Orientation="Horizontal" Margin="10,5,10,5" >
+
+                                 <TextBlock Name="WorkspaceName" Margin="0,2,0,0" >
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -403,7 +415,7 @@
                                 </TextBlock.Style>
                             </TextBlock>
 
-                            <TextBlock Name="Spacer" Text=" -" Margin="0,2,0,0">
+                                 <TextBlock Name="Spacer" Text=" -" Margin="0,2,0,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -422,7 +434,7 @@
 
                             </TextBlock>
 
-                            <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
+                                 <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -447,9 +459,11 @@
                                 
                             </TextBlock> 
                             
-                            <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
+                                 <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
 
-                        </StackPanel>
+                            </StackPanel>
+
+                        <!--</Button>-->
                         
                     </DataTemplate>
                     
