@@ -136,9 +136,10 @@ namespace Dynamo.Nodes
     public class dynFreeForm : dynRevitTransactionNodeWithOneOutput
     {
         public static Dictionary <ElementId, Solid> freeFormSolids = null;
+        public static Dictionary <ElementId, ElementId> previouslyDeletedFreeForms = null;
         public dynFreeForm()
         {
-            InPortData.Add(new PortData("solid", "solid to use for Freeform", typeof(Value.List)));
+            InPortData.Add(new PortData("solid", "solid to use for Freeform", typeof(object)));
 
             OutPortData.Add(new PortData("form", "Free Form", typeof(object)));
 
@@ -149,6 +150,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            ElementId deleteId = ElementId.InvalidElementId;
+
             //If we already have a form stored...
             if (this.Elements.Any())
             {
@@ -190,6 +193,19 @@ namespace Dynamo.Nodes
             {
                 this.Elements.Add(ffe.Id);
                 freeFormSolids[ffe.Id] = mySolid;
+                if (deleteId != ElementId.InvalidElementId)
+                {
+                    if (previouslyDeletedFreeForms == null)
+                        previouslyDeletedFreeForms = new Dictionary<ElementId, ElementId>();
+                    previouslyDeletedFreeForms[ffe.Id] = deleteId;
+                    if (previouslyDeletedFreeForms.ContainsKey(deleteId))
+                    {
+                        ElementId previouslyDeletedId = previouslyDeletedFreeForms[deleteId];
+                        if (previouslyDeletedId != ElementId.InvalidElementId)
+                           freeFormSolids.Remove(previouslyDeletedFreeForms[deleteId]);
+                        previouslyDeletedFreeForms.Remove(deleteId);
+                    }
+                }
             }
             else if (!methodCalled)
                 throw new Exception("This method is not available before 2014 release.");
