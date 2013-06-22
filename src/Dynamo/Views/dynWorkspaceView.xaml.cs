@@ -133,54 +133,6 @@ namespace Dynamo.Views
             node.Y = dropPt.Y;
         }
 
-        //void vm_RequestNoteCentered(object sender, EventArgs e)
-        //{
-        //    double x = 0;
-        //    double y = 0;
-        //    dynNoteModel note = (e as NoteEventArgs).Note;
-        //    Dictionary<string, object> data = (e as NoteEventArgs).Data;
-
-        //    x = outerCanvas.ActualWidth / 2.0;
-        //    y = outerCanvas.ActualHeight / 2.0;
-
-        //    // apply small perturbation
-        //    // so node isn't right on top of last placed node
-        //    var r = new Random();
-        //    x += (r.NextDouble() - 0.5) * 50;
-        //    y += (r.NextDouble() - 0.5) * 50;
-
-        //    if (data.ContainsKey("x"))
-        //        x = (double)data["x"];
-
-        //    if (data.ContainsKey("y"))
-        //        y = (double)data["y"];
-
-        //    var dropPt = new Point(x, y);
-
-        //    // Transform dropPt from outerCanvas space into zoomCanvas space
-        //    if (WorkBench != null)
-        //    {
-        //        var a = outerCanvas.TransformToDescendant(WorkBench);
-        //        dropPt = a.Transform(dropPt);
-        //    }
-
-        //    // center the node at the drop point
-        //    if (!Double.IsNaN(note.Width))
-        //        dropPt.X -= (note.Width / 2.0);
-
-        //    if (!Double.IsNaN(note.Height))
-        //        dropPt.Y -= (note.Height / 2.0);
-
-        //    if (!Double.IsNaN(note.Width))
-        //        dropPt.X -= (note.Height / 2.0);
-
-        //    if (!Double.IsNaN(note.Height))
-        //        dropPt.Y -= (note.Height / 2.0);
-
-        //    note.X = dropPt.X;
-        //    note.Y = dropPt.Y;
-        //}
-
         void vm_StopDragging(object sender, EventArgs e)
         {
             WorkBench.isDragInProgress = false;
@@ -373,6 +325,11 @@ namespace Dynamo.Views
         {
         }
 
+        /// <summary>
+        /// Centers the view on a node by changing the workspace's CurrentOffset.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         internal void CenterViewOnElement(object sender, EventArgs e)
         {
             this.Dispatcher.BeginInvoke((Action) delegate
@@ -382,16 +339,21 @@ namespace Dynamo.Views
 
                     var n = (e as ModelEventArgs).Model;
 
-                    double left = n.X;
-                    double top = n.Y;
+                    if (WorkBench != null)
+                    {
+                        var b = WorkBench.TransformToAncestor(outerCanvas);
 
-                    double x = left + n.Width/2 - outerCanvas.ActualWidth/2;
-                    double y = top + n.Height/2 - outerCanvas.ActualHeight/2;
+                        Point outerCenter = new Point(outerCanvas.ActualWidth/2, outerCanvas.ActualHeight/2);
+                        Point nodeCenterInCanvas = new Point(n.X + n.Width / 2, n.Y + n.Height / 2);
+                        Point nodeCenterInOverlay = b.Transform(nodeCenterInCanvas);
 
-                    var offset = new Point(-x, -y);
+                        double deltaX = nodeCenterInOverlay.X - outerCenter.X;
+                        double deltaY = nodeCenterInOverlay.Y - outerCenter.Y;
 
-                    vm.CurrentOffset = offset;
+                        var offset = new Point(vm.CurrentOffset.X - deltaX, vm.CurrentOffset.Y - deltaY);
 
+                        vm.CurrentOffset = offset;
+                    } 
                 });
         }
 

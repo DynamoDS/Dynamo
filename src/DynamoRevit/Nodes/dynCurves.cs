@@ -69,8 +69,13 @@ namespace Dynamo.Nodes
                 {
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
-                    var loc = mc.Location as LocationCurve;
-                    loc.Curve = c;
+
+                    if (c.IsBound)
+                    {
+                        c = c.Clone();
+                        c.MakeUnbound();
+                    }
+                    mc.GeometryCurve = c;
 
                 }
                 else
@@ -136,9 +141,13 @@ namespace Dynamo.Nodes
                 {
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
-                    var loc = mc.Location as LocationCurve;
-                    loc.Curve = c;
 
+                    if (c.IsBound)
+                    {
+                        c = c.Clone();
+                        c.MakeUnbound();
+                    }
+                    mc.GeometryCurve = c;
                 }
                 else
                 {
@@ -976,7 +985,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Approximate By Tangent Arcs")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Creates best fit arc through points")]
+    [NodeDescription("Appoximates curve by sequence of tangent arcs.")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class dynApproximateByTangentArcs : dynRevitTransactionNodeWithOneOutput
     {

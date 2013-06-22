@@ -98,7 +98,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public bool IsCustomFunction
         {
-            get { return this.GetType().IsAssignableFrom(typeof(dynFunction)); }
+            get { return this is dynFunction; }
         }
 
         public bool IsVisible
@@ -530,7 +530,7 @@ namespace Dynamo.Nodes
                 InputNode prev = node;
                 int prevIndex = 0;
 
-                foreach (var data in Enumerable.Range(0, OutPortData.Count).Zip(OutPortData, (i, d) => new { Index = i, Data = d }))
+                foreach (var data in OutPortData.Select((d, i) => new { Index = i, Data = d }))
                 {
                     if (HasOutput(data.Index))
                     {
@@ -683,7 +683,7 @@ namespace Dynamo.Nodes
                 {
                     if (Controller.RunCancelled)
                         throw new CancelEvaluationException(false);
-
+                    
                     __eval_internal(args, evaluationDict);
 
                     expr = OutPortData.Count == 1

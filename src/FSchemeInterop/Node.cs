@@ -307,6 +307,9 @@ namespace Dynamo.FSchemeInterop.Node
         //Connects a Node to one of our inputs.
         public virtual void ConnectInput(string inputName, INode inputNode)
         {
+            if (arguments.ContainsKey(inputName))
+                DisconnectInput(inputName);
+
             arguments[inputName] = inputNode;
             children.Add(inputNode);
             inputNode.parents.Add(this);
