@@ -36,9 +36,10 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("XYZs", "A List of XYZ's.", typeof (Value.List)));
             OutPortData.Add(new PortData("axis", "A normalized vector representing the axis of the best fit line.", typeof (Value.Container)));
             OutPortData.Add(new PortData("avg", "The average (mean) of the point list.", typeof(Value.Container)));
-            
-            this.ArgumentLacing = LacingStrategy.Disabled;
+
+            ArgumentLacing = LacingStrategy.Longest;
             RegisterAllPorts();
+            
         }
 
         public static List<T> AsGenericList<T>(FSharpList<Value> list)
@@ -123,8 +124,9 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("normal", "A normalized vector representing the axis of the best fit line.", typeof(Value.Container)));
             OutPortData.Add(new PortData("origin", "The average (mean) of the point list.", typeof(Value.Container)));
 
-            this.ArgumentLacing = LacingStrategy.Disabled;
+            ArgumentLacing = LacingStrategy.Longest;
             RegisterAllPorts();
+            
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -147,7 +149,6 @@ namespace Dynamo.Nodes
 
             return Value.NewList(results);
         }
-
 
     }
 
