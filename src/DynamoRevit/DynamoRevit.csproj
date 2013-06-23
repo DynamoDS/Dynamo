@@ -43,6 +43,9 @@
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\..\extern\mathnet-numerics\out\debug\Net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="MIConvexHullPlugin">
       <HintPath>..\..\extern\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
     </Reference>
@@ -85,6 +88,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -111,6 +115,7 @@
     <Compile Include="Nodes\dynGeometricForms.cs" />
     <Compile Include="Nodes\dynGeometry.cs" />
     <Compile Include="Nodes\dynIntersection.cs" />
+    <Compile Include="Nodes\dynPointAnalysis.cs" />
     <Compile Include="Nodes\dynMeasurement.cs" />
     <Compile Include="Nodes\dynModelUpdater.cs" />
     <Compile Include="Nodes\dynAnalyze.cs" />
