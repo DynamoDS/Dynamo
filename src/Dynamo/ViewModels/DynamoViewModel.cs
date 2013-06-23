@@ -110,7 +110,7 @@ namespace Dynamo.Controls
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
-
+        
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
             get { return _workspaces; }
