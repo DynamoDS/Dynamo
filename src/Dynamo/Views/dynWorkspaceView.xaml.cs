@@ -385,7 +385,6 @@ namespace Dynamo.Views
 
                     xLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
 
-
                     xLine2 = new Line();
                     xLine2.Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180));
                     xLine2.HorizontalAlignment = HorizontalAlignment.Left;

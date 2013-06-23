@@ -51,7 +51,7 @@ namespace Dynamo.Nodes
         public dynColorSaturation()
         {
             InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
-            OutPortData.Add(new PortData("mag", "The saturation of the color as a number between 0 and 1", typeof(Value.Number)));
+            OutPortData.Add(new PortData("sat", "The saturation of the color as a number between 0 and 1", typeof(Value.Number)));
 
             RegisterAllPorts();
 
@@ -138,7 +138,7 @@ namespace Dynamo.Nodes
         public dynColorHue()
         {
             InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
-            OutPortData.Add(new PortData("mag", "The hue of the color as a number between 0 and 1", typeof(Value.Number)));
+            OutPortData.Add(new PortData("hue", "The hue of the color as a number between 0 and 1", typeof(Value.Number)));
 
             RegisterAllPorts();
 

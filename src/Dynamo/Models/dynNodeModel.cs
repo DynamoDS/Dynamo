@@ -205,6 +205,30 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
+        ///     Name property
+        /// </summary>
+        /// <value>
+        ///     If the node has a name attribute, return it.  Other wise return empty string.
+        /// </value>
+        public string Name
+        {
+            get
+            {
+                var type = GetType();
+                object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
+                if (type.Namespace == "Dynamo.Nodes" &&
+                    !type.IsAbstract &&
+                    attribs.Length > 0 &&
+                    type.IsSubclassOf(typeof(dynNodeModel)))
+                {
+                    var elCatAttrib = attribs[0] as NodeNameAttribute;
+                    return elCatAttrib.Name;
+                }
+                return "";
+            }
+        }
+
+        /// <summary>
         ///     Category property
         /// </summary>
         /// <value>
@@ -340,7 +364,10 @@ namespace Dynamo.Nodes
             {
                 Type t = GetType();
                 object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
-                return ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
+                if (rtAttribs.Length > 0)
+                    return ((NodeDescriptionAttribute) rtAttribs[0]).ElementDescription;
+                else
+                    return "No description provided.";
             }
         }
 

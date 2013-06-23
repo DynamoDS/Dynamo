@@ -127,6 +127,9 @@ limitations under the License.
       <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Prompts\NodeHelpPrompt.xaml.cs">
+      <DependentUpon>NodeHelpPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Search\SearchElements\TopSearchElement.cs" />
@@ -255,6 +258,10 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Prompts\FunctionNamePrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Prompts\NodeHelpPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

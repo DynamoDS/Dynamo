@@ -21,6 +21,7 @@ using System.Windows.Input;
 using System.Collections.ObjectModel;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
+using Dynamo.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism.Commands;
@@ -206,6 +207,7 @@ namespace Dynamo.Controls
         public DelegateCommand<string> SetLacingTypeCommand { get; set; }
         public DelegateCommand<object> SetStateCommand { get; set; }
         public DelegateCommand SelectCommand { get; set; }
+        public DelegateCommand ShowHelpCommand { get; set; }
         public DelegateCommand ViewCustomNodeWorkspaceCommand { get; set; }
         public DelegateCommand<object> SetLayoutCommand { get; set; }
         public DelegateCommand<dynNodeView> SetupCustomUIElementsCommand { get; set; }
@@ -232,14 +234,13 @@ namespace Dynamo.Controls
             SetLacingTypeCommand = new DelegateCommand<string>(new Action<string>(SetLacingType), CanSetLacingType);
             SetStateCommand = new DelegateCommand<object>(SetState, CanSetState);
             SelectCommand = new DelegateCommand(Select, CanSelect);
+            ShowHelpCommand = new DelegateCommand(ShowHelp, CanShowHelp);
             ViewCustomNodeWorkspaceCommand = new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
             SetupCustomUIElementsCommand = new DelegateCommand<dynNodeView>(SetupCustomUIElements, CanSetupCustomUIElements);
             ValidateConnectionsCommand = new DelegateCommand(ValidateConnections, CanValidateConnections);
             ToggleIsVisibleCommand = new DelegateCommand(ToggleIsVisible, CanVisibilityBeToggled);
             ToggleIsUpstreamVisibleCommand = new DelegateCommand(ToggleIsUpstreamVisible, CanUpstreamVisibilityBeToggled);
-
-
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
@@ -322,6 +323,17 @@ namespace Dynamo.Controls
                     SetLacingTypeCommand.RaiseCanExecuteChanged();
                     break;
             }
+        }
+
+        private void ShowHelp()
+        {
+            var helpDialog = new NodeHelpPrompt(this.NodeModel);
+            helpDialog.Show();
+        }
+
+        private bool CanShowHelp()
+        {
+            return true;
         }
 
         private bool CanDeleteNode()
