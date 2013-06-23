@@ -190,9 +190,9 @@ namespace Dynamo.Nodes
             var pt = (XYZ)((Value.Container)args[1]).Item;
 
             XYZ tpt = TransformPoint(pt, t);
-            pts.Add(pt);
+            pts.Add(tpt);
 
-            return Value.NewContainer(pt);
+            return Value.NewContainer(tpt);
         }
 
         private XYZ TransformPoint(XYZ point, Transform transform)

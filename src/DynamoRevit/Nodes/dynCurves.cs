@@ -69,8 +69,13 @@ namespace Dynamo.Nodes
                 {
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
-                    var loc = mc.Location as LocationCurve;
-                    loc.Curve = c;
+
+                    if (c.IsBound)
+                    {
+                        c = c.Clone();
+                        c.MakeUnbound();
+                    }
+                    mc.GeometryCurve = c;
 
                 }
                 else
@@ -136,9 +141,13 @@ namespace Dynamo.Nodes
                 {
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
-                    var loc = mc.Location as LocationCurve;
-                    loc.Curve = c;
 
+                    if (c.IsBound)
+                    {
+                        c = c.Clone();
+                        c.MakeUnbound();
+                    }
+                    mc.GeometryCurve = c;
                 }
                 else
                 {
@@ -689,7 +698,62 @@ namespace Dynamo.Nodes
             var curves = ((Value.List)args[0]).Item.Select(
                x => ((Curve)((Value.Container)x).Item)).ToList();
 
-            CurveLoop result = CurveLoop.Create(curves);
+            List<Curve> curvesWithFlip = new List<Curve>();
+
+            bool bStart = true;
+            XYZ prevEnd = new XYZ();
+
+            double tolMax = 0.0001;
+            double tolMin = 0.00001;
+            
+            foreach (Curve c in curves)
+            {
+                if (!bStart)
+                {
+                    XYZ thisEnd = c.Evaluate(1.0, true);
+                    XYZ thisStart = c.Evaluate(0.0, true);
+                    double thisDist = thisStart.DistanceTo(prevEnd);
+                    if (thisDist > tolMax &&  thisEnd.DistanceTo(prevEnd) < tolMin && (c is Line))
+                    {
+                        prevEnd = thisStart;
+                        Curve flippedCurve = /* Line.CreateBound */ dynRevitSettings.Revit.Application.Create.NewLineBound(thisEnd, thisStart);
+                        curvesWithFlip.Add(flippedCurve);
+                        continue;
+                    }
+                }
+                else
+                {
+                    bStart = false;
+                    prevEnd = c.Evaluate(1.0, true);
+                    if (curves.Count > 1)
+                    {
+                        XYZ nextStart = curves[1].Evaluate(0.0, true);
+                        double thisDist = prevEnd.DistanceTo(nextStart);
+                        if (thisDist > tolMax)
+                        {
+                            XYZ nextEnd = curves[1].Evaluate(1.0, true);
+                            if (nextEnd.DistanceTo(prevEnd) > tolMax)
+                            {
+                                XYZ thisStart = c.Evaluate(0.0, true);
+                                if (thisStart.DistanceTo(nextEnd) < tolMin || thisStart.DistanceTo(nextStart) < tolMin)
+                                {
+                                    if (c is Line)
+                                    {
+                                        Curve flippedCurve = /* Line.CreateBound */ dynRevitSettings.Revit.Application.Create.NewLineBound(prevEnd, thisStart);
+                                        prevEnd = thisStart;
+                                        curvesWithFlip.Add(flippedCurve);
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                prevEnd = c.Evaluate(1.0, true);
+                curvesWithFlip.Add(c);
+            }
+
+            CurveLoop result = CurveLoop.Create(curvesWithFlip);
 
             foreach (Curve c in result)
             {
@@ -921,7 +985,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Approximate By Tangent Arcs")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Creates best fit arc through points")]
+    [NodeDescription("Appoximates curve by sequence of tangent arcs.")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class dynApproximateByTangentArcs : dynRevitTransactionNodeWithOneOutput
     {

@@ -26,6 +26,7 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 using System.Windows.Media.Effects;
 using Dynamo.Nodes;
+using Microsoft.FSharp.Collections;
 
 namespace Dynamo
 {
@@ -168,7 +169,7 @@ namespace Dynamo
                 }
             }
 
-            public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+            public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("ID");
@@ -199,7 +200,7 @@ namespace Dynamo
                 dynEl.AppendChild(outEl);
             }
 
-            public override void LoadElement(XmlNode elNode)
+            public override void LoadNode(XmlNode elNode)
             {
                 foreach (XmlNode subNode in elNode.ChildNodes)
                 {
@@ -321,6 +322,19 @@ namespace Dynamo
                 Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
             }
 
+            public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
+            {
+                if (OutPortData.Count > 1)
+                {
+                    var query = (Evaluate(args) as FScheme.Value.List).Item.Zip(
+                        OutPortData, (value, data) => new { value, data });
+
+                    foreach (var result in query)
+                        outPuts[result.data] = result.value;
+                }
+                else
+                    base.Evaluate(args, outPuts);
+            }
         }
 
         [NodeName("Output")]
@@ -392,7 +406,7 @@ namespace Dynamo
                 }
             }
 
-            public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+            public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("Symbol");
@@ -400,7 +414,7 @@ namespace Dynamo
                 dynEl.AppendChild(outEl);
             }
 
-            public override void LoadElement(XmlNode elNode)
+            public override void LoadNode(XmlNode elNode)
             {
                 foreach (XmlNode subNode in elNode.ChildNodes)
                 {
@@ -497,7 +511,7 @@ namespace Dynamo
                 return result[outPort];
             }
 
-            public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+            public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("Symbol");
@@ -505,7 +519,7 @@ namespace Dynamo
                 dynEl.AppendChild(outEl);
             }
 
-            public override void LoadElement(XmlNode elNode)
+            public override void LoadNode(XmlNode elNode)
             {
                 foreach (XmlNode subNode in elNode.ChildNodes)
                 {

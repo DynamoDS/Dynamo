@@ -275,6 +275,11 @@ namespace Dynamo
                 OnModified();
         }
 
+        public IEnumerable<dynNodeModel> GetHangingNodes()
+        {
+            return Nodes.Where(x => x.OutPortData.Any() && x.OutPorts.Any(y => !y.Connectors.Any()));
+        }
+
         public IEnumerable<dynNodeModel> GetTopMostNodes()
         {
             return Nodes.Where(
@@ -378,7 +383,7 @@ namespace Dynamo
                     dynEl.SetAttribute("isUpstreamVisible", el.IsUpstreamVisible.ToString().ToLower());
                     dynEl.SetAttribute("lacing", el.ArgumentLacing.ToString());
 
-                    el.SaveElement(xmlDoc, dynEl);
+                    el.SaveNode(xmlDoc, dynEl, SaveContext.File);
                 }
 
                 //write only the output connectors

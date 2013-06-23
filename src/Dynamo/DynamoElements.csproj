@@ -23,7 +23,7 @@ limitations under the License.
     <ProjectGuid>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dynamo.Nodes</RootNamespace>
+    <RootNamespace>Dynamo</RootNamespace>
     <AssemblyName>DynamoElements</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -116,12 +116,24 @@ limitations under the License.
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
+    <Compile Include="Prompts\CrashPrompt.xaml.cs">
+      <DependentUpon>CrashPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Prompts\dynEditWindow.xaml.cs">
+      <DependentUpon>dynEditWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Prompts\FunctionNamePrompt.xaml.cs">
+      <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Search\SearchElements\TopSearchElement.cs" />
     <Compile Include="Nodes\dynEquation.cs" />
     <Compile Include="Units.cs" />
     <Compile Include="Utilities\Extensions.cs" />
+    <Compile Include="Utilities\MouseClickManager.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\QuadTree.cs" />
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
@@ -167,9 +179,6 @@ limitations under the License.
     </Compile>
     <Compile Include="ViewModels\SearchViewModel.cs" />
     <Compile Include="Nodes\dynColors.cs" />
-    <Compile Include="Prompts\dynEditWindow.xaml.cs">
-      <DependentUpon>dynEditWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Nodes\dynTimer.cs" />
     <Compile Include="Nodes\dynArduino.cs" />
     <Compile Include="Nodes\dynBaseTypes.cs" />
@@ -195,9 +204,6 @@ limitations under the License.
     </Compile>
     <Compile Include="dynSettings.cs" />
     <Compile Include="Models\dynWorkspaceModel.cs" />
-    <Compile Include="Prompts\FunctionNamePrompt.xaml.cs">
-      <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Nodes\Watch\dynWatch.cs" />
     <Compile Include="Nodes\Watch\WatchTree.xaml.cs">
       <DependentUpon>WatchTree.xaml</DependentUpon>
@@ -241,6 +247,18 @@ limitations under the License.
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Prompts\CrashPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Prompts\dynEditWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Prompts\FunctionNamePrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\WatchViewFullscreen.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -250,10 +268,6 @@ limitations under the License.
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\dynNodeView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Prompts\dynEditWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -276,10 +290,6 @@ limitations under the License.
     <Page Include="Views\SearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Prompts\FunctionNamePrompt.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Nodes\Watch\WatchTree.xaml">
       <Generator>MSBuild:Compile</Generator>

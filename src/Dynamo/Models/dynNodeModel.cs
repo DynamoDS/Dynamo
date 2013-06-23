@@ -20,6 +20,8 @@ namespace Dynamo.Nodes
 {
     public enum ElementState { DEAD, ACTIVE, ERROR };
 
+    public enum SaveContext { File, Copy };
+
     public enum LacingStrategy
     {
         Disabled,
@@ -96,7 +98,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public bool IsCustomFunction
         {
-            get { return this.GetType().IsAssignableFrom(typeof(dynFunction)); }
+            get { return this is dynFunction; }
         }
 
         public bool IsVisible
@@ -353,7 +355,7 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-
+        
         public dynNodeModel()
         {
             InPortData = new ObservableCollection<PortData>();
@@ -413,21 +415,22 @@ namespace Dynamo.Nodes
 
         /// <summary>
         /// Override this to implement custom save data for your Element. If overridden, you should also override
-        /// LoadElement() in order to read the data back when loaded.
+        /// LoadNode() in order to read the data back when loaded.
         /// </summary>
         /// <param name="xmlDoc">The XmlDocument representing the whole workspace containing this Element.</param>
         /// <param name="dynEl">The XmlElement representing this Element.</param>
-        public virtual void SaveElement(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl)
+        /// <param name="context"></param>
+        public virtual void SaveNode(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl, SaveContext context)
         {
 
         }
 
         /// <summary>
         /// Override this to implement loading of custom data for your Element. If overridden, you should also override
-        /// SaveElement() in order to write the data when saved.
+        /// SaveNode() in order to write the data when saved.
         /// </summary>
         /// <param name="elNode">The XmlNode representing this Element.</param>
-        public virtual void LoadElement(System.Xml.XmlNode elNode)
+        public virtual void LoadNode(System.Xml.XmlNode elNode)
         {
 
         }
@@ -527,7 +530,7 @@ namespace Dynamo.Nodes
                 InputNode prev = node;
                 int prevIndex = 0;
 
-                foreach (var data in Enumerable.Range(0, OutPortData.Count).Zip(OutPortData, (i, d) => new { Index = i, Data = d }))
+                foreach (var data in OutPortData.Select((d, i) => new { Index = i, Data = d }))
                 {
                     if (HasOutput(data.Index))
                     {
@@ -680,6 +683,7 @@ namespace Dynamo.Nodes
                 {
                     if (Controller.RunCancelled)
                         throw new CancelEvaluationException(false);
+                    
 
                     __eval_internal(args, evaluationDict);
 
@@ -713,7 +717,6 @@ namespace Dynamo.Nodes
 
                     Controller.DynamoViewModel.ShowElement(this);
 
-
                     Error(ex.Message);
 
                     if (dynSettings.Controller.Testing)
@@ -741,7 +744,7 @@ namespace Dynamo.Nodes
                 if (result.Value != null)
                     return result.Value;
                 else
-                    throw new Exception("");
+                    return Value.NewString("Node evaluation failed");
             }
         }
 
@@ -766,7 +769,6 @@ namespace Dynamo.Nodes
             //Debug.WriteLine(string.Format("__eval_internal : {0} : {1}", 
             //    string.Join(",", argList), 
             //    string.Join(",", outPutsList)));
-
             Evaluate(args, outPuts);
         }
         
@@ -1199,16 +1201,18 @@ namespace Dynamo.Nodes
             
             //create a zip of the incoming args and the port data
             //to be used for type comparison
-            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
+            var portComparison = args.Zip(InPortData,
+                                          (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
+            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
 
-            //if any value is a list whose expectation is a single
-            //do an auto map
-            //TODO: figure out a better way to do this than using a lot
-            //of specific excludes
-            if (args.Count()> 0 && 
-                portComparison.Any(x => x.Item1 == typeof (Value.List) && 
-                x.Item2 != typeof (Value.List)) && 
-                !(this.ArgumentLacing == LacingStrategy.Disabled))
+            //there are more than zero arguments
+            //and there is either an argument which does not match its expections 
+            //OR an argument which requires a list and gets a list of lists
+            //AND argument lacing is not disabled
+            if (args.Count() > 0 &&
+                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
+                listOfListComparison.Any(x => x.Item1 == true && x.Item2 == typeof(Value.List))) &&
+                this.ArgumentLacing != LacingStrategy.Disabled)
             {
                 //if the argument is of the expected type, then
                 //leave it alone otherwise, wrap it in a list
@@ -1225,8 +1229,13 @@ namespace Dynamo.Nodes
                     //incoming value is list and expecting list
                     else
                     {
-                        //wrap in list
-                        argSets.Add(Utils.MakeFSharpList(arg));
+                        //check if we have a list of lists, if so, then don't wrap
+                        if (Utils.IsListOfLists(arg))
+                            //leave as list
+                            argSets.Add(((Value.List)arg).Item);
+                        else
+                            //wrap in list
+                            argSets.Add(Utils.MakeFSharpList(arg));
                     }
                     j++;
                 }

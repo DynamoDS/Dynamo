@@ -19,6 +19,7 @@ using Dynamo.Commands;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -74,6 +75,25 @@ namespace Dynamo.Search.SearchElements
         /// Joined set of keywords </value>
         public override string Keywords { get; set; }
 
+        /// <summary>
+        /// Whether the description of this node should be visible or not
+        /// </summary>
+        private Visibility _descriptionVisibility = Visibility.Collapsed;
+        public Visibility DescriptionVisibility
+        {
+            get { return _descriptionVisibility; }
+            set
+            {
+                _descriptionVisibility = value;
+                RaisePropertyChanged("DescriptionVisibility");
+            }
+        }
+
+        /// <summary>
+        /// Command for toggling visibility
+        /// </summary>
+        public DelegateCommand ToggleDescriptionVisibilityCommand { get; set; }
+
         #endregion
 
         /// <summary>
@@ -81,6 +101,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="node">The local node</param>
         public NodeSearchElement(dynNodeModel node)
         {
+            ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = node;
             this._name = Node.NickName;
             this.Weight = 1;
@@ -98,6 +119,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="tags"></param>
         public NodeSearchElement(string name, string description, List<string> tags)
         {
+            ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = null;
             this._name = name;
             this.Weight = 1;
@@ -105,6 +127,8 @@ namespace Dynamo.Search.SearchElements
             this._type = "Node";
             this._description = description;
         }
+
+
 
         /// <summary>
         ///     The class constructor - use this constructor when for
@@ -114,6 +138,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="guid">The unique id for the custom node</param>
         public NodeSearchElement(string name, Guid guid)
         {
+            ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = null;
             this._name = name;
             this.Weight = 0.9;
@@ -130,12 +155,25 @@ namespace Dynamo.Search.SearchElements
         /// <param name="funcDef">The FunctionDefinition for a custom node</param>
         public NodeSearchElement(FunctionDefinition funcDef)
         {
+            ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = dynSettings.Controller.DynamoViewModel.CreateNode(funcDef.FunctionId.ToString());
             this._name = funcDef.Workspace.Name;
             this.Weight = 1.1;
             this.Keywords = "";
             this._description = "Custom Node";
             this._type = "Custom Node";
+        }
+
+        private void ToggleIsVisible()
+        {
+            if (this.DescriptionVisibility != Visibility.Visible)
+            {
+                this.DescriptionVisibility = Visibility.Visible;
+            }
+            else
+            {
+                this.DescriptionVisibility = Visibility.Collapsed;
+            }
         }
 
         /// <summary>
@@ -174,7 +212,7 @@ namespace Dynamo.Search.SearchElements
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
-                dynSettings.Controller.OnRequestSelect(this, new NodeEventArgs(placedNode, null));
+                dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(placedNode, null));
             }
         }
 

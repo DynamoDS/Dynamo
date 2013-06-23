@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -59,10 +60,15 @@ namespace Dynamo.Controls
         {
             if (ViewModel != null)
             {
-                ViewModel.NodeLogic.Height = this.ActualHeight;
-                ViewModel.NodeLogic.Width = this.ActualWidth;
+                //Debug.WriteLine("Node layout updated.");
+                if (ViewModel.NodeLogic.Height != this.ActualHeight ||
+                    ViewModel.NodeLogic.Width != this.ActualWidth)
+                {
+                    ViewModel.NodeLogic.Height = this.ActualHeight;
+                    ViewModel.NodeLogic.Width = this.ActualWidth;
+                }
             }
-  
+
         }
 
         void dynNodeView_Loaded(object sender, RoutedEventArgs e)

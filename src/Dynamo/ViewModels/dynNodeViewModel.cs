@@ -252,7 +252,7 @@ namespace Dynamo.Controls
 
         void Controller_RequestNodeSelect(object sender, EventArgs e)
         {
-            dynNodeModel n = (e as NodeEventArgs).Node;
+            dynModelBase n = (e as ModelEventArgs).Model;
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(SelectCommand, n));
             dynSettings.Controller.ProcessCommandQueue();
         }
@@ -375,9 +375,7 @@ namespace Dynamo.Controls
 
         private bool CanViewCustomNodeWorkspace()
         {
-            if (nodeLogic.IsCustomFunction)
-                return true;
-            return false;
+            return nodeLogic.IsCustomFunction;
         }
 
         private void SetLayout(object parameters)

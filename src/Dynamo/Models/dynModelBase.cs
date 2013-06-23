@@ -128,8 +128,5 @@ namespace Dynamo
         double Width { get; set; }
         double Height { get; set; }
         Rect Rect { get; }
-
-        event EventHandler Updated;
-        void OnUpdated(EventArgs e);
     }
 }

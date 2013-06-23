@@ -48,6 +48,12 @@ namespace Dynamo.Controls
             InitializeComponent();
 
             this.Loaded += dynBench_Activated;
+            this.LayoutUpdated += new EventHandler(DynamoView_LayoutUpdated);
+        }
+
+        void DynamoView_LayoutUpdated(object sender, EventArgs e)
+        {
+            //Debug.WriteLine("Dynamo view layout updated.");
         }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
@@ -138,6 +144,7 @@ namespace Dynamo.Controls
             if (view_model.FindByIdCommand.CanExecute(id))
                 view_model.FindByIdCommand.Execute(id);
         }
+
     }
 
     public class CancelEvaluationException : Exception

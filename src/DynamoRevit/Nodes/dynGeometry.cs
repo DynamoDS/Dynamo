@@ -1852,12 +1852,12 @@ namespace Dynamo.Nodes
 
         public enum BooleanOperationOptions {Union, Intersect, Difference};
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("index", this.combo.SelectedIndex.ToString());
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -2447,6 +2447,60 @@ namespace Dynamo.Nodes
             if (resultSolid == null)
                 throw new Exception("Could not make patched solid, list Onesided Edges to investigate");
             
+            solids.Add(resultSolid);
+
+            return Value.NewContainer(resultSolid);
+        }
+    }
+
+    [NodeName("Solid On Curve Loops")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
+    [NodeDescription("Skin Solid by patch faces on set of curve loops.")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class dynSkinCurveLoops : dynSolidBase
+    {
+
+        public dynSkinCurveLoops()
+        {
+            InPortData.Add(new PortData("CurveLoops", "Additional curve loops ready for patching", typeof(Value.List)));
+            OutPortData.Add(new PortData("Result", "Computed Solid", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var listInCurveLoops = ((Value.List)args[0]).Item.Select(
+                    x => ((CurveLoop)((Value.Container)x).Item)
+                       ).ToList();
+
+            Type SolidType = typeof(Autodesk.Revit.DB.Solid);
+
+            MethodInfo[] solidTypeMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodCreate = "skinCurveLoopsIntoSolid";
+            Solid resultSolid = null;
+            bool methodFound = false;
+
+            foreach (MethodInfo m in solidTypeMethods)
+            {
+                if (m.Name == nameOfMethodCreate)
+                {
+                    object[] argsM = new object[1];
+                    argsM[0] = listInCurveLoops;
+
+                    resultSolid = (Solid)m.Invoke(null, argsM);
+                    methodFound = true;
+
+                    break;
+                }
+            }
+
+            if (!methodFound)
+                throw new Exception("This method uses later version of RevitAPI.dll with skinCurveLoopsIntoSolid method. Please use Patch Solid node instead.");
+            if (resultSolid == null)
+                throw new Exception("Failed to make solid, please check the input.");
+
             solids.Add(resultSolid);
 
             return Value.NewContainer(resultSolid);

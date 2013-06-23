@@ -29,6 +29,7 @@ using System.Windows.Media;
 using System.Linq;
 using System.Windows.Threading;
 using System.Xml.Serialization;
+using Dynamo.Nodes.Prompts;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -263,12 +264,8 @@ namespace Dynamo.Applications
             var exceptionMessage = args.Exception.Message;
             var stackTrace = args.Exception.StackTrace;
 
-            var message =
-                "Dynamo has crashed and is now closing.  You will get a chance to save your work.  \n\nThis is the message given:\n\n" +
-                exceptionMessage + "\n\nThis is where the exception took place: \n\n" + stackTrace;
-
-            MessageBox.Show(message, "Dynamo Error", MessageBoxButtons.OK, MessageBoxIcon.Error,
-                            MessageBoxDefaultButton.Button1);
+            var prompt = new CrashPrompt(exceptionMessage + "\n\n" + stackTrace);
+            prompt.ShowDialog();
 
             try
             {

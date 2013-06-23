@@ -656,9 +656,9 @@ namespace Dynamo.Utilities
                         return false;
 
                     el.DisableReporting();
-                    el.LoadElement(elNode); // inject the node properties from the xml
+                    el.LoadNode(elNode); // inject the node properties from the xml
 
-                    // moved this logic to LoadElement in dynFunction --SJE
+                    // moved this logic to LoadNode in dynFunction --SJE
 
                     //if (el is dynFunction)
                     //{
@@ -816,7 +816,6 @@ namespace Dynamo.Utilities
 
         public static FScheme.Expression CompileFunction( FunctionDefinition definition, ref IEnumerable<string> inputNames, ref IEnumerable<string> outputNames )
         {
-       
             if (definition == null)
                 return null;
 
@@ -826,7 +825,7 @@ namespace Dynamo.Utilities
             #region Find outputs
 
             // Find output elements for the node
-            IEnumerable<dynNodeModel> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
+            List<dynOutput> outputs = functionWorkspace.Nodes.OfType<dynOutput>().ToList();
 
             var topMost = new List<Tuple<int, dynNodeModel>>();
 
@@ -837,12 +836,12 @@ namespace Dynamo.Utilities
                 topMost.AddRange(
                     outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
 
-                outputNames = outputs.Select(x => (x as dynOutput).Symbol);
+                outputNames = outputs.Select(x => x.Symbol);
             }
             else
             {
                 // if there are no explicitly defined output nodes
-                // get the top most nodes and set THEM as tht output
+                // get the top most nodes and set THEM as the output
                 IEnumerable<dynNodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
 
                 var outNames = new List<string>();
@@ -879,15 +878,14 @@ namespace Dynamo.Utilities
 
             if (topMost.Count > 1)
             {
-                InputNode node = new ExternalFunctionNode(
-                    FScheme.Value.NewList,
-                    Enumerable.Range(0, topMost.Count).Select(x => x.ToString()));
+                InputNode node = new ExternalFunctionNode(FScheme.Value.NewList);
 
                 int i = 0;
                 foreach (var topNode in topMost)
                 {
                     string inputName = i.ToString();
-                    
+                    node.AddInput(inputName);
+                    node.ConnectInput(inputName, new BeginNode());
                     try
                     {
                         var exp = topNode.Item2.Build(buildDict, topNode.Item1);
@@ -909,8 +907,8 @@ namespace Dynamo.Utilities
             }
             else
             {
-                // if the custom node is empty, it will initially be a number node
-                top = new NumberNode(0);
+                // if the custom node is empty, it will initially be an empty begin
+                top = new BeginNode();
             }
                 
             // if the node has any outputs, we create a BeginNode in order to evaluate all of them
@@ -918,7 +916,7 @@ namespace Dynamo.Utilities
             if (outputs.Any())
             {
                 var beginNode = new BeginNode();
-                List<dynNodeModel> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
+                List<dynNodeModel> hangingNodes = functionWorkspace.GetHangingNodes().ToList();
 
                 foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
                 {

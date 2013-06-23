@@ -126,12 +126,12 @@ namespace Dynamo.Nodes
             combo.SetBinding(ComboBox.SelectedIndexProperty, indexBinding);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("index", SelectedIndex.ToString());
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -304,18 +304,22 @@ namespace Dynamo.Nodes
             return Value.NewContainer(((Parameter)Items[SelectedIndex].Item).Definition);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            XmlElement outEl = xmlDoc.CreateElement("familyid");
-            outEl.SetAttribute("value", this.storedId.IntegerValue.ToString());
-            dynEl.AppendChild(outEl);
+            if (this.storedId != null)
+            {
+                XmlElement outEl = xmlDoc.CreateElement("familyid");
+                outEl.SetAttribute("value", this.storedId.IntegerValue.ToString());
+                dynEl.AppendChild(outEl);
 
-            XmlElement param = xmlDoc.CreateElement("index");
-            param.SetAttribute("value", SelectedIndex.ToString());
-            dynEl.AppendChild(param);
+                XmlElement param = xmlDoc.CreateElement("index");
+                param.SetAttribute("value", SelectedIndex.ToString());
+                dynEl.AppendChild(param);
+            }
+
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             var doc = dynRevitSettings.Doc.Document;
 
