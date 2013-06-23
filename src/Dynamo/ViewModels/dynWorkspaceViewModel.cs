@@ -498,6 +498,8 @@ namespace Dynamo
 
         private void AlignSelected(string alignType)
         {
+            if (DynamoSelection.Instance.Selection.Count <= 1) return;
+
             if (alignType == "HorizontalCenter")  // make vertial line of elements
             {
                 var xAll = GetSelectionAverageX();

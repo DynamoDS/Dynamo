@@ -105,6 +105,7 @@ namespace Dynamo.Controls
         public DelegateCommand<object> DeleteCommand { get; set; }
         public DelegateCommand<object> SelectNeighborsCommand { get; set; }
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
+        public DelegateCommand<string> AlignSelectedCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand RefactorCustomNodeCommand { get; set; }
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
@@ -369,6 +370,7 @@ namespace Dynamo.Controls
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialog, CanShowNewFunctionDialogCommand);
             SaveCommand = new DelegateCommand(Save, CanSave);
             OpenCommand = new DelegateCommand<object>(Open, CanOpen);
+            AlignSelectedCommand = new DelegateCommand<string>(AlignSelected, CanAlignSelected);
             SaveAsCommand = new DelegateCommand<object>(SaveAs, CanSaveAs);
             ClearCommand = new DelegateCommand(Clear, CanClear);
             HomeCommand = new DelegateCommand(Home, CanGoHome);
@@ -429,6 +431,16 @@ namespace Dynamo.Controls
                         _workspaces.Remove(_workspaces.ToList().First(x => x.Model == item));
                     break;
             }
+        }
+
+        private void AlignSelected(string param)
+        {
+            this.CurrentSpaceViewModel.AlignSelectedCommand.Execute(param);
+        }
+
+        private bool CanAlignSelected(string param)
+        {
+            return true;
         }
 
         private bool CanSave()
