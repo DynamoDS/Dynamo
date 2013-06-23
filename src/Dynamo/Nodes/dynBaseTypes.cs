@@ -907,7 +907,9 @@ namespace Dynamo.Nodes
             FSharpList<Value> lst = ((Value.List)args[0]).Item;
             double n = (double)((Value.Number)args[1]).Item;
 
-            //if we have less elements in the 
+            n = Math.Round(n);
+
+            //if we have less elements in ther 
             //incoming list than the slice size,
             //just return the list
             if (lst.Count<Value>() < n)
