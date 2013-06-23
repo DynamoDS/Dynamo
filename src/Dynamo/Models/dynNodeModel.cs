@@ -355,7 +355,7 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-
+        
         public dynNodeModel()
         {
             InPortData = new ObservableCollection<PortData>();
@@ -684,6 +684,7 @@ namespace Dynamo.Nodes
                     if (Controller.RunCancelled)
                         throw new CancelEvaluationException(false);
                     
+
                     __eval_internal(args, evaluationDict);
 
                     expr = OutPortData.Count == 1
@@ -716,7 +717,6 @@ namespace Dynamo.Nodes
 
                     Controller.DynamoViewModel.ShowElement(this);
 
-
                     Error(ex.Message);
 
                     if (dynSettings.Controller.Testing)
@@ -744,7 +744,7 @@ namespace Dynamo.Nodes
                 if (result.Value != null)
                     return result.Value;
                 else
-                    throw new Exception("");
+                    return Value.NewString("Node evaluation failed");
             }
         }
 
@@ -769,7 +769,6 @@ namespace Dynamo.Nodes
             //Debug.WriteLine(string.Format("__eval_internal : {0} : {1}", 
             //    string.Join(",", argList), 
             //    string.Join(",", outPutsList)));
-
             Evaluate(args, outPuts);
         }
         
