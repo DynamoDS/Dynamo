@@ -1822,7 +1822,7 @@ namespace Dynamo.Nodes
             if (!preBuilt.TryGetValue(this, out result))
             {
                 result = new Dictionary<int, INode>();
-                result[outPort] = new NumberNode(Math.PI);
+                result[outPort] = new NumberNode(3.14159265358979);
                 preBuilt[this] = result;
             }
             return result[outPort];
