@@ -65,6 +65,7 @@ namespace Dynamo.Nodes
         public const string CORE_EVALUATE = "Core.Evaluate";
         public const string CORE_TIME = "Core.Time";
         public const string CORE_FUNCTIONS = "Core.Functions";
+        public const string CORE_GEOMETRY = "Core.Geometry";
 
         public const string LOGIC = "Logic";
         public const string LOGIC_MATH = "Logic.Math";
