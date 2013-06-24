@@ -7,6 +7,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Threading;
+
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
@@ -24,7 +26,7 @@ namespace Dynamo
     public class dynWorkspaceViewModel: dynViewModelBase
     {
         #region Properties and Fields
-
+        
         public dynWorkspaceModel _model;
 
         private bool isConnecting = false;
@@ -287,24 +289,15 @@ namespace Dynamo
             _model = model;
 
             this.CurrentOffset = new Point(10,10);
-
-            var nodesColl = new CollectionContainer();
-            nodesColl.Collection = Nodes;
+            
+            var nodesColl = new CollectionContainer { Collection = Nodes };
             WorkspaceElements.Add(nodesColl);
 
-            var connColl = new CollectionContainer();
-            connColl.Collection = Connectors;
+            var connColl = new CollectionContainer { Collection = Connectors };
             WorkspaceElements.Add(connColl);
 
-            var notesColl = new CollectionContainer();
-            notesColl.Collection = Notes;
+            var notesColl = new CollectionContainer { Collection = Notes };
             WorkspaceElements.Add(notesColl);
-
-            //var watch3DColl = new CollectionContainer();
-            //watch3DColl.Collection = Watch3DViewModels;
-            //WorkspaceElements.Add(watch3DColl);
-            
-            //Watch3DViewModels.Add(new Watch3DFullscreenViewModel(this));
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
