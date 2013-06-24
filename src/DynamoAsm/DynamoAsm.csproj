@@ -81,6 +81,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Release
+copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Debug
+</PostBuildEvent>
 copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Debug</PostBuildEvent>
     <PostBuildEvent>copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Release</PostBuildEvent>
   </PropertyGroup>
