@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -83,6 +83,10 @@
     <PostBuildEvent>copy /Y ..\..\extern\DynamoAsm\ASMAHL219A.dll ..\..\bin\Release
 copy /Y ..\..\extern\DynamoAsm\ASMBASE219A.dll ..\..\bin\Release
 copy /Y ..\..\extern\DynamoAsm\ASMBLND219A.dll ..\..\bin\Release
+
+copy /Y ..\..\extern\DynamoAsm\ASMAHL219A.dll ..\..\bin\Debug
+copy /Y ..\..\extern\DynamoAsm\ASMBASE219A.dll ..\..\bin\Debug
+copy /Y ..\..\extern\DynamoAsm\ASMBLND219A.dll ..\..\bin\Debug
 copy /Y ..\..\extern\DynamoAsm\ASMBOOL219A.dll ..\..\bin\Release
 copy /Y ..\..\extern\DynamoAsm\ASMCOVR219A.dll ..\..\bin\Release
 copy /Y ..\..\extern\DynamoAsm\AsmCppGeometry.dll ..\..\bin\Release
