@@ -172,6 +172,16 @@
                 <Separator/>
                 <MenuItem Focusable="False" Header="_Create Note" Command="{Binding Path=AddNoteCommand}"  Name="noteMenuItem" InputGestureText="Ctrl+W" />
                 <MenuItem Focusable="False" Header="_Create Node From Selection" Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
+                <MenuItem  Header="_Align Selection"  Name="Align">
+                    <MenuItem  Header="_X Average"  Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalCenter"/>
+                    <MenuItem  Header="_Left" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalLeft"/>
+                    <MenuItem  Header="_Right" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalRight"/>
+                    <MenuItem  Header="_Y Average" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalCenter"/>
+                    <MenuItem  Header="_Top" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalTop"/>
+                    <MenuItem  Header="_Bottom" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalBottom"/>
+                    <MenuItem  Header="_Y Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalDistribute"/>
+                    <MenuItem  Header="_X Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalDistribute"/>
+                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="_View" Name="viewMenu">
@@ -373,10 +383,22 @@
                 <TabControl.ItemTemplate>
                     
                     <DataTemplate>
-                        
-                        <StackPanel Orientation="Horizontal" Margin="10,5,10,5">
 
-                            <TextBlock Name="WorkspaceName" Margin="0,2,0,0" >
+                        <!--<Button>
+
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter Content="{TemplateBinding Content}"/>
+                                </ControlTemplate>
+                            </Button.Template>
+
+                            <Button.InputBindings>
+                                <MouseBinding Gesture="MiddleClick" Command="{Binding HideCommand}" />
+                            </Button.InputBindings>-->
+
+                            <StackPanel Orientation="Horizontal" Margin="10,5,10,5" >
+
+                                 <TextBlock Name="WorkspaceName" Margin="0,2,0,0" >
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -403,7 +425,7 @@
                                 </TextBlock.Style>
                             </TextBlock>
 
-                            <TextBlock Name="Spacer" Text=" -" Margin="0,2,0,0">
+                                 <TextBlock Name="Spacer" Text=" -" Margin="0,2,0,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -422,7 +444,7 @@
 
                             </TextBlock>
 
-                            <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
+                                 <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -447,9 +469,11 @@
                                 
                             </TextBlock> 
                             
-                            <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
+                                 <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
 
-                        </StackPanel>
+                            </StackPanel>
+
+                        <!--</Button>-->
                         
                     </DataTemplate>
                     

@@ -174,6 +174,24 @@ namespace Dynamo
         private ObservableCollection<dynNodeModel> _nodes;
         private ObservableCollection<dynConnectorModel> _connectors;
 
+        public double CenterX
+        {
+            get { return 0; }
+            set
+            {
+                
+            }
+        }
+
+        public double CenterY
+        {
+            get { return 0; }
+            set
+            {
+
+            }
+        }
+
         protected dynWorkspaceModel(
             String name, IEnumerable<dynNodeModel> e, IEnumerable<dynConnectorModel> c, double x, double y)
         {
