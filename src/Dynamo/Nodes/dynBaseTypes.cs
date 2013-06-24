@@ -1196,6 +1196,34 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Repeat")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Construct a list of a given item repeated a given number of times.")]
+    public class dynRepeat : dynNodeWithOneOutput
+    {
+        public dynRepeat()
+        {
+            InPortData.Add(new PortData("thing", "The thing to repeat. This can be a single object or a list.", typeof(Value)));
+            InPortData.Add(new PortData("length", "The number of times to repeat.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("list", "The list.", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            int n = Convert.ToInt16(((Value.Number) args[1]).Item);
+
+            if(n<0)
+                throw new Exception("Can't make a repeated list of a negative amount.");
+
+            return Value.NewList(Utils.SequenceToFSharpList(Enumerable.Repeat(args[0], n).ToList()));
+        }
+    }
+
+
     [NodeName("Flatten Completely")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Flatten nested lists into one list.")]
