@@ -788,6 +788,27 @@ namespace DynamoRevitTests
         }
 
         [Test]
+        public void ClosedCurveTest()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\ClosedCurve.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            var extrudeNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateExtrusionGeometry).First();
+            dynSolidBase nodeAsSolidBase = (dynSolidBase)extrudeNode;
+            Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
+            double volumeMin = 3850;
+            double volumeMax = 4050;
+            double actualVolume = result.Volume;
+            Assert.Greater(actualVolume, volumeMin);
+            Assert.Less(actualVolume, volumeMax);
+        }
+
+        [Test]
         public void AdaptiveComponentsNode()
         {
             DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
