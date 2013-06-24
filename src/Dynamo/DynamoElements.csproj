@@ -114,6 +114,7 @@ limitations under the License.
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
+    <Compile Include="Nodes\Watch\WatchViewModel.cs" />
     <Compile Include="Prompts\CrashPrompt.xaml.cs">
       <DependentUpon>CrashPrompt.xaml</DependentUpon>
     </Compile>
