@@ -48,7 +48,7 @@ namespace Dynamo.Utilities
 
         public static Dynamo.Controls.DragCanvas Workbench { get; internal set; }
 
-        public static DynamoView Bench { get; internal set; }
+        public static DynamoView Bench { get; set; }
 
         public static DynamoController Controller { get; internal set; }
 

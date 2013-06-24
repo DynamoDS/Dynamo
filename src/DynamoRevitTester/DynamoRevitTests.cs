@@ -270,8 +270,13 @@ namespace DynamoRevitTests
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function and connect points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(Path.Combine(_defsPath, "GraphFunction.dyf")));
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(Path.Combine(_defsPath, "ConnectPoints.dyf")));
+            string customDefPath1 = Path.Combine(_defsPath, "GraphFunction.dyf");
+            string customDefPath2 = Path.Combine(_defsPath, "ConnectPoints.dyf");
+            Assert.IsTrue(File.Exists(customDefPath1), "Cannot find specified custom definition to load for testing.");
+            Assert.IsTrue(File.Exists(customDefPath2), "Cannot find specified custom definition to load for testing.");
+
+            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath1));
+            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath2));
 
             dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
             dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
@@ -285,7 +290,9 @@ namespace DynamoRevitTests
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\scalable graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(Path.Combine(_defsPath, "Cf(dx).dyf")));
+            string customDefPath = Path.Combine(_defsPath, "Cf(dx).dyf");
+            Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
+            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath));
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
@@ -299,7 +306,9 @@ namespace DynamoRevitTests
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(Path.Combine(_defsPath, "GraphFunction.dyf")));
+            string customDefPath = Path.Combine(_defsPath, "GraphFunction.dyf");
+            Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
+            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath));
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
@@ -350,109 +359,118 @@ namespace DynamoRevitTests
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
         }
 
+        [Test]
+        public void ParametricTowerSamples()
+        {
+            Assert.Inconclusive();
+        }
+
         #region Python samples
-        /*
+        
         [Test]
         public void ConnectTwoPointArraysWithoutPython()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            //DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
-            string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\connect two point arrays without python.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            //string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\connect two point arrays without python.dyn");
+            //string testPath = Path.GetFullPath(samplePath);
 
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            //dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            //dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            Assert.Inconclusive("Python examples do not play well with testing.");
         }
 
         [Test]
         public void ConnectTwoPointArrays()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            //DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
-            string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\connect two point arrays.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            //string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\connect two point arrays.dyn");
+            //string testPath = Path.GetFullPath(samplePath);
 
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            //dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            //dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            Assert.Inconclusive("Python examples do not play well with testing.");
         }
-
-        
+   
         [Test]
         public void CreateSineWaveFromSelectedCurve()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            //DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
-            string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\create sine wave from selected curve.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            //string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\create sine wave from selected curve.dyn");
+            //string testPath = Path.GetFullPath(samplePath);
 
-            CurveByPoints cbp = null;
-            using (_trans = new Transaction(dynRevitSettings.Doc.Document))
-            {
-                _trans.Start("Create reference points for testing Python node.");
+            //CurveByPoints cbp = null;
+            //using (_trans = new Transaction(dynRevitSettings.Doc.Document))
+            //{
+            //    _trans.Start("Create reference points for testing Python node.");
 
-                ReferencePoint p1 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ());
-                ReferencePoint p2 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(0,10,0));
-                ReferencePoint p3 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(0,20,0));
-                ReferencePointArray ptArr = new ReferencePointArray();
-                ptArr.Append(p1);
-                ptArr.Append(p2);
-                ptArr.Append(p3);
+            //    ReferencePoint p1 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ());
+            //    ReferencePoint p2 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(0,10,0));
+            //    ReferencePoint p3 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(0,20,0));
+            //    ReferencePointArray ptArr = new ReferencePointArray();
+            //    ptArr.Append(p1);
+            //    ptArr.Append(p2);
+            //    ptArr.Append(p3);
 
-                cbp = dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(ptArr);
+            //    cbp = dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(ptArr);
 
-                _trans.Commit();
-            }
+            //    _trans.Commit();
+            //}
 
-            Assert.IsNotNull(cbp);
+            //Assert.IsNotNull(cbp);
 
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            //dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
-            var selectionNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection).First();
-            ((dynCurvesBySelection)selectionNode).SelectedElement = cbp;
+            //var selectionNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection).First();
+            //((dynCurvesBySelection)selectionNode).SelectedElement = cbp;
 
-            //delete the transaction node when testing
-            //var transNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynTransaction).First();
-            //dynRevitSettings.Controller.RunCommand(vm.DeleteCommand, transNode);
+            ////delete the transaction node when testing
+            ////var transNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynTransaction).First();
+            ////dynRevitSettings.Controller.RunCommand(vm.DeleteCommand, transNode);
 
-            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            //dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+
+            Assert.Inconclusive("Python examples do not play well with testing.");
         }
 
-        [Test]
-        public void CreateSineWaveFromSelectedPoints()
-        {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+        //[Test]
+        //public void CreateSineWaveFromSelectedPoints()
+        //{
+        //    DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
-            string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\create sine wave from selected points.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+        //    string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\create sine wave from selected points.dyn");
+        //    string testPath = Path.GetFullPath(samplePath);
 
-            ReferencePoint p1 = null;
-            ReferencePoint p2 = null;
+        //    ReferencePoint p1 = null;
+        //    ReferencePoint p2 = null;
 
-            using (_trans = new Transaction(dynRevitSettings.Doc.Document))
-            {
-                _trans.Start("Create reference points for testing python node.");
+        //    using (_trans = new Transaction(dynRevitSettings.Doc.Document))
+        //    {
+        //        _trans.Start("Create reference points for testing python node.");
 
-                p1 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ());
-                p2 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(0, 10, 0));
+        //        p1 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ());
+        //        p2 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(0, 10, 0));
 
-                _trans.Commit();
-            }
+        //        _trans.Commit();
+        //    }
 
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+        //    dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
-            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynPointBySelection);
-            Assert.AreEqual(2, selectionNodes.Count());
+        //    var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynPointBySelection);
+        //    Assert.AreEqual(2, selectionNodes.Count());
 
-            ((dynPointBySelection)selectionNodes.ElementAt(0)).SelectedElement = p1;
-            ((dynPointBySelection)selectionNodes.ElementAt(1)).SelectedElement = p2;
+        //    ((dynPointBySelection)selectionNodes.ElementAt(0)).SelectedElement = p1;
+        //    ((dynPointBySelection)selectionNodes.ElementAt(1)).SelectedElement = p2;
 
-            //delete the transaction node when testing
-            //var transNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynTransaction).First();
-            //dynRevitSettings.Controller.RunCommand(vm.DeleteCommand, transNode);
+        //    //delete the transaction node when testing
+        //    //var transNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynTransaction).First();
+        //    //dynRevitSettings.Controller.RunCommand(vm.DeleteCommand, transNode);
 
-            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
-        }
-        */
+        //    dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        //}
+        
         #endregion
 
         [Test]
