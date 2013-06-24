@@ -28,8 +28,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoNode", "DynamoNode\Dy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevitTests", "DynamoRevitTester\DynamoRevitTests.csproj", "{9ADADC68-36A3-4A21-9B54-298154A88720}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoSandboxNew", "DynamoSandbox1\DynamoSandboxNew.csproj", "{CD8A96FF-9A0E-41D3-9FE4-DDE382C0C9F8}"
-EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Dynamo.vsmdi
@@ -141,16 +139,6 @@ Global
 		{9ADADC68-36A3-4A21-9B54-298154A88720}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9ADADC68-36A3-4A21-9B54-298154A88720}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9ADADC68-36A3-4A21-9B54-298154A88720}.Release|x86.ActiveCfg = Release|Any CPU
-		{CD8A96FF-9A0E-41D3-9FE4-DDE382C0C9F8}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{CD8A96FF-9A0E-41D3-9FE4-DDE382C0C9F8}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{CD8A96FF-9A0E-41D3-9FE4-DDE382C0C9F8}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{CD8A96FF-9A0E-41D3-9FE4-DDE382C0C9F8}.Debug|x86.ActiveCfg = Debug|x86
-		{CD8A96FF-9A0E-41D3-9FE4-DDE382C0C9F8}.Debug|x86.Build.0 = Debug|x86
-		{CD8A96FF-9A0E-41D3-9FE4-DDE382C0C9F8}.Release|Any CPU.ActiveCfg = Release|x86
-		{CD8A96FF-9A0E-41D3-9FE4-DDE382C0C9F8}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{CD8A96FF-9A0E-41D3-9FE4-DDE382C0C9F8}.Release|Mixed Platforms.Build.0 = Release|x86
-		{CD8A96FF-9A0E-41D3-9FE4-DDE382C0C9F8}.Release|x86.ActiveCfg = Release|x86
-		{CD8A96FF-9A0E-41D3-9FE4-DDE382C0C9F8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
