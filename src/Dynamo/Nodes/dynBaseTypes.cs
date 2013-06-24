@@ -65,6 +65,7 @@ namespace Dynamo.Nodes
         public const string CORE_EVALUATE = "Core.Evaluate";
         public const string CORE_TIME = "Core.Time";
         public const string CORE_FUNCTIONS = "Core.Functions";
+        public const string CORE_GEOMETRY = "Core.Geometry";
 
         public const string LOGIC = "Logic";
         public const string LOGIC_MATH = "Logic.Math";
@@ -907,7 +908,9 @@ namespace Dynamo.Nodes
             FSharpList<Value> lst = ((Value.List)args[0]).Item;
             double n = (double)((Value.Number)args[1]).Item;
 
-            //if we have less elements in the 
+            n = Math.Round(n);
+
+            //if we have less elements in ther 
             //incoming list than the slice size,
             //just return the list
             if (lst.Count<Value>() < n)
@@ -1850,7 +1853,7 @@ namespace Dynamo.Nodes
             if (!preBuilt.TryGetValue(this, out result))
             {
                 result = new Dictionary<int, INode>();
-                result[outPort] = new NumberNode(Math.PI);
+                result[outPort] = new NumberNode(3.14159265358979);
                 preBuilt[this] = result;
             }
             return result[outPort];

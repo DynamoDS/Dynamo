@@ -15,6 +15,10 @@ class AutoBuildTests(unittest.TestCase):
         except Exception:
             self.fail("setup(path) raised ExceptionType unexpectedly!")
 
+    def test_s3_publish(self):
+
+        ab.publish_to_s3( 'tests', 'two' )
+
     def test_email_content(self):
 
         repo_date = "date"

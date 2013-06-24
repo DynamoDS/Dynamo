@@ -144,6 +144,7 @@ namespace Dynamo.Controls
             if (view_model.FindByIdCommand.CanExecute(id))
                 view_model.FindByIdCommand.Execute(id);
         }
+
     }
 
     public class CancelEvaluationException : Exception
