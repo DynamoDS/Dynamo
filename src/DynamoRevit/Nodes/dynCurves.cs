@@ -876,6 +876,58 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Bound Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates Curve by bounding original by two points")]
+    public class dynBoundCurve : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynBoundCurve()
+        {
+            InPortData.Add(new PortData("Curve", "Curve to bound.", typeof(object)));
+            InPortData.Add(new PortData("New Start Point", "Start point should be within bounded curve, anywhere on unbounded curve.", typeof(object)));
+            InPortData.Add(new PortData("New End Point", "End point should be within bounded curve, anywhere on unbounded curve.", typeof(object)));
+            OutPortData.Add(new PortData("Result", "Resulting curve.", typeof(object)));
+
+            RegisterAllPorts();
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+
+            Curve curve = (Curve)((Value.Container)args[0]).Item;
+            XYZ newStart = (XYZ) ((Value.Container)args[1]).Item;
+            XYZ newEnd = (XYZ) ((Value.Container)args[2]).Item;
+
+
+            IntersectionResult projectStart = curve.Project(newStart);
+            IntersectionResult projectEnd = curve.Project(newEnd);
+
+            double sParam = projectStart.Parameter;
+            double eParam = projectEnd.Parameter;
+
+
+            bool closed = dynXYZOnCurveOrEdge.curveIsReallyUnbound(curve);
+            if (closed)
+            {
+                double period = curve.Period;
+                while (eParam < sParam)
+                {
+                    eParam += period;
+                }
+                while (eParam >= sParam + period)
+                {
+                    eParam -= period;
+                }
+                if (eParam < sParam + 0.000000001 || eParam > sParam + period - 0.000000001)
+                    throw new Exception(" bounded curve results into curve of full period");
+            }
+            
+            Curve result = curve.Clone();
+                
+            result.MakeBound(sParam, eParam);
+            return Value.NewContainer(result);
+        }
+    }
+
     [NodeName("Bisector Line")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates bisector of two lines")]
