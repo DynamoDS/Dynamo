@@ -205,7 +205,11 @@ namespace Dynamo.Applications
                         //show the window
 
                         string context = m_revit.Application.VersionName; // string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
-                        dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, true, typeof(DynamoRevitViewModel), context);
+                        dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
+
+                        dynSettings.Bench = new DynamoView();
+                        dynSettings.Bench.DataContext = dynamoController.DynamoViewModel;
+                        dynamoController.UIDispatcher = dynSettings.Bench.Dispatcher;
                         dynamoView = dynSettings.Bench;
 
                         //set window handle and show dynamo
@@ -354,7 +358,7 @@ namespace Dynamo.Applications
 
                 //create dynamo
                 string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
-                var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
+                var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
 
                 //flag to run evalauation synchronously, helps to 
                 //avoid threading issues when testing.

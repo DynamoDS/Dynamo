@@ -7,6 +7,7 @@ import shutil
 import re
 import os
 import fnmatch
+import dynamo_s3
 from optparse import OptionParser
 
 from email.MIMEMultipart import MIMEMultipart
@@ -75,6 +76,8 @@ def main():
 
 		if not options.debug:
 			update_realtimedev( installer_dir, installer_bin_dir, repo_root, autodoc_root, options.realtimedev_root )
+			publish_to_s3( installer_dir, installer_bin_dir )
+
 	else:
 		print 'build failed'
 
@@ -93,6 +96,22 @@ def interpret_build(result):
 
 	return {'result': result, 'errors': errors, 'warnings': warnings, 'success': ( errors == 0) }
 
+def publish_to_s3(installer_dir, installer_bin_dir):
+
+	try:
+
+		mkdir('temp')
+		copy_folder_contents( form_path([installer_dir, installer_bin_dir]), 'temp' )
+
+		for file in os.listdir('temp'):
+		  if fnmatch.fnmatch( file, '*.exe'):
+		  	dynamo_s3.upload_daily( form_path( ['temp', file] ) )
+
+	except Exception:
+		print 'There was an exception uploading to s3.'
+	finally:
+		rm_dir('temp')
+	
 def setup(path):
 	mkdir(path)
 
@@ -161,7 +180,8 @@ def mkdir(path):
 
 	if os.path.exists(path):
 		return
-	os.makedirs(path)
+
+	os.makedirs( path )
 
 def make_docs( autodoc_root, autodoc_name ):
 

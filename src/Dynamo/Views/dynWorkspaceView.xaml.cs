@@ -382,6 +382,7 @@ namespace Dynamo.Views
                 Line xLine2 = null;
                 if (i == 0.0)
                 {
+
                     xLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
 
                     xLine2 = new Line();
