@@ -83,6 +83,8 @@
     <PostBuildEvent>copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Release
 copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Debug</PostBuildEvent>
     <PostBuildEvent>copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Release</PostBuildEvent>
+copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Debug
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
