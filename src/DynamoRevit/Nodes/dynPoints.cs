@@ -463,7 +463,7 @@ namespace Dynamo.Nodes
             if (!curve.IsCyclic)
                 return false;
             double period = curve.Period;
-            if (curve.GetEndParameter(1) > curve.GetEndParameter(0) + period - 0.000000001)
+            if (curve.get_EndParameter(1) > curve.get_EndParameter(0) + period - 0.000000001)
                 return true;
             return false;
         }
