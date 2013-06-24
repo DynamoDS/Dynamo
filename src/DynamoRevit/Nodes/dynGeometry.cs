@@ -733,7 +733,6 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            CurveElement c = (CurveElement)((Value.Container)args[0]).Item; // Curve 
 
             double xi;//, x0, xs;
             xi = ((Value.Number)args[1]).Item;// Number
@@ -744,13 +743,24 @@ namespace Dynamo.Nodes
             FSharpList<Value> result = FSharpList<Value>.Empty;
 
             //double x = x0;
-            Curve crvRef = c.GeometryCurve;
+            Curve crvRef = null;
+
+            if (((Value.Container)args[0]).Item is CurveElement)
+            {
+                CurveElement c = (CurveElement)((Value.Container)args[0]).Item; // Curve 
+                crvRef = c.GeometryCurve;
+            }
+            else
+            {
+                crvRef = (Curve)((Value.Container)args[0]).Item; // Curve 
+            }
+
             double t = 0;
 
             for (int xCount = 0; xCount < xi; xCount++)
             {
                 t = xCount / xi; // create normalized curve param by dividing current number by total number
-                XYZ pt = crvRef.Evaluate(t, true);
+                XYZ pt = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
                 result = FSharpList<Value>.Cons(
                     Value.NewContainer(
                          pt// pass in parameter on curve and the bool to say yes this is normalized, Curve.Evaluate passes back out an XYZ that we store in this list
@@ -1077,7 +1087,7 @@ namespace Dynamo.Nodes
     {
         public dynCircle()
         {
-            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("center", "Start XYZ", typeof(Value.Container)));
             InPortData.Add(new PortData("rad", "Radius", typeof(Value.Number)));
             OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Value.Container)));
 
