@@ -126,18 +126,15 @@ namespace Dynamo
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(ExecutionEnvironment env, bool withUI, Type viewModelType, string context)
+        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context)
         {
             dynSettings.Controller = this;
 
             this.Context = context;
 
-            //MVVM: don't construct the main window with a reference to the controller
-            //dynSettings.Bench = new dyndynSettings.Bench(this);
-
-            //MVVM : create the view model to which the main window will bind
+            //create the view model to which the main window will bind
             //the DynamoModel is created therein
-            //this.DynamoViewModel = new DynamoViewModel(this);
+
             this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(viewModelType,new object[]{this});
 
             // custom node loader
@@ -145,15 +142,6 @@ namespace Dynamo
             string pluginsPath = Path.Combine(directory, "definitions");
 
             CustomNodeLoader = new CustomNodeLoader(pluginsPath);
-
-            if (withUI)
-            {
-                dynSettings.Bench = new DynamoView();
-                dynSettings.Bench = dynSettings.Bench;
-                dynSettings.Bench.DataContext = DynamoViewModel;
-                this.UIDispatcher = dynSettings.Bench.Dispatcher;
-            }
-
 
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);
@@ -173,18 +161,6 @@ namespace Dynamo
 
             if(dynSettings.Bench != null)
                 DynamoLoader.LoadSamplesMenu(dynSettings.Bench);
-
-            if (dynSettings.Bench != null && withUI)
-            {
-                //dynSettings.Bench.LockUI();
-
-                //MVVM : callback has been restructured so that it sends a command back to the view model
-                //dynSettings.Bench.Activated += OndynSettings.BenchActivated;
-
-                //MVVM: we've gone to using a model and a model view of a workspace
-                //do not reference a specific workdynSettings.Bench here.
-                //dynSettings.WorkdynSettings.Bench = dynSettings.Bench.WorkdynSettings.Bench;
-            }
 
             //run tests
             if (FScheme.RunTests(dynSettings.Controller.DynamoViewModel.Log))
