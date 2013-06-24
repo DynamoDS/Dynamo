@@ -13,6 +13,25 @@ namespace Dynamo
         private double y = 0.0;
         private double height = 100;
         private double width = 100;
+        
+        public double CenterX
+        {
+            get { return X + Width / 2; }
+            set { 
+                this.X = value - this.Width/2;
+                RaisePropertyChanged("X");
+            }
+        }
+
+        public double CenterY
+        {
+            get { return Y + Height / 2; }
+            set
+            {
+                this.Y = value - this.Height / 2;
+                RaisePropertyChanged("Y");
+            }
+        }
 
         /// <summary>
         /// The X coordinate of the node in canvas space.
@@ -128,5 +147,7 @@ namespace Dynamo
         double Width { get; set; }
         double Height { get; set; }
         Rect Rect { get; }
+        double CenterX { get; set; }
+        double CenterY { get; set; }
     }
 }

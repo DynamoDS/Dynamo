@@ -6,7 +6,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
+
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
@@ -24,7 +27,7 @@ namespace Dynamo
     public class dynWorkspaceViewModel: dynViewModelBase
     {
         #region Properties and Fields
-
+        
         public dynWorkspaceModel _model;
 
         private bool isConnecting = false;
@@ -127,6 +130,8 @@ namespace Dynamo
         public DelegateCommand NodeFromSelectionCommand { get; set; }
         public DelegateCommand<object> SetZoomCommand { get; set; }
         public DelegateCommand<object> FindByIdCommand { get; set; }
+
+        public DelegateCommand<string> AlignSelectedCommand { get; set; }
 
         public string Name
         {
@@ -287,24 +292,15 @@ namespace Dynamo
             _model = model;
 
             this.CurrentOffset = new Point(10,10);
-
-            var nodesColl = new CollectionContainer();
-            nodesColl.Collection = Nodes;
+            
+            var nodesColl = new CollectionContainer { Collection = Nodes };
             WorkspaceElements.Add(nodesColl);
 
-            var connColl = new CollectionContainer();
-            connColl.Collection = Connectors;
+            var connColl = new CollectionContainer { Collection = Connectors };
             WorkspaceElements.Add(connColl);
 
-            var notesColl = new CollectionContainer();
-            notesColl.Collection = Notes;
+            var notesColl = new CollectionContainer { Collection = Notes };
             WorkspaceElements.Add(notesColl);
-
-            //var watch3DColl = new CollectionContainer();
-            //watch3DColl.Collection = Watch3DViewModels;
-            //WorkspaceElements.Add(watch3DColl);
-            
-            //Watch3DViewModels.Add(new Watch3DFullscreenViewModel(this));
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
@@ -321,6 +317,7 @@ namespace Dynamo
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             SetZoomCommand = new DelegateCommand<object>(SetZoom, CanSetZoom);
             FindByIdCommand = new DelegateCommand<object>(FindById, CanFindById);
+            AlignSelectedCommand = new DelegateCommand<string>(AlignSelected, CanAlignSelected);
 
             DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
 
@@ -426,6 +423,170 @@ namespace Dynamo
                     RaisePropertyChanged("FilePath");
                     break;
             }
+        }
+
+        public double GetSelectionAverageX()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.CenterX)
+                           .Average();
+        }
+
+        public double GetSelectionAverageY()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.CenterY)
+                           .Average();
+        }
+
+        public double GetSelectionMinX()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.X)
+                           .Min();
+        }
+
+        public double GetSelectionMinY()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.Y)
+                           .Min();
+        }
+
+        public double GetSelectionMaxX()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.X + x.Width)
+                           .Max();
+        }
+
+        public double GetSelectionMaxLeftX()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.X)
+                           .Max();
+        }
+
+        public double GetSelectionMaxY()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.Y + x.Height)
+                           .Max();
+        }
+
+        public double GetSelectionMaxTopY()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.Y)
+                           .Max();
+        }
+
+        private void AlignSelected(string alignType)
+        {
+            if (DynamoSelection.Instance.Selection.Count <= 1) return;
+
+            if (alignType == "HorizontalCenter")  // make vertial line of elements
+            {
+                var xAll = GetSelectionAverageX();
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList().ForEach((x) => { x.CenterX = xAll; });
+            }
+            else if (alignType == "HorizontalLeft")
+            {
+                var xAll = GetSelectionMinX();
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList().ForEach((x) => { x.X = xAll; });
+            }
+            else if (alignType == "HorizontalRight")
+            {
+                var xAll = GetSelectionMaxX();
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList().ForEach((x) => { x.X = xAll - x.Width; });
+            }
+            else if (alignType == "VerticalCenter")
+            {
+                var yAll = GetSelectionAverageY();
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList().ForEach((x) => { x.CenterY = yAll; });
+            }
+            else if (alignType == "VerticalTop")
+            {
+                var yAll = GetSelectionMinY();
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList().ForEach((x) => { x.Y = yAll; });
+            }
+            else if (alignType == "VerticalBottom")
+            {
+                var yAll = GetSelectionMaxY();
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList().ForEach((x) => { x.Y = yAll - x.Height; });
+            }
+            else if (alignType == "VerticalDistribute")
+            {
+                if (DynamoSelection.Instance.Selection.Count <= 2) return;
+
+                var yMin = GetSelectionMinY();
+                var yMax = GetSelectionMaxTopY();
+                var spacing = (yMax - yMin)/(DynamoSelection.Instance.Selection.Count - 1);
+                int count = 0;
+
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .OrderBy((x) => x.Y)
+                           .ToList()
+                           .ForEach((x) => x.Y = yMin + spacing * count++);
+            }
+            else if (alignType == "HorizontalDistribute")
+            {
+                if (DynamoSelection.Instance.Selection.Count <= 2) return;
+
+                var xMin = GetSelectionMinX();
+                var xMax = GetSelectionMaxLeftX();
+                var spacing = (xMax - xMin) / (DynamoSelection.Instance.Selection.Count - 1);
+                int count = 0;
+
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .OrderBy((x) => x.X)
+                           .ToList()
+                           .ForEach((x) => x.X = xMin + spacing * count++);
+            }
+
+            UpdateSelectionOffsets();
+
+        }
+
+        private void UpdateSelectionOffsets()
+        {
+            var sel = new List<ISelectable>();
+            foreach (var ele in DynamoSelection.Instance.Selection)
+            {
+                sel.Add(ele);
+            }
+            DynamoSelection.Instance.ClearSelection();
+            foreach (var ele in sel)
+            {
+                DynamoSelection.Instance.Selection.Add(ele);
+            }
+        }
+
+        private bool CanAlignSelected(string alignType)
+        {
+            return true;
         }
 
         private void Hide(object parameters)

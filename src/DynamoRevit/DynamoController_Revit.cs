@@ -19,8 +19,8 @@ namespace Dynamo
 
         dynamic oldPyEval;
 
-        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, bool withUI, Type viewModelType, string context)
-            : base(env, withUI, viewModelType, context)
+        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context)
+            : base(env, viewModelType, context)
         {
             Updater = updater;
             

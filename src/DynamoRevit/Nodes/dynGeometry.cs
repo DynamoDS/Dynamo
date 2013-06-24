@@ -472,6 +472,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -479,17 +480,8 @@ namespace Dynamo.Nodes
             if (!args[0].IsList)
                 throw new Exception("A list of XYZs is required to average.");
 
-            FSharpList<Value> lst = ((Value.List)args[0]).Item;
-
-            XYZ average = new XYZ();
-            foreach (Value v in lst)
-            {
-                XYZ pt = (XYZ)((Value.Container)v).Item;
-                average = average.Add(pt);
-            }
-
-            average = average.Divide(lst.Count<Value>());
-            pts.Add(average);
+            var lst = ((Value.List)args[0]).Item;
+            var average = dynBestFitLine.MeanXYZ(dynBestFitLine.AsGenericList<XYZ>(lst));
 
             return Value.NewContainer(average);
         }
