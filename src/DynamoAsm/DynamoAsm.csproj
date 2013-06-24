@@ -80,66 +80,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y ..\..\extern\DynamoAsm\ASMAHL219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMBASE219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMBLND219A.dll ..\..\bin\Release
-
-copy /Y ..\..\extern\DynamoAsm\ASMAHL219A.dll ..\..\bin\Debug
-copy /Y ..\..\extern\DynamoAsm\ASMBASE219A.dll ..\..\bin\Debug
-copy /Y ..\..\extern\DynamoAsm\ASMBLND219A.dll ..\..\bin\Debug
-copy /Y ..\..\extern\DynamoAsm\ASMBOOL219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMCOVR219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\AsmCppGeometry.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMCSTR219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMCT219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMDATAX219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMDEFM219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMEULR219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMFCT219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMFREC219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMGA219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMHEAL219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMIMPORT219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMINTR219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMKERN219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMLAW219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMLOP219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMLOPT219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMMATRIX219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMNPCH219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMOFST219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMOPER219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMPID219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMRB219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMRBI219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMREM219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMSBAP219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMSBOOL219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMSHL219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMSKIN219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMSWP219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMTOPT219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMTWK219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMUFLD219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\ASMWELD219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\boost_chrono-vc100-mt-1_51.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\boost_random-vc100-mt-1_51.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\boost_regex-vc100-mt-1_51.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\boost_system-vc100-mt-1_51.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\boost_thread-vc100-mt-1_51.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\cmAliasID219A.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\DejaVuSansMono.ttf ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\DSCppViewer.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\DSNetworkLib.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\libfreetype-6.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\LibG.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\SDL.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\SDL_ttf.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\tbb.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\tbbmalloc.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\tbbmalloc_proxy.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\tslib2010_64_dllwrap.dll ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\zlib1.dll ..\..\bin\Release
+    <PostBuildEvent>copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Release
+copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Debug
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
