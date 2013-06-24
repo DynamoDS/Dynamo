@@ -572,6 +572,11 @@ namespace Dynamo.Applications
                 DynamoLogger.Instance.Log("Test ERROR");
                 _dynamoRevitTest.ResultType = DynamoRevitTestResultType.Error;
             }
+            else if (result.Executed && result.ResultState == ResultState.Inconclusive)
+            {
+                DynamoLogger.Instance.Log("Test INCONCLUSIVE");
+                _dynamoRevitTest.ResultType = DynamoRevitTestResultType.Inconclusive;
+            }
             _dynamoRevitTest.Message = result.Message;
         }
         public void SuiteStarted(TestName testName) { }
@@ -701,7 +706,7 @@ namespace Dynamo.Applications
 #endif
 
 
-    public enum DynamoRevitTestResultType { Pass, Fail, Error, Exception, Unknown }
+    public enum DynamoRevitTestResultType { Pass, Fail, Error, Exception, Unknown, Inconclusive }
 
     public class ResultTypeToColorConverter : IValueConverter
     {
@@ -715,6 +720,8 @@ namespace Dynamo.Applications
                 case DynamoRevitTestResultType.Fail:
                     return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255,0,0));
                 case DynamoRevitTestResultType.Error:
+                    return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 160, 0));
+                case DynamoRevitTestResultType.Inconclusive:
                     return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 160, 0));
                 case DynamoRevitTestResultType.Exception:
                     return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 0, 0));

@@ -270,8 +270,13 @@ namespace DynamoRevitTests
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function and connect points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(Path.Combine(_defsPath, "GraphFunction.dyf")));
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(Path.Combine(_defsPath, "ConnectPoints.dyf")));
+            string customDefPath1 = Path.Combine(_defsPath, "GraphFunction.dyf");
+            string customDefPath2 = Path.Combine(_defsPath, "ConnectPoints.dyf");
+            Assert.IsTrue(File.Exists(customDefPath1), "Cannot find specified custom definition to load for testing.");
+            Assert.IsTrue(File.Exists(customDefPath2), "Cannot find specified custom definition to load for testing.");
+
+            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath1));
+            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath2));
 
             dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
             dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
@@ -285,7 +290,9 @@ namespace DynamoRevitTests
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\scalable graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(Path.Combine(_defsPath, "Cf(dx).dyf")));
+            string customDefPath = Path.Combine(_defsPath, "Cf(dx).dyf");
+            Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
+            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath));
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
@@ -299,7 +306,9 @@ namespace DynamoRevitTests
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(Path.Combine(_defsPath, "GraphFunction.dyf")));
+            string customDefPath = Path.Combine(_defsPath, "GraphFunction.dyf");
+            Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
+            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath));
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
@@ -368,7 +377,7 @@ namespace DynamoRevitTests
 
             //dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             //dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
-            Assert.Inconclusive();
+            Assert.Inconclusive("Python examples do not play well with testing.");
         }
 
         [Test]
@@ -381,7 +390,7 @@ namespace DynamoRevitTests
 
             //dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             //dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
-            Assert.Inconclusive();
+            Assert.Inconclusive("Python examples do not play well with testing.");
         }
    
         [Test]
@@ -423,44 +432,44 @@ namespace DynamoRevitTests
 
             //dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
 
-            Assert.Inconclusive();
+            Assert.Inconclusive("Python examples do not play well with testing.");
         }
 
-        [Test]
-        public void CreateSineWaveFromSelectedPoints()
-        {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+        //[Test]
+        //public void CreateSineWaveFromSelectedPoints()
+        //{
+        //    DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
-            string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\create sine wave from selected points.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+        //    string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\create sine wave from selected points.dyn");
+        //    string testPath = Path.GetFullPath(samplePath);
 
-            ReferencePoint p1 = null;
-            ReferencePoint p2 = null;
+        //    ReferencePoint p1 = null;
+        //    ReferencePoint p2 = null;
 
-            using (_trans = new Transaction(dynRevitSettings.Doc.Document))
-            {
-                _trans.Start("Create reference points for testing python node.");
+        //    using (_trans = new Transaction(dynRevitSettings.Doc.Document))
+        //    {
+        //        _trans.Start("Create reference points for testing python node.");
 
-                p1 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ());
-                p2 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(0, 10, 0));
+        //        p1 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ());
+        //        p2 = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ(0, 10, 0));
 
-                _trans.Commit();
-            }
+        //        _trans.Commit();
+        //    }
 
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+        //    dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
-            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynPointBySelection);
-            Assert.AreEqual(2, selectionNodes.Count());
+        //    var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynPointBySelection);
+        //    Assert.AreEqual(2, selectionNodes.Count());
 
-            ((dynPointBySelection)selectionNodes.ElementAt(0)).SelectedElement = p1;
-            ((dynPointBySelection)selectionNodes.ElementAt(1)).SelectedElement = p2;
+        //    ((dynPointBySelection)selectionNodes.ElementAt(0)).SelectedElement = p1;
+        //    ((dynPointBySelection)selectionNodes.ElementAt(1)).SelectedElement = p2;
 
-            //delete the transaction node when testing
-            //var transNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynTransaction).First();
-            //dynRevitSettings.Controller.RunCommand(vm.DeleteCommand, transNode);
+        //    //delete the transaction node when testing
+        //    //var transNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynTransaction).First();
+        //    //dynRevitSettings.Controller.RunCommand(vm.DeleteCommand, transNode);
 
-            dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
-        }
+        //    dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        //}
         
         #endregion
 
