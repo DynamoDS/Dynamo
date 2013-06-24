@@ -309,7 +309,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve Element Ref")]
+    [NodeName("Curve Reference")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Takes in a Model Curve or Geometry Curve, returns a Curve Reference")]
     public class dynCurveRef : dynRevitTransactionNodeWithOneOutput
@@ -376,9 +376,9 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Curve From Curve Ele")]
+    [NodeName("Curve From Curve Element")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Takes in a Model Curve and Extracts Geometry Curve")]
+    [NodeDescription("Takes in a model curve and extracts a geometry curve")]
     public class dynCurveFromModelCurve : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurveFromModelCurve()
@@ -771,7 +771,7 @@ namespace Dynamo.Nodes
     {
         public dynThickenCurveLoop()
         {
-            InPortData.Add(new PortData("Curve", "Curve to thicken, could not be closed.", typeof(Value.Container)));
+            InPortData.Add(new PortData("Curve", "Curve to thicken, cannot be closed.", typeof(Value.Container)));
             InPortData.Add(new PortData("Thickness", "Thickness value.", typeof(Value.Number)));
             InPortData.Add(new PortData("Normal", "The normal vector to the plane used for thickening.", typeof(Value.Container)));
             OutPortData.Add(new PortData("CurveLoop", "CurveLoop which is the result of thickening.", typeof(Value.Container)));
@@ -917,7 +917,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Best fit arc")]
+    [NodeName("Best Fit Arc")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates best fit arc through points")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
