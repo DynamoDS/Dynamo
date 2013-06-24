@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Windows;
-
 using System.Diagnostics;
+using System.Windows;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Utilities;
@@ -18,7 +17,8 @@ namespace DynamoSandbox
             try
             {
                 var controller = new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE);
-                
+
+                //create the view
                 dynSettings.Bench = new DynamoView();
                 dynSettings.Bench.DataContext = controller.DynamoViewModel;
                 controller.UIDispatcher = dynSettings.Bench.Dispatcher;
