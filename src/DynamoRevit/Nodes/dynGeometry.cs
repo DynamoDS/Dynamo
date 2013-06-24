@@ -746,11 +746,12 @@ namespace Dynamo.Nodes
             //double x = x0;
             Curve crvRef = c.GeometryCurve;
             double t = 0;
+            double period = crvRef.Period;
 
             for (int xCount = 0; xCount < xi; xCount++)
             {
                 t = xCount / xi; // create normalized curve param by dividing current number by total number
-                XYZ pt = crvRef.Evaluate(t, true);
+                XYZ pt = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * period, false);
                 result = FSharpList<Value>.Cons(
                     Value.NewContainer(
                          pt// pass in parameter on curve and the bool to say yes this is normalized, Curve.Evaluate passes back out an XYZ that we store in this list
@@ -1077,7 +1078,7 @@ namespace Dynamo.Nodes
     {
         public dynCircle()
         {
-            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("center", "Start XYZ", typeof(Value.Container)));
             InPortData.Add(new PortData("rad", "Radius", typeof(Value.Number)));
             OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Value.Container)));
 
