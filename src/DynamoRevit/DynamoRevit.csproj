@@ -43,8 +43,12 @@
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\..\extern\mathnet-numerics\out\debug\Net40\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\mathnet-numerics-build\lib\Net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics.IO">
+      <HintPath>..\..\extern\mathnet-numerics-build\lib\Net40\MathNet.Numerics.IO.dll</HintPath>
     </Reference>
     <Reference Include="MIConvexHullPlugin">
       <HintPath>..\..\extern\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
