@@ -449,11 +449,23 @@ namespace Dynamo.Nodes
     {
         public dynXYZOnCurveOrEdge()
         {
-            InPortData.Add(new PortData("normalized parameter", "The normalized parameter to evaluate at within 0..1 range.", typeof(Value.Number)));
+            InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range, any for closed curve.", typeof(Value.Number)));
             InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
             OutPortData.Add(new PortData("XYZ", "XYZ at parameter.", typeof(Value.Container)));
 
             RegisterAllPorts();
+        }
+
+        public static bool curveIsReallyUnbound(Curve curve)
+        {
+            if (!curve.IsBound)
+                return true;
+            if (!curve.IsCyclic)
+                return false;
+            double period = curve.Period;
+            if (curve.GetEndParameter(1) > curve.GetEndParameter(0) + period - 0.000000001)
+                return true;
+            return false;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -478,7 +490,8 @@ namespace Dynamo.Nodes
                 }
             }
 
-            XYZ result = (thisCurve != null) ? thisCurve.Evaluate(parameter, true) :  
+            XYZ result = (thisCurve != null) ? (!curveIsReallyUnbound(thisCurve) ? thisCurve.Evaluate(parameter, true) : thisCurve.Evaluate(parameter, false))
+                :  
                 (thisEdge == null ? null : thisEdge.Evaluate(parameter));
 
             pts.Add(result);
@@ -494,7 +507,7 @@ namespace Dynamo.Nodes
     {
         public dynTangentTransformOnCurveOrEdge()
         {
-            InPortData.Add(new PortData("normalized parameter", "The normalized parameter to evaluate at within 0..1 range.", typeof(Value.Number)));
+            InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range except for closed curve", typeof(Value.Number)));
             InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
             OutPortData.Add(new PortData("tangent transform", "tangent transform at parameter.", typeof(Value.Container)));
 
@@ -524,7 +537,9 @@ namespace Dynamo.Nodes
                 }
             }
 
-            Transform result = (thisCurve != null) ? thisCurve.ComputeDerivatives(parameter, true) : 
+            Transform result = (thisCurve != null) ?
+                (!dynXYZOnCurveOrEdge.curveIsReallyUnbound(thisCurve) ? thisCurve.ComputeDerivatives(parameter, true) : thisCurve.ComputeDerivatives(parameter, false))
+                : 
                 (thisEdge == null ? null : thisEdge.ComputeDerivatives(parameter));
 
             transforms.Add(result);
