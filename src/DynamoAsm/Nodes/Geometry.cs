@@ -17,6 +17,7 @@ using Autodesk.LibG;
 using Geometry = Autodesk.LibG.Geometry;
 using Point = Autodesk.LibG.Point;
 using Vector = Autodesk.LibG.Vector;
+using Polygon = Autodesk.LibG.Polygon;
 
 namespace Dynamo.Nodes
 {
@@ -27,6 +28,26 @@ namespace Dynamo.Nodes
             DynamoAsm.EnsureStarted();
 
             ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        internal DSObject RestoreProperDSType(DSObject d)
+        {
+            Geometry g = Geometry.cast(d);
+
+            if (g != null)
+                return RestoreProperType(g);
+
+            Vector v = Vector.cast(d);
+
+            if (v != null)
+                return v;
+
+            CoordinateSystem cs = CoordinateSystem.cast(d);
+
+            if (cs != null)
+                return cs;
+
+            return d;
         }
 
         internal Geometry RestoreProperType(Geometry g)
@@ -277,6 +298,37 @@ namespace Dynamo.Nodes
     }
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("CoordinateSystem")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Create a CoordinateSystem.")]
+    public class CoordinateSystemNode : GraphicItemNode
+    {
+        private CoordinateSystem _cs = null;
+
+        public CoordinateSystemNode()
+        {
+            InPortData.Add(new PortData("Origin", "Origin Point", typeof(Value.Container)));
+            InPortData.Add(new PortData("X Axis", "X Axis Vector", typeof(Value.Container)));
+            InPortData.Add(new PortData("Y Axis", "Y Axis Vector", typeof(Value.Container)));
+            OutPortData.Add(new PortData("CoordinateSystem", "CoordinateSystem", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Point origin = (Point)((Value.Container)args[0]).Item;
+            Vector x_axis = (Vector)((Value.Container)args[1]).Item;
+            Vector y_axis = (Vector)((Value.Container)args[2]).Item;
+
+            _cs = CoordinateSystem.by_origin_vectors(origin, x_axis, y_axis);
+            _graphicItems.Add(_cs);
+
+            return Value.NewContainer(_cs);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
     [NodeName("Line")]
     [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
     [NodeDescription("Create a Line between two Points.")]
@@ -302,6 +354,163 @@ namespace Dynamo.Nodes
             _graphicItems.Add(_line);
 
             return Value.NewContainer(_line);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Circle")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Create a Circle at a Point with radius")]
+    public class CircleNode : GraphicItemNode
+    {
+        private Circle _circle = null;
+
+        public CircleNode()
+        {
+            InPortData.Add(new PortData("Center", "Center Point", typeof(Value.Container)));
+            InPortData.Add(new PortData("Radius", "Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("Normal", "Normal Vector", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Circle", "Circle", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Point cp = (Point)((Value.Container)args[0]).Item;
+            double r = ((Value.Number)args[1]).Item;
+            Vector normal = (Vector)((Value.Container)args[2]).Item;
+
+            _circle = Circle.by_center_point_radius_normal(cp, r, normal);
+
+            _graphicItems.Add(_circle);
+
+            return Value.NewContainer(_circle);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Sweep As Surface")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Sweep a Crve along a path producing a Surface")]
+    public class SweepAsSurfaceNode : GraphicItemNode
+    {
+        private Surface _surface = null;
+
+        public SweepAsSurfaceNode()
+        {
+            InPortData.Add(new PortData("Path", "Path Curve", typeof(Value.Container)));
+            InPortData.Add(new PortData("Cross Section", "Cross Section Curve", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Surface", "Swept Surface", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve pathCurve = (Curve)((Value.Container)args[0]).Item;
+            Curve crossSection = (Curve)((Value.Container)args[1]).Item;
+
+            _surface = crossSection.sweep_as_surface(pathCurve);
+            GraphicItem.persist(_surface);
+            _graphicItems.Add(_surface);
+
+            return Value.NewContainer(_surface);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Sweep As Solid")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Sweep a Crve along a path producing a Solid")]
+    public class SweepAsSolidNode : GraphicItemNode
+    {
+        private Solid _solid = null;
+
+        public SweepAsSolidNode()
+        {
+            InPortData.Add(new PortData("Path", "Path Curve", typeof(Value.Container)));
+            InPortData.Add(new PortData("Cross Section", "Cross Section Curve", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Solid", "Swept Solid", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve pathCurve = (Curve)((Value.Container)args[0]).Item;
+            Curve crossSection = (Curve)((Value.Container)args[1]).Item;
+
+            _solid = crossSection.sweep_as_solid(pathCurve);
+            GraphicItem.persist(_solid);
+            _graphicItems.Add(_solid);
+
+            return Value.NewContainer(_solid);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Length")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Get the length of a Curve.")]
+    public class LengthNode : GraphicItemNode
+    {
+        public LengthNode()
+        {
+            InPortData.Add(new PortData("Curve", "Start Point", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Length", "Length, not in a unit", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve c = (Curve)((Value.Container)args[0]).Item;
+
+            double l = c.length();
+
+            return Value.NewNumber(l);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Translate")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Translate Object.")]
+    public class TranslateNode : GraphicItemNode
+    {
+        TransformableItem _transformableItem;
+        public TranslateNode()
+        {
+            InPortData.Add(new PortData("Object", "Input Object", typeof(Value.Container)));
+            InPortData.Add(new PortData("Vector", "Translation Vector", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Object", "Translated Object", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            DSObject item = (DSObject)((Value.Container)args[0]).Item;
+            Vector v = (Vector)((Value.Container)args[1]).Item;
+
+            DSObject cloned = item.clone();
+
+            _transformableItem = RestoreProperDSType(cloned) as TransformableItem;
+
+            // TODO: throw exception if not transformable item
+
+            _transformableItem.translate(v.x(), v.y(), v.z());
+
+            GraphicItem graphicItem = _transformableItem as GraphicItem;
+
+            if (graphicItem != null)
+            {
+                _graphicItems.Add(graphicItem);
+                GraphicItem.persist(graphicItem);
+            }
+
+            return Value.NewContainer(_transformableItem);
         }
     }
 
@@ -340,6 +549,143 @@ namespace Dynamo.Nodes
     }
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Closed BSplineCurve")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Create a B-Spline Curve through input points.")]
+    public class ClosedBSplineCurveNode : GraphicItemNode
+    {
+        private BSplineCurve _bsplinecurve = null;
+
+        public ClosedBSplineCurveNode()
+        {
+            InPortData.Add(new PortData("Points", "Points to interpolate", typeof(Value.List)));
+            OutPortData.Add(new PortData("BSplineCurve", "Output curve", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            PointList points = new PointList();
+            var input = (args[0] as Value.List).Item;
+
+            foreach (Value v in input)
+            {
+                Point p = ((Value.Container)v).Item as Point;
+                points.Add(p);
+            }
+
+            _bsplinecurve = BSplineCurve.by_points(points, true);
+            _graphicItems.Add(_bsplinecurve);
+
+            return Value.NewContainer(_bsplinecurve);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Polygon")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Create a Polygon from a set of points.")]
+    public class PolygonNode : GraphicItemNode
+    {
+        private Polygon _polygon = null;
+
+        public PolygonNode()
+        {
+            InPortData.Add(new PortData("Points", "Boundary Points", typeof(Value.List)));
+            OutPortData.Add(new PortData("Polygon", "Output Polygon", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            PointList points = new PointList();
+            var input = (args[0] as Value.List).Item;
+
+            foreach (Value v in input)
+            {
+                Point p = ((Value.Container)v).Item as Point;
+                points.Add(p);
+            }
+
+            _polygon = Polygon.by_vertices(points);
+            _graphicItems.Add(_polygon);
+
+            return Value.NewContainer(_polygon);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Loft")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Loft Curves to create a surface")]
+    public class LoftNode : GraphicItemNode
+    {
+        private Surface _surface = null;
+
+        public LoftNode()
+        {
+            InPortData.Add(new PortData("Curves", "Cross section Curves", typeof(Value.List)));
+            OutPortData.Add(new PortData("Loft", "Lofted Surface", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            CurveList curves = new CurveList();
+            var input = (args[0] as Value.List).Item;
+
+            foreach (Value v in input)
+            {
+                Curve c = ((Value.Container)v).Item as Curve;
+                curves.Add(c);
+            }
+
+            _surface = Surface.loft_by_cross_sections(curves);
+            _graphicItems.Add(_surface);
+
+            return Value.NewContainer(_surface);
+        }
+    }
+
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Patch")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Patch Curves to create a Surface")]
+    public class PatchNode : GraphicItemNode
+    {
+        private Surface _surface = null;
+
+        public PatchNode()
+        {
+            InPortData.Add(new PortData("Curves", "Cross section Curves", typeof(Value.List)));
+            OutPortData.Add(new PortData("Patch", "Surface Patch", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            CurveList curves = new CurveList();
+            var input = (args[0] as Value.List).Item;
+
+            foreach (Value v in input)
+            {
+                Curve c = ((Value.Container)v).Item as Curve;
+                curves.Add(c);
+            }
+
+            _surface = Surface.by_patch(curves);
+            _graphicItems.Add(_surface);
+
+            return Value.NewContainer(_surface);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
     [NodeName("Extrude Curve")]
     [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
     [NodeDescription("Extrude a curve in a direction.")]
@@ -371,6 +717,168 @@ namespace Dynamo.Nodes
             return Value.NewContainer(_surface);
         }
     }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Cuboid")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Cuboid is like a cube, or a shoebox.")]
+    public class CuboidNode : GraphicItemNode
+    {
+        Solid _solid = null;
+
+        public CuboidNode()
+        {
+            InPortData.Add(new PortData("CoordinateSystem", "Base CoordinateSystem", typeof(Value.Container)));
+            InPortData.Add(new PortData("Width", "Cuboid Width", typeof(Value.Number)));
+            InPortData.Add(new PortData("Length", "Cuboid Length", typeof(Value.Number)));
+            InPortData.Add(new PortData("Height", "Cuboid Height", typeof(Value.Number)));
+            OutPortData.Add(new PortData("Cuboid", "Cuboid Solid", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            CoordinateSystem cs = (CoordinateSystem)((Value.Container)args[0]).Item;
+            double w = ((Value.Number)args[1]).Item;
+            double l = ((Value.Number)args[2]).Item;
+            double h = ((Value.Number)args[3]).Item;
+
+            _solid = Cuboid.by_lengths(cs, w, l, h);
+
+            _graphicItems.Add(_solid);
+
+            return Value.NewContainer(_solid);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Plane")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Plane, an infinite 2D expanse in 3D space.")]
+    public class PlaneNode : GraphicItemNode
+    {
+        Plane _plane = null;
+
+        public PlaneNode()
+        {
+            InPortData.Add(new PortData("Origin", "Origin Point", typeof(Value.Container)));
+            InPortData.Add(new PortData("Normal", "Normal Vector to Plane", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Plane", "Output Plane", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Point origin = (Point)((Value.Container)args[0]).Item;
+            Vector normal = (Vector)((Value.Container)args[1]).Item;
+
+            _plane = Plane.by_origin_normal(origin, normal);
+
+            _graphicItems.Add(_plane);
+
+            return Value.NewContainer(_plane);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Point At Parameter")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Point at Parameter along Curve.")]
+    public class PointAtParameterNode : GraphicItemNode
+    {
+        Point _point = null;
+
+        public PointAtParameterNode()
+        {
+            InPortData.Add(new PortData("Curve", "Curve to evaluate", typeof(Value.Container)));
+            InPortData.Add(new PortData("Parameter", "Parameter from 0 to 1", typeof(Value.Number)));
+            OutPortData.Add(new PortData("Point", "Point at Parameter", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve curve = (Curve)((Value.Container)args[0]).Item;
+            double param = ((Value.Number)args[1]).Item;
+
+            _point = curve.point_at_parameter(param);
+            GraphicItem.persist(_point);
+
+            _graphicItems.Add(_point);
+
+            return Value.NewContainer(_point);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Point At UV Parameter")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Point at Parameter on Surface.")]
+    public class PointAtUVParameterNode : GraphicItemNode
+    {
+        Point _point = null;
+
+        public PointAtUVParameterNode()
+        {
+            InPortData.Add(new PortData("Surface", "Surface to evaluate", typeof(Value.Container)));
+            InPortData.Add(new PortData("U", "Parameter from 0 to 1", typeof(Value.Number)));
+            InPortData.Add(new PortData("V", "Parameter from 0 to 1", typeof(Value.Number)));
+            OutPortData.Add(new PortData("Point", "Point at Parameter", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Surface surf = (Surface)((Value.Container)args[0]).Item;
+            double u = ((Value.Number)args[1]).Item;
+            double v = ((Value.Number)args[2]).Item;
+
+            _point = surf.point_at_parameter(u, v);
+            GraphicItem.persist(_point);
+
+            _graphicItems.Add(_point);
+
+            return Value.NewContainer(_point);
+        }
+    }
+
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Thicken Surface")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Thicken / Extrude a Surface by an amount.")]
+    public class ThickenSurfaceNode : GraphicItemNode
+    {
+        Solid _solid = null;
+
+        public ThickenSurfaceNode()
+        {
+            InPortData.Add(new PortData("Surface", "Surface to thicken", typeof(Value.Container)));
+            InPortData.Add(new PortData("Thickness", "Thickness amount", typeof(Value.Number)));
+            OutPortData.Add(new PortData("Solid", "Thickened Solid", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Surface surf = (Surface)((Value.Container)args[0]).Item;
+            double dist = ((Value.Number)args[1]).Item;
+
+            _solid = surf.thicken(dist);
+            GraphicItem.persist(_solid);
+
+            _graphicItems.Add(_solid);
+
+            return Value.NewContainer(_solid);
+        }
+    }
+
+
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
     [NodeName("Intersect")]
