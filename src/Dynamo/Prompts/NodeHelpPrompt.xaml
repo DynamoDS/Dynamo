@@ -34,12 +34,12 @@
                 <TextBlock Name="Category" Text="{Binding Category}" Foreground="#555" TextWrapping="Wrap"></TextBlock>
 
                 <TextBlock Name="InputsLabel" FontSize="10" Foreground="#AAA" Margin="0,20,0,0">INPUTS</TextBlock>
-                <ListBox Name="Inputs" ItemsSource="{Binding InPortData}" BorderThickness="0" Padding="0" Background="Transparent">
+                <ListBox Name="Inputs" ItemsSource="{Binding InPortData}" BorderThickness="0" Padding="0" Margin="3" Background="Transparent">
                
                     <ListBox.ItemTemplate>
                         <DataTemplate>
 
-                            <StackPanel Margin="3">
+                            <StackPanel Width="230" >
                                 <TextBlock FontSize="12" Text="{Binding Path=NickName, Converter={StaticResource PortNameConverter}}" FontWeight="Bold" Foreground="#555" Padding="0,10,0,5"/>
                                 <TextBlock FontSize="11" Text="{Binding Path=ToolTipString}" Foreground="#555" TextWrapping="Wrap"/>
 
@@ -51,13 +51,13 @@
                 </ListBox>
 
                 <TextBlock Name="OutputsLabel" FontSize="10" Foreground="#AAA" Margin="0,10,0,0">OUTPUTS</TextBlock>
-                <ListBox Name="Outputs" ItemsSource="{Binding OutPortData}" BorderThickness="0" Padding="0" Background="Transparent">
+                <ListBox Name="Outputs" ItemsSource="{Binding OutPortData}" BorderThickness="0" Padding="0" Margin="3" Background="Transparent" >
                     <ListBox.ItemTemplate>
                         <DataTemplate>
 
-                            <StackPanel Margin="3">
+                            <StackPanel Width="230" >
                                 <TextBlock FontSize="12" Text="{Binding Path=NickName, Converter={StaticResource PortNameConverter}}" FontWeight="Bold" Foreground="#555" Padding="0,10,0,5"/>
-                                <TextBlock FontSize="11" Text="{Binding Path=ToolTipString}" Foreground="#555" TextWrapping="Wrap"/>
+                                <TextBlock FontSize="11" Text="{Binding Path=ToolTipString}" Foreground="#555" TextWrapping="Wrap" />
                             </StackPanel>
 
                         </DataTemplate>
