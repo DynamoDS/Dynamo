@@ -2648,9 +2648,10 @@ namespace Dynamo.Nodes
         public dynDoubleSliderInput()
         {
             RegisterAllPorts();
-            Value = 50.0;
+            
             Min = 0.0;
             Max = 100.0;
+            Value = 50.0;
         }
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
@@ -2659,7 +2660,7 @@ namespace Dynamo.Nodes
             tb_slider = new System.Windows.Controls.Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-
+            
             tb_slider.Width = 100;
 
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.None;
@@ -2693,40 +2694,40 @@ namespace Dynamo.Nodes
             mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             mintb.Width = double.NaN;
-            mintb.IsNumeric = true;
+            //mintb.IsNumeric = true;
 
             mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            mintb.OnChangeCommitted += delegate
-            {
-                try
-                {
-                    Min = Convert.ToDouble(mintb.Text);
-                }
-                catch
-                {
-                    Min = 0;
-                }
-            };
+            //mintb.OnChangeCommitted += delegate
+            //{
+            //    try
+            //    {
+            //        Min = Convert.ToDouble(mintb.Text);
+            //    }
+            //    catch
+            //    {
+            //        Min = 0;
+            //    }
+            //};
             //mintb.Pending = false;
 
             maxtb = new dynTextBox();
             maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             maxtb.Width = double.NaN;
-            maxtb.IsNumeric = true;
+            //maxtb.IsNumeric = true;
 
             maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            maxtb.OnChangeCommitted += delegate
-            {
-                try
-                {
-                    Max = Convert.ToDouble(maxtb.Text, CultureInfo.InvariantCulture);
-                }
-                catch
-                {
-                    Max = 100;
-                }
-            };
+            //maxtb.OnChangeCommitted += delegate
+            //{
+            //    try
+            //    {
+            //        Max = Convert.ToDouble(maxtb.Text, CultureInfo.InvariantCulture);
+            //    }
+            //    catch
+            //    {
+            //        Max = 100;
+            //    }
+            //};
 
             WrapPanel wp = new WrapPanel();
             wp.Children.Add(mintb);
@@ -2751,8 +2752,8 @@ namespace Dynamo.Nodes
 
             var bindingValue = new System.Windows.Data.Binding("Value")
             {
-                Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay(),
+                Mode = BindingMode.OneWay,
+                Converter = new DoubleDisplay()
             };
             displayBox.SetBinding(TextBox.TextProperty, bindingValue);
 
@@ -2760,7 +2761,6 @@ namespace Dynamo.Nodes
             {
                 Mode = BindingMode.TwoWay,
                 Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
             tb_slider.SetBinding(Slider.ValueProperty, sliderBinding);
 
@@ -2771,8 +2771,15 @@ namespace Dynamo.Nodes
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            tb_slider.SetBinding(Slider.MaximumProperty, bindingMax);
             maxtb.SetBinding(dynTextBox.TextProperty, bindingMax);
+            
+            var bindingMaxSlider = new System.Windows.Data.Binding("Max")
+            {
+                Mode = BindingMode.OneWay,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            tb_slider.SetBinding(Slider.MaximumProperty, bindingMaxSlider);
 
             var bindingMin = new System.Windows.Data.Binding("Min")
             {
@@ -2781,8 +2788,15 @@ namespace Dynamo.Nodes
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            tb_slider.SetBinding(Slider.MinimumProperty, bindingMin);
             mintb.SetBinding(dynTextBox.TextProperty, bindingMin);
+
+            var bindingMinSlider = new System.Windows.Data.Binding("Min")
+            {
+                Mode = BindingMode.OneWay,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            tb_slider.SetBinding(Slider.MinimumProperty, bindingMinSlider);
         }
 
         public override double Value
@@ -2795,6 +2809,8 @@ namespace Dynamo.Nodes
             {
                 base.Value = value;
                 RaisePropertyChanged("Value");
+
+                Debug.WriteLine(string.Format("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture)));
             }
         }
         
@@ -3404,12 +3420,22 @@ namespace Dynamo.Nodes
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value==null?"":((double)value).ToString("0.0000", culture);
+            //source -> target
+            string val = ((double) value).ToString("0.00",CultureInfo.CurrentCulture);
+            Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
+            return value == null ? "" : val;
+
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value.ToString();
+            //target -> source
+            //return value.ToString();
+
+            double val = 0.0;
+            double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
+            Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
+            return val;
         }
     }
 
