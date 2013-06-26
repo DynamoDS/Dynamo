@@ -70,7 +70,7 @@ namespace Dynamo.Nodes
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
 
-                    if (c.IsBound)
+                    if (!mc.GeometryCurve.IsBound && c.IsBound)
                     {
                         c = c.Clone();
                         c.MakeUnbound();
@@ -142,7 +142,7 @@ namespace Dynamo.Nodes
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
 
-                    if (c.IsBound)
+                    if (!mc.GeometryCurve.IsBound && c.IsBound)
                     {
                         c = c.Clone();
                         c.MakeUnbound();
