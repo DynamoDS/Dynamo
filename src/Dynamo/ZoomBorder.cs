@@ -97,6 +97,13 @@ namespace Dynamo.Controls
             tt.Y = p.Y;
         }
 
+        public void SetZoom(double zoom)
+        {
+            var st = GetScaleTransform(child);
+            st.ScaleX = zoom;
+            st.ScaleY = zoom;
+        }
+
         #region Child Events
 
         private void child_MouseWheel(object sender, MouseWheelEventArgs e)
