@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.Globalization;
 using System.Linq;
 using System.Xml;
 using Dynamo.Nodes;
@@ -485,6 +487,7 @@ namespace Dynamo.Utilities
                 string category = "";
                 double cx = DynamoView.CANVAS_OFFSET_X;
                 double cy = DynamoView.CANVAS_OFFSET_Y;
+                double zoom = 1.0;
                 string id = "";
 
                 // load the header
@@ -493,9 +496,11 @@ namespace Dynamo.Utilities
                     foreach (XmlAttribute att in node.Attributes)
                     {
                         if (att.Name.Equals("X"))
-                            cx = Convert.ToDouble(att.Value);
+                            cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("Y"))
-                            cy = Convert.ToDouble(att.Value);
+                            cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                        else if (att.Name.Equals("zoom"))
+                            zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("Name"))
                             funName = att.Value;
                         else if (att.Name.Equals("Category"))
