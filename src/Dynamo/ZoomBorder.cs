@@ -133,9 +133,9 @@ namespace Dynamo.Controls
                 tt.X = abosuluteX - relative.X * st.ScaleX;
                 tt.Y = abosuluteY - relative.Y * st.ScaleY;
 
-                dynWorkspaceViewModel viewModel = DataContext as dynWorkspaceViewModel;
-                if (viewModel.SetZoomCommand.CanExecute(st.ScaleX))
-                    viewModel.SetZoomCommand.Execute(st.ScaleX);
+                var vm = DataContext as dynWorkspaceViewModel;
+                if (vm.SetZoomCommand.CanExecute(st.ScaleX))
+                    vm.SetZoomCommand.Execute(st.ScaleX);
             }
         }
 
