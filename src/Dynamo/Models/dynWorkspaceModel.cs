@@ -362,6 +362,7 @@ namespace Dynamo
                 var root = xmlDoc.CreateElement("dynWorkspace"); //write the root element
                 root.SetAttribute("X", workSpace.X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", workSpace.Y.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("zoom", dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x._model == workSpace).Zoom.ToString(CultureInfo.InvariantCulture));
 
                 if (!savingHomespace) //If we are not saving the home space
                 {
