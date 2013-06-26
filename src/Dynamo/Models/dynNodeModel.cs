@@ -259,7 +259,16 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Get the last computed value from the node.
         /// </summary>
-        public Value OldValue { get; protected set; }
+        public Value _oldValue = null;
+        public Value OldValue { 
+            get
+            {
+                return _oldValue;
+            }
+            protected set { 
+                _oldValue = value;
+                RaisePropertyChanged("OldValue");
+        }}
 
         protected internal ExecutionEnvironment macroEnvironment = null;
 
@@ -593,14 +602,20 @@ namespace Dynamo.Nodes
             else
             {
                 if (partial)
+                {
                     nodes[outPort] = new AnonymousFunctionNode(partialSymList, node);
+                }
                 else
+                {
                     nodes[outPort] = node;
+                }
+                
             }
 
             //If this is a partial application, then remember not to re-eval.
             if (partial)
             {
+                OldValue = Value.NewFunction(null); // cache an old value for display to the user
                 RequiresRecalc = false;
             }
             
