@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -81,11 +81,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Release
-copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Debug</PostBuildEvent>
-    <PostBuildEvent>copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Release</PostBuildEvent>
-copy /Y ..\..\extern\DynamoAsm\* ..\..\bin\Debug
-</PostBuildEvent>
     <PostBuildEvent>copy /Y ..\..\extern\DynamoAsm\* $(OutDir)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
