@@ -1989,8 +1989,8 @@ namespace Dynamo.Controls
 
                 //set the zoom and trigger events
                 //to get the view to scale iteself
+                ws.Zoom = zoom;
                 var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == ws);
-                vm.Zoom = zoom;
                 vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 
             }
@@ -2384,6 +2384,11 @@ namespace Dynamo.Controls
 
             _model.CurrentSpace = newWs;
             _model.CurrentSpace.OnDisplayed();
+
+            //set the zoom and offsets events
+            var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == newWs);
+            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(newWs.X, newWs.Y)));
+            vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
         }
 
         public bool OpenWorkspace(string xmlPath)
@@ -2392,7 +2397,7 @@ namespace Dynamo.Controls
             CleanWorkbench();
 
             Stopwatch sw = new Stopwatch();
-            
+
             try
             {
                 #region read xml file
@@ -2432,9 +2437,9 @@ namespace Dynamo.Controls
                 //to get the view to position iteself
                 _model.CurrentSpace.X = cx;
                 _model.CurrentSpace.Y = cy;
+                _model.CurrentSpace.Zoom = zoom;
                 var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == _model.CurrentSpace);
-                vm.Zoom = zoom;
-                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx,cy)));
+                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
@@ -2489,7 +2494,7 @@ namespace Dynamo.Controls
                         t = Type.GetType(typeName);
 
                         //if we still can't find the type, try the also known as attributes
-                        if(t == null)
+                        if (t == null)
                         {
                             //try to get the also known as values
                             foreach (KeyValuePair<string, TypeLoadData> kvp in Controller.BuiltInTypesByName)
@@ -2499,7 +2504,7 @@ namespace Dynamo.Controls
                                 {
                                     if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
                                     {
-                                        Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key , typeName));
+                                        Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key, typeName));
                                         t = kvp.Value.Type;
                                     }
                                 }
@@ -2527,12 +2532,12 @@ namespace Dynamo.Controls
                     if (isUpstreamVisAttrib != null)
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
-                    dynNodeModel el = CreateNodeInstance( t, nickname, guid );
+                    dynNodeModel el = CreateNodeInstance(t, nickname, guid);
                     el.WorkSpace = _model.CurrentSpace;
                     el.LoadNode(elNode);
 
                     _model.CurrentSpace.Nodes.Add(el);
-                    
+
                     el.X = x;
                     el.Y = y;
 
@@ -2645,7 +2650,7 @@ namespace Dynamo.Controls
                 #endregion
 
                 Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
-                
+
                 foreach (dynNodeModel e in _model.CurrentSpace.Nodes)
                     e.EnableReporting();
 

@@ -32,7 +32,6 @@ namespace Dynamo
         public dynWorkspaceModel _model;
 
         private bool isConnecting = false;
-        private double zoom = 1.0;
 
         public event EventHandler StopDragging;
         public event PointEventHandler CurrentOffsetChanged;
@@ -43,6 +42,11 @@ namespace Dynamo
 
         private bool _watchEscapeIsDown = false;
 
+        /// <summary>
+        /// Used during open and workspace changes to set the location of the workspace
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
         {
             if (CurrentOffsetChanged != null)
@@ -52,6 +56,11 @@ namespace Dynamo
             }
         }
 
+        /// <summary>
+        /// Used during open and workspace changes to set the zoom of the workspace
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public virtual void OnZoomChanged(object sender, ZoomEventArgs e)
         {
             if (ZoomChanged != null)
@@ -242,22 +251,6 @@ namespace Dynamo
             get { return _model.HasUnsavedChanges; }
         }
 
-        /// <summary>
-        /// Specifies the pan location of the view
-        /// </summary>
-        //public Point CurrentOffset
-        //{
-        //    get
-        //    {
-        //        return new Point(_model.X, _model.Y);
-        //    }
-        //    set
-        //    {
-        //        Debug.WriteLine(string.Format("Setting current offset to {0}", value));
-        //        OnCurrentOffsetChanged(this, new PointEventArgs(value));
-        //    }
-        //}
-
         public dynWorkspaceModel Model
         {
             get { return _model; }
@@ -275,13 +268,7 @@ namespace Dynamo
 
         public double Zoom
         {
-            get { return zoom; }
-            set 
-            { 
-                zoom = value;
-                RaisePropertyChanged("Zoom");
-                OnZoomChanged(this, new ZoomEventArgs(zoom));
-            }
+            get { return _model.Zoom; }
         }
 
         #endregion
@@ -289,9 +276,6 @@ namespace Dynamo
         public dynWorkspaceViewModel(dynWorkspaceModel model, DynamoViewModel vm)
         {
             _model = model;
-
-            //this.CurrentOffset = new Point(10,10);
-            OnCurrentOffsetChanged(this, new PointEventArgs(new Point(model.X, model.Y)));
 
             var nodesColl = new CollectionContainer { Collection = Nodes };
             WorkspaceElements.Add(nodesColl);
@@ -407,10 +391,11 @@ namespace Dynamo
                     RaisePropertyChanged("Name");
                     break;
                 case "X":
-                    //RaisePropertyChanged("CurrentOffset");
                     break;
                 case "Y":
-                    //RaisePropertyChanged("CurrentOffset");
+                    break;
+                case "Zoom":
+                    OnZoomChanged(this, new ZoomEventArgs(_model.Zoom));
                     break;
                 case "IsCurrentSpace":
                     RaisePropertyChanged("IsCurrentSpace");
@@ -720,7 +705,7 @@ namespace Dynamo
 
         private void SetZoom(object zoom)
         {
-            Zoom = Convert.ToDouble(zoom);
+            _model.Zoom = Convert.ToDouble(zoom); ;
         }
 
         private bool CanSetZoom(object zoom)
