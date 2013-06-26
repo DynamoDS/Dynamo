@@ -817,16 +817,41 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        bool resetPlaneofSketchPlaneElement(SketchPlane sp, Plane p)
+        {
+            XYZ newOrigin = p.Origin;
+            XYZ newNorm = p.Normal;
+            var oldP = sp.Plane;
+            XYZ oldOrigin = oldP.Origin;
+            XYZ oldNorm = oldP.Normal;
+            
+            Transform trfP = null;
+            if (oldNorm.IsAlmostEqualTo(newNorm))
+            {
+                XYZ moveVec = newOrigin - oldOrigin;
+                if (moveVec.GetLength() > 0.000000001)
+                    ElementTransformUtils.MoveElement(this.UIDocument.Document, sp.Id, moveVec);
+                return true;
+            }
+            //rotation might not work for sketch planes
+            return false;
+        }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
             //TODO: If possible, update to handle mutation rather than deletion...
-            foreach (var e in this.Elements)
-                this.DeleteElement(e);
+            //foreach (var e in this.Elements)
+            //    this.DeleteElement(e);
 
             if (input.IsList)
             {
+                //TODO: If possible, update to handle mutation rather than deletion...
+                //but: how to preserve elements when list size changes or user reshuffles elements in the list?
+                foreach (var e in this.Elements)
+                    this.DeleteElement(e);
+
                 var planeList = (input as Value.List).Item;
 
                 var result = Utils.SequenceToFSharpList(
@@ -878,32 +903,53 @@ namespace Dynamo.Nodes
             }
             else
             {
-                var x = ((Value.Container)input).Item;
                 SketchPlane sp = null;
+                bool keepExistingElement = false;
+                var x = ((Value.Container)input).Item;
 
-                //handle Plane, Reference or PlanarFace, also test for family or project doc. there probably is a cleaner way to test for all these conditions.
-                if (x is Plane)
+                //TODO: If possible, update to handle mutation rather than deletion...
+                if (this.Elements.Count == 1)
                 {
-                    Plane p = x as Plane;
-                    sp  = (this.UIDocument.Document.IsFamilyDocument)
-                       ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
-                       : this.UIDocument.Document.Create.NewSketchPlane(p);
+                    Element e = this.UIDocument.Document.GetElement(this.Elements[0]);
+                    if (e != null && ( e is SketchPlane))
+                    {
+                       sp = (SketchPlane) e;
+                       
+                       if (x is Reference)
+                           keepExistingElement = true;
+                       else if (x is Plane && resetPlaneofSketchPlaneElement(sp, (Plane) x))
+                           keepExistingElement = true;
+                    }
                 }
-                else if (x is Reference)
+                if (!keepExistingElement)
                 {
-                    Reference r = x as Reference;
-                    sp  = (this.UIDocument.Document.IsFamilyDocument)
-                       ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(r)
-                       : this.UIDocument.Document.Create.NewSketchPlane(r);
-                } else if (x is PlanarFace)
-                {
-                    PlanarFace p = x as PlanarFace;
-                    sp = (this.UIDocument.Document.IsFamilyDocument)
-                       ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
-                       : this.UIDocument.Document.Create.NewSketchPlane(p);
-                }
+                    foreach (var e in this.Elements)
+                        this.DeleteElement(e);
 
-                this.Elements.Add(sp.Id);
+                    //handle Plane, Reference or PlanarFace, also test for family or project doc. there probably is a cleaner way to test for all these conditions.
+                    if (x is Plane)
+                    {
+                        Plane p = x as Plane;
+                        sp  = (this.UIDocument.Document.IsFamilyDocument)
+                           ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
+                           : this.UIDocument.Document.Create.NewSketchPlane(p);
+                    }
+                    else if (x is Reference)
+                    {
+                        Reference r = x as Reference;
+                        sp  = (this.UIDocument.Document.IsFamilyDocument)
+                           ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(r)
+                           : this.UIDocument.Document.Create.NewSketchPlane(r);
+                    } else if (x is PlanarFace)
+                    {
+                        PlanarFace p = x as PlanarFace;
+                        sp = (this.UIDocument.Document.IsFamilyDocument)
+                           ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
+                           : this.UIDocument.Document.Create.NewSketchPlane(p);
+                    }
+
+                    this.Elements.Add(sp.Id);
+                }
 
                 return Value.NewContainer(sp);
             }
