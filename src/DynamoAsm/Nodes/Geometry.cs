@@ -258,10 +258,154 @@ namespace Dynamo.Nodes
     }
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Point X")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Extract the X value of a Point.")]
+    public class PointXNode : GraphicItemNode
+    {
+        public PointXNode()
+        {
+            InPortData.Add(new PortData("Point", "Input Point", typeof(Value.Container)));
+            OutPortData.Add(new PortData("X", "X value", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Point p = (Point)((Value.Container)args[0]).Item;
+
+            double x = p.x();
+
+            return Value.NewNumber(x);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Point Y")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Extract the Y value of a Point.")]
+    public class PointYNode : GraphicItemNode
+    {
+        public PointYNode()
+        {
+            InPortData.Add(new PortData("Point", "Input Point", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Y", "Y value", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Point p = (Point)((Value.Container)args[0]).Item;
+
+            double y = p.y();
+
+            return Value.NewNumber(y);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Point Z")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Extract the Z value of a Point.")]
+    public class PointZNode : GraphicItemNode
+    {
+        public PointZNode()
+        {
+            InPortData.Add(new PortData("Point", "Input Point", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Z", "Z value", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Point p = (Point)((Value.Container)args[0]).Item;
+
+            double z = p.z();
+
+            return Value.NewNumber(z);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Vector X")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Extract the X value of a Vector.")]
+    public class VectorXNode : GraphicItemNode
+    {
+        public VectorXNode()
+        {
+            InPortData.Add(new PortData("Vector", "Input Vector", typeof(Value.Container)));
+            OutPortData.Add(new PortData("X", "X value", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Vector p = (Vector)((Value.Container)args[0]).Item;
+
+            double x = p.x();
+
+            return Value.NewNumber(x);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Vector Y")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Extract the Y value of a Vector.")]
+    public class VectorYNode : GraphicItemNode
+    {
+        public VectorYNode()
+        {
+            InPortData.Add(new PortData("Vector", "Input Vector", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Y", "Y value", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Vector p = (Vector)((Value.Container)args[0]).Item;
+
+            double y = p.y();
+
+            return Value.NewNumber(y);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Vector Z")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Extract the Z value of a Vector.")]
+    public class VectorZNode : GraphicItemNode
+    {
+        public VectorZNode()
+        {
+            InPortData.Add(new PortData("Vector", "Input Vector", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Z", "Z value", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Vector p = (Vector)((Value.Container)args[0]).Item;
+
+            double z = p.z();
+
+            return Value.NewNumber(z);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
     [NodeName("Vector")]
     [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
     [NodeDescription("Create a Vector representing a direction.")]
-    public class VectorNode : dynNodeWithOneOutput
+    public class VectorNode : LibGNode
     {
         private Vector _vector = null;
 
@@ -457,7 +601,7 @@ namespace Dynamo.Nodes
     {
         public LengthNode()
         {
-            InPortData.Add(new PortData("Curve", "Start Point", typeof(Value.Container)));
+            InPortData.Add(new PortData("Curve", "Input Curve", typeof(Value.Container)));
             OutPortData.Add(new PortData("Length", "Length, not in a unit", typeof(Value.Number)));
 
             RegisterAllPorts();
@@ -470,6 +614,30 @@ namespace Dynamo.Nodes
             double l = c.length();
 
             return Value.NewNumber(l);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Area")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Get the area of a Surface.")]
+    public class AreaNode : GraphicItemNode
+    {
+        public AreaNode()
+        {
+            InPortData.Add(new PortData("Surface", "Input Surface", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Area", "Surface area", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Surface s = (Surface)((Value.Container)args[0]).Item;
+
+            double a = s.area();
+
+            return Value.NewNumber(a);
         }
     }
 
@@ -783,18 +951,18 @@ namespace Dynamo.Nodes
     }
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
-    [NodeName("Point At Parameter")]
+    [NodeName("Normal At Parameter")]
     [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
-    [NodeDescription("Point at Parameter along Curve.")]
-    public class PointAtParameterNode : GraphicItemNode
+    [NodeDescription("Normal at Parameter along Curve.")]
+    public class NormalAtParameterNode : GraphicItemNode
     {
-        Point _point = null;
+        Vector _vector = null;
 
-        public PointAtParameterNode()
+        public NormalAtParameterNode()
         {
             InPortData.Add(new PortData("Curve", "Curve to evaluate", typeof(Value.Container)));
             InPortData.Add(new PortData("Parameter", "Parameter from 0 to 1", typeof(Value.Number)));
-            OutPortData.Add(new PortData("Point", "Point at Parameter", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Vector", "Vector at Parameter", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -804,12 +972,9 @@ namespace Dynamo.Nodes
             Curve curve = (Curve)((Value.Container)args[0]).Item;
             double param = ((Value.Number)args[1]).Item;
 
-            _point = curve.point_at_parameter(param);
-            GraphicItem.persist(_point);
+            _vector = curve.normal_at_parameter(param);
 
-            _graphicItems.Add(_point);
-
-            return Value.NewContainer(_point);
+            return Value.NewContainer(_vector);
         }
     }
 
@@ -846,6 +1011,35 @@ namespace Dynamo.Nodes
         }
     }
 
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Normal At UV Parameter")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Normal at Parameter on Surface.")]
+    public class NormalAtUVParameterNode : LibGNode
+    {
+        Vector _vector = null;
+
+        public NormalAtUVParameterNode()
+        {
+            InPortData.Add(new PortData("Surface", "Surface to evaluate", typeof(Value.Container)));
+            InPortData.Add(new PortData("U", "Parameter from 0 to 1", typeof(Value.Number)));
+            InPortData.Add(new PortData("V", "Parameter from 0 to 1", typeof(Value.Number)));
+            OutPortData.Add(new PortData("Vector", "Point at Parameter", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Surface surf = (Surface)((Value.Container)args[0]).Item;
+            double u = ((Value.Number)args[1]).Item;
+            double v = ((Value.Number)args[2]).Item;
+
+            _vector = surf.normal_at_parameter(u, v);
+
+            return Value.NewContainer(_vector);
+        }
+    }
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
     [NodeName("Thicken Surface")]
@@ -934,6 +1128,52 @@ namespace Dynamo.Nodes
 
                 return Value.NewList(Utils.SequenceToFSharpList(return_values));
             }
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Trim")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Trim Geometry with a tool Geometry.")]
+    public class TrimNode : GraphicItemNode
+    {
+        Geometry _result = null;
+
+        public TrimNode()
+        {
+            InPortData.Add(new PortData("Geometry", "Base Geoemtry to trim", typeof(Value.Container)));
+            InPortData.Add(new PortData("Tool", "Tool Geometry", typeof(Value.Container)));
+            InPortData.Add(new PortData("Pick Point", "This node returns the Geoemtry closest to the pick Point", typeof(Value.Container)));
+
+            OutPortData.Add(new PortData("Geometry", "Outcome", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Geometry base_geometry = (Geometry)((Value.Container)args[0]).Item;
+            Geometry tool_geometry = (Geometry)((Value.Container)args[1]).Item;
+            Point pick_point = (Point)((Value.Container)args[2]).Item;
+
+            Surface base_surface = base_geometry as Surface;
+            Solid base_solid = base_geometry as Solid;
+
+            Geometry result = null;
+
+            if (base_surface != null)
+                result = base_surface.trim(tool_geometry, pick_point);
+
+            if (base_solid != null)
+                result = base_solid.trim(tool_geometry, pick_point);
+
+            // TODO: implement curve. Trim has odd interface
+            _result = RestoreProperType(result);
+
+            GraphicItem.persist(_result);
+            _graphicItems.Add(_result);
+
+            return Value.NewContainer(_result); 
         }
     }
 }
