@@ -1151,13 +1151,7 @@ namespace Dynamo.Nodes
 
         void SetTooltip()
         {
-            Type t = GetType();
-            object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
-            if (rtAttribs.Length > 0)
-            {
-                string description = ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
-                ToolTipText = description;
-            }
+            ToolTipText = "";
         }
 
         public IEnumerable<dynConnectorModel> AllConnectors()

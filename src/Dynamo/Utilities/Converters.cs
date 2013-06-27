@@ -12,6 +12,26 @@ using Dynamo.Nodes;
 namespace Dynamo.Controls
 {
 
+    public class EmptyStringToCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is string && !string.IsNullOrEmpty(value as string))
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PortNameConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
