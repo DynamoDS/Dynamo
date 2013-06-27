@@ -39,6 +39,8 @@
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
     <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter"/>
+    <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"/>
+    <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter"/>
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
     <controls:ShowHideClassicNavigatorMenuItemConverter x:Key="ShowHideClassicNavigatorMenuItemConverter"/>
     <controls:PortTypeToMarginConverter x:Key="PortTypeToMarginConverter"/>

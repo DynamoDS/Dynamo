@@ -78,6 +78,8 @@ namespace Dynamo.Views
             Canvas.SetRight(view, 0);
         }
 
+        private double currentNodeCascadeOffset = 0.0;
+
         void vm_RequestNodeCentered(object sender, EventArgs e)
         {
             double x = 0;
@@ -90,9 +92,15 @@ namespace Dynamo.Views
 
             // apply small perturbation
             // so node isn't right on top of last placed node
-            var r = new Random();
-            x += (r.NextDouble() - 0.5) * 50;
-            y += (r.NextDouble() - 0.5) * 50;
+            if (currentNodeCascadeOffset > 96.0)
+            {
+                currentNodeCascadeOffset = 0.0;
+            }
+
+            x += currentNodeCascadeOffset;
+            y += currentNodeCascadeOffset;
+
+            currentNodeCascadeOffset += 24.0;
             
             var transformFromOuterCanvas = data.ContainsKey("transformFromOuterCanvasCoordinates");
 
