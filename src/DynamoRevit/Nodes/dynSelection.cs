@@ -708,17 +708,40 @@ namespace Dynamo.Nodes
             //TODO: Is there a better way to get a face that has a reference?
             foreach (GeometryObject geob in dynRevitSettings.Doc.Document.GetElement(_f).get_Geometry(opts))
             {
-                var solid = (Solid)geob;
-                foreach (Face f in solid.Faces)
+                if (FindFaceInGeometryObject(geob, ref face))
+                    break;
+            }
+
+            return Value.NewContainer(face);
+        }
+
+        private static bool FindFaceInGeometryObject(GeometryObject geob, ref Face face)
+        {
+            var instance = geob as GeometryInstance;
+            if (instance != null)
+            {
+                foreach (var geob_inner in instance.GetInstanceGeometry())
                 {
-                    if (f == face)
+                    FindFaceInGeometryObject(geob_inner, ref face);
+                }
+            }
+            else
+            {
+                var solid = geob as Solid;
+                if (solid != null)
+                {
+                    foreach (Face f in solid.Faces)
                     {
-                        face = f;
+                        if (f == face)
+                        {
+                            face = f;
+                            return true;
+                        }
                     }
                 }
             }
 
-            return Value.NewContainer(face);
+            return false;
         }
 
         public override string SelectionText

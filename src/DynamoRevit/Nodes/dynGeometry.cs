@@ -2554,4 +2554,42 @@ namespace Dynamo.Nodes
             return Value.NewContainer(resultSolid);
         }
     }
+
+    [NodeName("Curves Through Points")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Create a series of linear curves through a set of points.")]
+    public class dynCurvesThroughPoints : dynCurveBase
+    {
+        public dynCurvesThroughPoints()
+        {
+            InPortData.Add(new PortData("points", "List of reference points", typeof(Value.List)));
+            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            bool isRefCurve = Convert.ToBoolean(((Value.Number)args[1]).Item);
+
+            //Build a sequence that unwraps the input list from it's Value form.
+            IEnumerable<XYZ> pts = ((Value.List)args[0]).Item.Select(
+               x => (XYZ)((Value.Container)x).Item
+            );
+
+            crvs.Clear();
+
+            var results = FSharpList<Value>.Empty;
+
+            var enumerable = pts as XYZ[] ?? pts.ToArray();
+            for (int i = 1; i < enumerable.Count(); i++)
+            {
+                Line l = dynRevitSettings.Revit.Application.Create.NewLineBound(enumerable.ElementAt(i), enumerable.ElementAt(i-1));
+                crvs.Add(l);
+                results = FSharpList<Value>.Cons(Value.NewContainer(l), results);
+            }
+
+            return Value.NewList(results);
+        }
+    }
 }
