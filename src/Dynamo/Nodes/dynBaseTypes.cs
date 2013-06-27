@@ -2697,6 +2697,7 @@ namespace Dynamo.Nodes
                     if (Max < Value)
                         Max = Value;
                     Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
+                    tb_slider.Value = Value;
                 }
                 catch
                 {
@@ -2710,22 +2711,8 @@ namespace Dynamo.Nodes
             //maxtb.IsNumeric = true;
 
             maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            //maxtb.OnChangeCommitted += delegate
-            //{
-            //    try
-            //    {
-            //        Max = Convert.ToDouble(maxtb.Text, CultureInfo.InvariantCulture);
-            //    }
-            //    catch
-            //    {
-            //        Max = 100;
-            //    }
-            //};
 
-            
-
-
-            WrapPanel wp = new WrapPanel();
+            var wp = new WrapPanel();
             wp.Children.Add(valtb);
             wp.Children.Add(mintb);
             wp.Children.Add(tb_slider);
