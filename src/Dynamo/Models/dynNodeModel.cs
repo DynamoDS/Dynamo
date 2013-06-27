@@ -769,7 +769,7 @@ namespace Dynamo.Nodes
                         DynamoCommands.WriteToLogCmd.Execute(ex.StackTrace);
                     }
 
-                    Controller.DynamoViewModel.ShowElement(this);
+                    //Controller.DynamoViewModel.ShowElement(this); // not good if multiple nodes are in error state
 
                     Error(ex.Message);
 
