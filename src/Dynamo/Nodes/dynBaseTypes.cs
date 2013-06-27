@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -44,6 +45,7 @@ using System.Windows.Input;
 using System.Windows.Data;
 using System.Globalization;
 using Binding = System.Windows.Forms.Binding;
+using ComboBox = System.Windows.Controls.ComboBox;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 
 namespace Dynamo.Nodes
@@ -2648,9 +2650,10 @@ namespace Dynamo.Nodes
         public dynDoubleSliderInput()
         {
             RegisterAllPorts();
-            Value = 50.0;
+            
             Min = 0.0;
             Max = 100.0;
+            Value = 50.0;
         }
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
@@ -2659,7 +2662,7 @@ namespace Dynamo.Nodes
             tb_slider = new System.Windows.Controls.Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-
+            
             tb_slider.Width = 100;
 
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.None;
@@ -2693,40 +2696,40 @@ namespace Dynamo.Nodes
             mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             mintb.Width = double.NaN;
-            mintb.IsNumeric = true;
+            //mintb.IsNumeric = true;
 
             mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            mintb.OnChangeCommitted += delegate
-            {
-                try
-                {
-                    Min = Convert.ToDouble(mintb.Text);
-                }
-                catch
-                {
-                    Min = 0;
-                }
-            };
+            //mintb.OnChangeCommitted += delegate
+            //{
+            //    try
+            //    {
+            //        Min = Convert.ToDouble(mintb.Text);
+            //    }
+            //    catch
+            //    {
+            //        Min = 0;
+            //    }
+            //};
             //mintb.Pending = false;
 
             maxtb = new dynTextBox();
             maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             maxtb.Width = double.NaN;
-            maxtb.IsNumeric = true;
+            //maxtb.IsNumeric = true;
 
             maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            maxtb.OnChangeCommitted += delegate
-            {
-                try
-                {
-                    Max = Convert.ToDouble(maxtb.Text, CultureInfo.InvariantCulture);
-                }
-                catch
-                {
-                    Max = 100;
-                }
-            };
+            //maxtb.OnChangeCommitted += delegate
+            //{
+            //    try
+            //    {
+            //        Max = Convert.ToDouble(maxtb.Text, CultureInfo.InvariantCulture);
+            //    }
+            //    catch
+            //    {
+            //        Max = 100;
+            //    }
+            //};
 
             WrapPanel wp = new WrapPanel();
             wp.Children.Add(mintb);
@@ -2751,8 +2754,8 @@ namespace Dynamo.Nodes
 
             var bindingValue = new System.Windows.Data.Binding("Value")
             {
-                Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay(),
+                Mode = BindingMode.OneWay,
+                Converter = new DoubleDisplay()
             };
             displayBox.SetBinding(TextBox.TextProperty, bindingValue);
 
@@ -2760,7 +2763,6 @@ namespace Dynamo.Nodes
             {
                 Mode = BindingMode.TwoWay,
                 Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
             tb_slider.SetBinding(Slider.ValueProperty, sliderBinding);
 
@@ -2771,8 +2773,15 @@ namespace Dynamo.Nodes
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            tb_slider.SetBinding(Slider.MaximumProperty, bindingMax);
             maxtb.SetBinding(dynTextBox.TextProperty, bindingMax);
+            
+            var bindingMaxSlider = new System.Windows.Data.Binding("Max")
+            {
+                Mode = BindingMode.OneWay,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            tb_slider.SetBinding(Slider.MaximumProperty, bindingMaxSlider);
 
             var bindingMin = new System.Windows.Data.Binding("Min")
             {
@@ -2781,8 +2790,15 @@ namespace Dynamo.Nodes
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            tb_slider.SetBinding(Slider.MinimumProperty, bindingMin);
             mintb.SetBinding(dynTextBox.TextProperty, bindingMin);
+
+            var bindingMinSlider = new System.Windows.Data.Binding("Min")
+            {
+                Mode = BindingMode.OneWay,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            tb_slider.SetBinding(Slider.MinimumProperty, bindingMinSlider);
         }
 
         public override double Value
@@ -2795,6 +2811,8 @@ namespace Dynamo.Nodes
             {
                 base.Value = value;
                 RaisePropertyChanged("Value");
+
+                Debug.WriteLine(string.Format("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture)));
             }
         }
         
@@ -3404,12 +3422,22 @@ namespace Dynamo.Nodes
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value==null?"":((double)value).ToString("0.0000", culture);
+            //source -> target
+            string val = ((double) value).ToString("0.00",CultureInfo.CurrentCulture);
+            Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
+            return value == null ? "" : val;
+
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value.ToString();
+            //target -> source
+            //return value.ToString();
+
+            double val = 0.0;
+            double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
+            Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
+            return val;
         }
     }
 
@@ -3493,4 +3521,136 @@ namespace Dynamo.Nodes
         }
     }
     #endregion
+
+    /// <summary>
+    /// A class used to store a name and associated item for a drop down menu
+    /// </summary>
+    public class DynamoDropDownItem
+    {
+        public string Name { get; set; }
+        public object Item { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public DynamoDropDownItem(string name, object item)
+        {
+            Name = name;
+            Item = item;
+        }
+    }
+    /// <summary>
+    /// Base class for all nodes using a drop down
+    /// </summary>
+    public abstract class dynDropDrownBase : dynNodeWithOneOutput
+    {
+        private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
+        public ObservableCollection<DynamoDropDownItem> Items
+        {
+            get { return items; }
+            set
+            {
+                items = value;
+                RaisePropertyChanged("Items");
+            }
+        }
+
+        private int selectedIndex = 0;
+        public int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set
+            {
+                //do not allow selected index to
+                //go out of range of the items collection
+                if (value > Items.Count - 1)
+                {
+                    selectedIndex = -1;
+                }
+                else
+                    selectedIndex = value;
+                RaisePropertyChanged("SelectedIndex");
+            }
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        {
+            base.SetupCustomUIElements(nodeUI);
+
+            //add a drop down list to the window
+            ComboBox combo = new ComboBox();
+            combo.Width = 300;
+            combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            nodeUI.inputGrid.Children.Add(combo);
+            System.Windows.Controls.Grid.SetColumn(combo, 0);
+            System.Windows.Controls.Grid.SetRow(combo, 0);
+
+            combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
+            combo.SelectionChanged += delegate
+            {
+                if (combo.SelectedIndex != -1)
+                    this.RequiresRecalc = true;
+            };
+
+            combo.DataContext = this;
+            //bind this combo box to the selected item hash
+
+            var bindingVal = new System.Windows.Data.Binding("Items")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = this
+            };
+            combo.SetBinding(ComboBox.ItemsSourceProperty, bindingVal);
+
+            //bind the selected index to the 
+            var indexBinding = new System.Windows.Data.Binding("SelectedIndex")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = this
+            };
+            combo.SetBinding(ComboBox.SelectedIndexProperty, indexBinding);
+        }
+
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        {
+            dynEl.SetAttribute("index", SelectedIndex.ToString());
+        }
+
+        public override void LoadNode(XmlNode elNode)
+        {
+            try
+            {
+                SelectedIndex = Convert.ToInt32(elNode.Attributes["index"].Value);
+            }
+            catch { }
+        }
+
+        public virtual void PopulateItems()
+        {
+            //override in child classes
+        }
+
+        /// <summary>
+        /// When the dropdown is opened, the node's implementation of PopulateItemsHash is called
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void combo_DropDownOpened(object sender, EventArgs e)
+        {
+            PopulateItems();
+        }
+
+        /// <summary>
+        /// The base behavior for the drop down node is to return the item at the selected index in the Items collection.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewContainer(Items[SelectedIndex].Item);
+        }
+    }
 }
