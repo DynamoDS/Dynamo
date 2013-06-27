@@ -240,7 +240,10 @@ namespace Dynamo.Nodes
                         //...and if we're successful, update it's position (well for now make a new one with the same name)... 
                         refPlane = e as ReferencePlane;
                         name = refPlane.Name;
-                        this.UIDocument.Document.Delete(refPlane.Id);//delete old one for now
+
+                        XYZ oldBubbleEnd = refPlane.BubbleEnd;
+                        XYZ oldFreeEnd = refPlane.FreeEnd;
+                        XYZ midPointOld = 0.5 * (oldBubbleEnd + oldFreeEnd);
 
                         //refPlane.Reference = (Line)((Value.Container)x).Item;// these are all readonly, how to modify exising grid then?
 
@@ -249,21 +252,38 @@ namespace Dynamo.Nodes
                         bubbleEnd = line.get_EndPoint(0);
                         freeEnd = line.get_EndPoint(1);
 
-                        refPlane = this.UIDocument.Document.IsFamilyDocument
-                          ? this.UIDocument.Document.FamilyCreate.NewReferencePlane(
-                              bubbleEnd,
-                              freeEnd,
-                              XYZ.BasisZ,
-                              this.UIDocument.ActiveView
-                          )
-                          : this.UIDocument.Document.Create.NewReferencePlane(
-                              bubbleEnd,
-                              freeEnd,
-                              XYZ.BasisZ,
-                              this.UIDocument.ActiveView
-                          );
-                        refPlane.Name = name;
+                        XYZ midPoint = 0.5 * (bubbleEnd + freeEnd);
+                        XYZ moveVec = XYZ.BasisZ.DotProduct(midPoint - midPointOld) * XYZ.BasisZ;
+                        bool didByMove = true;
+                        try
+                        {
+                            ElementTransformUtils.MoveElement(this.UIDocument.Document, refPlane.Id, moveVec);
+                            refPlane.BubbleEnd = bubbleEnd;
+                            refPlane.FreeEnd = freeEnd;
+                        }
+                        catch
+                        {
+                            didByMove = false;
+                        }
+                        if (!didByMove)
+                        {
+                            this.UIDocument.Document.Delete(refPlane.Id);//delete old one for now
 
+                            refPlane = this.UIDocument.Document.IsFamilyDocument
+                              ? this.UIDocument.Document.FamilyCreate.NewReferencePlane(
+                                  bubbleEnd,
+                                  freeEnd,
+                                  XYZ.BasisZ,
+                                  this.UIDocument.ActiveView
+                              )
+                              : this.UIDocument.Document.Create.NewReferencePlane(
+                                  bubbleEnd,
+                                  freeEnd,
+                                  XYZ.BasisZ,
+                                  this.UIDocument.ActiveView
+                              );
+                            refPlane.Name = name;
+                        }
                     }
                     else
                     {
