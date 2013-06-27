@@ -769,7 +769,7 @@ namespace Dynamo.Nodes
                         DynamoCommands.WriteToLogCmd.Execute(ex.StackTrace);
                     }
 
-                    Controller.DynamoViewModel.ShowElement(this);
+                    //Controller.DynamoViewModel.ShowElement(this); // not good if multiple nodes are in error state
 
                     Error(ex.Message);
 
@@ -1151,13 +1151,7 @@ namespace Dynamo.Nodes
 
         void SetTooltip()
         {
-            Type t = GetType();
-            object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
-            if (rtAttribs.Length > 0)
-            {
-                string description = ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
-                ToolTipText = description;
-            }
+            ToolTipText = "";
         }
 
         public IEnumerable<dynConnectorModel> AllConnectors()

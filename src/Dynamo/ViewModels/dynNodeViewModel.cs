@@ -122,12 +122,14 @@ namespace Dynamo.Controls
                 {
                     return "Not available in custom nodes";
                 }
-                return nodeLogic.OldValue != null ? BuildValueString(nodeLogic.OldValue, 0, 3, 0, 2).TrimEnd('\n') : "Not available";
+                return BuildValueString(nodeLogic.OldValue, 0, 3, 0, 2).TrimEnd('\n');
             }
         }
 
         public string BuildValueString(FScheme.Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth )
         {
+            if (eIn == null)
+                return "<null>";
 
             string accString = String.Concat(Enumerable.Repeat("  ", currentDepth));
 
@@ -158,6 +160,7 @@ namespace Dynamo.Controls
                 // build all elements of sub list
                 foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
+
                     if (e.Index > maxListIndex)
                     {
                         break;
