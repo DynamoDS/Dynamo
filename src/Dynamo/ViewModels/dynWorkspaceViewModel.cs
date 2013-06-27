@@ -396,6 +396,7 @@ namespace Dynamo
                     break;
                 case "Zoom":
                     OnZoomChanged(this, new ZoomEventArgs(_model.Zoom));
+                    RaisePropertyChanged("Zoom");
                     break;
                 case "IsCurrentSpace":
                     RaisePropertyChanged("IsCurrentSpace");
