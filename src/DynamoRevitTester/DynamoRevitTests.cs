@@ -950,6 +950,47 @@ namespace DynamoRevitTests
             Assert.AreEqual(20, fec.ToElements().Count());
         }
 
+        [Test]
+        public void DividedSurface()
+        {
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            string samplePath = Path.Combine(_testPath, @".\DividedSurfaceTest.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            var shellPath = Path.Combine(_testPath, "shell.rfa");
+
+            SwapCurrentModel(shellPath);
+
+            dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof (DividedSurface));
+
+            //did it create a divided surface?
+            Assert.AreEqual(1, fec.ToElements().Count());
+
+            var ds = (DividedSurface) fec.ToElements()[0];
+            Assert.AreEqual(5, ds.USpacingRule.Number);
+            Assert.AreEqual(5, ds.VSpacingRule.Number);
+
+            //can we change the number of divisions
+            var numNode = (dynDoubleInput)dynRevitSettings.Controller.DynamoModel.Nodes.First(x => x is dynDoubleInput);
+            numNode.Value = 10;
+            dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+
+            //did it create a divided surface?
+            Assert.AreEqual(10, ds.USpacingRule.Number);
+            Assert.AreEqual(10, ds.VSpacingRule.Number);
+
+            //does it throw an error when we try to set a negative number of divisions
+            numNode.Value = -5;
+            Assert.Throws(typeof(NUnit.Framework.AssertionException),
+                          () => dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true));
+            
+        }
+
         /// <summary>
         /// Opens and activates a new model, and closes the old model.
         /// </summary>

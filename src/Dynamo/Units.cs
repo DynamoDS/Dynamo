@@ -71,22 +71,22 @@ namespace Dynamo.Measure
                     return Utils.ToFractionalInches(Item.ConvertTo(DynamoUnitType.INCHES));
 
                 case DynamoUnitDisplayType.DECIMAL_INCHES:
-                    return Item.ConvertTo(DynamoUnitType.INCHES).ToString("0.00", CultureInfo.InvariantCulture) + " in";
+                    return Item.ConvertTo(DynamoUnitType.INCHES).ToString("0.00", CultureInfo.CurrentCulture) + " in";
 
                 case DynamoUnitDisplayType.DECIMAL_FEET:
-                    return Item.ConvertTo(DynamoUnitType.FEET).ToString("0.00", CultureInfo.InvariantCulture) + " ft";
+                    return Item.ConvertTo(DynamoUnitType.FEET).ToString("0.00", CultureInfo.CurrentCulture) + " ft";
 
                 case DynamoUnitDisplayType.FRACTIONAL_FEET_INCHES:
                     return Utils.ToFeetAndFractionalInches(Item.ConvertTo(DynamoUnitType.FEET));
 
                 case DynamoUnitDisplayType.MILLIMETERS:
-                    return Item.ConvertTo(DynamoUnitType.MILLIMETERS).ToString("0.00", CultureInfo.InvariantCulture) + " mm";
+                    return Item.ConvertTo(DynamoUnitType.MILLIMETERS).ToString("0.00", CultureInfo.CurrentCulture) + " mm";
 
                 case DynamoUnitDisplayType.CENTIMETERS:
-                    return Item.ConvertTo(DynamoUnitType.CENTIMETERS).ToString("0.00", CultureInfo.InvariantCulture) + " cm";
+                    return Item.ConvertTo(DynamoUnitType.CENTIMETERS).ToString("0.00", CultureInfo.CurrentCulture) + " cm";
 
                 case DynamoUnitDisplayType.METERS:
-                    return Item.ConvertTo(DynamoUnitType.METERS).ToString("0.00", CultureInfo.InvariantCulture) + " m";
+                    return Item.ConvertTo(DynamoUnitType.METERS).ToString("0.00", CultureInfo.CurrentCulture) + " m";
 
                 default:
                     return ToString();
@@ -491,10 +491,11 @@ namespace Dynamo.Measure
         public static double ParseUnit(string value, string unitSymbol)
         {
             double m;
+
             if (value.ToLower().Contains(unitSymbol))
                 value = value.Replace(unitSymbol, "");
-            m = 0.0;
-            if (!double.TryParse(value, out m))
+
+            if (!double.TryParse(value, NumberStyles.Any, CultureInfo.CurrentCulture, out m))
             {
                 return 0.0;
             }

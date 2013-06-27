@@ -1666,6 +1666,7 @@ namespace Dynamo.Controls
                 string category = "";
                 double cx = DynamoView.CANVAS_OFFSET_X;
                 double cy = DynamoView.CANVAS_OFFSET_Y;
+                double zoom = 1.0;
                 string id = "";
 
                 // load the header
@@ -1677,6 +1678,8 @@ namespace Dynamo.Controls
                             cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("Y"))
                             cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                        else if (att.Name.Equals("zoom"))
+                            zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("Name"))
                             funName = att.Value;
                         else if (att.Name.Equals("Category"))
@@ -1983,6 +1986,12 @@ namespace Dynamo.Controls
 
                 Controller.PackageManagerClient.LoadPackageHeader(def, funName);
                 nodeWorkspaceWasLoaded(def, children, parents);
+
+                //set the zoom and trigger events
+                //to get the view to scale iteself
+                ws.Zoom = zoom;
+                var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == ws);
+                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 
             }
             catch (Exception ex)
@@ -2375,6 +2384,11 @@ namespace Dynamo.Controls
 
             _model.CurrentSpace = newWs;
             _model.CurrentSpace.OnDisplayed();
+
+            //set the zoom and offsets events
+            var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == newWs);
+            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(newWs.X, newWs.Y)));
+            vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
         }
 
         public bool OpenWorkspace(string xmlPath)
@@ -2383,7 +2397,7 @@ namespace Dynamo.Controls
             CleanWorkbench();
 
             Stopwatch sw = new Stopwatch();
-            
+
             try
             {
                 #region read xml file
@@ -2396,20 +2410,36 @@ namespace Dynamo.Controls
                 TimeSpan previousElapsed = sw.Elapsed;
                 Log(string.Format("{0} elapsed for loading xml.", sw.Elapsed));
 
+                double cx = DynamoView.CANVAS_OFFSET_X;
+                double cy = DynamoView.CANVAS_OFFSET_Y;
+                double zoom = 1.0;
+
                 foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
                         if (att.Name.Equals("X"))
                         {
-                            _model.CurrentSpace.X = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                            cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
                         else if (att.Name.Equals("Y"))
                         {
-                            _model.CurrentSpace.Y = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                            cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                        }
+                        else if (att.Name.Equals("zoom"))
+                        {
+                            zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
                     }
                 }
+
+                //set the zoom and offsets and trigger events
+                //to get the view to position iteself
+                _model.CurrentSpace.X = cx;
+                _model.CurrentSpace.Y = cy;
+                _model.CurrentSpace.Zoom = zoom;
+                var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == _model.CurrentSpace);
+                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
@@ -2464,7 +2494,7 @@ namespace Dynamo.Controls
                         t = Type.GetType(typeName);
 
                         //if we still can't find the type, try the also known as attributes
-                        if(t == null)
+                        if (t == null)
                         {
                             //try to get the also known as values
                             foreach (KeyValuePair<string, TypeLoadData> kvp in Controller.BuiltInTypesByName)
@@ -2474,7 +2504,7 @@ namespace Dynamo.Controls
                                 {
                                     if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
                                     {
-                                        Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key , typeName));
+                                        Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key, typeName));
                                         t = kvp.Value.Type;
                                     }
                                 }
@@ -2502,12 +2532,12 @@ namespace Dynamo.Controls
                     if (isUpstreamVisAttrib != null)
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
-                    dynNodeModel el = CreateNodeInstance( t, nickname, guid );
+                    dynNodeModel el = CreateNodeInstance(t, nickname, guid);
                     el.WorkSpace = _model.CurrentSpace;
                     el.LoadNode(elNode);
 
                     _model.CurrentSpace.Nodes.Add(el);
-                    
+
                     el.X = x;
                     el.Y = y;
 
@@ -2620,7 +2650,7 @@ namespace Dynamo.Controls
                 #endregion
 
                 Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
-                
+
                 foreach (dynNodeModel e in _model.CurrentSpace.Nodes)
                     e.EnableReporting();
 
@@ -2899,6 +2929,16 @@ namespace Dynamo.Controls
         public PointEventArgs(Point p)
         {
             Point = p;
+        }
+    }
+
+    public class ZoomEventArgs : EventArgs
+    {
+        public double Zoom { get; set; }
+
+        public ZoomEventArgs(double zoom)
+        {
+            Zoom = zoom;
         }
     }
 
