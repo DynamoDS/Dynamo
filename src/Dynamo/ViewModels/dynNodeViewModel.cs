@@ -117,7 +117,13 @@ namespace Dynamo.Controls
 
         public string OldValue
         {
-            get { return nodeLogic.OldValue != null ? BuildValueString( nodeLogic.OldValue, 0, 3, 0, 2).TrimEnd('\n') : "Not available"; }
+            get { 
+                if (this.nodeLogic.WorkSpace is FuncWorkspace)
+                {
+                    return "Not available in custom nodes";
+                }
+                return nodeLogic.OldValue != null ? BuildValueString(nodeLogic.OldValue, 0, 3, 0, 2).TrimEnd('\n') : "Not available";
+            }
         }
 
         public string BuildValueString(FScheme.Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth )

@@ -679,10 +679,22 @@ namespace Dynamo.Nodes
 
         private Value evalIfDirty(FSharpList<Value> args)
         {
+            // should I re-evaluate?
             if (OldValue == null || !SaveResult || RequiresRecalc)
             {
-                //Evaluate arguments, then evaluate 
-                OldValue = evaluateNode(args);
+                
+                // re-evaluate
+                var result = evaluateNode(args);
+
+                // if it was a failure, the old value is null
+                if (result.IsString && (result as Value.String).Item == _failureString)
+                {
+                    OldValue = null;
+                }
+                else // cache the old value
+                {
+                    OldValue = result;
+                }               
             }
             else
                 OnEvaluate();
@@ -786,9 +798,11 @@ namespace Dynamo.Nodes
                 if (result.Value != null)
                     return result.Value;
                 else
-                    return Value.NewString("Node evaluation failed");
+                    return Value.NewString(_failureString);
             }
         }
+
+        private string _failureString = "Node evaluation failed";
 
         protected virtual void OnRunCancelled()
         {

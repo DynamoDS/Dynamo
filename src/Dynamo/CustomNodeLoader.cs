@@ -585,8 +585,8 @@ namespace Dynamo.Utilities
 
                     string nickname = nicknameAttrib.Value;
 
-                    double x = Convert.ToDouble(xAttrib.Value);
-                    double y = Convert.ToDouble(yAttrib.Value);
+                    double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
+                    double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
                     bool isVisible = true;
                     if (isVisAttrib != null)
