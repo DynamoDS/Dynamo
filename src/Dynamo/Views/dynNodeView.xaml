@@ -43,7 +43,7 @@
                 <TextBlock Name="tt_longText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                            Text="{Binding Path=ToolTipText}" FontFamily="Consolas" FontSize="11" TextTrimming="WordEllipsis" Margin="2"/>-->
                 <TextBlock Name="tt_lastValueName" HorizontalAlignment="Stretch" 
-                           VerticalAlignment="Top" Text="Old Value:" FontSize="11" FontFamily="Arial" FontWeight="Bold" Margin="2"/>
+                           VerticalAlignment="Top" Text="Last Value:" FontSize="11" FontFamily="Arial" FontWeight="Bold" Margin="2"/>
                 <TextBlock Name="tt_lastValue" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                            Text="{Binding Path=OldValue}" FontFamily="Consolas" FontSize="11" TextTrimming="WordEllipsis" Margin="2"/>
             </StackPanel>
