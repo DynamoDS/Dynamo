@@ -2323,12 +2323,12 @@ namespace Dynamo.Nodes
             {
                 var p = CaretIndex;
 
-                base.Text = dynSettings.RemoveChars(
-                   Text,
-                   Text.ToCharArray()
-                      .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
-                      .Select(c => c.ToString())
-                );
+                //base.Text = dynSettings.RemoveChars(
+                //   Text,
+                //   Text.ToCharArray()
+                //      .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
+                //      .Select(c => c.ToString())
+                //);
 
                 CaretIndex = p;
             }
