@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -44,6 +45,7 @@ using System.Windows.Input;
 using System.Windows.Data;
 using System.Globalization;
 using Binding = System.Windows.Forms.Binding;
+using ComboBox = System.Windows.Controls.ComboBox;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 
 namespace Dynamo.Nodes
@@ -3519,4 +3521,136 @@ namespace Dynamo.Nodes
         }
     }
     #endregion
+
+    /// <summary>
+    /// A class used to store a name and associated item for a drop down menu
+    /// </summary>
+    public class DynamoDropDownItem
+    {
+        public string Name { get; set; }
+        public object Item { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public DynamoDropDownItem(string name, object item)
+        {
+            Name = name;
+            Item = item;
+        }
+    }
+    /// <summary>
+    /// Base class for all nodes using a drop down
+    /// </summary>
+    public abstract class dynDropDrownBase : dynNodeWithOneOutput
+    {
+        private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
+        public ObservableCollection<DynamoDropDownItem> Items
+        {
+            get { return items; }
+            set
+            {
+                items = value;
+                RaisePropertyChanged("Items");
+            }
+        }
+
+        private int selectedIndex = 0;
+        public int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set
+            {
+                //do not allow selected index to
+                //go out of range of the items collection
+                if (value > Items.Count - 1)
+                {
+                    selectedIndex = -1;
+                }
+                else
+                    selectedIndex = value;
+                RaisePropertyChanged("SelectedIndex");
+            }
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        {
+            base.SetupCustomUIElements(nodeUI);
+
+            //add a drop down list to the window
+            ComboBox combo = new ComboBox();
+            combo.Width = 300;
+            combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            nodeUI.inputGrid.Children.Add(combo);
+            System.Windows.Controls.Grid.SetColumn(combo, 0);
+            System.Windows.Controls.Grid.SetRow(combo, 0);
+
+            combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
+            combo.SelectionChanged += delegate
+            {
+                if (combo.SelectedIndex != -1)
+                    this.RequiresRecalc = true;
+            };
+
+            combo.DataContext = this;
+            //bind this combo box to the selected item hash
+
+            var bindingVal = new System.Windows.Data.Binding("Items")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = this
+            };
+            combo.SetBinding(ComboBox.ItemsSourceProperty, bindingVal);
+
+            //bind the selected index to the 
+            var indexBinding = new System.Windows.Data.Binding("SelectedIndex")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = this
+            };
+            combo.SetBinding(ComboBox.SelectedIndexProperty, indexBinding);
+        }
+
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        {
+            dynEl.SetAttribute("index", SelectedIndex.ToString());
+        }
+
+        public override void LoadNode(XmlNode elNode)
+        {
+            try
+            {
+                SelectedIndex = Convert.ToInt32(elNode.Attributes["index"].Value);
+            }
+            catch { }
+        }
+
+        public virtual void PopulateItems()
+        {
+            //override in child classes
+        }
+
+        /// <summary>
+        /// When the dropdown is opened, the node's implementation of PopulateItemsHash is called
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void combo_DropDownOpened(object sender, EventArgs e)
+        {
+            PopulateItems();
+        }
+
+        /// <summary>
+        /// The base behavior for the drop down node is to return the item at the selected index in the Items collection.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewContainer(Items[SelectedIndex].Item);
+        }
+    }
 }
