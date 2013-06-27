@@ -128,7 +128,6 @@
     <Compile Include="Nodes\dynSelection.cs" />
     <Compile Include="Nodes\dynSimplexNoise.cs" />
     <Compile Include="Nodes\dynSolarRadiation.cs" />
-    <Compile Include="Nodes\dynStructural.cs" />
     <Compile Include="Nodes\dynTessellation.cs" />
     <Compile Include="Nodes\dynTransactions.cs" />
     <Compile Include="Nodes\dynTransforms.cs" />
