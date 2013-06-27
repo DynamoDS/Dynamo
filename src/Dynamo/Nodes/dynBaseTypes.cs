@@ -2643,7 +2643,8 @@ namespace Dynamo.Nodes
         Slider tb_slider;
         dynTextBox mintb;
         dynTextBox maxtb;
-        TextBox displayBox;
+        dynTextBox valtb;
+
         private double max;
         private double min;
 
@@ -2667,28 +2668,8 @@ namespace Dynamo.Nodes
 
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.None;
 
-            tb_slider.ValueChanged += delegate
-            {
-                var pos = Mouse.GetPosition(nodeUI.elementCanvas);
-                Canvas.SetLeft(displayBox, pos.X);
-                Canvas.SetTop(displayBox, Height);
-            };
-
-            tb_slider.PreviewMouseDown += delegate
-            {
-                if (nodeUI.IsEnabled && !nodeUI.elementCanvas.Children.Contains(displayBox))
-                {
-                    nodeUI.elementCanvas.Children.Add(displayBox);
-                    var pos = Mouse.GetPosition(nodeUI.elementCanvas);
-                    Canvas.SetLeft(displayBox, pos.X);
-                }
-            };
-
             tb_slider.PreviewMouseUp += delegate
             {
-                if (nodeUI.elementCanvas.Children.Contains(displayBox))
-                    nodeUI.elementCanvas.Children.Remove(displayBox);
-
                 dynSettings.ReturnFocusToSearch();
             };
 
@@ -2696,21 +2677,31 @@ namespace Dynamo.Nodes
             mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             mintb.Width = double.NaN;
-            //mintb.IsNumeric = true;
 
             mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            //mintb.OnChangeCommitted += delegate
-            //{
-            //    try
-            //    {
-            //        Min = Convert.ToDouble(mintb.Text);
-            //    }
-            //    catch
-            //    {
-            //        Min = 0;
-            //    }
-            //};
-            //mintb.Pending = false;
+
+            // input value textbox
+            valtb = new dynTextBox();
+            valtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            valtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            valtb.Width = double.NaN;
+            valtb.Margin = new Thickness(0,0,10,0);
+            //maxtb.IsNumeric = true;
+            valtb.OnChangeCommitted += delegate
+            {
+                try
+                {
+                    Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
+                    if (Min > Value)
+                        Min = Value;
+                    if (Max < Value)
+                        Max = Value;
+                    Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
+                }
+                catch
+                {
+                }
+            };
 
             maxtb = new dynTextBox();
             maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
@@ -2731,34 +2722,30 @@ namespace Dynamo.Nodes
             //    }
             //};
 
+            
+
+
             WrapPanel wp = new WrapPanel();
+            wp.Children.Add(valtb);
             wp.Children.Add(mintb);
             wp.Children.Add(tb_slider);
             wp.Children.Add(maxtb);
             nodeUI.inputGrid.Children.Add(wp);
 
-            displayBox = new TextBox()
-            {
-                IsReadOnly = true,
-                Background = Brushes.White,
-                Foreground = Brushes.Black
-            };
-
-            Canvas.SetTop(displayBox, nodeUI.Height);
-            Canvas.SetZIndex(displayBox, int.MaxValue);
-
-            displayBox.DataContext = this;
             maxtb.DataContext = this;
             tb_slider.DataContext = this;
             mintb.DataContext = this;
+            valtb.DataContext = this;
 
-            var bindingValue = new System.Windows.Data.Binding("Value")
+            // value input
+            var inputBinding = new System.Windows.Data.Binding("Value")
             {
-                Mode = BindingMode.OneWay,
+                Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay()
             };
-            displayBox.SetBinding(TextBox.TextProperty, bindingValue);
+            valtb.SetBinding(dynTextBox.TextProperty, inputBinding);
 
+            // slider value 
             var sliderBinding = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
@@ -2766,6 +2753,7 @@ namespace Dynamo.Nodes
             };
             tb_slider.SetBinding(Slider.ValueProperty, sliderBinding);
 
+            // max value
             var bindingMax = new System.Windows.Data.Binding("Max")
             {
                 Mode = BindingMode.TwoWay,
@@ -2774,7 +2762,8 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             maxtb.SetBinding(dynTextBox.TextProperty, bindingMax);
-            
+
+            // max slider value
             var bindingMaxSlider = new System.Windows.Data.Binding("Max")
             {
                 Mode = BindingMode.OneWay,
@@ -2783,6 +2772,8 @@ namespace Dynamo.Nodes
             };
             tb_slider.SetBinding(Slider.MaximumProperty, bindingMaxSlider);
 
+
+            // min value
             var bindingMin = new System.Windows.Data.Binding("Min")
             {
                 Mode = BindingMode.TwoWay,
@@ -2792,6 +2783,7 @@ namespace Dynamo.Nodes
             };
             mintb.SetBinding(dynTextBox.TextProperty, bindingMin);
 
+            // min slider value
             var bindingMinSlider = new System.Windows.Data.Binding("Min")
             {
                 Mode = BindingMode.OneWay,
