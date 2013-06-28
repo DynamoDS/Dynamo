@@ -688,7 +688,7 @@ namespace Dynamo.Controls
 
                 if (Controller.CustomNodeLoader.Contains(name) || Controller.BuiltInTypesByNickname.ContainsKey(name))
                 {
-                    error = "A function with this name already exists.";
+                    error = "A node with this name already exists.";
                     System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
                                                    MessageBoxImage.Warning);
 
