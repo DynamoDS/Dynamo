@@ -686,18 +686,23 @@ namespace Dynamo.Controls
                 name = dialog.Text;
                 category = dialog.Category;
 
-                if (Controller.CustomNodeLoader.Contains(name) || Controller.BuiltInTypesByNickname.ContainsKey(name))
+                if (Controller.CustomNodeLoader.Contains(name))
                 {
-                    error = "A node with this name already exists.";
+                    error = "A custom node with the given name already exists.";
                     System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
-                                                   MessageBoxImage.Warning);
-
+                                                   MessageBoxImage.Error);
+                }
+                else if ( Controller.BuiltInTypesByNickname.ContainsKey(name) )
+                {
+                    error = "A built-in node with the given name already exists.";
+                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
                 }
                 else if (category.Equals(""))
                 {
                     error = "You must enter a new category or choose one from the existing categories.";
                     System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
-                                                   MessageBoxImage.Warning);
+                                                   MessageBoxImage.Error);
 
                 }
                 else
