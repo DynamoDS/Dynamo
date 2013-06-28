@@ -343,19 +343,8 @@ namespace Dynamo.Utilities
                     //MessageBox.Show(message);
                     dynSettings.Controller.DynamoViewModel.Log(message);
 
-                    //create some geometry options so that we compute references
-                    //Autodesk.Revit.DB.Options opts = new Options();
-                    //opts.ComputeReferences = true;
-                    //opts.DetailLevel = ViewDetailLevel.Medium;
-                    //opts.IncludeNonVisibleObjects = false;
-
                     Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
 
-                    //if (faceRef != null)
-                    //{
-                    //    GeometryElement geom = dynRevitSettings.Doc.Document.GetElement(faceRef).get_Geometry(opts); 
-                    //    dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
-                    //}
                     return faceRef;
                 }
                 catch (Exception ex)
@@ -376,19 +365,8 @@ namespace Dynamo.Utilities
                     //MessageBox.Show(message);
                     dynSettings.Controller.DynamoViewModel.Log(message);
 
-                    //create some geometry options so that we compute references
-                    //Autodesk.Revit.DB.Options opts = new Options();
-                    //opts.ComputeReferences = true;
-                    //opts.DetailLevel = ViewDetailLevel.Medium;
-                    //opts.IncludeNonVisibleObjects = false;
-
                     Reference edgeRef = doc.Selection.PickObject(ObjectType.Edge);
 
-                    //if (faceRef != null)
-                    //{
-                    //    GeometryElement geom = dynRevitSettings.Doc.Document.GetElement(faceRef).get_Geometry(opts); 
-                    //    dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
-                    //}
                     return edgeRef;
                 }
                 catch (Exception ex)

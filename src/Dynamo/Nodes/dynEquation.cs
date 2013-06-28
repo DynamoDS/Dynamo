@@ -165,6 +165,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+
+            
             var e = new Expression(Formula);
 
             var functionLookup = new Dictionary<string, Value>();

@@ -48,12 +48,6 @@ namespace Dynamo.Controls
             InitializeComponent();
 
             this.Loaded += dynBench_Activated;
-            this.LayoutUpdated += new EventHandler(DynamoView_LayoutUpdated);
-        }
-
-        void DynamoView_LayoutUpdated(object sender, EventArgs e)
-        {
-            //Debug.WriteLine("Dynamo view layout updated.");
         }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
@@ -144,6 +138,18 @@ namespace Dynamo.Controls
             if (view_model.FindByIdCommand.CanExecute(id))
                 view_model.FindByIdCommand.Execute(id);
         }
+
+        private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_vm != null)
+            {
+                int workspace_index = _vm.CurrentWorkspaceIndex;
+                var workspace_vm = _vm.Workspaces[workspace_index];
+                workspace_vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspace_vm.Model.X, workspace_vm.Model.Y)));
+                workspace_vm.OnZoomChanged(this, new ZoomEventArgs(workspace_vm.Zoom));
+            }
+        }
+
     }
 
     public class CancelEvaluationException : Exception

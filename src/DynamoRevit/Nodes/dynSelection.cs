@@ -700,8 +700,24 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            var opts = new Options { ComputeReferences = true };
+
             var face =
                 (Autodesk.Revit.DB.Face)dynRevitSettings.Doc.Document.GetElement(_f).GetGeometryObjectFromReference(_f);
+
+            //TODO: Is there a better way to get a face that has a reference?
+            foreach (GeometryObject geob in dynRevitSettings.Doc.Document.GetElement(_f).get_Geometry(opts))
+            {
+                var solid = (Solid)geob;
+                foreach (Face f in solid.Faces)
+                {
+                    if (f == face)
+                    {
+                        face = f;
+                    }
+                }
+            }
+
             return Value.NewContainer(face);
         }
 
