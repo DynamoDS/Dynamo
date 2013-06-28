@@ -26,44 +26,18 @@ namespace Dynamo.Utilities
         {
             var selectedNodeSet = new HashSet<dynNodeModel>(selectedNodes);
 
-            #region Prompt
-
             //First, prompt the user to enter a name
-            string newNodeName, newNodeCategory;
-            string error = "";
-
-            do
+            string newNodeName ="", newNodeCategory ="";
+            if ( !dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory))
             {
-                var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
-                if (dialog.ShowDialog() != true)
-                {
-                    return;
-                }
-
-                newNodeName = dialog.Text;
-                newNodeCategory = dialog.Category;
-
-                if (dynSettings.Controller.CustomNodeLoader.Contains(newNodeName))
-                {
-                    error = "A function with this name already exists.";
-                }
-                else if (newNodeCategory.Equals(""))
-                {
-                    error = "Please enter a valid category.";
-                }
-                else
-                {
-                    error = "";
-                }
-            } while (!error.Equals(""));
+                return;
+            }
 
             var newNodeWorkspace = new FuncWorkspace(newNodeName, newNodeCategory, 0, 0);
             var newNodeDefinition = new FunctionDefinition(Guid.NewGuid())
             {
                 Workspace = newNodeWorkspace
             };
-
-            #endregion
 
             currentWorkspace.DisableReporting();
 
