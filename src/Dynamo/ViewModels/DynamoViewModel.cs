@@ -367,7 +367,7 @@ namespace Dynamo.Controls
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResultCommand);
-            ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialog, CanShowNewFunctionDialogCommand);
+            ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveCommand = new DelegateCommand(Save, CanSave);
             OpenCommand = new DelegateCommand<object>(Open, CanOpen);
             AlignSelectedCommand = new DelegateCommand<string>(AlignSelected, CanAlignSelected);
@@ -665,18 +665,19 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void ShowNewFunctionDialog()
+        public bool ShowNewFunctionDialog(ref string name, ref string category)
         {
-            //First, prompt the user to enter a name
-            string name, category;
             string error = "";
 
             do
             {
                 var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
+                dialog.nameBox.Text = name;
+                dialog.categoryBox.Text = category;
+
                 if (dialog.ShowDialog() != true)
                 {
-                    return;
+                    return false;
                 }
 
                 name = dialog.Text;
@@ -685,18 +686,34 @@ namespace Dynamo.Controls
                 if (Controller.CustomNodeLoader.Contains(name))
                 {
                     error = "A function with this name already exists.";
+                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                                                   MessageBoxImage.Warning);
+
                 }
                 else if (category.Equals(""))
                 {
-                    error = "Please enter a valid category.";
+                    error = "You must enter a new category or choose one from the existing categories.";
+                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                                                   MessageBoxImage.Warning);
+
                 }
                 else
                 {
                     error = "";
                 }
+
             } while (!error.Equals(""));
 
-            NewFunction(Guid.NewGuid(), name, category, true);
+            return true;
+        }
+
+        private void ShowNewFunctionDialogAndMakeFunction()
+        {
+            string name = "", category = "";
+            if (ShowNewFunctionDialog(ref name, ref category))
+            {
+                NewFunction(Guid.NewGuid(), name, category, true);
+            }
         }
 
         private bool CanShowNewFunctionDialogCommand()
