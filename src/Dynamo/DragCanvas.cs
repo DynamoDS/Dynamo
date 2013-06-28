@@ -4,12 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using Dynamo.Selection;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace Dynamo.Controls
 {
@@ -462,7 +464,7 @@ namespace Dynamo.Controls
                           if (el == null)
                               continue;
 
-                          OffsetData od = offsets[count];
+                          var od = offsets[count];
 
                           if (od.ModifyLeftOffset)
                               //Canvas.SetLeft(el, od.NewHorizontalOffset);

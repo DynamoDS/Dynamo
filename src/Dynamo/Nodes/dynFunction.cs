@@ -26,11 +26,14 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 using System.Windows.Media.Effects;
 using Dynamo.Nodes;
+using Microsoft.FSharp.Collections;
 
 namespace Dynamo
 {
     namespace Nodes
     {
+        
+        [NodeDescription("A node with customized internal functionality.")]
         [IsInteractive(false)]
         public class dynFunction : dynBuiltinFunction
         {
@@ -53,6 +56,24 @@ namespace Dynamo
                 : base(null)
             {
 
+            }
+
+            public new string Category
+            {
+                get
+                {
+                    if (dynSettings.Controller.CustomNodeLoader.NodeCategories.ContainsKey(this.Definition.FunctionId))
+                        return dynSettings.Controller.CustomNodeLoader.NodeCategories[this.Definition.FunctionId];
+                    else
+                    {
+                        return BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+                    }
+                }
+            }
+
+            public new string Name 
+            {
+                get { return this.Definition.Workspace.Name; }
             }
 
             public override void SetupCustomUIElements(dynNodeView nodeUI)
@@ -321,6 +342,19 @@ namespace Dynamo
                 Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
             }
 
+            public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
+            {
+                if (OutPortData.Count > 1)
+                {
+                    var query = (Evaluate(args) as FScheme.Value.List).Item.Zip(
+                        OutPortData, (value, data) => new { value, data });
+
+                    foreach (var result in query)
+                        outPuts[result.data] = result.value;
+                }
+                else
+                    base.Evaluate(args, outPuts);
+            }
         }
 
         [NodeName("Output")]

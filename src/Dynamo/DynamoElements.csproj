@@ -23,7 +23,7 @@ limitations under the License.
     <ProjectGuid>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dynamo.Nodes</RootNamespace>
+    <RootNamespace>Dynamo</RootNamespace>
     <AssemblyName>DynamoElements</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -93,15 +93,13 @@ limitations under the License.
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands.cs" />
@@ -116,6 +114,7 @@ limitations under the License.
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
+    <Compile Include="Nodes\Watch\WatchViewModel.cs" />
     <Compile Include="Prompts\CrashPrompt.xaml.cs">
       <DependentUpon>CrashPrompt.xaml</DependentUpon>
     </Compile>
@@ -127,12 +126,16 @@ limitations under the License.
       <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Prompts\NodeHelpPrompt.xaml.cs">
+      <DependentUpon>NodeHelpPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Search\SearchElements\TopSearchElement.cs" />
     <Compile Include="Nodes\dynEquation.cs" />
     <Compile Include="Units.cs" />
     <Compile Include="Utilities\Extensions.cs" />
+    <Compile Include="Utilities\MouseClickManager.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
     <Compile Include="Utilities\WPF.cs" />
@@ -254,6 +257,10 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Prompts\FunctionNamePrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Prompts\NodeHelpPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

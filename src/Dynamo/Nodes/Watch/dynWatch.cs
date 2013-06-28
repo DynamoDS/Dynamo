@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("Visualize the output of node.")]
+    [NodeDescription("Visualize the output of node. ")]
     [NodeSearchTags("print", "output", "display")]
     public class dynWatch: dynNodeWithOneOutput
     {
