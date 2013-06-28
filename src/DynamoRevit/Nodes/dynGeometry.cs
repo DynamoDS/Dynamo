@@ -2570,8 +2570,6 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            bool isRefCurve = Convert.ToBoolean(((Value.Number)args[1]).Item);
-
             //Build a sequence that unwraps the input list from it's Value form.
             IEnumerable<XYZ> pts = ((Value.List)args[0]).Item.Select(
                x => (XYZ)((Value.Container)x).Item
