@@ -686,7 +686,7 @@ namespace Dynamo.Controls
                 name = dialog.Text;
                 category = dialog.Category;
 
-                if (Controller.CustomNodeLoader.Contains(name))
+                if (Controller.CustomNodeLoader.Contains(name) || Controller.BuiltInTypesByNickname.ContainsKey(name))
                 {
                     error = "A function with this name already exists.";
                     System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
