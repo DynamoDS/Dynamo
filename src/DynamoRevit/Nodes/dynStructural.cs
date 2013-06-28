@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using Dynamo.Connectors;
@@ -50,7 +52,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("type", "The framing type.", typeof(Value.Container)));
             InPortData.Add(new PortData("curves", "The curve(s) to be used as center lines for your framing elements.", typeof(Value.Container)));
-            InPortData.Add(new PortData("target", "A point to act as a target for the rotation of the framing element.", typeof(Value.Container)));
+            InPortData.Add(new PortData("normal", "A vector to act as a target for the rotation of the framing element.", typeof(Value.Container)));
             OutPortData.Add(new PortData("framing", "The structural framing instance(s) created by this operation.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -67,18 +69,31 @@ namespace Dynamo.Nodes
             //and vector between the start of the beam and the target point
             //both projected onto the start plane of the beam.
 
-            XYZ target_vec = (target - curve.get_EndPoint(0)).Normalize();
-            Transform t = curve.ComputeDerivatives(0, true);
             XYZ zAxis = new XYZ(0,0,1);
+            XYZ yAxis = new XYZ(0, 1, 0);
+
+            //flatten the beam line onto the XZ plane
+            //using the start's z coordinate
+            XYZ start = curve.get_EndPoint(0);
+            XYZ end = curve.get_EndPoint(1);
+            XYZ newEnd = new XYZ(end.X, end.Y, start.Z); //drop end point to plane
 
             ////use the x axis of the curve's transform 
             ////as the normal of the start plane
-            XYZ planeNormal = t.BasisX.Normalize();
+            //XYZ planeNormal = (curve.get_EndPoint(0) - curve.get_EndPoint(1)).Normalize();
 
-            //XYZ gamma_project = gamma - gamma.DotProduct(planeNormal) * planeNormal;
-            //XYZ z_project = zAxis - zAxis.DotProduct(planeNormal) * planeNormal;
+            //catch the case where the end is directly above
+            //the start, creating a normal with zero length
+            //in that case, use the Z axis
+            XYZ planeNormal = newEnd.IsAlmostEqualTo(start) ? zAxis : (newEnd - start).Normalize();
 
-            double gamma = target_vec.AngleOnPlaneTo(zAxis, planeNormal);
+            XYZ target_project = target - target.DotProduct(planeNormal) * planeNormal;
+            XYZ z_project = zAxis - zAxis.DotProduct(planeNormal) * planeNormal;
+
+            //double gamma = target_project.AngleTo(z_project);
+            double gamma = target.AngleOnPlaneTo(zAxis.IsAlmostEqualTo(planeNormal) ? yAxis : zAxis, planeNormal);
+
+            Debug.WriteLine(gamma);
 
             FamilyInstance instance = null;
             if (this.Elements.Any())
