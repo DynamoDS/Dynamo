@@ -111,7 +111,8 @@ namespace Dynamo.Controls
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
-        
+        public DelegateCommand GoHomeCommand { get; set; }
+
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
             get { return _workspaces; }
@@ -397,6 +398,8 @@ namespace Dynamo.Controls
             ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
+            GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
+
             #endregion
         }
 
@@ -2922,6 +2925,21 @@ namespace Dynamo.Controls
         }
 
         private bool CanToggleCanNavigateBackground()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Resets the offset and the zoom for a view
+        /// </summary>
+        private void GoHomeView()
+        {
+            _model.CurrentSpace.Zoom = 1.0;
+            var wsvm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == _model.CurrentSpace);
+            wsvm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(0,0)));
+        }
+
+        private bool CanGoHomeView()
         {
             return true;
         }
