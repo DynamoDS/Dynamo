@@ -238,11 +238,12 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("An analysis results object to be used with a spatial field manager.")]
     [AlsoKnownAs("dynAnalysisResults")]
-    class dynSpatialFieldFace : dynRevitTransactionNodeWithOneOutput
+    class dynSpatialFieldFace : dynRevitTransactionNodeWithOneOutput, IClearable
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results";
 
-        int idx = -1;
+        List<int> idxs = new List<int>();
+        private SpatialFieldManager sfm;
 
         public dynSpatialFieldFace()
         {
@@ -253,17 +254,13 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(Value.Container)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var sfm = ((Value.Container)args[2]).Item as SpatialFieldManager;
-
-            //first, cleanup the old one
-            if (idx != -1)
-            {
-                sfm.RemoveSpatialFieldPrimitive(idx);
-            }
+            sfm = ((Value.Container)args[2]).Item as SpatialFieldManager;
 
             var reference = (args[3] as Value.Container).Item as Reference;
             var face = (reference == null) ?
@@ -278,7 +275,7 @@ namespace Dynamo.Nodes
             if (reference == null)
                 throw new Exception("Could not resolved a referenced for the face.");
 
-            idx = sfm.AddSpatialFieldPrimitive(reference);
+            int idx = sfm.AddSpatialFieldPrimitive(reference);
 
             //unwrap the sample locations
             IEnumerable<UV> pts = ((Value.List)args[1]).Item.Select(
@@ -319,7 +316,23 @@ namespace Dynamo.Nodes
 
             sfm.UpdateSpatialFieldPrimitive(idx, samplePts, sampleValues, schemaIndex);
 
+            idxs.Add(idx);
+
             return Value.NewContainer(idx);
+        }
+
+        public void ClearReferences()
+        {
+            //first, cleanup the old one
+            if (idxs.Count > 0)
+            {
+                foreach (var id in idxs)
+                {
+                    sfm.RemoveSpatialFieldPrimitive(id);
+                }
+            }
+
+            idxs.Clear();
         }
     }
 
@@ -455,6 +468,7 @@ namespace Dynamo.Nodes
 
         public dynSpatialFieldCurve()
         {
+            InPortData.Add(new PortData("vals", "List of values.", typeof(Value.List)));
             InPortData.Add(new PortData("curve", "The curve on which to map the results.", typeof(Value.Container)));
             InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(Value.Number)));
@@ -466,8 +480,11 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var curve = (Curve)((Value.Container)args[0]).Item;
-            sfm = (SpatialFieldManager)((Value.Container)args[1]).Item;
+            //unwrap the values
+            IEnumerable<double> nvals = ((Value.List)args[0]).Item.Select(q => (double)((Value.Number)q).Item);
+
+            var curve = (Curve)((Value.Container)args[1]).Item;
+            sfm = (SpatialFieldManager)((Value.Container)args[2]).Item;
 
             if (!sfm.IsResultSchemaNameUnique(DYNAMO_TEMP_CURVES_SCHEMA, -1))
             {
