@@ -5,6 +5,7 @@ using System.Text;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
+using Dynamo.Revit;
 using Dynamo.Utilities;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
@@ -17,7 +18,7 @@ namespace Dynamo.Nodes
     [NodeName("Spatial Field Manager")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Gets or creates the spatial field manager on the view.")]
-    class dynSpatialFieldManager : dynNodeWithOneOutput
+    class dynSpatialFieldManager : dynRevitTransactionNodeWithOneOutput
     {
         //AnalysisDisplayStyle analysisDisplayStyle;
 
@@ -237,7 +238,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("An analysis results object to be used with a spatial field manager.")]
     [AlsoKnownAs("dynAnalysisResults")]
-    class dynSpatialFieldFace : dynNodeWithOneOutput
+    class dynSpatialFieldFace : dynRevitTransactionNodeWithOneOutput
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results";
 
@@ -322,6 +323,7 @@ namespace Dynamo.Nodes
         }
     }
 
+    /*
     [NodeName("Spatial Field Curve")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("An analysis results curve to be used with a spatial field manager.")]
@@ -330,31 +332,44 @@ namespace Dynamo.Nodes
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results Curve";
 
-        int idx = -1;
+        //int idx = -1;
+        List<int> idxs = new List<int>();
 
         public dynSpatialFieldCurve()
         {
             InPortData.Add(new PortData("values", "List of values.", typeof(Value.List)));
-            InPortData.Add(new PortData("uvs", "Sample locations as a list of UVs.", typeof(Value.List)));
+            InPortData.Add(new PortData("t", "Sample parameters along the curve." +
+                                             "", typeof(Value.List)));
             InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Value.Container)));
             InPortData.Add(new PortData("curve", "Curve", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(Value.Container)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var sfm = ((Value.Container)args[2]).Item as SpatialFieldManager;
+            //unwrap the values
+            IEnumerable<double> nvals = ((Value.List)args[0]).Item.Select(
+               x => (double)((Value.Number)x).Item
+            );
 
-            // Place analysis results in the form of vectors at each of a beam or column's analytical model curve
-            var curve = ((Value.Container)args[3]).Item as Curve;
+            //unwrap the sample locations
+            IEnumerable<double> pts = ((Value.List)args[1]).Item.Select(
+               x => ((Value.Number)x).Item
+            );
+
+            var sfm = (SpatialFieldManager)((Value.Container)args[2]).Item;
+            var curve = (Curve)((Value.Container)args[3]).Item;
 
             int index = sfm.AddSpatialFieldPrimitive(curve, Transform.Identity);
 
             IList<double> doubleList = new List<double>();
             doubleList.Add(curve.get_EndParameter(0)); // vectors will be at each end of the analytical model curve
             doubleList.Add(curve.get_EndParameter(1));
+
             var pointsByParameter = new FieldDomainPointsByParameter(doubleList);
 
             var xyzList = new List<XYZ> {curve.ComputeDerivatives(0, true).BasisX.Normalize()};
@@ -368,38 +383,36 @@ namespace Dynamo.Nodes
             int n = 0;
             sfm.UpdateSpatialFieldPrimitive(index, fieldPoints, fieldValues, n);
 
-            /*
+            //------------------------------------------------------
+            
             //first, cleanup the old one
-            if (idx != -1)
-            {
-                sfm.RemoveSpatialFieldPrimitive(idx);
-            }
+            //if (idx != -1)
+            //{
+            //    sfm.RemoveSpatialFieldPrimitive(idx);
+            //}
 
-            Reference reference = ((Value.Container)args[3]).Item as Reference;
-            idx = sfm.AddSpatialFieldPrimitive(reference);
+            //cleanup the old spatial field primitives
+            idxs.Where(x => x != -1).ToList().ForEach(sfm.RemoveSpatialFieldPrimitive);
+            idxs.Clear();
 
-            Face face = dynRevitSettings.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Cell;
+            //Transform t = Transform.Identity;
+            //t.set_Basis(0, (curve.get_EndPoint(1)-curve.get_EndPoint(0)).Normalize());
+            //XYZ curveY = t.BasisX.CrossProduct(new XYZ(0, 0, 1));
+            //t.set_Basis(1, curveY);
+            //t.set_Basis(2, t.BasisX.CrossProduct(t.BasisY));
+            //t.Origin = curve.get_EndPoint(0);
 
-            //unwrap the sample locations
-            IEnumerable<UV> pts = ((Value.List)args[1]).Item.Select(
-               x => (UV)((Value.Container)x).Item
-            );
-            FieldDomainPointsByUV sample_pts = new FieldDomainPointsByUV(pts.ToList<UV>());
+            int idx = sfm.AddSpatialFieldPrimitive(curve, Transform.Identity);
+            idxs.Add(idx);
 
-            //unwrap the values
-            IEnumerable<double> nvals = ((Value.List)args[0]).Item.Select(
-               x => (double)((Value.Number)x).Item
-            );
+            var samplePts = new FieldDomainPointsByParameter(pts.ToList());
 
             //for every sample location add a list
-            //of valueatpoint objets. for now, we only
+            //of valueatpoint objects. for now, we only
             //support one value per point
-            IList<ValueAtPoint> valList = new List<ValueAtPoint>();
-            foreach (var n in nvals)
-            {
-                valList.Add(new ValueAtPoint(new List<double> { n }));
-            }
-            FieldValues sample_values = new FieldValues(valList);
+            //IList<ValueAtPoint> valList = nvals.Select(n => new ValueAtPoint(new List<double> {n})).ToList();
+            IList<VectorAtPoint> valList = nvals.Select(n => new VectorAtPoint(new List<XYZ> {new XYZ(0,0,1)})).ToList();
+            var sampleValues = new FieldValues(valList);
 
             int schemaIndex = 0;
             if (!sfm.IsResultSchemaNameUnique(DYNAMO_ANALYSIS_RESULTS_NAME, -1))
@@ -417,49 +430,44 @@ namespace Dynamo.Nodes
             }
             else
             {
-                AnalysisResultSchema ars = new AnalysisResultSchema(DYNAMO_ANALYSIS_RESULTS_NAME, "Resulting analyses from Dynamo.");
+                var ars = new AnalysisResultSchema(DYNAMO_ANALYSIS_RESULTS_NAME, "Resulting analyses from Dynamo.");
                 schemaIndex = sfm.RegisterResult(ars);
             }
 
-            sfm.UpdateSpatialFieldPrimitive(idx, sample_pts, sample_values, schemaIndex);
-            */
+            sfm.UpdateSpatialFieldPrimitive(idx, samplePts, sampleValues, schemaIndex);
 
             return Value.NewContainer(idx);
 
         }
     }
+    */
 
-    /*[NodeName("Temp Curves")]
+    [NodeName("Spatial Field Curve")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Draw temporary curves in the family.")]
-    class dynTemporaryCurves : dynNodeWithOneOutput
+    class dynSpatialFieldCurve : dynRevitTransactionNodeWithOneOutput, IClearable
     {
         const string DYNAMO_TEMP_CURVES_SCHEMA = "Dynamo Temporary Curves";
 
         List<int> idxs = new List<int>();
         int schemaId = -1;
+        private SpatialFieldManager sfm;
 
-        public dynTemporaryCurves()
+        public dynSpatialFieldCurve()
         {
-            InPortData.Add(new PortData("lst", "List of sets of xys that will define line segments.", typeof(Value.List)));
+            InPortData.Add(new PortData("curve", "The curve on which to map the results.", typeof(Value.Container)));
             InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Value.Container)));
-            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(Value.Container)));
+            OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(Value.Number)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            SpatialFieldManager sfm = ((Value.Container)args[1]).Item as SpatialFieldManager;
-
-            //first, cleanup the old one
-            if(idxs.Count > 0)
-            {
-                foreach (int idx in idxs)
-                {
-                    sfm.RemoveSpatialFieldPrimitive(idx);
-                }
-            }
+            var curve = (Curve)((Value.Container)args[0]).Item;
+            sfm = (SpatialFieldManager)((Value.Container)args[1]).Item;
 
             if (!sfm.IsResultSchemaNameUnique(DYNAMO_TEMP_CURVES_SCHEMA, -1))
             {
@@ -476,74 +484,76 @@ namespace Dynamo.Nodes
             }
             else
             {
-                AnalysisResultSchema ars = new AnalysisResultSchema(DYNAMO_TEMP_CURVES_SCHEMA, "Temporary curves from Dynamo.");
+                var ars = new AnalysisResultSchema(DYNAMO_TEMP_CURVES_SCHEMA, "Temporary curves from Dynamo.");
                 schemaId = sfm.RegisterResult(ars);
             }
 
             Transform trf = Transform.Identity;
 
-            //get the list of pairs
-            FSharpList<Value> listOfPairs = ((Value.List)args[0]).Item;
-            foreach (Value expr in listOfPairs)
+            //http://thebuildingcoder.typepad.com/blog/2012/09/sphere-creation-for-avf-and-filtering.html#3
+
+            var create = dynRevitSettings.Doc.Application.Application.Create;
+
+            Transform t = curve.ComputeDerivatives(0, true);
+
+            XYZ x = t.BasisX.Normalize();
+            XYZ y = t.BasisX.IsAlmostEqualTo(XYZ.BasisZ) ? 
+                t.BasisX.CrossProduct(XYZ.BasisY).Normalize() : 
+                t.BasisX.CrossProduct(XYZ.BasisZ).Normalize();
+            XYZ z = x.CrossProduct(y);
+
+            Ellipse arc1 = dynRevitSettings.Revit.Application.Create.NewEllipse(t.Origin, .25, .25, y,z,-Math.PI, 0);
+            Ellipse arc2 = dynRevitSettings.Revit.Application.Create.NewEllipse(t.Origin, .25, .25, y, z, 0, Math.PI);
+
+            var pathLoop = new CurveLoop();
+            pathLoop.Append(curve);
+            var profileLoop = new CurveLoop();
+            profileLoop.Append(arc1);
+            profileLoop.Append(arc2);
+
+            int idx = -1;
+            var s = GeometryCreationUtilities.CreateSweptGeometry(pathLoop, 0, 0, new List<CurveLoop>{profileLoop});
+            foreach (Face face in s.Faces)
             {
-                FSharpList<Value> pair = ((Value.List)expr).Item;
+                idx = sfm.AddSpatialFieldPrimitive(face, trf);
 
-                XYZ start = (XYZ)((Value.Container)pair[0]).Item;
-                XYZ end = (XYZ)((Value.Container)pair[1]).Item;
-                XYZ start1 = start + XYZ.BasisZ * .1;
-                XYZ end1 = end + XYZ.BasisZ * .1;
+                //need to use double parameters because
+                //we're drawing lines
+                IList<UV> uvPts = new List<UV>();
+                uvPts.Add(face.GetBoundingBox().Min);
 
-                //http://thebuildingcoder.typepad.com/blog/2012/09/sphere-creation-for-avf-and-filtering.html#3
+                var pnts = new FieldDomainPointsByUV(uvPts);
 
-                var create = dynRevitSettings.Doc.Application.Application.Create;
+                var doubleList = new List<double> {0};
 
-                Line l1 = create.NewLineBound(start, end);
-                Line l2 = create.NewLineBound(end, end1);
-                Line l3 = create.NewLineBound(end1, start1);
-                Line l4 = create.NewLineBound(start1, start);
+                IList<ValueAtPoint> valList
+                    = new List<ValueAtPoint>();
 
-                List<CurveLoop> loops = new List<CurveLoop>();
-                CurveLoop cl = new CurveLoop();
-                cl.Append(l1);
-                cl.Append(l2);
-                cl.Append(l3);
-                cl.Append(l4);
-                loops.Add(cl);
-                Solid s = GeometryCreationUtilities.CreateExtrusionGeometry(loops, (end-start).CrossProduct(start1-start), .01);
-                
-                foreach (Autodesk.Revit.DB.Face face in s.Faces)
+                valList.Add(new ValueAtPoint(doubleList));
+
+                var vals = new FieldValues(valList);
+
+                sfm.UpdateSpatialFieldPrimitive(
+                    idx, pnts, vals, schemaId);
+
+                idxs.Add(idx);
+            }
+
+            return Value.NewNumber(idx);
+        }
+
+        public void ClearReferences()
+        {
+            //first, cleanup the old one
+            if (idxs.Count > 0)
+            {
+                foreach (var id in idxs)
                 {
-                    int idx = sfm.AddSpatialFieldPrimitive(face, trf);
-
-                    //need to use double parameters because
-                    //we're drawing lines
-                    IList<UV> uvPts = new List<UV>();
-                    uvPts.Add(face.GetBoundingBox().Min);
-
-                    FieldDomainPointsByUV pnts
-                      = new FieldDomainPointsByUV(uvPts);
-
-                    List<double> doubleList
-                      = new List<double>();
-
-                    doubleList.Add(0);
-
-                    IList<ValueAtPoint> valList
-                      = new List<ValueAtPoint>();
-
-                    valList.Add(new ValueAtPoint(doubleList));
-
-                    FieldValues vals = new FieldValues(valList);
-
-                    sfm.UpdateSpatialFieldPrimitive(
-                      idx, pnts, vals, schemaId);
-
-                    idxs.Add(idx);
+                    sfm.RemoveSpatialFieldPrimitive(id);
                 }
             }
 
-            return Value.NewList(Utils.SequenceToFSharpList(idxs.Select(x => Value.NewNumber(x))));
-
+            idxs.Clear();
         }
-    }*/
+    }
 }
