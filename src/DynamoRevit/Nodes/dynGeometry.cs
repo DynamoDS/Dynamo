@@ -1679,7 +1679,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Rectangle")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.")]
+    [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.  Outputs a CurveLoop object directed counter-clockwise from upper right.")]
     public class Rectangle : dynCurveBase
     {
         public Rectangle()
@@ -1698,11 +1698,11 @@ namespace Dynamo.Nodes
             double width = ((Value.Number)args[1]).Item;
             double height = ((Value.Number)args[2]).Item;
 
-            //cw from upper right
+            //ccw from upper right
             var p0 = new XYZ(width / 2, height/2, 0);
-            var p1 = new XYZ(width / 2, -height / 2, 0);
-            var p2 = new XYZ(-width / 2, -height / 2, 0);
             var p3 = new XYZ(-width / 2, height / 2, 0);
+            var p2 = new XYZ(-width / 2, -height / 2, 0);
+            var p1 = new XYZ(width / 2, -height / 2, 0);
 
             p0 = t.OfPoint(p0);
             p1 = t.OfPoint(p1);
