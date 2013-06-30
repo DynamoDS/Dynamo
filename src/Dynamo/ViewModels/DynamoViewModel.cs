@@ -111,7 +111,8 @@ namespace Dynamo.Controls
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
-        
+        public DelegateCommand GoHomeCommand { get; set; }
+
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
             get { return _workspaces; }
@@ -367,7 +368,7 @@ namespace Dynamo.Controls
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResultCommand);
-            ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialog, CanShowNewFunctionDialogCommand);
+            ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveCommand = new DelegateCommand(Save, CanSave);
             OpenCommand = new DelegateCommand<object>(Open, CanOpen);
             AlignSelectedCommand = new DelegateCommand<string>(AlignSelected, CanAlignSelected);
@@ -397,6 +398,8 @@ namespace Dynamo.Controls
             ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
+            GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
+
             #endregion
         }
 
@@ -665,18 +668,19 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void ShowNewFunctionDialog()
+        public bool ShowNewFunctionDialog(ref string name, ref string category)
         {
-            //First, prompt the user to enter a name
-            string name, category;
             string error = "";
 
             do
             {
                 var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
+                dialog.nameBox.Text = name;
+                dialog.categoryBox.Text = category;
+
                 if (dialog.ShowDialog() != true)
                 {
-                    return;
+                    return false;
                 }
 
                 name = dialog.Text;
@@ -684,19 +688,40 @@ namespace Dynamo.Controls
 
                 if (Controller.CustomNodeLoader.Contains(name))
                 {
-                    error = "A function with this name already exists.";
+                    error = "A custom node with the given name already exists.";
+                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
+                }
+                else if ( Controller.BuiltInTypesByNickname.ContainsKey(name) )
+                {
+                    error = "A built-in node with the given name already exists.";
+                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
                 }
                 else if (category.Equals(""))
                 {
-                    error = "Please enter a valid category.";
+                    error = "You must enter a new category or choose one from the existing categories.";
+                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
+
                 }
                 else
                 {
                     error = "";
                 }
+
             } while (!error.Equals(""));
 
-            NewFunction(Guid.NewGuid(), name, category, true);
+            return true;
+        }
+
+        private void ShowNewFunctionDialogAndMakeFunction()
+        {
+            string name = "", category = "";
+            if (ShowNewFunctionDialog(ref name, ref category))
+            {
+                NewFunction(Guid.NewGuid(), name, category, true);
+            }
         }
 
         private bool CanShowNewFunctionDialogCommand()
@@ -2905,6 +2930,21 @@ namespace Dynamo.Controls
         }
 
         private bool CanToggleCanNavigateBackground()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Resets the offset and the zoom for a view
+        /// </summary>
+        private void GoHomeView()
+        {
+            _model.CurrentSpace.Zoom = 1.0;
+            var wsvm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == _model.CurrentSpace);
+            wsvm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(0,0)));
+        }
+
+        private bool CanGoHomeView()
         {
             return true;
         }

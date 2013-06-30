@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -44,6 +45,7 @@ using System.Windows.Input;
 using System.Windows.Data;
 using System.Globalization;
 using Binding = System.Windows.Forms.Binding;
+using ComboBox = System.Windows.Controls.ComboBox;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 
 namespace Dynamo.Nodes
@@ -2321,12 +2323,12 @@ namespace Dynamo.Nodes
             {
                 var p = CaretIndex;
 
-                base.Text = dynSettings.RemoveChars(
-                   Text,
-                   Text.ToCharArray()
-                      .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
-                      .Select(c => c.ToString())
-                );
+                //base.Text = dynSettings.RemoveChars(
+                //   Text,
+                //   Text.ToCharArray()
+                //      .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
+                //      .Select(c => c.ToString())
+                //);
 
                 CaretIndex = p;
             }
@@ -2641,7 +2643,8 @@ namespace Dynamo.Nodes
         Slider tb_slider;
         dynTextBox mintb;
         dynTextBox maxtb;
-        TextBox displayBox;
+        dynTextBox valtb;
+
         private double max;
         private double min;
 
@@ -2665,28 +2668,8 @@ namespace Dynamo.Nodes
 
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.None;
 
-            tb_slider.ValueChanged += delegate
-            {
-                var pos = Mouse.GetPosition(nodeUI.elementCanvas);
-                Canvas.SetLeft(displayBox, pos.X);
-                Canvas.SetTop(displayBox, Height);
-            };
-
-            tb_slider.PreviewMouseDown += delegate
-            {
-                if (nodeUI.IsEnabled && !nodeUI.elementCanvas.Children.Contains(displayBox))
-                {
-                    nodeUI.elementCanvas.Children.Add(displayBox);
-                    var pos = Mouse.GetPosition(nodeUI.elementCanvas);
-                    Canvas.SetLeft(displayBox, pos.X);
-                }
-            };
-
             tb_slider.PreviewMouseUp += delegate
             {
-                if (nodeUI.elementCanvas.Children.Contains(displayBox))
-                    nodeUI.elementCanvas.Children.Remove(displayBox);
-
                 dynSettings.ReturnFocusToSearch();
             };
 
@@ -2694,21 +2677,32 @@ namespace Dynamo.Nodes
             mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             mintb.Width = double.NaN;
-            //mintb.IsNumeric = true;
 
             mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            //mintb.OnChangeCommitted += delegate
-            //{
-            //    try
-            //    {
-            //        Min = Convert.ToDouble(mintb.Text);
-            //    }
-            //    catch
-            //    {
-            //        Min = 0;
-            //    }
-            //};
-            //mintb.Pending = false;
+
+            // input value textbox
+            valtb = new dynTextBox();
+            valtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            valtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            valtb.Width = double.NaN;
+            valtb.Margin = new Thickness(0,0,10,0);
+            //maxtb.IsNumeric = true;
+            valtb.OnChangeCommitted += delegate
+            {
+                try
+                {
+                    Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
+                    if (Min > Value)
+                        Min = Value;
+                    if (Max < Value)
+                        Max = Value;
+                    Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
+                    tb_slider.Value = Value;
+                }
+                catch
+                {
+                }
+            };
 
             maxtb = new dynTextBox();
             maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
@@ -2717,46 +2711,28 @@ namespace Dynamo.Nodes
             //maxtb.IsNumeric = true;
 
             maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            //maxtb.OnChangeCommitted += delegate
-            //{
-            //    try
-            //    {
-            //        Max = Convert.ToDouble(maxtb.Text, CultureInfo.InvariantCulture);
-            //    }
-            //    catch
-            //    {
-            //        Max = 100;
-            //    }
-            //};
 
-            WrapPanel wp = new WrapPanel();
+            var wp = new WrapPanel();
+            wp.Children.Add(valtb);
             wp.Children.Add(mintb);
             wp.Children.Add(tb_slider);
             wp.Children.Add(maxtb);
             nodeUI.inputGrid.Children.Add(wp);
 
-            displayBox = new TextBox()
-            {
-                IsReadOnly = true,
-                Background = Brushes.White,
-                Foreground = Brushes.Black
-            };
-
-            Canvas.SetTop(displayBox, nodeUI.Height);
-            Canvas.SetZIndex(displayBox, int.MaxValue);
-
-            displayBox.DataContext = this;
             maxtb.DataContext = this;
             tb_slider.DataContext = this;
             mintb.DataContext = this;
+            valtb.DataContext = this;
 
-            var bindingValue = new System.Windows.Data.Binding("Value")
+            // value input
+            var inputBinding = new System.Windows.Data.Binding("Value")
             {
-                Mode = BindingMode.OneWay,
+                Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay()
             };
-            displayBox.SetBinding(TextBox.TextProperty, bindingValue);
+            valtb.SetBinding(dynTextBox.TextProperty, inputBinding);
 
+            // slider value 
             var sliderBinding = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
@@ -2764,6 +2740,7 @@ namespace Dynamo.Nodes
             };
             tb_slider.SetBinding(Slider.ValueProperty, sliderBinding);
 
+            // max value
             var bindingMax = new System.Windows.Data.Binding("Max")
             {
                 Mode = BindingMode.TwoWay,
@@ -2772,7 +2749,8 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             maxtb.SetBinding(dynTextBox.TextProperty, bindingMax);
-            
+
+            // max slider value
             var bindingMaxSlider = new System.Windows.Data.Binding("Max")
             {
                 Mode = BindingMode.OneWay,
@@ -2781,6 +2759,8 @@ namespace Dynamo.Nodes
             };
             tb_slider.SetBinding(Slider.MaximumProperty, bindingMaxSlider);
 
+
+            // min value
             var bindingMin = new System.Windows.Data.Binding("Min")
             {
                 Mode = BindingMode.TwoWay,
@@ -2790,6 +2770,7 @@ namespace Dynamo.Nodes
             };
             mintb.SetBinding(dynTextBox.TextProperty, bindingMin);
 
+            // min slider value
             var bindingMinSlider = new System.Windows.Data.Binding("Min")
             {
                 Mode = BindingMode.OneWay,
@@ -3439,6 +3420,7 @@ namespace Dynamo.Nodes
         }
     }
 
+
     public class RadianToDegreesConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -3519,4 +3501,136 @@ namespace Dynamo.Nodes
         }
     }
     #endregion
+
+    /// <summary>
+    /// A class used to store a name and associated item for a drop down menu
+    /// </summary>
+    public class DynamoDropDownItem
+    {
+        public string Name { get; set; }
+        public object Item { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public DynamoDropDownItem(string name, object item)
+        {
+            Name = name;
+            Item = item;
+        }
+    }
+    /// <summary>
+    /// Base class for all nodes using a drop down
+    /// </summary>
+    public abstract class dynDropDrownBase : dynNodeWithOneOutput
+    {
+        private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
+        public ObservableCollection<DynamoDropDownItem> Items
+        {
+            get { return items; }
+            set
+            {
+                items = value;
+                RaisePropertyChanged("Items");
+            }
+        }
+
+        private int selectedIndex = 0;
+        public int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set
+            {
+                //do not allow selected index to
+                //go out of range of the items collection
+                if (value > Items.Count - 1)
+                {
+                    selectedIndex = -1;
+                }
+                else
+                    selectedIndex = value;
+                RaisePropertyChanged("SelectedIndex");
+            }
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        {
+            base.SetupCustomUIElements(nodeUI);
+
+            //add a drop down list to the window
+            ComboBox combo = new ComboBox();
+            combo.Width = 300;
+            combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            nodeUI.inputGrid.Children.Add(combo);
+            System.Windows.Controls.Grid.SetColumn(combo, 0);
+            System.Windows.Controls.Grid.SetRow(combo, 0);
+
+            combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
+            combo.SelectionChanged += delegate
+            {
+                if (combo.SelectedIndex != -1)
+                    this.RequiresRecalc = true;
+            };
+
+            combo.DataContext = this;
+            //bind this combo box to the selected item hash
+
+            var bindingVal = new System.Windows.Data.Binding("Items")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = this
+            };
+            combo.SetBinding(ComboBox.ItemsSourceProperty, bindingVal);
+
+            //bind the selected index to the 
+            var indexBinding = new System.Windows.Data.Binding("SelectedIndex")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = this
+            };
+            combo.SetBinding(ComboBox.SelectedIndexProperty, indexBinding);
+        }
+
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        {
+            dynEl.SetAttribute("index", SelectedIndex.ToString());
+        }
+
+        public override void LoadNode(XmlNode elNode)
+        {
+            try
+            {
+                SelectedIndex = Convert.ToInt32(elNode.Attributes["index"].Value);
+            }
+            catch { }
+        }
+
+        public virtual void PopulateItems()
+        {
+            //override in child classes
+        }
+
+        /// <summary>
+        /// When the dropdown is opened, the node's implementation of PopulateItemsHash is called
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void combo_DropDownOpened(object sender, EventArgs e)
+        {
+            PopulateItems();
+        }
+
+        /// <summary>
+        /// The base behavior for the drop down node is to return the item at the selected index in the Items collection.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewContainer(Items[SelectedIndex].Item);
+        }
+    }
 }
