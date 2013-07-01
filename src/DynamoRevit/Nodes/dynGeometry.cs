@@ -1679,7 +1679,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Rectangle")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.")]
+    [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.  Outputs a CurveLoop object directed counter-clockwise from upper right.")]
     public class Rectangle : dynCurveBase
     {
         public Rectangle()
@@ -1694,27 +1694,27 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Transform t = (Transform)((Value.Container)args[0]).Item;
+            var t = (Transform)((Value.Container)args[0]).Item;
             double width = ((Value.Number)args[1]).Item;
             double height = ((Value.Number)args[2]).Item;
 
             //ccw from upper right
-            XYZ p0 = new XYZ(width/2, width/2, 0);
-            XYZ p1 = new XYZ(-width/2, width/2, 0);
-            XYZ p2 = new XYZ(-width/2, -width/2, 0);
-            XYZ p3 = new XYZ(width/2, -width/2, 0);
+            var p0 = new XYZ(width / 2, height/2, 0);
+            var p3 = new XYZ(-width / 2, height / 2, 0);
+            var p2 = new XYZ(-width / 2, -height / 2, 0);
+            var p1 = new XYZ(width / 2, -height / 2, 0);
 
             p0 = t.OfPoint(p0);
             p1 = t.OfPoint(p1);
             p2 = t.OfPoint(p2);
             p3 = t.OfPoint(p3);
 
-            Line l1 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p0,p1);
-            Line l2 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p1,p2);
-            Line l3 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p2,p3);
-            Line l4 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p3,p0);
+            var l1 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p0, p1);
+            var l2 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p1, p2);
+            var l3 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p2, p3);
+            var l4 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p3, p0);
 
-            CurveLoop cl = new CurveLoop();
+            var cl = new CurveLoop();
             cl.Append(l1);
             cl.Append(l2);
             cl.Append(l3);
