@@ -3084,6 +3084,18 @@ namespace Dynamo.Nodes
                 Value = openDialog.SelectedPath;
             }
         }
+
+        protected override string DeserializeValue(string val)
+        {
+            if (Directory.Exists(val))
+            {
+                return val;
+            }
+            else
+            {
+                return "";
+            }
+        }
     }
 
     [NodeName("File Path")]
