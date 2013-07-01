@@ -351,38 +351,9 @@ namespace Dynamo.PackageManager
             }
         } 
 
-        /// <summary>
-        ///     Shows a string in the UI associated with whether the open workspace is package controlled
-        /// </summary>
-        public void ShowPackageControlInformation()
+        internal void Download(DynamoPackageDownload dynamoPackageDownload)
         {
-
-            //FunctionDefinition f = Controller.CustomNodeLoader.GetDefinitionFromWorkspace(Controller.CurrentSpace);
-
-            //if (f != null)
-            //{
-            //    if (LoadedPackageHeaders.ContainsKey(f))
-            //    {
-            //        dynSettings.Bench.packageControlLabel.Content = "Under package control";
-            //        dynSettings.Bench.editNameButton.Visibility = Visibility.Collapsed;
-            //        dynSettings.Bench.editNameButton.IsHitTestVisible = true;
-            //    }
-            //    else
-            //    {
-            //        dynSettings.Bench.packageControlLabel.Content = "Not under package control";
-            //    }
-            //    dynSettings.Bench.packageControlLabel.Visibility = Visibility.Visible;
-            //}
+            throw new NotImplementedException();
         }
-
-        /// <summary>
-        ///     Hides the string in the UI associated with package control for the current workspace
-        /// </summary>
-        public void HidePackageControlInformation()
-        {
-            //dynSettings.Bench.packageControlLabel.Visibility = Visibility.Collapsed;
-        }
-
-        
     }
 }
