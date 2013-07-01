@@ -341,7 +341,7 @@ namespace Dynamo.Nodes
             string path = ((Value.String)args[0]).Item;
             string name = ((Value.String)args[1]).Item;
             System.Drawing.Image image = (System.Drawing.Image)((Value.Container)args[2]).Item;
-            string pathName = path + "\\" + name;
+            string pathName = path + "\\" + name + ".png";
 
             try
             {
