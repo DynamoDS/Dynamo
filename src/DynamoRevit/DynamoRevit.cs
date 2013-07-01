@@ -205,7 +205,11 @@ namespace Dynamo.Applications
                         //show the window
 
                         string context = m_revit.Application.VersionName; // string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
-                        dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, true, typeof(DynamoRevitViewModel), context);
+                        dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
+
+                        dynSettings.Bench = new DynamoView();
+                        dynSettings.Bench.DataContext = dynamoController.DynamoViewModel;
+                        dynamoController.UIDispatcher = dynSettings.Bench.Dispatcher;
                         dynamoView = dynSettings.Bench;
 
                         //set window handle and show dynamo
@@ -354,7 +358,7 @@ namespace Dynamo.Applications
 
                 //create dynamo
                 string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
-                var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, false, typeof(DynamoRevitViewModel), context);
+                var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
 
                 //flag to run evalauation synchronously, helps to 
                 //avoid threading issues when testing.
@@ -568,6 +572,11 @@ namespace Dynamo.Applications
                 DynamoLogger.Instance.Log("Test ERROR");
                 _dynamoRevitTest.ResultType = DynamoRevitTestResultType.Error;
             }
+            else if (result.Executed && result.ResultState == ResultState.Inconclusive)
+            {
+                DynamoLogger.Instance.Log("Test INCONCLUSIVE");
+                _dynamoRevitTest.ResultType = DynamoRevitTestResultType.Inconclusive;
+            }
             _dynamoRevitTest.Message = result.Message;
         }
         public void SuiteStarted(TestName testName) { }
@@ -697,7 +706,7 @@ namespace Dynamo.Applications
 #endif
 
 
-    public enum DynamoRevitTestResultType { Pass, Fail, Error, Exception, Unknown }
+    public enum DynamoRevitTestResultType { Pass, Fail, Error, Exception, Unknown, Inconclusive }
 
     public class ResultTypeToColorConverter : IValueConverter
     {
@@ -711,6 +720,8 @@ namespace Dynamo.Applications
                 case DynamoRevitTestResultType.Fail:
                     return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255,0,0));
                 case DynamoRevitTestResultType.Error:
+                    return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 160, 0));
+                case DynamoRevitTestResultType.Inconclusive:
                     return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 160, 0));
                 case DynamoRevitTestResultType.Exception:
                     return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 0, 0));

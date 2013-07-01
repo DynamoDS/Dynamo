@@ -97,6 +97,13 @@ namespace Dynamo.Controls
             tt.Y = p.Y;
         }
 
+        public void SetZoom(double zoom)
+        {
+            var st = GetScaleTransform(child);
+            st.ScaleX = zoom;
+            st.ScaleY = zoom;
+        }
+
         #region Child Events
 
         private void child_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -126,9 +133,9 @@ namespace Dynamo.Controls
                 tt.X = abosuluteX - relative.X * st.ScaleX;
                 tt.Y = abosuluteY - relative.Y * st.ScaleY;
 
-                dynWorkspaceViewModel viewModel = DataContext as dynWorkspaceViewModel;
-                if (viewModel.SetZoomCommand.CanExecute(st.ScaleX))
-                    viewModel.SetZoomCommand.Execute(st.ScaleX);
+                var vm = DataContext as dynWorkspaceViewModel;
+                if (vm.SetZoomCommand.CanExecute(st.ScaleX))
+                    vm.SetZoomCommand.Execute(st.ScaleX);
             }
         }
 

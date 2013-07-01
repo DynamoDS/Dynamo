@@ -70,7 +70,7 @@ namespace Dynamo.Nodes
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
 
-                    if (c.IsBound)
+                    if (!mc.GeometryCurve.IsBound && c.IsBound)
                     {
                         c = c.Clone();
                         c.MakeUnbound();
@@ -142,7 +142,7 @@ namespace Dynamo.Nodes
                     mc = e as ModelCurve;
                     mc.SketchPlane = sp;
 
-                    if (c.IsBound)
+                    if (!mc.GeometryCurve.IsBound && c.IsBound)
                     {
                         c = c.Clone();
                         c.MakeUnbound();
@@ -309,7 +309,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve Element Ref")]
+    [NodeName("Curve Reference")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Takes in a Model Curve or Geometry Curve, returns a Curve Reference")]
     public class dynCurveRef : dynRevitTransactionNodeWithOneOutput
@@ -376,9 +376,9 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Curve From Curve Ele")]
+    [NodeName("Curve From Curve Element")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Takes in a Model Curve and Extracts Geometry Curve")]
+    [NodeDescription("Takes in a model curve and extracts a geometry curve")]
     public class dynCurveFromModelCurve : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurveFromModelCurve()
@@ -771,7 +771,7 @@ namespace Dynamo.Nodes
     {
         public dynThickenCurveLoop()
         {
-            InPortData.Add(new PortData("Curve", "Curve to thicken, could not be closed.", typeof(Value.Container)));
+            InPortData.Add(new PortData("Curve", "Curve to thicken, cannot be closed.", typeof(Value.Container)));
             InPortData.Add(new PortData("Thickness", "Thickness value.", typeof(Value.Number)));
             InPortData.Add(new PortData("Normal", "The normal vector to the plane used for thickening.", typeof(Value.Container)));
             OutPortData.Add(new PortData("CurveLoop", "CurveLoop which is the result of thickening.", typeof(Value.Container)));
@@ -876,6 +876,58 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Bound Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates Curve by bounding original by two points")]
+    public class dynBoundCurve : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynBoundCurve()
+        {
+            InPortData.Add(new PortData("Curve", "Curve to bound.", typeof(object)));
+            InPortData.Add(new PortData("New Start Point", "Start point should be within bounded curve, anywhere on unbounded curve.", typeof(object)));
+            InPortData.Add(new PortData("New End Point", "End point should be within bounded curve, anywhere on unbounded curve.", typeof(object)));
+            OutPortData.Add(new PortData("Result", "Resulting curve.", typeof(object)));
+
+            RegisterAllPorts();
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+
+            Curve curve = (Curve)((Value.Container)args[0]).Item;
+            XYZ newStart = (XYZ) ((Value.Container)args[1]).Item;
+            XYZ newEnd = (XYZ) ((Value.Container)args[2]).Item;
+
+
+            IntersectionResult projectStart = curve.Project(newStart);
+            IntersectionResult projectEnd = curve.Project(newEnd);
+
+            double sParam = projectStart.Parameter;
+            double eParam = projectEnd.Parameter;
+
+
+            bool closed = dynXYZOnCurveOrEdge.curveIsReallyUnbound(curve);
+            if (closed)
+            {
+                double period = curve.Period;
+                while (eParam < sParam)
+                {
+                    eParam += period;
+                }
+                while (eParam >= sParam + period)
+                {
+                    eParam -= period;
+                }
+                if (eParam < sParam + 0.000000001 || eParam > sParam + period - 0.000000001)
+                    throw new Exception(" bounded curve results into curve of full period");
+            }
+            
+            Curve result = curve.Clone();
+                
+            result.MakeBound(sParam, eParam);
+            return Value.NewContainer(result);
+        }
+    }
+
     [NodeName("Bisector Line")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates bisector of two lines")]
@@ -917,7 +969,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Best fit arc")]
+    [NodeName("Best Fit Arc")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates best fit arc through points")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]

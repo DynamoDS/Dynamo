@@ -32,6 +32,8 @@ namespace Dynamo
 {
     namespace Nodes
     {
+        
+        [NodeDescription("A node with customized internal functionality.")]
         [IsInteractive(false)]
         public class dynFunction : dynBuiltinFunction
         {
@@ -54,6 +56,24 @@ namespace Dynamo
                 : base(null)
             {
 
+            }
+
+            public new string Category
+            {
+                get
+                {
+                    if (dynSettings.Controller.CustomNodeLoader.NodeCategories.ContainsKey(this.Definition.FunctionId))
+                        return dynSettings.Controller.CustomNodeLoader.NodeCategories[this.Definition.FunctionId];
+                    else
+                    {
+                        return BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+                    }
+                }
+            }
+
+            public new string Name 
+            {
+                get { return this.Definition.Workspace.Name; }
             }
 
             public override void SetupCustomUIElements(dynNodeView nodeUI)

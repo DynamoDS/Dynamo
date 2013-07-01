@@ -27,6 +27,7 @@ namespace Dynamo
         private double _width = 100;
         private double _x;
         private double _y;
+        private double _zoom = 1.0;
 
         /// <summary>
         ///     The date of the last save.
@@ -128,6 +129,16 @@ namespace Dynamo
             }
         }
 
+        public double Zoom
+        {
+            get { return _zoom; }
+            set
+            {
+                _zoom = value;
+                RaisePropertyChanged("Zoom");
+            }
+        }
+
         /// <summary>
         ///     Get the height of the workspace's bounds.
         /// </summary>
@@ -173,6 +184,24 @@ namespace Dynamo
 
         private ObservableCollection<dynNodeModel> _nodes;
         private ObservableCollection<dynConnectorModel> _connectors;
+
+        public double CenterX
+        {
+            get { return 0; }
+            set
+            {
+                
+            }
+        }
+
+        public double CenterY
+        {
+            get { return 0; }
+            set
+            {
+
+            }
+        }
 
         protected dynWorkspaceModel(
             String name, IEnumerable<dynNodeModel> e, IEnumerable<dynConnectorModel> c, double x, double y)
@@ -344,6 +373,7 @@ namespace Dynamo
                 var root = xmlDoc.CreateElement("dynWorkspace"); //write the root element
                 root.SetAttribute("X", workSpace.X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", workSpace.Y.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("zoom", workSpace.Zoom.ToString(CultureInfo.InvariantCulture));
 
                 if (!savingHomespace) //If we are not saving the home space
                 {
