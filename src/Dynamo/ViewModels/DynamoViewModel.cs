@@ -1196,7 +1196,7 @@ namespace Dynamo.Controls
 
         private void ShowPackageManagerSearch()
         {
-            var pms = new PackageManagerSearchViewModel();
+            var pms = new PackageManagerSearchViewModel(Controller.PackageManagerClient);
             var window = new PackageManagerSearchView(pms);
             window.Show();
         }

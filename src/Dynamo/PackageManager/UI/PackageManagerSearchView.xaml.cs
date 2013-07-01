@@ -24,10 +24,14 @@ namespace Dynamo.PackageManager.UI
             InitializeComponent();
         }
 
-
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(((TextBox)sender).Text);
+        }
+
+        private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ((PackageManagerSearchViewModel)DataContext).ExecuteSelected();
         }
     }
 }

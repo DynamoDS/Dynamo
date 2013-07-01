@@ -295,31 +295,31 @@ namespace Dynamo.PackageManager
         /// Delegate used to submit the element</summary>
         private void OnSubmit(object arg)
         {
-            if (!this.IsNewVersion)
-            {
-                var pkg = Client.GetPackageUpload(this.FunctionDefinition,
-                                                                        this.FullVersion,
-                                                                        this.Description, this.KeywordList, "MIT", "global");
-                if (pkg != null)
-                {
-                    Client.Publish(pkg, this.FunctionDefinition);
-                    dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
-                    this.Visible = Visibility.Collapsed;
-                }
-            }
-            else // new version
-            {
-                var pkgVersion = Client.GetPackageVersionUpload(this.FunctionDefinition,
-                                                                this.PackageHeader,
-                                                                this.FullVersion,
-                                                                this.Description, this.KeywordList, "MIT", "global");
-                if (pkgVersion != null)
-                {
-                    Client.Publish(pkgVersion);
-                    dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
-                    this.Visible = Visibility.Collapsed;
-                }
-            }
+            //if (!this.IsNewVersion)
+            //{
+            //    var pkg = Client.GetPackageUpload(this.FunctionDefinition,
+            //                                                            this.FullVersion,
+            //                                                            this.Description, this.KeywordList, "MIT", "global");
+            //    if (pkg != null)
+            //    {
+            //        Client.Publish(pkg, this.FunctionDefinition);
+            //        dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
+            //        this.Visible = Visibility.Collapsed;
+            //    }
+            //}
+            //else // new version
+            //{
+            //    var pkgVersion = Client.GetPackageVersionUpload(this.FunctionDefinition,
+            //                                                    this.PackageHeader,
+            //                                                    this.FullVersion,
+            //                                                    this.Description, this.KeywordList, "MIT", "global");
+            //    if (pkgVersion != null)
+            //    {
+            //        Client.Publish(pkgVersion);
+            //        dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
+            //        this.Visible = Visibility.Collapsed;
+            //    }
+            //}
         }
 
         /// <summary>

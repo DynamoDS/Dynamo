@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Input;
 using Dynamo.Commands;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
@@ -33,7 +34,6 @@ namespace Dynamo.Search.SearchElements
         public PackageManagerSearchElement(PackageHeader header)
         {
             this.Header = header;
-            this.Guid = PackageManagerClient.ExtractFunctionDefinitionGuid(header, 0);
             this.Weight = 1;
             if (header.keywords.Count > 0)
             {
@@ -45,38 +45,19 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+        private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Executes the element in search, this is what happens when the user 
         /// hits enter in the SearchView.  This either attempts to download the node, 
         /// or gets the local node if already downloaded. </summary>
         public override void Execute()
         {
-            Guid guid = this.Guid;
+            // download package
 
-            //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
-
-            if ( !dynSettings.Controller.CustomNodeLoader.Contains(guid) )
-            {
-                // go get the node from online, place it in view asynchronously
-                dynSettings.Controller.PackageManagerClient.Download(this.Id, "", (finalGuid) => 
-                    dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
-                        {
-                            { "name", guid.ToString() },
-                            { "transformFromOuterCanvasCoordinates", true },
-                            { "guid", Guid.NewGuid() }
-                        })
-                );
-            }
-            else
-            {
-                // get the node from here
-                dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
-                    {
-                        {"name", this.Guid.ToString() },
-                        {"transformFromOuterCanvasCoordinates", true},
-                        {"guid", Guid.NewGuid() }
-                    });
-            }
         }
 
         #region Properties 
@@ -102,7 +83,7 @@ namespace Dynamo.Search.SearchElements
             /// Description property </summary>
             /// <value>
             /// A string describing what the node does</value>
-            public override string Description { get { return Header.description; } }
+            public override string Description { get { return Header.description ?? ""; } }
 
             /// <summary>
             /// Weight property </summary>
