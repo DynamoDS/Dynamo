@@ -103,18 +103,41 @@ namespace DynamoPython
             RegexToType.Add(arrayRegex, typeof(List));
             RegexToType.Add(dictRegex, typeof(PythonDictionary));
 
-            try
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            if (assemblies.Any(x => x.FullName.Contains("RevitAPI")) && assemblies.Any(x => x.FullName.Contains("RevitAPIUI")))
             {
-                _scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.Statements).Execute(_scope);
+                try
+                {
+                    _scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.Statements).Execute(_scope);
 
-                var revitImports =
-                    "clr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
+                    var revitImports =
+                        "clr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
 
-                _scope.Engine.CreateScriptSourceFromString(revitImports, SourceCodeKind.Statements).Execute(_scope);
+                    _scope.Engine.CreateScriptSourceFromString(revitImports, SourceCodeKind.Statements).Execute(_scope);
+                }
+                catch
+                {
+                    DynamoLogger.Instance.Log("Failed to load Revit types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
+                }
             }
-            catch
+            
+            if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
             {
-                DynamoLogger.Instance.Log("Failed to load Revit types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
+                try
+                {
+                    _scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.Statements).Execute(_scope);
+
+                    var libGImports =
+                        "import clr\nclr.AddReference('LibGNet')\nfrom Autodesk.LibG import *\n";
+
+                    _scope.Engine.CreateScriptSourceFromString(libGImports, SourceCodeKind.Statements).Execute(_scope);
+                }
+                catch (Exception e)
+                {
+                    DynamoLogger.Instance.Log(e.ToString());
+                    DynamoLogger.Instance.Log("Failed to load LibG types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
+                }
             }
 
         }
