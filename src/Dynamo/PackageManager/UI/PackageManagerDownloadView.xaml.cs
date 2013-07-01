@@ -22,5 +22,10 @@ namespace Dynamo.PackageManager.UI
         {
             InitializeComponent();
         }
+
+        private void Clear_Completed_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

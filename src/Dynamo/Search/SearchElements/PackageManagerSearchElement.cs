@@ -57,6 +57,7 @@ namespace Dynamo.Search.SearchElements
         public override void Execute()
         {
             // download package
+            var s = dynSettings.Controller.PackageManagerClient.Download()
 
         }
 
