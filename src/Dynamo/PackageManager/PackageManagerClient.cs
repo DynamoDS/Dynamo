@@ -476,5 +476,10 @@ namespace Dynamo.PackageManager
         {
             //dynSettings.Bench.packageControlLabel.Visibility = Visibility.Collapsed;
         }
+
+        internal static List<Search.SearchElements.SearchElementBase> Search(string search, int MaxNumSearchResults)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

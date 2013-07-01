@@ -110,25 +110,25 @@ namespace Dynamo.PackageManager
         /// <param name="query"> The search query </param>
         internal void SearchAndUpdateResults(string query)
         {
-            Task<IEnumerable<SearchElementBase>>.Factory.StartNew(() =>
-            {
-                lock (PackageManagerClient)
-                {
-                    return Search(query);
-                }
-            }).ContinueWith((t) =>
-            {
-                lock (SearchResults)
-                {
-                    SearchResults.Clear();
-                    foreach (var result in t)
-                    {
-                        SearchResults.Add(result);
-                    }
-                }
+            //Task<List<SearchElementBase>>.Factory.StartNew(() =>
+            //{
+            //    lock (PackageManagerClient)
+            //    {
+            //        return Search(query);
+            //    }
+            //}).ContinueWith((t) =>
+            //{
+            //    lock (SearchResults)
+            //    {
+            //        SearchResults.Clear();
+            //        foreach (var result in t)
+            //        {
+            //            SearchResults.Add(result);
+            //        }
+            //    }
 
-            }
-            , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
+            //}
+            //, TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
         }
 
         ///// <summary>
