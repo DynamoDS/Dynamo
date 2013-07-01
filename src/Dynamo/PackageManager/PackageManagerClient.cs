@@ -23,6 +23,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Xml;
+using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg;
 using Greg.Requests;
@@ -97,8 +98,10 @@ namespace Dynamo.PackageManager
         {
             Controller = controller;
 
+            //IAuthProvider provider = new RevitOxygenProvider(Autodesk.Revit.AdWebServicesBase.GetInstance());
+           
             LoadedPackageHeaders = new Dictionary<FunctionDefinition, PackageHeader>();
-            Client = new Client("https://accounts-dev.autodesk.com", "http://54.243.225.192:8080");
+            Client = new Client(null, "http://54.225.215.247");
             Worker = new BackgroundWorker();
 
             IsLoggedIn = false;
@@ -148,20 +151,26 @@ namespace Dynamo.PackageManager
         /// <param name="group"> The "group" for the package (e.g. DynamoTutorial) </param>
         /// <returns> Returns null if it fails to get the xmlDoc, otherwise a valid PackageUpload </returns>
         public PackageUpload GetPackageUpload(FunctionDefinition funDef, string version, string description,
-                                              List<string> keywords, string license, string group)
+                                              List<string> keywords, string license, string group, List<string> files, List<PackageDependency> deps )
         {
             // var group = ((FuncWorkspace) funDef.Workspace).Category;
             string name = funDef.Workspace.Name;
-            var xml = dynWorkspaceModel.GetXmlDocFromWorkspace(funDef.Workspace, false);
-            if (xml == null) return null;
-            var contents = xml.OuterXml;
+            var contents = "";
             string engineVersion = "0.1.0"; //nope
-            string engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString(); //store the guid here
 
-            PackageUpload pkg = PackageUpload.MakeDynamoPackage(name, version, description, keywords, license,
+            string engineMetadata = "";
+
+            var pkg = PackageUpload.MakeDynamoPackage(name, version, description, keywords, license,
                                                                 contents,
-                                                                engineVersion, engineMetadata);
+                                                                engineVersion, engineMetadata, files, deps);
             return pkg;
+        }
+
+        internal List<Search.SearchElements.PackageManagerSearchElement> Search(string search, int MaxNumSearchResults)
+        {
+            var nv = new Greg.Requests.Search(search);
+            var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
+            return pkgResponse.content.GetRange(0,Math.Min(MaxNumSearchResults, pkgResponse.content.Count())).Select((header) => new PackageManagerSearchElement(header)).ToList();
         }
 
         /// <summary>
@@ -178,7 +187,7 @@ namespace Dynamo.PackageManager
         public PackageVersionUpload GetPackageVersionUpload(FunctionDefinition funDef, PackageHeader packageHeader,
                                                             string version,
                                                             string description, List<string> keywords, string license,
-                                                            string group)
+                                                            string group, List<string> files, List<PackageDependency> deps)
         {
             // var group = ((FuncWorkspace) funDef.Workspace).Category;
             string name = funDef.Workspace.Name;
@@ -190,7 +199,7 @@ namespace Dynamo.PackageManager
 
             var pkg = new PackageVersionUpload(name, version, description, keywords, contents, "dynamo",
                                                 engineVersion,
-                                                engineMetadata);
+                                                engineMetadata, files, deps );
             return pkg;
         }
 
@@ -297,115 +306,12 @@ namespace Dynamo.PackageManager
                     var m = new HeaderDownload(id);
                     ResponseWithContentBody<PackageHeader> p = Client.ExecuteAndDeserializeWithContent<PackageHeader>(m);
 
-                    // then save it to a file in packages
-                    var d = new XmlDocument();
-                    d.LoadXml(p.content.versions[p.content.versions.Count-1].contents);
-
-                    // obtain the funcDefGuid
-                    Guid funcDefGuid = ExtractFunctionDefinitionGuid(p.content, 0);
-                    if (Guid.Empty == funcDefGuid)
-                    {
-                        return;
-                    }
-
-                    // for which we need to create path
-                    string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-                    if (directory == null)
-                    {
-                        throw new DirectoryNotFoundException();
-                    }
-                    string pluginsPath = Path.Combine(directory, "definitions");
-
-                    try
-                    {
-                        if (!Directory.Exists(pluginsPath))
-                            Directory.CreateDirectory(pluginsPath);
-
-                        // now save it
-                        string path = Path.Combine(pluginsPath, p.content.name + ".dyf");
-                        d.Save(path);
-
-                        SavePackageHeader(p.content);
-
-                        dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
-                            {
-                                Controller.DynamoViewModel.OpenDefinition(path);
-                                dynSettings.Controller.DynamoViewModel.Log("Successfully imported package " + p.content.name);
-                                callback(funcDefGuid);
-                            }));
-                    }
-                    catch
-                    {
-                        dynSettings.Bench.Dispatcher.BeginInvoke(
-                            (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to load package " + p.content.name)));
-                    }
+                    
+                    
                 };
             new Thread(start).Start();
         }
 
-        /// <summary>
-        ///     Asynchronously obtain an AccessToken from the server, this enables upload.  Assumes
-        ///     you've already obtained a RequestToken.
-        /// </summary>
-        internal void GetAccessToken()
-        {
-            ThreadStart start = () =>
-                {
-                    try
-                    {
-                        Client.GetAccessTokenAsync(
-                            (s) =>
-                            Client.IsAuthenticatedAsync(
-                                (auth) => dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
-                                    {
-                                        if (auth)
-                                        {
-                                            // TODO: these elements should observe the package manager state
-                                            //dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
-                                            //dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
-                                            IsLoggedIn = true;
-                                        }
-                                    }))));
-                    }
-                    catch
-                    {
-                        dynSettings.Controller.DynamoViewModel.Log("Failed to login. Are you connected to the internet?");
-                    }
-                };
-            new Thread(start).Start();
-        }
-
-        /// <summary>
-        ///     Extract a guid from the engine-meta data string, usually from a PackageHeader
-        /// </summary>
-        /// <param name="metadataString"> The string itself </param>
-        /// <returns> Returns the guid if the guid was found, otherwise Guid.Empty. </returns>
-        internal static Guid ExtractFunctionDefinitionGuid(string metadataString)
-        {
-            string pattern = "FunctionDefinitionGuid:([0-9a-f-]{36})"; // match a FunctionDefinition
-            MatchCollection matches = Regex.Matches(metadataString, pattern, RegexOptions.IgnoreCase);
-
-            if (matches.Count != 1)
-            {
-                return Guid.Empty;
-            }
-
-            return new Guid(matches[0].Groups[1].Value);
-        }
-
-        /// <summary>
-        ///     Extract a guid from the engine-meta data string from a PackageHeader
-        /// </summary>
-        /// <param name="header"> The package header </param>
-        /// <param name="versionIndex"> The index of the version to obtain </param>
-        /// <returns> Returns the guid if the guid was found, otherwise Guid.Empty. </returns>
-        public static Guid ExtractFunctionDefinitionGuid(PackageHeader header, int versionIndex)
-        {
-            if (versionIndex < 0 || versionIndex >= header.versions.Count)
-                return Guid.Empty;
-            return ExtractFunctionDefinitionGuid(header.versions[versionIndex].engine_metadata);
-        }
 
         /// <summary>
         ///     Attempts to load a PackageHeader from the Packages directory, if successful, stores the PackageHeader
@@ -477,9 +383,6 @@ namespace Dynamo.PackageManager
             //dynSettings.Bench.packageControlLabel.Visibility = Visibility.Collapsed;
         }
 
-        internal static List<Search.SearchElements.SearchElementBase> Search(string search, int MaxNumSearchResults)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

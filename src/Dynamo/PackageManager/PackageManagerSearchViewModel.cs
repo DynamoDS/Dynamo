@@ -68,7 +68,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     This property is observed by SearchView to see the search results
         /// </value>
-        public ObservableCollection<SearchElementBase> SearchResults { get; private set; }
+        public ObservableCollection<PackageManagerSearchElement> SearchResults { get; private set; }
 
         /// <summary>
         ///     MaxNumSearchResults property
@@ -98,11 +98,11 @@ namespace Dynamo.PackageManager
         ///     The class constructor.
         /// </summary>
         /// <param name="bench"> Reference to dynBench object for logging </param>
-        public PackageManagerSearchViewModel()
+        public PackageManagerSearchViewModel(PackageManagerClient client)
         {
-            SearchResults = new ObservableCollection<SearchElementBase>();
-            MaxNumSearchResults = 20;
-
+            PackageManagerClient = client;
+            SearchResults = new ObservableCollection<PackageManagerSearchElement>();
+            MaxNumSearchResults = 12;
         }
         /// <summary>
         ///     Asynchronously performs a search and updates the observable SearchResults property.
@@ -110,25 +110,20 @@ namespace Dynamo.PackageManager
         /// <param name="query"> The search query </param>
         internal void SearchAndUpdateResults(string query)
         {
-            //Task<List<SearchElementBase>>.Factory.StartNew(() =>
-            //{
-            //    lock (PackageManagerClient)
-            //    {
-            //        return Search(query);
-            //    }
-            //}).ContinueWith((t) =>
-            //{
-            //    lock (SearchResults)
-            //    {
-            //        SearchResults.Clear();
-            //        foreach (var result in t)
-            //        {
-            //            SearchResults.Add(result);
-            //        }
-            //    }
+            Task<List<PackageManagerSearchElement>>.Factory.StartNew(() => Search(query)
 
-            //}
-            //, TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
+            ).ContinueWith((t) =>
+            {
+                lock (SearchResults)
+                {
+                    SearchResults.Clear();
+                    foreach (var result in t.Result)
+                    {
+                        SearchResults.Add(result);
+                    }
+                }
+            }
+            , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
         }
 
         ///// <summary>
@@ -195,11 +190,11 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        internal List<SearchElementBase> Search(string search)
+        internal List<PackageManagerSearchElement> Search(string search)
         {
             if (string.IsNullOrEmpty(search) || search == "Search...")
             {
-                return new List<SearchElementBase>();
+                return new List<PackageManagerSearchElement>();
             }
 
             return PackageManagerClient.Search(search, MaxNumSearchResults);
