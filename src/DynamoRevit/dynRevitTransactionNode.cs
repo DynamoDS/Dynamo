@@ -2,21 +2,25 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using Dynamo.Controls;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Autodesk.Revit.DB;
-
-using Value = Dynamo.FScheme.Value;
-using Microsoft.FSharp.Collections;
-using Dynamo.Connectors;
-using Dynamo.FSchemeInterop;
-using HelixToolkit.Wpf;
-
-using System.Windows.Media;
+using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 using System.Xml;
+
+using Autodesk.Revit.DB;
+
+using Microsoft.FSharp.Collections;
+
+using Dynamo.Utilities;
+using Value = Dynamo.FScheme.Value;
+using Dynamo.Connectors;
+using Dynamo.FSchemeInterop;
+using Dynamo.Controls;
+using Dynamo.Nodes;
+
+using HelixToolkit.Wpf;
+
+
+
 
 namespace Dynamo.Revit
 {
@@ -754,6 +758,27 @@ namespace Dynamo.Revit
         public virtual Value Evaluate(FSharpList<Value> args)
         {
             throw new NotImplementedException();
+        }
+
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        {
+            base.SetupCustomUIElements(nodeUI);
+
+            MenuItem mi = new MenuItem
+                {
+                    Header = "Show Elements"
+                };
+
+            mi.Click += new System.Windows.RoutedEventHandler(mi_Click);
+            
+            nodeUI.MainContextMenu.Items.Add(mi);
+
+        }
+
+        void mi_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if(Elements.Count > 0)
+                dynRevitSettings.Doc.ShowElements(Elements);
         }
     }
 
