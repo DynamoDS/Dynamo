@@ -43,6 +43,10 @@
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\mathnet-numerics-build\lib\Net40\MathNet.Numerics.dll</HintPath>
@@ -112,6 +116,7 @@
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Nodes\dynAdaptiveComponents.cs" />
     <Compile Include="Nodes\dynAnalysis.cs" />
+    <Compile Include="Nodes\dynASMToRevit.cs" />
     <Compile Include="Nodes\dynCurves.cs" />
     <Compile Include="Nodes\dynDatums.cs" />
     <Compile Include="Nodes\dynDivide.cs" />
