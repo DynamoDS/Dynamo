@@ -26,7 +26,7 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public class dynFormula : dynMathBase
     {
-        private string _formula;
+        private string _formula = "";
         public string Formula
         {
             get
@@ -46,7 +46,8 @@ namespace Dynamo.Nodes
                         RaisePropertyChanged("Formula");
                         RequiresRecalc = true;
                         EnableReporting();
-                        WorkSpace.Modified();
+                        if (WorkSpace != null)
+                            WorkSpace.Modified();
                     }
                 }
             }
@@ -80,15 +81,14 @@ namespace Dynamo.Nodes
             tb.SetBinding(TextBox.TextProperty, bindingVal);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("formula", Formula);
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
-            Formula = elNode.Attributes["formula"].Value;
-            processFormula();
+            Formula = elNode.Attributes["formula"].Value ?? "";
         }
 
         private static HashSet<string> RESERVED_NAMES = new HashSet<string>() { 
@@ -165,6 +165,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+
+            
             var e = new Expression(Formula);
 
             var functionLookup = new Dictionary<string, Value>();

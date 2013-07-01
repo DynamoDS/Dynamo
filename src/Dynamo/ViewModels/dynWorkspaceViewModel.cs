@@ -6,7 +6,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
+
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
@@ -20,37 +23,59 @@ namespace Dynamo
     public delegate void NodeEventHandler(object sender, EventArgs e);
     public delegate void NoteEventHandler(object sender, EventArgs e);
     public delegate void ViewEventHandler(object sender, EventArgs e);
+    public delegate void ZoomEventHandler(object sender, EventArgs e);
 
     public class dynWorkspaceViewModel: dynViewModelBase
     {
         #region Properties and Fields
-
+        
         public dynWorkspaceModel _model;
 
         private bool isConnecting = false;
-        private double zoom = 1.0;
 
         public event EventHandler StopDragging;
         public event PointEventHandler CurrentOffsetChanged;
+        public event ZoomEventHandler ZoomChanged;
         public event NodeEventHandler RequestCenterViewOnElement;
-        //public event EventHandler UILocked;
-        //public event EventHandler UIUnlocked;
         public event NodeEventHandler RequestNodeCentered;
-        //public event NoteEventHandler RequestNoteCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
 
         private bool _watchEscapeIsDown = false;
 
+        /// <summary>
+        /// Used during open and workspace changes to set the location of the workspace
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
         {
             if (CurrentOffsetChanged != null)
+            {
+                Debug.WriteLine(string.Format("Setting current offset to {0}", e.Point));
                 CurrentOffsetChanged(this, e);
+            }
         }
+
+        /// <summary>
+        /// Used during open and workspace changes to set the zoom of the workspace
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnZoomChanged(object sender, ZoomEventArgs e)
+        {
+            if (ZoomChanged != null)
+            {
+                Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
+                ZoomChanged(this, e);
+            }
+        }
+
         public virtual void OnStopDragging(object sender, EventArgs e)
         {
             if (StopDragging != null)
                 StopDragging(this, e);
         }
+        
         public virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
         {
             if (RequestCenterViewOnElement != null)
@@ -62,12 +87,6 @@ namespace Dynamo
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
         }
-
-        //public virtual void OnRequestNoteCentered(object sender, NoteEventArgs e)
-        //{
-        //    if (RequestNoteCentered != null)
-        //        RequestNoteCentered(this, e);
-        //}
 
         public virtual void OnRequestAddViewToOuterCanvas(object sender, ViewEventArgs e)
         {
@@ -127,6 +146,8 @@ namespace Dynamo
         public DelegateCommand NodeFromSelectionCommand { get; set; }
         public DelegateCommand<object> SetZoomCommand { get; set; }
         public DelegateCommand<object> FindByIdCommand { get; set; }
+
+        public DelegateCommand<string> AlignSelectedCommand { get; set; }
 
         public string Name
         {
@@ -199,16 +220,6 @@ namespace Dynamo
             set { isConnecting = value; }
         }
 
-        //public Color BackgroundColor
-        //{
-        //    get
-        //    {
-        //        if (_model == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
-        //            return Color.FromRgb(220, 220, 220);
-        //        return Color.FromRgb(255, 255, 220);
-        //    }
-        //}
-
         public bool IsCurrentSpace
         {
             get { return _model.IsCurrentSpace; }
@@ -240,21 +251,6 @@ namespace Dynamo
             get { return _model.HasUnsavedChanges; }
         }
 
-        /// <summary>
-        /// Specifies the pan location of the view
-        /// </summary>
-        public Point CurrentOffset
-        {
-            get
-            {
-                return new Point(_model.X, _model.Y);
-            }
-            set
-            {
-                OnCurrentOffsetChanged(this, new PointEventArgs(value));
-            }
-        }
-
         public dynWorkspaceModel Model
         {
             get { return _model; }
@@ -272,12 +268,7 @@ namespace Dynamo
 
         public double Zoom
         {
-            get { return zoom; }
-            set 
-            { 
-                zoom = value;
-                RaisePropertyChanged("Zoom");
-            }
+            get { return _model.Zoom; }
         }
 
         #endregion
@@ -286,25 +277,14 @@ namespace Dynamo
         {
             _model = model;
 
-            this.CurrentOffset = new Point(10,10);
-
-            var nodesColl = new CollectionContainer();
-            nodesColl.Collection = Nodes;
+            var nodesColl = new CollectionContainer { Collection = Nodes };
             WorkspaceElements.Add(nodesColl);
 
-            var connColl = new CollectionContainer();
-            connColl.Collection = Connectors;
+            var connColl = new CollectionContainer { Collection = Connectors };
             WorkspaceElements.Add(connColl);
 
-            var notesColl = new CollectionContainer();
-            notesColl.Collection = Notes;
+            var notesColl = new CollectionContainer { Collection = Notes };
             WorkspaceElements.Add(notesColl);
-
-            //var watch3DColl = new CollectionContainer();
-            //watch3DColl.Collection = Watch3DViewModels;
-            //WorkspaceElements.Add(watch3DColl);
-            
-            //Watch3DViewModels.Add(new Watch3DFullscreenViewModel(this));
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
@@ -321,6 +301,7 @@ namespace Dynamo
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             SetZoomCommand = new DelegateCommand<object>(SetZoom, CanSetZoom);
             FindByIdCommand = new DelegateCommand<object>(FindById, CanFindById);
+            AlignSelectedCommand = new DelegateCommand<string>(AlignSelected, CanAlignSelected);
 
             DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
 
@@ -410,10 +391,12 @@ namespace Dynamo
                     RaisePropertyChanged("Name");
                     break;
                 case "X":
-                    RaisePropertyChanged("CurrentOffset");
                     break;
                 case "Y":
-                    RaisePropertyChanged("CurrentOffset");
+                    break;
+                case "Zoom":
+                    OnZoomChanged(this, new ZoomEventArgs(_model.Zoom));
+                    RaisePropertyChanged("Zoom");
                     break;
                 case "IsCurrentSpace":
                     RaisePropertyChanged("IsCurrentSpace");
@@ -426,6 +409,170 @@ namespace Dynamo
                     RaisePropertyChanged("FilePath");
                     break;
             }
+        }
+
+        public double GetSelectionAverageX()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.CenterX)
+                           .Average();
+        }
+
+        public double GetSelectionAverageY()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.CenterY)
+                           .Average();
+        }
+
+        public double GetSelectionMinX()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.X)
+                           .Min();
+        }
+
+        public double GetSelectionMinY()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.Y)
+                           .Min();
+        }
+
+        public double GetSelectionMaxX()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.X + x.Width)
+                           .Max();
+        }
+
+        public double GetSelectionMaxLeftX()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.X)
+                           .Max();
+        }
+
+        public double GetSelectionMaxY()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.Y + x.Height)
+                           .Max();
+        }
+
+        public double GetSelectionMaxTopY()
+        {
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .Select((x) => x.Y)
+                           .Max();
+        }
+
+        private void AlignSelected(string alignType)
+        {
+            if (DynamoSelection.Instance.Selection.Count <= 1) return;
+
+            if (alignType == "HorizontalCenter")  // make vertial line of elements
+            {
+                var xAll = GetSelectionAverageX();
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList().ForEach((x) => { x.CenterX = xAll; });
+            }
+            else if (alignType == "HorizontalLeft")
+            {
+                var xAll = GetSelectionMinX();
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList().ForEach((x) => { x.X = xAll; });
+            }
+            else if (alignType == "HorizontalRight")
+            {
+                var xAll = GetSelectionMaxX();
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList().ForEach((x) => { x.X = xAll - x.Width; });
+            }
+            else if (alignType == "VerticalCenter")
+            {
+                var yAll = GetSelectionAverageY();
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList().ForEach((x) => { x.CenterY = yAll; });
+            }
+            else if (alignType == "VerticalTop")
+            {
+                var yAll = GetSelectionMinY();
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList().ForEach((x) => { x.Y = yAll; });
+            }
+            else if (alignType == "VerticalBottom")
+            {
+                var yAll = GetSelectionMaxY();
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList().ForEach((x) => { x.Y = yAll - x.Height; });
+            }
+            else if (alignType == "VerticalDistribute")
+            {
+                if (DynamoSelection.Instance.Selection.Count <= 2) return;
+
+                var yMin = GetSelectionMinY();
+                var yMax = GetSelectionMaxTopY();
+                var spacing = (yMax - yMin)/(DynamoSelection.Instance.Selection.Count - 1);
+                int count = 0;
+
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .OrderBy((x) => x.Y)
+                           .ToList()
+                           .ForEach((x) => x.Y = yMin + spacing * count++);
+            }
+            else if (alignType == "HorizontalDistribute")
+            {
+                if (DynamoSelection.Instance.Selection.Count <= 2) return;
+
+                var xMin = GetSelectionMinX();
+                var xMax = GetSelectionMaxLeftX();
+                var spacing = (xMax - xMin) / (DynamoSelection.Instance.Selection.Count - 1);
+                int count = 0;
+
+                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .OrderBy((x) => x.X)
+                           .ToList()
+                           .ForEach((x) => x.X = xMin + spacing * count++);
+            }
+
+            UpdateSelectionOffsets();
+
+        }
+
+        private void UpdateSelectionOffsets()
+        {
+            var sel = new List<ISelectable>();
+            foreach (var ele in DynamoSelection.Instance.Selection)
+            {
+                sel.Add(ele);
+            }
+            DynamoSelection.Instance.ClearSelection();
+            foreach (var ele in sel)
+            {
+                DynamoSelection.Instance.Selection.Add(ele);
+            }
+        }
+
+        private bool CanAlignSelected(string alignType)
+        {
+            return true;
         }
 
         private void Hide(object parameters)
@@ -524,10 +671,8 @@ namespace Dynamo
 
             //set the current offset without triggering
             //any property change notices.
-            //_model.CurrentOffset = new Point(p.X, p.Y);
             if (_model.X != p.X && _model.Y != p.Y)
             {
-                //Debug.WriteLine("Setting workspace offset.");
                 _model.X = p.X;
                 _model.Y = p.Y;
             }
@@ -561,7 +706,7 @@ namespace Dynamo
 
         private void SetZoom(object zoom)
         {
-            Zoom = Convert.ToDouble(zoom);
+            _model.Zoom = Convert.ToDouble(zoom); ;
         }
 
         private bool CanSetZoom(object zoom)

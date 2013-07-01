@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 //using Autodesk.Revit.DB;
+using System.Windows.Controls;
 using Dynamo.Connectors;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -34,7 +35,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("Visualize the output of node.")]
+    [NodeDescription("Visualize the output of node. ")]
     [NodeSearchTags("print", "output", "display")]
     public class dynWatch: dynNodeWithOneOutput
     {
@@ -94,8 +95,11 @@ namespace Dynamo.Nodes
         {
             watchTree = new WatchTree();
 
-            nodeUI.inputGrid.Children.Add(watchTree);
-
+            //nodeUI.inputGrid.Children.Add(watchTree);
+            nodeUI.grid.Children.Add(watchTree);
+            watchTree.SetValue(Grid.RowProperty,2);
+            watchTree.SetValue(Grid.ColumnSpanProperty,3);
+            watchTree.Margin = new Thickness(5,0,5,5);
             watchTreeBranch = watchTree.FindResource("Tree") as WatchTreeBranch;
         }
 

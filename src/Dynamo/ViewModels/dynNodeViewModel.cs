@@ -21,6 +21,7 @@ using System.Windows.Input;
 using System.Collections.ObjectModel;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
+using Dynamo.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism.Commands;
@@ -112,6 +113,77 @@ namespace Dynamo.Controls
         public string NickName
         {
             get { return nodeLogic.NickName; }
+        }
+
+        public string OldValue
+        {
+            get { 
+                if (this.nodeLogic.WorkSpace is FuncWorkspace)
+                {
+                    return "Not available in custom nodes";
+                }
+                return BuildValueString(nodeLogic.OldValue, 0, 3, 0, 2).TrimEnd('\n');
+            }
+        }
+
+        public string BuildValueString(FScheme.Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth )
+        {
+            if (eIn == null)
+                return "<null>";
+
+            string accString = String.Concat(Enumerable.Repeat("  ", currentDepth));
+
+            if ( maxDepth == currentDepth || currentListIndex == maxListIndex ) 
+            {
+                accString += "...\n";
+                return accString;
+            }
+            
+            if (eIn.IsContainer)
+            {
+                var str = (eIn as FScheme.Value.Container).Item != null
+                    ? (eIn as FScheme.Value.Container).Item.ToString()
+                    : "null";
+
+                accString += str;
+            }
+            else if (eIn.IsFunction)
+            {
+                accString += "<function>";
+            }
+            else if (eIn.IsList)
+            {
+                accString += "List\n";
+
+                var list = (eIn as FScheme.Value.List).Item;
+
+                // build all elements of sub list
+                foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
+                {
+
+                    if (e.Index > maxListIndex)
+                    {
+                        break;
+                    }
+                    accString += BuildValueString(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth );
+                }
+            }
+            else if (eIn.IsNumber)
+            {
+                accString += (eIn as FScheme.Value.Number).Item.ToString();
+            }
+            else if (eIn.IsString)
+            {
+                accString += "\"" + (eIn as FScheme.Value.String).Item + "\"";
+            }
+            else if (eIn.IsSymbol)
+            {
+                accString += "<" + (eIn as FScheme.Value.Symbol).Item + ">";
+            }
+
+            accString += "\n";
+
+            return accString;
         }
 
         public ElementState State
@@ -206,6 +278,7 @@ namespace Dynamo.Controls
         public DelegateCommand<string> SetLacingTypeCommand { get; set; }
         public DelegateCommand<object> SetStateCommand { get; set; }
         public DelegateCommand SelectCommand { get; set; }
+        public DelegateCommand ShowHelpCommand { get; set; }
         public DelegateCommand ViewCustomNodeWorkspaceCommand { get; set; }
         public DelegateCommand<object> SetLayoutCommand { get; set; }
         public DelegateCommand<dynNodeView> SetupCustomUIElementsCommand { get; set; }
@@ -232,14 +305,13 @@ namespace Dynamo.Controls
             SetLacingTypeCommand = new DelegateCommand<string>(new Action<string>(SetLacingType), CanSetLacingType);
             SetStateCommand = new DelegateCommand<object>(SetState, CanSetState);
             SelectCommand = new DelegateCommand(Select, CanSelect);
+            ShowHelpCommand = new DelegateCommand(ShowHelp, CanShowHelp);
             ViewCustomNodeWorkspaceCommand = new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
             SetupCustomUIElementsCommand = new DelegateCommand<dynNodeView>(SetupCustomUIElements, CanSetupCustomUIElements);
             ValidateConnectionsCommand = new DelegateCommand(ValidateConnections, CanValidateConnections);
             ToggleIsVisibleCommand = new DelegateCommand(ToggleIsVisible, CanVisibilityBeToggled);
             ToggleIsUpstreamVisibleCommand = new DelegateCommand(ToggleIsUpstreamVisible, CanUpstreamVisibilityBeToggled);
-
-
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
@@ -303,6 +375,9 @@ namespace Dynamo.Controls
                 case "NickName":
                     RaisePropertyChanged("NickName");
                     break;
+                case "OldValue":
+                    RaisePropertyChanged("OldValue");
+                    break;
                 case "X":
                     RaisePropertyChanged("Left");
                     break;
@@ -322,6 +397,17 @@ namespace Dynamo.Controls
                     SetLacingTypeCommand.RaiseCanExecuteChanged();
                     break;
             }
+        }
+
+        private void ShowHelp()
+        {
+            var helpDialog = new NodeHelpPrompt(this.NodeModel);
+            helpDialog.Show();
+        }
+
+        private bool CanShowHelp()
+        {
+            return true;
         }
 
         private bool CanDeleteNode()
@@ -375,9 +461,7 @@ namespace Dynamo.Controls
 
         private bool CanViewCustomNodeWorkspace()
         {
-            if (nodeLogic.IsCustomFunction)
-                return true;
-            return false;
+            return nodeLogic.IsCustomFunction;
         }
 
         private void SetLayout(object parameters)

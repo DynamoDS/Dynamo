@@ -38,10 +38,12 @@
                     Stroke="#FF505050"/>
             </Canvas>
             <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <TextBlock Name="tt_elementName" HorizontalAlignment="Stretch" 
-                           VerticalAlignment="Top" Text="{Binding Path=NickName}" FontSize="12" FontFamily="Arial" FontWeight="Bold" Margin="2"/>
                 <TextBlock Name="tt_longText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                           Text="{Binding Path=ToolTipText}" FontFamily="Consolas" FontSize="11" TextTrimming="WordEllipsis" Margin="2"/>
+                           Text="{Binding Path=ToolTipText}" FontFamily="Consolas" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=ToolTipText, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+                <TextBlock Name="tt_lastValueName" HorizontalAlignment="Stretch" 
+                           VerticalAlignment="Top" Text="Last Value:" FontSize="11" FontFamily="Arial" FontWeight="Bold" Margin="2" Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
+                <TextBlock Name="tt_lastValue" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                           Text="{Binding Path=OldValue}" FontFamily="Consolas" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
             </StackPanel>
         </Grid>
     </UserControl.ToolTip>
@@ -83,6 +85,8 @@
                 <MenuItem Name="isUpstreamVisible_cm" Header="Preview Upstream" 
                           IsChecked="{Binding Path=IsUpstreamVisible}"
                           Command="{Binding Path=ToggleIsUpstreamVisibleCommand}"/>
+                <MenuItem Name="help_cm" Header="Help..." 
+                          Command="{Binding Path=ShowHelpCommand}"/>
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -101,8 +105,8 @@
 
         
             <StackPanel Name="gridLeft" 
-            HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Stretch"
             IsHitTestVisible="True" 
             Margin="0"
             Background="Transparent"
@@ -184,25 +188,25 @@
                 Name="elementCanvas" 
                 Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
 
-            <Rectangle Canvas.Left="10" Canvas.Top="10" Canvas.ZIndex="1"  Width="{Binding ElementName=topControl, Path=ActualWidth}"
+            <Rectangle Canvas.Left="8" Canvas.Top="8" Canvas.ZIndex="1"  Width="{Binding ElementName=topControl, Path=ActualWidth}"
                        Height="{Binding ElementName=topControl, Path=ActualHeight}"
                        Name="customNodeRectangle2" 
                        Stroke="DarkGray" 
-                       StrokeThickness="1"
-                       Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" 
+                       StrokeThickness="2" StrokeDashArray="4,1"
+                       Fill="{x:Null}" 
                        RadiusX="2" RadiusY="2"
                        Visibility="{Binding Path=IsCustomFunction, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
             </Rectangle>
             
-            <Rectangle Canvas.Left="5" Canvas.Top="5" Canvas.ZIndex="1"  Width="{Binding ElementName=topControl, Path=ActualWidth}"
+            <!--<Rectangle Canvas.Left="5" Canvas.Top="5" Canvas.ZIndex="1"  Width="{Binding ElementName=topControl, Path=ActualWidth}"
                        Height="{Binding ElementName=topControl, Path=ActualHeight}"
                        Name="customNodeRectangle1" 
                        Stroke="DarkGray" 
-                       StrokeThickness="1"
-                       Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" 
+                       StrokeThickness="2" StrokeDashArray="4,1"
+                       Fill="{x:Null}" 
                        RadiusX="2" RadiusY="2"
                        Visibility="{Binding Path=IsCustomFunction, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
-            </Rectangle>
+            </Rectangle>-->
 
             <Rectangle Width="{Binding ElementName=topControl, Path=ActualWidth}"
                        Height="{Binding ElementName=topControl, Path=ActualHeight}"

@@ -105,11 +105,13 @@ namespace Dynamo.Controls
         public DelegateCommand<object> DeleteCommand { get; set; }
         public DelegateCommand<object> SelectNeighborsCommand { get; set; }
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
+        public DelegateCommand<string> AlignSelectedCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand RefactorCustomNodeCommand { get; set; }
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
+        public DelegateCommand GoHomeCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -366,9 +368,10 @@ namespace Dynamo.Controls
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResultCommand);
-            ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialog, CanShowNewFunctionDialogCommand);
+            ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveCommand = new DelegateCommand(Save, CanSave);
             OpenCommand = new DelegateCommand<object>(Open, CanOpen);
+            AlignSelectedCommand = new DelegateCommand<string>(AlignSelected, CanAlignSelected);
             SaveAsCommand = new DelegateCommand<object>(SaveAs, CanSaveAs);
             ClearCommand = new DelegateCommand(Clear, CanClear);
             HomeCommand = new DelegateCommand(Home, CanGoHome);
@@ -395,6 +398,8 @@ namespace Dynamo.Controls
             ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
+            GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
+
             #endregion
         }
 
@@ -429,6 +434,16 @@ namespace Dynamo.Controls
                         _workspaces.Remove(_workspaces.ToList().First(x => x.Model == item));
                     break;
             }
+        }
+
+        private void AlignSelected(string param)
+        {
+            this.CurrentSpaceViewModel.AlignSelectedCommand.Execute(param);
+        }
+
+        private bool CanAlignSelected(string param)
+        {
+            return true;
         }
 
         private bool CanSave()
@@ -653,18 +668,19 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void ShowNewFunctionDialog()
+        public bool ShowNewFunctionDialog(ref string name, ref string category)
         {
-            //First, prompt the user to enter a name
-            string name, category;
             string error = "";
 
             do
             {
                 var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
+                dialog.nameBox.Text = name;
+                dialog.categoryBox.Text = category;
+
                 if (dialog.ShowDialog() != true)
                 {
-                    return;
+                    return false;
                 }
 
                 name = dialog.Text;
@@ -672,19 +688,40 @@ namespace Dynamo.Controls
 
                 if (Controller.CustomNodeLoader.Contains(name))
                 {
-                    error = "A function with this name already exists.";
+                    error = "A custom node with the given name already exists.";
+                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
+                }
+                else if ( Controller.BuiltInTypesByNickname.ContainsKey(name) )
+                {
+                    error = "A built-in node with the given name already exists.";
+                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
                 }
                 else if (category.Equals(""))
                 {
-                    error = "Please enter a valid category.";
+                    error = "You must enter a new category or choose one from the existing categories.";
+                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
+
                 }
                 else
                 {
                     error = "";
                 }
+
             } while (!error.Equals(""));
 
-            NewFunction(Guid.NewGuid(), name, category, true);
+            return true;
+        }
+
+        private void ShowNewFunctionDialogAndMakeFunction()
+        {
+            string name = "", category = "";
+            if (ShowNewFunctionDialog(ref name, ref category))
+            {
+                NewFunction(Guid.NewGuid(), name, category, true);
+            }
         }
 
         private bool CanShowNewFunctionDialogCommand()
@@ -1053,7 +1090,7 @@ namespace Dynamo.Controls
                 var xmlDoc = new XmlDocument();
                 var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
                 xmlDoc.AppendChild(dynEl);
-                node.SaveElement(xmlDoc, dynEl);
+                node.SaveNode(xmlDoc, dynEl, SaveContext.Copy);
 
                 nodeData.Add("data", dynEl);
 
@@ -1343,7 +1380,7 @@ namespace Dynamo.Controls
             //try to set the value on the node
             if (data.ContainsKey("data"))
             {
-                node.LoadElement(data["data"] as XmlNode);
+                node.LoadNode(data["data"] as XmlNode);
             }
 
             //override the guid so we can store
@@ -1498,8 +1535,12 @@ namespace Dynamo.Controls
 
             //if we have null parameters, the note is being added
             //from the menu, center the view on the note
-            if(parameters==null)
+            if (parameters == null)
+            {
+                inputs.Add("transformFromOuterCanvasCoordinates", true);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered( this, new ModelEventArgs(n, inputs) );
+            }
+                
 
             n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
             var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspaceModel)inputs["workspace"];
@@ -1650,6 +1691,7 @@ namespace Dynamo.Controls
                 string category = "";
                 double cx = DynamoView.CANVAS_OFFSET_X;
                 double cy = DynamoView.CANVAS_OFFSET_Y;
+                double zoom = 1.0;
                 string id = "";
 
                 // load the header
@@ -1661,6 +1703,8 @@ namespace Dynamo.Controls
                             cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("Y"))
                             cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                        else if (att.Name.Equals("zoom"))
+                            zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("Name"))
                             funName = att.Value;
                         else if (att.Name.Equals("Category"))
@@ -1819,7 +1863,7 @@ namespace Dynamo.Controls
                     }
 
                     el.DisableReporting();
-                    el.LoadElement(elNode);
+                    el.LoadNode(elNode);
 
                     if (el is dynFunction)
                     {
@@ -1967,6 +2011,12 @@ namespace Dynamo.Controls
 
                 Controller.PackageManagerClient.LoadPackageHeader(def, funName);
                 nodeWorkspaceWasLoaded(def, children, parents);
+
+                //set the zoom and trigger events
+                //to get the view to scale iteself
+                ws.Zoom = zoom;
+                var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == ws);
+                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 
             }
             catch (Exception ex)
@@ -2359,6 +2409,11 @@ namespace Dynamo.Controls
 
             _model.CurrentSpace = newWs;
             _model.CurrentSpace.OnDisplayed();
+
+            //set the zoom and offsets events
+            var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == newWs);
+            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(newWs.X, newWs.Y)));
+            vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
         }
 
         public bool OpenWorkspace(string xmlPath)
@@ -2367,7 +2422,7 @@ namespace Dynamo.Controls
             CleanWorkbench();
 
             Stopwatch sw = new Stopwatch();
-            
+
             try
             {
                 #region read xml file
@@ -2380,20 +2435,36 @@ namespace Dynamo.Controls
                 TimeSpan previousElapsed = sw.Elapsed;
                 Log(string.Format("{0} elapsed for loading xml.", sw.Elapsed));
 
+                double cx = DynamoView.CANVAS_OFFSET_X;
+                double cy = DynamoView.CANVAS_OFFSET_Y;
+                double zoom = 1.0;
+
                 foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
                         if (att.Name.Equals("X"))
                         {
-                            _model.CurrentSpace.X = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                            cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
                         else if (att.Name.Equals("Y"))
                         {
-                            _model.CurrentSpace.Y = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                            cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                        }
+                        else if (att.Name.Equals("zoom"))
+                        {
+                            zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
                     }
                 }
+
+                //set the zoom and offsets and trigger events
+                //to get the view to position iteself
+                _model.CurrentSpace.X = cx;
+                _model.CurrentSpace.Y = cy;
+                _model.CurrentSpace.Zoom = zoom;
+                var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == _model.CurrentSpace);
+                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
@@ -2448,7 +2519,7 @@ namespace Dynamo.Controls
                         t = Type.GetType(typeName);
 
                         //if we still can't find the type, try the also known as attributes
-                        if(t == null)
+                        if (t == null)
                         {
                             //try to get the also known as values
                             foreach (KeyValuePair<string, TypeLoadData> kvp in Controller.BuiltInTypesByName)
@@ -2458,7 +2529,7 @@ namespace Dynamo.Controls
                                 {
                                     if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
                                     {
-                                        Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key , typeName));
+                                        Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key, typeName));
                                         t = kvp.Value.Type;
                                     }
                                 }
@@ -2486,12 +2557,12 @@ namespace Dynamo.Controls
                     if (isUpstreamVisAttrib != null)
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
-                    dynNodeModel el = CreateNodeInstance( t, nickname, guid );
+                    dynNodeModel el = CreateNodeInstance(t, nickname, guid);
                     el.WorkSpace = _model.CurrentSpace;
-                    el.LoadElement(elNode);
+                    el.LoadNode(elNode);
 
                     _model.CurrentSpace.Nodes.Add(el);
-                    
+
                     el.X = x;
                     el.Y = y;
 
@@ -2513,15 +2584,15 @@ namespace Dynamo.Controls
                     if (ViewingHomespace)
                         el.SaveResult = true;
 
-                    //el.LoadElement(elNode);
+                    //el.LoadNode(elNode);
                 }
 
                 Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
-                //OnRequestLayoutUpdate(this, EventArgs.Empty);
-                //Log(string.Format("{0} ellapsed for updating layout.", sw.Elapsed - previousElapsed));
-                //previousElapsed = sw.Elapsed;
+                OnRequestLayoutUpdate(this, EventArgs.Empty);
+                Log(string.Format("{0} ellapsed for updating layout.", sw.Elapsed - previousElapsed));
+                previousElapsed = sw.Elapsed;
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
@@ -2604,7 +2675,7 @@ namespace Dynamo.Controls
                 #endregion
 
                 Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
-                
+
                 foreach (dynNodeModel e in _model.CurrentSpace.Nodes)
                     e.EnableReporting();
 
@@ -2862,6 +2933,21 @@ namespace Dynamo.Controls
         {
             return true;
         }
+
+        /// <summary>
+        /// Resets the offset and the zoom for a view
+        /// </summary>
+        private void GoHomeView()
+        {
+            _model.CurrentSpace.Zoom = 1.0;
+            var wsvm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == _model.CurrentSpace);
+            wsvm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(0,0)));
+        }
+
+        private bool CanGoHomeView()
+        {
+            return true;
+        }
     }
 
     public class TypeLoadData
@@ -2883,6 +2969,16 @@ namespace Dynamo.Controls
         public PointEventArgs(Point p)
         {
             Point = p;
+        }
+    }
+
+    public class ZoomEventArgs : EventArgs
+    {
+        public double Zoom { get; set; }
+
+        public ZoomEventArgs(double zoom)
+        {
+            Zoom = zoom;
         }
     }
 

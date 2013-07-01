@@ -28,6 +28,7 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 //using Autodesk.Revit.DB;
 
@@ -49,92 +50,15 @@ namespace Dynamo.Controls
         {
             //find the element which was clicked
             //and implement it's method for jumping to stuff
-            FrameworkElement fe = sender as FrameworkElement;
+            var fe = sender as FrameworkElement;
 
-            WatchNode node = (WatchNode)fe.DataContext;
+            if (fe == null)
+                return;
+
+            var node = (WatchNode)fe.DataContext;
 
             if (node != null)
                 node.Click();
-        }
-    }
-
-    public class WatchNode : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void Notify(string propName)
-        {
-            if (this.PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
-            }
-        }
-
-        public event Action Clicked;
-
-        internal void Click()
-        {
-            if (Clicked != null)
-                Clicked();
-        }
-
-        WatchTreeBranch _children = new WatchTreeBranch();
-        string _label;
-        string _link;
-
-        //public object Data { get; set; }
-
-        public WatchTreeBranch Children
-        {
-            get { return _children; }
-            set { 
-                _children = value;
-                Notify("Children");
-            }
-        }
-        public string NodeLabel
-        {
-            get { return _label; }
-            set
-            {
-                _label = value;
-                Notify("NodeLabel");
-            }
-        }
-        public string Link
-        {
-            get { return _link; }
-            set
-            {
-                _link = value;
-                Notify("Link");
-            }
-        }
-
-        public WatchNode()
-        {
-        }
-
-        public WatchNode(string label)
-        {
-            _label = label;
-        }
-    }
-
-    public class WatchTreeBranch:ObservableCollection<WatchNode>
-    {
-        
-    }
-
-    public sealed class NullToVisibiltyConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        { 
-            return value == null ? System.Windows.Visibility.Hidden : System.Windows.Visibility.Visible;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
     }
 }

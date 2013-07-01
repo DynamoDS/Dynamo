@@ -95,8 +95,17 @@ namespace Dynamo.Nodes
 
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
-            dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(this);
+            if (ViewModel != null)
+                dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(this.ViewModel.Model);
         }
 
+        private void Note_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount >= 2)
+            {
+                editItem_Click(this, null);
+                e.Handled = true;
+            }
+        }
     }
 }

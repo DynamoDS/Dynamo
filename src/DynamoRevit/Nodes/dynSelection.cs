@@ -232,7 +232,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(SelectedElement);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElement != null)
@@ -243,7 +243,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -439,7 +439,7 @@ namespace Dynamo.Nodes
             return Value.NewList(Utils.SequenceToFSharpList(els));
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElements != null)
@@ -453,7 +453,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -700,9 +700,48 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            var opts = new Options { ComputeReferences = true };
+
             var face =
                 (Autodesk.Revit.DB.Face)dynRevitSettings.Doc.Document.GetElement(_f).GetGeometryObjectFromReference(_f);
+
+            //TODO: Is there a better way to get a face that has a reference?
+            foreach (GeometryObject geob in dynRevitSettings.Doc.Document.GetElement(_f).get_Geometry(opts))
+            {
+                if (FindFaceInGeometryObject(geob, ref face))
+                    break;
+            }
+
             return Value.NewContainer(face);
+        }
+
+        private static bool FindFaceInGeometryObject(GeometryObject geob, ref Face face)
+        {
+            var instance = geob as GeometryInstance;
+            if (instance != null)
+            {
+                foreach (var geob_inner in instance.GetInstanceGeometry())
+                {
+                    FindFaceInGeometryObject(geob_inner, ref face);
+                }
+            }
+            else
+            {
+                var solid = geob as Solid;
+                if (solid != null)
+                {
+                    foreach (Face f in solid.Faces)
+                    {
+                        if (f == face)
+                        {
+                            face = f;
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         public override string SelectionText
@@ -733,14 +772,14 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawFace(RenderDescription, face);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             if(_f != null)
                 dynEl.SetAttribute(
                     "faceRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -807,13 +846,13 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawGeometryElement(RenderDescription, edge);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute(
                 "edgeRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -856,7 +895,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -1260,7 +1299,7 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawXYZ(RenderDescription, thisXYZ);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute(
                 "refXYZ", _refXyz.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
@@ -1268,7 +1307,7 @@ namespace Dynamo.Nodes
             dynEl.SetAttribute("refXYZparam1", _param1.ToString());
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             try
             {

@@ -307,6 +307,9 @@ namespace Dynamo.FSchemeInterop.Node
         //Connects a Node to one of our inputs.
         public virtual void ConnectInput(string inputName, INode inputNode)
         {
+            if (arguments.ContainsKey(inputName))
+                DisconnectInput(inputName);
+
             arguments[inputName] = inputNode;
             children.Add(inputNode);
             inputNode.parents.Add(this);
@@ -544,7 +547,7 @@ namespace Dynamo.FSchemeInterop.Node
             HashSet<string> initializedIds)
         {
             var uninitialized = new HashSet<INode>();
-            GatherUninitializedIds(EntryPoint, symbols, initializedIds, uninitialized);
+            GatherUninitializedIds(EntryPoint, symbols, letEntries, initializedIds, uninitialized);
 
             var initialized = new List<Expression>();
 
@@ -552,11 +555,14 @@ namespace Dynamo.FSchemeInterop.Node
             {
                 var symbol = symbols[node];
 
-                symbols.Remove(node);
-                var binding = node.compile(symbols, letEntries, initializedIds);
-                symbols[node] = symbol;
-                initialized.Add(Expression.NewSetId(symbol, binding));
-                initializedIds.Add(symbol);
+                if (!initializedIds.Contains(symbol))
+                {
+                    symbols.Remove(node);
+                    var binding = node.compile(symbols, letEntries, initializedIds);
+                    symbols[node] = symbol;
+                    initialized.Add(Expression.NewSetId(symbol, binding));
+                    initializedIds.Add(symbol);
+                }
             }
 
             initialized.Add(Utils.MakeAnon(Inputs, EntryPoint.compile(symbols, letEntries, initializedIds)));
@@ -564,7 +570,7 @@ namespace Dynamo.FSchemeInterop.Node
             return Expression.NewBegin(Utils.SequenceToFSharpList(initialized));
         }
 
-        private static void GatherUninitializedIds(INode entryPoint, Dictionary<INode, string> symbols, HashSet<string> initializedIds, HashSet<INode> uninitialized)
+        private static void GatherUninitializedIds(INode entryPoint, Dictionary<INode, string> symbols, Dictionary<INode, List<INode>> letEntries, HashSet<string> initializedIds, HashSet<INode> uninitialized)
         {
             string symbol;
             if (symbols.TryGetValue(entryPoint, out symbol))
@@ -577,7 +583,13 @@ namespace Dynamo.FSchemeInterop.Node
 
             foreach (var c in entryPoint.Children)
             {
-                GatherUninitializedIds(c, symbols, initializedIds, uninitialized);
+                GatherUninitializedIds(c, symbols, letEntries, initializedIds, uninitialized);
+            }
+
+            List<INode> entry;
+            if (letEntries.TryGetValue(entryPoint, out entry))
+            {
+                entry.ForEach(x => uninitialized.Remove(x));
             }
         }
 

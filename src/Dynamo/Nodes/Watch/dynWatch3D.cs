@@ -50,8 +50,8 @@ namespace Dynamo.Nodes
 
         public dynWatch3D()
         {
-            InPortData.Add(new PortData("IN", "Incoming geometry objects.", typeof(object)));
-            OutPortData.Add(new PortData("OUT", "Watch contents, passed through", typeof(object)));
+            InPortData.Add(new PortData("", "Incoming geometry objects.", typeof(object)));
+            OutPortData.Add(new PortData("", "Watch contents, passed through", typeof(object)));
 
             RegisterAllPorts();
 
@@ -96,8 +96,8 @@ namespace Dynamo.Nodes
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             backgroundRect.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-            backgroundRect.RadiusX = 10;
-            backgroundRect.RadiusY = 10;
+            //backgroundRect.RadiusX = 10;
+            //backgroundRect.RadiusY = 10;
             backgroundRect.IsHitTestVisible = false;
             BrushConverter bc = new BrushConverter();
             Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
@@ -105,9 +105,19 @@ namespace Dynamo.Nodes
             backgroundRect.StrokeThickness = 1;
             SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
             backgroundRect.Fill = backgroundBrush;
-            nodeUI.inputGrid.Children.Add(backgroundRect);
-            nodeUI.inputGrid.Children.Add(_watchView);
 
+
+            //nodeUI.inputGrid.Children.Add(backgroundRect);
+            //nodeUI.inputGrid.Children.Add(_watchView);
+
+            nodeUI.grid.Children.Add(backgroundRect);
+            nodeUI.grid.Children.Add(_watchView);
+            backgroundRect.SetValue(Grid.RowProperty,2);
+            backgroundRect.SetValue(Grid.ColumnSpanProperty,3);
+            _watchView.SetValue(Grid.RowProperty, 2);
+            _watchView.SetValue(Grid.ColumnSpanProperty, 3);
+            _watchView.Margin = new Thickness(5,0,5,5);
+            backgroundRect.Margin = new Thickness(5, 0, 5, 5);
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
         }
 

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -44,6 +45,7 @@ using System.Windows.Input;
 using System.Windows.Data;
 using System.Globalization;
 using Binding = System.Windows.Forms.Binding;
+using ComboBox = System.Windows.Controls.ComboBox;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 
 namespace Dynamo.Nodes
@@ -65,6 +67,7 @@ namespace Dynamo.Nodes
         public const string CORE_EVALUATE = "Core.Evaluate";
         public const string CORE_TIME = "Core.Time";
         public const string CORE_FUNCTIONS = "Core.Functions";
+        public const string CORE_GEOMETRY = "Core.Geometry";
 
         public const string LOGIC = "Logic";
         public const string LOGIC_MATH = "Logic.Math";
@@ -240,7 +243,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData(getInputRootName() + getNewInputIndex(), "", typeof(object)));
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             foreach (var inport in InPortData)
@@ -253,7 +256,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             int i = InPortData.Count;
             foreach (XmlNode subNode in elNode.ChildNodes)
@@ -547,12 +550,12 @@ namespace Dynamo.Nodes
             base.AddInput();
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             var inputAttr = elNode.Attributes["inputs"];
             int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
@@ -622,12 +625,12 @@ namespace Dynamo.Nodes
             base.AddInput();
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             var inputAttr = elNode.Attributes["inputs"];
             int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
@@ -907,7 +910,9 @@ namespace Dynamo.Nodes
             FSharpList<Value> lst = ((Value.List)args[0]).Item;
             double n = (double)((Value.Number)args[1]).Item;
 
-            //if we have less elements in the 
+            n = Math.Round(n);
+
+            //if we have less elements in ther 
             //incoming list than the slice size,
             //just return the list
             if (lst.Count<Value>() < n)
@@ -1017,9 +1022,9 @@ namespace Dynamo.Nodes
                 tb.Commit();
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
-            base.LoadElement(elNode);
+            base.LoadNode(elNode);
             processTextForNewInputs();
         }
 
@@ -1193,9 +1198,37 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Flatten")]
+    [NodeName("Repeat")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Flatten a list of lists into one list.")]
+    [NodeDescription("Construct a list of a given item repeated a given number of times.")]
+    public class dynRepeat : dynNodeWithOneOutput
+    {
+        public dynRepeat()
+        {
+            InPortData.Add(new PortData("thing", "The thing to repeat. This can be a single object or a list.", typeof(Value)));
+            InPortData.Add(new PortData("length", "The number of times to repeat.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("list", "The list.", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            int n = Convert.ToInt16(((Value.Number) args[1]).Item);
+
+            if(n<0)
+                throw new Exception("Can't make a repeated list of a negative amount.");
+
+            return Value.NewList(Utils.SequenceToFSharpList(Enumerable.Repeat(args[0], n).ToList()));
+        }
+    }
+
+
+    [NodeName("Flatten Completely")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Flatten nested lists into one list.")]
     public class dynFlattenList : dynNodeWithOneOutput
     {
         public dynFlattenList()
@@ -1205,7 +1238,32 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Longest;
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        internal static IEnumerable<Value> Flatten(IEnumerable<Value> list, ref int amt)
+        {
+            while (amt != 0)
+            {
+                bool keepFlattening = false;
+
+                list = list.SelectMany<Value, Value>(
+                    x =>
+                    {
+                        if (x is Value.List)
+                        {
+                            keepFlattening = true;
+                            return (x as Value.List).Item;
+                        }
+                        return new[] { x };
+                    }).ToList();
+
+                if (keepFlattening)
+                    amt--;
+                else
+                    break;
+            }
+            return list;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -1213,10 +1271,49 @@ namespace Dynamo.Nodes
             if (!args[0].IsList)
                 throw new Exception("A list is required to flatten.");
 
-            FSharpList<Value> list = ((Value.List)args[0]).Item;
-            var vals = list.ToList().SelectMany(x => ((Value.List)x).Item);
+            IEnumerable<Value> list = ((Value.List)args[0]).Item;
 
-            return Value.NewList(Utils.SequenceToFSharpList(vals));
+            int amt = -1;
+            return Value.NewList(Utils.SequenceToFSharpList(Flatten(list, ref amt)));
+        }
+    }
+
+    [NodeName("Flatten")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Flatten nested lists into one list.")]
+    public class dynFlattenListAmt : dynNodeWithOneOutput
+    {
+        public dynFlattenListAmt()
+        {
+            InPortData.Add(new PortData("list", "The list of lists to flatten.", typeof(Value.List)));
+            InPortData.Add(new PortData("amt", "Amount of nesting to remove.", typeof(Value.Number)));
+
+            OutPortData.Add(new PortData("list", "The flattened list.", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+                throw new Exception("A list is required to flatten.");
+
+            IEnumerable<Value> list = ((Value.List)args[0]).Item;
+
+            var oldAmt = Convert.ToInt32(((Value.Number)args[1]).Item);
+
+            if (oldAmt < 0)
+                throw new Exception("Cannot flatten a list by a negative amount.");
+
+            var amt = oldAmt;
+            var result = dynFlattenList.Flatten(list, ref amt);
+
+            if (amt > 0)
+                throw new Exception("List not nested enough to flatten by given amount. Nesting Amt = " + (oldAmt - amt) + ", Given Amt = " + oldAmt);
+
+            return Value.NewList(Utils.SequenceToFSharpList(result));
         }
     }
 
@@ -1758,7 +1855,7 @@ namespace Dynamo.Nodes
             if (!preBuilt.TryGetValue(this, out result))
             {
                 result = new Dictionary<int, INode>();
-                result[outPort] = new NumberNode(Math.PI);
+                result[outPort] = new NumberNode(3.14159265358979);
                 preBuilt[this] = result;
             }
             return result[outPort];
@@ -1988,7 +2085,7 @@ namespace Dynamo.Nodes
                 base.RemoveInput();
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             foreach (var inport in InPortData.Skip(1))
@@ -2001,7 +2098,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -2226,12 +2323,12 @@ namespace Dynamo.Nodes
             {
                 var p = CaretIndex;
 
-                base.Text = dynSettings.RemoveChars(
-                   Text,
-                   Text.ToCharArray()
-                      .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
-                      .Select(c => c.ToString())
-                );
+                //base.Text = dynSettings.RemoveChars(
+                //   Text,
+                //   Text.ToCharArray()
+                //      .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
+                //      .Select(c => c.ToString())
+                //);
 
                 CaretIndex = p;
             }
@@ -2320,7 +2417,7 @@ namespace Dynamo.Nodes
             //override in child classes
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(typeof(T).FullName);
@@ -2328,7 +2425,7 @@ namespace Dynamo.Nodes
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -2352,7 +2449,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewNumber(Value);
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", ((double)Value).ToString(CultureInfo.InvariantCulture));
@@ -2546,16 +2643,18 @@ namespace Dynamo.Nodes
         Slider tb_slider;
         dynTextBox mintb;
         dynTextBox maxtb;
-        TextBox displayBox;
+        dynTextBox valtb;
+
         private double max;
         private double min;
 
         public dynDoubleSliderInput()
         {
             RegisterAllPorts();
-            Value = 50.0;
+            
             Min = 0.0;
             Max = 100.0;
+            Value = 50.0;
         }
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
@@ -2564,33 +2663,13 @@ namespace Dynamo.Nodes
             tb_slider = new System.Windows.Controls.Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-
+            
             tb_slider.Width = 100;
 
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.None;
 
-            tb_slider.ValueChanged += delegate
-            {
-                var pos = Mouse.GetPosition(nodeUI.elementCanvas);
-                Canvas.SetLeft(displayBox, pos.X);
-                Canvas.SetTop(displayBox, Height);
-            };
-
-            tb_slider.PreviewMouseDown += delegate
-            {
-                if (nodeUI.IsEnabled && !nodeUI.elementCanvas.Children.Contains(displayBox))
-                {
-                    nodeUI.elementCanvas.Children.Add(displayBox);
-                    var pos = Mouse.GetPosition(nodeUI.elementCanvas);
-                    Canvas.SetLeft(displayBox, pos.X);
-                }
-            };
-
             tb_slider.PreviewMouseUp += delegate
             {
-                if (nodeUI.elementCanvas.Children.Contains(displayBox))
-                    nodeUI.elementCanvas.Children.Remove(displayBox);
-
                 dynSettings.ReturnFocusToSearch();
             };
 
@@ -2598,77 +2677,70 @@ namespace Dynamo.Nodes
             mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             mintb.Width = double.NaN;
-            mintb.IsNumeric = true;
 
             mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            mintb.OnChangeCommitted += delegate
+
+            // input value textbox
+            valtb = new dynTextBox();
+            valtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            valtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            valtb.Width = double.NaN;
+            valtb.Margin = new Thickness(0,0,10,0);
+            //maxtb.IsNumeric = true;
+            valtb.OnChangeCommitted += delegate
             {
                 try
                 {
-                    Min = Convert.ToDouble(mintb.Text);
+                    Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
+                    if (Min > Value)
+                        Min = Value;
+                    if (Max < Value)
+                        Max = Value;
+                    Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
+                    tb_slider.Value = Value;
                 }
                 catch
                 {
-                    Min = 0;
                 }
             };
-            //mintb.Pending = false;
 
             maxtb = new dynTextBox();
             maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             maxtb.Width = double.NaN;
-            maxtb.IsNumeric = true;
+            //maxtb.IsNumeric = true;
 
             maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            maxtb.OnChangeCommitted += delegate
-            {
-                try
-                {
-                    Max = Convert.ToDouble(maxtb.Text, CultureInfo.InvariantCulture);
-                }
-                catch
-                {
-                    Max = 100;
-                }
-            };
 
-            WrapPanel wp = new WrapPanel();
+            var wp = new WrapPanel();
+            wp.Children.Add(valtb);
             wp.Children.Add(mintb);
             wp.Children.Add(tb_slider);
             wp.Children.Add(maxtb);
             nodeUI.inputGrid.Children.Add(wp);
 
-            displayBox = new TextBox()
-            {
-                IsReadOnly = true,
-                Background = Brushes.White,
-                Foreground = Brushes.Black
-            };
-
-            Canvas.SetTop(displayBox, nodeUI.Height);
-            Canvas.SetZIndex(displayBox, int.MaxValue);
-
-            displayBox.DataContext = this;
             maxtb.DataContext = this;
             tb_slider.DataContext = this;
             mintb.DataContext = this;
+            valtb.DataContext = this;
 
-            var bindingValue = new System.Windows.Data.Binding("Value")
+            // value input
+            var inputBinding = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay(),
+                Converter = new DoubleDisplay()
             };
-            displayBox.SetBinding(TextBox.TextProperty, bindingValue);
+            valtb.SetBinding(dynTextBox.TextProperty, inputBinding);
 
+            // slider value 
             var sliderBinding = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
             tb_slider.SetBinding(Slider.ValueProperty, sliderBinding);
 
+            // max value
             var bindingMax = new System.Windows.Data.Binding("Max")
             {
                 Mode = BindingMode.TwoWay,
@@ -2676,9 +2748,19 @@ namespace Dynamo.Nodes
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            tb_slider.SetBinding(Slider.MaximumProperty, bindingMax);
             maxtb.SetBinding(dynTextBox.TextProperty, bindingMax);
 
+            // max slider value
+            var bindingMaxSlider = new System.Windows.Data.Binding("Max")
+            {
+                Mode = BindingMode.OneWay,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            tb_slider.SetBinding(Slider.MaximumProperty, bindingMaxSlider);
+
+
+            // min value
             var bindingMin = new System.Windows.Data.Binding("Min")
             {
                 Mode = BindingMode.TwoWay,
@@ -2686,8 +2768,16 @@ namespace Dynamo.Nodes
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            tb_slider.SetBinding(Slider.MinimumProperty, bindingMin);
             mintb.SetBinding(dynTextBox.TextProperty, bindingMin);
+
+            // min slider value
+            var bindingMinSlider = new System.Windows.Data.Binding("Min")
+            {
+                Mode = BindingMode.OneWay,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            tb_slider.SetBinding(Slider.MinimumProperty, bindingMinSlider);
         }
 
         public override double Value
@@ -2700,6 +2790,8 @@ namespace Dynamo.Nodes
             {
                 base.Value = value;
                 RaisePropertyChanged("Value");
+
+                Debug.WriteLine(string.Format("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture)));
             }
         }
         
@@ -2741,7 +2833,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
@@ -2750,25 +2842,33 @@ namespace Dynamo.Nodes
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
                 if (subNode.Name.Equals(typeof(double).FullName))
                 {
+                    double value = Value;
+                    double min = Min;
+                    double max = Max;
+
                     foreach (XmlAttribute attr in subNode.Attributes)
                     {
                         if (attr.Name.Equals("value"))
-                            Value = DeserializeValue(attr.Value);
+                            value = DeserializeValue(attr.Value);
                         else if (attr.Name.Equals("min"))
                         {
-                            Min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                            min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                         }
                         else if (attr.Name.Equals("max"))
                         {
-                            Max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                            max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                         }
                     }
+
+                    Min = min;
+                    Max = max;
+                    Value = value;
                 }
             }
         }
@@ -2928,14 +3028,14 @@ namespace Dynamo.Nodes
             return val;
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(string).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -2967,7 +3067,26 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Filename")]
+    [NodeName("Directory")]
+    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeDescription("Allows you to select a directory on the system to get its path.")]
+    public class dynStringDirectory : dynStringFilename
+    {
+        protected override void readFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var openDialog = new FolderBrowserDialog
+            {
+                ShowNewFolderButton = true
+            };
+
+            if (openDialog.ShowDialog() == DialogResult.OK)
+            {
+                Value = openDialog.SelectedPath;
+            }
+        }
+    }
+
+    [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Allows you to select a file on the system to get its filename.")]
     public class dynStringFilename : dynBasicInteractive<string>
@@ -3031,9 +3150,12 @@ namespace Dynamo.Nodes
             }
         }
 
-        void readFileButton_Click(object sender, RoutedEventArgs e)
+        protected virtual void readFileButton_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openDialog = new OpenFileDialog();
+            var openDialog = new OpenFileDialog
+            {
+                CheckFileExists = false
+            };
 
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
@@ -3089,7 +3211,7 @@ namespace Dynamo.Nodes
                 base.RemoveInput();
         }
 
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             foreach (var inport in InPortData.Skip(2))
@@ -3102,32 +3224,21 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadElement(XmlNode elNode)
+        public override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
                 if (subNode.Name == "Input")
                 {
-                    var attr = subNode.Attributes["name"].Value;
-
                     InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
                 }
             }
             RegisterAllPorts();
         }
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
-        {
-            if (SaveResult)
-                return base.Compile(portNames);
-            else
-                return new FunctionNode("concat-strings", portNames);
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("concat-strings"))
-                .Item.Invoke(args);
+            return Value.NewString(string.Concat(args.Cast<Value.String>().Select(x => x.Item)));
         }
     }
 
@@ -3290,14 +3401,25 @@ namespace Dynamo.Nodes
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value==null?"":((double)value).ToString("0.0000", culture);
+            //source -> target
+            string val = ((double) value).ToString("0.00",CultureInfo.CurrentCulture);
+            Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
+            return value == null ? "" : val;
+
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value.ToString();
+            //target -> source
+            //return value.ToString();
+
+            double val = 0.0;
+            double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
+            Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
+            return val;
         }
     }
+
 
     public class RadianToDegreesConverter : IValueConverter
     {
@@ -3379,4 +3501,136 @@ namespace Dynamo.Nodes
         }
     }
     #endregion
+
+    /// <summary>
+    /// A class used to store a name and associated item for a drop down menu
+    /// </summary>
+    public class DynamoDropDownItem
+    {
+        public string Name { get; set; }
+        public object Item { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public DynamoDropDownItem(string name, object item)
+        {
+            Name = name;
+            Item = item;
+        }
+    }
+    /// <summary>
+    /// Base class for all nodes using a drop down
+    /// </summary>
+    public abstract class dynDropDrownBase : dynNodeWithOneOutput
+    {
+        private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
+        public ObservableCollection<DynamoDropDownItem> Items
+        {
+            get { return items; }
+            set
+            {
+                items = value;
+                RaisePropertyChanged("Items");
+            }
+        }
+
+        private int selectedIndex = 0;
+        public int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set
+            {
+                //do not allow selected index to
+                //go out of range of the items collection
+                if (value > Items.Count - 1)
+                {
+                    selectedIndex = -1;
+                }
+                else
+                    selectedIndex = value;
+                RaisePropertyChanged("SelectedIndex");
+            }
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        {
+            base.SetupCustomUIElements(nodeUI);
+
+            //add a drop down list to the window
+            ComboBox combo = new ComboBox();
+            combo.Width = 300;
+            combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            nodeUI.inputGrid.Children.Add(combo);
+            System.Windows.Controls.Grid.SetColumn(combo, 0);
+            System.Windows.Controls.Grid.SetRow(combo, 0);
+
+            combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
+            combo.SelectionChanged += delegate
+            {
+                if (combo.SelectedIndex != -1)
+                    this.RequiresRecalc = true;
+            };
+
+            combo.DataContext = this;
+            //bind this combo box to the selected item hash
+
+            var bindingVal = new System.Windows.Data.Binding("Items")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = this
+            };
+            combo.SetBinding(ComboBox.ItemsSourceProperty, bindingVal);
+
+            //bind the selected index to the 
+            var indexBinding = new System.Windows.Data.Binding("SelectedIndex")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = this
+            };
+            combo.SetBinding(ComboBox.SelectedIndexProperty, indexBinding);
+        }
+
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        {
+            dynEl.SetAttribute("index", SelectedIndex.ToString());
+        }
+
+        public override void LoadNode(XmlNode elNode)
+        {
+            try
+            {
+                SelectedIndex = Convert.ToInt32(elNode.Attributes["index"].Value);
+            }
+            catch { }
+        }
+
+        public virtual void PopulateItems()
+        {
+            //override in child classes
+        }
+
+        /// <summary>
+        /// When the dropdown is opened, the node's implementation of PopulateItemsHash is called
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void combo_DropDownOpened(object sender, EventArgs e)
+        {
+            PopulateItems();
+        }
+
+        /// <summary>
+        /// The base behavior for the drop down node is to return the item at the selected index in the Items collection.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewContainer(Items[SelectedIndex].Item);
+        }
+    }
 }
