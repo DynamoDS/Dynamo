@@ -32,8 +32,6 @@
 
                         </Style.Resources>
 
-                        <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
-
                     </Style>
 
                 </ListBox.ItemContainerStyle>
@@ -41,25 +39,24 @@
                 <ListBox.ItemTemplate >
 
                     <DataTemplate>
+                        
+                        <Border BorderBrush="DimGray" BorderThickness="0,0,0,1">
+                            
+                            <Grid Name="SearchEle" VerticalAlignment="Stretch" HorizontalAlignment="Left" Background="#CC000000">
+                                
+                                
 
-                        <Grid Width ="279" Name="SearchEle" VerticalAlignment="Stretch" HorizontalAlignment="Left" Background="#CC000000">
-
-                            <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" MaxWidth="200" Foreground="AliceBlue" Padding="10,5,0,10"/>
-                            <TextBlock FontSize="11" Name="description" Visibility="Collapsed" HorizontalAlignment="Left" MaxWidth="260" TextWrapping ="Wrap" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 30, 0, 10" />
-                            <TextBlock FontSize="10" Name="keywords" Text="{Binding Path=Keywords}" HorizontalAlignment="Right" Foreground="Gray"  Padding="10, 20, 10, 0"/>
-                            <TextBlock FontSize="11" Name="type" Text="{Binding Path=Type}" Foreground="Azure" HorizontalAlignment="Right" Padding="10, 5, 10, 0"/>
-
-                            <Line X1="0" X2="279" Stroke="DimGray" Y1="0" Y2="0" />
-
-                        </Grid>
+                            </Grid>
+                            
+                        </Border>
 
                         <DataTemplate.Triggers>
 
-                            <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Node">
+                            <!--<DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Node">
                                 <DataTrigger.Setters>
                                     <Setter Property="Visibility" Value="Visible" TargetName="description" />
                                 </DataTrigger.Setters>
-                            </DataTrigger>
+                            </DataTrigger>-->
 
                         </DataTemplate.Triggers>
 

@@ -45,19 +45,20 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Executes the element in search, this is what happens when the user 
         /// hits enter in the SearchView.  This either attempts to download the node, 
         /// or gets the local node if already downloaded. </summary>
         public override void Execute()
         {
-            // download package
-            var s = dynSettings.Controller.PackageManagerClient.Download()
+            var result = MessageBox.Show("Are you sure you want to install this package?", "Package Download Confirmation",
+                            MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.OK)
+            {
+                var dl = new DynamoPackageDownload(this.Header, this.Header.versions[0].version); // download the most recent version
+                dynSettings.Controller.PackageManagerClient.DownloadAndInstall(dl);
+            }
 
         }
 

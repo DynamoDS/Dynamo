@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -333,14 +334,7 @@ namespace Dynamo.PackageManager
 
                 if (files.Length == 1) // There can only be one!
                 {
-                    // open and deserialize to a PackageHeader object
-                    // this is a bit hacky looking, but does the job
-                    var proxyResponse = new RestResponse();
-                    proxyResponse.Content = File.ReadAllText(files[0]);
-                    var jsonDes = new JsonDeserializer();
-                    var packageHeader = jsonDes.Deserialize<PackageHeader>(proxyResponse);
-                    dynSettings.Controller.DynamoViewModel.Log("Loading package control information for " + name + " from packages");
-                    LoadedPackageHeaders.Add(funcDef, packageHeader);
+                    
                 }
             }
             catch (Exception ex)
@@ -351,9 +345,46 @@ namespace Dynamo.PackageManager
             }
         } 
 
-        internal void Download(DynamoPackageDownload dynamoPackageDownload)
+        ObservableCollection<DynamoPackageDownload> Downloads = new ObservableCollection<DynamoPackageDownload>();
+        ObservableCollection<DynamoInstalledPackage> InstalledPackages = new ObservableCollection<DynamoInstalledPackage>();
+
+        internal void ClearInstalled()
         {
-            throw new NotImplementedException();
+            foreach (
+                var ele in Downloads.Where((x) => x.DownloadState == DynamoPackageDownload.State.Installed).ToList())
+            {
+                Downloads.Remove(ele);
+            }
+        }
+
+        internal void DownloadAndInstall(DynamoPackageDownload dynamoPackageDownload)
+        {
+            var pkgDownload = new PackageDownload(dynamoPackageDownload.Header._id, dynamoPackageDownload.VersionName);
+            Downloads.Add( dynamoPackageDownload );
+
+            ThreadStart start = () =>
+            {
+                try
+                {
+                    var response = Client.Execute(pkgDownload);
+                    var pathDl = PackageDownload.GetFileFromResponse(response);
+                    dynamoPackageDownload.Done(pathDl);
+                    DynamoInstalledPackage dynPkg;
+                    if (dynamoPackageDownload.Extract(out dynPkg))
+                    {
+                        dynPkg.RegisterWithHost();
+                    }
+                    else
+                    {
+                        throw new Exception("Failed to extract the package");
+                    }
+                }
+                catch (Exception e)
+                {
+                    dynamoPackageDownload.Error("Something is wrong with the download.  Please attempt to restart.");
+                }
+            };
+            new Thread(start).Start();
         }
     }
 }
