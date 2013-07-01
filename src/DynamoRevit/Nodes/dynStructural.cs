@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using Dynamo.Connectors;
@@ -50,7 +52,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("type", "The framing type.", typeof(Value.Container)));
             InPortData.Add(new PortData("curves", "The curve(s) to be used as center lines for your framing elements.", typeof(Value.Container)));
-            InPortData.Add(new PortData("gamma", "An angle which represents the desired cross section rotation of the elements.", typeof(Value.Container)));
+            InPortData.Add(new PortData("normal", "A vector to act as a target for the rotation of the framing element.", typeof(Value.Container)));
             OutPortData.Add(new PortData("framing", "The structural framing instance(s) created by this operation.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -60,7 +62,38 @@ namespace Dynamo.Nodes
         {
             var symbol = (FamilySymbol)((Value.Container)args[0]).Item;
             var curve = (Curve) ((Value.Container) args[1]).Item;
-            var gamma = ((Value.Number) args[2]).Item;
+            var target = (XYZ)((Value.Container) args[2]).Item;
+
+            //calculate the desired rotation
+            //we do this by finding the angle between the z axis
+            //and vector between the start of the beam and the target point
+            //both projected onto the start plane of the beam.
+
+            XYZ zAxis = new XYZ(0,0,1);
+            XYZ yAxis = new XYZ(0, 1, 0);
+
+            //flatten the beam line onto the XZ plane
+            //using the start's z coordinate
+            XYZ start = curve.get_EndPoint(0);
+            XYZ end = curve.get_EndPoint(1);
+            XYZ newEnd = new XYZ(end.X, end.Y, start.Z); //drop end point to plane
+
+            ////use the x axis of the curve's transform 
+            ////as the normal of the start plane
+            //XYZ planeNormal = (curve.get_EndPoint(0) - curve.get_EndPoint(1)).Normalize();
+
+            //catch the case where the end is directly above
+            //the start, creating a normal with zero length
+            //in that case, use the Z axis
+            XYZ planeNormal = newEnd.IsAlmostEqualTo(start) ? zAxis : (newEnd - start).Normalize();
+
+            XYZ target_project = target - target.DotProduct(planeNormal) * planeNormal;
+            XYZ z_project = zAxis - zAxis.DotProduct(planeNormal) * planeNormal;
+
+            //double gamma = target_project.AngleTo(z_project);
+            double gamma = target.AngleOnPlaneTo(zAxis.IsAlmostEqualTo(planeNormal) ? yAxis : zAxis, planeNormal);
+
+            Debug.WriteLine(gamma);
 
             FamilyInstance instance = null;
             if (this.Elements.Any())
@@ -73,9 +106,6 @@ namespace Dynamo.Nodes
                     //update the curve
                     var locCurve = instance.Location as LocationCurve;
                     locCurve.Curve = curve;
-
-                    //TODO:update the gamma
-
                 }
                 else
                 {
@@ -91,6 +121,14 @@ namespace Dynamo.Nodes
                                                                                   dynRevitSettings.DefaultLevel,
                                                                                   StructuralType.Beam);
                 this.Elements.Add(instance.Id);
+            }
+
+            //TODO:update the gamma
+            Parameter p = instance.get_Parameter("Cross-Section Rotation");
+            if (p != null)
+            {
+                if(gamma != p.AsDouble())
+                    p.Set(gamma);
             }
 
             return Value.NewContainer(instance);
