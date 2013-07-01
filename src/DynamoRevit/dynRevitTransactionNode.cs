@@ -24,7 +24,7 @@ using HelixToolkit.Wpf;
 
 namespace Dynamo.Revit
 {
-    public abstract class dynRevitTransactionNode : dynNodeModel, IDrawable
+    public abstract partial class dynRevitTransactionNode : dynNodeModel, IDrawable
     {
         protected object drawableObject = null;
         protected Func<object, RenderDescription> drawMethod = null;
@@ -760,26 +760,6 @@ namespace Dynamo.Revit
             throw new NotImplementedException();
         }
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            base.SetupCustomUIElements(nodeUI);
-
-            MenuItem mi = new MenuItem
-                {
-                    Header = "Show Elements"
-                };
-
-            mi.Click += new System.Windows.RoutedEventHandler(mi_Click);
-            
-            nodeUI.MainContextMenu.Items.Add(mi);
-
-        }
-
-        void mi_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            if(Elements.Count > 0)
-                dynRevitSettings.Doc.ShowElements(Elements);
-        }
     }
 
     public class dynRevitTransactionNodeWithOneOutput : dynRevitTransactionNode
