@@ -53,7 +53,7 @@ namespace Dynamo.PackageManager
 
         public void Start()
         {
-            dynSettings.Controller.PackageManagerClient.Download(this);
+            dynSettings.Controller.PackageManagerClient.DownloadAndInstall(this);
         }
 
         public void Error(string errorString)
@@ -61,16 +61,18 @@ namespace Dynamo.PackageManager
             this.DownloadState = State.Error;
             this.ErrorString = errorString;
         }
-
+        
         public void Done( string filePath )
         {
             this.DownloadState = State.Downloaded;
             this.DownloadPath = filePath;
         }
 
-        public string MakeInstallDirectory()
+        private string GetInstallDirectoryString()
         {
             // assembly path, packages
+            return "nothing";
+
         }
 
         public bool Extract( out DynamoInstalledPackage pkg )
@@ -82,10 +84,22 @@ namespace Dynamo.PackageManager
             }
 
             // unzip, place files
-            var unzippedDirectory = Greg.Utility.FileUtilities.UnZip(DownloadPath);
+            var unzipPath = Greg.Utility.FileUtilities.UnZip(DownloadPath);
+            
+            var installedPath = GetInstallDirectoryString();
+
+            //Now Create all of the directories
+            foreach (string dirPath in Directory.GetDirectories(unzipPath, "*",
+                SearchOption.AllDirectories))
+                Directory.CreateDirectory(dirPath.Replace(unzipPath, installedPath));
+
+            //Copy all the files
+            foreach (string newPath in Directory.GetFiles(unzipPath, "*.*",
+                SearchOption.AllDirectories))
+                File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
-            pkg = new DynamoInstalledPackage( unzippedDirectory, Header, VersionName );
+            pkg = new DynamoInstalledPackage(installedPath, Header, VersionName);
 
             return true;
         }
@@ -107,7 +121,9 @@ namespace Dynamo.PackageManager
 
         public DynamoInstalledPackage(string directory, PackageHeader header, string versionName )
         {
-            
+            this.Directory = directory;
+            this.Header = header;
+            this.VersionName = versionName;
         }
 
         // do everything necessary to make the host aware of the package
@@ -133,6 +149,7 @@ namespace Dynamo.PackageManager
         {
             // open and deserialize a package
             // 
+            return true;
         }
     }
 

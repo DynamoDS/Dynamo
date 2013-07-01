@@ -31,7 +31,13 @@ namespace Dynamo.PackageManager.UI
 
         private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ((PackageManagerSearchViewModel)DataContext).ExecuteSelected();
+            var result = MessageBox.Show("Are you sure you want to install this package?", "Package Download Confirmation",
+                            MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.OK)
+            {
+                ((PackageManagerSearchViewModel)DataContext).ExecuteSelected();
+            }
         }
     }
 }

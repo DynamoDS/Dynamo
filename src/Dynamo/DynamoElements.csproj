@@ -118,11 +118,18 @@ limitations under the License.
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
+    <Compile Include="PackageManager\DynamoPackageDownload.cs" />
     <Compile Include="PackageManager\PackageManagerSearchViewModel.cs" />
+    <Compile Include="PackageManager\UI\DynamoInstalledPackagesView.xaml.cs">
+      <DependentUpon>DynamoInstalledPackagesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PackageManager\UI\PackageDependencyInternalViewModel.cs" />
     <Compile Include="PackageManager\UI\PackageDependencyViewModel.cs" />
     <Compile Include="PackageManager\UI\PackageDependencyLeafViewModel.cs" />
     <Compile Include="PackageManager\UI\PackageDependencyRootViewModel.cs" />
+    <Compile Include="PackageManager\UI\PackageManagerDownloadView.xaml.cs">
+      <DependentUpon>PackageManagerDownloadView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PackageManager\UI\PackageManagerPublishView.xaml.cs">
       <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
     </Compile>
@@ -256,6 +263,14 @@ limitations under the License.
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="PackageManager\UI\DynamoInstalledPackagesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageManager\UI\PackageManagerDownloadView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PackageManager\UI\PackageManagerPublishView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
