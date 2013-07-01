@@ -21,6 +21,7 @@ using System.Windows.Input;
 using System.Collections.ObjectModel;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
+using Dynamo.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism.Commands;

@@ -167,6 +167,16 @@
                 <Separator/>
                 <MenuItem Focusable="False" Header="_Create Note" Command="{Binding Path=AddNoteCommand}"  Name="noteMenuItem" InputGestureText="Ctrl+W" />
                 <MenuItem Focusable="False" Header="_Create Node From Selection" Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
+                <MenuItem  Header="_Align Selection"  Name="Align">
+                    <MenuItem  Header="_X Average"  Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalCenter"/>
+                    <MenuItem  Header="_Left" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalLeft"/>
+                    <MenuItem  Header="_Right" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalRight"/>
+                    <MenuItem  Header="_Y Average" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalCenter"/>
+                    <MenuItem  Header="_Top" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalTop"/>
+                    <MenuItem  Header="_Bottom" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalBottom"/>
+                    <MenuItem  Header="_Y Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalDistribute"/>
+                    <MenuItem  Header="_X Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalDistribute"/>
+                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="_View" Name="viewMenu">
@@ -199,12 +209,15 @@
                     <MenuItem Focusable="False" Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
                     <MenuItem Focusable="False" Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
                     <MenuItem Focusable="False" Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
-                    <MenuItem Focusable="False" Header="_Show Package Manager Search" Command="{Binding Path=ShowPackageManagerSearch}"  Name="showPMSearch" />
+                    <MenuItem Focusable="False" Header="_Show Package Manager Search" Command="{Binding Path=ShowPackageManagerSearchCommand}"  Name="showPMSearch" />
                 </MenuItem>
 
                 <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem"
                           IsChecked="{Binding Path=IsShowingConnectors}" 
                           Command="{Binding Path=ShowHideConnectorsCommand}">
+                </MenuItem>
+                
+                <MenuItem Focusable="False" Header="_Go Home" IsCheckable="False" Name="GoHome" Command="{Binding Path=GoHomeCommand}">
                 </MenuItem>
                 
                 <MenuItem Focusable="False" Header="_Find Node By Id" IsCheckable="False" Name="FindNodeById">
@@ -213,7 +226,7 @@
                         <Button Content="Find" Name="id_butt" Click="Id_butt_OnClick"></Button>
                     </WrapPanel>
                 </MenuItem>
-                
+
             </MenuItem>
 
             <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
@@ -246,7 +259,7 @@
                 Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#999">
             
             <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs" 
-                        SelectedIndex="{Binding CurrentWorkspaceIndex}" Background="#222" Padding ="0">
+                        SelectedIndex="{Binding CurrentWorkspaceIndex}" Background="#222" Padding ="0" SelectionChanged="WorkspaceTabs_SelectionChanged">
                 
                 <TabControl.Resources>
 
@@ -367,10 +380,22 @@
                 <TabControl.ItemTemplate>
                     
                     <DataTemplate>
-                        
-                        <StackPanel Orientation="Horizontal" Margin="10,5,10,5">
 
-                            <TextBlock Name="WorkspaceName" Margin="0,2,0,0" >
+                        <!--<Button>
+
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter Content="{TemplateBinding Content}"/>
+                                </ControlTemplate>
+                            </Button.Template>
+
+                            <Button.InputBindings>
+                                <MouseBinding Gesture="MiddleClick" Command="{Binding HideCommand}" />
+                            </Button.InputBindings>-->
+
+                            <StackPanel Orientation="Horizontal" Margin="10,5,10,5" >
+
+                                 <TextBlock Name="WorkspaceName" Margin="0,2,0,0" >
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -397,7 +422,7 @@
                                 </TextBlock.Style>
                             </TextBlock>
 
-                            <TextBlock Name="Spacer" Text=" -" Margin="0,2,0,0">
+                                 <TextBlock Name="Spacer" Text=" -" Margin="0,2,0,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -416,7 +441,7 @@
 
                             </TextBlock>
 
-                            <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
+                                 <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -441,9 +466,11 @@
                                 
                             </TextBlock> 
                             
-                            <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
+                                 <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
 
-                        </StackPanel>
+                            </StackPanel>
+
+                        <!--</Button>-->
                         
                     </DataTemplate>
                     

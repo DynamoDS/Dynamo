@@ -68,7 +68,7 @@ namespace DynamoElementsTests
                 DynamoLogger.Instance.StartLogging();
 
                 //create a new instance of the ViewModel
-                controller = new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), false, typeof(DynamoViewModel), Context.NONE);
+                controller = new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE);
             }
             catch (Exception ex)
             {
