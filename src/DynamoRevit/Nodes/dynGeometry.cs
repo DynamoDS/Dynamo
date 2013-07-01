@@ -472,6 +472,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -479,17 +480,8 @@ namespace Dynamo.Nodes
             if (!args[0].IsList)
                 throw new Exception("A list of XYZs is required to average.");
 
-            FSharpList<Value> lst = ((Value.List)args[0]).Item;
-
-            XYZ average = new XYZ();
-            foreach (Value v in lst)
-            {
-                XYZ pt = (XYZ)((Value.Container)v).Item;
-                average = average.Add(pt);
-            }
-
-            average = average.Divide(lst.Count<Value>());
-            pts.Add(average);
+            var lst = ((Value.List)args[0]).Item;
+            var average = dynBestFitLine.MeanXYZ(dynBestFitLine.AsGenericList<XYZ>(lst));
 
             return Value.NewContainer(average);
         }
@@ -741,7 +733,6 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            CurveElement c = (CurveElement)((Value.Container)args[0]).Item; // Curve 
 
             double xi;//, x0, xs;
             xi = ((Value.Number)args[1]).Item;// Number
@@ -752,13 +743,24 @@ namespace Dynamo.Nodes
             FSharpList<Value> result = FSharpList<Value>.Empty;
 
             //double x = x0;
-            Curve crvRef = c.GeometryCurve;
+            Curve crvRef = null;
+
+            if (((Value.Container)args[0]).Item is CurveElement)
+            {
+                CurveElement c = (CurveElement)((Value.Container)args[0]).Item; // Curve 
+                crvRef = c.GeometryCurve;
+            }
+            else
+            {
+                crvRef = (Curve)((Value.Container)args[0]).Item; // Curve 
+            }
+
             double t = 0;
 
             for (int xCount = 0; xCount < xi; xCount++)
             {
                 t = xCount / xi; // create normalized curve param by dividing current number by total number
-                XYZ pt = crvRef.Evaluate(t, true);
+                XYZ pt = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
                 result = FSharpList<Value>.Cons(
                     Value.NewContainer(
                          pt// pass in parameter on curve and the bool to say yes this is normalized, Curve.Evaluate passes back out an XYZ that we store in this list
@@ -815,16 +817,41 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        bool resetPlaneofSketchPlaneElement(SketchPlane sp, Plane p)
+        {
+            XYZ newOrigin = p.Origin;
+            XYZ newNorm = p.Normal;
+            var oldP = sp.Plane;
+            XYZ oldOrigin = oldP.Origin;
+            XYZ oldNorm = oldP.Normal;
+            
+            Transform trfP = null;
+            if (oldNorm.IsAlmostEqualTo(newNorm))
+            {
+                XYZ moveVec = newOrigin - oldOrigin;
+                if (moveVec.GetLength() > 0.000000001)
+                    ElementTransformUtils.MoveElement(this.UIDocument.Document, sp.Id, moveVec);
+                return true;
+            }
+            //rotation might not work for sketch planes
+            return false;
+        }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
             //TODO: If possible, update to handle mutation rather than deletion...
-            foreach (var e in this.Elements)
-                this.DeleteElement(e);
+            //foreach (var e in this.Elements)
+            //    this.DeleteElement(e);
 
             if (input.IsList)
             {
+                //TODO: If possible, update to handle mutation rather than deletion...
+                //but: how to preserve elements when list size changes or user reshuffles elements in the list?
+                foreach (var e in this.Elements)
+                    this.DeleteElement(e);
+
                 var planeList = (input as Value.List).Item;
 
                 var result = Utils.SequenceToFSharpList(
@@ -876,32 +903,53 @@ namespace Dynamo.Nodes
             }
             else
             {
-                var x = ((Value.Container)input).Item;
                 SketchPlane sp = null;
+                bool keepExistingElement = false;
+                var x = ((Value.Container)input).Item;
 
-                //handle Plane, Reference or PlanarFace, also test for family or project doc. there probably is a cleaner way to test for all these conditions.
-                if (x is Plane)
+                //TODO: If possible, update to handle mutation rather than deletion...
+                if (this.Elements.Count == 1)
                 {
-                    Plane p = x as Plane;
-                    sp  = (this.UIDocument.Document.IsFamilyDocument)
-                       ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
-                       : this.UIDocument.Document.Create.NewSketchPlane(p);
+                    Element e = this.UIDocument.Document.GetElement(this.Elements[0]);
+                    if (e != null && ( e is SketchPlane))
+                    {
+                       sp = (SketchPlane) e;
+                       
+                       if (x is Reference)
+                           keepExistingElement = true;
+                       else if (x is Plane && resetPlaneofSketchPlaneElement(sp, (Plane) x))
+                           keepExistingElement = true;
+                    }
                 }
-                else if (x is Reference)
+                if (!keepExistingElement)
                 {
-                    Reference r = x as Reference;
-                    sp  = (this.UIDocument.Document.IsFamilyDocument)
-                       ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(r)
-                       : this.UIDocument.Document.Create.NewSketchPlane(r);
-                } else if (x is PlanarFace)
-                {
-                    PlanarFace p = x as PlanarFace;
-                    sp = (this.UIDocument.Document.IsFamilyDocument)
-                       ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
-                       : this.UIDocument.Document.Create.NewSketchPlane(p);
-                }
+                    foreach (var e in this.Elements)
+                        this.DeleteElement(e);
 
-                this.Elements.Add(sp.Id);
+                    //handle Plane, Reference or PlanarFace, also test for family or project doc. there probably is a cleaner way to test for all these conditions.
+                    if (x is Plane)
+                    {
+                        Plane p = x as Plane;
+                        sp  = (this.UIDocument.Document.IsFamilyDocument)
+                           ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
+                           : this.UIDocument.Document.Create.NewSketchPlane(p);
+                    }
+                    else if (x is Reference)
+                    {
+                        Reference r = x as Reference;
+                        sp  = (this.UIDocument.Document.IsFamilyDocument)
+                           ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(r)
+                           : this.UIDocument.Document.Create.NewSketchPlane(r);
+                    } else if (x is PlanarFace)
+                    {
+                        PlanarFace p = x as PlanarFace;
+                        sp = (this.UIDocument.Document.IsFamilyDocument)
+                           ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
+                           : this.UIDocument.Document.Create.NewSketchPlane(p);
+                    }
+
+                    this.Elements.Add(sp.Id);
+                }
 
                 return Value.NewContainer(sp);
             }
@@ -1085,7 +1133,7 @@ namespace Dynamo.Nodes
     {
         public dynCircle()
         {
-            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("center", "Start XYZ", typeof(Value.Container)));
             InPortData.Add(new PortData("rad", "Radius", typeof(Value.Number)));
             OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Value.Container)));
 
@@ -1631,7 +1679,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Rectangle")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.")]
+    [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.  Outputs a CurveLoop object directed counter-clockwise from upper right.")]
     public class Rectangle : dynCurveBase
     {
         public Rectangle()
@@ -1646,27 +1694,27 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Transform t = (Transform)((Value.Container)args[0]).Item;
+            var t = (Transform)((Value.Container)args[0]).Item;
             double width = ((Value.Number)args[1]).Item;
             double height = ((Value.Number)args[2]).Item;
 
             //ccw from upper right
-            XYZ p0 = new XYZ(width/2, width/2, 0);
-            XYZ p1 = new XYZ(-width/2, width/2, 0);
-            XYZ p2 = new XYZ(-width/2, -width/2, 0);
-            XYZ p3 = new XYZ(width/2, -width/2, 0);
+            var p0 = new XYZ(width / 2, height/2, 0);
+            var p3 = new XYZ(-width / 2, height / 2, 0);
+            var p2 = new XYZ(-width / 2, -height / 2, 0);
+            var p1 = new XYZ(width / 2, -height / 2, 0);
 
             p0 = t.OfPoint(p0);
             p1 = t.OfPoint(p1);
             p2 = t.OfPoint(p2);
             p3 = t.OfPoint(p3);
 
-            Line l1 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p0,p1);
-            Line l2 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p1,p2);
-            Line l3 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p2,p3);
-            Line l4 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p3,p0);
+            var l1 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p0, p1);
+            var l2 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p1, p2);
+            var l3 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p2, p3);
+            var l4 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p3, p0);
 
-            CurveLoop cl = new CurveLoop();
+            var cl = new CurveLoop();
             cl.Append(l1);
             cl.Append(l2);
             cl.Append(l3);
@@ -2504,6 +2552,42 @@ namespace Dynamo.Nodes
             solids.Add(resultSolid);
 
             return Value.NewContainer(resultSolid);
+        }
+    }
+
+    [NodeName("Curves Through Points")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Create a series of linear curves through a set of points.")]
+    public class dynCurvesThroughPoints : dynCurveBase
+    {
+        public dynCurvesThroughPoints()
+        {
+            InPortData.Add(new PortData("points", "List of reference points", typeof(Value.List)));
+            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            //Build a sequence that unwraps the input list from it's Value form.
+            IEnumerable<XYZ> pts = ((Value.List)args[0]).Item.Select(
+               x => (XYZ)((Value.Container)x).Item
+            );
+
+            crvs.Clear();
+
+            var results = FSharpList<Value>.Empty;
+
+            var enumerable = pts as XYZ[] ?? pts.ToArray();
+            for (int i = 1; i < enumerable.Count(); i++)
+            {
+                Line l = dynRevitSettings.Revit.Application.Create.NewLineBound(enumerable.ElementAt(i), enumerable.ElementAt(i-1));
+                crvs.Add(l);
+                results = FSharpList<Value>.Cons(Value.NewContainer(l), results);
+            }
+
+            return Value.NewList(results);
         }
     }
 }

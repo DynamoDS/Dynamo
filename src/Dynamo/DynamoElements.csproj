@@ -93,15 +93,13 @@ limitations under the License.
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands.cs" />
@@ -116,6 +114,7 @@ limitations under the License.
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
+    <Compile Include="Nodes\Watch\WatchViewModel.cs" />
     <Compile Include="Prompts\CrashPrompt.xaml.cs">
       <DependentUpon>CrashPrompt.xaml</DependentUpon>
     </Compile>
@@ -126,6 +125,9 @@ limitations under the License.
     <Compile Include="Prompts\FunctionNamePrompt.xaml.cs">
       <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Prompts\NodeHelpPrompt.xaml.cs">
+      <DependentUpon>NodeHelpPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Search\BrowserItem.cs" />
@@ -256,6 +258,10 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Prompts\FunctionNamePrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Prompts\NodeHelpPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

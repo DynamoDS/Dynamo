@@ -54,12 +54,10 @@ namespace Dynamo.Views
         {
             var vm = DataContext as dynWorkspaceViewModel;
             vm.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
+            vm.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
             vm.StopDragging += new EventHandler(vm_StopDragging);
             vm.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             vm.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
-            //vm.RequestNoteCentered += vm_RequestNoteCentered;
-            //vm.UILocked += new EventHandler(LockUI);
-            //vm.UIUnlocked += new EventHandler(UnlockUI);
             vm.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
         }
 
@@ -80,6 +78,8 @@ namespace Dynamo.Views
             Canvas.SetRight(view, 0);
         }
 
+        private double currentNodeCascadeOffset = 0.0;
+
         void vm_RequestNodeCentered(object sender, EventArgs e)
         {
             double x = 0;
@@ -92,9 +92,15 @@ namespace Dynamo.Views
 
             // apply small perturbation
             // so node isn't right on top of last placed node
-            var r = new Random();
-            x += (r.NextDouble() - 0.5) * 50;
-            y += (r.NextDouble() - 0.5) * 50;
+            if (currentNodeCascadeOffset > 96.0)
+            {
+                currentNodeCascadeOffset = 0.0;
+            }
+
+            x += currentNodeCascadeOffset;
+            y += currentNodeCascadeOffset;
+
+            currentNodeCascadeOffset += 24.0;
             
             var transformFromOuterCanvas = data.ContainsKey("transformFromOuterCanvasCoordinates");
 
@@ -152,6 +158,11 @@ namespace Dynamo.Views
         void vm_CurrentOffsetChanged(object sender, EventArgs e)
         {
             zoomBorder.SetTranslateTransformOrigin((e as PointEventArgs).Point);
+        }
+
+        void vm_ZoomChanged(object sender, EventArgs e)
+        {
+            zoomBorder.SetZoom((e as ZoomEventArgs).Zoom);
         }
 
         private void dynWorkspaceView_KeyDown(object sender, KeyEventArgs e)
@@ -350,9 +361,11 @@ namespace Dynamo.Views
                         double deltaX = nodeCenterInOverlay.X - outerCenter.X;
                         double deltaY = nodeCenterInOverlay.Y - outerCenter.Y;
 
-                        var offset = new Point(vm.CurrentOffset.X - deltaX, vm.CurrentOffset.Y - deltaY);
+                        //var offset = new Point(vm.CurrentOffset.X - deltaX, vm.CurrentOffset.Y - deltaY);
 
-                        vm.CurrentOffset = offset;
+                        //vm.CurrentOffset = offset;
+
+                        zoomBorder.SetTranslateTransformOrigin(new Point(vm.Model.X - deltaX, vm.Model.Y - deltaY));
                     } 
                 });
         }
@@ -384,7 +397,6 @@ namespace Dynamo.Views
                 {
 
                     xLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
-
 
                     xLine2 = new Line();
                     xLine2.Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180));

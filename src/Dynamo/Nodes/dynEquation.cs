@@ -185,7 +185,7 @@ namespace Dynamo.Nodes
                     var func = ((Value.Function)functionLookup[name]).Item;
                     fArgs.Result = ((Value.Number)func.Invoke(
                         Utils.SequenceToFSharpList(
-                            fArgs.Parameters.Select<Expression, Value>(
+                            fArgs.Parameters.Select(
                                 p => Value.NewNumber(Convert.ToDouble(p.Evaluate())))))).Item;
                 }
                 else

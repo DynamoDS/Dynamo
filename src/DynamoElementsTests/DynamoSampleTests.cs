@@ -64,7 +64,8 @@ namespace Dynamo.Tests
                 DynamoLogger.Instance.StartLogging();
 
                 //create a new instance of the ViewModel
-                controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment(), false, typeof(DynamoViewModel), Context.NONE);
+                controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE);
+                controller.Testing = true;
             }
             catch (Exception ex)
             {
@@ -191,8 +192,8 @@ namespace Dynamo.Tests
             controller.RunCommand(vm.OpenCommand, openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(8, vm.CurrentSpace.Connectors.Count);
-            Assert.AreEqual(8, vm.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(5, vm.CurrentSpace.Connectors.Count);
+            Assert.AreEqual(5, vm.CurrentSpace.Nodes.Count);
 
             // run the expression
             controller.RunCommand(vm.RunExpressionCommand);
@@ -201,7 +202,7 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-
+            Assert.Inconclusive("Finish me!");
         }
 
         [Test]
@@ -227,7 +228,7 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-
+            Assert.Inconclusive("Finish me!");
 
         }
 
@@ -255,7 +256,7 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-
+            Assert.Inconclusive("Finish me!");
 
         }
 
@@ -281,7 +282,7 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-
+            Assert.Inconclusive("Finish me!");
 
         }
 
@@ -305,7 +306,7 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-
+            Assert.Inconclusive("Finish me!");
 
         }
 
@@ -533,6 +534,37 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(expected, strNode.Value.ToString());
             
+        }
+
+        [Test]
+        public void Repeat()
+        {
+            var vm = controller.DynamoViewModel;
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns");
+            string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
+
+            //open and run the expression
+            controller.RunCommand(vm.OpenCommand, openPath);
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(300);
+
+            var watch = (dynWatch)controller.DynamoModel.Nodes.First(x => x is dynWatch);
+            FSharpList<FScheme.Value> listWatchVal = GetListFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(5, listWatchVal.Length);
+
+            //change the value of the list
+            var numNode = (dynDoubleInput) controller.DynamoModel.Nodes.Last(x => x is dynDoubleInput);
+            numNode.Value = 3;
+            controller.RunCommand(vm.RunExpressionCommand);
+            Thread.Sleep(300);
+
+            listWatchVal = GetListFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(3, listWatchVal.Length);
+
+            //test the negative case to make sure it throws an error
+            numNode.Value = -1;
+            Assert.Throws<NUnit.Framework.AssertionException>(() => controller.RunCommand(vm.RunExpressionCommand));
+
         }
 
     }

@@ -10,6 +10,7 @@ using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
 using System.Reflection;
+using System.Xml;
 
 namespace Dynamo.Nodes
 {
@@ -29,17 +30,70 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        Dictionary<ElementId, ElementId> sformCurveToReferenceCurveMap;
+        ElementId formId;
+
+        bool matchOrAddFormCurveToReferenceCurveMap(Form formElement, ReferenceArrayArray refArrArr, bool doMatch)
+        {
+            if (formElement.Id != formId && doMatch)
+            {
+                return false;
+            }
+            else if (!doMatch)
+                formId = formElement.Id;
+
+            if (doMatch && sformCurveToReferenceCurveMap.Count == 0)
+                return false;
+            else if (!doMatch)
+                sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
+
+            for (int indexRefArr = 0; indexRefArr < refArrArr.Size; indexRefArr++)
+            {
+                if (indexRefArr >= refArrArr.Size)
+                {
+                    if (!doMatch)
+                        sformCurveToReferenceCurveMap.Clear();
+                    return false;
+                }
+
+                if (refArrArr.get_Item(indexRefArr).Size != formElement.get_CurveLoopReferencesOnProfile(indexRefArr, 0).Size)
+                {
+                    if (!doMatch)
+                        sformCurveToReferenceCurveMap.Clear();
+                    return false;
+                }
+                for (int indexRef = 0; indexRef < refArrArr.get_Item(indexRefArr).Size; indexRef++)
+                {
+                    Reference oldRef = formElement.get_CurveLoopReferencesOnProfile(indexRefArr, 0).get_Item(indexRef);
+                    Reference newRef = refArrArr.get_Item(indexRefArr).get_Item(indexRef);
+
+                    if ((oldRef.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_NONE &&
+                            oldRef.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR) ||
+                            (newRef.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_NONE &&
+                             newRef.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR) ||
+                            oldRef.ElementReferenceType != newRef.ElementReferenceType)
+                    {
+                        if (!doMatch)
+                            sformCurveToReferenceCurveMap.Clear();
+                        return false;
+                    }
+                    ElementId oldRefId = oldRef.ElementId;
+                    ElementId newRefId = newRef.ElementId;
+
+                    if (doMatch && sformCurveToReferenceCurveMap[newRefId] != oldRefId)
+                    {
+                        return false;
+                    }
+                    else if (!doMatch)
+                        sformCurveToReferenceCurveMap[newRefId] = oldRefId;
+                }
+            }
+            return true;
+        }
+
+
         public override Value Evaluate(FSharpList<Value> args)
         {
-            //If we already have a form stored...
-            if (this.Elements.Any())
-            {
-                //Dissolve it, we will re-make it later.
-                FormUtils.DissolveForms(this.UIDocument.Document, this.Elements.Take(1).ToList());
-                //And register the form for deletion. Since we've already deleted it here manually, we can 
-                //pass "true" as the second argument.
-                this.DeleteElement(this.Elements[0], true);
-            }
 
             //Solid argument
             bool isSolid = ((Value.Number)args[0]).Item == 1;
@@ -99,6 +153,43 @@ namespace Dynamo.Nodes
                 refArrArr.Append(refArr);
             }
 
+            //If we already have a form stored...
+            if (this.Elements.Any())
+            {
+                //is this same element?
+                Element e = null;
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(Form), out e) && e != null &&
+                    e is Form)
+                {
+                    Form oldF = (Form)e;
+                    if (matchOrAddFormCurveToReferenceCurveMap(oldF,  refArrArr, true))
+                    {
+                            return Value.NewContainer(oldF);
+                    }
+                }
+
+                //Dissolve it, we will re-make it later.
+                FormUtils.DissolveForms(this.UIDocument.Document, this.Elements.Take(1).ToList());
+                //And register the form for deletion. Since we've already deleted it here manually, we can 
+                //pass "true" as the second argument.
+                this.DeleteElement(this.Elements[0], true);
+
+            }
+            else if (this.formId != ElementId.InvalidElementId)
+            {
+                Element e = null;
+                if (dynUtils.TryGetElement(this.formId, typeof(Form), out e) && e != null &&
+                    e is Form)
+                {
+                    Form oldF = (Form)e;
+                    if (matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
+                    {
+                        return Value.NewContainer(oldF);
+                    }
+                }
+            }
+
+
             //We use the ReferenceArrayArray to make the form, and we store it for later runs.
 
             Form f;
@@ -123,9 +214,56 @@ namespace Dynamo.Nodes
                 f = this.UIDocument.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr);
             }
 
+            matchOrAddFormCurveToReferenceCurveMap(f, refArrArr, false);
             this.Elements.Add(f.Id);
 
             return Value.NewContainer(f);
+        }
+
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        {
+            dynEl.SetAttribute("FormId", formId.ToString());
+            String mapAsString = "";
+
+            var enumMap = sformCurveToReferenceCurveMap.GetEnumerator();
+            for (; enumMap.MoveNext(); )
+            {
+                ElementId keyId = enumMap.Current.Key;
+                ElementId valueId = enumMap.Current.Value;
+
+                mapAsString = mapAsString + keyId.ToString() + "=" + valueId.ToString() + ";";
+            }
+            dynEl.SetAttribute("FormCurveToReferenceCurveMap", mapAsString);
+        }
+
+        public override void LoadNode(XmlNode elNode)
+        {
+            try
+            {
+                formId = new ElementId(Convert.ToInt32(elNode.Attributes["FormId"].Value));
+
+                string mapAsString = elNode.Attributes["FormCurveToReferenceCurveMap"].Value;
+                sformCurveToReferenceCurveMap = new Dictionary<ElementId,ElementId>();
+
+                string[] curMap = mapAsString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                int mapSize = curMap.Length;
+                for (int iMap = 0; iMap < mapSize; iMap++)
+                {
+                    string[] thisMap = curMap[iMap].Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (thisMap.Length != 2)
+                    {
+                        sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
+                        break;
+                    }
+                    ElementId keyId = new ElementId(Convert.ToInt32(thisMap[0]));
+                    ElementId valueId = new ElementId(Convert.ToInt32(thisMap[1]));
+                    sformCurveToReferenceCurveMap[keyId] = valueId;
+                }
+            }
+            catch 
+            {
+                sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
+            }
         }
     }
 
