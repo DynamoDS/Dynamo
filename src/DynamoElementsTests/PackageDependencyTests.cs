@@ -7,6 +7,7 @@ using System.Text;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.FSchemeInterop;

@@ -17,6 +17,7 @@ using System.Globalization;
 using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 
@@ -24,6 +25,7 @@ using Microsoft.Practices.Prism.Commands;
 
 using NUnit.Core;
 using NUnit.Framework;
+using Dynamo.PackageManager.UI;
 
 namespace Dynamo.Controls
 {
@@ -85,6 +87,7 @@ namespace Dynamo.Controls
         public DelegateCommand SaveCommand { get; set; }
         public DelegateCommand<object> SaveAsCommand { get; set; }
         public DelegateCommand ClearCommand { get; set; }
+        public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand LayoutAllCommand { get; set; }
         public DelegateCommand NewHomeWorkspaceCommand { get; set; }
@@ -368,6 +371,7 @@ namespace Dynamo.Controls
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResultCommand);
+            ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveCommand = new DelegateCommand(Save, CanSave);
             OpenCommand = new DelegateCommand<object>(Open, CanOpen);
@@ -1186,6 +1190,18 @@ namespace Dynamo.Controls
         }
 
         private bool CanCancelRun()
+        {
+            return true;
+        }
+
+        private void ShowPackageManagerSearch()
+        {
+            var pms = new PackageManagerSearchViewModel();
+            var window = new PackageManagerSearchView(pms);
+            window.Show();
+        }
+
+        private bool CanShowPackageManagerSearch()
         {
             return true;
         }

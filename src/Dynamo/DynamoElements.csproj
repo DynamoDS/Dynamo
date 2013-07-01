@@ -116,6 +116,7 @@ limitations under the License.
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
+    <Compile Include="PackageManager\PackageManagerSearchViewModel.cs" />
     <Compile Include="PackageManager\UI\PackageDependencyInternalViewModel.cs" />
     <Compile Include="PackageManager\UI\PackageDependencyViewModel.cs" />
     <Compile Include="PackageManager\UI\PackageDependencyLeafViewModel.cs" />
@@ -124,6 +125,9 @@ limitations under the License.
       <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\UI\PackageManagerPublishCustomNodeViewModel.cs" />
+    <Compile Include="PackageManager\UI\PackageManagerSearchView.xaml.cs">
+      <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Prompts\CrashPrompt.xaml.cs">
       <DependentUpon>CrashPrompt.xaml</DependentUpon>
     </Compile>
@@ -248,6 +252,10 @@ limitations under the License.
     <Page Include="PackageManager\UI\PackageManagerPublishView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PackageManager\UI\PackageManagerSearchView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Prompts\CrashPrompt.xaml">
       <SubType>Designer</SubType>
