@@ -94,8 +94,17 @@ namespace Dynamo.PackageManager
 
     }
 
-    public class DynamoInstalledPackage
+    public class DynamoInstalledPackage : NotificationObject
     {
+        public PackageHeader Header { get; private set; }
+        public string Name { get { return Header.name; } }
+
+        private string _directory;
+        public string Directory { get { return _directory; } set { _directory = value; RaisePropertyChanged("Directory"); } }
+
+        private string _versionName;
+        public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
+
         public DynamoInstalledPackage(string directory, PackageHeader header, string versionName )
         {
             
@@ -110,17 +119,17 @@ namespace Dynamo.PackageManager
 
         public DynamoInstalledPackage FromXML()
         {
-            // open and deserialize a package
+            // open a
+            return null;
         }
 
-        // header
         // location of all files
         public void Uninstall()
         {
             // remove this package completely
         }
 
-        public DynamoInstalledPackage ToXML()
+        public bool ToXML()
         {
             // open and deserialize a package
             // 
