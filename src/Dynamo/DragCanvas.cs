@@ -106,11 +106,6 @@ namespace Dynamo.Controls
 
         #region Constructor
 
-        protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
-        {
-            base.OnVisualChildrenChanged(visualAdded, visualRemoved);
-        }
-
         /// <summary>
         /// Initializes a new instance of DragCanvas.  UIElements in
         /// the DragCanvas will immediately be draggable by the user.
