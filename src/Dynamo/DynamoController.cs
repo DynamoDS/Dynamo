@@ -159,9 +159,6 @@ namespace Dynamo
 
             DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);
 
-            if(dynSettings.Bench != null)
-                DynamoLoader.LoadSamplesMenu(dynSettings.Bench);
-
             //run tests
             if (FScheme.RunTests(dynSettings.Controller.DynamoViewModel.Log))
             {
