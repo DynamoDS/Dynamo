@@ -818,6 +818,38 @@ namespace Dynamo.Nodes
         }
     }
 
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Draw")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Draws Geometry created in a Python or external script")]
+    public class ForceDrawNode : GraphicItemNode
+    {
+        public ForceDrawNode()
+        {
+            InPortData.Add(new PortData("Objects", "List of Objects to draw.", typeof(Value.List)));
+            OutPortData.Add(new PortData("Objects", "List of same Objects", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var input = (args[0] as Value.List).Item;
+
+            foreach (Value v in input)
+            {
+                GraphicItem item = ((Value.Container)v).Item as GraphicItem;
+
+                if (item == null)
+                    continue;
+
+                _graphicItems.Add(item);
+            }
+
+            return args[0];
+        }
+    }
+
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
     [NodeName("Patch")]
@@ -951,10 +983,70 @@ namespace Dynamo.Nodes
     }
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Point At Parameter")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Point at parameter along Curve.")]
+    public class PointAtParameterNode : GraphicItemNode
+    {
+        Point _point = null;
+
+        public PointAtParameterNode()
+        {
+            InPortData.Add(new PortData("Curve", "Curve to evaluate", typeof(Value.Container)));
+            InPortData.Add(new PortData("Parameter", "Parameter from 0 to 1", typeof(Value.Number)));
+            OutPortData.Add(new PortData("Point", "Point at Parameter", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve curve = (Curve)((Value.Container)args[0]).Item;
+            double param = ((Value.Number)args[1]).Item;
+
+            _point = curve.point_at_parameter(param);
+            GraphicItem.persist(_point);
+            _graphicItems.Add(_point);
+
+            return Value.NewContainer(_point);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Point At Distance")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Point at distance along Curve.")]
+    public class PointAtDistanceNode : GraphicItemNode
+    {
+        Point _point = null;
+
+        public PointAtDistanceNode()
+        {
+            InPortData.Add(new PortData("Curve", "Curve to evaluate", typeof(Value.Container)));
+            InPortData.Add(new PortData("Distance", "Distance along curve", typeof(Value.Number)));
+            OutPortData.Add(new PortData("Point", "Point at distance", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve curve = (Curve)((Value.Container)args[0]).Item;
+            double dist = ((Value.Number)args[1]).Item;
+
+            _point = curve.point_at_distance(dist);
+            GraphicItem.persist(_point);
+            _graphicItems.Add(_point);
+
+            return Value.NewContainer(_point);
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
     [NodeName("Normal At Parameter")]
     [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
     [NodeDescription("Normal at Parameter along Curve.")]
-    public class NormalAtParameterNode : GraphicItemNode
+    public class NormalAtParameterNode : LibGNode
     {
         Vector _vector = null;
 
@@ -1174,6 +1266,57 @@ namespace Dynamo.Nodes
             _graphicItems.Add(_result);
 
             return Value.NewContainer(_result); 
+        }
+    }
+
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Import SAT")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Import SAT Geometry from file.")]
+    public class ImportSATNode : GraphicItemNode
+    {
+        List<DSObject> _result = new List<DSObject>();
+
+        public ImportSATNode()
+        {
+            InPortData.Add(new PortData("File Name", "File name of .SAT file", typeof(Value.String)));
+
+            OutPortData.Add(new PortData("Geometry", "Imported Geometry", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            String file_name = ((Value.String)args[0]).Item;
+
+            DSObjectList objects = ASMImporter.import_file(file_name);
+
+            _result.Clear();
+
+            foreach (DSObject obj in objects)
+            {
+                DSObject restored = RestoreProperDSType(obj);
+
+                _result.Add(restored);
+
+                GraphicItem item = restored as GraphicItem;
+
+                if (item == null)
+                    continue;
+
+                GraphicItem.persist(item);
+                _graphicItems.Add(item);
+            }
+
+            List<Value> return_values = new List<Value>();
+
+            foreach (DSObject obj in _result)
+            {
+                return_values.Add(Value.NewContainer(obj));
+            }
+
+            return Value.NewList(Utils.SequenceToFSharpList(return_values));
         }
     }
 
