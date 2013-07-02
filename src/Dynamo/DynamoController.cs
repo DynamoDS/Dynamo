@@ -292,7 +292,15 @@ namespace Dynamo
             if (RunCompleted != null)
                 RunCompleted(sender, success);
         }
-        
+
+        public delegate void IntermittentUpdateHandler(object controller, bool success);
+        public event IntermittentUpdateHandler IntermittentUpdate;
+        public virtual void OnIntermittentUpdate(object sender, bool success)
+        {
+            if (IntermittentUpdate != null)
+                IntermittentUpdate(sender, success);
+        }
+
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
             //Get our entry points (elements with nothing connected to output)
