@@ -28,8 +28,15 @@ namespace Dynamo.Revit
 
         void mi_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (Elements.Count > 0)
-                dynRevitSettings.Doc.ShowElements(Elements);
+            if (AllElements.Count == 0)
+                return;
+
+            //select the elements
+            dynRevitSettings.Doc.Selection.Elements.Clear();
+            AllElements.ForEach(x=>dynRevitSettings.Doc.Selection.Elements.Add(dynRevitSettings.Doc.Document.GetElement(x)));
+
+            //show the elements
+            dynRevitSettings.Doc.ShowElements(Elements);
         }
     }
 }
