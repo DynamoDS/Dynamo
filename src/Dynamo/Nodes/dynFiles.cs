@@ -346,10 +346,12 @@ namespace Dynamo.Nodes
             try
             {
                 image.Save(pathName);
+                dynSettings.Controller.DynamoViewModel.Log("Saved Image File " + pathName);
 
             }
             catch (Exception e)
             {
+                dynSettings.Controller.DynamoViewModel.Log("Error Saving Image File " + pathName);
                 dynSettings.Controller.DynamoViewModel.Log(e);
                 return Value.NewNumber(0);
             }
