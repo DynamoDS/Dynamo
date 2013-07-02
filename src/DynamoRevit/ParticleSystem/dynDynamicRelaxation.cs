@@ -89,18 +89,22 @@ namespace Dynamo.Nodes
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
     class dynDynamicRelaxation :  dynParticleSystemBase
     {
-        int oldNumX = -1;
-        int oldNumY = -1;
+        private double _d;
+        private double _m;
+        private double _s;
+        private double _r;
+        private double _g;
 
         public dynDynamicRelaxation()
         {
             InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(Value.List)));
+            InPortData.Add(new PortData("curves", "Curves to use as springs.", typeof(Value.List)));
             InPortData.Add(new PortData("d", "Dampening.", typeof(Value.Number)));
             InPortData.Add(new PortData("s", "Spring Constant.", typeof(Value.Number)));
             InPortData.Add(new PortData("r", "Rest Length.", typeof(Value.Number)));
             InPortData.Add(new PortData("m", "Nodal Mass.", typeof(Value.Number)));
-            InPortData.Add(new PortData("numX", "Number of Particles in X.", typeof(Value.Number)));
-            InPortData.Add(new PortData("numY", "Number of Particles in Y.", typeof(Value.Number)));
+            //InPortData.Add(new PortData("numX", "Number of Particles in X.", typeof(Value.Number)));
+            //InPortData.Add(new PortData("numY", "Number of Particles in Y.", typeof(Value.Number)));
             InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(Value.Number)));
 
             OutPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
@@ -265,31 +269,55 @@ namespace Dynamo.Nodes
         //    return null;
         //}
 
+        private void CreateSpringsFromCurves(IEnumerable<Value> curves, IEnumerable<Value> points)
+        {
+            //create all the fixed points first
+            foreach (var pt in points)
+            {
+                var xyz = (XYZ) ((Value.Container) pt).Item;
+                particleSystem.makeParticle(_m, xyz, true);
+            }
+
+            //create all the springs, checking for existing particles
+            foreach (var crv in curves)
+            {
+                var curve = (Curve) ((Value.Container) crv).Item;
+                XYZ start = curve.get_EndPoint(0);
+                XYZ end = curve.get_EndPoint(1);
+
+                //find an existing particle to use
+                Particle a = particleSystem.getParticleByXYZ(start);
+                Particle b = particleSystem.getParticleByXYZ(end);
+
+                //if not, create a particle
+                if (a == null)
+                    a = particleSystem.makeParticle(_m, start, false);
+                if (b == null)
+                    b = particleSystem.makeParticle(_m, end, false);
+
+                particleSystem.makeSpring(a, b, _r, _s, _d);
+            }
+
+        }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
 
-            var input = args[0];//point list
-            double d = ((Value.Number)args[1]).Item;//dampening
-            double s = ((Value.Number)args[2]).Item;//spring constant
-            double r = ((Value.Number)args[3]).Item;//rest length
-            double m = ((Value.Number)args[4]).Item;//nodal mass
-            int numX = (int)((Value.Number)args[5]).Item;//number of particles in X
-            int numY = (int)((Value.Number)args[6]).Item;//number of particles in Y
-            double g = ((Value.Number)args[7]).Item;//gravity z component
+            var points = ((Value.List)args[0]).Item;//point list
+            var curves = ((Value.List)args[1]).Item;//spring list
+            _d = ((Value.Number)args[2]).Item;//dampening
+            _s = ((Value.Number)args[3]).Item;//spring constant
+            _r = ((Value.Number)args[4]).Item;//rest length
+            _m = ((Value.Number)args[5]).Item;//nodal mass
+            _g = ((Value.Number)args[6]).Item;//gravity z component
 
             //if the particle system has a different layout, then
             //clear it instead of updating
             bool reset = false;
-            if(oldNumX == -1 || 
-                oldNumY == -1 || 
-                oldNumX != numX || 
-                oldNumY != numY ||
-                particleSystem.numberOfParticles() == 0)
+            if(particleSystem.numberOfParticles() == 0)
             {
                 reset = true;
                 particleSystem.Clear();
-                oldNumX = numX;
-                oldNumY = numY;
 
                 //if we have an existing RenderDescription
                 //then clear it
@@ -305,61 +333,51 @@ namespace Dynamo.Nodes
                 }
             }
 
-            particleSystem.setGravity(g);
+            particleSystem.setGravity(_g);
 
-            ReferencePoint pt1;
-            ReferencePoint pt2;
+            //ReferencePoint pt1;
+            //ReferencePoint pt2;
 
-            //If we are receiving a list, we must create fixed particles for each reference point in the list.
-            if (input.IsList)
+            Array pointArray = points.ToArray();
+
+            for (int i = 0; i < pointArray.Length-1; i++)
             {
-                var pointList = (input as Value.List).Item;
 
-                Array pointArray = pointList.ToArray();
+                //pt1 = (ReferencePoint)((Value.Container)pointArray.GetValue(i)).Item as ReferencePoint;
+                //pt2 = (ReferencePoint)((Value.Container)pointArray.GetValue(i + 1)).Item as ReferencePoint;
 
-                for (int i = 0; i < pointArray.Length-1; i++)
+                //(dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt1.Id, ChangeTypeEnum.Modify, UpdateStart);
+                //(dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt2.Id, ChangeTypeEnum.Modify, UpdateEnd);
+
+                if (reset)
                 {
-
-                    pt1 = (ReferencePoint)((Value.Container)pointArray.GetValue(i)).Item as ReferencePoint;
-                    pt2 = (ReferencePoint)((Value.Container)pointArray.GetValue(i + 1)).Item as ReferencePoint;
-
-                    (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt1.Id, ChangeTypeEnum.Modify, UpdateStart);
-                    (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt2.Id, ChangeTypeEnum.Modify, UpdateEnd);
-
-                    if (reset)
-                    {
-                        CreateChainWithTwoFixedEnds(pt1, pt2, numX, d, r, s, m);
-                    }
-                    else
-                    {
-                        //update the spring values
-                        for (int j = 0; j < particleSystem.numberOfSprings(); j++)
-                        {
-                            ParticleSpring spring = particleSystem.getSpring(j);
-                            spring.setDamping(d);
-                            spring.setRestLength(r);
-                            spring.setSpringConstant(s);
-                        }
-                        for (int j = 0; j < particleSystem.numberOfParticles(); j++)
-                        {
-                            Particle p = particleSystem.getParticle(j);
-                            p.setMass(m);
-                        }
-
-                        particleSystem.getParticle(0).setPosition(pt1.Position);
-                        particleSystem.getParticle(particleSystem.numberOfParticles()-1).setPosition(pt2.Position);
-                    }
+                    //CreateChainWithTwoFixedEnds(pt1, pt2, numX, d, r, s, m);
+                    //setupLineTest(numX, numY, d, r, s, m);
+                    CreateSpringsFromCurves(curves, points);
                 }
+                else
+                {
+                    //update the spring values
+                    for (int j = 0; j < particleSystem.numberOfSprings(); j++)
+                    {
+                        ParticleSpring spring = particleSystem.getSpring(j);
+                        spring.setDamping(_d);
+                        spring.setRestLength(_r);
+                        spring.setSpringConstant(_s);
+                    }
+                    for (int j = 0; j < particleSystem.numberOfParticles(); j++)
+                    {
+                        Particle p = particleSystem.getParticle(j);
+                        p.setMass(_m);
+                    }
 
-                return Value.NewContainer(particleSystem);
-            }
-            else
-            {
-                throw new Exception("You must pass in a list of reference points.");
+                    //particleSystem.getParticle(0).setPosition(pt1.Position);
+                    //particleSystem.getParticle(particleSystem.numberOfParticles()-1).setPosition(pt2.Position);
+                }
             }
 
-            //setupLineTest(numX, numY, d, r, s, m);
-            //return Value.NewContainer(particleSystem);
+            return Value.NewContainer(particleSystem);
+
         }
 
         public void UpdateStart(List<ElementId> updated)
