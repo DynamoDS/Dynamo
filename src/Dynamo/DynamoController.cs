@@ -28,10 +28,10 @@ namespace Dynamo
     public static partial class Context
     {
         public const string NONE = "None";
-        public const string REVIT_2013 = "Autodesk Revit 2013";
-        public const string REVIT_2014 = "Autodesk Revit 2014";
-        public const string VASARI_2013 = "Autodesk Vasari 2013";
-        public const string VASARI_2014 = "Autodesk Vasari 2014";
+        public const string REVIT_2013 = "Revit 2013";
+        public const string REVIT_2014 = "Revit 2014";
+        public const string VASARI_2013 = "Vasari 2013";
+        public const string VASARI_2014 = "Vasari 2014";
     }
 
     public class DynamoController
