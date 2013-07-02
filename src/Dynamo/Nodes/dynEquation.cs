@@ -92,10 +92,10 @@ namespace Dynamo.Nodes
         }
 
         private static HashSet<string> RESERVED_NAMES = new HashSet<string>() { 
-            "Abs", "Acos", "Asin", "Atan", "Ceiling", "Cos",
-            "Exp", "Floor", "IEEERemainder", "Log", "Log10",
-            "Max", "Min", "Pow", "Round", "Sign", "Sin", "Sqrt",
-            "Tan", "Truncate", "in", "if"
+            "abs", "acos", "asin", "atan", "ceiling", "cos",
+            "exp", "floor", "ieeeremainder", "log", "log10",
+            "max", "min", "pow", "round", "sign", "sin", "sqrt",
+            "tan", "truncate", "in", "if"
         };
 
         private void processFormula()
@@ -103,7 +103,7 @@ namespace Dynamo.Nodes
             Expression e;
             try
             {
-                e = new Expression(Formula);
+                e = new Expression(Formula, EvaluateOptions.IgnoreCase);
             }
             catch (Exception ex)
             {
@@ -117,7 +117,7 @@ namespace Dynamo.Nodes
                 return;
             }
 
-            var parameters = new SortedList<int, Tuple<string, Type>>();
+            var parameters = new List<Tuple<string, Type>>();
             var paramSet = new HashSet<string>();
 
             e.EvaluateFunction += delegate(string name, FunctionArgs args)
@@ -125,7 +125,7 @@ namespace Dynamo.Nodes
                 if (!paramSet.Contains(name) && !RESERVED_NAMES.Contains(name))
                 {
                     paramSet.Add(name);
-                    parameters.Add(Formula.IndexOf(name), Tuple.Create(name, typeof(Value.Function)));
+                    parameters.Add(Tuple.Create(name, typeof(Value.Function)));
                 }
 
                 foreach (var p in args.Parameters)
@@ -141,7 +141,7 @@ namespace Dynamo.Nodes
                 if (!paramSet.Contains(name))
                 {
                     paramSet.Add(name);
-                    parameters.Add(Formula.IndexOf(name), Tuple.Create(name, typeof(Value.Number)));
+                    parameters.Add(Tuple.Create(name, typeof(Value.Number)));
                 }
 
                 args.Result = 0;
@@ -155,7 +155,7 @@ namespace Dynamo.Nodes
 
             InPortData.Clear();
 
-            foreach (var p in parameters.Values)
+            foreach (var p in parameters)
             {
                 InPortData.Add(new PortData(p.Item1, "variable", p.Item2));
             }
@@ -165,9 +165,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-
-            
-            var e = new Expression(Formula);
+            var e = new Expression(Formula, EvaluateOptions.IgnoreCase);
 
             var functionLookup = new Dictionary<string, Value>();
 
@@ -187,7 +185,7 @@ namespace Dynamo.Nodes
                     var func = ((Value.Function)functionLookup[name]).Item;
                     fArgs.Result = ((Value.Number)func.Invoke(
                         Utils.SequenceToFSharpList(
-                            fArgs.Parameters.Select<Expression, Value>(
+                            fArgs.Parameters.Select(
                                 p => Value.NewNumber(Convert.ToDouble(p.Evaluate())))))).Item;
                 }
                 else

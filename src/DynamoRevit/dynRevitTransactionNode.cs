@@ -2,25 +2,29 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using Dynamo.Controls;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Autodesk.Revit.DB;
-
-using Value = Dynamo.FScheme.Value;
-using Microsoft.FSharp.Collections;
-using Dynamo.Connectors;
-using Dynamo.FSchemeInterop;
-using HelixToolkit.Wpf;
-
-using System.Windows.Media;
+using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 using System.Xml;
 
+using Autodesk.Revit.DB;
+
+using Microsoft.FSharp.Collections;
+
+using Dynamo.Utilities;
+using Value = Dynamo.FScheme.Value;
+using Dynamo.Connectors;
+using Dynamo.FSchemeInterop;
+using Dynamo.Controls;
+using Dynamo.Nodes;
+
+using HelixToolkit.Wpf;
+
+
+
+
 namespace Dynamo.Revit
 {
-    public abstract class dynRevitTransactionNode : dynNodeModel, IDrawable
+    public abstract partial class dynRevitTransactionNode : dynNodeModel, IDrawable
     {
         protected object drawableObject = null;
         protected Func<object, RenderDescription> drawMethod = null;
@@ -755,6 +759,7 @@ namespace Dynamo.Revit
         {
             throw new NotImplementedException();
         }
+
     }
 
     public class dynRevitTransactionNodeWithOneOutput : dynRevitTransactionNode
