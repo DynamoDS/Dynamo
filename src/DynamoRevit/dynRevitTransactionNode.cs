@@ -64,6 +64,14 @@ namespace Dynamo.Revit
             }
         }
 
+        public List<ElementId> AllElements
+        {
+            get
+            {
+                return elements.SelectMany(x=>x.Select(y=>y)).ToList();
+            }
+        }
+
         public RenderDescription RenderDescription { get; set; }
 
         protected dynRevitTransactionNode()

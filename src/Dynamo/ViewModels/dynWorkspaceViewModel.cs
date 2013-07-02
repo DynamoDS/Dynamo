@@ -30,8 +30,8 @@ namespace Dynamo
         #region Properties and Fields
         
         public dynWorkspaceModel _model;
-
-        private bool isConnecting = false;
+        private bool _isConnecting = false;
+        private bool _canFindNodesFromElements = false;
 
         public event EventHandler StopDragging;
         public event PointEventHandler CurrentOffsetChanged;
@@ -146,8 +146,8 @@ namespace Dynamo
         public DelegateCommand NodeFromSelectionCommand { get; set; }
         public DelegateCommand<object> SetZoomCommand { get; set; }
         public DelegateCommand<object> FindByIdCommand { get; set; }
-
         public DelegateCommand<string> AlignSelectedCommand { get; set; }
+        public DelegateCommand FindNodesFromSelectionCommand { get; set; }
 
         public string Name
         {
@@ -216,8 +216,8 @@ namespace Dynamo
 
         public bool IsConnecting
         {
-            get { return isConnecting; }
-            set { isConnecting = value; }
+            get { return _isConnecting; }
+            set { _isConnecting = value; }
         }
 
         public bool IsCurrentSpace
@@ -271,6 +271,18 @@ namespace Dynamo
             get { return _model.Zoom; }
         }
 
+        public bool CanFindNodesFromElements
+        {
+            get { return _canFindNodesFromElements; }
+            set
+            {
+                _canFindNodesFromElements = value;
+                RaisePropertyChanged("CanFindNodesFromElements");
+            }
+        }
+
+        public Action FindNodesFromElements{ get; set; }
+
         #endregion
 
         public dynWorkspaceViewModel(dynWorkspaceModel model, DynamoViewModel vm)
@@ -302,6 +314,7 @@ namespace Dynamo
             SetZoomCommand = new DelegateCommand<object>(SetZoom, CanSetZoom);
             FindByIdCommand = new DelegateCommand<object>(FindById, CanFindById);
             AlignSelectedCommand = new DelegateCommand<string>(AlignSelected, CanAlignSelected);
+            FindNodesFromSelectionCommand = new DelegateCommand(FindNodesFromSelection, CanFindNodesFromSelection);
 
             DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
 
@@ -762,6 +775,18 @@ namespace Dynamo
         private bool CanFindById(object id)
         {
             if (!string.IsNullOrEmpty(id.ToString()))
+                return true;
+            return false;
+        }
+
+        private void FindNodesFromSelection()
+        {
+            FindNodesFromElements();
+        }
+
+        private bool CanFindNodesFromSelection()
+        {
+            if (FindNodesFromElements != null)
                 return true;
             return false;
         }
