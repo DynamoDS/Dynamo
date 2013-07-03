@@ -436,28 +436,34 @@ let Take =    function [Number(n); List(l)] -> List(Seq.take (int n) l |> List.o
 let Drop =    function [Number(n); List(l)] -> List(Seq.skip (int n) l |> List.ofSeq) | m -> malformed "drop"   <| List(m)
 let IsEmpty = function [List(l)]            -> Number(if l.IsEmpty then 1. else 0.)   | m -> malformed "empty?" <| List(m)
 
-let rec private reduceLists = function
-    | []     -> Seq.empty
-    | [xs]   -> seq { for x in xs -> [x] }
-    | h :: t -> 
-        let t' = reduceLists t
-        let tcount = Seq.length t'
-        let hcount = Seq.length h
-        let tail = if tcount < hcount then Seq.skip tcount h |> Seq.map (fun x -> [x]) else Seq.skip hcount t'
-        Seq.append
-            (Seq.zip h t' |> Seq.map (fun (a,b) -> a::b))
-            tail
+let private transpose lists =
+    let rec transpose' acc lists rev =
+        let rec transposeStep (acc : 'a list) (acc' : 'a list list) rev = function
+            | [] :: t      -> transposeStep acc acc' rev t
+            | (x::xs) :: t -> transposeStep (x::acc) (xs::acc') rev t
+            | []           -> (if rev then List.rev acc else acc), acc'
+        match transposeStep [] [] rev lists with
+        | [], _ -> List.rev acc
+        | r, a  -> transpose' (r::acc) a (not rev)
+    transpose' [] lists true
+
+let Transpose = function
+    | [List(lists)] ->
+        let ls = List.map (function List(l) -> l | m -> failwith "bad transpose arg") lists
+        let transposed = transpose ls
+        List.map List transposed |> List
+    | m -> malformed "transpose" <| List(m)
 
 let Map = function
     | Function(f) :: lists ->
         List.map (function List(l) -> l | m -> failwith "bad map arg") lists
-            |> reduceLists |> Seq.map f |> Seq.toList |> List
+            |> transpose |> Seq.map f |> Seq.toList |> List
     | m -> malformed "map" <| List(m)
 
 let FoldL = function
     | Function(f) :: a :: lists ->
         List.map (function List(l) -> l | m -> failwith "bad fold arg") lists
-            |> reduceLists
+            |> transpose
             |> Seq.fold (fun a x -> f (x @ [a])) a
     | m -> malformed "foldl" <| List(m)
 
@@ -465,7 +471,7 @@ let FoldR = function
     | Function(f) :: a :: lists ->
         List.foldBack (fun x a' -> f (x @ [a']))
                       (List.map (function List(l) -> l | m -> failwith "bad fold arg") lists
-                        |> reduceLists |> Seq.toList)
+                        |> transpose |> Seq.toList)
                       a
     | m -> malformed "foldr" <| List(m)
 
@@ -964,6 +970,7 @@ let CreateEnvironments() =
     AddDefaultBinding "for-each" (Function(ForEach))
     AddDefaultBinding "flatten" (Function(Flatten))
     AddDefaultBinding "sqrt" (Function(Sqrt))
+    AddDefaultBinding "transpose" (Function(Transpose))
 
     environment := [Seq.map (fun (_, x) -> x) !tempEnv |> Seq.toArray |> ref]
     compileEnvironment := [List.map (fun (x, _) -> x) !tempEnv]
@@ -1101,6 +1108,9 @@ let RunTests (log : ErrorLog) =
     case "(map (λ (x) x) '(1 2 3))" "(1 2 3)"
     case "(map append '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
     case "(map list '(1 2 3) '(4 5 6) '(7 8) '(9 10 11 12))" "((1 4 7 9) (2 5 8 10) (3 6 11) (12))"
+
+    //Transpose
+    case "(transpose '((1 2 3) (4 5 6) (7 8) (9 10 11 12)))" "((1 4 7 9) (2 5 8 10) (3 6 11) (12))"
 
     //Filter
     case "(filter (λ (x) (< x 2)) '(0 2 3 4 1 6 5))" "(0 1)"

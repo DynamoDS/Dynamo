@@ -894,6 +894,10 @@ namespace Dynamo.Controls
             _model.CurrentSpace.FilePath = "";
             _model.CurrentSpace.HasUnsavedChanges = false;
 
+            //clear the renderables
+            dynSettings.Controller.RenderDescriptions.Clear();
+            dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
+
             IsUILocked = false;
         }
 
@@ -2419,7 +2423,12 @@ namespace Dynamo.Controls
         public bool OpenWorkspace(string xmlPath)
         {
             Log("Opening home workspace " + xmlPath + "...");
+
             CleanWorkbench();
+
+            //clear the renderables
+            dynSettings.Controller.RenderDescriptions.Clear();
+            dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
 
             Stopwatch sw = new Stopwatch();
 

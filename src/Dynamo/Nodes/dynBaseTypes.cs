@@ -947,24 +947,14 @@ namespace Dynamo.Nodes
     [NodeName("Transpose Lists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Swaps rows and columns in a list of lists.")]
-    public class dynTranspose : dynNodeWithOneOutput
+    public class dynTranspose : dynBuiltinFunction
     {
-        public dynTranspose()
+        public dynTranspose() : base("transpose")
         {
             InPortData.Add(new PortData("lists", "The list of lists to transpose.", typeof(Value.List)));
             OutPortData.Add(new PortData("", "Transposed list of lists.", typeof(Value.List)));
+
             RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var lists = ((Value.List)args[0]).Item;
-
-            return FScheme.Map(
-                FSharpList<Value>.Cons(
-                    Value.NewFunction(
-                        FSharpFunc<FSharpList<Value>, Value>.FromConverter(Value.NewList)),
-                    lists));
         }
     }
 
@@ -1852,6 +1842,41 @@ namespace Dynamo.Nodes
             {
                 result = new Dictionary<int, INode>();
                 result[outPort] = new NumberNode(3.14159265358979);
+                preBuilt[this] = result;
+            }
+            return result[outPort];
+        }
+    }
+
+    [NodeName("2*Pi")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Pi constant")]
+    [NodeSearchTags("trigonometry", "circle", "π")]
+    [IsInteractive(false)]
+    public class dyn2Pi : dynNodeModel
+    {
+        public dyn2Pi()
+        {
+            OutPortData.Add(new PortData("3.14159...*2", "2*pi", typeof(Value.Number)));
+            RegisterAllPorts();
+        }
+
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return false;
+            }
+            set { }
+        }
+
+        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        {
+            Dictionary<int, INode> result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new Dictionary<int, INode>();
+                result[outPort] = new NumberNode(3.14159265358979 * 2);
                 preBuilt[this] = result;
             }
             return result[outPort];
