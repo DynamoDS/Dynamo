@@ -28,10 +28,10 @@ namespace Dynamo
     public static partial class Context
     {
         public const string NONE = "None";
-        public const string REVIT_2013 = "Autodesk Revit 2013";
-        public const string REVIT_2014 = "Autodesk Revit 2014";
-        public const string VASARI_2013 = "Autodesk Vasari 2013";
-        public const string VASARI_2014 = "Autodesk Vasari 2014";
+        public const string REVIT_2013 = "Revit 2013";
+        public const string REVIT_2014 = "Revit 2014";
+        public const string VASARI_2013 = "Vasari 2013";
+        public const string VASARI_2014 = "Vasari 2014";
     }
 
     public class DynamoController
@@ -158,9 +158,6 @@ namespace Dynamo
                 Assembly.GetExecutingAssembly().GetName().Version));
 
             DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);
-
-            if(dynSettings.Bench != null)
-                DynamoLoader.LoadSamplesMenu(dynSettings.Bench);
 
             //run tests
             if (FScheme.RunTests(dynSettings.Controller.DynamoViewModel.Log))
@@ -295,7 +292,15 @@ namespace Dynamo
             if (RunCompleted != null)
                 RunCompleted(sender, success);
         }
-        
+
+        public delegate void IntermittentUpdateHandler(object controller, bool success);
+        public event IntermittentUpdateHandler IntermittentUpdate;
+        public virtual void OnIntermittentUpdate(object sender, bool success)
+        {
+            if (IntermittentUpdate != null)
+                IntermittentUpdate(sender, success);
+        }
+
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
             //Get our entry points (elements with nothing connected to output)
