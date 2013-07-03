@@ -78,13 +78,15 @@ namespace Dynamo.Nodes
                 this.RenderDescription = new RenderDescription();
             else
                 this.RenderDescription.ClearAll();
-
-            foreach (Curve c in crvs)
+            lock (crvs)
             {
-                if (c == null)
-                    continue;
+                foreach (Curve c in crvs)
+                {
+                    if (c == null)
+                        continue;
 
-                DrawCurve(this.RenderDescription, c);
+                    DrawCurve(this.RenderDescription, c);
+                }
             }
         }
 

@@ -233,13 +233,10 @@ namespace Dynamo.PackageManager
             if (SelectedIndex == -1)
                 return;
 
-            if (_visibleSearchResults.Count <= SelectedIndex)
+            if (SearchResults.Count <= SelectedIndex)
                 return;
 
-            if (_visibleSearchResults[SelectedIndex] is SearchElementBase)
-            {
-                ((SearchElementBase)_visibleSearchResults[SelectedIndex]).Execute();
-            }
+            SearchResults[SelectedIndex].Execute();
 
         }
 
