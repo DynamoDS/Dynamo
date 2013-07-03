@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Dynamo.Utilities;
 using Greg.Responses;
@@ -68,10 +69,13 @@ namespace Dynamo.PackageManager
             this.DownloadPath = filePath;
         }
 
-        private string GetInstallDirectoryString()
+        private string BuildInstallDirectoryString()
         {
-            // assembly path, packages
-            return "nothing";
+            // assembly_path/dynamo_packages/package_name
+
+            Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
+            string location = Path.GetDirectoryName(dynamoAssembly.Location);
+            return Path.Combine(location, "dynamo_packages", this.Name);
 
         }
 
@@ -86,7 +90,9 @@ namespace Dynamo.PackageManager
             // unzip, place files
             var unzipPath = Greg.Utility.FileUtilities.UnZip(DownloadPath);
             
-            var installedPath = GetInstallDirectoryString();
+            var installedPath = BuildInstallDirectoryString();
+
+            Directory.CreateDirectory(installedPath);
 
             //Now Create all of the directories
             foreach (string dirPath in Directory.GetDirectories(unzipPath, "*",
