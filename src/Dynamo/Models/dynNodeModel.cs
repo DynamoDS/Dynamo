@@ -1369,6 +1369,11 @@ namespace Dynamo.Nodes
             }
 
             ValidateConnections();
+
+            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
+            {
+                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
+            }  
         }
         public virtual Value Evaluate(FSharpList<Value> args)
         {
@@ -1467,6 +1472,11 @@ namespace Dynamo.Nodes
             }
             
             ValidateConnections();
+
+            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
+            {
+                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
+            }  
         }
 
         public virtual Value Evaluate(FSharpList<Value> args)
