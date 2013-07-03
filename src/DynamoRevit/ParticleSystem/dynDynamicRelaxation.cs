@@ -491,6 +491,11 @@ namespace Dynamo.Nodes
             double timeStep = ((Value.Number)args[1]).Item;
             particleSystem.step(timeStep);//in ms
 
+            //trigger an intermittent update on the controller
+            //this is useful for when this node is used in an infinite
+            //loop and you need to draw its contents
+            dynSettings.Controller.OnIntermittentUpdate(this, true);
+
             return Value.NewList(Utils.MakeFSharpList<Value>(
                 new Value[]{Value.NewContainer(particleSystem),Value.NewNumber(particleSystem.getMaxResidualForce())})
                 );

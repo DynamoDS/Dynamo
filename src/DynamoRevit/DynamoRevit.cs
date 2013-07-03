@@ -19,6 +19,7 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Resources;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
@@ -204,7 +205,9 @@ namespace Dynamo.Applications
 
                         //show the window
 
-                        string context = m_revit.Application.VersionName; // string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
+                        Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
+                        string context = r.Replace(m_revit.Application.VersionName, "");
+
                         dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
 
                         dynSettings.Bench = new DynamoView();
@@ -357,7 +360,9 @@ namespace Dynamo.Applications
                 dynRevitSettings.DefaultLevel = defaultLevel;
 
                 //create dynamo
-                string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
+                Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
+                string context = r.Replace(m_revit.Application.VersionName, "");
+
                 var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
 
                 //flag to run evalauation synchronously, helps to 

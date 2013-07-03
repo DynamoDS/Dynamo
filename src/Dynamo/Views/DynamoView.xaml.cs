@@ -66,6 +66,8 @@ namespace Dynamo.Controls
             _timer.Stop();
             dynSettings.Controller.DynamoViewModel.Log(string.Format("{0} elapsed for loading Dynamo main window.",
                                                                      _timer.Elapsed));
+
+            DynamoLoader.LoadSamplesMenu(dynSettings.Bench);
         }
 
         private void WindowClosing(object sender, CancelEventArgs  e)

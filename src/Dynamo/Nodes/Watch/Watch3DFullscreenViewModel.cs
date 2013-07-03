@@ -92,6 +92,7 @@ namespace Dynamo.Controls
         {
             _parentWorkspace = parentWorkspace;
             dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(Watch3DFullscreenViewModel_RunCompleted);
+            dynSettings.Controller.IntermittentUpdate += Watch3DFullscreenViewModel_RunCompleted;
         }
 
         public void Watch3DFullscreenViewModel_RunCompleted(object controller, bool success)
