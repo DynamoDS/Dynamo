@@ -380,7 +380,12 @@ namespace Dynamo
                     {
                         if (item != null && item is dynNodeModel)
                         {
-                            _nodes.Add(new dynNodeViewModel(item as dynNodeModel));
+                            var node = item as dynNodeModel;
+                            _nodes.Add(new dynNodeViewModel(node));
+                            
+                            //submit the node for rendering
+                            if(node is IDrawable)
+                                dynSettings.Controller.OnNodeSubmittedForRendering(node, EventArgs.Empty);
                         }
                     }
                     break;
@@ -390,7 +395,12 @@ namespace Dynamo
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
+                        var node = item as dynNodeModel;
                         _nodes.Remove(_nodes.First(x => x.NodeLogic == item));
+
+                        //remove the node from rendering
+                        if (node is IDrawable)
+                            dynSettings.Controller.OnNodeRemovedFromRendering(node, EventArgs.Empty);
                     }
                     break;
             }
