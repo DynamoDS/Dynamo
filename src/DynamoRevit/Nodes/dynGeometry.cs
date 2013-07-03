@@ -2575,8 +2575,6 @@ namespace Dynamo.Nodes
                x => (XYZ)((Value.Container)x).Item
             );
 
-            crvs.Clear();
-
             var results = FSharpList<Value>.Empty;
 
             var enumerable = pts as XYZ[] ?? pts.ToArray();
