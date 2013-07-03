@@ -125,6 +125,35 @@ namespace Dynamo
                 RequestNodeSelect(sender, e);
         }
 
+        public delegate void RunCompletedHandler(object controller, bool success);
+        public event RunCompletedHandler RunCompleted;
+        public virtual void OnRunCompleted(object sender, bool success)
+        {
+            if (RunCompleted != null)
+                RunCompleted(sender, success);
+        }
+
+        public event EventHandler RequestsRedraw;
+        public virtual void OnRequestsRedraw(object sender, EventArgs e)
+        {
+            if (RequestsRedraw != null)
+                RequestsRedraw(sender, e);
+        }
+
+        public event EventHandler NodeSubmittedForRendering;
+        public virtual void OnNodeSubmittedForRendering(object sender, EventArgs e)
+        {
+            if (NodeSubmittedForRendering != null)
+                NodeSubmittedForRendering(sender, e);
+        }
+
+        public event EventHandler NodeRemovedFromRendering;
+        public virtual void OnNodeRemovedFromRendering(object sender, EventArgs e)
+        {
+            if (NodeRemovedFromRendering != null)
+                NodeRemovedFromRendering(sender, e);
+        }
+
         #endregion
 
         #region Constructor and Initialization
@@ -292,36 +321,6 @@ namespace Dynamo
                 //test before the evaluation (and the run)
                 //is complete
                 EvaluationThread(null, null);
-        }
-
-        public delegate void RunCompletedHandler(object controller, bool success);
-        public event RunCompletedHandler RunCompleted;
-        public virtual void OnRunCompleted(object sender, bool success)
-        {
-            if (RunCompleted != null)
-                RunCompleted(sender, success);
-        }
-
-        public delegate void IntermittentUpdateHandler(object controller, bool success);
-        public event IntermittentUpdateHandler IntermittentUpdate;
-        public virtual void OnIntermittentUpdate(object sender, bool success)
-        {
-            if (IntermittentUpdate != null)
-                IntermittentUpdate(sender, success);
-        }
-
-        public event EventHandler NodeSubmittedForRendering;
-        public virtual void OnNodeSubmittedForRendering(object sender, EventArgs e)
-        {
-            if (NodeSubmittedForRendering != null)
-                NodeSubmittedForRendering(sender, e);
-        }
-
-        public event EventHandler NodeRemovedFromRendering;
-        public virtual void OnNodeRemovedFromRendering(object sender, EventArgs e)
-        {
-            if (NodeRemovedFromRendering != null)
-                NodeRemovedFromRendering(sender, e);
         }
 
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
@@ -505,7 +504,6 @@ namespace Dynamo
         protected virtual void OnEvaluationCompleted()
         {
         }
-
 
         /// <summary>
         /// Callback for node being unregistered from rendering

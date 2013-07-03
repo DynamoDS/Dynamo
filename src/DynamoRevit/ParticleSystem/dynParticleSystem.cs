@@ -416,15 +416,15 @@ namespace Dynamo.Nodes
 
             for (int i = 0; i < particles.Count(); ++i)
             {
-                if (xyz != null && particles.Count > 0 && (particles[i].getElementID() != null))
-                {
+                //if (xyz != null && particles.Count > 0 && (particles[i].getElementID() != null))
+                //{
                     if (xyz.IsAlmostEqualTo(particles[i].getPosition()))
                     {
                         return particles[i];
 
                     }
 
-                }
+                //}
                
             }
 
