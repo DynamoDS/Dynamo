@@ -597,6 +597,8 @@ namespace Dynamo.Nodes
                         else
                             nodes[data.Index] = firstNode;
                     }
+                    else
+                        nodes[data.Index] = new NumberNode(0);
                 }
             }
             else
