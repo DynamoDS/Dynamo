@@ -597,6 +597,8 @@ namespace Dynamo.Nodes
                         else
                             nodes[data.Index] = firstNode;
                     }
+                    else
+                        nodes[data.Index] = new NumberNode(0);
                 }
             }
             else
@@ -1369,6 +1371,11 @@ namespace Dynamo.Nodes
             }
 
             ValidateConnections();
+
+            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
+            {
+                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
+            }  
         }
         public virtual Value Evaluate(FSharpList<Value> args)
         {
@@ -1467,6 +1474,11 @@ namespace Dynamo.Nodes
             }
             
             ValidateConnections();
+
+            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
+            {
+                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
+            }  
         }
 
         public virtual Value Evaluate(FSharpList<Value> args)

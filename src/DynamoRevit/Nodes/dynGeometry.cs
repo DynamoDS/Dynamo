@@ -52,13 +52,17 @@ namespace Dynamo.Nodes
             else
                 this.RenderDescription.ClearAll();
 
-            foreach (XYZ pt in pts)
+            lock (pts)
             {
-                if (pt == null)
-                    continue;
+                foreach (XYZ pt in pts)
+                {
+                    if (pt == null)
+                        continue;
 
-                this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
+                    this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
+                }
             }
+            
         }
 
         public void ClearReferences()
@@ -79,13 +83,17 @@ namespace Dynamo.Nodes
             else
                 this.RenderDescription.ClearAll();
 
-            foreach (Curve c in crvs)
+            lock (crvs)
             {
-                if (c == null)
-                    continue;
+                foreach (Curve c in crvs)
+                {
+                    if (c == null)
+                        continue;
 
-                DrawCurve(this.RenderDescription, c);
+                    DrawCurve(this.RenderDescription, c);
+                }
             }
+            
         }
 
         public void ClearReferences()
@@ -123,13 +131,17 @@ namespace Dynamo.Nodes
             else
                 this.RenderDescription.ClearAll();
 
-            foreach (Solid s in solids)
+            lock (solids)
             {
-                if (s == null)
-                    continue;
+                foreach (Solid s in solids)
+                {
+                    if (s == null)
+                        continue;
 
-                dynRevitTransactionNode.DrawSolid(this.RenderDescription, s);
+                    dynRevitTransactionNode.DrawSolid(this.RenderDescription, s);
+                }
             }
+           
         }
 
         public void ClearReferences()
@@ -571,26 +583,29 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FSharpList<Value> domain;
-            double ui, vi;
-            
-            domain = ((Value.List)args[0]).Item;
-            ui = ((Value.Number)args[1]).Item;
-            vi = ((Value.Number)args[2]).Item;
+            FSharpList<Value> domain = ((Value.List)args[0]).Item;
+            double ui = ((Value.Number)args[1]).Item;
+            double vi = ((Value.Number)args[2]).Item;
             double us = ((Value.Number)domain[2]).Item / ui;
             double vs = ((Value.Number)domain[3]).Item / vi;
 
             FSharpList<Value> result = FSharpList<Value>.Empty;
 
-            UV min = ((Value.Container)domain[0]).Item as UV;
-            UV max = ((Value.Container)domain[1]).Item as UV;
+            var min = ((Value.Container)domain[0]).Item as UV;
+            var max = ((Value.Container)domain[1]).Item as UV;
 
-            for (double u = min.U; u <= max.U; u+=us)
+            //for (double u = min.U; u <= max.U; u += us)
+            for (int i = 0; i <= ui; i++ )
             {
-                for (double v = min.V; v <= max.V; v+=vs)
+                double u = min.U + i*us;
+
+                //for (double v = min.V; v <= max.V; v += vs)
+                for (int j = 0; j <= vi; j++ )
                 {
+                    double v = min.V + j*vs;
+
                     result = FSharpList<Value>.Cons(
-                        Value.NewContainer(new UV(u,v)),
+                        Value.NewContainer(new UV(u, v)),
                         result
                     );
                 }
@@ -2574,8 +2589,6 @@ namespace Dynamo.Nodes
             IEnumerable<XYZ> pts = ((Value.List)args[0]).Item.Select(
                x => (XYZ)((Value.Container)x).Item
             );
-
-            crvs.Clear();
 
             var results = FSharpList<Value>.Empty;
 

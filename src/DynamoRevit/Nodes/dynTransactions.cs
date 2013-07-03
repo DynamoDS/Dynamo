@@ -85,9 +85,11 @@ namespace Dynamo.Nodes
             protected override Expression compileBody(
                 Dictionary<INode, string> symbols,
                 Dictionary<INode, List<INode>> letEntries,
-                HashSet<string> initializedIds)
+                HashSet<string> initializedIds,
+                HashSet<string> conditionalIds)
             {
-                var arg =  arguments["expr0"].compile(symbols, letEntries, initializedIds);
+                var arg =  arguments.First().Value.compile(
+                    symbols, letEntries, initializedIds, conditionalIds);
                 
                 //idle :: (() -> A) -> A
                 //Evaluates the given function in the Revit Idle thread.
