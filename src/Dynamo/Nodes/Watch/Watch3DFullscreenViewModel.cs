@@ -85,6 +85,12 @@ namespace Dynamo.Controls
         {
             _parentWorkspace = parentWorkspace;
             dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(Watch3DFullscreenViewModel_RunCompleted);
+            dynSettings.Controller.RequestsRedraw += Controller_RequestsRedraw;
+        }
+
+        void Controller_RequestsRedraw(object sender, EventArgs e)
+        {
+            RenderDrawables();
         }
 
         public void Watch3DFullscreenViewModel_RunCompleted(object controller, bool success)

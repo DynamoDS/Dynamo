@@ -27,9 +27,70 @@ using System.Windows.Media.Media3D;
 namespace Dynamo.Nodes
 {
 
-    public abstract class dynParticleSystemBase : dynNodeWithOneOutput
+    public abstract class dynParticleSystemBase : dynNodeWithOneOutput, IDrawable
     {
         internal ParticleSystem particleSystem;
+
+        internal dynParticleSystemBase()
+        {
+            dynSettings.Controller.RequestsRedraw += Controller_RequestsRedraw;
+        }
+
+        void Controller_RequestsRedraw(object sender, EventArgs e)
+        {
+            Draw();
+        }
+
+        public RenderDescription RenderDescription
+        {
+            get;
+            set;
+        }
+
+        public void Draw()
+        {
+            if (this.RenderDescription == null)
+                this.RenderDescription = new Nodes.RenderDescription();
+
+            if (particleSystem == null)
+                return;
+
+            for (int i = 0; i < particleSystem.numberOfParticles(); i++)
+            {
+                Particle p = particleSystem.getParticle(i);
+                XYZ pos = p.getPosition();
+                if (i < this.RenderDescription.points.Count())
+                {
+                    this.RenderDescription.points[i] = new Point3D(pos.X, pos.Y, pos.Z);
+                }
+                else
+                {
+                    Point3D pt = new System.Windows.Media.Media3D.Point3D(pos.X, pos.Y, pos.Z);
+                    this.RenderDescription.points.Add(pt);
+                }
+            }
+
+            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
+            {
+                ParticleSpring ps = particleSystem.getSpring(i);
+                XYZ pos1 = ps.getOneEnd().getPosition();
+                XYZ pos2 = ps.getTheOtherEnd().getPosition();
+
+                if (i * 2 + 1 < this.RenderDescription.lines.Count())
+                {
+                    this.RenderDescription.lines[i * 2] = new Point3D(pos1.X, pos1.Y, pos1.Z);
+                    this.RenderDescription.lines[i * 2 + 1] = new Point3D(pos2.X, pos2.Y, pos2.Z);
+                }
+                else
+                {
+                    Point3D pt1 = new System.Windows.Media.Media3D.Point3D(pos1.X, pos1.Y, pos1.Z);
+                    Point3D pt2 = new System.Windows.Media.Media3D.Point3D(pos2.X, pos2.Y, pos2.Z);
+
+                    this.RenderDescription.lines.Add(pt1);
+                    this.RenderDescription.lines.Add(pt2);
+                }
+            }
+        }
     }
 
     [NodeName("Create Particle System")]
@@ -250,7 +311,6 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-
             var points = ((Value.List)args[0]).Item;//point list
             var curves = ((Value.List)args[1]).Item;//spring list
             _d = ((Value.Number)args[2]).Item;//dampening
@@ -262,7 +322,8 @@ namespace Dynamo.Nodes
             //if the particle system has a different layout, then
             //clear it instead of updating
             bool reset = false;
-            if(particleSystem.numberOfParticles() == 0)
+            if(particleSystem.numberOfParticles() == 0 ||
+                curves.Count() != particleSystem.numberOfSprings())
             {
                 reset = true;
                 particleSystem.Clear();
@@ -426,7 +487,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     [IsInteractive(true)]
-    public class dynDynamicRelaxationStep: dynNodeWithOneOutput, IDrawable
+    public class dynDynamicRelaxationStep: dynNodeWithOneOutput
     {
         private ParticleSystem particleSystem;
 
@@ -449,63 +510,13 @@ namespace Dynamo.Nodes
             //trigger an intermittent update on the controller
             //this is useful for when this node is used in an infinite
             //loop and you need to draw its contents
-            dynSettings.Controller.OnIntermittentUpdate(this, true);
+            dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
 
             return Value.NewList(Utils.MakeFSharpList<Value>(
                 new Value[]{Value.NewContainer(particleSystem),Value.NewNumber(particleSystem.getMaxResidualForce())})
                 );
         }
 
-        public RenderDescription RenderDescription
-        {
-            get;
-            set;
-        }
-
-        public void Draw()
-        {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new Nodes.RenderDescription();
-
-            if (particleSystem == null)
-                return;
-
-            for (int i = 0; i < particleSystem.numberOfParticles(); i++)
-            {
-                Particle p = particleSystem.getParticle(i);
-                XYZ pos = p.getPosition();
-                if (i < this.RenderDescription.points.Count())
-                {
-                    this.RenderDescription.points[i] = new Point3D(pos.X, pos.Y, pos.Z);
-                }
-                else
-                {
-                    Point3D pt = new System.Windows.Media.Media3D.Point3D(pos.X, pos.Y, pos.Z);
-                    this.RenderDescription.points.Add(pt);
-                }
-            }
-
-            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
-            {
-                ParticleSpring ps = particleSystem.getSpring(i);
-                XYZ pos1 = ps.getOneEnd().getPosition();
-                XYZ pos2 = ps.getTheOtherEnd().getPosition();
-
-                if (i * 2 + 1 < this.RenderDescription.lines.Count())
-                {
-                    this.RenderDescription.lines[i * 2] = new Point3D(pos1.X, pos1.Y, pos1.Z);
-                    this.RenderDescription.lines[i * 2 + 1] = new Point3D(pos2.X, pos2.Y, pos2.Z);
-                }
-                else
-                {
-                    Point3D pt1 = new System.Windows.Media.Media3D.Point3D(pos1.X, pos1.Y, pos1.Z);
-                    Point3D pt2 = new System.Windows.Media.Media3D.Point3D(pos2.X, pos2.Y, pos2.Z);
-
-                    this.RenderDescription.lines.Add(pt1);
-                    this.RenderDescription.lines.Add(pt2);
-                }
-            }
-        }
     }
 
     [NodeName("XYZs from Particle System")]
