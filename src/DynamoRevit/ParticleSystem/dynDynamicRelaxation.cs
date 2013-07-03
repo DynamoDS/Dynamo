@@ -327,48 +327,32 @@ namespace Dynamo.Nodes
             {
                 reset = true;
                 particleSystem.Clear();
+                if (dynSettings.Controller.UIDispatcher != null)
+                {
+                    dynSettings.Controller.UIDispatcher.Invoke(new Action(()=> RenderDescription.ClearAll()));
+                }
             }
 
             particleSystem.setGravity(_g);
 
-            //ReferencePoint pt1;
-            //ReferencePoint pt2;
-
-            Array pointArray = points.ToArray();
-
-            for (int i = 0; i < pointArray.Length-1; i++)
+            if (reset)
             {
-
-                //pt1 = (ReferencePoint)((Value.Container)pointArray.GetValue(i)).Item as ReferencePoint;
-                //pt2 = (ReferencePoint)((Value.Container)pointArray.GetValue(i + 1)).Item as ReferencePoint;
-
-                //(dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt1.Id, ChangeTypeEnum.Modify, UpdateStart);
-                //(dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt2.Id, ChangeTypeEnum.Modify, UpdateEnd);
-
-                if (reset)
+                CreateSpringsFromCurves(curves, points);
+            }
+            else
+            {
+                //update the spring values
+                for (int j = 0; j < particleSystem.numberOfSprings(); j++)
                 {
-                    //CreateChainWithTwoFixedEnds(pt1, pt2, numX, d, r, s, m);
-                    //setupLineTest(numX, numY, d, r, s, m);
-                    CreateSpringsFromCurves(curves, points);
+                    ParticleSpring spring = particleSystem.getSpring(j);
+                    spring.setDamping(_d);
+                    spring.setRestLength(_r);
+                    spring.setSpringConstant(_s);
                 }
-                else
+                for (int j = 0; j < particleSystem.numberOfParticles(); j++)
                 {
-                    //update the spring values
-                    for (int j = 0; j < particleSystem.numberOfSprings(); j++)
-                    {
-                        ParticleSpring spring = particleSystem.getSpring(j);
-                        spring.setDamping(_d);
-                        spring.setRestLength(_r);
-                        spring.setSpringConstant(_s);
-                    }
-                    for (int j = 0; j < particleSystem.numberOfParticles(); j++)
-                    {
-                        Particle p = particleSystem.getParticle(j);
-                        p.setMass(_m);
-                    }
-
-                    //particleSystem.getParticle(0).setPosition(pt1.Position);
-                    //particleSystem.getParticle(particleSystem.numberOfParticles()-1).setPosition(pt2.Position);
+                    Particle p = particleSystem.getParticle(j);
+                    p.setMass(_m);
                 }
             }
 
