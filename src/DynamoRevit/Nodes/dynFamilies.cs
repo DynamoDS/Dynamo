@@ -34,7 +34,7 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Select Fam")]
+    [NodeName("Select Family Type")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a Family Type from a drop down list.")]
     [IsInteractive(true)]
@@ -841,7 +841,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curves from Fam")]
+    [NodeName("Curves from Family Instance")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
     [NodeDescription("Extracts curves from family instances.")]
     public class dynCurvesFromFamilyInstance : dynRevitTransactionNodeWithOneOutput
