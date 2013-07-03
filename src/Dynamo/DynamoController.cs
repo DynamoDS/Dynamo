@@ -197,8 +197,7 @@ namespace Dynamo
             //run tests
             if (FScheme.RunTests(dynSettings.Controller.DynamoViewModel.Log))
             {
-                if (dynSettings.Bench != null)
-                    this.DynamoViewModel.Log("All Tests Passed. Core library loaded OK.");
+                dynSettings.Controller.DynamoViewModel.Log("All Tests Passed. Core library loaded OK.");
             }
 
             NodeSubmittedForRendering += new EventHandler(Controller_NodeSubmittedForRendering);
