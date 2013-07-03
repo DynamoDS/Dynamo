@@ -236,48 +236,6 @@ namespace Dynamo.Nodes
 
         }
 
-        // geometric test, fairly expensive. obsoleted by CreateParticleByElementID and GetParticleFromElementID
-        //public ReferencePoint FindRefPointFromXYZ(XYZ xyz)         
-        //{
-        //    Element el;
-        //    ReferencePoint rp;
-
-        //    foreach(ElementId id in this.Elements)
-        //    {
-
-        //        dynUtils.TryGetElement(id, out el);
-        //        rp = el as ReferencePoint;
-
-        //        if (rp != null && rp.Position.IsAlmostEqualTo(xyz))// note this is not gauranteed to be unique. there may be mulitple coincident refpoints and this utill will only return the first found
-        //        {
-        //            return rp;
-
-        //        }
-        //    }
-
-        //    return null;
-        //}
-
-        // geometric test, fairly expensive. 
-        //public ReferencePoint FindRefPointWithCoincidentXYZ(ReferencePoint rp)
-        //{
-        //    Element el;
-        //    ReferencePoint rp2;
-
-        //    foreach (ElementId id in this.Elements) // compare to inputed points
-        //    {
-        //        dynUtils.TryGetElement(id, out el);
-        //        rp2 = el as ReferencePoint;
-
-        //        if (rp != null && rp2 != null && rp.Position.IsAlmostEqualTo(rp2.Position))// note this is not gauranteed to be unique. there may be mulitple coincident refpoints and this utill will only return the first found
-        //        {
-        //            return rp2; // found a match
-        //        }
-        //    }
-
-        //    return null;
-        //}
-
         private void CreateSpringsFromCurves(IEnumerable<Value> curves, IEnumerable<Value> points)
         {
             //create all the fixed points first
