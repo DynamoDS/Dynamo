@@ -345,8 +345,12 @@ namespace Dynamo.Nodes
 
             try
             {
-                image.Save(pathName);
-                dynSettings.Controller.DynamoViewModel.Log("Saved Image File " + pathName);
+                //if (image != null)
+                //{
+                    image.Save(pathName);
+                    dynSettings.Controller.DynamoViewModel.Log("Saved Image File " + pathName);
+                //}
+
 
             }
             catch (Exception e)
