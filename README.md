@@ -30,9 +30,9 @@ July 2013
 
 Fixes
 - UV Grid improvements
-- Particle Systeme and Dynamic Relaxation improvements
+- Particle System and Dynamic Relaxation improvements
 - Delete for notes
-- Forumula node is now case insensitive
+- Formula node is now case insensitive
 - Watch and Watch 3d improvments
 - Zoom and workspace tabbing
 - Length node culture formatting
@@ -50,6 +50,7 @@ New
 - Last computed value is now displayed on nodes with mouse-over
 - Zoom state saved with workspaces
 - More nodes for using Analysis Visualization Framework (model coloring)
+- Color Nodes (Hue, Brightness, Saturation, etc)
 - Better node error state reporting
 - Curves Through Points node
 - Find Nodes from Selected Elements
