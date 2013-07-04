@@ -24,6 +24,39 @@ The current version will run on top of Revit 2013, Revit 2014, Project Vasari Be
 
 ## Releases ##
 
+###0.5.2###
+
+July 2013
+
+Fixes
+- UV Grid improvements
+- Particle Systeme and Dynamic Relaxation improvements
+- Delete for notes
+- Forumula node is now case insensitive
+- Watch and Watch 3d improvments
+- Zoom and workspace tabbing
+- Length node culture formatting
+- Fixed rectangle node
+- Custom node fixes
+- Multi-output node fixes
+
+New
+- Structural Framing nodes
+- More List management nodes, Flatten changes, Repeat node
+- More Math Nodes
+- Node alignment tools 
+- Best Fit Plane, Best Fit Arc
+- Number Slider state display
+- Last computed value is now displayed on nodes with mouse-over
+- Zoom state saved with workspaces
+- More nodes for using Analysis Visualization Framework (model coloring)
+- Better node error state reporting
+- Curves Through Points node
+- Find Nodes from Selected Elements
+
+Known Issues
+- See Issues on Github:  https://github.com/ikeough/Dynamo/issues?state=open
+
 ###0.5.0###
 
 June 2013
