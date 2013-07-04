@@ -2176,7 +2176,7 @@ namespace Dynamo.Nodes
     [NodeName("Smooth")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Smooths a list of numbers using a running average.")]
-    [NodeSearchTags("running average")]
+    [NodeSearchTags("running average", "moving average", "sma")]
     public class dynSmooth: dynMathBase
     {
 
@@ -2188,7 +2188,7 @@ namespace Dynamo.Nodes
         public dynSmooth()
         {
             InPortData.Add(new PortData("val", "The current value.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("avg", "The running average, current value smoothed with previous values", typeof(Value.Number)));
+            OutPortData.Add(new PortData("avg", "uses a simple moving average to smooth out values that fluctuate over time", typeof(Value.Number)));
             RegisterAllPorts();
             ArgumentLacing = LacingStrategy.Longest;
         }
