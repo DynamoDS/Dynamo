@@ -52,13 +52,17 @@ namespace Dynamo.Nodes
             else
                 this.RenderDescription.ClearAll();
 
-            foreach (XYZ pt in pts)
+            lock (pts)
             {
-                if (pt == null)
-                    continue;
+                foreach (XYZ pt in pts)
+                {
+                    if (pt == null)
+                        continue;
 
-                this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
+                    this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
+                }
             }
+            
         }
 
         public void ClearReferences()
@@ -79,13 +83,17 @@ namespace Dynamo.Nodes
             else
                 this.RenderDescription.ClearAll();
 
-            foreach (Curve c in crvs)
+            lock (crvs)
             {
-                if (c == null)
-                    continue;
+                foreach (Curve c in crvs)
+                {
+                    if (c == null)
+                        continue;
 
-                DrawCurve(this.RenderDescription, c);
+                    DrawCurve(this.RenderDescription, c);
+                }
             }
+            
         }
 
         public void ClearReferences()
@@ -123,13 +131,17 @@ namespace Dynamo.Nodes
             else
                 this.RenderDescription.ClearAll();
 
-            foreach (Solid s in solids)
+            lock (solids)
             {
-                if (s == null)
-                    continue;
+                foreach (Solid s in solids)
+                {
+                    if (s == null)
+                        continue;
 
-                dynRevitTransactionNode.DrawSolid(this.RenderDescription, s);
+                    dynRevitTransactionNode.DrawSolid(this.RenderDescription, s);
+                }
             }
+           
         }
 
         public void ClearReferences()
