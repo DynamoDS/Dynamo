@@ -460,7 +460,9 @@ namespace Dynamo.Revit
                 var elems = elements[i];
                 foreach (var e in elems)
                 {
-                    UIDocument.Document.Delete(e);
+                    Element el = UIDocument.Document.GetElement(e);
+                    if(el!=null)
+                        UIDocument.Document.Delete(e);
                 }
                 elems.Clear();
             }
