@@ -18,19 +18,36 @@ namespace Dynamo.Utilities
     /// <summary>
     ///     Handles loading various types of elements into Dynamo at startup
     /// </summary>
-    class DynamoLoader
+    internal class DynamoLoader
     {
+        private static string _dynamoDirectory = "";
+        public static string GetDynamoDirectory()
+        {
+            if (String.IsNullOrEmpty(_dynamoDirectory))
+            {
+                var dynamoAssembly = Assembly.GetExecutingAssembly();
+                _dynamoDirectory = Path.GetDirectoryName(dynamoAssembly.Location);
+                
+            }
+            return _dynamoDirectory;
+        }
+
+        public static HashSet<string> LoadedAssemblyNames = new HashSet<string>();
+
         /// <summary>
         ///     Enumerate local library assemblies and add them to DynamoController's
         ///     dictionaries and search.  
         /// </summary>
         /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
-        internal static void LoadBuiltinTypes(SearchViewModel searchViewModel, DynamoController controller)
+        internal static void LoadBuiltinTypes()
         {
-            Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
+            var searchViewModel = dynSettings.Controller.SearchViewModel;
+            var controller = dynSettings.Controller;
 
-            string location = Path.GetDirectoryName(dynamoAssembly.Location);
+            dynSettings.PackageLoader.AppendBinarySearchPath();
+
+            string location = GetDynamoDirectory();
 
             #region determine assemblies to load
 
@@ -47,17 +64,9 @@ namespace Dynamo.Utilities
                 catch { }
             }
 
-            string path = Path.Combine(location, "packages");
+            IEnumerable<string> allDynamoAssemblyPaths = Directory.GetFiles(location, "*.dll");
 
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            IEnumerable<string> allDynamoAssemblyPaths =
-                Directory.GetFiles(location, "*.dll")
-                         .Concat(Directory.GetFiles(
-                             path,
-                             "*.dll",
-                             SearchOption.AllDirectories));
+            allDynamoAssemblyPaths = SearchPaths.Select(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)).Aggregate(allDynamoAssemblyPaths, (current, dlls) => current.Concat(dlls));
 
             var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
             {
@@ -68,15 +77,27 @@ namespace Dynamo.Utilities
 
             AppDomain.CurrentDomain.AssemblyResolve += resolver;
 
-            foreach (string assemblyPath in allDynamoAssemblyPaths)
+            foreach (var assemblyPath in allDynamoAssemblyPaths)
             {
+                var fn = Path.GetFileName(assemblyPath);
+
+                if (fn == null)
+                    continue;
+
+                if (LoadedAssemblyNames.Contains(fn))
+                    continue;
+
+                LoadedAssemblyNames.Add( fn );
+
                 if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
+                {
                     LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath], searchViewModel, controller);
+                }   
                 else
                 {
                     try
                     {
-                        Assembly assembly = Assembly.LoadFrom(assemblyPath);
+                        var assembly = Assembly.LoadFrom(assemblyPath);
                         allLoadedAssemblies[assembly.GetName().Name] = assembly;
                         LoadNodesFromAssembly(assembly, searchViewModel, controller);
                     }
@@ -290,12 +311,17 @@ namespace Dynamo.Utilities
         ///     directory where the executing assembly is located..
         /// </summary>
         /// <param name="bench">The logger is needed in order to tell how long it took.</param>
-        public static void LoadCustomNodes(DynamoView bench, CustomNodeLoader customNodeLoader, SearchViewModel searchViewModel)
+        public static void LoadCustomNodes()
         {
+
+            var customNodeLoader = dynSettings.CustomNodeLoader;
+            var searchViewModel = dynSettings.Controller.SearchViewModel;
 
             // custom node loader
             var sw = new Stopwatch();
             sw.Start();
+
+            dynSettings.PackageLoader.AppendCustomNodeSearchPaths(customNodeLoader);
 
             customNodeLoader.UpdateSearchPath();
             var nn = customNodeLoader.GetNodeNameCategoryAndGuidList();
@@ -314,5 +340,11 @@ namespace Dynamo.Utilities
 
         }
 
+        public static HashSet<string> SearchPaths = new HashSet<string>();
+
+        internal static void AddBinarySearchPath(string p)
+        {
+            SearchPaths.Add(p);
+        }
     }
 }

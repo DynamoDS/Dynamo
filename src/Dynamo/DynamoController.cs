@@ -141,6 +141,7 @@ namespace Dynamo
             string pluginsPath = Path.Combine(directory, "definitions");
 
             CustomNodeLoader = new CustomNodeLoader(pluginsPath);
+            dynSettings.PackageLoader = new PackageLoader();
 
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);
@@ -155,7 +156,7 @@ namespace Dynamo
                 "Dynamo -- Build {0}",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
-            DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);
+            DynamoLoader.LoadBuiltinTypes();
 
             if(dynSettings.Bench != null)
                 DynamoLoader.LoadSamplesMenu(dynSettings.Bench);

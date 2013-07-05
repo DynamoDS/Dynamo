@@ -42,6 +42,7 @@
     <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"/>
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter"/>
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
+    <controls:PackageDownloadStateToStringConverter x:Key="PackageDownloadStateToStringConverter"/>
     <controls:ShowHideClassicNavigatorMenuItemConverter x:Key="ShowHideClassicNavigatorMenuItemConverter"/>
     <controls:PortTypeToMarginConverter x:Key="PortTypeToMarginConverter"/>
     <controls:PortTypeToTextAlignmentConverter x:Key="PortTypeToTextAlignmentConverter"/>

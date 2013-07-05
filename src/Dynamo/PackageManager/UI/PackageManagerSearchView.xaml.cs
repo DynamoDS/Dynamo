@@ -33,5 +33,10 @@ namespace Dynamo.PackageManager.UI
         {
             ((PackageManagerSearchViewModel)DataContext).ExecuteSelected();
         }
+
+        private void Clear_Completed_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

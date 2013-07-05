@@ -8,9 +8,56 @@ using System.Windows.Data;
 using System.Windows.Media;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 
 namespace Dynamo.Controls
 {
+    public class PackageDownloadStateToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is DynamoPackageDownload.State )
+            {
+                var st = ( DynamoPackageDownload.State ) value;
+
+                if (st == DynamoPackageDownload.State.Downloaded)
+                {
+                    return "Downloaded";
+                }
+                else if (st == DynamoPackageDownload.State.Downloading)
+                {
+                    return "Downloading";
+                }
+                else if (st == DynamoPackageDownload.State.Error)
+                {
+                    return "Error";
+                }
+                else if (st == DynamoPackageDownload.State.Installed)
+                {
+                    return "Installed";
+                }
+                else if (st == DynamoPackageDownload.State.Installing)
+                {
+                    return "Installing";
+                }
+                else  if (st == DynamoPackageDownload.State.Uninitialized)
+                {
+                    return "Starting";
+                }
+
+            }
+
+            return "Unknown";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class NonEmptyStringToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,

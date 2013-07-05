@@ -656,9 +656,9 @@ namespace Dynamo.Controls
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = fi.Name;
             }
-            else if (_model.CurrentSpace is FuncWorkspace)
+            else if (_model.CurrentSpace is FuncWorkspace && dynSettings.Controller.CustomNodeLoader.SearchPath.Any())
             {
-                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath;
+                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath[0];
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -1651,7 +1651,7 @@ namespace Dynamo.Controls
 
         private void PostUIActivation()
         {
-            DynamoLoader.LoadCustomNodes(dynSettings.Bench, Controller.CustomNodeLoader, Controller.SearchViewModel);
+            DynamoLoader.LoadCustomNodes();
 
             dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
 
@@ -2185,7 +2185,7 @@ namespace Dynamo.Controls
         ///     Save a function.  This includes writing to a file and compiling the 
         ///     function and saving it to the FSchemeEnvironment
         /// </summary>
-        /// <param name="definition">The definition to saveo</param>
+        /// <param name="definition">The definition to save</param>
         /// <param name="bool">Whether to write the function to file.</param>
         /// <returns>Whether the operation was successful</returns>
         public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = false, bool compileFunction = true)

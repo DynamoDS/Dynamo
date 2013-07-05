@@ -51,7 +51,17 @@ namespace Dynamo.Search.SearchElements
         /// or gets the local node if already downloaded. </summary>
         public override void Execute()
         {
-            var result = MessageBox.Show("Are you sure you want to install this package?", "Package Download Confirmation",
+            string message = "";
+            if (dynSettings.PackageLoader.InstalledPackageNames.ContainsKey(this.Name))
+            {
+                message = "Dynamo has already installed " + this.Name + ".  Dynamo will need to OVERWRITE this package.";
+            }
+            else
+            {
+                message = "Are you sure you want to install " + this.Name + "?";
+            }
+
+            var result = MessageBox.Show(message, "Package Download Confirmation",
                             MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.OK)
