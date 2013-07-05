@@ -27,7 +27,7 @@ using System.Windows.Media.Media3D;
 namespace Dynamo.Nodes
 {
 
-    public abstract class dynParticleSystemBase : dynNodeWithOneOutput, IDrawable
+    public abstract class dynParticleSystemBase : dynNodeWithMultipleOutputs, IDrawable
     {
         internal ParticleSystem particleSystem;
 
@@ -121,7 +121,8 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(Value.Number)));
 
             OutPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
-            
+            OutPortData.Add(new PortData("f", "Member forces.", typeof(Value.List)));
+
             RegisterAllPorts();
 
             particleSystem = new ParticleSystem();
@@ -330,7 +331,20 @@ namespace Dynamo.Nodes
                 }
             }
 
-            return Value.NewContainer(particleSystem);
+            FSharpList<Value> forces = FSharpList<Value>.Empty;
+            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
+            {
+                forces = FSharpList<Value>.Cons(Value.NewNumber(particleSystem.getSpring(i).getResidualForce()), forces);
+            }
+
+            forces.Reverse();
+
+            FSharpList<Value> results = FSharpList<Value>.Empty;
+            results = FSharpList<Value>.Cons(Value.NewList(forces), results);
+            results = FSharpList<Value>.Cons(Value.NewContainer(particleSystem), results);
+
+            //return Value.NewContainer(particleSystem);
+            return Value.NewList(results);
 
         }
 
