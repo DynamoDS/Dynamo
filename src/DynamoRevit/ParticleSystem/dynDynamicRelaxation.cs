@@ -334,25 +334,6 @@ namespace Dynamo.Nodes
 
         }
 
-        public void UpdateStart(List<ElementId> updated)
-        {
-            ReferencePoint rp = dynRevitSettings.Doc.Document.GetElement(updated[0]) as ReferencePoint;
-            if (rp != null)
-            {
-                Particle p = particleSystem.getParticle(0);
-                p.setPosition(rp.Position);
-            }
-        }
-
-        public void UpdateEnd(List<ElementId> updated)
-        {
-            ReferencePoint rp = dynRevitSettings.Doc.Document.GetElement(updated[0]) as ReferencePoint;
-            if (rp != null)
-            {
-                Particle p = particleSystem.getParticle(particleSystem.numberOfParticles()-1);
-                p.setPosition(rp.Position);
-            }
-        }
     }
 
     [NodeName("Create Particle System on Face")]
