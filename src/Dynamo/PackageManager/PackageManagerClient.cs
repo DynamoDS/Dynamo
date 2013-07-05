@@ -345,8 +345,19 @@ namespace Dynamo.PackageManager
             }
         } 
 
-        ObservableCollection<DynamoPackageDownload> Downloads = new ObservableCollection<DynamoPackageDownload>();
-        ObservableCollection<DynamoInstalledPackage> InstalledPackages = new ObservableCollection<DynamoInstalledPackage>();
+        ObservableCollection<DynamoPackageDownload> _downloads = new ObservableCollection<DynamoPackageDownload>();
+        public ObservableCollection<DynamoPackageDownload> Downloads
+        {
+            get { return _downloads; }
+            set { _downloads = value; }
+        }
+
+        ObservableCollection<DynamoInstalledPackage> _installedPackages = new ObservableCollection<DynamoInstalledPackage>();
+        public ObservableCollection<DynamoInstalledPackage> InstalledPackages
+        {
+            get { return _installedPackages; }
+            set { _installedPackages = value; }
+        }
 
         internal void ClearInstalled()
         {
@@ -370,9 +381,22 @@ namespace Dynamo.PackageManager
                     var pathDl = PackageDownload.GetFileFromResponse(response);
                     dynamoPackageDownload.Done(pathDl);
                     DynamoInstalledPackage dynPkg;
+
+                    if (dynSettings.PackageLoader.InstalledPackageNames.ContainsKey(dynamoPackageDownload.Name))
+                    {
+                        var pkgRemove = dynSettings.PackageLoader.InstalledPackageNames[dynamoPackageDownload.Name];
+
+                        pkgRemove.Uninstall();
+                        // unload package
+                        // unload types from search
+                        // unload assembly
+                        // remove folder
+                    }
+
                     if (dynamoPackageDownload.Extract(out dynPkg))
                     {
                         dynPkg.RegisterWithHost();
+                        dynamoPackageDownload.DownloadState = DynamoPackageDownload.State.Installed;
                     }
                     else
                     {

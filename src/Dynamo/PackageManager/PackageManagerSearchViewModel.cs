@@ -103,7 +103,15 @@ namespace Dynamo.PackageManager
             PackageManagerClient = client;
             SearchResults = new ObservableCollection<PackageManagerSearchElement>();
             MaxNumSearchResults = 12;
+
+            SearchAndUpdateResults("*");
         }
+
+        public ObservableCollection<DynamoPackageDownload> Downloads
+        {
+            get { return PackageManagerClient.Downloads; }
+        }
+
         /// <summary>
         ///     Asynchronously performs a search and updates the observable SearchResults property.
         /// </summary>
@@ -192,13 +200,8 @@ namespace Dynamo.PackageManager
         /// <param name="search"> The search query </param>
         internal List<PackageManagerSearchElement> Search(string search)
         {
-            if (string.IsNullOrEmpty(search) || search == "Search...")
-            {
-                return new List<PackageManagerSearchElement>();
-            }
-
-            return PackageManagerClient.Search(search, MaxNumSearchResults);
-
+            search = String.Join("* ", search.Split(' ')) + "*"; // append wild card to each search
+            return PackageManagerClient.Search( search, MaxNumSearchResults);
         }
 
         /// <summary>

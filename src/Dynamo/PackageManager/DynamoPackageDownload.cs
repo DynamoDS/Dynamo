@@ -87,6 +87,8 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
+            this.DownloadState = State.Installing;
+
             // unzip, place files
             var unzipPath = Greg.Utility.FileUtilities.UnZip(DownloadPath);
             
@@ -105,7 +107,7 @@ namespace Dynamo.PackageManager
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
-            pkg = new DynamoInstalledPackage(installedPath, Header, VersionName);
+            pkg = new DynamoInstalledPackage(installedPath, Header.name, VersionName);
 
             return true;
         }
@@ -116,8 +118,7 @@ namespace Dynamo.PackageManager
 
     public class DynamoInstalledPackage : NotificationObject
     {
-        public PackageHeader Header { get; private set; }
-        public string Name { get { return Header.name; } }
+        public string Name { get; set; }
 
         private string _directory;
         public string Directory { get { return _directory; } set { _directory = value; RaisePropertyChanged("Directory"); } }
@@ -125,10 +126,10 @@ namespace Dynamo.PackageManager
         private string _versionName;
         public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
 
-        public DynamoInstalledPackage(string directory, PackageHeader header, string versionName )
+        public DynamoInstalledPackage(string directory, string name, string versionName )
         {
             this.Directory = directory;
-            this.Header = header;
+            this.Name = name;
             this.VersionName = versionName;
         }
 
@@ -136,6 +137,12 @@ namespace Dynamo.PackageManager
         // may require a restart
         public bool RegisterWithHost()
         {
+            dynSettings.PackageLoader.AppendBinarySearchPath();
+            DynamoLoader.LoadBuiltinTypes();
+
+            dynSettings.PackageLoader.AppendCustomNodeSearchPaths(dynSettings.CustomNodeLoader);
+            DynamoLoader.LoadCustomNodes();
+            
             return false;
         }
 

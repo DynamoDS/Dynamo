@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Globalization;
 using System.Linq;
@@ -48,8 +49,9 @@ namespace Dynamo.Utilities
 
         /// <summary>
         /// SearchPath property </summary>
-        /// <value>This is where this object will search for dyf files.</value>
-        public string SearchPath { get; set; }
+        /// <value>This is a list of directories where this object will 
+        /// search for dyf files.</value>
+        public ObservableCollection<string> SearchPath { get; private set; }
 
         #endregion
 
@@ -57,8 +59,11 @@ namespace Dynamo.Utilities
         ///     Class Constructor
         /// </summary>
         /// <param name="searchPath">The path to search for definitions</param>
-        public CustomNodeLoader(string searchPath) {
-            SearchPath = searchPath;
+        public CustomNodeLoader(string searchPath)
+        {
+            SearchPath = new ObservableCollection<string>();
+            SearchPath.Add(searchPath);
+
             NodeNames = new ObservableDictionary<string, Guid>();
             NodeCategories = new ObservableDictionary<Guid, string>();
         }
@@ -113,6 +118,13 @@ namespace Dynamo.Utilities
                 return false;
             }
 
+            // the node has already been loaded
+            // from somewhere else
+            if (Contains(guid))
+            {
+                return false;
+            }
+
             this.SetNodeInfo(name, category, guid, file);
             return true;
         }
@@ -124,14 +136,12 @@ namespace Dynamo.Utilities
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
         public bool UpdateSearchPath()
         {
-            if (!Directory.Exists(SearchPath))
+            foreach (string dir in SearchPath)
             {
-                return false;
-            }
-
-            foreach (string file in Directory.EnumerateFiles(SearchPath, "*.dyf"))
-            {
-                this.AddFileToPath(file);
+                foreach (string file in Directory.EnumerateFiles(dir, "*.dyf"))
+                {
+                    this.AddFileToPath(file);
+                }
             }
             
             return true;
@@ -205,7 +215,7 @@ namespace Dynamo.Utilities
         /// <returns>A string representing a path</returns>
         public string GetDefaultSearchPath()
         {
-            return SearchPath;
+            return SearchPath[0];
         }
 
         /// <summary>
@@ -958,7 +968,17 @@ namespace Dynamo.Utilities
             return s;
         }
 
-
-
+        /// <summary>
+        /// Adds a directory to the search path without adding a duplicates.
+        /// </summary>
+        /// <param name="p">The absolute path of the directory to add</param>
+        /// <returns>False if the directory does not exist or it already exists in the 
+        /// search path. </returns>
+        internal bool AddDirectoryToSearchPath(string p)
+        {
+            if (!Directory.Exists(p) || SearchPath.Contains(p)) return false;
+            SearchPath.Add(p);
+            return true;
+        }
     }
 }

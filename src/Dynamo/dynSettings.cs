@@ -46,9 +46,13 @@ namespace Dynamo.Utilities
             }
         }
 
-        public static Dynamo.Controls.DragCanvas Workbench { get; internal set; }
+        public static DragCanvas Workbench { get; internal set; }
 
         public static DynamoView Bench { get; set; }
+
+        public static PackageLoader PackageLoader { get; internal set; }
+
+        public static CustomNodeLoader CustomNodeLoader { get { return Controller.CustomNodeLoader; } }
 
         public static DynamoController Controller { get; internal set; }
 

@@ -119,6 +119,7 @@ limitations under the License.
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
     <Compile Include="PackageManager\DynamoPackageDownload.cs" />
+    <Compile Include="PackageManager\PackageLoader.cs" />
     <Compile Include="PackageManager\PackageManagerSearchViewModel.cs" />
     <Compile Include="PackageManager\UI\DynamoInstalledPackagesView.xaml.cs">
       <DependentUpon>DynamoInstalledPackagesView.xaml</DependentUpon>
