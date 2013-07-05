@@ -3569,7 +3569,7 @@ namespace Dynamo.Nodes
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
-            string val = ((double) value).ToString("0.00",CultureInfo.CurrentCulture);
+            string val = ((double) value).ToString("0.000",CultureInfo.CurrentCulture);
             Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
             return value == null ? "" : val;
 
