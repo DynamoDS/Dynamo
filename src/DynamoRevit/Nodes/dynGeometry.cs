@@ -2570,15 +2570,15 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curves Through Points")]
+    [NodeName("Lines Through XYZ")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create a series of linear curves through a set of points.")]
     public class dynCurvesThroughPoints : dynCurveBase
     {
         public dynCurvesThroughPoints()
         {
-            InPortData.Add(new PortData("points", "List of reference points", typeof(Value.List)));
-            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(Value.Container)));
+            InPortData.Add(new PortData("xyzs", "List of points (xyz) through which to create lines.", typeof(Value.List)));
+            OutPortData.Add(new PortData("lines", "Lines created through points.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }

@@ -27,7 +27,7 @@ using System.Windows.Media.Media3D;
 namespace Dynamo.Nodes
 {
 
-    public abstract class dynParticleSystemBase : dynNodeWithOneOutput, IDrawable
+    public abstract class dynParticleSystemBase : dynNodeWithMultipleOutputs, IDrawable
     {
         internal ParticleSystem particleSystem;
 
@@ -95,7 +95,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Create Particle System")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
-    [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
+    [NodeDescription("A node which allows you to drive the position of elements via a particle system.")]
     class dynDynamicRelaxation :  dynParticleSystemBase
     {
         private double _d;
@@ -103,21 +103,26 @@ namespace Dynamo.Nodes
         private double _s;
         private double _r;
         private double _g;
+        private int _fixPtCount;
+        private bool _use_rl;
+        private double _rlf;
 
         public dynDynamicRelaxation()
         {
             InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(Value.List)));
             InPortData.Add(new PortData("curves", "Curves to use as springs.", typeof(Value.List)));
             InPortData.Add(new PortData("d", "Dampening.", typeof(Value.Number)));
-            InPortData.Add(new PortData("s", "Spring Constant.", typeof(Value.Number)));
-            InPortData.Add(new PortData("r", "Rest Length.", typeof(Value.Number)));
+            InPortData.Add(new PortData("s", "Spring constant.", typeof(Value.Number)));
+            InPortData.Add(new PortData("rl", "Rest length.", typeof(Value.Number)));
+            InPortData.Add(new PortData("use_rl", "Should the rest length be considered (true), or should we use the rest length factor instead (false)?.", typeof(Value.Number)));
+            InPortData.Add(new PortData("rlf", "Rest length factor. If use rest length factor is set to false," +
+                " rest length will be ignored and this factor will be used to determine the rest length as a factor of the spring's initial size.", typeof(Value.Number)));
             InPortData.Add(new PortData("m", "Nodal Mass.", typeof(Value.Number)));
-            //InPortData.Add(new PortData("numX", "Number of Particles in X.", typeof(Value.Number)));
-            //InPortData.Add(new PortData("numY", "Number of Particles in Y.", typeof(Value.Number)));
             InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(Value.Number)));
 
             OutPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
-            
+            OutPortData.Add(new PortData("f", "Member forces.", typeof(Value.List)));
+
             RegisterAllPorts();
 
             particleSystem = new ParticleSystem();
@@ -262,7 +267,14 @@ namespace Dynamo.Nodes
                 if (b == null)
                     b = particleSystem.makeParticle(_m, end, false);
 
-                particleSystem.makeSpring(a, b, _r, _s, _d);
+                if (_use_rl)
+                    particleSystem.makeSpring(a, b, _r, _s, _d);
+                else
+                {
+                    double restLength = start.DistanceTo(end)*_rlf;
+                    particleSystem.makeSpring(a, b, restLength, _s, _d);
+                }
+                    
             }
 
         }
@@ -274,13 +286,16 @@ namespace Dynamo.Nodes
             _d = ((Value.Number)args[2]).Item;//dampening
             _s = ((Value.Number)args[3]).Item;//spring constant
             _r = ((Value.Number)args[4]).Item;//rest length
-            _m = ((Value.Number)args[5]).Item;//nodal mass
-            _g = ((Value.Number)args[6]).Item;//gravity z component
+            _use_rl = Convert.ToBoolean(((Value.Number)args[5]).Item);//use rest length
+            _rlf = ((Value.Number)args[6]).Item;//rest length factor
+            _m = ((Value.Number)args[7]).Item;//nodal mass
+            _g = ((Value.Number)args[8]).Item;//gravity z component
 
             //if the particle system has a different layout, then
             //clear it instead of updating
             bool reset = false;
             if(particleSystem.numberOfParticles() == 0 ||
+                _fixPtCount != points.Count() ||
                 curves.Count() != particleSystem.numberOfSprings())
             {
                 reset = true;
@@ -289,6 +304,7 @@ namespace Dynamo.Nodes
                 {
                     dynSettings.Controller.UIDispatcher.Invoke(new Action(()=> RenderDescription.ClearAll()));
                 }
+                _fixPtCount = points.Count();
             }
 
             particleSystem.setGravity(_g);
@@ -304,7 +320,8 @@ namespace Dynamo.Nodes
                 {
                     ParticleSpring spring = particleSystem.getSpring(j);
                     spring.setDamping(_d);
-                    spring.setRestLength(_r);
+                    if(!_use_rl)
+                        spring.setRestLength(_r);
                     spring.setSpringConstant(_s);
                 }
                 for (int j = 0; j < particleSystem.numberOfParticles(); j++)
@@ -314,29 +331,23 @@ namespace Dynamo.Nodes
                 }
             }
 
-            return Value.NewContainer(particleSystem);
-
-        }
-
-        public void UpdateStart(List<ElementId> updated)
-        {
-            ReferencePoint rp = dynRevitSettings.Doc.Document.GetElement(updated[0]) as ReferencePoint;
-            if (rp != null)
+            FSharpList<Value> forces = FSharpList<Value>.Empty;
+            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
             {
-                Particle p = particleSystem.getParticle(0);
-                p.setPosition(rp.Position);
+                forces = FSharpList<Value>.Cons(Value.NewNumber(particleSystem.getSpring(i).getResidualForce()), forces);
             }
+
+            forces.Reverse();
+
+            FSharpList<Value> results = FSharpList<Value>.Empty;
+            results = FSharpList<Value>.Cons(Value.NewList(forces), results);
+            results = FSharpList<Value>.Cons(Value.NewContainer(particleSystem), results);
+
+            //return Value.NewContainer(particleSystem);
+            return Value.NewList(results);
+
         }
 
-        public void UpdateEnd(List<ElementId> updated)
-        {
-            ReferencePoint rp = dynRevitSettings.Doc.Document.GetElement(updated[0]) as ReferencePoint;
-            if (rp != null)
-            {
-                Particle p = particleSystem.getParticle(particleSystem.numberOfParticles()-1);
-                p.setPosition(rp.Position);
-            }
-        }
     }
 
     [NodeName("Create Particle System on Face")]

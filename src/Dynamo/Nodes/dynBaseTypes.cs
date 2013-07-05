@@ -890,8 +890,8 @@ namespace Dynamo.Nodes
         public dynSlice()
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
-            InPortData.Add(new PortData("n", "The number of elements in each sub-list.", typeof(Value.List)));
-            OutPortData.Add(new PortData("list", "The list of lists.", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The 'width' of the array.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "A list of lists representing rows in your array.", typeof(Value.List)));
 
             RegisterAllPorts();
 
@@ -904,9 +904,7 @@ namespace Dynamo.Nodes
                 throw new Exception("A list is required to slice.");
 
             FSharpList<Value> lst = ((Value.List)args[0]).Item;
-            double n = (double)((Value.Number)args[1]).Item;
-
-            n = Math.Round(n);
+            var n = (int)Math.Round(((Value.Number)args[1]).Item);
 
             //if we have less elements in ther 
             //incoming list than the slice size,
@@ -915,6 +913,7 @@ namespace Dynamo.Nodes
             {
                 return Value.NewList(lst);
             }
+
 
             List<Value> finalList = new List<Value>();
             List<Value> currList = new List<Value>();
@@ -935,6 +934,168 @@ namespace Dynamo.Nodes
             }
 
             if (currList.Count<Value>() > 0)
+            {
+                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+            }
+
+            return Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
+
+        }
+    }
+
+    [NodeName("Diagonal Right List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Create a diagonal lists of lists from top left to lower right.")]
+    public class dynDiagonalRightList : dynNodeWithOneOutput
+    {
+        public dynDiagonalRightList()
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The width of the array.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "A list of lists representing diagonals in your array.", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+                throw new Exception("A list is required to create diagonals.");
+
+            FSharpList<Value> lst = ((Value.List)args[0]).Item;
+            var n = (int)Math.Round(((Value.Number)args[1]).Item);
+
+            //if we have less elements in the
+            //incoming list than the slice size,
+            //just return the list
+            if (lst.Count<Value>() < n)
+            {
+                return Value.NewList(lst);
+            }
+
+            var finalList = new List<Value>();
+            var currList = new List<Value>();
+
+            int count = 0;
+
+            var startIndices = new List<int>();
+            
+            //get indices along 'side' of array
+            for (int i = n; i < lst.Count(); i += n)
+            {
+                startIndices.Add(i);
+            }
+
+            startIndices.Reverse();
+
+            //get indices along 'top' of array
+            for (int i = 0; i < n - 1; i++)
+            {
+                startIndices.Add(i);
+            }
+
+            foreach(int start in startIndices)
+            {
+                int index = start;
+
+                while (index < lst.Count())
+                {
+                    var currentRow = (int)Math.Ceiling((index + 1)/(double)n);
+                    currList.Add(lst.ElementAt(index));
+                    index += n + 1;
+
+                    //ensure we are skipping a row to get the next index
+                    var nextRow = (int) Math.Ceiling((index + 1)/(double)n);
+                    if (nextRow > currentRow + 1 || nextRow == currentRow)
+                        break;
+                }
+                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                currList = new List<Value>();
+            }
+
+            if (currList.Any())
+            {
+                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+            }
+
+            return Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
+
+        }
+    }
+
+    [NodeName("Diagonal Left List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Create a diagonal lists of lists from top right to lower left.")]
+    public class dynDiagonalLeftList : dynNodeWithOneOutput
+    {
+        public dynDiagonalLeftList()
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The width of the array.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "A list of lists representing diagonals in your array.", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+                throw new Exception("A list is required to create diagonals.");
+
+            FSharpList<Value> lst = ((Value.List)args[0]).Item;
+            var n = (int)Math.Round(((Value.Number)args[1]).Item);
+
+            //if we have less elements in the
+            //incoming list than the slice size,
+            //just return the list
+            if (lst.Count<Value>() < n)
+            {
+                return Value.NewList(lst);
+            }
+
+            var finalList = new List<Value>();
+            var currList = new List<Value>();
+
+            int count = 0;
+
+            var startIndices = new List<int>();
+
+            //get indices along 'top' of array
+            for (int i = 1; i < (int)n; i++)
+            {
+                startIndices.Add(i);
+            }
+
+            //get indices along 'side' of array
+            for (int i = n-1 + n; i < lst.Count(); i += n)
+            {
+                startIndices.Add(i);
+            }
+
+            foreach (int start in startIndices)
+            {
+                int index = start;
+
+                while (index < lst.Count())
+                {
+                    var currentRow = (int)Math.Ceiling((index + 1) / (double)n);
+                    currList.Add(lst.ElementAt(index));
+                    index += (int)n - 1;
+
+                    //ensure we are skipping a row to get the next index
+                    var nextRow = (int)Math.Ceiling((index + 1) / (double)n);
+                    if (nextRow > currentRow + 1 || nextRow == currentRow)
+                        break;
+                }
+                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                currList = new List<Value>();
+            }
+
+            if (currList.Any())
             {
                 finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
             }
@@ -2707,23 +2868,6 @@ namespace Dynamo.Nodes
             valtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             valtb.Width = double.NaN;
             valtb.Margin = new Thickness(0,0,10,0);
-            //maxtb.IsNumeric = true;
-            valtb.OnChangeCommitted += delegate
-            {
-                try
-                {
-                    Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
-                    if (Min > Value)
-                        Min = Value;
-                    if (Max < Value)
-                        Max = Value;
-                    Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
-                    tb_slider.Value = Value;
-                }
-                catch
-                {
-                }
-            };
 
             maxtb = new dynTextBox();
             maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
@@ -2821,10 +2965,11 @@ namespace Dynamo.Nodes
             get { return max; }
             set
             {
+                max = value;
+
                 if (max < Value)
                     Value = max;
 
-                max = value;
                 RaisePropertyChanged("Max");
             }
         }
@@ -2834,10 +2979,11 @@ namespace Dynamo.Nodes
             get { return min; }
             set
             {
+                min = value;
+
                 if (min > Value)
                     Value = min;
 
-                min = value;
                 RaisePropertyChanged("Min");
             } 
         }
@@ -3423,7 +3569,7 @@ namespace Dynamo.Nodes
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
-            string val = ((double) value).ToString("0.00",CultureInfo.CurrentCulture);
+            string val = ((double) value).ToString("0.000",CultureInfo.CurrentCulture);
             Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
             return value == null ? "" : val;
 
