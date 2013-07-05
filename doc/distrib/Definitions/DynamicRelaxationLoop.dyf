@@ -1,0 +1,43 @@
+<dynWorkspace X="-125" Y="184" zoom="1" Name="DynamicRelaxationLoop" Category="DynamicRelaxation" ID="db998bc3-43fe-47c3-a1e9-6b825757fdb5">
+  <dynElements>
+    <Dynamo.Nodes.dynDynamicRelaxationStep type="Dynamo.Nodes.dynDynamicRelaxationStep" guid="1a3bc282-9df4-4b7c-8c24-c2864e5928a1" nickname="Dynamic Relaxation Step" x="613.368942132379" y="97" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="60df8660-9343-41e6-85ea-a11a4ae61792" nickname="Number" x="273" y="149.025888653575" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0.002" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="f82c4660-905e-4a83-88c4-7ce1ee29411f" nickname="Input" x="275" y="78" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ps" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="ec9cb0d2-f954-4e6c-9c5d-1bd63b0164e2" nickname="Input" x="259" y="227.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="update" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynBegin type="Dynamo.Nodes.dynBegin" guid="49f7f19d-6202-4f6f-8e93-caa76e062144" nickname="Perform All" x="1037" y="161.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="expr1" />
+      <Input name="expr2" />
+      <Input name="expr3" />
+    </Dynamo.Nodes.dynBegin>
+    <Dynamo.Nodes.dynPause type="Dynamo.Nodes.dynPause" guid="49ffacbd-b5f4-46fa-a22a-9993a3e9c7e2" nickname="Pause" x="870" y="223.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="803d02d6-8bd2-4252-8cb7-ba6901600c6e" nickname="DynamicRelaxationLoop" x="704" y="325.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="db998bc3-43fe-47c3-a1e9-6b825757fdb5" />
+      <Name value="DynamicRelaxationLoop" />
+      <Inputs>
+        <Input value="ps" />
+        <Input value="update" />
+      </Inputs>
+      <Outputs>
+        <Output value="last" />
+      </Outputs>
+    </Dynamo.Nodes.dynFunction>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="1a3bc282-9df4-4b7c-8c24-c2864e5928a1" start_index="0" end="49f7f19d-6202-4f6f-8e93-caa76e062144" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="60df8660-9343-41e6-85ea-a11a4ae61792" start_index="0" end="1a3bc282-9df4-4b7c-8c24-c2864e5928a1" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="f82c4660-905e-4a83-88c4-7ce1ee29411f" start_index="0" end="1a3bc282-9df4-4b7c-8c24-c2864e5928a1" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="f82c4660-905e-4a83-88c4-7ce1ee29411f" start_index="0" end="803d02d6-8bd2-4252-8cb7-ba6901600c6e" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="ec9cb0d2-f954-4e6c-9c5d-1bd63b0164e2" start_index="0" end="1a3bc282-9df4-4b7c-8c24-c2864e5928a1" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="ec9cb0d2-f954-4e6c-9c5d-1bd63b0164e2" start_index="0" end="49ffacbd-b5f4-46fa-a22a-9993a3e9c7e2" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="ec9cb0d2-f954-4e6c-9c5d-1bd63b0164e2" start_index="0" end="803d02d6-8bd2-4252-8cb7-ba6901600c6e" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="49ffacbd-b5f4-46fa-a22a-9993a3e9c7e2" start_index="0" end="49f7f19d-6202-4f6f-8e93-caa76e062144" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="803d02d6-8bd2-4252-8cb7-ba6901600c6e" start_index="0" end="49f7f19d-6202-4f6f-8e93-caa76e062144" end_index="2" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>
