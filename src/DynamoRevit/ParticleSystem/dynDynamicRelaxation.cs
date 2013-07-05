@@ -95,7 +95,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Create Particle System")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
-    [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
+    [NodeDescription("A node which allows you to drive the position of elements via a particle system.")]
     class dynDynamicRelaxation :  dynParticleSystemBase
     {
         private double _d;
