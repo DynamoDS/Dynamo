@@ -75,21 +75,7 @@ namespace Dynamo.FSchemeInterop.Node
             if (symbols.TryGetValue(this, out symbol))
             {
                 var body = Expression.NewId(symbol);
-                if (!initializedIds.Contains(symbol))
-                {
-                    symbols.Remove(this);
-                    var binding = compile(symbols, letEntries, initializedIds, conditionalIds);
-                    symbols[this] = symbol;
-
-                    body = Expression.NewBegin(
-                        Utils.MakeFSharpList(
-                            Expression.NewSetId(symbol, binding),
-                            Expression.NewSetId(symbol+"-init", Expression.NewNumber_E(1)),
-                            body));
-
-                    initializedIds.Add(symbol);
-                }
-                else if (conditionalIds.Contains(symbol))
+                if (conditionalIds.Contains(symbol))
                 {
                     symbols.Remove(this);
                     var binding = compile(symbols, letEntries, initializedIds, conditionalIds);
@@ -103,6 +89,20 @@ namespace Dynamo.FSchemeInterop.Node
                                 Expression.NewSetId(symbol, binding),
                                 Expression.NewSetId(symbol+"-init", Expression.NewNumber_E(1)),
                                 body)));
+                }
+                else if (!initializedIds.Contains(symbol))
+                {
+                    symbols.Remove(this);
+                    var binding = compile(symbols, letEntries, initializedIds, conditionalIds);
+                    symbols[this] = symbol;
+
+                    body = Expression.NewBegin(
+                        Utils.MakeFSharpList(
+                            Expression.NewSetId(symbol, binding),
+                            Expression.NewSetId(symbol + "-init", Expression.NewNumber_E(1)),
+                            body));
+
+                    initializedIds.Add(symbol);
                 }
                 return body;
             }
@@ -279,10 +279,18 @@ namespace Dynamo.FSchemeInterop.Node
             var trueSet = new HashSet<string>(initializedIds);
             var falseSet = new HashSet<string>(initializedIds);
 
-            var trueBranch = arguments[_true].compile(symbols, letEntries, trueSet, conditionalIds);
-            var falseBranch = arguments[_false].compile(symbols, letEntries, falseSet, conditionalIds);
+            var trueCond = new HashSet<string>(conditionalIds);
+            var falseCond = new HashSet<string>(conditionalIds);
 
-            conditionalIds.UnionWith(trueSet.Union(falseSet).Except(trueSet.Intersect(falseSet)));
+            var trueBranch = arguments[_true].compile(symbols, letEntries, trueSet, trueCond);
+            var falseBranch = arguments[_false].compile(symbols, letEntries, falseSet, falseCond);
+
+            var alwaysInitialized = trueSet.Intersect(falseSet).ToList();
+
+            conditionalIds.UnionWith(trueCond.Union(falseCond));
+            conditionalIds.UnionWith(trueSet.Union(falseSet).Except(alwaysInitialized));
+
+            initializedIds.UnionWith(alwaysInitialized);
             
             return Expression.NewIf(testBranch, trueBranch, falseBranch);
         }
