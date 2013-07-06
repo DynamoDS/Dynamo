@@ -331,10 +331,10 @@ namespace Dynamo.Nodes
 
     }
 
-    /*
+    
     [NodeName("Watch Image")]
     [NodeDescription("Previews an image")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     public class dynWatchImage : dynNodeWithOneOutput
     {
 
@@ -487,5 +487,5 @@ namespace Dynamo.Nodes
         }
       
     }
-     */
+     
 }
