@@ -59,6 +59,9 @@ namespace Dynamo.Nodes
         protected int partID;
         protected int springID;
 
+        protected bool converged = false;
+        protected double threshold = 0.1;
+
         public ParticleSystem()
         {
             hasDeadParticles = false;
@@ -277,6 +280,9 @@ namespace Dynamo.Nodes
                 maxNodalVelocity = Math.Max(maxNodalVelocity, particles[i].getVelocity().GetLength());
             }
 
+            if (maxNodalVelocity < threshold && maxNodalVelocity != 0)
+                converged = true;
+
             //F=kd, calculate the maximum residual force in any member
             for (int i = 0; i < springs.Count(); i++)
             {
@@ -349,7 +355,22 @@ namespace Dynamo.Nodes
             return springs[i];
         }
 
-        public Particle getParticleByElementID(ElementId eid)
+         public bool getConverged()
+         {
+             return converged;
+         }
+
+         public void setConverged(bool value)
+         {
+             converged = value;
+         }
+
+         public void setThreshold(double value)
+         {
+             threshold = value < 0 ? 0 : value;
+         }
+
+         public Particle getParticleByElementID(ElementId eid)
         {
             for (int i = 0; i < particles.Count(); ++i)
             {
