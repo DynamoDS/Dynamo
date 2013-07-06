@@ -54,6 +54,8 @@ New
 - Better node error state reporting
 - Curves Through Points node
 - Find Nodes from Selected Elements
+- Watch node shows index of list members
+- Tooltips in search
 
 Known Issues
 - See Issues on Github:  https://github.com/ikeough/Dynamo/issues?state=open

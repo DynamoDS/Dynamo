@@ -525,11 +525,14 @@ namespace Dynamo.Controls
                 double hOffset = ResolveOffset(left, right, out modLeft);
                 double vOffset = ResolveOffset(top, bottom, out modTop);
 
-                OffsetData os = offsets[count];
-                os.ModifyLeftOffset = modLeft;
-                os.ModifyTopOffset = modTop;
-                os.OriginalHorizontalOffset = hOffset;
-                os.OriginalVerticalOffset = vOffset;
+                if (offsets.Count > count)
+                {
+                    OffsetData os = offsets[count];
+                    os.ModifyLeftOffset = modLeft;
+                    os.ModifyTopOffset = modTop;
+                    os.OriginalHorizontalOffset = hOffset;
+                    os.OriginalVerticalOffset = vOffset;
+                }
 
                 count++;
             }

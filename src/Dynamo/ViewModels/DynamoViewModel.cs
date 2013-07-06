@@ -357,6 +357,7 @@ namespace Dynamo.Controls
             sw = new StringWriter();
             ConnectorType = ConnectorType.BEZIER;
 
+            DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
             #region Initialize Commands
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
             ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
@@ -401,6 +402,12 @@ namespace Dynamo.Controls
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
 
             #endregion
+        }
+
+        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            CopyCommand.RaiseCanExecuteChanged();
+            PasteCommand.RaiseCanExecuteChanged();
         }
 
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1054,7 +1061,7 @@ namespace Dynamo.Controls
         }
 
         private bool CanCopy(object parameters)
-        {
+        {   
             if (DynamoSelection.Instance.Selection.Count == 0)
             {
                 return false;

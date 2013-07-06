@@ -27,7 +27,7 @@ using System.Windows.Media.Media3D;
 namespace Dynamo.Nodes
 {
 
-    public abstract class dynParticleSystemBase : dynNodeWithOneOutput, IDrawable
+    public abstract class dynParticleSystemBase : dynNodeWithMultipleOutputs, IDrawable
     {
         internal ParticleSystem particleSystem;
 
@@ -95,7 +95,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Create Particle System")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
-    [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
+    [NodeDescription("A node which allows you to drive the position of elements via a particle system.")]
     class dynDynamicRelaxation :  dynParticleSystemBase
     {
         private double _d;
@@ -121,7 +121,8 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(Value.Number)));
 
             OutPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
-            
+            OutPortData.Add(new PortData("f", "Member forces.", typeof(Value.List)));
+
             RegisterAllPorts();
 
             particleSystem = new ParticleSystem();
@@ -330,29 +331,23 @@ namespace Dynamo.Nodes
                 }
             }
 
-            return Value.NewContainer(particleSystem);
-
-        }
-
-        public void UpdateStart(List<ElementId> updated)
-        {
-            ReferencePoint rp = dynRevitSettings.Doc.Document.GetElement(updated[0]) as ReferencePoint;
-            if (rp != null)
+            FSharpList<Value> forces = FSharpList<Value>.Empty;
+            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
             {
-                Particle p = particleSystem.getParticle(0);
-                p.setPosition(rp.Position);
+                forces = FSharpList<Value>.Cons(Value.NewNumber(particleSystem.getSpring(i).getResidualForce()), forces);
             }
+
+            forces.Reverse();
+
+            FSharpList<Value> results = FSharpList<Value>.Empty;
+            results = FSharpList<Value>.Cons(Value.NewList(forces), results);
+            results = FSharpList<Value>.Cons(Value.NewContainer(particleSystem), results);
+
+            //return Value.NewContainer(particleSystem);
+            return Value.NewList(results);
+
         }
 
-        public void UpdateEnd(List<ElementId> updated)
-        {
-            ReferencePoint rp = dynRevitSettings.Doc.Document.GetElement(updated[0]) as ReferencePoint;
-            if (rp != null)
-            {
-                Particle p = particleSystem.getParticle(particleSystem.numberOfParticles()-1);
-                p.setPosition(rp.Position);
-            }
-        }
     }
 
     [NodeName("Create Particle System on Face")]
