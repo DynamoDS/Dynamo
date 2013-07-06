@@ -190,6 +190,11 @@ namespace Dynamo.Controls
         {
             get { return nodeLogic.State; }
         }
+
+        public string Description
+        {
+            get { return nodeLogic.Description; }
+        }
         
         //public double DropShadowOpacity
         //{

@@ -2437,26 +2437,25 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(button, 0);
             button.Content = "Continue";
 
-            enabled = false;
+            Enabled = false;
 
             button.Click += new RoutedEventHandler(button_Click);
+
+            var bindingVal = new System.Windows.Data.Binding("Enabled")
+            {
+                Mode = BindingMode.TwoWay,
+                NotifyOnValidationError = false,
+                Source = this
+            };
+            button.SetBinding(UIElement.IsEnabledProperty, bindingVal);
         }
 
-        private bool _enabled;
-        private bool enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                _enabled = value;
-                button.IsEnabled = value;
-            }
-        }
+        private bool Enabled { get; set; }
 
         void button_Click(object sender, RoutedEventArgs e)
         {
             Deselect();
-            enabled = false;
+            Enabled = false;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -2467,11 +2466,11 @@ namespace Dynamo.Nodes
 
             if (Controller.DynamoViewModel.RunInDebug)
             {
-                enabled = true;
+                Enabled = true;
                 Select();
                 Controller.DynamoViewModel.ShowElement(this);
 
-                while (enabled)
+                while (Enabled)
                 {
                     Thread.Sleep(1);
                 }
@@ -2952,23 +2951,6 @@ namespace Dynamo.Nodes
             valtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             valtb.Width = double.NaN;
             valtb.Margin = new Thickness(0,0,10,0);
-            //maxtb.IsNumeric = true;
-            valtb.OnChangeCommitted += delegate
-            {
-                try
-                {
-                    Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
-                    if (Min > Value)
-                        Min = Value;
-                    if (Max < Value)
-                        Max = Value;
-                    Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
-                    tb_slider.Value = Value;
-                }
-                catch
-                {
-                }
-            };
 
             maxtb = new dynTextBox();
             maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
@@ -3066,10 +3048,11 @@ namespace Dynamo.Nodes
             get { return max; }
             set
             {
+                max = value;
+
                 if (max < Value)
                     Value = max;
 
-                max = value;
                 RaisePropertyChanged("Max");
             }
         }
@@ -3079,10 +3062,11 @@ namespace Dynamo.Nodes
             get { return min; }
             set
             {
+                min = value;
+
                 if (min > Value)
                     Value = min;
 
-                min = value;
                 RaisePropertyChanged("Min");
             } 
         }
@@ -3680,7 +3664,7 @@ namespace Dynamo.Nodes
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
-            string val = ((double) value).ToString("0.00",CultureInfo.CurrentCulture);
+            string val = ((double) value).ToString("0.000",CultureInfo.CurrentCulture);
             Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
             return value == null ? "" : val;
 
