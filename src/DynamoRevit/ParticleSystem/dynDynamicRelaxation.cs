@@ -106,6 +106,7 @@ namespace Dynamo.Nodes
         private int _fixPtCount;
         private bool _use_rl;
         private double _rlf;
+        private double _threshold;
 
         public dynDynamicRelaxation()
         {
@@ -119,6 +120,7 @@ namespace Dynamo.Nodes
                 " rest length will be ignored and this factor will be used to determine the rest length as a factor of the spring's initial size.", typeof(Value.Number)));
             InPortData.Add(new PortData("m", "Nodal Mass.", typeof(Value.Number)));
             InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(Value.Number)));
+            InPortData.Add(new PortData("threshold", "The convergence threshold. When the maximum nodal velocity falls below this number, the particle system is flagged \"converged\".", typeof(Value.Number)));
 
             OutPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
             OutPortData.Add(new PortData("f", "Member forces.", typeof(Value.List)));
@@ -290,6 +292,12 @@ namespace Dynamo.Nodes
             _rlf = ((Value.Number)args[6]).Item;//rest length factor
             _m = ((Value.Number)args[7]).Item;//nodal mass
             _g = ((Value.Number)args[8]).Item;//gravity z component
+            _threshold = ((Value.Number) args[9]).Item; //convergence threshold
+
+            //if we are in the evaluate, this has been
+            //marked dirty and we should set it to unconverged
+            //in case one of the inputs has changed.
+            particleSystem.setConverged(false);
 
             //if the particle system has a different layout, then
             //clear it instead of updating
@@ -336,7 +344,6 @@ namespace Dynamo.Nodes
             {
                 forces = FSharpList<Value>.Cons(Value.NewNumber(particleSystem.getSpring(i).getResidualForce()), forces);
             }
-
             forces.Reverse();
 
             FSharpList<Value> results = FSharpList<Value>.Empty;
@@ -440,7 +447,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     [IsInteractive(true)]
-    public class dynDynamicRelaxationStep: dynNodeWithOneOutput
+    public class dynDynamicRelaxationStep: dynNodeWithMultipleOutputs
     {
         private ParticleSystem particleSystem;
 
@@ -449,7 +456,9 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("ps", "Particle System to simulate", typeof(Value.Container)));
             InPortData.Add(new PortData("step", "Time to step.", typeof(Value.Number)));
             InPortData.Add(new PortData("interval", "An execution interval.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("data", "Relaxation data.", typeof(Value.Container)));
+            
+            OutPortData.Add(new PortData("max_v", "Maximum nodal velocity.", typeof(Value.Number))); 
+            OutPortData.Add(new PortData("converged?", "Has the maximum nodal velocity dropped below the threshold set for the system?", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -466,7 +475,7 @@ namespace Dynamo.Nodes
             dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
 
             return Value.NewList(Utils.MakeFSharpList<Value>(
-                new Value[]{Value.NewContainer(particleSystem),Value.NewNumber(particleSystem.getMaxResidualForce())})
+                new Value[] { Value.NewNumber(particleSystem.getMaxNodalVelocity()), Value.NewNumber(Convert.ToInt16(particleSystem.getConverged())) })
                 );
         }
 
