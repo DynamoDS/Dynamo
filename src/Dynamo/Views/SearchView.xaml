@@ -13,6 +13,16 @@
              x:Name="SearchControl" 
              MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoConverters.xaml"/>
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoColorsAndBrushes.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     <Grid Background="Black" >
 
         <Grid.RowDefinitions>
@@ -233,8 +243,28 @@ Source="..\Images\search_24.png" Opacity="1">
 
                     </HierarchicalDataTemplate>
 
+                    <HierarchicalDataTemplate DataType="{x:Type searchElements:TopSearchElement}">
+                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
+                            
+                            <TextBlock.ToolTip>
+                                <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+                                    <TextBlock Name="tt_longText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                             Text="{Binding Path=Description}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+                                </Grid>
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                    </HierarchicalDataTemplate>
+                    
                     <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
+                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
+                            
+                            <TextBlock.ToolTip>
+                                <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+                                    <TextBlock Name="tt_longText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                             Text="{Binding Path=Description}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+                                </Grid>
+                            </TextBlock.ToolTip>
+                        </TextBlock>
                         
                         <!--<Grid>
                             
@@ -275,13 +305,7 @@ Source="..\Images\search_24.png" Opacity="1">
 
     </Grid>
 
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
+
 
 </UserControl>
   

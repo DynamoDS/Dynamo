@@ -367,17 +367,27 @@ namespace Dynamo.Nodes
             }
         }
 
+        public string _description = null;
         public string Description
         {
-            get
-            {
-                Type t = GetType();
-                object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
-                if (rtAttribs.Length > 0)
-                    return ((NodeDescriptionAttribute) rtAttribs[0]).ElementDescription;
-                else
-                    return "No description provided.";
+            get { 
+                _description = _description ?? GetDescriptionString();
+                return _description;
             }
+        }
+
+        /// <summary>
+        ///     Get the description from type information
+        /// </summary>
+        /// <returns>The value or "No description provided"</returns>
+        public string GetDescriptionString()
+        {
+            var t = GetType();
+            object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
+            if (rtAttribs.Length > 0)
+                return ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
+            
+            return "No description provided";
         }
 
         public bool InteractionEnabled
