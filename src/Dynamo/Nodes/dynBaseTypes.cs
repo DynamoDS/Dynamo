@@ -2353,26 +2353,25 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(button, 0);
             button.Content = "Continue";
 
-            enabled = false;
+            Enabled = false;
 
             button.Click += new RoutedEventHandler(button_Click);
+
+            var bindingVal = new System.Windows.Data.Binding("Enabled")
+            {
+                Mode = BindingMode.TwoWay,
+                NotifyOnValidationError = false,
+                Source = this
+            };
+            button.SetBinding(UIElement.IsEnabledProperty, bindingVal);
         }
 
-        private bool _enabled;
-        private bool enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                _enabled = value;
-                button.IsEnabled = value;
-            }
-        }
+        private bool Enabled { get; set; }
 
         void button_Click(object sender, RoutedEventArgs e)
         {
             Deselect();
-            enabled = false;
+            Enabled = false;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -2383,11 +2382,11 @@ namespace Dynamo.Nodes
 
             if (Controller.DynamoViewModel.RunInDebug)
             {
-                enabled = true;
+                Enabled = true;
                 Select();
                 Controller.DynamoViewModel.ShowElement(this);
 
-                while (enabled)
+                while (Enabled)
                 {
                     Thread.Sleep(1);
                 }
