@@ -1079,9 +1079,9 @@ namespace Dynamo.Controls
             //paste contents in
             DynamoSelection.Instance.Selection.RemoveAll();
 
-            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynNodeModel);
+            var nodes = dynSettings.Controller.ClipBoard.OfType<dynNodeModel>();
 
-            var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnectorModel);
+            var connectors = dynSettings.Controller.ClipBoard.OfType<dynConnectorModel>();
 
             foreach (dynNodeModel node in nodes)
             {
@@ -1155,10 +1155,37 @@ namespace Dynamo.Controls
             //process the queue again to create the connectors
             dynSettings.Controller.ProcessCommandQueue();
 
+            var notes = dynSettings.Controller.ClipBoard.OfType<dynNoteModel>();
+
+            foreach (dynNoteModel note in notes)
+            {
+                var newGUID = Guid.NewGuid();
+
+                var sameSpace = _model.CurrentSpace.Notes.Any(x => x.GUID == note.GUID);
+                var newX = sameSpace ? note.X + 20 : note.X;
+                var newY = sameSpace ? note.Y + 20 : note.Y;
+
+                var noteData = new Dictionary<string, object>()
+                {
+                    { "x", newX },
+                    { "y", newY },
+                    { "text", note.Text },
+                    { "guid", newGUID }
+                };
+
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(AddNoteCommand, noteData));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(
+                    AddToSelectionCommand, 
+                    _model.CurrentSpace.Notes.FirstOrDefault(x => x.GUID == newGUID)));
+            }
+
+            dynSettings.Controller.ProcessCommandQueue();
+
             foreach (var de in nodeLookup)
             {
-                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(AddToSelectionCommand,
-                    _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == (Guid)de.Value)));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(
+                    AddToSelectionCommand,
+                    _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == de.Value)));
             }
 
             dynSettings.Controller.ProcessCommandQueue();
@@ -1527,9 +1554,7 @@ namespace Dynamo.Controls
 
         private void AddNote(object parameters)
         {
-            var inputs = (Dictionary<string, object>)parameters;
-
-            inputs = inputs ?? new Dictionary<string, object>();
+            var inputs = parameters as Dictionary<string, object> ?? new Dictionary<string, object>();
 
             // by default place note at center
             var x = 0.0;
@@ -1551,7 +1576,10 @@ namespace Dynamo.Controls
                 inputs.Add("transformFromOuterCanvasCoordinates", true);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered( this, new ModelEventArgs(n, inputs) );
             }
-                
+
+            object id;
+            if (inputs.TryGetValue("guid", out id))
+                n.GUID = (Guid)id;
 
             n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
             var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspaceModel)inputs["workspace"];
