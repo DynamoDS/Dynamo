@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 using System.Xml;
@@ -114,6 +115,8 @@ namespace Dynamo.Revit
 
             elements.Clear();
 
+            var sb = new StringBuilder();
+            
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
                 if (subNode.Name == "Run")
@@ -125,7 +128,7 @@ namespace Dynamo.Revit
                     {
                         if (element.Name == "Element")
                         {
-                            var eid = subNode.InnerText;
+                            var eid = element.InnerText;
                             try
                             {
                                 var id = UIDocument.Document.GetElement(eid).Id;
@@ -134,12 +137,15 @@ namespace Dynamo.Revit
                             }
                             catch (NullReferenceException)
                             {
-                                dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
+                                //dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
+                                sb.AppendLine("Element with UID \"" + eid + "\" not found in Document.");
                             }
                         }
                     }
                 }
             }
+
+            dynSettings.Controller.DynamoViewModel.Log(sb.ToString());
         }
 
         internal void RegisterAllElementsDeleteHook()
