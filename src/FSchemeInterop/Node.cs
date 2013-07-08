@@ -262,7 +262,7 @@ namespace Dynamo.FSchemeInterop.Node
         }
 
         public ConditionalNode()
-            : base("if", new List<string>() { "test", "true", "false" }) { }
+            : this(new List<string>() { "test", "true", "false" }) { }
 
         string _test;
         string _true;
