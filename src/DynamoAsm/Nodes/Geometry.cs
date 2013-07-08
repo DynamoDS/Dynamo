@@ -505,6 +505,7 @@ namespace Dynamo.Nodes
     [NodeName("Circle")]
     [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
     [NodeDescription("Create a Circle at a Point with radius")]
+    [NodeSearchTags("circle")]
     public class CircleNode : GraphicItemNode
     {
         private Circle _circle = null;
