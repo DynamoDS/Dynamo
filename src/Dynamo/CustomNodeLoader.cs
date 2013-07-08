@@ -769,9 +769,6 @@ namespace Dynamo.Utilities
                         double x = Convert.ToDouble(xAttrib.Value);
                         double y = Convert.ToDouble(yAttrib.Value);
 
-                        //dynNoteView n = Bench.AddNote(text, x, y, ws);
-                        //Bench.AddNote(text, x, y, ws);
-
                         var paramDict = new Dictionary<string, object>();
                         paramDict.Add("x", x);
                         paramDict.Add("y", y);
