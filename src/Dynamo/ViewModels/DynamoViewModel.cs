@@ -1633,7 +1633,7 @@ namespace Dynamo.Controls
         {
             sw.WriteLine(message);
             LogText = sw.ToString();
-           
+
             if (DynamoCommands.WriteToLogCmd.CanExecute(null))
             {
                 DynamoCommands.WriteToLogCmd.Execute(message);
