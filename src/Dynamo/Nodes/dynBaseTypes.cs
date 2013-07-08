@@ -3726,10 +3726,12 @@ namespace Dynamo.Nodes
             base.SetupCustomUIElements(nodeUI);
 
             //add a drop down list to the window
-            ComboBox combo = new ComboBox();
-            combo.Width = 300;
-            combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            var combo = new ComboBox
+                {
+                    Width = 300,
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                    VerticalAlignment = System.Windows.VerticalAlignment.Center
+                };
             nodeUI.inputGrid.Children.Add(combo);
             System.Windows.Controls.Grid.SetColumn(combo, 0);
             System.Windows.Controls.Grid.SetRow(combo, 0);
@@ -3738,7 +3740,7 @@ namespace Dynamo.Nodes
             combo.SelectionChanged += delegate
             {
                 if (combo.SelectedIndex != -1)
-                    this.RequiresRecalc = true;
+                    RequiresRecalc = true;
             };
 
             combo.DataContext = this;
