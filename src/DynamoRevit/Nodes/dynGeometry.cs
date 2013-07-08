@@ -245,23 +245,23 @@ namespace Dynamo.Nodes
             }
 
             FSharpList<Value> vals = ((Value.List)args[0]).Item;
-            if (vals.Count() % 3 != 0)
+            var len = vals.Length;
+            if (len % 3 != 0)
                 throw new Exception("List size must be a multiple of 3");
 
-            var results = FSharpList<Value>.Empty;
-
-            for(int i=0 ;i<vals.Count()-3; i+=3)
+            var result = new Value[len / 3];
+            int count = 0;
+            while (!vals.IsEmpty)
             {
-                var x = (double)((Value.Number)vals[i]).Item;
-                var y = (double)((Value.Number)vals[i+1]).Item;
-                var z = (double)((Value.Number)vals[i+2]).Item;
-
-                XYZ pt = new XYZ(x,y,z);
-                pts.Add(pt);
-                results = FSharpList<Value>.Cons(Value.NewContainer(pt), results);
+                result[count] = Value.NewContainer(new XYZ(
+                    ((Value.Number)vals.Head).Item,
+                    ((Value.Number)vals.Tail.Head).Item,
+                    ((Value.Number)vals.Tail.Tail.Head).Item));
+                vals = vals.Tail.Tail.Tail;
+                count++;
             }
 
-            return Value.NewList(results);
+            return Value.NewList(Utils.SequenceToFSharpList(result));
         }
     }
 
