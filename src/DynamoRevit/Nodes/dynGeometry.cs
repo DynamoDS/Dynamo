@@ -445,7 +445,7 @@ namespace Dynamo.Nodes
             double n = ((Value.Number)args[1]).Item;
             XYZ base_xyz = (XYZ)((Value.Container)args[2]).Item;
 
-            XYZ pt = ((xyz - base_xyz).Multiply(n)) + base_xyz;
+            XYZ pt = n * (xyz - base_xyz) + base_xyz;
             pts.Add(pt);
             return Value.NewContainer(pt);
         }
