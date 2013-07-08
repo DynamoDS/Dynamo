@@ -359,13 +359,17 @@ namespace Dynamo.Nodes
             if (points == null || curves == null)
                 return;
 
-            particleSystem.Clear();
+            //particleSystem.Clear();
+            particleSystem = null;
+            particleSystem = new ParticleSystem();
 
             _fixPtCount = points.Count();
 
-            CreateSpringsFromCurves(curves, points);
-
             particleSystem.setConverged(false);
+            particleSystem.setGravity(_g);
+            particleSystem.setThreshold(_threshold);
+
+            CreateSpringsFromCurves(curves, points);
 
             DispatchOnUIThread(new Action(dynSettings.Controller.RequestClearDrawables));
 
