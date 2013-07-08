@@ -369,6 +369,9 @@ namespace Dynamo.Search
 
         }
 
+
+
+
         /// <summary>
         ///     Add a category, given a delimited name
         /// </summary>
@@ -836,6 +839,15 @@ namespace Dynamo.Search
         public void Refactor(FunctionDefinition def, string oldName, string newName)
         {
             SearchDictionary.Remove((ele) => (ele).Name == oldName);
+        }
+
+        public void Remove(string nodeName)
+        {
+
+            SearchDictionary.Remove((ele) => (ele).Name == nodeName);
+            _browserLeaves.RemoveAll((ele) => (ele).Name == nodeName);
+            // remove from categories!
+
         }
     }
 }
