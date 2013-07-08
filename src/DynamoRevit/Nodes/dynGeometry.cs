@@ -751,18 +751,22 @@ namespace Dynamo.Nodes
 
             double xi;//, x0, xs;
             xi = ((Value.Number)args[1]).Item;// Number
+            xi = Math.Round(xi);
+            if (xi < Double.Epsilon)
+                throw new Exception("The point count must be larger than 0.");
+            xi = xi - 1;
+
             //x0 = ((Value.Number)args[2]).Item;// Starting Coord
             //xs = ((Value.Number)args[3]).Item;// Spacing
 
 
-            FSharpList<Value> result = FSharpList<Value>.Empty;
+            var result = FSharpList<Value>.Empty;
 
-            //double x = x0;
             Curve crvRef = null;
 
             if (((Value.Container)args[0]).Item is CurveElement)
             {
-                CurveElement c = (CurveElement)((Value.Container)args[0]).Item; // Curve 
+                var c = (CurveElement)((Value.Container)args[0]).Item; // Curve 
                 crvRef = c.GeometryCurve;
             }
             else
@@ -772,17 +776,21 @@ namespace Dynamo.Nodes
 
             double t = 0;
 
-            for (int xCount = 0; xCount < xi; xCount++)
+            if (xi < Double.Epsilon)
+            {
+                var pt = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+                result = FSharpList<Value>.Cons(Value.NewContainer(pt), result);
+                pts.Add(pt);
+                return Value.NewList(
+                  ListModule.Reverse(result)
+               );
+            }
+
+            for (int xCount = 0; xCount <= xi; xCount++)
             {
                 t = xCount / xi; // create normalized curve param by dividing current number by total number
-                XYZ pt = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
-                result = FSharpList<Value>.Cons(
-                    Value.NewContainer(
-                         pt// pass in parameter on curve and the bool to say yes this is normalized, Curve.Evaluate passes back out an XYZ that we store in this list
-                    ),
-                    result
-                );
-                //x += xs;
+                var pt = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+                result = FSharpList<Value>.Cons(Value.NewContainer( pt ), result );
                 pts.Add(pt);
             }
 
