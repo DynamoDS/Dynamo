@@ -1117,11 +1117,7 @@ namespace Dynamo.Nodes
                                 setParam(
                                    (FamilyInstance)((Value.Container)x).Item,
                                    paramName,
-                                   valueExpr
-                                )
-                          )
-                       )
-                    );
+                                   valueExpr))));
                 }
                 else
                 {
@@ -1145,11 +1141,7 @@ namespace Dynamo.Nodes
                                 setParam(
                                    (FamilyInstance)((Value.Container)x).Item,
                                    paramDef,
-                                   valueExpr
-                                )
-                          )
-                       )
-                    );
+                                   valueExpr))));
                 }
                 else
                 {

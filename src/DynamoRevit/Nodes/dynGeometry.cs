@@ -423,16 +423,45 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Scale XYZ with Base Point")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Scales an XYZ relative to the supplies base point.")]
+    public class dynXYZScaleOffset : dynXYZBase
+    {
+        public dynXYZScaleOffset()
+        {
+            InPortData.Add(new PortData("xyz", "XYZ to scale", typeof(Value.Container)));
+            InPortData.Add(new PortData("n", "Scale amount", typeof(Value.Number)));
+            InPortData.Add(new PortData("base", "XYZ serving as the base point of the scale operation", typeof(Value.Container)));
+
+            OutPortData.Add(new PortData("xyz", "Scaled XYZ", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ xyz = (XYZ)((Value.Container)args[0]).Item;
+            double n = ((Value.Number)args[1]).Item;
+            XYZ base_xyz = (XYZ)((Value.Container)args[2]).Item;
+
+            XYZ pt = ((xyz - base_xyz).Multiply(n)) + base_xyz;
+            pts.Add(pt);
+            return Value.NewContainer(pt);
+        }
+    }
+
     [NodeName("Scale XYZ")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Multiplies each component of an XYZ by a number.")]
-    public class dynXYZScale: dynXYZBase
+    public class dynXYZScale : dynXYZBase
     {
         public dynXYZScale()
         {
-            InPortData.Add(new PortData("XYZ", "XYZ", typeof(Value.Container)));
-            InPortData.Add(new PortData("n", "Scale value.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("n", "Scale amount", typeof(Value.Number)));
+
+            OutPortData.Add(new PortData("xyz", "Scaled XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -455,9 +484,9 @@ namespace Dynamo.Nodes
     {
         public dynXYZAdd()
         {
-            InPortData.Add(new PortData("XYZa", "XYZ a", typeof(Value.Container)));
-            InPortData.Add(new PortData("XYZb", "XYZ b", typeof(Value.Container)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("XYZ(a)", "XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("XYZ(b)", "XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("XYZ(a+b)", "a + b", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -468,6 +497,31 @@ namespace Dynamo.Nodes
             XYZ xyzb = (XYZ)((Value.Container)args[1]).Item;
 
             XYZ pt = xyza + xyzb;
+            pts.Add(pt);
+            return Value.NewContainer(pt);
+        }
+    }
+
+    [NodeName("Subtract XYZ")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Subtracts the components of two XYZs.")]
+    public class dynXYZSubtract : dynXYZBase
+    {
+        public dynXYZSubtract()
+        {
+            InPortData.Add(new PortData("XYZ(a)", "XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("XYZ(b)", "XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("XYZ(a-b)", "a - b", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ xyza = (XYZ)((Value.Container)args[0]).Item;
+            XYZ xyzb = (XYZ)((Value.Container)args[1]).Item;
+
+            XYZ pt = xyza - xyzb;
             pts.Add(pt);
             return Value.NewContainer(pt);
         }
