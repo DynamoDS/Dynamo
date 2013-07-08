@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -537,5 +538,15 @@ namespace Dynamo
 
     #endregion
 
+        public void RequestRedraw()
+        {
+            OnRequestsRedraw(this, EventArgs.Empty);
+        }
+
+        public void RequestClearDrawables()
+        {
+            var drawables = DynamoModel.Nodes.Where(x => x is IDrawable);
+            drawables.ToList().ForEach(x=>((IDrawable)x).RenderDescription.ClearAll());
+        }
     }
 }
