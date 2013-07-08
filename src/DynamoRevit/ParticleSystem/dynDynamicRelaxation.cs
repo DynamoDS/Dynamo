@@ -303,14 +303,15 @@ namespace Dynamo.Nodes
             //marked dirty and we should set it to unconverged
             //in case one of the inputs has changed.
             particleSystem.setConverged(false);
-
             particleSystem.setGravity(_g);
+            particleSystem.setThreshold(_threshold);
 
             //if the particle system has a different layout, then
             //clear it instead of updating
             if(particleSystem.numberOfParticles() == 0 ||
                 _fixPtCount != _points.Count() ||
-                _curves.Count() != particleSystem.numberOfSprings())
+                _curves.Count() != particleSystem.numberOfSprings() ||
+                _reset)
             {
                 ResetSystem(_points, _curves);
             }
@@ -359,16 +360,16 @@ namespace Dynamo.Nodes
                 return;
 
             particleSystem.Clear();
-            if (dynSettings.Controller.UIDispatcher != null)
-            {
-                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => RenderDescription.ClearAll()));
-            }
+
             _fixPtCount = points.Count();
 
             CreateSpringsFromCurves(curves, points);
 
-            //we're going to clear all drawables.
+            particleSystem.setConverged(false);
+
             DispatchOnUIThread(new Action(dynSettings.Controller.RequestClearDrawables));
+
+            _reset = false;
         }
 
         public override void  SetupCustomUIElements(Controls.dynNodeView nodeUI)
@@ -385,7 +386,7 @@ namespace Dynamo.Nodes
 
             resetButt.Click += delegate
                 {
-                    ResetSystem(_points, _curves);
+                    _reset = true;
                     RequiresRecalc = true;
                 };
 
