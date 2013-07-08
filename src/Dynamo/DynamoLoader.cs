@@ -34,6 +34,8 @@ namespace Dynamo.Utilities
 
         public static HashSet<string> LoadedAssemblyNames = new HashSet<string>();
 
+        public static Dictionary<string, List<Type>> AssemblyPathToTypesLoaded = new Dictionary<string, List<Type>>();
+
         /// <summary>
         ///     Enumerate local library assemblies and add them to DynamoController's
         ///     dictionaries and search.  
@@ -91,7 +93,7 @@ namespace Dynamo.Utilities
 
                 if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
                 {
-                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath], searchViewModel, controller);
+                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
                 }   
                 else
                 {
@@ -99,7 +101,7 @@ namespace Dynamo.Utilities
                     {
                         var assembly = Assembly.LoadFrom(assemblyPath);
                         allLoadedAssemblies[assembly.GetName().Name] = assembly;
-                        LoadNodesFromAssembly(assembly, searchViewModel, controller);
+                        LoadNodesFromAssembly(assembly);
                     }
                     catch
                     {
@@ -134,13 +136,18 @@ namespace Dynamo.Utilities
         /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
         /// <param name="bench">The bench where logging errors will be sent</param>
-        private static void LoadNodesFromAssembly(Assembly assembly, SearchViewModel searchViewModel, DynamoController controller)
+        private static void LoadNodesFromAssembly(Assembly assembly)
         {
+            var controller = dynSettings.Controller;
+            var searchViewModel = dynSettings.Controller.SearchViewModel;
+
+            AssemblyPathToTypesLoaded.Add(assembly.Location, new List<Type>());
+
             try
             {
                 Type[] loadedTypes = assembly.GetTypes();
 
-                foreach (Type t in loadedTypes)
+                foreach (var t in loadedTypes)
                 {
                     try
                     {
@@ -148,55 +155,59 @@ namespace Dynamo.Utilities
                         //and have the elementname attribute
                         object[] attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
 
-                        if (IsNodeSubType(t) /*&& attribs.Length > 0*/)
+                        if (!IsNodeSubType(t)) /*&& attribs.Length > 0*/
+                            continue;
+
+                        //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
+                        //if available, to discern whether we should load this type
+                        if (!controller.Context.Equals(Context.NONE))
                         {
-                            //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
-                            //if available, to discern whether we should load this type
-                            if (!controller.Context.Equals(Context.NONE))
+                            object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
+                            if (platformExclusionAttribs.Length > 0)
                             {
-                                object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
-                                if (platformExclusionAttribs.Length > 0)
-                                {
-                                    string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
-                                    if (exclusions.Contains(controller.Context))
-                                        //if the attribute's values contain the context stored on the controller
-                                        //then skip loading this type.
-                                        continue;
-                                }
-                            }
-
-                            string typeName;
-
-                            if (attribs.Length > 0)
-                            {
-                                searchViewModel.Add(t);
-                                typeName = (attribs[0] as NodeNameAttribute).Name;
-                            }
-                            else
-                            {
-                                typeName = t.Name;
-                            }
-
-                            var data = new TypeLoadData(assembly, t);
-
-                            if (!controller.BuiltInTypesByNickname.ContainsKey(typeName))
-                            {
-                                controller.BuiltInTypesByNickname.Add(typeName, data);
-                            }
-                            else
-                            {
-                                dynSettings.Controller.DynamoViewModel.Log("Duplicate type encountered: " + typeName);
-                            }
-
-                            if (!controller.BuiltInTypesByName.ContainsKey(t.FullName))
-                            {
-                                controller.BuiltInTypesByName.Add(t.FullName, data);
-                            }
-                            else
-                            {
-                                dynSettings.Controller.DynamoViewModel.Log("Duplicate type encountered: " + typeName);
+                                string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
+                                if (exclusions.Contains(controller.Context))
+                                    //if the attribute's values contain the context stored on the controller
+                                    //then skip loading this type.
+                                    continue;
                             }
                         }
+
+                        string typeName;
+
+                        if (attribs.Length > 0)
+                        {
+                            searchViewModel.Add(t);
+                            typeName = (attribs[0] as NodeNameAttribute).Name;
+                            
+                        }
+                        else
+                        {
+                            typeName = t.Name;
+                        }
+
+                        AssemblyPathToTypesLoaded[assembly.Location].Add(t);
+
+                        var data = new TypeLoadData(assembly, t);
+
+                        if (!controller.BuiltInTypesByNickname.ContainsKey(typeName))
+                        {
+                            controller.BuiltInTypesByNickname.Add(typeName, data);
+                        }
+                        else
+                        {
+                            dynSettings.Controller.DynamoViewModel.Log("Duplicate type encountered: " + typeName);
+                        }
+
+                        if (!controller.BuiltInTypesByName.ContainsKey(t.FullName))
+                        {
+                            controller.BuiltInTypesByName.Add(t.FullName, data);
+                        }
+                        else
+                        {
+                            dynSettings.Controller.DynamoViewModel.Log("Duplicate type encountered: " + typeName);
+                        }
+
                     }
                     catch (Exception e)
                     {

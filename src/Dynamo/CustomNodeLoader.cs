@@ -130,6 +130,80 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
+        ///     Indicates whether a custom node from a particular folder is loaded.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="typeNames">The typenames from the folder that are in use.</param>
+        /// <returns></returns>
+        public bool TypesFromFolderAreInUse(string path, ref HashSet< Tuple<string, string> > whereTypesAreLoaded )
+        {
+            whereTypesAreLoaded.UnionWith(dynSettings.Controller.DynamoViewModel.AllNodes.Where((n) => n is dynFunction)
+                                           .Cast<dynFunction>()
+                                           .Where((func) => this.nodePaths[func.Definition.FunctionId].StartsWith(path))
+                                           .Select((func) => new Tuple<string, string>(func.Name, func.WorkSpace.Name)));
+
+            return whereTypesAreLoaded.Any();
+        }
+
+        public List<Guid> GetIdsFromFolder(string dir)
+        {
+            return (from ele in nodePaths let guid = ele.Key let nodePath = ele.Value where nodePath.StartsWith(dir) select guid).ToList();
+        } 
+
+        /// <summary>
+        ///     Removes the custom nodes loaded from a particular folder.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public bool RemoveTypesLoadedFromFolder(string path)
+        {
+
+            var guidsToRemove = GetIdsFromFolder(path);
+            guidsToRemove.ToList().ForEach(this.Remove);
+
+            return guidsToRemove.Any();
+
+        }
+
+        /// <summary>
+        ///     Remove a folder and all of its elements from the search path
+        ///     and the current Dynamo instance
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public bool RemoveFolder(string path)
+        {
+
+            if (SearchPath.Contains(path))
+                SearchPath.Remove(path);
+            return RemoveTypesLoadedFromFolder(path);
+
+        }
+
+        /// <summary>
+        ///     Attempts to remove all traces of a particular custom node from Dynamo, assuming the node is not in a loaded workspace.
+        /// </summary>
+        /// <param name="guid"></param>
+        public void Remove(Guid guid)
+        {
+            
+            if (loadedNodes.ContainsKey(guid)){}
+                loadedNodes.Remove(guid);
+            if (nodePaths.ContainsKey(guid))
+                nodePaths.Remove(guid);
+            if (NodeCategories.ContainsKey(guid))
+                NodeCategories.Remove(guid);
+            var nodeName = NodeNames.Where((x) => x.Value == guid).ToList();
+            nodeName.ForEach((pair) =>
+                {
+                    NodeNames.Remove(pair.Key);
+                    dynSettings.Controller.SearchViewModel.Remove(pair.Key);
+                });
+            dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
+
+        }
+
+        /// <summary>
         ///     Enumerates all of the files in the search path and get's their guids.
         ///     Does not instantiate the nodes.
         /// </summary>
