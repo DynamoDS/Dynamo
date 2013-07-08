@@ -230,6 +230,7 @@ namespace Dynamo.Nodes
         MeshVisual3D MakeMeshVisual3D(Mesh3D mesh)
         {
             MeshVisual3D vismesh = new MeshVisual3D { Content = new GeometryModel3D { Geometry = mesh.ToMeshGeometry3D(), Material = Materials.White } };
+            
             return vismesh;
         }
 
@@ -239,9 +240,10 @@ namespace Dynamo.Nodes
 
             _requiresRedraw = true;
 
+            var meshesValue = Value.NewContainer(Meshes);
             var results = FSharpList<Value>.Empty;
-            results = FSharpList<Value>.Cons(Value.NewContainer(input), results);
-            results = FSharpList<Value>.Cons(Value.NewContainer(_meshes), results);//helix visual3d mesh
+            results = FSharpList<Value>.Cons(Value.NewContainer(Meshes), results);//helix mesh3d mesh
+            results = FSharpList<Value>.Cons(Value.NewContainer(input), results);//confusing that this list iss reversed
 
             return Value.NewList(results);
         }
