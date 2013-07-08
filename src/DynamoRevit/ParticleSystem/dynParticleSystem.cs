@@ -61,6 +61,7 @@ namespace Dynamo.Nodes
 
         protected bool converged = false;
         protected double threshold = 0.1;
+        protected int stepCount = 0;
 
         public ParticleSystem()
         {
@@ -80,6 +81,7 @@ namespace Dynamo.Nodes
         public void step(double t)
         {
             integrator.step(t); //.0002 should be stable
+            stepCount++;
         }
 
         //public void SetIntegrator(IntegratorType integrator )
@@ -280,7 +282,10 @@ namespace Dynamo.Nodes
                 maxNodalVelocity = Math.Max(maxNodalVelocity, particles[i].getVelocity().GetLength());
             }
 
-            if (maxNodalVelocity < threshold && maxNodalVelocity != 0)
+            //test whether we are converged according to the threshold criteria
+            //make sure the simulation has a couple of steps computed so we don't
+            //bail at time step 0 when the structure hasn't started moving yet.
+            if (maxNodalVelocity < threshold && stepCount > 10)
                 converged = true;
 
             //F=kd, calculate the maximum residual force in any member
