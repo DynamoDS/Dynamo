@@ -547,7 +547,8 @@ namespace Dynamo.Revit
                            controller.CancelTransaction();
                            throw ex;
                        }
-                   }
+                   },
+                   false
                 );
 
                 #endregion
