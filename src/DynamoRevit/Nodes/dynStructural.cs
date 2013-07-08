@@ -122,6 +122,9 @@ namespace Dynamo.Nodes
                     {
                         instance = e as FamilyInstance;
 
+                        if (instance.Symbol != symbol)
+                            instance.Symbol = symbol;
+
                         //update the curve
                         var locCurve = instance.Location as LocationCurve;
                         locCurve.Curve = curve;

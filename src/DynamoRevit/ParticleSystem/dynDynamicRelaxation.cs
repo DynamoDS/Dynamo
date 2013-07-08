@@ -366,12 +366,15 @@ namespace Dynamo.Nodes
             _fixPtCount = points.Count();
 
             CreateSpringsFromCurves(curves, points);
+
+            //we're going to clear all drawables.
+            DispatchOnUIThread(new Action(dynSettings.Controller.RequestClearDrawables));
         }
 
         public override void  SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
  	         base.SetupCustomUIElements(nodeUI);
-
+            
             var resetButt = new Button()
                 {
                     Content = "Reset",
