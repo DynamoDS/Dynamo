@@ -15,6 +15,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
@@ -107,7 +109,10 @@ namespace Dynamo.Nodes
         private bool _use_rl;
         private double _rlf;
         private double _threshold;
-
+        private bool _reset = false;
+        private FSharpList<Value> _points;
+        private FSharpList<Value> _curves;
+ 
         public dynDynamicRelaxation()
         {
             InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(Value.List)));
@@ -283,8 +288,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var points = ((Value.List)args[0]).Item;//point list
-            var curves = ((Value.List)args[1]).Item;//spring list
+            _points = ((Value.List)args[0]).Item;//point list
+            _curves = ((Value.List)args[1]).Item;//spring list
             _d = ((Value.Number)args[2]).Item;//dampening
             _s = ((Value.Number)args[3]).Item;//spring constant
             _r = ((Value.Number)args[4]).Item;//rest length
@@ -299,44 +304,19 @@ namespace Dynamo.Nodes
             //in case one of the inputs has changed.
             particleSystem.setConverged(false);
 
-            //if the particle system has a different layout, then
-            //clear it instead of updating
-            bool reset = false;
-            if(particleSystem.numberOfParticles() == 0 ||
-                _fixPtCount != points.Count() ||
-                curves.Count() != particleSystem.numberOfSprings())
-            {
-                reset = true;
-                particleSystem.Clear();
-                if (dynSettings.Controller.UIDispatcher != null)
-                {
-                    dynSettings.Controller.UIDispatcher.Invoke(new Action(()=> RenderDescription.ClearAll()));
-                }
-                _fixPtCount = points.Count();
-            }
-
             particleSystem.setGravity(_g);
 
-            if (reset)
+            //if the particle system has a different layout, then
+            //clear it instead of updating
+            if(particleSystem.numberOfParticles() == 0 ||
+                _fixPtCount != _points.Count() ||
+                _curves.Count() != particleSystem.numberOfSprings())
             {
-                CreateSpringsFromCurves(curves, points);
+                ResetSystem(_points, _curves);
             }
             else
             {
-                //update the spring values
-                for (int j = 0; j < particleSystem.numberOfSprings(); j++)
-                {
-                    ParticleSpring spring = particleSystem.getSpring(j);
-                    spring.setDamping(_d);
-                    if(!_use_rl)
-                        spring.setRestLength(_r);
-                    spring.setSpringConstant(_s);
-                }
-                for (int j = 0; j < particleSystem.numberOfParticles(); j++)
-                {
-                    Particle p = particleSystem.getParticle(j);
-                    p.setMass(_m);
-                }
+                UpdateSystem();
             }
 
             FSharpList<Value> forces = FSharpList<Value>.Empty;
@@ -355,6 +335,59 @@ namespace Dynamo.Nodes
 
         }
 
+        private void UpdateSystem()
+        {
+            //update the spring values
+            for (int j = 0; j < particleSystem.numberOfSprings(); j++)
+            {
+                ParticleSpring spring = particleSystem.getSpring(j);
+                spring.setDamping(_d);
+                if (!_use_rl)
+                    spring.setRestLength(_r);
+                spring.setSpringConstant(_s);
+            }
+            for (int j = 0; j < particleSystem.numberOfParticles(); j++)
+            {
+                Particle p = particleSystem.getParticle(j);
+                p.setMass(_m);
+            }
+        }
+
+        private void ResetSystem(FSharpList<Value> points, FSharpList<Value> curves)
+        {
+            if (points == null || curves == null)
+                return;
+
+            particleSystem.Clear();
+            if (dynSettings.Controller.UIDispatcher != null)
+            {
+                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => RenderDescription.ClearAll()));
+            }
+            _fixPtCount = points.Count();
+
+            CreateSpringsFromCurves(curves, points);
+        }
+
+        public override void  SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        {
+ 	         base.SetupCustomUIElements(nodeUI);
+
+            var resetButt = new Button()
+                {
+                    Content = "Reset",
+                    ToolTip = "Resets the system to its initial state.",
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Top
+                };
+
+            resetButt.Click += delegate
+                {
+                    ResetSystem(_points, _curves);
+                    RequiresRecalc = true;
+                };
+
+            nodeUI.inputGrid.Children.Add(resetButt);
+        }
     }
 
     [NodeName("Create Particle System on Face")]
