@@ -1,17 +1,6 @@
-<dynWorkspace X="-413.926984126984" Y="-24.6364444444444" zoom="0.8">
+<dynWorkspace X="-820.770185370175" Y="-104.347089355087" zoom="0.8">
   <dynElements>
     <Dynamo.Nodes.dynDynamicRelaxation type="Dynamo.Nodes.dynDynamicRelaxation" guid="e8988e3d-06f7-434e-bc91-552e86daa627" nickname="Create Particle System" x="1859" y="230.908888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="121d4ccd-298f-4570-8727-3b127dc00796" nickname="DynamicRelaxationLoop" x="2097.55555555556" y="198.797777777778" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <ID value="db998bc3-43fe-47c3-a1e9-6b825757fdb5" />
-      <Name value="DynamicRelaxationLoop" />
-      <Inputs>
-        <Input value="ps" />
-        <Input value="update" />
-      </Inputs>
-      <Outputs>
-        <Output value="last" />
-      </Outputs>
-    </Dynamo.Nodes.dynFunction>
     <Dynamo.Nodes.dynBuildSeq type="Dynamo.Nodes.dynBuildSeq" guid="1287bf44-94c6-4d8f-81ad-7ed845d6d0b9" nickname="Number Sequence" x="204" y="266.02" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="5d2e709a-4252-42b3-b05e-4f6bcd43174d" nickname="Number" x="42" y="249.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="0" />
@@ -55,33 +44,54 @@
       <Input name="index0" />
       <Input name="index1" />
     </Dynamo.Nodes.dynNewList>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="23831537-2b9b-47a2-870a-41f6b1ba0bd2" nickname="Number" x="1606.77777777778" y="174.128888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="23831537-2b9b-47a2-870a-41f6b1ba0bd2" nickname="Number" x="1604.77777777778" y="247.349325396824" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="1" />
     </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynBoolSelector type="Dynamo.Nodes.dynBoolSelector" guid="b0db3af4-deff-405f-9929-c8bef898e136" nickname="Boolean" x="1606.77777777778" y="318.003492063492" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.dynBoolSelector type="Dynamo.Nodes.dynBoolSelector" guid="b0db3af4-deff-405f-9929-c8bef898e136" nickname="Boolean" x="1604.77777777778" y="322.746646825396" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Boolean value="False" />
     </Dynamo.Nodes.dynBoolSelector>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="ff37901e-4736-482a-9d32-d08c19bf5175" nickname="Number" x="1606.77777777778" y="389.940793650794" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="ff37901e-4736-482a-9d32-d08c19bf5175" nickname="Number" x="1604.77777777778" y="398.143968253968" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="1.01" />
     </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="14303c87-a701-4def-a6f1-a458c4ddde70" nickname="Number" x="1606.77777777778" y="461.878095238095" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="14303c87-a701-4def-a6f1-a458c4ddde70" nickname="Number" x="1604.77777777778" y="548.938611111111" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="32.2" />
     </Dynamo.Nodes.dynDoubleInput>
     <Dynamo.Nodes.dynFlattenList type="Dynamo.Nodes.dynFlattenList" guid="29cedcf1-0a55-4d2f-83cc-fa6103e58a00" nickname="Flatten Completely" x="1063.44444444445" y="208.24" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynFlattenList type="Dynamo.Nodes.dynFlattenList" guid="e78b1d6e-a012-49ab-8ed6-272699379882" nickname="Flatten Completely" x="1110.11111111111" y="317.128888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynFlattenList type="Dynamo.Nodes.dynFlattenList" guid="cef69c61-42eb-4d7f-9590-2cb341d5a746" nickname="Flatten Completely" x="1437.88888888889" y="208.24" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="acccf866-2ce6-46f5-9546-402247e8ab44" nickname="Number" x="1606.77777777778" y="246.066190476191" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="1000" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="acccf866-2ce6-46f5-9546-402247e8ab44" nickname="Number" x="1604.77777777778" y="171.952003968253" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="40000" />
     </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="521faca2-7510-4be2-9d20-18b4dc6c2af1" nickname="Number" x="2012.25396825397" y="300.958253968254" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="521faca2-7510-4be2-9d20-18b4dc6c2af1" nickname="Number" x="2064.38780663781" y="289.556738816739" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="1" />
     </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="655548c5-25c8-4419-a193-c51d131cde8b" nickname="Number" x="1606.77777777778" y="533.815396825397" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="655548c5-25c8-4419-a193-c51d131cde8b" nickname="Number" x="1604.77777777778" y="473.541289682539" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="1" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="bbb91e76-d30d-45d7-a4b8-c2583f3e764a" nickname="Number" x="1604.77777777778" y="96.554682539681" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="100" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="369f2462-43d3-4d26-9559-afc6400aa5c6" nickname="DynamicRelaxationLoop" x="2281.34776334777" y="260.081702741701" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="db998bc3-43fe-47c3-a1e9-6b825757fdb5" />
+      <Name value="DynamicRelaxationLoop" />
+      <Inputs>
+        <Input value="ps" />
+        <Input value="update" />
+        <Input value="step" />
+      </Inputs>
+      <Outputs>
+        <Output value="result" />
+      </Outputs>
+    </Dynamo.Nodes.dynFunction>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="c0337a01-031f-462c-8ba5-f1b63d772876" nickname="Number" x="2063.25144300144" y="367.46077922078" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0.002" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="1bdcf466-6c26-40f6-85cf-fc892288e723" nickname="Number" x="1606.34476634476" y="648.701899211897" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0.1" />
     </Dynamo.Nodes.dynDoubleInput>
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="e8988e3d-06f7-434e-bc91-552e86daa627" start_index="0" end="121d4ccd-298f-4570-8727-3b127dc00796" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e8988e3d-06f7-434e-bc91-552e86daa627" start_index="0" end="369f2462-43d3-4d26-9559-afc6400aa5c6" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="1287bf44-94c6-4d8f-81ad-7ed845d6d0b9" start_index="0" end="9d4de021-15d7-4972-aeda-e6412da6adb0" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="1287bf44-94c6-4d8f-81ad-7ed845d6d0b9" start_index="0" end="9d4de021-15d7-4972-aeda-e6412da6adb0" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="1287bf44-94c6-4d8f-81ad-7ed845d6d0b9" start_index="0" end="b63b2367-2789-4b83-ba53-2c09b4b61451" end_index="0" portType="0" />
@@ -116,7 +126,6 @@
     <Dynamo.Connectors.dynConnectorModel start="eb7def3f-9275-442e-ad44-1fa588432c6c" start_index="0" end="74251d6e-4ef7-4e62-8c56-26fc1bbc9f7d" end_index="3" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="bdac1998-ea36-429e-95b9-8cada1482818" start_index="0" end="74251d6e-4ef7-4e62-8c56-26fc1bbc9f7d" end_index="4" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="ac2e89bb-7fe2-4f64-8f62-d0065139ed02" start_index="0" end="cef69c61-42eb-4d7f-9590-2cb341d5a746" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="23831537-2b9b-47a2-870a-41f6b1ba0bd2" start_index="0" end="e8988e3d-06f7-434e-bc91-552e86daa627" end_index="2" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="23831537-2b9b-47a2-870a-41f6b1ba0bd2" start_index="0" end="e8988e3d-06f7-434e-bc91-552e86daa627" end_index="4" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="b0db3af4-deff-405f-9929-c8bef898e136" start_index="0" end="e8988e3d-06f7-434e-bc91-552e86daa627" end_index="5" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="ff37901e-4736-482a-9d32-d08c19bf5175" start_index="0" end="e8988e3d-06f7-434e-bc91-552e86daa627" end_index="6" portType="0" />
@@ -125,13 +134,16 @@
     <Dynamo.Connectors.dynConnectorModel start="e78b1d6e-a012-49ab-8ed6-272699379882" start_index="0" end="ac2e89bb-7fe2-4f64-8f62-d0065139ed02" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="cef69c61-42eb-4d7f-9590-2cb341d5a746" start_index="0" end="e8988e3d-06f7-434e-bc91-552e86daa627" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="acccf866-2ce6-46f5-9546-402247e8ab44" start_index="0" end="e8988e3d-06f7-434e-bc91-552e86daa627" end_index="3" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="521faca2-7510-4be2-9d20-18b4dc6c2af1" start_index="0" end="121d4ccd-298f-4570-8727-3b127dc00796" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="521faca2-7510-4be2-9d20-18b4dc6c2af1" start_index="0" end="369f2462-43d3-4d26-9559-afc6400aa5c6" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="655548c5-25c8-4419-a193-c51d131cde8b" start_index="0" end="e8988e3d-06f7-434e-bc91-552e86daa627" end_index="7" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="bbb91e76-d30d-45d7-a4b8-c2583f3e764a" start_index="0" end="e8988e3d-06f7-434e-bc91-552e86daa627" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="c0337a01-031f-462c-8ba5-f1b63d772876" start_index="0" end="369f2462-43d3-4d26-9559-afc6400aa5c6" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="1bdcf466-6c26-40f6-85cf-fc892288e723" start_index="0" end="e8988e3d-06f7-434e-bc91-552e86daa627" end_index="9" portType="0" />
   </dynConnectors>
   <dynNotes>
     <Dynamo.Nodes.dynNoteModel text="Visualize the fixed points." x="1629.04761904762" y="748.934444444444" />
-    <Dynamo.Nodes.dynNoteModel text="The analytical step. This is called recursively, so it will run until you press Cancel." x="2056.8253968254" y="137.823333333333" />
-    <Dynamo.Nodes.dynNoteModel text="Create a particle system, passing in fixed points, curves to use as springs and some spring properties." x="1721.26984126984" y="161.156666666666" />
+    <Dynamo.Nodes.dynNoteModel text="The analytical step. This will run until the maximum nodal velocity is below the threshold value." x="2210.5753968254" y="197.684444444444" />
+    <Dynamo.Nodes.dynNoteModel text="Create a particle system, passing in fixed points, curves to use as springs and some spring properties." x="1781.26984126984" y="168.934444444444" />
     <Dynamo.Nodes.dynNoteModel text="Create a square grid of curves to use as springs." x="1015.71428571429" y="157.823333333333" />
     <Dynamo.Nodes.dynNoteModel text="Find the corner points of the grids to use as fixed points." x="826.40873015873" y="504.047777777778" />
   </dynNotes>
