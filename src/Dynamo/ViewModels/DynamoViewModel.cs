@@ -1638,10 +1638,6 @@ namespace Dynamo.Controls
             {
                 DynamoCommands.WriteToLogCmd.Execute(message);
             }
-
-            //MVVM: Replaced with event handler on source changed
-            //if (LogScroller != null)
-            //    LogScroller.ScrollToBottom();
         }
 
         private void PostUIActivation()

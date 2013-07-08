@@ -502,7 +502,7 @@
                     Visibility="Visible"
                     Grid.Row="3"
                     Grid.Column="0" 
-                    Grid.ColumnSpan="3" SourceUpdated="LogScroller_OnSourceUpdated">
+                    Grid.ColumnSpan="3">
             <ScrollViewer.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Clear" Command="{Binding ClearLogCommand}"/>
@@ -513,7 +513,7 @@
                     Foreground="#FF888888" BorderThickness="0" BorderBrush="#00000000" Background="Black"
                     Margin="0" TextWrapping="Wrap"
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
-                    IsTabStop="False" FontFamily="Consolas" />
+                    IsTabStop="False" FontFamily="Consolas" TextChanged="TextBoxBase_OnTextChanged" />
         </ScrollViewer>
 
         <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
