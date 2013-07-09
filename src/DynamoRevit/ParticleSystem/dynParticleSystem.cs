@@ -59,6 +59,10 @@ namespace Dynamo.Nodes
         protected int partID;
         protected int springID;
 
+        protected bool converged = false;
+        protected double threshold = 0.1;
+        protected int stepCount = 0;
+
         public ParticleSystem()
         {
             hasDeadParticles = false;
@@ -77,6 +81,7 @@ namespace Dynamo.Nodes
         public void step(double t)
         {
             integrator.step(t); //.0002 should be stable
+            stepCount++;
         }
 
         //public void SetIntegrator(IntegratorType integrator )
@@ -277,6 +282,12 @@ namespace Dynamo.Nodes
                 maxNodalVelocity = Math.Max(maxNodalVelocity, particles[i].getVelocity().GetLength());
             }
 
+            //test whether we are converged according to the threshold criteria
+            //make sure the simulation has a couple of steps computed so we don't
+            //bail at time step 0 when the structure hasn't started moving yet.
+            if (maxNodalVelocity < threshold && stepCount > 10)
+                converged = true;
+
             //F=kd, calculate the maximum residual force in any member
             for (int i = 0; i < springs.Count(); i++)
             {
@@ -349,7 +360,22 @@ namespace Dynamo.Nodes
             return springs[i];
         }
 
-        public Particle getParticleByElementID(ElementId eid)
+         public bool getConverged()
+         {
+             return converged;
+         }
+
+         public void setConverged(bool value)
+         {
+             converged = value;
+         }
+
+         public void setThreshold(double value)
+         {
+             threshold = value < 0 ? 0 : value;
+         }
+
+         public Particle getParticleByElementID(ElementId eid)
         {
             for (int i = 0; i < particles.Count(); ++i)
             {
@@ -416,15 +442,15 @@ namespace Dynamo.Nodes
 
             for (int i = 0; i < particles.Count(); ++i)
             {
-                if (xyz != null && particles.Count > 0 && (particles[i].getElementID() != null))
-                {
+                //if (xyz != null && particles.Count > 0 && (particles[i].getElementID() != null))
+                //{
                     if (xyz.IsAlmostEqualTo(particles[i].getPosition()))
                     {
                         return particles[i];
 
                     }
 
-                }
+                //}
                
             }
 

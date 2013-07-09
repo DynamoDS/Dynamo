@@ -23,7 +23,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Xml;
@@ -39,12 +38,9 @@ using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using Value = Dynamo.FScheme.Value;
 using TextBox = System.Windows.Controls.TextBox;
-using System.Diagnostics.Contracts;
-using System.Text;
 using System.Windows.Input;
 using System.Windows.Data;
 using System.Globalization;
-using Binding = System.Windows.Forms.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 
@@ -894,8 +890,8 @@ namespace Dynamo.Nodes
         public dynSlice()
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
-            InPortData.Add(new PortData("n", "The number of elements in each sub-list.", typeof(Value.List)));
-            OutPortData.Add(new PortData("list", "The list of lists.", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The 'width' of the array.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "A list of lists representing rows in your array.", typeof(Value.List)));
 
             RegisterAllPorts();
 
@@ -908,9 +904,7 @@ namespace Dynamo.Nodes
                 throw new Exception("A list is required to slice.");
 
             FSharpList<Value> lst = ((Value.List)args[0]).Item;
-            double n = (double)((Value.Number)args[1]).Item;
-
-            n = Math.Round(n);
+            var n = (int)Math.Round(((Value.Number)args[1]).Item);
 
             //if we have less elements in ther 
             //incoming list than the slice size,
@@ -919,6 +913,7 @@ namespace Dynamo.Nodes
             {
                 return Value.NewList(lst);
             }
+
 
             List<Value> finalList = new List<Value>();
             List<Value> currList = new List<Value>();
@@ -948,27 +943,179 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transpose Lists")]
+    [NodeName("Diagonal Right List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Swaps rows and columns in a list of lists.")]
-    public class dynTranspose : dynNodeWithOneOutput
+    [NodeDescription("Create a diagonal lists of lists from top left to lower right.")]
+    public class dynDiagonalRightList : dynNodeWithOneOutput
     {
-        public dynTranspose()
+        public dynDiagonalRightList()
         {
-            InPortData.Add(new PortData("lists", "The list of lists to transpose.", typeof(Value.List)));
-            OutPortData.Add(new PortData("", "Transposed list of lists.", typeof(Value.List)));
+            InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The width of the array.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "A list of lists representing diagonals in your array.", typeof(Value.List)));
+
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var lists = ((Value.List)args[0]).Item;
+            if (!args[0].IsList)
+                throw new Exception("A list is required to create diagonals.");
 
-            return FScheme.Map(
-                FSharpList<Value>.Cons(
-                    Value.NewFunction(
-                        FSharpFunc<FSharpList<Value>, Value>.FromConverter(Value.NewList)),
-                    lists));
+            FSharpList<Value> lst = ((Value.List)args[0]).Item;
+            var n = (int)Math.Round(((Value.Number)args[1]).Item);
+
+            //if we have less elements in the
+            //incoming list than the slice size,
+            //just return the list
+            if (lst.Count<Value>() < n)
+            {
+                return Value.NewList(lst);
+            }
+
+            var finalList = new List<Value>();
+            var currList = new List<Value>();
+
+            int count = 0;
+
+            var startIndices = new List<int>();
+            
+            //get indices along 'side' of array
+            for (int i = n; i < lst.Count(); i += n)
+            {
+                startIndices.Add(i);
+            }
+
+            startIndices.Reverse();
+
+            //get indices along 'top' of array
+            for (int i = 0; i < n - 1; i++)
+            {
+                startIndices.Add(i);
+            }
+
+            foreach(int start in startIndices)
+            {
+                int index = start;
+
+                while (index < lst.Count())
+                {
+                    var currentRow = (int)Math.Ceiling((index + 1)/(double)n);
+                    currList.Add(lst.ElementAt(index));
+                    index += n + 1;
+
+                    //ensure we are skipping a row to get the next index
+                    var nextRow = (int) Math.Ceiling((index + 1)/(double)n);
+                    if (nextRow > currentRow + 1 || nextRow == currentRow)
+                        break;
+                }
+                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                currList = new List<Value>();
+            }
+
+            if (currList.Any())
+            {
+                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+            }
+
+            return Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
+
+        }
+    }
+
+    [NodeName("Diagonal Left List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Create a diagonal lists of lists from top right to lower left.")]
+    public class dynDiagonalLeftList : dynNodeWithOneOutput
+    {
+        public dynDiagonalLeftList()
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The width of the array.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "A list of lists representing diagonals in your array.", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+                throw new Exception("A list is required to create diagonals.");
+
+            FSharpList<Value> lst = ((Value.List)args[0]).Item;
+            var n = (int)Math.Round(((Value.Number)args[1]).Item);
+
+            //if we have less elements in the
+            //incoming list than the slice size,
+            //just return the list
+            if (lst.Count<Value>() < n)
+            {
+                return Value.NewList(lst);
+            }
+
+            var finalList = new List<Value>();
+            var currList = new List<Value>();
+
+            int count = 0;
+
+            var startIndices = new List<int>();
+
+            //get indices along 'top' of array
+            for (int i = 1; i < (int)n; i++)
+            {
+                startIndices.Add(i);
+            }
+
+            //get indices along 'side' of array
+            for (int i = n-1 + n; i < lst.Count(); i += n)
+            {
+                startIndices.Add(i);
+            }
+
+            foreach (int start in startIndices)
+            {
+                int index = start;
+
+                while (index < lst.Count())
+                {
+                    var currentRow = (int)Math.Ceiling((index + 1) / (double)n);
+                    currList.Add(lst.ElementAt(index));
+                    index += (int)n - 1;
+
+                    //ensure we are skipping a row to get the next index
+                    var nextRow = (int)Math.Ceiling((index + 1) / (double)n);
+                    if (nextRow > currentRow + 1 || nextRow == currentRow)
+                        break;
+                }
+                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                currList = new List<Value>();
+            }
+
+            if (currList.Any())
+            {
+                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+            }
+
+            return Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
+
+        }
+    }
+
+    [NodeName("Transpose Lists")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Swaps rows and columns in a list of lists.")]
+    public class dynTranspose : dynBuiltinFunction
+    {
+        public dynTranspose() : base("transpose")
+        {
+            InPortData.Add(new PortData("lists", "The list of lists to transpose.", typeof(Value.List)));
+            OutPortData.Add(new PortData("", "Transposed list of lists.", typeof(Value.List)));
+
+            RegisterAllPorts();
         }
     }
 
@@ -1862,6 +2009,41 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("2*Pi")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Pi constant")]
+    [NodeSearchTags("trigonometry", "circle", "π")]
+    [IsInteractive(false)]
+    public class dyn2Pi : dynNodeModel
+    {
+        public dyn2Pi()
+        {
+            OutPortData.Add(new PortData("3.14159...*2", "2*pi", typeof(Value.Number)));
+            RegisterAllPorts();
+        }
+
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return false;
+            }
+            set { }
+        }
+
+        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        {
+            Dictionary<int, INode> result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new Dictionary<int, INode>();
+                result[outPort] = new NumberNode(3.14159265358979 * 2);
+                preBuilt[this] = result;
+            }
+            return result[outPort];
+        }
+    }
+
     [NodeName("Sine")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Computes the sine of the given angle.")]
@@ -2171,26 +2353,25 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(button, 0);
             button.Content = "Continue";
 
-            enabled = false;
+            Enabled = false;
 
             button.Click += new RoutedEventHandler(button_Click);
+
+            var bindingVal = new System.Windows.Data.Binding("Enabled")
+            {
+                Mode = BindingMode.TwoWay,
+                NotifyOnValidationError = false,
+                Source = this
+            };
+            button.SetBinding(UIElement.IsEnabledProperty, bindingVal);
         }
 
-        private bool _enabled;
-        private bool enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                _enabled = value;
-                button.IsEnabled = value;
-            }
-        }
+        private bool Enabled { get; set; }
 
         void button_Click(object sender, RoutedEventArgs e)
         {
             Deselect();
-            enabled = false;
+            Enabled = false;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -2201,11 +2382,11 @@ namespace Dynamo.Nodes
 
             if (Controller.DynamoViewModel.RunInDebug)
             {
-                enabled = true;
+                Enabled = true;
                 Select();
                 Controller.DynamoViewModel.ShowElement(this);
 
-                while (enabled)
+                while (Enabled)
                 {
                     Thread.Sleep(1);
                 }
@@ -2686,23 +2867,6 @@ namespace Dynamo.Nodes
             valtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             valtb.Width = double.NaN;
             valtb.Margin = new Thickness(0,0,10,0);
-            //maxtb.IsNumeric = true;
-            valtb.OnChangeCommitted += delegate
-            {
-                try
-                {
-                    Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
-                    if (Min > Value)
-                        Min = Value;
-                    if (Max < Value)
-                        Max = Value;
-                    Value = Convert.ToDouble(valtb.Text, CultureInfo.InvariantCulture);
-                    tb_slider.Value = Value;
-                }
-                catch
-                {
-                }
-            };
 
             maxtb = new dynTextBox();
             maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
@@ -2800,10 +2964,11 @@ namespace Dynamo.Nodes
             get { return max; }
             set
             {
+                max = value;
+
                 if (max < Value)
                     Value = max;
 
-                max = value;
                 RaisePropertyChanged("Max");
             }
         }
@@ -2813,10 +2978,11 @@ namespace Dynamo.Nodes
             get { return min; }
             set
             {
+                min = value;
+
                 if (min > Value)
                     Value = min;
 
-                min = value;
                 RaisePropertyChanged("Min");
             } 
         }
@@ -3402,7 +3568,7 @@ namespace Dynamo.Nodes
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
-            string val = ((double) value).ToString("0.00",CultureInfo.CurrentCulture);
+            string val = ((double) value).ToString("0.000",CultureInfo.CurrentCulture);
             Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
             return value == null ? "" : val;
 
@@ -3560,10 +3726,12 @@ namespace Dynamo.Nodes
             base.SetupCustomUIElements(nodeUI);
 
             //add a drop down list to the window
-            ComboBox combo = new ComboBox();
-            combo.Width = 300;
-            combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            var combo = new ComboBox
+                {
+                    Width = 300,
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                    VerticalAlignment = System.Windows.VerticalAlignment.Center
+                };
             nodeUI.inputGrid.Children.Add(combo);
             System.Windows.Controls.Grid.SetColumn(combo, 0);
             System.Windows.Controls.Grid.SetRow(combo, 0);
@@ -3572,7 +3740,7 @@ namespace Dynamo.Nodes
             combo.SelectionChanged += delegate
             {
                 if (combo.SelectedIndex != -1)
-                    this.RequiresRecalc = true;
+                    RequiresRecalc = true;
             };
 
             combo.DataContext = this;

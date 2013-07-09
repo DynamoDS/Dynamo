@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Media.Media3D;
-using System.Collections.ObjectModel;
-using System.Windows.Threading;
-
-using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.Selection;
 using HelixToolkit.Wpf;
 
 namespace Dynamo.Controls
@@ -92,6 +85,12 @@ namespace Dynamo.Controls
         {
             _parentWorkspace = parentWorkspace;
             dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(Watch3DFullscreenViewModel_RunCompleted);
+            dynSettings.Controller.RequestsRedraw += Controller_RequestsRedraw;
+        }
+
+        void Controller_RequestsRedraw(object sender, EventArgs e)
+        {
+            RenderDrawables();
         }
 
         public void Watch3DFullscreenViewModel_RunCompleted(object controller, bool success)
@@ -102,49 +101,47 @@ namespace Dynamo.Controls
             if (!dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing)
                 return;
 
-            List<IDrawable> drawables = new List<IDrawable>();
+            //List<IDrawable> drawables = new List<IDrawable>();
 
-            foreach (dynNodeViewModel nodeViewModel in _parentWorkspace.Nodes)
-            {
-                if (nodeViewModel.State != ElementState.ACTIVE)
-                    continue;
+            //foreach (dynNodeViewModel nodeViewModel in _parentWorkspace.Nodes)
+            //{
+            //    if (nodeViewModel.State != ElementState.ACTIVE)
+            //        continue;
 
-                dynNodeModel nodeModel = nodeViewModel.NodeLogic;
+            //    dynNodeModel nodeModel = nodeViewModel.NodeLogic;
                 
-                IDrawable drawable = nodeModel as IDrawable;
+            //    IDrawable drawable = nodeModel as IDrawable;
 
-                if (nodeModel.IsVisible && drawable != null)
-                    drawables.Add(drawable);
+            //    if (nodeModel.IsVisible && drawable != null)
+            //        drawables.Add(drawable);
 
-                //if the node is function then get all the 
-                //drawables inside that node. only do this if the
-                //node's workspace is the home space to avoid infinite
-                //recursion in the case of custom nodes in custom nodes
-                if (nodeModel is dynFunction && nodeModel.WorkSpace == dynSettings.Controller.DynamoModel.HomeSpace)
-                {
-                    dynFunction func = (dynFunction)nodeModel;
-                    foreach(dynNodeModel innerNode in func.Definition.Workspace.Nodes)
-                    {
-                        if (innerNode is IDrawable)
-                        {
-                            drawables.Add(innerNode as IDrawable);
-                        }
-                    }
-                }
-            }
+            //    //if the node is function then get all the 
+            //    //drawables inside that node. only do this if the
+            //    //node's workspace is the home space to avoid infinite
+            //    //recursion in the case of custom nodes in custom nodes
+            //    if (nodeModel is dynFunction && nodeModel.WorkSpace == dynSettings.Controller.DynamoModel.HomeSpace)
+            //    {
+            //        dynFunction func = (dynFunction)nodeModel;
+            //        foreach(dynNodeModel innerNode in func.Definition.Workspace.Nodes)
+            //        {
+            //            if (innerNode is IDrawable)
+            //            {
+            //                drawables.Add(innerNode as IDrawable);
+            //            }
+            //        }
+            //    }
+            //}
 
             if (dynSettings.Controller.UIDispatcher != null)
             {
                 dynSettings.Controller.UIDispatcher.Invoke(new Action(
-                   delegate
-                   {
-                       RenderDrawables(drawables);
-                   }
+                   RenderDrawables
                 ));
             }
         }
 
-        private void RenderDrawables(List<IDrawable> drawables)
+        //private void RenderDrawables(List<IDrawable> drawables)
+        private void RenderDrawables()
         {
             List<Point3D> points = new List<Point3D>();
             List<Point3D> lines = new List<Point3D>();
@@ -153,36 +150,48 @@ namespace Dynamo.Controls
             List<Point3D> yAxes = new List<Point3D>();
             List<Point3D> zAxes = new List<Point3D>();
 
-            foreach (IDrawable d in drawables)
+            //foreach (IDrawable d in drawables)
+            foreach (KeyValuePair<Guid, RenderDescription> kvp in dynSettings.Controller.RenderDescriptions)
             {
-                d.Draw();
+                var rd = kvp.Value as RenderDescription;
 
-                foreach (Point3D p in d.RenderDescription.points)
+                if (rd == null)
+                    continue;
+
+                //d.Draw();
+
+                //foreach (Point3D p in d.RenderDescription.points)
+                foreach (Point3D p in rd.points)
                 {
                     points.Add(p);
                 }
 
-                foreach (Point3D p in d.RenderDescription.lines)
+                //foreach (Point3D p in d.RenderDescription.lines)
+                foreach (Point3D p in rd.lines)
                 {
                     lines.Add(p);
                 }
 
-                foreach (Mesh3D m in d.RenderDescription.meshes)
+                //foreach (Mesh3D m in d.RenderDescription.meshes)
+                foreach (Mesh3D m in rd.meshes)
                 {
                     meshes.Add(m);
                 }
 
-                foreach (Point3D p in d.RenderDescription.xAxisPoints)
+                //foreach (Point3D p in d.RenderDescription.xAxisPoints)
+                foreach (Point3D p in rd.xAxisPoints)
                 {
                     xAxes.Add(p);
                 }
 
-                foreach (Point3D p in d.RenderDescription.yAxisPoints)
+                //foreach (Point3D p in d.RenderDescription.yAxisPoints)
+                foreach (Point3D p in rd.yAxisPoints)
                 {
                     yAxes.Add(p);
                 }
 
-                foreach (Point3D p in d.RenderDescription.zAxisPoints)
+                //foreach (Point3D p in d.RenderDescription.zAxisPoints)
+                foreach (Point3D p in rd.zAxisPoints)
                 {
                     zAxes.Add(p);
                 }
