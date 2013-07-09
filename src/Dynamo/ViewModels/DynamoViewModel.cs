@@ -1766,7 +1766,11 @@ namespace Dynamo.Controls
                 {
                     //View the home workspace, then open the bench file
                     if (!ViewingHomespace)
-                        ViewHomeWorkspace(); //TODO: Refactor
+                        ViewHomeWorkspace();
+
+                    Controller.CustomNodeLoader.AddDirectoryToSearchPath(Path.GetDirectoryName(xmlPath));
+                    Controller.CustomNodeLoader.UpdateSearchPath();
+
                     return OpenWorkspace(xmlPath);
                 }
                 else if (Controller.CustomNodeLoader.Contains(funName))
