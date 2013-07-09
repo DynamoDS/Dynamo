@@ -2045,6 +2045,7 @@ namespace Dynamo.Controls
                     SaveFunction(def, false);
 
                 Controller.PackageManagerClient.LoadPackageHeader(def, funName);
+
                 nodeWorkspaceWasLoaded(def, children, parents);
 
                 //set the zoom and trigger events
@@ -2270,6 +2271,7 @@ namespace Dynamo.Controls
                     //Call OnSave for all saved elements
                     foreach (dynNodeModel el in functionWorkspace.Nodes)
                         el.onSave();
+
 
                     #endregion
 
@@ -2783,7 +2785,10 @@ namespace Dynamo.Controls
         {
             //Add an entry to the funcdict
             var workSpace = new FuncWorkspace(
-                name, category, workspaceOffsetX, workspaceOffsetY);
+                name, category, workspaceOffsetX, workspaceOffsetY)
+                {
+                    WatchChanges = true
+                };
 
             _model.Workspaces.Add(workSpace);
 
