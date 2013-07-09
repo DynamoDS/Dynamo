@@ -944,9 +944,9 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    [NodeName("Select Curves")]
+    [NodeName("Select Elements")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
-    [NodeDescription("Select a set of curves from the document.")]
+    [NodeDescription("Box select a collection of Revit Elements from the document.")]
     public class dynMultipleCurvesBySelection : dynMultipleElementSelectionBase
     {
         public dynMultipleCurvesBySelection()
