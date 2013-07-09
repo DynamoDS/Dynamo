@@ -367,17 +367,27 @@ namespace Dynamo.Nodes
             }
         }
 
+        public string _description = null;
         public string Description
         {
-            get
-            {
-                Type t = GetType();
-                object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
-                if (rtAttribs.Length > 0)
-                    return ((NodeDescriptionAttribute) rtAttribs[0]).ElementDescription;
-                else
-                    return "No description provided.";
+            get { 
+                _description = _description ?? GetDescriptionString();
+                return _description;
             }
+        }
+
+        /// <summary>
+        ///     Get the description from type information
+        /// </summary>
+        /// <returns>The value or "No description provided"</returns>
+        public string GetDescriptionString()
+        {
+            var t = GetType();
+            object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
+            if (rtAttribs.Length > 0)
+                return ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
+            
+            return "No description provided";
         }
 
         public bool InteractionEnabled
@@ -597,6 +607,8 @@ namespace Dynamo.Nodes
                         else
                             nodes[data.Index] = firstNode;
                     }
+                    else
+                        nodes[data.Index] = new NumberNode(0);
                 }
             }
             else
@@ -1369,6 +1381,11 @@ namespace Dynamo.Nodes
             }
 
             ValidateConnections();
+
+            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
+            {
+                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
+            }  
         }
         public virtual Value Evaluate(FSharpList<Value> args)
         {
@@ -1467,6 +1484,11 @@ namespace Dynamo.Nodes
             }
             
             ValidateConnections();
+
+            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
+            {
+                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
+            }  
         }
 
         public virtual Value Evaluate(FSharpList<Value> args)

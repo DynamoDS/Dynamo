@@ -841,6 +841,7 @@ namespace Dynamo.Search
             SearchDictionary.Remove((ele) => (ele).Name == oldName);
         }
 
+
         public void Remove(string nodeName)
         {
 

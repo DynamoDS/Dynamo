@@ -5,7 +5,14 @@ The intent of this project is to provide a visual interface for building interes
 
 ## Contributors ##
 
-This project was started by Ian Keough. A complete rewrite of the underlying Dynamo engine was done by Stephen Elliott and made more perfect by Peter Boyer. Matt Jezyk contributed a ton of nodes as well as a wealth of input on pretty much all other aspects of Dynamo's design. Prior to Ian's joining Autodesk, others on the Autodesk team including Zach Kron, Tom Vollaro, and Lillian Smith provided a lot of very useful feedback.
+* [Ian Keough](https://github.com/ikeough): Started the project, main developer.
+* [Stephen Elliott](https://github.com/Steell): Engine overhaul, main developer. 
+* [Peter Boyer](https://github.com/pboyer): UX and UI overhaul, main developer.
+* [Lev Lipkin](https://github.com/LevL): Revit node designer, Revit interaction specialist.
+* [Matt Jezyk](https://github.com/tatlin): Node designer and overall design input.
+* [Zach Kron](https://github.com/kronz): UX and node design input.
+* Lillian Smith: Useful feedback and use cases.
+* [Tom Vollaro](https://github.com/tvollaro): Useful feedback and use cases.
 
 
 Dynamo has been developed based on feedback from several parties inlcuding Buro Happold Engineers, Autodesk, and students and faculty at the USC School of Architecture.
@@ -16,6 +23,42 @@ Dynamo has been developed based on feedback from several parties inlcuding Buro 
 The current version will run on top of Revit 2013, Revit 2014, Project Vasari Beta 2, and Project Vasari Beta 3. 
 
 ## Releases ##
+
+###0.5.2###
+
+July 2013
+
+Fixes
+- UV Grid improvements
+- Particle System and Dynamic Relaxation improvements
+- Delete for notes
+- Formula node is now case insensitive
+- Watch and Watch 3d improvments
+- Zoom and workspace tabbing
+- Length node culture formatting
+- Fixed rectangle node
+- Custom node fixes
+- Multi-output node fixes
+
+New
+- Structural Framing nodes
+- More List management nodes, Flatten changes, Repeat node
+- More Math Nodes
+- Node alignment tools 
+- Best Fit Plane, Best Fit Arc
+- Number Slider state display
+- Last computed value is now displayed on nodes with mouse-over
+- Zoom state saved with workspaces
+- More nodes for using Analysis Visualization Framework (model coloring)
+- Color Nodes (Hue, Brightness, Saturation, etc)
+- Better node error state reporting
+- Curves Through Points node
+- Find Nodes from Selected Elements
+- Watch node shows index of list members
+- Tooltips in search
+
+Known Issues
+- See Issues on Github:  https://github.com/ikeough/Dynamo/issues?state=open
 
 ###0.5.0###
 

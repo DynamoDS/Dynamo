@@ -64,6 +64,12 @@ namespace Dynamo.Nodes
             _label = label;
             IsNodeExpanded = true;
         }
+
+        public WatchNode( string label, bool isListMember, int count )
+        {
+            _label = isListMember ? "[" + count + "] " + label : label;
+            IsNodeExpanded = true;
+        }
     }
 
     public class WatchTreeBranch : ObservableCollection<WatchNode>

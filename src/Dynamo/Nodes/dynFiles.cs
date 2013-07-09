@@ -185,7 +185,7 @@ namespace Dynamo.Nodes
         {
             storedPath = ((Value.String)args[0]).Item;
             double xDiv = ((Value.Number)args[1]).Item;
-            double yDiv = ((Value.Number)args[1]).Item;
+            double yDiv = ((Value.Number)args[2]).Item;
 
             FSharpList<Value> result = FSharpList<Value>.Empty;
             if (File.Exists(storedPath))
