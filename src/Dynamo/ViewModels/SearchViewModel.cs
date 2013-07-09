@@ -837,5 +837,10 @@ namespace Dynamo.Search
         {
             SearchDictionary.Remove((ele) => (ele).Name == oldName);
         }
+
+        internal void Remove(string p)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
