@@ -22,7 +22,7 @@ namespace Dynamo.Nodes
         public dynLoftForm()
         {
             InPortData.Add(new PortData("solid/void", "Indicates if the Form is Solid or Void. Use True for solid and false for void.", typeof(Value.Number)));
-            InPortData.Add(new PortData("list", "A list of curves. The profile set of the newly created loft. Each profile should consist of only one curve loop. The input profile must be in one plane.", typeof(Value.List)));
+            InPortData.Add(new PortData("list", "A list of profiles to be the profile set of the newly created loft. Each profile must be in one plane and consist of list of curves of one curve loop or one curve.", typeof(Value.List)));
             InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(Value.Container)));
 
             OutPortData.Add(new PortData("form", "Loft Form", typeof(object)));
@@ -34,6 +34,7 @@ namespace Dynamo.Nodes
 
         Dictionary<ElementId, ElementId> sformCurveToReferenceCurveMap;
         ElementId formId;
+        bool preferSurfaceForOneLoop;
 
         bool matchOrAddFormCurveToReferenceCurveMap(Form formElement, ReferenceArrayArray refArrArr, bool doMatch)
         {
@@ -104,7 +105,9 @@ namespace Dynamo.Nodes
             bool isSurface = ((Value.Number)args[2]).Item == 1;
 
             //Build up our list of list of references for the form by...
-            IEnumerable<IEnumerable<Reference>> refArrays = ((Value.List)args[1]).Item.Select(
+            var curvesListList = (Value.List)args[1];
+
+            IEnumerable<IEnumerable<Reference>> refArrays = (curvesListList).Item.Select(
                 //...first selecting everything in the topmost list...
                delegate(Value x)
                {
@@ -164,14 +167,17 @@ namespace Dynamo.Nodes
                     e is Form)
                 {
                     Form oldF = (Form)e;
-                    if (matchOrAddFormCurveToReferenceCurveMap(oldF,  refArrArr, true))
+                    if (oldF.IsSolid == isSolid  &&
+                        preferSurfaceForOneLoop == isSurface 
+                        && matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
                     {
                             return Value.NewContainer(oldF);
                     }
                 }
 
                 //Dissolve it, we will re-make it later.
-                FormUtils.DissolveForms(this.UIDocument.Document, this.Elements.Take(1).ToList());
+                if (FormUtils.CanBeDissolved(this.UIDocument.Document, this.Elements.Take(1).ToList()))
+                   FormUtils.DissolveForms(this.UIDocument.Document, this.Elements.Take(1).ToList());
                 //And register the form for deletion. Since we've already deleted it here manually, we can 
                 //pass "true" as the second argument.
                 this.DeleteElement(this.Elements[0], true);
@@ -184,13 +190,16 @@ namespace Dynamo.Nodes
                     e is Form)
                 {
                     Form oldF = (Form)e;
-                    if (matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
+                    if (oldF.IsSolid == isSolid  &&
+                        preferSurfaceForOneLoop == isSurface 
+                        && matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
                     {
                         return Value.NewContainer(oldF);
                     }
                 }
             }
 
+            preferSurfaceForOneLoop = isSurface;
 
             //We use the ReferenceArrayArray to make the form, and we store it for later runs.
 
@@ -225,6 +234,8 @@ namespace Dynamo.Nodes
         public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("FormId", formId.ToString());
+            dynEl.SetAttribute("PreferSurfaceForOneLoop", preferSurfaceForOneLoop.ToString());
+
             String mapAsString = "";
 
             if (sformCurveToReferenceCurveMap != null)
@@ -246,6 +257,11 @@ namespace Dynamo.Nodes
             try
             {
                 formId = new ElementId(Convert.ToInt32(elNode.Attributes["FormId"].Value));
+                var thisIsSurface = elNode.Attributes["PreferSurfaceForOneLoop"];
+                if (thisIsSurface != null)
+                   preferSurfaceForOneLoop = Convert.ToBoolean(thisIsSurface.Value);
+                else //used to be able to make only surface, so init to more likely value
+                   preferSurfaceForOneLoop = true;
 
                 string mapAsString = elNode.Attributes["FormCurveToReferenceCurveMap"].Value;
                 sformCurveToReferenceCurveMap = new Dictionary<ElementId,ElementId>();
