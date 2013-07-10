@@ -696,6 +696,8 @@ namespace Dynamo.Nodes
                 doc, "Select a face.");
             SelectedElement = doc.Document.GetElement(_f);
             RaisePropertyChanged("SelectionText");
+
+            RequiresRecalc = true;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
