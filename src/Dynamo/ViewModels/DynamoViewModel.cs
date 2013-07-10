@@ -659,9 +659,9 @@ namespace Dynamo.Controls
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = fi.Name;
             }
-            else if (_model.CurrentSpace is FuncWorkspace)
+            else if (_model.CurrentSpace is FuncWorkspace && dynSettings.Controller.CustomNodeLoader.SearchPath.Any())
             {
-                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath;
+                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath[0];
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -1766,7 +1766,11 @@ namespace Dynamo.Controls
                 {
                     //View the home workspace, then open the bench file
                     if (!ViewingHomespace)
-                        ViewHomeWorkspace(); //TODO: Refactor
+                        ViewHomeWorkspace();
+
+                    Controller.CustomNodeLoader.AddDirectoryToSearchPath(Path.GetDirectoryName(xmlPath));
+                    Controller.CustomNodeLoader.UpdateSearchPath();
+
                     return OpenWorkspace(xmlPath);
                 }
                 else if (Controller.CustomNodeLoader.Contains(funName))
@@ -2045,6 +2049,7 @@ namespace Dynamo.Controls
                     SaveFunction(def, false);
 
                 Controller.PackageManagerClient.LoadPackageHeader(def, funName);
+
                 nodeWorkspaceWasLoaded(def, children, parents);
 
                 //set the zoom and trigger events
@@ -2270,6 +2275,7 @@ namespace Dynamo.Controls
                     //Call OnSave for all saved elements
                     foreach (dynNodeModel el in functionWorkspace.Nodes)
                         el.onSave();
+
 
                     #endregion
 
@@ -2783,7 +2789,10 @@ namespace Dynamo.Controls
         {
             //Add an entry to the funcdict
             var workSpace = new FuncWorkspace(
-                name, category, workspaceOffsetX, workspaceOffsetY);
+                name, category, workspaceOffsetX, workspaceOffsetY)
+                {
+                    WatchChanges = true
+                };
 
             _model.Workspaces.Add(workSpace);
 

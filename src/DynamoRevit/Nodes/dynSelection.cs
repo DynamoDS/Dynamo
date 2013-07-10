@@ -946,13 +946,13 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    [NodeName("Select Curves")]
+    [NodeName("Select Elements")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
-    [NodeDescription("Select a set of curves from the document.")]
+    [NodeDescription("Box select a collection of Revit Elements from the document.")]
     public class dynMultipleCurvesBySelection : dynMultipleElementSelectionBase
     {
         public dynMultipleCurvesBySelection()
-            : base(new PortData("curves", "The curves", typeof(Value.Container))) { }
+            : base(new PortData("Elements", "The Elements", typeof(Value.Container))) { }
 
         protected override void OnSelectClick()
         {
@@ -964,7 +964,7 @@ namespace Dynamo.Nodes
 
             SelectedElements = dynRevitSettings.SelectionHelper
                                                .RequestMultipleCurveElementsSelection(
-                                                   dynRevitSettings.Doc, "Select a set of curves.");
+                                                   dynRevitSettings.Doc, "Select a set of Revit Elements.");
 
             RaisePropertyChanged("SelectionText");
         }
