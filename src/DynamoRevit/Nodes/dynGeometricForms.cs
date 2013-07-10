@@ -28,6 +28,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("form", "Loft Form", typeof(object)));
 
             RegisterAllPorts();
+            if (formId == null)
+                formId = ElementId.InvalidElementId;
         }
 
         Dictionary<ElementId, ElementId> sformCurveToReferenceCurveMap;
@@ -225,13 +227,16 @@ namespace Dynamo.Nodes
             dynEl.SetAttribute("FormId", formId.ToString());
             String mapAsString = "";
 
-            var enumMap = sformCurveToReferenceCurveMap.GetEnumerator();
-            for (; enumMap.MoveNext(); )
+            if (sformCurveToReferenceCurveMap != null)
             {
-                ElementId keyId = enumMap.Current.Key;
-                ElementId valueId = enumMap.Current.Value;
+                var enumMap = sformCurveToReferenceCurveMap.GetEnumerator();
+                for (; enumMap.MoveNext(); )
+                {
+                    ElementId keyId = enumMap.Current.Key;
+                    ElementId valueId = enumMap.Current.Value;
 
-                mapAsString = mapAsString + keyId.ToString() + "=" + valueId.ToString() + ";";
+                    mapAsString = mapAsString + keyId.ToString() + "=" + valueId.ToString() + ";";
+                }
             }
             dynEl.SetAttribute("FormCurveToReferenceCurveMap", mapAsString);
         }
@@ -244,20 +249,23 @@ namespace Dynamo.Nodes
 
                 string mapAsString = elNode.Attributes["FormCurveToReferenceCurveMap"].Value;
                 sformCurveToReferenceCurveMap = new Dictionary<ElementId,ElementId>();
-
-                string[] curMap = mapAsString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                int mapSize = curMap.Length;
-                for (int iMap = 0; iMap < mapSize; iMap++)
+                if (mapAsString != "")
                 {
-                    string[] thisMap = curMap[iMap].Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (thisMap.Length != 2)
+
+                    string[] curMap = mapAsString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                    int mapSize = curMap.Length;
+                    for (int iMap = 0; iMap < mapSize; iMap++)
                     {
-                        sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
-                        break;
+                        string[] thisMap = curMap[iMap].Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (thisMap.Length != 2)
+                        {
+                            sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
+                            break;
+                        }
+                        ElementId keyId = new ElementId(Convert.ToInt32(thisMap[0]));
+                        ElementId valueId = new ElementId(Convert.ToInt32(thisMap[1]));
+                        sformCurveToReferenceCurveMap[keyId] = valueId;
                     }
-                    ElementId keyId = new ElementId(Convert.ToInt32(thisMap[0]));
-                    ElementId valueId = new ElementId(Convert.ToInt32(thisMap[1]));
-                    sformCurveToReferenceCurveMap[keyId] = valueId;
                 }
             }
             catch 
