@@ -902,6 +902,8 @@ namespace Dynamo.Nodes
         {
             if(!args[0].IsList)
                 throw new Exception("A list is required to slice.");
+            if(args.Length != 2)
+                throw new Exception("A number is required to specify the sublist length.");
 
             FSharpList<Value> lst = ((Value.List)args[0]).Item;
             var n = (int)Math.Round(((Value.Number)args[1]).Item);
@@ -913,7 +915,6 @@ namespace Dynamo.Nodes
             {
                 return Value.NewList(lst);
             }
-
 
             List<Value> finalList = new List<Value>();
             List<Value> currList = new List<Value>();
@@ -991,7 +992,7 @@ namespace Dynamo.Nodes
             startIndices.Reverse();
 
             //get indices along 'top' of array
-            for (int i = 0; i < n - 1; i++)
+            for (int i = 0; i < n; i++)
             {
                 startIndices.Add(i);
             }
@@ -1065,7 +1066,7 @@ namespace Dynamo.Nodes
             var startIndices = new List<int>();
 
             //get indices along 'top' of array
-            for (int i = 1; i < (int)n; i++)
+            for (int i = 0; i < (int)n; i++)
             {
                 startIndices.Add(i);
             }
