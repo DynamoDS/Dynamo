@@ -950,7 +950,7 @@ namespace Dynamo.Nodes
     public class dynMultipleCurvesBySelection : dynMultipleElementSelectionBase
     {
         public dynMultipleCurvesBySelection()
-            : base(new PortData("curves", "The curves", typeof(Value.Container))) { }
+            : base(new PortData("Elements", "The Elements", typeof(Value.Container))) { }
 
         protected override void OnSelectClick()
         {
@@ -962,7 +962,7 @@ namespace Dynamo.Nodes
 
             SelectedElements = dynRevitSettings.SelectionHelper
                                                .RequestMultipleCurveElementsSelection(
-                                                   dynRevitSettings.Doc, "Select a set of curves.");
+                                                   dynRevitSettings.Doc, "Select a set of Revit Elements.");
 
             RaisePropertyChanged("SelectionText");
         }
