@@ -293,34 +293,34 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            foreach (ElementId el in this.Elements)
-            {
-                Element e;
-                if (dynUtils.TryGetElement(el,typeof(ReferencePoint), out e))
-                {
-                    this.UIDocument.Document.Delete(el);
-                }
-            }
-            ReferencePoint p = null;
-
-            ReferencePoint pt = ((Value.Container)args[0]).Item as ReferencePoint;
-            XYZ norm = ((Value.Container)args[1]).Item as XYZ;
+            var pt = (ReferencePoint)((Value.Container)args[0]).Item;
+            var norm = (XYZ)((Value.Container)args[1]).Item;
             double dist = ((Value.Number)args[2]).Item;
 
-            XYZ location = null;
-            PointElementReference per = pt.GetPointElementReference();
+            ReferencePoint p;
 
-            if (pt.GetPointElementReference().GetType() == typeof(PointOnFace))
+            var newLocation = pt.Position + norm.Normalize().Multiply(dist);
+
+            if (Elements.Any())
             {
-                //gather information about the point
-                PointOnFace pof = per as PointOnFace;
-                Reference faceRef = pof.GetFaceReference();
-                Autodesk.Revit.DB.Face f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
-                location = f.Evaluate(pof.UV);
-
-                p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(location + norm.Normalize().Multiply(dist));
+                Element el;
+                if (dynUtils.TryGetElement(Elements[0], typeof (ReferencePoint), out el))
+                {
+                    //move the point to the new offset
+                    p = (ReferencePoint) el;
+                    p.Position = newLocation;
+                    Elements[0] = p.Id;
+                }
+                else
+                {
+                    p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(newLocation);
+                    Elements[0] = p.Id;
+                }
+            }
+            else
+            {
+                p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(newLocation);
                 this.Elements.Add(p.Id);
-
             }
 
             return Value.NewContainer(p);
