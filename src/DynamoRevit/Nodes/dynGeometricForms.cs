@@ -30,8 +30,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
             if (formId == null)
                 formId = ElementId.InvalidElementId;
-            if (preferSurfaceForOneLoop == null)
-               preferSurfaceForOneLoop = false;
         }
 
         Dictionary<ElementId, ElementId> sformCurveToReferenceCurveMap;
