@@ -91,7 +91,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Isometric View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
-    [NodeDescription("Creates a drafting view.")]
+    [NodeDescription("Creates an isometric view.")]
     public class dynIsometricView : dynRevitTransactionNodeWithOneOutput
     {
         public dynIsometricView()
@@ -99,6 +99,8 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("eye", "The eye position point.", typeof(Value.Container)));
             InPortData.Add(new PortData("up", "The up direction of the view.", typeof(Value.Container)));
             InPortData.Add(new PortData("forward", "The view direction - the vector pointing from the eye towards the model.", typeof(Value.Container)));
+            InPortData.Add(new PortData("name", "The name of the view.", typeof(Value.String)));
+
             OutPortData.Add(new PortData("v", "The newly created 3D view.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -107,48 +109,54 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             View3D view = null;
-            XYZ eye = (XYZ)((Value.Container)args[0]).Item;
-            XYZ userUp = (XYZ)((Value.Container)args[1]).Item;
-            XYZ direction = (XYZ)((Value.Container)args[2]).Item;
+            var eye = (XYZ)((Value.Container)args[0]).Item;
+            var userUp = (XYZ)((Value.Container)args[1]).Item;
+            var direction = (XYZ)((Value.Container)args[2]).Item;
+            var name = ((Value.String) args[3]).Item;
 
-            XYZ side = new XYZ();
+            XYZ side;
             if (direction.IsAlmostEqualTo(userUp) || direction.IsAlmostEqualTo(userUp.Negate()))
                 side = XYZ.BasisZ.CrossProduct(direction);
             else
                 side = userUp.CrossProduct(direction);
             XYZ up = side.CrossProduct(direction);
 
+            //need to reverse the up direction to get the 
+            //proper orientation - there might be a better way to handle this
+            var orient = new ViewOrientation3D(eye, -up, direction);
+
             if (this.Elements.Any())
             {
                 Element e;
                 if (dynUtils.TryGetElement(this.Elements[0], typeof(View3D), out e))
                 {
-                    view = e as View3D;
+                    view = (View3D)e;
                     if (!view.ViewDirection.IsAlmostEqualTo(direction))
                     {
-                        ViewOrientation3D orient = new ViewOrientation3D(eye, up, direction);
+                        view.Unlock();
                         view.SetOrientation(orient);
                         view.SaveOrientationAndLock();
-                        view.SetOrientation(orient);
                     }
+                    if (view.Name != null && view.Name != name)
+                        view.Name = name;
                 }
                 else
                 {
                     //create a new view
-                    view = Create3DView(eye, up, direction);
+                    view = Create3DView(orient, name, false);
                     Elements[0] = view.Id;
                 }
             }
             else
             {
-                view = Create3DView(eye, up, direction);
+                view = Create3DView(orient, name, false);
                 Elements.Add(view.Id);
             }
 
             return Value.NewContainer(view);
         }
 
-        private static View3D Create3DView(XYZ eye, XYZ up, XYZ direction)
+        private static View3D Create3DView(ViewOrientation3D orient, string name, bool isPerspective)
         {
             //http://adndevblog.typepad.com/aec/2012/05/viewplancreate-method.html
 
@@ -159,10 +167,104 @@ namespace Dynamo.Nodes
                                                           select type;
 
             //create a new view
-            View3D view = View3D.CreateIsometric(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id);
-            ViewOrientation3D orient = new ViewOrientation3D(eye, up, direction);
+            View3D view = isPerspective ? 
+                              View3D.CreatePerspective(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id) :
+                              View3D.CreateIsometric(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id);
+
             view.SetOrientation(orient);
             view.SaveOrientationAndLock();
+            view.Name = name;
+
+            return view;
+        }
+    }
+
+    [NodeName("Perspective View")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
+    [NodeDescription("Creates a perspective view.")]
+    public class dynPerspectiveView : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynPerspectiveView()
+        {
+            InPortData.Add(new PortData("eye", "The eye position point.", typeof(Value.Container)));
+            InPortData.Add(new PortData("up", "The up direction of the view.", typeof(Value.Container)));
+            InPortData.Add(new PortData("forward", "The view direction - the vector pointing from the eye towards the model.", typeof(Value.Container)));
+            InPortData.Add(new PortData("name", "The name of the view.", typeof(Value.String)));
+
+            OutPortData.Add(new PortData("v", "The newly created 3D view.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            View3D view = null;
+            var eye = (XYZ)((Value.Container)args[0]).Item;
+            var userUp = (XYZ)((Value.Container)args[1]).Item;
+            var direction = (XYZ)((Value.Container)args[2]).Item;
+            var name = ((Value.String)args[3]).Item;
+
+            XYZ side;
+            if (direction.IsAlmostEqualTo(userUp) || direction.IsAlmostEqualTo(userUp.Negate()))
+                side = XYZ.BasisZ.CrossProduct(direction);
+            else
+                side = userUp.CrossProduct(direction);
+            XYZ up = side.CrossProduct(direction);
+
+            //need to reverse the up direction to get the 
+            //proper orientation - there might be a better way to handle this
+            var orient = new ViewOrientation3D(eye, -up, direction);
+
+            if (this.Elements.Any())
+            {
+                Element e;
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(View3D), out e))
+                {
+                    view = (View3D)e;
+                    if (!view.ViewDirection.IsAlmostEqualTo(direction))
+                    {
+                        view.Unlock();
+                        view.SetOrientation(orient);
+                        view.SaveOrientationAndLock();
+                    }
+                    if (view.Name != null && view.Name != name)
+                        view.Name = name;
+                }
+                else
+                {
+                    //create a new view
+                    view = Create3DView(orient, name, true);
+                    Elements[0] = view.Id;
+                }
+            }
+            else
+            {
+                view = Create3DView(orient, name, true);
+                Elements.Add(view.Id);
+            }
+
+            return Value.NewContainer(view);
+        }
+
+        private static View3D Create3DView(ViewOrientation3D orient, string name, bool isPerspective)
+        {
+            //http://adndevblog.typepad.com/aec/2012/05/viewplancreate-method.html
+
+            IEnumerable<ViewFamilyType> viewFamilyTypes = from elem in new
+              FilteredElementCollector(dynRevitSettings.Doc.Document).OfClass(typeof(ViewFamilyType))
+                                                          let type = elem as ViewFamilyType
+                                                          where type.ViewFamily == ViewFamily.ThreeDimensional
+                                                          select type;
+
+            //create a new view
+            View3D view = isPerspective ?
+                              View3D.CreateIsometric(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id) :
+                              View3D.CreatePerspective(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id);
+
+            view.SetOrientation(orient);
+            view.SaveOrientationAndLock();
+            view.Name = name;
+
             return view;
         }
     }
