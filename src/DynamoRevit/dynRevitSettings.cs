@@ -316,9 +316,7 @@ namespace Dynamo.Utilities
 
                     if (faceRef != null)
                     {
-
                         GeometryObject geob = dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
-
                         f = geob as Face;
                     }
                     return f;
@@ -335,23 +333,16 @@ namespace Dynamo.Utilities
             // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
             public static Reference RequestFaceReferenceSelection(UIDocument doc, string message)
             {
-                try
-                {
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
-                    choices.Elements.Clear();
+                Reference faceRef = null;
 
-                    //MessageBox.Show(message);
-                    dynSettings.Controller.DynamoViewModel.Log(message);
+                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                choices.Elements.Clear();
 
-                    Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
+                dynSettings.Controller.DynamoViewModel.Log(message);
+                faceRef = doc.Selection.PickObject(ObjectType.Face);
 
-                    return faceRef;
-                }
-                catch (Exception ex)
-                {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
-                    return null;
-                }
+                return faceRef;
+
             }
 
 

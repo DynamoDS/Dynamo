@@ -34,11 +34,19 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class dynElementSelectionBase : dynNodeWithOneOutput
     {
-        private TextBox _tb;
-        private Button _selectButton;
-
+        //private TextBox _tb;
+        //private Button _selectButton;
+        private bool _canSelect = true;
         protected string _selectButtonContent;
 
+        public bool CanSelect
+        {
+            get { return _canSelect; }
+            set { 
+                _canSelect = value;
+                RaisePropertyChanged("CanSelect");
+            }
+        }
         public string SelectButtonContent
         {
             get { return _selectButtonContent; }
@@ -67,14 +75,14 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            _selectButton = new dynNodeButton
+            var selectButton = new dynNodeButton
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center
             };
-            _selectButton.Click += selectButton_Click;
+            selectButton.Click += selectButton_Click;
 
-            _tb = new TextBox
+            var tb = new TextBox
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -95,36 +103,42 @@ namespace Dynamo.Nodes
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
-            nodeUI.inputGrid.Children.Add(_tb);
-            nodeUI.inputGrid.Children.Add(_selectButton);
+            nodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(selectButton);
 
-            System.Windows.Controls.Grid.SetRow(_selectButton, 0);
-            System.Windows.Controls.Grid.SetRow(_tb, 1);
+            System.Windows.Controls.Grid.SetRow(selectButton, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            _tb.DataContext = this;
-            _selectButton.DataContext = this;
+            tb.DataContext = this;
+            selectButton.DataContext = this;
 
             var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
             {
                 Mode = BindingMode.TwoWay,
             };
-            _tb.SetBinding(TextBox.TextProperty, selectTextBinding);
+            tb.SetBinding(TextBox.TextProperty, selectTextBinding);
 
             var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
             {
                 Mode = BindingMode.TwoWay,
             };
-            _selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
+            selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
+
+            var buttonEnabledBinding = new System.Windows.Data.Binding("CanSelect")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
         }
 
         private void selectButton_Click(object sender, RoutedEventArgs e)
         {
-            _selectButton.IsEnabled = false;
+            CanSelect = false;
             IdlePromise.ExecuteOnIdle(
                 delegate
                 {
                     OnSelectClick();
-                    _selectButton.IsEnabled = true;
+                    CanSelect = true;
                 });
         }
 
@@ -598,75 +612,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        /*
-        public override Element SelectedElement
-        {
-            get
-            {
-                return base.SelectedElement;
-            }
-            set
-            {
-                base.SelectedElement = value;
-
-                var result = new List<List<FamilyInstance>>();
-
-                DividedSurfaceData dsd = this.SelectedElement.GetDividedSurfaceData();
-
-                if (dsd != null)
-                {
-                    foreach (Reference r in dsd.GetReferencesWithDividedSurfaces())
-                    {
-                        DividedSurface ds = dsd.GetDividedSurfaceForReference(r);
-
-                        GridNode gn = new GridNode();
-
-                        int u = 0;
-                        while (u < ds.NumberOfUGridlines)
-                        {
-
-                            var lst = new List<FamilyInstance>();
-
-                            gn.UIndex = u;
-
-                            int v = 0;
-                            while (v < ds.NumberOfVGridlines)
-                            {
-                                gn.VIndex = v;
-
-                                if (ds.IsSeedNode(gn))
-                                {
-                                    FamilyInstance fi
-                                      = ds.GetTileFamilyInstance(gn, 0);
-
-                                    //put the family instance into the tree
-                                    lst.Add(fi);
-                                }
-                                v = v + 1;
-                            }
-
-                            result.Add(lst);
-
-                            u = u + 1;
-                        }
-                    }
-
-                    this.data = Value.NewList(
-                       Utils.SequenceToFSharpList(
-                          result.Select(
-                             row => Value.NewList(
-                                Utils.SequenceToFSharpList(
-                                   row.Select(Value.NewContainer)
-                                )
-                             )
-                          )
-                       )
-                    );
-                }
-            }
-        }
-        */
-
         protected override void OnSelectClick()
         {
             SelectedElement = null;
@@ -692,8 +637,21 @@ namespace Dynamo.Nodes
         {
             var doc = dynRevitSettings.Doc;
 
-            _f = dynRevitSettings.SelectionHelper.RequestFaceReferenceSelection(
-                doc, "Select a face.");
+            try
+            {
+                _f = dynRevitSettings.SelectionHelper.RequestFaceReferenceSelection(
+                    doc, "Select a face.");
+            }
+            catch (OperationCanceledException cancelEx)
+            {
+                CanSelect = true;
+            }
+            catch (Exception e)
+            {
+                dynSettings.Controller.DynamoViewModel.Log(e);
+                return;
+            }
+            
             SelectedElement = doc.Document.GetElement(_f);
             RaisePropertyChanged("SelectionText");
 
