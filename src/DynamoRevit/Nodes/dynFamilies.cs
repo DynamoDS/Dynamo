@@ -74,7 +74,7 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Select Family Instance Parameter")]
+    [NodeName("Get Parameter")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a parameter as a string.")]
     [NodeSearchTags("fam")]
@@ -125,19 +125,21 @@ namespace Dynamo.Nodes
                     if (p.IsReadOnly || p.StorageType == StorageType.None)
                         continue;
                     Items.Add(
-                            new DynamoDropDownItem(p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")", p));
+                            new DynamoDropDownItem(string.Format("{0}(Type)({1})", p.Definition.Name, getStorageTypeString(p.StorageType)), p));
                 }
 
-                var fd = doc.EditFamily(fs.Family);
-                var ps = fd.FamilyManager.Parameters;
+                //this was causing duplication of parameters
+                //in the drop-down. 
+                //var fd = doc.EditFamily(fs.Family);
+                //var ps = fd.FamilyManager.Parameters;
 
-                foreach (dynamic p in ps)
-                {
-                    if (p.IsReadOnly || p.StorageType == StorageType.None)
-                        continue;
-                    Items.Add(
-                            new DynamoDropDownItem(p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")", p));
-                }
+                //foreach (dynamic p in ps)
+                //{
+                //    if (p.IsReadOnly || p.StorageType == StorageType.None)
+                //        continue;
+                //    Items.Add(
+                //            new DynamoDropDownItem(p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")", p));
+                //}
 
             }
             else if (element is FamilyInstance)
@@ -149,30 +151,44 @@ namespace Dynamo.Nodes
                     if (p.IsReadOnly || p.StorageType == StorageType.None)
                         continue;
                     Items.Add(
-                            new DynamoDropDownItem(p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")", p));
+                            new DynamoDropDownItem(string.Format("{0}({1})", p.Definition.Name, getStorageTypeString(p.StorageType)), p));
                 }
+
+                var fs = fi.Symbol;
+
+                foreach (dynamic p in fs.Parameters)
+                {
+                    if (p.IsReadOnly || p.StorageType == StorageType.None)
+                        continue;
+                    Items.Add(
+                            new DynamoDropDownItem(string.Format("{0}(Type)({1})", p.Definition.Name, getStorageTypeString(p.StorageType)), p));
+                }
+
+
             }
             else
             {
-                this.storedId = null;
+                storedId = null;
             }
 
-            this.Items = this.Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             element = (Element)((Value.Container)args[0]).Item;
 
-            if (element.GetType() != typeof(FamilyInstance))
+            if (element.GetType() != typeof(FamilyInstance) &&
+                element.GetType() != typeof(FamilySymbol))
             {
-                throw new Exception("The input is not a Family Instance.");
+                throw new Exception("The input is not a family instance or symbol.");
             }
 
+            //only update the collection on evaluate
+            //if the item coming in is different
             if (!element.Id.Equals(this.storedId))
             {
                 this.storedId = element.Id;
-
                 PopulateItems();
             }
 
@@ -182,63 +198,63 @@ namespace Dynamo.Nodes
             return Value.NewContainer(((Parameter)Items[SelectedIndex].Item).Definition);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
-        {
-            if (this.storedId != null)
-            {
-                XmlElement outEl = xmlDoc.CreateElement("familyid");
-                outEl.SetAttribute("value", this.storedId.IntegerValue.ToString());
-                dynEl.AppendChild(outEl);
+        //public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        //{
+        //    if (this.storedId != null)
+        //    {
+        //        XmlElement outEl = xmlDoc.CreateElement("familyid");
+        //        outEl.SetAttribute("value", this.storedId.IntegerValue.ToString());
+        //        dynEl.AppendChild(outEl);
 
-                XmlElement param = xmlDoc.CreateElement("index");
-                param.SetAttribute("value", SelectedIndex.ToString());
-                dynEl.AppendChild(param);
-            }
+        //        XmlElement param = xmlDoc.CreateElement("index");
+        //        param.SetAttribute("value", SelectedIndex.ToString());
+        //        dynEl.AppendChild(param);
+        //    }
 
-        }
+        //}
 
-        public override void LoadNode(XmlNode elNode)
-        {
-            var doc = dynRevitSettings.Doc.Document;
+        //public override void LoadNode(XmlNode elNode)
+        //{
+        //    var doc = dynRevitSettings.Doc.Document;
 
-            int index = -1;
+        //    int index = -1;
 
-            foreach (XmlNode subNode in elNode.ChildNodes)
-            {
-                if (subNode.Name.Equals("familyid"))
-                {
-                    int id;
-                    try
-                    {
-                        id = Convert.ToInt32(subNode.Attributes[0].Value);
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                    this.storedId = new ElementId(id);
+        //    foreach (XmlNode subNode in elNode.ChildNodes)
+        //    {
+        //        if (subNode.Name.Equals("familyid"))
+        //        {
+        //            int id;
+        //            try
+        //            {
+        //                id = Convert.ToInt32(subNode.Attributes[0].Value);
+        //            }
+        //            catch
+        //            {
+        //                continue;
+        //            }
+        //            this.storedId = new ElementId(id);
 
-                    element = doc.GetElement(this.storedId);
+        //            element = doc.GetElement(this.storedId);
 
-                }
-                else if (subNode.Name.Equals("index"))
-                {
-                    try
-                    {
-                        index = Convert.ToInt32(subNode.Attributes[0].Value);
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
+        //        }
+        //        else if (subNode.Name.Equals("index"))
+        //        {
+        //            try
+        //            {
+        //                index = Convert.ToInt32(subNode.Attributes[0].Value);
+        //            }
+        //            catch
+        //            {
+        //            }
+        //        }
+        //    }
 
-            if (element != null)
-            {
-                PopulateItems();
-                SelectedIndex = index;
-            }  
-        }
+        //    if (element != null)
+        //    {
+        //        PopulateItems();
+        //        SelectedIndex = index;
+        //    }  
+        //}
     }
 
     #region Disabled ParameterMapper
