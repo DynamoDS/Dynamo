@@ -781,6 +781,11 @@ namespace Dynamo.Revit
 
     public class dynRevitTransactionNodeWithOneOutput : dynRevitTransactionNode
     {
+        public virtual bool acceptsListOfLists()
+        {
+            return false;
+        }
+
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             //THE OLD WAY
@@ -826,8 +831,7 @@ namespace Dynamo.Revit
                     else
                     {
                         //check if we have a list of lists, if so, then don't wrap
-                        if (portAtThis.Item1 == typeof(Value.List) && portAtThis.Item2 == typeof(Value.List) &&
-                            !Utils.IsListOfLists(arg))
+                        if (Utils.IsListOfLists(arg) && !acceptsListOfLists())
                             //leave as list
                             argSets.Add(((Value.List)arg).Item);
                         else
