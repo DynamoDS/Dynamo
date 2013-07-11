@@ -275,8 +275,8 @@ namespace DynamoRevitTests
             Assert.IsTrue(File.Exists(customDefPath1), "Cannot find specified custom definition to load for testing.");
             Assert.IsTrue(File.Exists(customDefPath2), "Cannot find specified custom definition to load for testing.");
 
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath1));
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath2));
+            dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath1);
+            dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath2);
 
             dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
             dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
@@ -290,9 +290,9 @@ namespace DynamoRevitTests
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\scalable graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            string customDefPath = Path.Combine(_defsPath, "Cf(dx).dyf");
-            Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath));
+            //string customDefPath = Path.Combine(_defsPath, "Cf(dx).dyf");
+            //Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
+            //Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath));
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
@@ -308,7 +308,7 @@ namespace DynamoRevitTests
 
             string customDefPath = Path.Combine(_defsPath, "GraphFunction.dyf");
             Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath));
+            dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath);
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
