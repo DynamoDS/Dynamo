@@ -36,6 +36,11 @@ namespace Dynamo.Nodes
         ElementId formId;
         bool preferSurfaceForOneLoop;
 
+        public override bool acceptsListOfLists()
+        {
+            return true;
+        }
+
         bool matchOrAddFormCurveToReferenceCurveMap(Form formElement, ReferenceArrayArray refArrArr, bool doMatch)
         {
             if (formElement.Id != formId && doMatch)
