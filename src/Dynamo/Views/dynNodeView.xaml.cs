@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
@@ -178,5 +179,33 @@ namespace Dynamo.Controls
                     return null;
             }
         }
+
+        private void NickNameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount > 1)
+            {
+                //show an edit window
+                var editWindow = new dynEditWindow {DataContext = this.DataContext};
+
+                var bindingVal = new Binding("DataContext.NickName")
+                {
+                    Mode = BindingMode.TwoWay,
+                    NotifyOnValidationError = false,
+                    Source = this,
+                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                };
+                editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
+
+                editWindow.Title = "Edit Node Name";
+
+                if (editWindow.ShowDialog() != true)
+                {
+                    return;
+                }
+
+                e.Handled = true;
+            }
+        }
+
     }
 }

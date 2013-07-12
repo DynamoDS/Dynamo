@@ -85,9 +85,9 @@
 
         <Grid Canvas.ZIndex="4" Grid.Row="1" Margin="3,5,3,5" Grid.Column="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*" MinWidth="40"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -133,18 +133,18 @@
         </StackPanel>
 
         <!-- INPUT GRID -->
-            
-        <Grid Name="inputGrid"
-            x:FieldModifier="public"
-            VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch"
-            Height="Auto"
-            Width="Auto"
-            Background="Transparent"
-              Margin="5,0,5,0"
-              Canvas.ZIndex="5"  
-              IsEnabled="{Binding Path=IsInteractionEnabled}" Grid.Column="1" Grid.Row="0"/>
-            
+            <Grid Name="inputGrid"
+                x:FieldModifier="public"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Height="Auto"
+                Width="Auto"
+                Background="Transparent"
+                Margin="5,0,5,0"
+                Canvas.ZIndex="5"  
+                IsEnabled="{Binding Path=IsInteractionEnabled}"
+                Grid.Column="1" Grid.Row="0"/>
+
         </Grid>
         
         <TextBlock Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}" 
@@ -159,19 +159,19 @@
         <TextBlock  Name="nickNameBlock" 
                          VerticalAlignment="Top" 
                          HorizontalAlignment="Stretch"
-                         TextTrimming="CharacterEllipsis"
                          Text="{Binding NickName, UpdateSourceTrigger=PropertyChanged}"
                             Margin="2,2,2,0"
                          Padding="5"
                          FontSize="11"
                          FontWeight="Bold" 
                          TextAlignment="Center" 
-                         IsHitTestVisible="False" 
+                         IsHitTestVisible="True" 
                          Canvas.ZIndex="5" 
                          Height ="25"
                          Background="{x:Null}" FontStyle="Normal" Foreground="LightGray"
                     Visibility="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynWorkspaceView}}, Converter={StaticResource ZoomToVisibilityConverter}}"
-            Grid.Row="0" Grid.Column="0">
+            Grid.Row="0" Grid.Column="0"
+                  MouseDown="NickNameBlock_OnMouseDown">
         </TextBlock>
         
         <!-- CENTER CANVAS -->
