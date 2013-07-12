@@ -16,6 +16,7 @@ using System;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Controls;
 using System.Xml;
@@ -178,15 +179,14 @@ namespace Dynamo.Nodes
         {
             element = (Element)((Value.Container)args[0]).Item;
 
-            if (element.GetType() != typeof(FamilyInstance) &&
-                element.GetType() != typeof(FamilySymbol))
+            if (element == null)
             {
                 throw new Exception("The input is not a family instance or symbol.");
             }
 
             //only update the collection on evaluate
             //if the item coming in is different
-            if (!element.Id.Equals(this.storedId))
+            if (element != null && !element.Id.Equals(this.storedId))
             {
                 this.storedId = element.Id;
                 PopulateItems();
@@ -198,63 +198,63 @@ namespace Dynamo.Nodes
             return Value.NewContainer(((Parameter)Items[SelectedIndex].Item).Definition);
         }
 
-        //public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
-        //{
-        //    if (this.storedId != null)
-        //    {
-        //        XmlElement outEl = xmlDoc.CreateElement("familyid");
-        //        outEl.SetAttribute("value", this.storedId.IntegerValue.ToString());
-        //        dynEl.AppendChild(outEl);
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        {
+            if (this.storedId != null)
+            {
+                XmlElement outEl = xmlDoc.CreateElement("familyid");
+                outEl.SetAttribute("value", this.storedId.IntegerValue.ToString(CultureInfo.InvariantCulture));
+                dynEl.AppendChild(outEl);
 
-        //        XmlElement param = xmlDoc.CreateElement("index");
-        //        param.SetAttribute("value", SelectedIndex.ToString());
-        //        dynEl.AppendChild(param);
-        //    }
+                XmlElement param = xmlDoc.CreateElement("index");
+                param.SetAttribute("value", SelectedIndex.ToString(CultureInfo.InvariantCulture));
+                dynEl.AppendChild(param);
+            }
 
-        //}
+        }
 
-        //public override void LoadNode(XmlNode elNode)
-        //{
-        //    var doc = dynRevitSettings.Doc.Document;
+        public override void LoadNode(XmlNode elNode)
+        {
+            var doc = dynRevitSettings.Doc.Document;
 
-        //    int index = -1;
+            int index = -1;
 
-        //    foreach (XmlNode subNode in elNode.ChildNodes)
-        //    {
-        //        if (subNode.Name.Equals("familyid"))
-        //        {
-        //            int id;
-        //            try
-        //            {
-        //                id = Convert.ToInt32(subNode.Attributes[0].Value);
-        //            }
-        //            catch
-        //            {
-        //                continue;
-        //            }
-        //            this.storedId = new ElementId(id);
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name.Equals("familyid"))
+                {
+                    int id;
+                    try
+                    {
+                        id = Convert.ToInt32(subNode.Attributes[0].Value);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                    this.storedId = new ElementId(id);
 
-        //            element = doc.GetElement(this.storedId);
+                    element = doc.GetElement(this.storedId);
 
-        //        }
-        //        else if (subNode.Name.Equals("index"))
-        //        {
-        //            try
-        //            {
-        //                index = Convert.ToInt32(subNode.Attributes[0].Value);
-        //            }
-        //            catch
-        //            {
-        //            }
-        //        }
-        //    }
+                }
+                else if (subNode.Name.Equals("index"))
+                {
+                    try
+                    {
+                        index = Convert.ToInt32(subNode.Attributes[0].Value);
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
 
-        //    if (element != null)
-        //    {
-        //        PopulateItems();
-        //        SelectedIndex = index;
-        //    }  
-        //}
+            if (element != null)
+            {
+                PopulateItems();
+                SelectedIndex = index;
+            }
+        }
     }
 
     #region Disabled ParameterMapper
