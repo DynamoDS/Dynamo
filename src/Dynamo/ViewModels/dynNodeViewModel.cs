@@ -113,6 +113,7 @@ namespace Dynamo.Controls
         public string NickName
         {
             get { return nodeLogic.NickName; }
+            set { nodeLogic.NickName = value; }
         }
 
         public string OldValue
