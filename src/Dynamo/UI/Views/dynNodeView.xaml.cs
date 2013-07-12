@@ -14,15 +14,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Grid = System.Windows.Controls.Grid;
 
 namespace Dynamo.Controls
 {

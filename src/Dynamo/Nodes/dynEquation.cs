@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Media;
 using System.Xml;
 
 using Microsoft.FSharp.Collections;
-
-using Dynamo.Controls;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
-using Dynamo.Utilities;
 using Value = Dynamo.FScheme.Value;
 
 using NCalc;

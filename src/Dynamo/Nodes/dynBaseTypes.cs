@@ -22,27 +22,23 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Media;
+//using System.Windows.Controls;
+//using System.Windows.Forms;
+//using System.Windows.Media;
 using System.Xml;
 using System.Web;
 
 using Dynamo.Connectors;
-using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
-using Microsoft.FSharp.Core;
 using Value = Dynamo.FScheme.Value;
 using TextBox = System.Windows.Controls.TextBox;
 using System.Windows.Input;
 using System.Windows.Data;
 using System.Globalization;
-using ComboBox = System.Windows.Controls.ComboBox;
-using HorizontalAlignment = System.Windows.HorizontalAlignment;
 
 namespace Dynamo.Nodes
 {
@@ -2305,153 +2301,6 @@ namespace Dynamo.Nodes
 
     #region Base Classes
 
-    public class dynTextBox : TextBox
-    {
-        public event Action OnChangeCommitted;
-
-        private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255,255,255));
-        private static Brush highlighted = new SolidColorBrush(System.Windows.Media.Color.FromArgb(200, 255, 255, 255));
-
-        public dynTextBox()
-        {
-            //turn off the border
-            Background = clear;
-            BorderThickness = new Thickness(1);
-            GotFocus += OnGotFocus;
-            LostFocus += OnLostFocus;
-            LostKeyboardFocus += OnLostFocus;
-        }
-
-        private void OnLostFocus(object sender, RoutedEventArgs routedEventArgs)
-        {
-            Background = clear;
-        }
-
-        private void OnGotFocus(object sender, RoutedEventArgs routedEventArgs)
-        {
-            Background = highlighted;
-        }
-
-        private bool numeric;
-        public bool IsNumeric
-        {
-            get { return numeric; }
-            set
-            {
-                numeric = value;
-                if (value && Text.Length > 0)
-                {
-                    Text = dynSettings.RemoveChars(
-                       Text,
-                       Text.ToCharArray()
-                          .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
-                          .Select(c => c.ToString())
-                    );
-                }
-            }
-        }
-
-        private bool pending;
-        public bool Pending
-        {
-            get { return pending; }
-            set
-            {
-                if (value)
-                {
-                    FontStyle = FontStyles.Italic;
-                }
-                else
-                {
-                    FontStyle = FontStyles.Normal;
-                }
-                pending = value;
-            }
-        }
-
-        public void Commit()
-        {
-            var expr = GetBindingExpression(TextBox.TextProperty);
-            if (expr != null)
-                expr.UpdateSource();
-
-            if (OnChangeCommitted != null)
-            {
-                OnChangeCommitted();
-            }
-            Pending = false;
-
-            //dynSettings.Bench.mainGrid.Focus();
-        }
-
-        new public string Text
-        {
-            get { return base.Text; }
-            set
-            {
-                //base.Text = value;
-                Commit();
-            }
-        }
-
-        private bool shouldCommit()
-        {
-            return !dynSettings.Controller.DynamoViewModel.DynamicRunEnabled;
-        }
-
-        protected override void OnTextChanged(TextChangedEventArgs e)
-        {
-            Pending = true;
-
-            if (IsNumeric)
-            {
-                var p = CaretIndex;
-
-                //base.Text = dynSettings.RemoveChars(
-                //   Text,
-                //   Text.ToCharArray()
-                //      .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
-                //      .Select(c => c.ToString())
-                //);
-
-                CaretIndex = p;
-            }
-        }
-
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == Key.Return || e.Key == Key.Enter)
-            {
-                dynSettings.ReturnFocusToSearch();
-            }
-        }
-
-        protected override void OnLostFocus(RoutedEventArgs e)
-        {
-            Commit();
-        }
-    }
-
-    public class dynStringTextBox : dynTextBox
-    {
-
-        public dynStringTextBox()
-        {
-            Commit();
-            Pending = false;
-        }
-
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
-        {
-            //if (e.Key == Key.Return || e.Key == Key.Enter)
-            //{
-            //    dynSettings.ReturnFocusToSearch();
-            //}
-        }
-
-    }
-
-
     [IsInteractive(true)]
     public abstract partial class dynBasicInteractive<T> : dynNodeWithOneOutput
     {
@@ -2657,10 +2506,10 @@ namespace Dynamo.Nodes
     [NodeDescription("Change a number value with a slider.")]
     public partial class dynDoubleSliderInput : dynDouble
     {
-        Slider tb_slider;
-        dynTextBox mintb;
-        dynTextBox maxtb;
-        dynTextBox valtb;
+        //Slider tb_slider;
+        //dynTextBox mintb;
+        //dynTextBox maxtb;
+        //dynTextBox valtb;
 
         private double max;
         private double min;
@@ -2882,20 +2731,9 @@ namespace Dynamo.Nodes
     [NodeName("Directory")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Allows you to select a directory on the system to get its path.")]
-    public class dynStringDirectory : dynStringFilename
+    public partial class dynStringDirectory : dynStringFilename
     {
-        protected override void readFileButton_Click(object sender, RoutedEventArgs e)
-        {
-            var openDialog = new FolderBrowserDialog
-            {
-                ShowNewFolderButton = true
-            };
 
-            if (openDialog.ShowDialog() == DialogResult.OK)
-            {
-                Value = openDialog.SelectedPath;
-            }
-        }
     }
 
     [NodeName("File Path")]
@@ -2919,19 +2757,6 @@ namespace Dynamo.Nodes
             else
             {
                 return "";
-            }
-        }
-
-        protected virtual void readFileButton_Click(object sender, RoutedEventArgs e)
-        {
-            var openDialog = new OpenFileDialog
-            {
-                CheckFileExists = false
-            };
-
-            if (openDialog.ShowDialog() == DialogResult.OK)
-            {
-                Value = openDialog.FileName;
             }
         }
 

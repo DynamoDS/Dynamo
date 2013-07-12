@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Windows;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Selection

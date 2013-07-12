@@ -17,9 +17,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoColorsAndBrushes.xaml" />
-                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoConverters.xaml" />
-                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/UI/Themes/DynamoConverters.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/UI/Themes/DynamoModern.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

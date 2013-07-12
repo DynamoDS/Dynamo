@@ -13,18 +13,8 @@
 //limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Media;
-using System.Linq;
-using System.ComponentModel;
-using System.Collections.Specialized;
-using Dynamo.Connectors;
 using Dynamo.Controls;
-using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using System.Windows.Input;
 

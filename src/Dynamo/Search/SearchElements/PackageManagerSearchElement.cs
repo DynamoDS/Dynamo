@@ -14,8 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows;
-using Dynamo.Commands;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Greg.Responses;

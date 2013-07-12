@@ -20,9 +20,7 @@ using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
 using HelixToolkit.Wpf;
 using Dynamo.Controls;
-using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using System.Windows.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.Nodes

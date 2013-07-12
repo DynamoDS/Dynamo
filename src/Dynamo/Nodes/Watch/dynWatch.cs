@@ -13,12 +13,8 @@
 //limitations under the License.
 
 using System;
-using System.Windows;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-//using Autodesk.Revit.DB;
-using System.Windows.Controls;
 using Dynamo.Connectors;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
