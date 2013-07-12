@@ -175,5 +175,24 @@ namespace Dynamo.FSchemeInterop
 
             return false;
         }
+        public static bool IsListOfListsOfLists(FScheme.Value value)
+        {
+            if (value.IsList)
+            {
+                FSharpList<Value> vals = ((Value.List)value).Item;
+
+                if (!vals.Any())
+                    return false;
+
+                if (vals[0].IsList)
+                {
+                    FSharpList<Value> vals2 = ((Value.List)vals[0]).Item;
+                    if (vals2.Any() && vals2[0].IsList)
+                        return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
