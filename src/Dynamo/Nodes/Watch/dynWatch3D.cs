@@ -31,7 +31,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview")]
-    public class dynWatch3D : dynNodeWithOneOutput
+    public partial class dynWatch3D : dynNodeWithOneOutput
     {
         WatchView _watchView;
 
@@ -56,69 +56,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-        }
-
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
-        {
-            MenuItem mi = new MenuItem();
-            mi.Header = "Zoom to Fit";
-            mi.Click += new RoutedEventHandler(mi_Click);
-
-            nodeUI.MainContextMenu.Items.Add(mi);
-
-            //take out the left and right margins and make this so it's not so wide
-            //NodeUI.inputGrid.Margin = new Thickness(10, 10, 10, 10);
-
-            //add a 3D viewport to the input grid
-            //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
-            _watchView = new WatchView();
-            _watchView.watch_view.DataContext = this;
-
-            RenderOptions.SetEdgeMode(_watchView, EdgeMode.Unspecified);
-
-            Points = new Point3DCollection();
-            Lines = new Point3DCollection();
-
-            _points = new PointsVisual3D { Color = Colors.Red, Size = 6 };
-            _lines = new LinesVisual3D { Color = Colors.Blue, Thickness = 1 };
-
-            _points.Points = Points;
-            _lines.Points = Lines;
-
-            _watchView.watch_view.Children.Add(_lines);
-            _watchView.watch_view.Children.Add(_points);
-
-            _watchView.watch_view.Children.Add(new DefaultLights());
-
-            _watchView.Width = 400;
-            _watchView.Height = 300;
-
-            System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
-            backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            backgroundRect.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-            //backgroundRect.RadiusX = 10;
-            //backgroundRect.RadiusY = 10;
-            backgroundRect.IsHitTestVisible = false;
-            BrushConverter bc = new BrushConverter();
-            Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
-            backgroundRect.Stroke = strokeBrush;
-            backgroundRect.StrokeThickness = 1;
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
-            backgroundRect.Fill = backgroundBrush;
-
-
-            //nodeUI.inputGrid.Children.Add(backgroundRect);
-            //nodeUI.inputGrid.Children.Add(_watchView);
-
-            nodeUI.grid.Children.Add(backgroundRect);
-            nodeUI.grid.Children.Add(_watchView);
-            backgroundRect.SetValue(Grid.RowProperty,2);
-            backgroundRect.SetValue(Grid.ColumnSpanProperty,3);
-            _watchView.SetValue(Grid.RowProperty, 2);
-            _watchView.SetValue(Grid.ColumnSpanProperty, 3);
-            _watchView.Margin = new Thickness(5,0,5,5);
-            backgroundRect.Margin = new Thickness(5, 0, 5, 5);
-            CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
         }
 
         void mi_Click(object sender, RoutedEventArgs e)

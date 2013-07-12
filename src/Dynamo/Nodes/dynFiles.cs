@@ -148,7 +148,7 @@ namespace Dynamo.Nodes
     [NodeName("Read Image File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Reads data from an image file.")]
-    public class dynImageFileReader : dynFileReaderBase
+    public partial class dynImageFileReader : dynFileReaderBase
     {
         System.Windows.Controls.Image image1;
 
@@ -158,27 +158,6 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
             InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
             RegisterAllPorts();
-        }
-
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
-        {
-            image1 = new System.Windows.Controls.Image
-                {
-                    //Width = 320,
-                    //Height = 240,
-                    MaxWidth = 400,
-                    MaxHeight = 400,
-                    Margin = new Thickness(5),
-                    HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
-                    Name = "image1",
-                    VerticalAlignment = System.Windows.VerticalAlignment.Center
-                };
-
-            //nodeUI.inputGrid.Children.Add(image1);
-            nodeUI.grid.Children.Add(image1);
-            image1.SetValue(Grid.RowProperty, 2);
-            image1.SetValue(Grid.ColumnProperty, 0);
-            image1.SetValue(Grid.ColumnSpanProperty, 3);
         }
 
         public override Value Evaluate(FSharpList<Value> args)

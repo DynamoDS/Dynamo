@@ -35,7 +35,7 @@ namespace Dynamo
         
         [NodeDescription("A node with customized internal functionality.")]
         [IsInteractive(false)]
-        public class dynFunction : dynBuiltinFunction
+        public partial class dynFunction : dynBuiltinFunction
         {
             protected internal dynFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition def)
                 : base(def.FunctionId.ToString())
@@ -74,11 +74,6 @@ namespace Dynamo
             public new string Name 
             {
                 get { return this.Definition.Workspace.Name; }
-            }
-
-            public override void SetupCustomUIElements(dynNodeView nodeUI)
-            {
-                nodeUI.MouseDoubleClick += new System.Windows.Input.MouseButtonEventHandler(ui_MouseDoubleClick);
             }
 
             void ui_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -361,7 +356,7 @@ namespace Dynamo
         [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
         [NodeDescription("A function output")]
         [IsInteractive(false)]
-        public class dynOutput : dynNodeModel
+        public partial class dynOutput : dynNodeModel
         {
             TextBox tb;
             private string symbol = "";
@@ -371,32 +366,6 @@ namespace Dynamo
                 InPortData.Add(new PortData("", "", typeof(object)));
 
                 RegisterAllPorts();
-            }
-
-            public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
-            {
-                //add a text box to the input grid of the control
-                tb = new TextBox();
-                tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-                tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-                nodeUI.inputGrid.Children.Add(tb);
-                System.Windows.Controls.Grid.SetColumn(tb, 0);
-                System.Windows.Controls.Grid.SetRow(tb, 0);
-
-                //turn off the border
-                SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-                tb.Background = backgroundBrush;
-                tb.BorderThickness = new Thickness(0);
-
-                tb.DataContext = this;
-                var bindingSymbol = new System.Windows.Data.Binding("Symbol")
-                {
-                    Mode = BindingMode.TwoWay,
-                    Converter = new StringDisplay()
-                };
-                tb.SetBinding(TextBox.TextProperty, bindingSymbol);
-
-                tb.TextChanged += tb_TextChanged;
             }
 
             void tb_TextChanged(object sender, TextChangedEventArgs e)
@@ -451,7 +420,7 @@ namespace Dynamo
         [NodeDescription("A function parameter")]
         [NodeSearchTags("variable", "argument", "parameter")]
         [IsInteractive(false)]
-        public class dynSymbol : dynNodeModel
+        public partial class dynSymbol : dynNodeModel
         {
             TextBox tb;
             private string symbol = "";
@@ -461,32 +430,6 @@ namespace Dynamo
                 OutPortData.Add(new PortData("", "Symbol", typeof(object)));
 
                 RegisterAllPorts();
-            }
-
-            public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
-            {
-                //add a text box to the input grid of the control
-                tb = new TextBox();
-                tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-                tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-                nodeUI.inputGrid.Children.Add(tb);
-                System.Windows.Controls.Grid.SetColumn(tb, 0);
-                System.Windows.Controls.Grid.SetRow(tb, 0);
-
-                //turn off the border
-                SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-                tb.Background = backgroundBrush;
-                tb.BorderThickness = new Thickness(0);
-
-                tb.DataContext = this;
-                var bindingSymbol = new System.Windows.Data.Binding("Symbol")
-                {
-                    Mode = BindingMode.TwoWay
-                };
-                tb.SetBinding(TextBox.TextProperty, bindingSymbol);
-
-                tb.TextChanged += new TextChangedEventHandler(tb_TextChanged);
-
             }
 
             void tb_TextChanged(object sender, TextChangedEventArgs e)

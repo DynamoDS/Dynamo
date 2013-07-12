@@ -17,7 +17,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class dynEnum : dynNodeWithOneOutput
+    public abstract partial class dynEnum : dynNodeWithOneOutput
     {
 
         public int SelectedIndex { get; set; }
@@ -27,32 +27,6 @@ namespace Dynamo.Nodes
         {
             Items = new string[] {""};
             SelectedIndex = 0;
-        }
-
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            var comboBox = new ComboBox
-                {
-                    MinWidth = 150,
-                    Padding = new Thickness(8),
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-
-            nodeUI.inputGrid.Children.Add(comboBox);
-
-            Grid.SetColumn(comboBox, 0);
-            Grid.SetRow(comboBox, 0);
-
-            comboBox.ItemsSource = this.Items;
-            comboBox.SelectedIndex = this.SelectedIndex;
-
-            comboBox.SelectionChanged += delegate
-            {
-                if (comboBox.SelectedIndex == -1) return;
-                this.RequiresRecalc = true;
-                this.SelectedIndex = comboBox.SelectedIndex;
-            };
         }
 
         public void WireToEnum(Array arr)

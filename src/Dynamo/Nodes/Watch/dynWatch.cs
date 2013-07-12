@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("Visualize the output of node. ")]
     [NodeSearchTags("print", "output", "display")]
-    public class dynWatch: dynNodeWithOneOutput
+    public partial class dynWatch: dynNodeWithOneOutput
     {
         public WatchTree watchTree;
         public WatchTreeBranch watchTreeBranch;
@@ -89,18 +89,6 @@ namespace Dynamo.Nodes
             {
                 p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
             }
-        }
-
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            watchTree = new WatchTree();
-
-            //nodeUI.inputGrid.Children.Add(watchTree);
-            nodeUI.grid.Children.Add(watchTree);
-            watchTree.SetValue(Grid.RowProperty,2);
-            watchTree.SetValue(Grid.ColumnSpanProperty,3);
-            watchTree.Margin = new Thickness(5,0,5,5);
-            watchTreeBranch = watchTree.FindResource("Tree") as WatchTreeBranch;
         }
 
         void p_PortDisconnected(object sender, EventArgs e)
