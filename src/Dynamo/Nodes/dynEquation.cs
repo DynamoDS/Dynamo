@@ -24,7 +24,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Design and compute mathematical expressions.")]
     [NodeSearchTags("Equation", "Arithmetic")]
     [IsInteractive(true)]
-    public class dynFormula : dynMathBase
+    public partial class dynFormula : dynMathBase
     {
         private string _formula = "";
         public string Formula
@@ -57,28 +57,6 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("", "Result of math computation", typeof(Value.Number)));
             RegisterAllPorts();
-        }
-
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            var tb = new dynTextBox();
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-            nodeUI.inputGrid.Children.Add(tb);
-            System.Windows.Controls.Grid.SetColumn(tb, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 0);
-            tb.IsNumeric = false;
-            tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-
-            tb.DataContext = this;
-            var bindingVal = new Binding("Formula")
-            {
-                Mode = BindingMode.TwoWay,
-                NotifyOnValidationError = false,
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tb.SetBinding(TextBox.TextProperty, bindingVal);
         }
 
         public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
