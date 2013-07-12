@@ -187,93 +187,69 @@ namespace Dynamo.Utilities
 
         public class SelectionHelper
         {
-
-            //RequestReferencePointSelection
-            public static ReferencePoint RequestReferencePointSelection(UIDocument doc, string message)
+            public static ReferencePoint RequestReferencePointSelection(string message)
             {
-                try
-                {
-                    ReferencePoint rp = null;
+                var doc = dynRevitSettings.Doc;
 
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                ReferencePoint rp = null;
 
-                    choices.Elements.Clear();
+                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
-                    //MessageBox.Show(message);
-                    dynSettings.Controller.DynamoViewModel.Log(message);
+                choices.Elements.Clear();
 
-                    //create some geometry options so that we computer references
-                    Autodesk.Revit.DB.Options opts = new Options();
-                    opts.ComputeReferences = true;
-                    opts.DetailLevel = ViewDetailLevel.Medium;
-                    opts.IncludeNonVisibleObjects = false;
-                    
-                    Reference pointRef = doc.Selection.PickObject(ObjectType.Element);
-                    //Reference pointRef = IdlePromise<Reference>.ExecuteOnIdle(
-                    //    () => doc.Selection.PickObject(ObjectType.Element)
-                    //);
+                dynSettings.Controller.DynamoViewModel.Log(message);
 
-
-                    if (pointRef != null)
+                //create some geometry options so that we computer references
+                var opts = new Options
                     {
-                        rp = dynRevitSettings.Doc.Document.GetElement(pointRef) as ReferencePoint;
-                    }
-                    return rp;
-                }
-                catch (Exception ex)
+                        ComputeReferences = true,
+                        DetailLevel = ViewDetailLevel.Medium,
+                        IncludeNonVisibleObjects = false
+                    };
+
+                Reference pointRef = doc.Selection.PickObject(ObjectType.Element);
+
+                if (pointRef != null)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
-                    return null;
+                    rp = dynRevitSettings.Doc.Document.GetElement(pointRef) as ReferencePoint;
                 }
-
-
-            }
-            public static CurveElement RequestCurveElementSelection(UIDocument doc, string message)
-            {
-                try
-                {
-                    CurveElement c = null;
-
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
-
-                    choices.Elements.Clear();
-
-                    //MessageBox.Show(message);
-                    dynSettings.Controller.DynamoViewModel.Log(message);
-
-                    Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
-
-                    c = dynRevitSettings.Revit.ActiveUIDocument.Document.GetElement(curveRef) as CurveElement;
-
-                    return c;
-                }
-                catch (Exception ex)
-                {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
-                    return null;
-                }
+                return rp;
             }
 
-            public static IList<Element> RequestMultipleCurveElementsSelection(UIDocument doc, string message)
+            public static CurveElement RequestCurveElementSelection(string message)
             {
-                try
-                {
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
-                    choices.Elements.Clear();
+                var doc = dynRevitSettings.Doc;
 
-                    dynSettings.Controller.DynamoViewModel.Log(message);
+                CurveElement c = null;
 
-                    var ca = new ElementArray();
-                    ISelectionFilter selFilter = new CurveSelectionFilter();
-                    return doc.Selection.PickElementsByRectangle(//selFilter,
-                        "Window select multiple curves.") as IList<Element>;
+                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
-                }
-                catch (Exception ex)
-                {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
-                    return null;
-                }
+                choices.Elements.Clear();
+
+                //MessageBox.Show(message);
+                dynSettings.Controller.DynamoViewModel.Log(message);
+
+                Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
+
+                c = dynRevitSettings.Revit.ActiveUIDocument.Document.GetElement(curveRef) as CurveElement;
+
+                return c;
+            }
+
+            public static IList<Element> RequestMultipleCurveElementsSelection(string message)
+            {
+                var doc = dynRevitSettings.Doc;
+
+                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                choices.Elements.Clear();
+
+                dynSettings.Controller.DynamoViewModel.Log(message);
+
+                var ca = new ElementArray();
+                ISelectionFilter selFilter = new CurveSelectionFilter();
+                return doc.Selection.PickElementsByRectangle(//selFilter,
+                    "Window select multiple curves.") as IList<Element>;
+
             }
 
             public class CurveSelectionFilter : ISelectionFilter
@@ -293,127 +269,101 @@ namespace Dynamo.Utilities
                 }
             }
 
-            public static Face RequestFaceSelection(UIDocument doc, string message)
+            public static Face RequestFaceSelection(string message)
             {
-                try
-                {
-                    Face f = null;
+                var doc = dynRevitSettings.Doc;
 
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                Face f = null;
 
-                    choices.Elements.Clear();
+                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
-                    //MessageBox.Show(message);
-                    dynSettings.Controller.DynamoViewModel.Log(message);
+                choices.Elements.Clear();
 
-                    //create some geometry options so that we computer references
-                    Autodesk.Revit.DB.Options opts = new Options();
-                    opts.ComputeReferences = true;
-                    opts.DetailLevel = ViewDetailLevel.Medium;
-                    opts.IncludeNonVisibleObjects = false;
+                dynSettings.Controller.DynamoViewModel.Log(message);
 
-                    Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
-
-                    if (faceRef != null)
+                //create some geometry options so that we computer references
+                var opts = new Options
                     {
+                        ComputeReferences = true,
+                        DetailLevel = ViewDetailLevel.Medium,
+                        IncludeNonVisibleObjects = false
+                    };
 
-                        GeometryObject geob = dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
+                Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
 
-                        f = geob as Face;
-                    }
-                    return f;
-                }
-                catch (Exception ex)
+                if (faceRef != null)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
-                    return null;
+                    GeometryObject geob = dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
+                    f = geob as Face;
                 }
-
+                return f;
 
             }
 
             // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
-            public static Reference RequestFaceReferenceSelection(UIDocument doc, string message)
+            public static Reference RequestFaceReferenceSelection(string message)
             {
-                try
-                {
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
-                    choices.Elements.Clear();
+                var doc = dynRevitSettings.Doc;
 
-                    //MessageBox.Show(message);
-                    dynSettings.Controller.DynamoViewModel.Log(message);
+                Reference faceRef = null;
 
-                    Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
+                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                choices.Elements.Clear();
 
-                    return faceRef;
-                }
-                catch (Exception ex)
-                {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
-                    return null;
-                }
+                dynSettings.Controller.DynamoViewModel.Log(message);
+                faceRef = doc.Selection.PickObject(ObjectType.Face);
+
+                return faceRef;
             }
 
-
-            public static Reference RequestEdgeReferenceSelection(UIDocument doc, string message)
+            public static Reference RequestEdgeReferenceSelection(string message)
             {
-                try
-                {
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
-                    choices.Elements.Clear();
+                var doc = dynRevitSettings.Doc;
 
-                    //MessageBox.Show(message);
-                    dynSettings.Controller.DynamoViewModel.Log(message);
+                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                choices.Elements.Clear();
 
-                    Reference edgeRef = doc.Selection.PickObject(ObjectType.Edge);
+                dynSettings.Controller.DynamoViewModel.Log(message);
 
-                    return edgeRef;
-                }
-                catch (Exception ex)
-                {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
-                    return null;
-                }
+                Reference edgeRef = doc.Selection.PickObject(ObjectType.Edge);
+
+                return edgeRef;
            }
 
-
-            public static Form RequestFormSelection(UIDocument doc, string message)
+            public static Form RequestFormSelection(string message)
             {
-                try
-                {
-                    Form f = null;
+                var doc = dynRevitSettings.Doc;
 
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                Form f = null;
 
-                    choices.Elements.Clear();
+                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
 
-                    //MessageBox.Show(message);
-                    dynSettings.Controller.DynamoViewModel.Log(message);
+                choices.Elements.Clear();
 
-                    //create some geometry options so that we computer references
-                    Autodesk.Revit.DB.Options opts = new Options();
-                    opts.ComputeReferences = true;
-                    opts.DetailLevel = ViewDetailLevel.Medium;
-                    opts.IncludeNonVisibleObjects = false;
+                dynSettings.Controller.DynamoViewModel.Log(message);
 
-                    Reference formRef = doc.Selection.PickObject(ObjectType.Element);
-
-                    if (formRef != null)
+                //create some geometry options so that we computer references
+                var opts = new Options
                     {
-                        //the suggested new method didn't exist in API?
-                        f = dynRevitSettings.Doc.Document.GetElement(formRef) as Form;
-                    }
-                    return f;
-                }
-                catch (Exception ex)
+                        ComputeReferences = true,
+                        DetailLevel = ViewDetailLevel.Medium,
+                        IncludeNonVisibleObjects = false
+                    };
+
+                Reference formRef = doc.Selection.PickObject(ObjectType.Element);
+
+                if (formRef != null)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
-                    return null;
+                    //the suggested new method didn't exist in API?
+                    f = dynRevitSettings.Doc.Document.GetElement(formRef) as Form;
                 }
+                return f;
             }
 
-            public static FamilySymbol RequestFamilySymbolByInstanceSelection(UIDocument doc, string message, ref FamilyInstance fi)
+            public static FamilySymbol RequestFamilySymbolByInstanceSelection(string message, ref FamilyInstance fi)
             {
+                var doc = dynRevitSettings.Doc;
+
                 try
                 {
                     //FamilySymbol fs = null;
@@ -446,8 +396,10 @@ namespace Dynamo.Utilities
                 }
             }
 
-            public static FamilyInstance RequestFamilyInstanceSelection(UIDocument doc, string message)
+            public static FamilyInstance RequestFamilyInstanceSelection(string message)
             {
+                var doc = dynRevitSettings.Doc;
+
                 try
                 {
                     Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
@@ -473,35 +425,33 @@ namespace Dynamo.Utilities
                 }
             }
 
-            public static Element RequestLevelSelection(UIDocument doc, string message)
+            public static Element RequestLevelSelection(string message)
             {
-                try
+                var doc = dynRevitSettings.Doc;
+
+                Level l = null;
+
+                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+
+                choices.Elements.Clear();
+
+                //MessageBox.Show(message);
+                dynSettings.Controller.DynamoViewModel.Log(message);
+
+                Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
+
+                if (fsRef != null)
                 {
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
-
-                    choices.Elements.Clear();
-
-                    //MessageBox.Show(message);
-                    dynSettings.Controller.DynamoViewModel.Log(message);
-
-                    Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
-
-                    if (fsRef != null)
-                    {
-                        return doc.Document.GetElement(fsRef.ElementId) as Level;
-                    }
-                    else
-                        return null;
+                    l = (Level)doc.Document.GetElement(fsRef.ElementId);
                 }
-                catch (Exception ex)
-                {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
-                    return null;
-                }
+
+                return l;
             }
 
-            public static Element RequestAnalysisResultInstanceSelection(UIDocument doc, string message)
+            public static Element RequestAnalysisResultInstanceSelection(string message)
             {
+                var doc = dynRevitSettings.Doc;
+
                 try
                 {
 
@@ -544,59 +494,44 @@ namespace Dynamo.Utilities
                 }
             }
 
-            public static Element RequestModelElementSelection(UIDocument doc, string message)
+            public static Element RequestModelElementSelection(string message)
             {
-                try
+                var doc = dynRevitSettings.Doc;
+
+                Element selectedElement = null;
+
+                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+
+                choices.Elements.Clear();
+
+                dynSettings.Controller.DynamoViewModel.Log(message);
+
+                Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
+
+                if (fsRef != null)
                 {
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
-
-                    choices.Elements.Clear();
-
-                    //MessageBox.Show(message);
-                    dynSettings.Controller.DynamoViewModel.Log(message);
-
-                    Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
-
-                    if (fsRef != null)
-                    {
-                        Element selectedElement = doc.Document.GetElement(fsRef.ElementId);
-                        if (selectedElement is FamilyInstance || selectedElement is HostObject ||
-                             selectedElement is ImportInstance ||
-                              selectedElement is CombinableElement)
-                            return selectedElement;
-                        else
-                            return null;
-
-                    }
-                    else
-                        return null;
+                    selectedElement = doc.Document.GetElement(fsRef.ElementId);
+                    if (selectedElement is FamilyInstance || selectedElement is HostObject ||
+                            selectedElement is ImportInstance ||
+                            selectedElement is CombinableElement)
+                        return selectedElement;
                 }
-                catch (Exception ex)
-                {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
-                    return null;
-                }
+
+                return selectedElement;
             }
        
-            public static Reference RequestReferenceXYZSelection(UIDocument doc, string message)
+            public static Reference RequestReferenceXYZSelection(string message)
             {
-                try
-                {
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
-                    choices.Elements.Clear();
+                var doc = dynRevitSettings.Doc;
 
-                    dynSettings.Controller.DynamoViewModel.Log(message);
+                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                choices.Elements.Clear();
 
-                    Reference xyzRef = doc.Selection.PickObject(ObjectType.PointOnElement);
+                dynSettings.Controller.DynamoViewModel.Log(message);
 
+                Reference xyzRef = doc.Selection.PickObject(ObjectType.PointOnElement);
 
-                    return xyzRef;
-                }
-                catch (Exception ex)
-                {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
-                    return null;
-                }
+                return xyzRef;
             }
         }
 

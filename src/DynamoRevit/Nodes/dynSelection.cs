@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -21,6 +22,7 @@ using System.Windows.Media;
 using System.Linq;
 using System.Xml;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.Revit;
@@ -28,17 +30,28 @@ using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class dynElementSelectionBase : dynNodeWithOneOutput
+    public abstract class dynSelectionBase : dynNodeWithOneOutput
     {
-        private TextBox _tb;
-        private Button _selectButton;
-
+        private bool _canSelect = true;
         protected string _selectButtonContent;
+        protected string _selectionMessage;
+        private Element _selected;
+        protected string _selectionText;
 
+        public bool CanSelect
+        {
+            get { return _canSelect; }
+            set { 
+                _canSelect = value;
+                RaisePropertyChanged("CanSelect");
+            }
+        }
+        
         public string SelectButtonContent
         {
             get { return _selectButtonContent; }
@@ -48,94 +61,6 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectButtonContent");
             }
         }
-
-        /// <summary>
-        /// Determines what the text should read on the node when the selection has been changed.
-        /// Is ignored in the case where nothing is selected.
-        /// </summary>
-        //protected abstract string SelectionText { get; }
-        protected string _selectionText;
-
-        public abstract string SelectionText { get; set; }
-
-        protected dynElementSelectionBase(PortData outPortData)
-        {
-            OutPortData.Add(outPortData);
-            RegisterAllPorts();
-        }
-
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
-        {
-            //add a button to the inputGrid on the dynElement
-            _selectButton = new dynNodeButton
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            _selectButton.Click += selectButton_Click;
-
-            _tb = new TextBox
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
-                BorderThickness = new Thickness(0),
-                IsReadOnly = true,
-                IsReadOnlyCaretVisible = false
-            };
-
-            //tb.Text = "Nothing Selected";
-            if (SelectedElement == null || !SelectionText.Any() || !SelectButtonContent.Any())
-            {
-                SelectionText = "Nothing Selected";
-                SelectButtonContent = "Select Instance";
-            }
-
-            //NodeUI.SetRowAmount(2);
-            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-
-            nodeUI.inputGrid.Children.Add(_tb);
-            nodeUI.inputGrid.Children.Add(_selectButton);
-
-            System.Windows.Controls.Grid.SetRow(_selectButton, 0);
-            System.Windows.Controls.Grid.SetRow(_tb, 1);
-
-            _tb.DataContext = this;
-            _selectButton.DataContext = this;
-
-            var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
-            {
-                Mode = BindingMode.TwoWay,
-            };
-            _tb.SetBinding(TextBox.TextProperty, selectTextBinding);
-
-            var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
-            {
-                Mode = BindingMode.TwoWay,
-            };
-            _selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
-        }
-
-        private void selectButton_Click(object sender, RoutedEventArgs e)
-        {
-            _selectButton.IsEnabled = false;
-            IdlePromise.ExecuteOnIdle(
-                delegate
-                {
-                    OnSelectClick();
-                    _selectButton.IsEnabled = true;
-                });
-        }
-
-        /// <summary>
-        /// Callback for when the "Select" button has been clicked.
-        /// </summary>
-        /// 
-        /// 
-        protected abstract void OnSelectClick();
-
-        private Element _selected;
 
         /// <summary>
         /// The Element which is selected. Setting this property will automatically register the Element
@@ -170,14 +95,10 @@ namespace Dynamo.Nodes
                         }
                         );
 
-                    //this.tb.Text = this.SelectionText;
-                    //this.selectButton.Content = "Change";
                     SelectButtonContent = "Change";
                 }
                 else
                 {
-                    //this.tb.Text = "Nothing Selected.";
-                    //this.selectButton.Content = "Select";
                     SelectionText = "Nothing Selected";
                     SelectButtonContent = "Select";
                 }
@@ -186,46 +107,98 @@ namespace Dynamo.Nodes
                     RequiresRecalc = true;
             }
         }
+        
+        /// <summary>
+        /// Determines what the text should read on the node when the selection has been changed.
+        /// Is ignored in the case where nothing is selected.
+        /// </summary>
+        public abstract string SelectionText { get; set; }
+
+        protected dynSelectionBase(PortData outPortData)
+        {
+            OutPortData.Add(outPortData);
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        {
+            //add a button to the inputGrid on the dynElement
+            var selectButton = new dynNodeButton
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            selectButton.Click += selectButton_Click;
+
+            var tb = new TextBox
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
+                BorderThickness = new Thickness(0),
+                IsReadOnly = true,
+                IsReadOnlyCaretVisible = false
+            };
+
+            //tb.Text = "Nothing Selected";
+            if (SelectedElement == null || !SelectionText.Any() || !SelectButtonContent.Any())
+            {
+                SelectionText = "Nothing Selected";
+                SelectButtonContent = "Select Instance";
+            }
+
+            //NodeUI.SetRowAmount(2);
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+
+            nodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(selectButton);
+
+            System.Windows.Controls.Grid.SetRow(selectButton, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 1);
+
+            tb.DataContext = this;
+            selectButton.DataContext = this;
+
+            var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            tb.SetBinding(TextBox.TextProperty, selectTextBinding);
+
+            var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
+
+            var buttonEnabledBinding = new System.Windows.Data.Binding("CanSelect")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
+        }
+
+        private void selectButton_Click(object sender, RoutedEventArgs e)
+        {
+            CanSelect = false;
+            IdlePromise.ExecuteOnIdle(
+                delegate
+                {
+                    OnSelectClick();
+                    CanSelect = true;
+                });
+        }
+
+        public virtual void OnSelectClick()
+        {
+            //this method calls a different selection action in the derived classes.
+        }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             if (SelectedElement == null)
             {
-                //if (dynSettings.Controller.Testing)
-                //{
-                //    //if we're in test mode
-                //    //try to pass out an object of the right type
-                //    if (this is dynCurvesBySelection)
-                //    {
-                //        FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-                //        fec.OfClass(typeof(CurveElement));
-
-                //        if (fec.ToElements().Any())
-                //        {
-                //            //attempt to find elements that have not yet been selected
-                //            //this is important for things like lofts where you cannot have
-                //            //an element be the input for two parts of the form
-                //            var curveBySelectionNodes = dynSettings.Controller.DynamoModel.Nodes
-                //                .Where(x => (x is dynCurvesBySelection) && (x as dynCurvesBySelection).SelectedElement != null);
-                //            var previouslySelectedElements = curveBySelectionNodes
-                //                .Select(x => (x as dynCurvesBySelection).SelectedElement);
-                //            foreach (Element e in fec.ToElements())
-                //            {
-                //                if (e is ModelCurve)
-                //                {
-                //                    if (!previouslySelectedElements.Contains(e))
-                //                    {
-                //                        this.SelectedElement = e;
-                //                        break;
-                //                    }
-                //                }
-                //            }
-                //        }
-                //        else
-                //            throw new Exception("Suitable curve could not be found for testing.");
-                //    }
-                //}
-                //else
                 throw new Exception("Nothing selected.");
             }
 
@@ -262,6 +235,66 @@ namespace Dynamo.Nodes
                     }
                     SelectedElement = saved;
                 }
+            }
+        }
+    }
+
+    public abstract class dynElementSelectionBase : dynSelectionBase
+    {
+        protected Func<string, Element> _selectionAction;
+
+        protected dynElementSelectionBase(PortData outPortData) : base(outPortData){}
+
+        /// <summary>
+        /// Callback for when the "Select" button has been clicked.
+        /// </summary>
+        public override void OnSelectClick()
+        {
+            try
+            {
+                SelectedElement = _selectionAction(_selectionMessage);
+                RaisePropertyChanged("SelectionText");
+                RequiresRecalc = true;
+            }
+            catch (OperationCanceledException cancelEx)
+            {
+                CanSelect = true;
+            }
+            catch (Exception e)
+            {
+                dynSettings.Controller.DynamoViewModel.Log(e);
+            }
+        }
+    }
+
+    [IsInteractive(true)]
+    public abstract class dynReferenceSelectionBase : dynSelectionBase
+    {
+        protected Func<string, Reference> _selectionAction;
+        protected Reference _reference;
+
+        protected dynReferenceSelectionBase(PortData outPortData):base(outPortData){}
+
+        /// <summary>
+        /// Callback for when the "Select" button has been clicked.
+        /// </summary>
+        public override void OnSelectClick()
+        {
+            try
+            {
+                _reference = _selectionAction(_selectionMessage);
+                if (_reference != null)
+                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_reference.ElementId);
+                RaisePropertyChanged("SelectionText");
+                RequiresRecalc = true;
+            }
+            catch (OperationCanceledException cancelEx)
+            {
+                CanSelect = true;
+            }
+            catch (Exception e)
+            {
+                dynSettings.Controller.DynamoViewModel.Log(e);
             }
         }
     }
@@ -486,14 +519,29 @@ namespace Dynamo.Nodes
         public dynFamilyInstanceCreatorSelection()
             : base(
                 new PortData(
-                    "fi", "Family instances created by this operation.", typeof(Value.Container))) { }
-
-        protected override void OnSelectClick()
+                    "fi", "Family instances created by this operation.", typeof (Value.Container)))
         {
-            SelectedElement = dynRevitSettings.SelectionHelper.RequestFamilyInstanceSelection(
-                dynRevitSettings.Doc, "Select Massing Family Instance");
-            RaisePropertyChanged("SelectionText");
+            _selectionMessage = "Select Family Instance";
+            _selectionAction = dynRevitSettings.SelectionHelper.RequestFamilyInstanceSelection;
         }
+
+        //protected override void OnSelectClick()
+        //{
+        //    try
+        //    {
+        //        SelectedElement = dynRevitSettings.SelectionHelper.RequestFamilyInstanceSelection("Select Massing Family Instance");
+        //        RaisePropertyChanged("SelectionText");
+        //        RequiresRecalc = true;
+        //    }
+        //    catch (OperationCanceledException cancelEx)
+        //    {
+        //        CanSelect = true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //    }
+        //}
 
         public override string SelectionText
         {
@@ -521,7 +569,11 @@ namespace Dynamo.Nodes
         public dynDividedSurfaceBySelection()
             : base(
                 new PortData(
-                    "srf", "The divided surface family instance(s)", typeof(Value.Container))) { }
+                    "srf", "The divided surface family instance(s)", typeof (Value.Container)))
+        {
+            _selectionMessage = "Select a divided surface.";
+            _selectionAction = dynRevitSettings.SelectionHelper.RequestFormSelection;
+        }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -532,53 +584,53 @@ namespace Dynamo.Nodes
             //the divided surface that way?
             DividedSurfaceData dsd = SelectedElement.GetDividedSurfaceData();
 
-            if (dsd != null)
+            if(dsd == null)
+                throw new Exception("The selected form has no divided surface data.");
+
+            foreach (Reference r in dsd.GetReferencesWithDividedSurfaces())
             {
-                foreach (Reference r in dsd.GetReferencesWithDividedSurfaces())
+                DividedSurface ds = dsd.GetDividedSurfaceForReference(r);
+
+                var gn = new GridNode();
+
+                int u = 0;
+                while (u < ds.NumberOfUGridlines)
                 {
-                    DividedSurface ds = dsd.GetDividedSurfaceForReference(r);
+                    var lst = new List<FamilyInstance>();
 
-                    var gn = new GridNode();
+                    gn.UIndex = u;
 
-                    int u = 0;
-                    while (u < ds.NumberOfUGridlines)
+                    int v = 0;
+                    while (v < ds.NumberOfVGridlines)
                     {
-                        var lst = new List<FamilyInstance>();
+                        gn.VIndex = v;
 
-                        gn.UIndex = u;
-
-                        int v = 0;
-                        while (v < ds.NumberOfVGridlines)
+                        //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
+                        if (ds.IsSeedNode(gn))
                         {
-                            gn.VIndex = v;
+                            FamilyInstance fi
+                                = ds.GetTileFamilyInstance(gn, 0);
 
-                            //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
-                            if (ds.IsSeedNode(gn))
-                            {
-                                FamilyInstance fi
-                                    = ds.GetTileFamilyInstance(gn, 0);
-
-                                //put the family instance into the tree
-                                lst.Add(fi);
-                            }
-                            v = v + 1;
+                            //put the family instance into the tree
+                            lst.Add(fi);
                         }
-
-                        //don't add list if it's empty
-                        if (lst.Any())
-                            result.Add(lst);
-
-                        u = u + 1;
+                        v = v + 1;
                     }
-                }
 
-                _data = Value.NewList(
-                    Utils.SequenceToFSharpList(
-                        result.Select(
-                            row => Value.NewList(
-                                Utils.SequenceToFSharpList(
-                                    row.Select(Value.NewContainer))))));
+                    //don't add list if it's empty
+                    if (lst.Any())
+                        result.Add(lst);
+
+                    u = u + 1;
+                }
             }
+
+            _data = Value.NewList(
+                Utils.SequenceToFSharpList(
+                    result.Select(
+                        row => Value.NewList(
+                            Utils.SequenceToFSharpList(
+                                row.Select(Value.NewContainer))))));
 
             return _data;
         }
@@ -598,117 +650,74 @@ namespace Dynamo.Nodes
             }
         }
 
-        /*
-        public override Element SelectedElement
-        {
-            get
-            {
-                return base.SelectedElement;
-            }
-            set
-            {
-                base.SelectedElement = value;
+        //protected override void OnSelectClick()
+        //{
+        //    SelectedElement = null;
 
-                var result = new List<List<FamilyInstance>>();
-
-                DividedSurfaceData dsd = this.SelectedElement.GetDividedSurfaceData();
-
-                if (dsd != null)
-                {
-                    foreach (Reference r in dsd.GetReferencesWithDividedSurfaces())
-                    {
-                        DividedSurface ds = dsd.GetDividedSurfaceForReference(r);
-
-                        GridNode gn = new GridNode();
-
-                        int u = 0;
-                        while (u < ds.NumberOfUGridlines)
-                        {
-
-                            var lst = new List<FamilyInstance>();
-
-                            gn.UIndex = u;
-
-                            int v = 0;
-                            while (v < ds.NumberOfVGridlines)
-                            {
-                                gn.VIndex = v;
-
-                                if (ds.IsSeedNode(gn))
-                                {
-                                    FamilyInstance fi
-                                      = ds.GetTileFamilyInstance(gn, 0);
-
-                                    //put the family instance into the tree
-                                    lst.Add(fi);
-                                }
-                                v = v + 1;
-                            }
-
-                            result.Add(lst);
-
-                            u = u + 1;
-                        }
-                    }
-
-                    this.data = Value.NewList(
-                       Utils.SequenceToFSharpList(
-                          result.Select(
-                             row => Value.NewList(
-                                Utils.SequenceToFSharpList(
-                                   row.Select(Value.NewContainer)
-                                )
-                             )
-                          )
-                       )
-                    );
-                }
-            }
-        }
-        */
-
-        protected override void OnSelectClick()
-        {
-            SelectedElement = null;
-            SelectedElement = dynRevitSettings.SelectionHelper.RequestFormSelection(
-                dynRevitSettings.Doc, "Select a form element.");
-            RaisePropertyChanged("SelectionText");
-        }
+        //    try
+        //    {
+        //        SelectedElement = dynRevitSettings.SelectionHelper.RequestFormSelection(
+        //            dynRevitSettings.Doc, "Select a form element.");
+        //        RaisePropertyChanged("SelectionText");
+        //        RequiresRecalc = true;
+        //    }
+        //    catch (OperationCanceledException)
+        //    {
+        //        CanSelect = true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //    }
+            
+        //}
     }
 
     [NodeName("Select Face")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a face from the document.")]
-    public class dynFormElementBySelection : dynElementSelectionBase, IDrawable
+    public class dynFormElementBySelection : dynReferenceSelectionBase, IDrawable
     {
-        private Reference _f;
-
         public RenderDescription RenderDescription { get; set; }
 
         public dynFormElementBySelection()
-            : base(new PortData("face", "The face", typeof(Value.Container))) { }
-
-        protected override void OnSelectClick()
+            : base(new PortData("face", "The face", typeof (Value.Container)))
         {
-            var doc = dynRevitSettings.Doc;
-
-            _f = dynRevitSettings.SelectionHelper.RequestFaceReferenceSelection(
-                doc, "Select a face.");
-            SelectedElement = doc.Document.GetElement(_f);
-            RaisePropertyChanged("SelectionText");
-
-            RequiresRecalc = true;
+            _selectionMessage = "Select a face.";
+            _selectionAction = dynRevitSettings.SelectionHelper.RequestFaceReferenceSelection;
         }
+
+        //protected override void OnSelectClick()
+        //{
+        //    var doc = dynRevitSettings.Doc;
+
+        //    try
+        //    {
+        //        _f = dynRevitSettings.SelectionHelper.RequestFaceReferenceSelection(
+        //            doc, "Select a face.");
+        //        SelectedElement = doc.Document.GetElement(_f);
+        //        RaisePropertyChanged("SelectionText");
+        //        RequiresRecalc = true;
+        //    }
+        //    catch (OperationCanceledException cancelEx)
+        //    {
+        //        CanSelect = true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //    }
+        //}
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             var opts = new Options { ComputeReferences = true };
 
             var face =
-                (Autodesk.Revit.DB.Face)dynRevitSettings.Doc.Document.GetElement(_f).GetGeometryObjectFromReference(_f);
+                (Autodesk.Revit.DB.Face)dynRevitSettings.Doc.Document.GetElement(_reference).GetGeometryObjectFromReference(_reference);
 
             //TODO: Is there a better way to get a face that has a reference?
-            foreach (GeometryObject geob in dynRevitSettings.Doc.Document.GetElement(_f).get_Geometry(opts))
+            foreach (GeometryObject geob in dynRevitSettings.Doc.Document.GetElement(_reference).get_Geometry(opts))
             {
                 if (FindFaceInGeometryObject(geob, ref face))
                     break;
@@ -769,26 +778,26 @@ namespace Dynamo.Nodes
                 RenderDescription.ClearAll();
 
             var face =
-                (Autodesk.Revit.DB.Face)dynRevitSettings.Doc.Document.GetElement(_f).GetGeometryObjectFromReference(_f);
+                (Autodesk.Revit.DB.Face)dynRevitSettings.Doc.Document.GetElement(_reference).GetGeometryObjectFromReference(_reference);
 
             dynRevitTransactionNode.DrawFace(RenderDescription, face);
         }
 
         public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            if(_f != null)
+            if(_reference != null)
                 dynEl.SetAttribute(
-                    "faceRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+                    "faceRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
         public override void LoadNode(XmlNode elNode)
         {
             try
             {
-                _f = Reference.ParseFromStableRepresentation(
+                _reference = Reference.ParseFromStableRepresentation(
                     dynRevitSettings.Doc.Document, elNode.Attributes["faceRef"].Value);
-                if (_f != null)
-                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_f.ElementId);
+                if (_reference != null)
+                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_reference.ElementId);
             }
             catch { }
         }
@@ -797,27 +806,42 @@ namespace Dynamo.Nodes
     [NodeName("Select Edge")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select an edge from the document.")]
-    public class dynEdgeOnElementBySelection : dynElementSelectionBase, IDrawable
+    public class dynEdgeOnElementBySelection : dynReferenceSelectionBase, IDrawable
     {
-        private Reference _f;
         public RenderDescription RenderDescription { get; set; }
 
         public dynEdgeOnElementBySelection()
-            : base(new PortData("edge", "The edge", typeof(Value.Container))) { }
-
-        protected override void OnSelectClick()
+            : base(new PortData("edge", "The edge", typeof (Value.Container)))
         {
-            var doc = dynRevitSettings.Doc;
-
-            _f = dynRevitSettings.SelectionHelper.RequestEdgeReferenceSelection(
-                doc, "Select an edge.");
-            SelectedElement = doc.Document.GetElement(_f);
-            RaisePropertyChanged("SelectionText");
+            _selectionMessage = "Select an edge.";
+            _selectionAction = dynRevitSettings.SelectionHelper.RequestEdgeReferenceSelection;
         }
+
+        //protected override void OnSelectClick()
+        //{
+        //    try
+        //    {
+        //        var doc = dynRevitSettings.Doc;
+
+        //        _f = dynRevitSettings.SelectionHelper.RequestEdgeReferenceSelection(
+        //            doc, "Select an edge.");
+        //        SelectedElement = doc.Document.GetElement(_f);
+        //        RaisePropertyChanged("SelectionText");
+        //        RequiresRecalc = true;
+        //    }
+        //    catch (OperationCanceledException cancelEx)
+        //    {
+        //        CanSelect = true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        dynRevitSettings.Controller.DynamoViewModel.Log(e);
+        //    } 
+        //}
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewContainer(_f);
+            return Value.NewContainer(_reference);
         }
 
         public override string SelectionText
@@ -843,25 +867,26 @@ namespace Dynamo.Nodes
                 RenderDescription.ClearAll();
 
             var edge =
-                (Edge)dynRevitSettings.Doc.Document.GetElement(_f).GetGeometryObjectFromReference(_f);
+                (Edge)dynRevitSettings.Doc.Document.GetElement(_reference).GetGeometryObjectFromReference(_reference);
 
             dynRevitTransactionNode.DrawGeometryElement(RenderDescription, edge);
         }
 
         public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            dynEl.SetAttribute(
-                "edgeRef", _f.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+            if(_reference != null)
+                dynEl.SetAttribute(
+                    "edgeRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
         public override void LoadNode(XmlNode elNode)
         {
             try
             {
-                _f = Reference.ParseFromStableRepresentation(
+                _reference = Reference.ParseFromStableRepresentation(
                     dynRevitSettings.Doc.Document, elNode.Attributes["edgeRef"].Value);
-                if (_f != null)
-                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_f.ElementId);
+                if (_reference != null)
+                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_reference.ElementId);
             }
             catch { }
         }
@@ -873,14 +898,30 @@ namespace Dynamo.Nodes
     public class dynCurvesBySelection : dynElementSelectionBase, IDrawable
     {
         public dynCurvesBySelection()
-            : base(new PortData("curve", "The curve", typeof(Value.Container))) { }
-
-        protected override void OnSelectClick()
+            : base(new PortData("curve", "The curve", typeof (Value.Container)))
         {
-            SelectedElement = dynRevitSettings.SelectionHelper.RequestCurveElementSelection(
-                dynRevitSettings.Doc, "Select a curve.");
-            RaisePropertyChanged("SelectionText");
+            _selectionMessage = "Select a curve.";
+            _selectionAction = dynRevitSettings.SelectionHelper.RequestCurveElementSelection;
         }
+
+        //protected override void OnSelectClick()
+        //{
+        //    try
+        //    {
+        //        SelectedElement = dynRevitSettings.SelectionHelper.RequestCurveElementSelection(
+        //            dynRevitSettings.Doc, "Select a curve.");
+        //        RaisePropertyChanged("SelectionText");
+        //        RequiresRecalc = true;
+        //    }
+        //    catch (OperationCanceledException cancelEx)
+        //    {
+        //        CanSelect = true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //    }
+        //}
 
         public override string SelectionText
         {
@@ -963,8 +1004,7 @@ namespace Dynamo.Nodes
             }
 
             SelectedElements = dynRevitSettings.SelectionHelper
-                                               .RequestMultipleCurveElementsSelection(
-                                                   dynRevitSettings.Doc, "Select a set of Revit Elements.");
+                                               .RequestMultipleCurveElementsSelection("Select a set of Revit Elements.");
 
             RaisePropertyChanged("SelectionText");
         }
@@ -996,15 +1036,31 @@ namespace Dynamo.Nodes
     public class dynPointBySelection : dynElementSelectionBase
     {
         public dynPointBySelection() :
-            base(new PortData("pt", "The point", typeof(Value.Container))) { }
-
-        protected override void OnSelectClick()
+            base(new PortData("pt", "The point", typeof (Value.Container)))
         {
-            SelectedElement = dynRevitSettings.SelectionHelper.RequestReferencePointSelection(
-                dynRevitSettings.Doc, "Select a reference point.");
-
-            RaisePropertyChanged("SelectionText");
+            _selectionMessage = "Select a reference point.";
+            _selectionAction = dynRevitSettings.SelectionHelper.RequestReferencePointSelection;
         }
+
+        //protected override void OnSelectClick()
+        //{
+        //    try
+        //    {
+        //        SelectedElement = dynRevitSettings.SelectionHelper.RequestReferencePointSelection(
+        //            dynRevitSettings.Doc, "Select a reference point.");
+        //        RaisePropertyChanged("SelectionText");
+        //        RequiresRecalc = true;
+        //    }
+        //    catch (OperationCanceledException cancelEx)
+        //    {
+        //        CanSelect = true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //    }
+            
+        //}
 
         public override string SelectionText
         {
@@ -1029,14 +1085,31 @@ namespace Dynamo.Nodes
     public class dynLevelBySelection : dynElementSelectionBase
     {
         public dynLevelBySelection() :
-            base(new PortData("lvl", "The selected level", typeof(Value.Container))) { }
-
-        protected override void OnSelectClick()
+            base(new PortData("lvl", "The selected level", typeof (Value.Container)))
         {
-            SelectedElement = dynRevitSettings.SelectionHelper.RequestLevelSelection(
-                dynRevitSettings.Doc, "Select a level.");
-            RaisePropertyChanged("SelectionText");
+            _selectionMessage = "Select a level.";
+            _selectionAction = dynRevitSettings.SelectionHelper.RequestLevelSelection;
         }
+
+        //protected override void OnSelectClick()
+        //{
+        //    try
+        //    {
+        //        SelectedElement = dynRevitSettings.SelectionHelper.RequestLevelSelection(
+        //            dynRevitSettings.Doc, "Select a level.");
+        //        RaisePropertyChanged("SelectionText");
+        //        RequiresRecalc = true;
+        //    }
+        //    catch (OperationCanceledException cancelEx)
+        //    {
+        //        CanSelect = true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        dynRevitSettings.Controller.DynamoViewModel.Log(e);
+        //    }
+            
+        //}
 
         public override string SelectionText
         {
@@ -1064,14 +1137,18 @@ namespace Dynamo.Nodes
             : base(
                 new PortData(
                     "me", "Model element reference created by this operation.",
-                    typeof(Value.Container))) { }
-
-        protected override void OnSelectClick()
+                    typeof (Value.Container)))
         {
-            SelectedElement = dynRevitSettings.SelectionHelper.RequestModelElementSelection(
-                dynRevitSettings.Doc, "Select Model Element");
-            RaisePropertyChanged("SelectionText");
+            _selectionMessage = "Select Model Element";
+            _selectionAction = dynRevitSettings.SelectionHelper.RequestModelElementSelection;
         }
+
+        //protected override void OnSelectClick()
+        //{
+        //    SelectedElement = dynRevitSettings.SelectionHelper.RequestModelElementSelection(
+        //        dynRevitSettings.Doc, "Select Model Element");
+        //    RaisePropertyChanged("SelectionText");
+        //}
 
         public override string SelectionText
         {
@@ -1092,9 +1169,9 @@ namespace Dynamo.Nodes
     [NodeName("Select XYZ on element")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a XYZ location on model face or edge of the element.")]
-    public class dynXYZBySelection : dynElementSelectionBase, IDrawable
+    public class dynXYZBySelection : dynReferenceSelectionBase, IDrawable
     {
-        private Reference _refXyz;
+        //private Reference _refXyz;
         private double _param0;
         private double _param1;
         private bool _init;
@@ -1102,27 +1179,31 @@ namespace Dynamo.Nodes
         public RenderDescription RenderDescription { get; set; }
 
         public dynXYZBySelection() :
-            base(new PortData("XYZ", "The XYZ location on element", typeof(Value.Container))) { }
-
-        protected override void OnSelectClick()
+            base(new PortData("XYZ", "The XYZ location on element", typeof (Value.Container)))
         {
-            _refXyz = dynRevitSettings.SelectionHelper.RequestReferenceXYZSelection(
-                dynRevitSettings.Doc, "Select a XYZ location on face or edge of the element."
-                );
-            if (_refXyz != null)
-                SelectedElement = dynRevitSettings.Doc.Document.GetElement(_refXyz.ElementId);
-            _init = false;
-
-            RaisePropertyChanged("SelectionText");
+            _selectionMessage = "Select a XYZ location on face or edge of the element.";
+            _selectionAction = dynRevitSettings.SelectionHelper.RequestReferenceXYZSelection;
         }
+
+        //protected override void OnSelectClick()
+        //{
+        //    _refXyz = dynRevitSettings.SelectionHelper.RequestReferenceXYZSelection(
+        //        dynRevitSettings.Doc, "Select a XYZ location on face or edge of the element."
+        //        );
+        //    if (_refXyz != null)
+        //        SelectedElement = dynRevitSettings.Doc.Document.GetElement(_refXyz.ElementId);
+        //    _init = false;
+
+        //    RaisePropertyChanged("SelectionText");
+        //}
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            if (_refXyz.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_SURFACE &&
-                _refXyz.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR)
+            if (_reference.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_SURFACE &&
+                _reference.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR)
                 throw new Exception("Could not use face or edge which is not part of the model");
 
-            GeometryObject thisObject = SelectedElement.GetGeometryObjectFromReference(_refXyz);
+            GeometryObject thisObject = SelectedElement.GetGeometryObjectFromReference(_reference);
             Autodesk.Revit.DB.Transform thisTrf = null;
 
 
@@ -1219,14 +1300,14 @@ namespace Dynamo.Nodes
 
             XYZ thisXYZ;
 
-            if (_refXyz.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_SURFACE
+            if (_reference.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_SURFACE
                 && thisObject is Autodesk.Revit.DB.Face)
             {
                 var face = thisObject as Autodesk.Revit.DB.Face;
                 if (!_init)
                 {
-                    _param0 = _refXyz.UVPoint[0];
-                    _param1 = _refXyz.UVPoint[1];
+                    _param0 = _reference.UVPoint[0];
+                    _param1 = _reference.UVPoint[1];
                     _init = true;
                 }
                 var uv = new UV(_param0, _param1);
@@ -1234,27 +1315,27 @@ namespace Dynamo.Nodes
                 if (thisTrf != null)
                     thisXYZ = thisTrf.OfPoint(thisXYZ);
             }
-            else if (_refXyz.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_LINEAR)
+            else if (_reference.ElementReferenceType == ElementReferenceType.REFERENCE_TYPE_LINEAR)
             {
                 Curve curve;
                 if (thisObject is Edge)
                 {
-                    var edge = (Edge)SelectedElement.GetGeometryObjectFromReference(_refXyz);
+                    var edge = (Edge)SelectedElement.GetGeometryObjectFromReference(_reference);
                     curve = edge.AsCurve();
                 }
                 else
-                    curve = (Curve)SelectedElement.GetGeometryObjectFromReference(_refXyz);
+                    curve = (Curve)SelectedElement.GetGeometryObjectFromReference(_reference);
                 if (curve != null)
                 {
                     if (_init)
                         thisXYZ = curve.Evaluate(_param0, true);
                     else
                     {
-                        XYZ curPoint = _refXyz.GlobalPoint;
+                        XYZ curPoint = _reference.GlobalPoint;
                         if (thisTrf != null)
                         {
                             Autodesk.Revit.DB.Transform inverseTrf = thisTrf.Inverse;
-                            curPoint = inverseTrf.OfPoint(_refXyz.GlobalPoint);
+                            curPoint = inverseTrf.OfPoint(_reference.GlobalPoint);
                         }
                         IntersectionResult thisResult = curve.Project(curPoint);
                         _param0 = curve.ComputeNormalizedParameter(thisResult.Parameter);
@@ -1278,9 +1359,9 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selectionText = _refXyz == null
+                return _selectionText = _reference == null
                                             ? "Nothing Selected"
-                                            : "Point on element" + " (" + _refXyz.ElementId + ")";
+                                            : "Point on element" + " (" + _reference.ElementId + ")";
             }
             set
             {
@@ -1296,28 +1377,29 @@ namespace Dynamo.Nodes
             else
                 RenderDescription.ClearAll();
 
-            XYZ thisXYZ = _refXyz.GlobalPoint;
+            XYZ thisXYZ = _reference.GlobalPoint;
 
             dynRevitTransactionNode.DrawXYZ(RenderDescription, thisXYZ);
         }
 
         public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            dynEl.SetAttribute(
-                "refXYZ", _refXyz.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
-            dynEl.SetAttribute("refXYZparam0", _param0.ToString());
-            dynEl.SetAttribute("refXYZparam1", _param1.ToString());
+            if(_reference != null)
+                dynEl.SetAttribute(
+                    "refXYZ", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+                dynEl.SetAttribute("refXYZparam0", _param0.ToString(CultureInfo.InvariantCulture));
+                dynEl.SetAttribute("refXYZparam1", _param1.ToString(CultureInfo.InvariantCulture));
         }
 
         public override void LoadNode(XmlNode elNode)
         {
             try
             {
-                _refXyz = Reference.ParseFromStableRepresentation(
+                _reference = Reference.ParseFromStableRepresentation(
                     dynRevitSettings.Doc.Document, elNode.Attributes["refXYZ"].Value);
-                if (_refXyz != null)
+                if (_reference != null)
                     SelectedElement = dynRevitSettings.Doc.Document.GetElement(
-                        _refXyz.ElementId);
+                        _reference.ElementId);
                 _param0 = Convert.ToDouble(elNode.Attributes["refXYZparam0"].Value);
                 _param1 = Convert.ToDouble(elNode.Attributes["refXYZparam1"].Value);
                 _init = true;
