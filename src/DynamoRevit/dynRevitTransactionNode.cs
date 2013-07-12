@@ -781,7 +781,7 @@ namespace Dynamo.Revit
 
     public class dynRevitTransactionNodeWithOneOutput : dynRevitTransactionNode
     {
-        public virtual bool acceptsListOfLists()
+        public virtual bool acceptsListOfLists(FScheme.Value value)
         {
             return false;
         }
@@ -831,7 +831,7 @@ namespace Dynamo.Revit
                     else
                     {
                         //check if we have a list of lists, if so, then don't wrap
-                        if (Utils.IsListOfLists(arg) && !acceptsListOfLists())
+                        if (Utils.IsListOfLists(arg) && !acceptsListOfLists(arg))
                             //leave as list
                             argSets.Add(((Value.List)arg).Item);
                         else
