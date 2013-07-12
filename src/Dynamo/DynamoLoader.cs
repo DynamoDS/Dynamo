@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Dynamo.Commands;
 using Dynamo.Search;
 using Dynamo.Controls;
@@ -9,7 +8,6 @@ using System.Reflection;
 using System.IO;
 using Dynamo.Nodes;
 using System.Windows.Controls;
-using Dynamo.Utilities;
 using System.Windows;
 using System.Diagnostics;
 

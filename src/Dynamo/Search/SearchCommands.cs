@@ -17,7 +17,6 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Search;
 using Dynamo.Utilities;
-using Dynamo.Controls;
 
 namespace Dynamo.Commands
 {

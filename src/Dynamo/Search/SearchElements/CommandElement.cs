@@ -15,8 +15,6 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
-using Dynamo.Commands;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 
 namespace Dynamo.Search.SearchElements

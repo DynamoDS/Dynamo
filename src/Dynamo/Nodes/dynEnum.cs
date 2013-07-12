@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
 using System.Xml;
-
-using Dynamo.Controls;
 using Dynamo.Connectors;
-using Dynamo.Utilities;
-
-using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 

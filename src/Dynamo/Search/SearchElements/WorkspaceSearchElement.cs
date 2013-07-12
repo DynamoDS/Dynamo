@@ -13,9 +13,6 @@
 //limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Windows;
-using Dynamo.Commands;
 using Dynamo.Utilities;
 
 namespace Dynamo.Search.SearchElements

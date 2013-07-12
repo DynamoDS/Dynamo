@@ -1,12 +1,22 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Dynamo.Controls;
 using Dynamo.Utilities;
 using HelixToolkit.Wpf;
+using Binding = System.Windows.Data.Binding;
+using ComboBox = System.Windows.Controls.ComboBox;
+using DialogResult = System.Windows.Forms.DialogResult;
+using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using MenuItem = System.Windows.Controls.MenuItem;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Nodes
 {
@@ -194,7 +204,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a slider control to the input grid of the control
-            tb_slider = new Slider();
+            var tb_slider = new Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
@@ -207,17 +217,17 @@ namespace Dynamo.Nodes
                 dynSettings.ReturnFocusToSearch();
             };
 
-            mintb = new dynTextBox();
+            var mintb = new dynTextBox();
             mintb.Width = double.NaN;
 
             mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             // input value textbox
-            valtb = new dynTextBox();
+            var valtb = new dynTextBox();
             valtb.Width = double.NaN;
             valtb.Margin = new Thickness(0, 0, 10, 0);
 
-            maxtb = new dynTextBox();
+            var maxtb = new dynTextBox();
             maxtb.Width = double.NaN;
 
             maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
@@ -423,6 +433,20 @@ namespace Dynamo.Nodes
                 Converter = new FilePathDisplay()
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
+        }
+
+
+        protected virtual void readFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var openDialog = new OpenFileDialog
+            {
+                CheckFileExists = false
+            };
+
+            if (openDialog.ShowDialog() == DialogResult.OK)
+            {
+                Value = openDialog.FileName;
+            }
         }
  
     }
@@ -694,6 +718,168 @@ namespace Dynamo.Nodes
             _watchView.Margin = new Thickness(5, 0, 5, 5);
             backgroundRect.Margin = new Thickness(5, 0, 5, 5);
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
+        }
+
+    }
+
+    public partial class dynStringDirectory : dynStringFilename
+    {
+        protected override void readFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var openDialog = new FolderBrowserDialog
+            {
+                ShowNewFolderButton = true
+            };
+
+            if (openDialog.ShowDialog() == DialogResult.OK)
+            {
+                Value = openDialog.SelectedPath;
+            }
+        }
+    }
+
+    public class dynTextBox : System.Windows.Controls.TextBox
+    {
+        public event Action OnChangeCommitted;
+
+        private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255, 255, 255));
+        private static Brush highlighted = new SolidColorBrush(System.Windows.Media.Color.FromArgb(200, 255, 255, 255));
+
+        public dynTextBox()
+        {
+            //turn off the border
+            Background = clear;
+            BorderThickness = new Thickness(1);
+            GotFocus += OnGotFocus;
+            LostFocus += OnLostFocus;
+            LostKeyboardFocus += OnLostFocus;
+        }
+
+        private void OnLostFocus(object sender, RoutedEventArgs routedEventArgs)
+        {
+            Background = clear;
+        }
+
+        private void OnGotFocus(object sender, RoutedEventArgs routedEventArgs)
+        {
+            Background = highlighted;
+        }
+
+        private bool numeric;
+        public bool IsNumeric
+        {
+            get { return numeric; }
+            set
+            {
+                numeric = value;
+                if (value && Text.Length > 0)
+                {
+                    Text = dynSettings.RemoveChars(
+                       Text,
+                       Text.ToCharArray()
+                          .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
+                          .Select(c => c.ToString())
+                    );
+                }
+            }
+        }
+
+        private bool pending;
+        public bool Pending
+        {
+            get { return pending; }
+            set
+            {
+                if (value)
+                {
+                    FontStyle = FontStyles.Italic;
+                }
+                else
+                {
+                    FontStyle = FontStyles.Normal;
+                }
+                pending = value;
+            }
+        }
+
+        public void Commit()
+        {
+            var expr = GetBindingExpression(TextBox.TextProperty);
+            if (expr != null)
+                expr.UpdateSource();
+
+            if (OnChangeCommitted != null)
+            {
+                OnChangeCommitted();
+            }
+            Pending = false;
+
+            //dynSettings.Bench.mainGrid.Focus();
+        }
+
+        new public string Text
+        {
+            get { return base.Text; }
+            set
+            {
+                //base.Text = value;
+                Commit();
+            }
+        }
+
+        private bool shouldCommit()
+        {
+            return !dynSettings.Controller.DynamoViewModel.DynamicRunEnabled;
+        }
+
+        protected override void OnTextChanged(TextChangedEventArgs e)
+        {
+            Pending = true;
+
+            if (IsNumeric)
+            {
+                var p = CaretIndex;
+
+                //base.Text = dynSettings.RemoveChars(
+                //   Text,
+                //   Text.ToCharArray()
+                //      .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
+                //      .Select(c => c.ToString())
+                //);
+
+                CaretIndex = p;
+            }
+        }
+
+        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Return || e.Key == Key.Enter)
+            {
+                dynSettings.ReturnFocusToSearch();
+            }
+        }
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            Commit();
+        }
+    }
+
+    public class dynStringTextBox : dynTextBox
+    {
+
+        public dynStringTextBox()
+        {
+            Commit();
+            Pending = false;
+        }
+
+        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        {
+            //if (e.Key == Key.Return || e.Key == Key.Enter)
+            //{
+            //    dynSettings.ReturnFocusToSearch();
+            //}
         }
 
     }
