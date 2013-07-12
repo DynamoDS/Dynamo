@@ -22,7 +22,7 @@ namespace Dynamo.Nodes
         public dynLoftForm()
         {
             InPortData.Add(new PortData("solid/void", "Indicates if the Form is Solid or Void. Use True for solid and false for void.", typeof(Value.Number)));
-            InPortData.Add(new PortData("list", "A list of profiles to be the profile set of the newly created loft. Each profile must be in one plane and consist of list of curves of one curve loop or one curve.", typeof(Value.List)));
+            InPortData.Add(new PortData("list", "A list of profiles for the Loft Form. The recommended way is to use list of Planar Ref Curve Chains, list of lists and list of curves are supported for legacy graphs.", typeof(Value.List)));
             InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(Value.Container)));
 
             OutPortData.Add(new PortData("form", "Loft Form", typeof(object)));
@@ -111,58 +111,81 @@ namespace Dynamo.Nodes
 
             //Build up our list of list of references for the form by...
             var curvesListList = (Value.List)args[1];
-
-            IEnumerable<IEnumerable<Reference>> refArrays = (curvesListList).Item.Select(
-                //...first selecting everything in the topmost list...
-               delegate(Value x)
-               {
-                   //If the element in the topmost list is a sub-list...
-                   if (x.IsList)
-                   {
-                       //...then we return a new IEnumerable of References by converting the sub list.
-                       return (x as Value.List).Item.Select(
-                          delegate(Value y)
-                          {
-                              //Since we're in a sub-list, we can assume it's a container.
-                              var item = ((Value.Container)y).Item;
-                              if (item is CurveElement)
-                                  return (item as CurveElement).GeometryCurve.Reference;
-                              else
-                                  return (Reference)item;
-                          }
-                       );
-                   }
-                   //If the element is not a sub-list, then just assume it's a container.
-                   else
-                   {
-                       var obj = ((Value.Container)x).Item;
-                       Reference r;
-                       if (obj is CurveElement)
-                       {
-                           r = (obj as CurveElement).GeometryCurve.Reference;
-                       }
-                       else
-                       {
-                           r = (Reference)obj;
-                       }
-                       //We return a list here since it's expecting an IEnumerable<Reference>. In reality,
-                       //just passing the element by itself instead of a sub-list is a shortcut for having
-                       //a list with one element, so this is just performing that for the user.
-                       return new List<Reference>() { r };
-                   }
-               }
-            );
-
             //Now we add all of those references into ReferenceArrays
             ReferenceArrayArray refArrArr = new ReferenceArrayArray();
-            foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
-            {
-                var refArr = new ReferenceArray();
-                foreach (Reference r in refs)
-                    refArr.Append(r);
-                refArrArr.Append(refArr);
-            }
 
+            FSharpList<Value> vals = ((Value.List)curvesListList).Item;
+
+            if (vals.Any() && (vals[0] is Value.Container) && ((Value.Container)vals[0]).Item is ModelCurveArray)  
+            {
+                //Build a sequence that unwraps the input list from it's Value form.
+                IEnumerable<ModelCurveArray> modelCurveArrays = ((Value.List)args[1]).Item.Select(
+                   x => (ModelCurveArray)((Value.Container)x).Item
+                );
+
+                foreach (var modelCurveArray in modelCurveArrays)
+                {
+                    var refArr = new ReferenceArray();
+                    foreach (ModelCurve modelCurve in modelCurveArray)
+                    {
+                        refArr.Append(modelCurve.GeometryCurve.Reference);
+                    }
+                    refArrArr.Append(refArr);
+                }
+            }
+            else
+            {
+                IEnumerable<IEnumerable<Reference>> refArrays = (curvesListList).Item.Select(
+                    //...first selecting everything in the topmost list...
+                   delegate(Value x)
+                   {
+                       //If the element in the topmost list is a sub-list...
+                       if (x.IsList)
+                       {
+                           //...then we return a new IEnumerable of References by converting the sub list.
+                           return (x as Value.List).Item.Select(
+                              delegate(Value y)
+                              {
+                                  //Since we're in a sub-list, we can assume it's a container.
+                                  var item = ((Value.Container)y).Item;
+                                  if (item is CurveElement)
+                                      return (item as CurveElement).GeometryCurve.Reference;
+                                  else
+                                      return (Reference)item;
+                              }
+                           );
+                       }
+                       //If the element is not a sub-list, then just assume it's a container.
+                       else
+                       {
+                           var obj = ((Value.Container)x).Item;
+                           Reference r;
+                           if (obj is CurveElement)
+                           {
+                               r = (obj as CurveElement).GeometryCurve.Reference;
+                           }
+                           else
+                           {
+                               r = (Reference)obj;
+                           }
+                           //We return a list here since it's expecting an IEnumerable<Reference>. In reality,
+                           //just passing the element by itself instead of a sub-list is a shortcut for having
+                           //a list with one element, so this is just performing that for the user.
+                           return new List<Reference>() { r };
+                       }
+                   }
+                );
+
+                //Now we add all of those references into ReferenceArrays
+
+                foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
+                {
+                    var refArr = new ReferenceArray();
+                    foreach (Reference r in refs)
+                        refArr.Append(r);
+                    refArrArr.Append(refArr);
+                }
+            }
             //If we already have a form stored...
             if (this.Elements.Any())
             {
@@ -378,6 +401,61 @@ namespace Dynamo.Nodes
                 throw new Exception("This method is not available before 2014 release.");
 
             return Value.NewContainer(ffe);
+        }
+    }
+
+    [NodeName("Planar Ref Curve Chain")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
+    [NodeDescription("Creates planar chain of reference curves ")]
+    public class dynPlanarRefCurveChain : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynPlanarRefCurveChain()
+        {
+            InPortData.Add(new PortData("list", "A list of ref curves to make one planar chain", typeof(Value.List)));
+
+            OutPortData.Add(new PortData("Chain", "Chain of ref. curves ready to be one profile for nodes like Loft Form", typeof(ModelCurveArray)));
+
+            RegisterAllPorts();
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var doc = dynRevitSettings.Doc;
+            var refCurveList = ((Value.List)args[0]).Item.Select(
+               x => ( ((Value.Container)x).Item is ModelCurve ?
+                   ((ModelCurve)((Value.Container)x).Item)
+                   : (ModelCurve)(
+                                      doc.Document.GetElement( 
+                                             ((Reference) ((Value.Container)x).Item).ElementId)
+                                                             )
+                                 )
+                   ).ToList();
+
+            ModelCurveArray myModelCurves = new ModelCurveArray();
+      
+            CurveLoop curveLoop = new CurveLoop();
+            List<ElementId> refIds = new List<ElementId>();
+            foreach( var refCurve in refCurveList)
+            {
+                curveLoop.Append(refCurve.GeometryCurve);
+                refIds.Add(refCurve.Id);
+                myModelCurves.Append(refCurve);
+            }
+
+            foreach (ElementId oldId in this.Elements)
+            {
+                if (!refIds.Contains(oldId))
+                {
+                    this.Elements.Remove(oldId);
+                }
+            }
+            foreach (ElementId newId in refIds)
+            {
+                if (!this.Elements.Contains(newId))
+                    this.Elements.Add(newId);
+            }
+            if (!curveLoop.HasPlane())
+                throw new Exception(" Planar Ref Curve Chain fails: not planar");
+            return Value.NewContainer(myModelCurves);
         }
     }
 }
