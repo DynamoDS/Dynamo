@@ -367,7 +367,7 @@ namespace Dynamo.Nodes
             base.SetupCustomUIElements(nodeUI);
 
             //add a text box to the input grid of the control
-            tb = new dynStringTextBox
+            var tb = new dynStringTextBox
             {
                 AcceptsReturn = true,
                 AcceptsTab = true,
@@ -738,6 +738,32 @@ namespace Dynamo.Nodes
         }
     }
 
+    public partial class dynArduino : dynNodeWithOneOutput
+    {
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        {
+            string[] serialPortNames = System.IO.Ports.SerialPort.GetPortNames();
+
+            foreach (string portName in serialPortNames)
+            {
+
+                if (lastComItem != null)
+                {
+                    lastComItem.IsChecked = false; // uncheck last checked item
+                }
+                comItem = new System.Windows.Controls.MenuItem();
+                comItem.Header = portName;
+                comItem.IsCheckable = true;
+                comItem.IsChecked = true;
+                comItem.Checked += new System.Windows.RoutedEventHandler(comItem_Checked);
+                nodeUI.MainContextMenu.Items.Add(comItem);
+
+                port.PortName = portName;
+                lastComItem = comItem;
+            }
+        }
+    }
+
     public class dynTextBox : System.Windows.Controls.TextBox
     {
         public event Action OnChangeCommitted;
@@ -883,4 +909,6 @@ namespace Dynamo.Nodes
         }
 
     }
+
+    
 }

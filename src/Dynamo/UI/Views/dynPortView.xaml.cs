@@ -22,13 +22,6 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Connectors
 {
-    /// <summary>
-    /// Interaction logic for dynPort.xaml
-    /// </summary>
-    public delegate void PortConnectedHandler(object sender, EventArgs e);
-    public delegate void PortDisconnectedHandler(object sender, EventArgs e);
-    public enum PortType { INPUT, OUTPUT };
-
     public partial class dynPortView : UserControl, IViewModelView<dynPortViewModel>
     {
         private Dynamo.Controls.DragCanvas canvas;

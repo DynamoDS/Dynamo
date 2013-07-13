@@ -273,10 +273,10 @@ namespace Dynamo.Nodes
         protected internal ExecutionEnvironment macroEnvironment = null;
 
         //TODO: don't make this static (maybe)
-        protected DynamoView Bench
-        {
-            get { return dynSettings.Bench; }
-        }
+        //protected DynamoView Bench
+        //{
+        //    get { return dynSettings.Bench; }
+        //}
 
         protected DynamoController Controller
         {

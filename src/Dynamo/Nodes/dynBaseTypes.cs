@@ -2664,7 +2664,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Creates a string.")]
     public partial class dynStringInput : dynString
     {
-        dynTextBox tb;
+        //dynTextBox tb;
 
         public override string Value
         {

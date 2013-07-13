@@ -468,8 +468,8 @@ namespace Dynamo
 
     internal static class WorkspaceHelpers
     {
-        public static Dictionary<string, dynNodeView> HiddenNodes =
-            new Dictionary<string, dynNodeView>();
+        //public static Dictionary<string, dynNodeView> HiddenNodes =
+        //    new Dictionary<string, dynNodeView>();
     }
 
     public class FuncWorkspace : dynWorkspaceModel

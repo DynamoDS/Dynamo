@@ -215,6 +215,37 @@ namespace Dynamo.Search
 
         #endregion
 
+        #region events
+        public event EventHandler RequestShowSearch;
+        public virtual void OnRequestShowSearch(object sender, EventArgs e)
+        {
+            if (RequestShowSearch != null)
+                RequestShowSearch(this, e);
+        }
+
+        public event EventHandler RequestHideSearch;
+        public virtual void OnRequestHideSearch(object sender, EventArgs e)
+        {
+            if (RequestHideSearch != null)
+                RequestHideSearch(this, e);
+        }
+
+        public event EventHandler RequestFocusSearch;
+        public virtual void OnRequestFocusSearch(object sender, EventArgs e)
+        {
+            if (RequestFocusSearch != null)
+                RequestFocusSearch(this, e);
+        }
+
+        public event EventHandler RequestReturnFocusToSearch;
+        public virtual void OnRequestReturnFocusToSearch(object sender, EventArgs e)
+        {
+            if (RequestReturnFocusToSearch != null)
+                RequestReturnFocusToSearch(this, e);
+        }
+        #endregion
+
+
         /// <summary>
         ///     The class constructor.
         /// </summary>

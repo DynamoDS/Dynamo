@@ -294,7 +294,7 @@ namespace Dynamo.Utilities
         ///     directory where the executing assembly is located..
         /// </summary>
         /// <param name="bench">The logger is needed in order to tell how long it took.</param>
-        public static void LoadCustomNodes(DynamoView bench, CustomNodeLoader customNodeLoader, SearchViewModel searchViewModel)
+        public static void LoadCustomNodes(CustomNodeLoader customNodeLoader, SearchViewModel searchViewModel)
         {
 
             // custom node loader

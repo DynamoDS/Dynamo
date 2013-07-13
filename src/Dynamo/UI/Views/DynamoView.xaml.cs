@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Diagnostics;
+using Dynamo.Search;
 using Dynamo.Utilities;
 
 namespace Dynamo.Controls
@@ -67,6 +68,20 @@ namespace Dynamo.Controls
             dynSettings.Controller.DynamoViewModel.Log(string.Format("{0} elapsed for loading Dynamo main window.",
                                                                      _timer.Elapsed));
             DynamoLoader.LoadSamplesMenu(dynSettings.Bench);
+
+            var search = new SearchView();
+            search.DataContext = dynSettings.Controller.SearchViewModel;
+            sidebarGrid.Children.Add(search);
+            dynSettings.Controller.SearchViewModel.Visible = Visibility.Visible;
+
+            var pmLoginView = new PackageManager.PackageManagerLoginView();
+            pmLoginView.DataContext = dynSettings.Controller.PackageManagerLoginViewModel;
+            //mainGrid.Children.Add(pmLoginView);
+
+            var pmPublishView = new PackageManager.PackageManagerPublishView();
+            pmPublishView.DataContext = dynSettings.Controller.PackageManagerPublishViewModel;
+            //mainGrid.Children.Add(pmPublishView);
+
         }
 
         private void WindowClosing(object sender, CancelEventArgs  e)
