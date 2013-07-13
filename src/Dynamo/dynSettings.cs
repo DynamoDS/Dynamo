@@ -36,7 +36,7 @@ namespace Dynamo.Utilities
             }
         }
 
-        public static Dynamo.Controls.DragCanvas Workbench { get; internal set; }
+        //public static Dynamo.Controls.DragCanvas Workbench { get; internal set; }
 
         public static DynamoView Bench { get; set; }
 
@@ -53,11 +53,14 @@ namespace Dynamo.Utilities
         }
 
         public static void ReturnFocusToSearch() {
-            
-            if ( Dynamo.Commands.ShowSearchCommand.search != null)
-            {
-                Keyboard.Focus(Dynamo.Commands.ShowSearchCommand.search.SearchTextBox );
-            }
+
+            dynSettings.Controller.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
+
+            //if ( Dynamo.Commands.ShowSearchCommand.search != null)
+            //{
+            //    Keyboard.Focus(Dynamo.Commands.ShowSearchCommand.search.SearchTextBox );
+                
+            //}
 
         }
 

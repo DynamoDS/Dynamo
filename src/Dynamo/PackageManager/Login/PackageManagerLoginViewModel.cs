@@ -121,6 +121,14 @@ namespace Dynamo.PackageManager
 
         #endregion
 
+        #region events
+        public event EventHandler RequestHidePackageManagerLogin;
+        public virtual void OnRequestHidePackageManagerLogin(object sender, EventArgs e)
+        {
+            if (RequestHidePackageManagerLogin != null)
+                RequestHidePackageManagerLogin(this, e);
+        }
+        #endregion
         /// <summary>
         ///     The class constructor.
         /// </summary>

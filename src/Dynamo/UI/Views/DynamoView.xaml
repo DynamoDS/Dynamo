@@ -5,7 +5,10 @@
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:commands="clr-namespace:Dynamo.Commands"
         xmlns:views="clr-namespace:Dynamo.Views"
-        xmlns:utilities="clr-namespace:Dynamo.Utilities" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:search="clr-namespace:Dynamo.Search"
+        xmlns:packages="clr-namespace:Dynamo.PackageManager"
+        xmlns:utilities="clr-namespace:Dynamo.Utilities" 
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         x:Name="_this"
         Height="768" Width="1024"
         Closing="WindowClosing" 
@@ -491,7 +494,7 @@
             </TabControl>
        
         </Border>
-        
+
         <ScrollViewer Name="LogScroller" 
                     VerticalAlignment="Stretch"
                     VerticalScrollBarVisibility="Auto" 
@@ -517,7 +520,8 @@
         </ScrollViewer>
 
         <Grid Height="Auto" Width="Auto" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
-              Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black"/>
+              Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black">
+        </Grid>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
 

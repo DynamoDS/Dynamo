@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager
 {
@@ -7,12 +9,25 @@ namespace Dynamo.PackageManager
     /// </summary>
     public partial class PackageManagerPublishView : UserControl
     {
+        private PackageManagerPublishViewModel viewModel;
 
-        public PackageManagerPublishView(PackageManagerPublishViewModel viewModel)
+        public PackageManagerPublishView()
         {
-
             InitializeComponent();
-            this.DataContext = viewModel;
+            this.Loaded += new System.Windows.RoutedEventHandler(PackageManagerPublishView_Loaded);
+        }
+
+        void PackageManagerPublishView_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            viewModel = dynSettings.Controller.PackageManagerPublishViewModel;
+            DataContext = viewModel;
+
+            viewModel.RequestHidePackageManagerPublish += new System.EventHandler(viewModel_RequestHidePackageManagerPublish);
+        }
+
+        void viewModel_RequestHidePackageManagerPublish(object sender, System.EventArgs e)
+        {
+            Visibility = Visibility.Collapsed;
         }
 
     }

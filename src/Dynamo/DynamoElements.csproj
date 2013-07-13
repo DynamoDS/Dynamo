@@ -103,7 +103,6 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands.cs" />
-    <Compile Include="UI\DragCanvas.cs" />
     <Compile Include="DynamoCompletionData.cs" />
     <Compile Include="DynamoLogger.cs" />
     <Compile Include="DynamoRunner.cs" />
@@ -115,8 +114,16 @@ limitations under the License.
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
     <Compile Include="Nodes\Watch\WatchViewModel.cs" />
+    <Compile Include="Search\BrowserInternalElement.cs" />
+    <Compile Include="Search\BrowserItem.cs" />
+    <Compile Include="Search\SearchElements\TopSearchElement.cs" />
+    <Compile Include="Nodes\dynEquation.cs" />
+    <Compile Include="UI\DragCanvas.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
       <DependentUpon>CrashPrompt.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Prompts\dynEditWindow.xaml.cs">
       <DependentUpon>dynEditWindow.xaml</DependentUpon>
@@ -128,18 +135,70 @@ limitations under the License.
     </Compile>
     <Compile Include="UI\Prompts\NodeHelpPrompt.xaml.cs">
       <DependentUpon>NodeHelpPrompt.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Search\BrowserInternalElement.cs" />
-    <Compile Include="Search\BrowserItem.cs" />
-    <Compile Include="Search\SearchElements\TopSearchElement.cs" />
-    <Compile Include="Nodes\dynEquation.cs" />
-    <Compile Include="UI\UIPartials.cs" />
+    <Compile Include="UI\UIPartials.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Views\DynamoView.xaml.cs">
+      <DependentUpon>DynamoView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Views\dynConnectorView.xaml.cs">
+      <DependentUpon>dynConnectorView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Views\dynNodeView.xaml.cs">
+      <DependentUpon>dynNodeView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Views\dynNoteView.xaml.cs">
+      <DependentUpon>dynNoteView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Views\dynPortView.xaml.cs">
+      <DependentUpon>dynPortView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Views\dynWorkspaceView.xaml.cs">
+      <DependentUpon>dynWorkspaceView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Views\PackageManagerLoginView.xaml.cs">
+      <DependentUpon>PackageManagerLoginView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Views\PackageManagerPublishView.xaml.cs">
+      <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Views\SearchView.xaml.cs">
+      <DependentUpon>SearchView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Views\WatchTree.xaml.cs">
+      <DependentUpon>WatchTree.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Views\WatchView.xaml.cs">
+      <DependentUpon>WatchView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Views\WatchViewFullscreen.xaml.cs">
+      <DependentUpon>WatchViewFullscreen.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\WPF.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\ZoomBorder.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Units.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\MouseClickManager.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
-    <Compile Include="UI\WPF.cs" />
     <Compile Include="ViewModels\DynamoViewModel.cs" />
     <Compile Include="ViewModels\dynConnectorViewModel.cs" />
     <Compile Include="ViewModels\dynNodeViewModel.cs" />
@@ -159,14 +218,8 @@ limitations under the License.
     <Compile Include="Nodes\Watch\dynWatch3D.cs" />
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
     <Compile Include="PackageManager\Login\PackageManagerLoginViewModel.cs" />
-    <Compile Include="UI\Views\PackageManagerLoginView.xaml.cs">
-      <DependentUpon>PackageManagerLoginView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="PackageManager\Publish\PackageManagerPublishViewModel.cs" />
-    <Compile Include="UI\Views\PackageManagerPublishView.xaml.cs">
-      <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Search\Regions\PackageManagerRegion.cs" />
     <Compile Include="Search\Regions\RegionBase.cs" />
     <Compile Include="Search\Regions\RevitAPIRegion.cs" />
@@ -176,40 +229,19 @@ limitations under the License.
     <Compile Include="Search\SearchElements\PackageManagerSearchElement.cs" />
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Search\SearchElements\WorkspaceSearchElement.cs" />
-    <Compile Include="UI\Views\SearchView.xaml.cs">
-      <DependentUpon>SearchView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\SearchViewModel.cs" />
     <Compile Include="Nodes\dynColors.cs" />
     <Compile Include="Nodes\dynTimer.cs" />
     <Compile Include="Nodes\dynArduino.cs" />
     <Compile Include="Nodes\dynBaseTypes.cs" />
-    <Compile Include="UI\Views\WatchViewFullscreen.xaml.cs">
-      <DependentUpon>WatchViewFullscreen.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Views\DynamoView.xaml.cs">
-      <DependentUpon>DynamoView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Nodes\dynCommunication.cs" />
     <Compile Include="Models\dynConnectorModel.cs" />
     <Compile Include="Nodes\dynFiles.cs" />
     <Compile Include="Nodes\dynFunction.cs" />
     <Compile Include="Models\dynNodeModel.cs" />
-    <Compile Include="UI\Views\dynNodeView.xaml.cs">
-      <DependentUpon>dynNodeView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Views\dynNoteView.xaml.cs">
-      <DependentUpon>dynNoteView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Views\dynPortView.xaml.cs">
-      <DependentUpon>dynPortView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="dynSettings.cs" />
     <Compile Include="Models\dynWorkspaceModel.cs" />
     <Compile Include="Nodes\Watch\dynWatch.cs" />
-    <Compile Include="UI\Views\WatchTree.xaml.cs">
-      <DependentUpon>WatchTree.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -223,16 +255,6 @@ limitations under the License.
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="UI\Views\WatchView.xaml.cs">
-      <DependentUpon>WatchView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Views\dynConnectorView.xaml.cs">
-      <DependentUpon>dynConnectorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Views\dynWorkspaceView.xaml.cs">
-      <DependentUpon>dynWorkspaceView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ZoomBorder.cs" />
     <Compile Include="Search\SearchDictionary.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -245,6 +267,45 @@ limitations under the License.
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
+      <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
+      <Name>FSchemeInterop</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\FScheme\FScheme.fsproj">
+      <Project>{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}</Project>
+      <Name>FScheme</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\add.png" />
+    <Resource Include="UI\Images\add_32.png" />
+    <Resource Include="UI\Images\add_32_white.png" />
+    <Resource Include="UI\Images\Anonymous_Pencil_icon.png" />
+    <Resource Include="UI\Images\Anonymous_Pencil_icon_white.png" />
+    <Resource Include="UI\Images\Anonymous_Pencil_icon_white_24.png" />
+    <Resource Include="UI\Images\Anonymous_Pencil_icon_white_32.png" />
+    <Resource Include="UI\Images\arrow-left-black.png" />
+    <Resource Include="UI\Images\arrow-left-white.png" />
+    <Resource Include="UI\Images\arrow-right-black.png" />
+    <Resource Include="UI\Images\arrow-right-white.png" />
+    <Resource Include="UI\Images\back.png" />
+    <Resource Include="UI\Images\back_24.png" />
+    <Resource Include="UI\Images\back_32.png" />
+    <Resource Include="UI\Images\cloud_download_arrow.png" />
+    <Resource Include="UI\Images\cloud_download_arrow_gray.png" />
+    <Resource Include="UI\Images\cloud_download_arrow_white.png" />
+    <Resource Include="UI\Images\DocumentHS.png" />
+    <Resource Include="UI\Images\HomeHS.png" />
+    <Resource Include="UI\Images\openHS.png" />
+    <Resource Include="UI\Images\OpenSelectedItemHS.png" />
+    <Resource Include="UI\Images\padlock-closed-black.png" />
+    <Resource Include="UI\Images\padlock-closed-black24x24.png" />
+    <Resource Include="UI\Images\saveHS.png" />
+    <Resource Include="UI\Images\search.png" />
+    <Resource Include="UI\Images\search_24.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\Prompts\CrashPrompt.xaml">
@@ -263,13 +324,29 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\WatchViewFullscreen.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="UI\Themes\DynamoColorsAndBrushes.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Themes\DynamoConverters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Themes\DynamoModern.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Themes\DynamoText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\DynamoView.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\dynConnectorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\dynNodeView.xaml">
       <SubType>Designer</SubType>
@@ -280,8 +357,12 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\dynPortView.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\dynWorkspaceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\PackageManagerLoginView.xaml">
       <SubType>Designer</SubType>
@@ -296,30 +377,6 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\WatchTree.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\Themes\DynamoColorsAndBrushes.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Themes\DynamoConverters.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Views\dynConnectorView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Views\dynWorkspaceView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Resource Include="UI\Themes\DynamoModern.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Resource>
-    <Page Include="UI\Themes\DynamoText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -327,82 +384,11 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Views\WatchViewFullscreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
-      <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
-      <Name>FSchemeInterop</Name>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\FScheme\FScheme.fsproj">
-      <Project>{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}</Project>
-      <Name>FScheme</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\Anonymous_Pencil_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\saveHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\HomeHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\openHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\DocumentHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\OpenSelectedItemHS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\cloud_download_arrow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\cloud_download_arrow_white.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\cloud_download_arrow_gray.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\search.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\padlock-closed-black24x24.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\arrow-right-white.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\arrow-left-black.png" />
-    <Resource Include="UI\Images\arrow-left-white.png" />
-    <Resource Include="UI\Images\arrow-right-black.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\add.png" />
-    <Resource Include="UI\Images\add_32.png" />
-    <Resource Include="UI\Images\add_32_white.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\search_24.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\back.png" />
-    <Resource Include="UI\Images\back_24.png" />
-    <Resource Include="UI\Images\back_32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\Anonymous_Pencil_icon_white.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\Anonymous_Pencil_icon_white_32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\Anonymous_Pencil_icon_white_24.png" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

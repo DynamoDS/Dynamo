@@ -16,6 +16,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using Dynamo.Utilities;
 using Greg;
 
 namespace Dynamo.PackageManager
@@ -27,12 +28,26 @@ namespace Dynamo.PackageManager
     {
         private PackageManagerLoginViewModel viewModel;
 
-        public PackageManagerLoginView( PackageManagerLoginViewModel viewModel )
+        public PackageManagerLoginView()
         {
             InitializeComponent();
-            this.DataContext = this.viewModel = viewModel;
+            this.Loaded += new RoutedEventHandler(PackageManagerLoginView_Loaded);
+        }
+
+        void PackageManagerLoginView_Loaded(object sender, RoutedEventArgs e)
+        {
             this.webBrowser.LoadCompleted += viewModel.WebBrowserNavigatedEvent;
             this.LoginContainerStackPanel.IsVisibleChanged += delegate { if (this.LoginContainerStackPanel.Visibility == Visibility.Visible) viewModel.NavigateToLogin(); };
+
+            viewModel = dynSettings.Controller.PackageManagerLoginViewModel;
+            this.DataContext = viewModel;
+
+            viewModel.RequestHidePackageManagerLogin += new EventHandler(viewModel_RequestHidePackageManagerLogin);
+        }
+
+        void viewModel_RequestHidePackageManagerLogin(object sender, EventArgs e)
+        {
+            Visibility = Visibility.Collapsed;
         }
 
         /// <summary>

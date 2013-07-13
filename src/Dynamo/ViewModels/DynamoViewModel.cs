@@ -112,6 +112,9 @@ namespace Dynamo.Controls
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
+        public DelegateCommand ShowSearchCommand { get; set; }
+        public DelegateCommand HideSearchCommand { get; set; }
+        public DelegateCommand FocusSearchCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -400,6 +403,9 @@ namespace Dynamo.Controls
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
+            ShowSearchCommand = new DelegateCommand(ShowSearch, CanShowSearch);
+            HideSearchCommand = new DelegateCommand(HideSearch, CanHideSearch);
+            FocusSearchCommand = new DelegateCommand(FocusSearch, CanFocusSearch);
 
             #endregion
         }
@@ -1670,7 +1676,7 @@ namespace Dynamo.Controls
 
         private void PostUIActivation()
         {
-            DynamoLoader.LoadCustomNodes(dynSettings.Bench, Controller.CustomNodeLoader, Controller.SearchViewModel);
+            DynamoLoader.LoadCustomNodes(Controller.CustomNodeLoader, Controller.SearchViewModel);
 
             dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
 
@@ -1690,7 +1696,7 @@ namespace Dynamo.Controls
             //OnUIUnlocked(this, EventArgs.Empty);
             IsUILocked = false;
 
-            DynamoCommands.ShowSearch.Execute(null);
+            //DynamoCommands.ShowSearch.Execute(null);
 
             _model.HomeSpace.OnDisplayed();
 
@@ -2994,6 +3000,38 @@ namespace Dynamo.Controls
         }
 
         private bool CanGoHomeView()
+        {
+            return true;
+        }
+    
+        private void HideSearch()
+        {
+            dynSettings.Controller.PackageManagerPublishViewModel.OnRequestHidePackageManagerPublish(this, EventArgs.Empty);
+            dynSettings.Controller.PackageManagerLoginViewModel.OnRequestHidePackageManagerLogin(this, EventArgs.Empty);
+            dynSettings.Controller.SearchViewModel.OnRequestHideSearch(this, EventArgs.Empty);
+        }
+
+        private bool CanHideSearch()
+        {
+            return true;
+        }
+
+        private void ShowSearch()
+        {
+            dynSettings.Controller.SearchViewModel.OnRequestShowSearch(this, EventArgs.Empty);
+        }
+
+        private bool CanShowSearch()
+        {
+            return true;
+        }
+
+        private void FocusSearch()
+        {
+            dynSettings.Controller.SearchViewModel.OnRequestFocusSearch(this, EventArgs.Empty);
+        }
+
+        private bool CanFocusSearch()
         {
             return true;
         }

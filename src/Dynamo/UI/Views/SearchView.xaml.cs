@@ -32,34 +32,64 @@ namespace Dynamo.Search
     /// </summary>
     public partial class SearchView : UserControl
     {
-        public SearchView(SearchViewModel viewModel)
+        public SearchView()
         {
-            DataContext = viewModel;
             InitializeComponent();
+            this.Loaded += new RoutedEventHandler(SearchView_Loaded);
+        }
 
-            PreviewKeyDown += viewModel.KeyHandler;
+        void SearchView_Loaded(object sender, RoutedEventArgs e)
+        {
+            DataContext = dynSettings.Controller.SearchViewModel;
+
+            PreviewKeyDown += dynSettings.Controller.SearchViewModel.KeyHandler;
 
             SearchTextBox.IsVisibleChanged += delegate
-                {
-                    DynamoCommands.Search.Execute(null);
-                    Keyboard.Focus(this.SearchTextBox);
-                    SearchTextBox.InputBindings.AddRange(dynSettings.Bench.InputBindings);
-                };
+            {
+                DynamoCommands.Search.Execute(null);
+                Keyboard.Focus(this.SearchTextBox);
+                SearchTextBox.InputBindings.AddRange(dynSettings.Bench.InputBindings);
+            };
 
             SearchTextBox.GotKeyboardFocus += delegate
+            {
+                if (SearchTextBox.Text == "Search...")
                 {
-                    if (SearchTextBox.Text == "Search...")
-                    {
-                        SearchTextBox.Text = "";
-                    }
+                    SearchTextBox.Text = "";
+                }
 
-                    SearchTextBox.Foreground = Brushes.White;
-                };
+                SearchTextBox.Foreground = Brushes.White;
+            };
 
             SearchTextBox.LostKeyboardFocus += delegate
-                {
-                    SearchTextBox.Foreground = Brushes.Gray;
-                };
+            {
+                SearchTextBox.Foreground = Brushes.Gray;
+            };
+
+            dynSettings.Controller.SearchViewModel.RequestHideSearch += new EventHandler(SearchViewModel_RequestHideSearch);
+            dynSettings.Controller.SearchViewModel.RequestShowSearch += new EventHandler(SearchViewModel_RequestShowSearch);
+            dynSettings.Controller.SearchViewModel.RequestFocusSearch += new EventHandler(SearchViewModel_RequestFocusSearch);
+            dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += new EventHandler(SearchViewModel_RequestReturnFocusToSearch);
+        }
+
+        void SearchViewModel_RequestReturnFocusToSearch(object sender, EventArgs e)
+        {
+            Keyboard.Focus(SearchTextBox);
+        }
+
+        void SearchViewModel_RequestFocusSearch(object sender, EventArgs e)
+        {
+            SearchTextBox.Focus();
+        }
+
+        void SearchViewModel_RequestHideSearch(object sender, EventArgs e)
+        {
+            Visibility = Visibility.Visible;
+        }
+
+        void SearchViewModel_RequestShowSearch(object sender, EventArgs e)
+        {
+            Visibility = Visibility.Visible;
         }
 
         public void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)

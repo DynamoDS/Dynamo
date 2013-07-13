@@ -52,7 +52,7 @@ namespace Dynamo.Commands
     public class ShowNodePublishInfoCommand : ICommand
     {
         private bool init;
-        private PackageManagerPublishView _view;
+        //private PackageManagerPublishView _view;
 
         public ShowNodePublishInfoCommand()
         {
@@ -71,7 +71,7 @@ namespace Dynamo.Commands
 
             if (!init)
             {
-                _view = new PackageManagerPublishView(dynSettings.Controller.PackageManagerPublishViewModel);
+                //var view = new PackageManagerPublishView(dynSettings.Controller.PackageManagerPublishViewModel);
 
                 //MVVM: we now have an event called on the current workspace view model to 
                 //add the view to its outer canvas
@@ -79,7 +79,7 @@ namespace Dynamo.Commands
                 //Canvas.SetBottom(_view, 0);
                 //Canvas.SetRight(_view, 0);
 
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(_view));
+                //dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(view));
 
                 init = true;
             }
@@ -126,14 +126,14 @@ namespace Dynamo.Commands
         {
             if (!_init)
             {
-                var loginView = new PackageManagerLoginView(dynSettings.Controller.PackageManagerLoginViewModel);
+                //var loginView = new PackageManagerLoginView(dynSettings.Controller.PackageManagerLoginViewModel);
 
                 //MVVM: event on current workspace model view now adds views to canvas
                 //dynSettings.Bench.outerCanvas.Children.Add(loginView);
                 //Canvas.SetBottom(loginView, 0);
                 //Canvas.SetRight(loginView, 0);
 
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(loginView));
+                //dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(loginView));
 
                 _init = true;
             }
