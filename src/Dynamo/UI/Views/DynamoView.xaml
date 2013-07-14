@@ -134,7 +134,7 @@
                 <MenuItem Header="_Open..." Command="{Binding Path=ShowOpenDialogAndOpenResultCommand}" Name="openButton" InputGestureText="Ctrl+O">
 
                     <MenuItem.Icon>
-                        <Image Source="/DynamoElements;component/Images/openHS.png" Width="16" Height="16" />
+                        <Image Source="/DynamoElements;component/UI/Images/openHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
@@ -143,14 +143,14 @@
                           Name="saveThisButton" InputGestureText="Ctrl+S">
 
                     <MenuItem.Icon>
-                        <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
+                        <Image Source="/DynamoElements;component/UI/Images/saveHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Focusable="False" Header="_Save As..." Command="{Binding Path=ShowSaveDialogAndSaveResultCommand}" 
                           Name="saveButton" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
 
                     <MenuItem.Icon>
-                        <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
+                        <Image Source="/DynamoElements;component/UI/Images/saveHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
 
@@ -162,7 +162,7 @@
                           InputGestureText="Ctrl+Shift+C" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
 
                     <MenuItem.Icon>
-                        <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
+                        <Image Source="/DynamoElements;component/UI/Images/DocumentHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
@@ -250,7 +250,7 @@
                 <!--<MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>-->
                 <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
                     <MenuItem.Icon>
-                        <Image Source="/DynamoElements;component/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
+                        <Image Source="/DynamoElements;component/UI/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="_Report A Bug" Command="{Binding Path=ReportABugCommand}"  Name="bugCommand"/>

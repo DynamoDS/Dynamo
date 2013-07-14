@@ -19,8 +19,7 @@ namespace Dynamo.PackageManager
 
         void PackageManagerPublishView_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            viewModel = dynSettings.Controller.PackageManagerPublishViewModel;
-            DataContext = viewModel;
+            viewModel = (PackageManagerPublishViewModel)DataContext;
         }
     }
 
