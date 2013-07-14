@@ -224,15 +224,6 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        #region events
-        public event EventHandler RequestHidePackageManagerPublish;
-        public virtual void OnRequestHidePackageManagerPublish(object sender, EventArgs e)
-        {
-            if (RequestHidePackageManagerPublish != null)
-                RequestHidePackageManagerPublish(this, e);
-        }
-
-        #endregion
             /// <summary>
         /// The class constructor. </summary>
         /// <param name="client"> Reference to to the PackageManagerClient object for the app </param>

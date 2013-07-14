@@ -41,13 +41,6 @@ namespace Dynamo.PackageManager
 
             viewModel = dynSettings.Controller.PackageManagerLoginViewModel;
             this.DataContext = viewModel;
-
-            viewModel.RequestHidePackageManagerLogin += new EventHandler(viewModel_RequestHidePackageManagerLogin);
-        }
-
-        void viewModel_RequestHidePackageManagerLogin(object sender, EventArgs e)
-        {
-            Visibility = Visibility.Collapsed;
         }
 
         /// <summary>

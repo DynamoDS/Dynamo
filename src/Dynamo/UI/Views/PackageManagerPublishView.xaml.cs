@@ -21,15 +21,7 @@ namespace Dynamo.PackageManager
         {
             viewModel = dynSettings.Controller.PackageManagerPublishViewModel;
             DataContext = viewModel;
-
-            viewModel.RequestHidePackageManagerPublish += new System.EventHandler(viewModel_RequestHidePackageManagerPublish);
         }
-
-        void viewModel_RequestHidePackageManagerPublish(object sender, System.EventArgs e)
-        {
-            Visibility = Visibility.Collapsed;
-        }
-
     }
 
 }
