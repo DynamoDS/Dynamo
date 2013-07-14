@@ -216,20 +216,6 @@ namespace Dynamo.Search
         #endregion
 
         #region events
-        public event EventHandler RequestShowSearch;
-        public virtual void OnRequestShowSearch(object sender, EventArgs e)
-        {
-            if (RequestShowSearch != null)
-                RequestShowSearch(this, e);
-        }
-
-        public event EventHandler RequestHideSearch;
-        public virtual void OnRequestHideSearch(object sender, EventArgs e)
-        {
-            if (RequestHideSearch != null)
-                RequestHideSearch(this, e);
-        }
-
         public event EventHandler RequestFocusSearch;
         public virtual void OnRequestFocusSearch(object sender, EventArgs e)
         {

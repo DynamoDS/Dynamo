@@ -509,6 +509,10 @@ namespace Dynamo
         {
             base.Modified();
 
+            //add a check if any loaded defs match this workspace
+            if (dynSettings.Controller.CustomNodeLoader.GetLoadedDefinitions().All(x => x.Workspace != this))
+                return;
+
             var def =
                 dynSettings.Controller.CustomNodeLoader
                            .GetLoadedDefinitions()

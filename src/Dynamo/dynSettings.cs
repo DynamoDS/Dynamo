@@ -54,6 +54,8 @@ namespace Dynamo.Utilities
 
         public static void ReturnFocusToSearch() {
 
+            //trigger event to request the view to focus the
+            //search box
             dynSettings.Controller.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
 
             //if ( Dynamo.Commands.ShowSearchCommand.search != null)

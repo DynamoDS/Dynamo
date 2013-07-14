@@ -66,8 +66,6 @@ namespace Dynamo.Search
                 SearchTextBox.Foreground = Brushes.Gray;
             };
 
-            dynSettings.Controller.SearchViewModel.RequestHideSearch += new EventHandler(SearchViewModel_RequestHideSearch);
-            dynSettings.Controller.SearchViewModel.RequestShowSearch += new EventHandler(SearchViewModel_RequestShowSearch);
             dynSettings.Controller.SearchViewModel.RequestFocusSearch += new EventHandler(SearchViewModel_RequestFocusSearch);
             dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += new EventHandler(SearchViewModel_RequestReturnFocusToSearch);
         }
@@ -80,16 +78,6 @@ namespace Dynamo.Search
         void SearchViewModel_RequestFocusSearch(object sender, EventArgs e)
         {
             SearchTextBox.Focus();
-        }
-
-        void SearchViewModel_RequestHideSearch(object sender, EventArgs e)
-        {
-            Visibility = Visibility.Visible;
-        }
-
-        void SearchViewModel_RequestShowSearch(object sender, EventArgs e)
-        {
-            Visibility = Visibility.Visible;
         }
 
         public void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
