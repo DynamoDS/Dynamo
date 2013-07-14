@@ -216,9 +216,9 @@ namespace Dynamo.Applications
 
                         dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
 
-                        dynSettings.Bench = new DynamoView {DataContext = dynamoController.DynamoViewModel};
-                        dynamoController.UIDispatcher = dynSettings.Bench.Dispatcher;
-                        dynamoView = dynSettings.Bench;
+                        var ui = new DynamoView {DataContext = dynamoController.DynamoViewModel};
+                        dynamoController.UIDispatcher = ui.Dispatcher;
+                        dynamoView = ui;
 
                         //set window handle and show dynamo
                         new WindowInteropHelper(dynamoView).Owner = mwHandle;

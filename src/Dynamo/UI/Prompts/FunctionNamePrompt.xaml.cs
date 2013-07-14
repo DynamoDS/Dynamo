@@ -15,6 +15,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using Dynamo.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
@@ -27,7 +28,8 @@ namespace Dynamo.Nodes
       public FunctionNamePrompt(IEnumerable<string> categories, string error)
       {
          InitializeComponent();
-         this.Owner = dynSettings.Bench;
+         //this.Owner = dynSettings.Bench;
+         this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
          this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
          this.nameBox.Focus();

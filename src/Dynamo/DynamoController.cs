@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -155,6 +156,13 @@ namespace Dynamo
                 NodeRemovedFromRendering(sender, e);
         }
 
+        public event DispatchedToUIThreadHandler DispatchedToUI;
+        public void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
+        {
+            if (DispatchedToUI != null)
+                DispatchedToUI(this, e);
+        }
+
         #endregion
 
         #region Constructor and Initialization
@@ -262,10 +270,10 @@ namespace Dynamo
             }
             commandQueue.Clear();
 
-            if (dynSettings.Bench != null)
+            if (dynSettings.Controller.UIDispatcher!=null)
             {
                 DynamoLogger.Instance.Log(string.Format("dynSettings.Bench Thread : {0}",
-                                                       dynSettings.Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
+                                                       dynSettings.Controller.UIDispatcher.Thread.ManagedThreadId.ToString(CultureInfo.InvariantCulture)));
             }
         }
 
@@ -411,13 +419,15 @@ namespace Dynamo
                     //Reset flag
                     runAgain = false;
 
-                    if (dynSettings.Bench != null)
-                    {
-                        //Run this method again from the main thread
-                        dynSettings.Bench.Dispatcher.BeginInvoke(new Action(
-                                                                     delegate { RunExpression(_showErrors); }
-                                                                     ));
-                    }
+                    //if (dynSettings.Bench != null)
+                    //{
+                    //    //Run this method again from the main thread
+                    //    dynSettings.Bench.Dispatcher.BeginInvoke(new Action(
+                    //                                                 delegate { RunExpression(_showErrors); }
+                    //                                                 ));
+                    //}
+
+                    dynSettings.Controller.DispatchOnUIThread(() => RunExpression(_showErrors));
                 }
                 else
                 {
@@ -431,7 +441,7 @@ namespace Dynamo
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
             {
-                if (dynSettings.Bench != null)
+                if (dynSettings.Controller.UIDispatcher != null)
                 {
                     foreach (dynNodeModel node in topElements)
                     {
@@ -448,7 +458,7 @@ namespace Dynamo
                 //Evaluate the expression
                 FScheme.Value expr = FSchemeEnvironment.Evaluate(runningExpression);
 
-                if (dynSettings.Bench != null)
+                if (dynSettings.Controller.UIDispatcher != null)
                 {
                     //Print some more stuff if we're in debug mode
                     if (DynamoViewModel.RunInDebug && expr != null)
@@ -470,14 +480,16 @@ namespace Dynamo
             {
                 /* Evaluation failed due to error */
 
-                if (dynSettings.Bench != null)
+                if (dynSettings.Controller.UIDispatcher != null)
                 {
                     //Print unhandled exception
                     if (ex.Message.Length > 0)
                     {
-                        dynSettings.Bench.Dispatcher.Invoke(new Action(
-                                                    delegate { dynSettings.Controller.DynamoViewModel.Log(ex); }
-                                                    ));
+                        //dynSettings.Bench.Dispatcher.Invoke(new Action(
+                        //                            delegate { dynSettings.Controller.DynamoViewModel.Log(ex); }
+                        //                            ));
+
+                        dynSettings.Controller.DispatchOnUIThread(() => dynSettings.Controller.DynamoViewModel.Log(ex));
                     }
                 }
 
@@ -547,6 +559,16 @@ namespace Dynamo
         {
             var drawables = DynamoModel.Nodes.Where(x => x is IDrawable);
             drawables.ToList().ForEach(x=>((IDrawable)x).RenderDescription.ClearAll());
+        }
+
+        /// <summary>
+        /// Called by nodes for behavior that they want to dispatch on the UI thread
+        /// Triggers event to be received by the UI. If no UI exists, behavior will not be executed.
+        /// </summary>
+        /// <param name="a"></param>
+        public void DispatchOnUIThread(Action a)
+        {
+            OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
         }
     }
 }

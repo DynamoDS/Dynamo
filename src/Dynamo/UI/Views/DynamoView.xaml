@@ -91,12 +91,12 @@
                                 Command="{Binding Path=DataContext.ClearCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
         <KeyBinding Key="R"
-                Modifiers="Ctrl"
+                Modifiers="Control"
                     Command="{Binding Path=DataContext.ShowPackageManagerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
 
         <KeyBinding Key="L"
-                Modifiers="Ctrl+Shift"
+                Modifiers="Control+Shift"
                     Command="{Binding Path=DataContext.LayoutAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         
     </Window.InputBindings>

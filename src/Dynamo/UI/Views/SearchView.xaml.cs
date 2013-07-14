@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Dynamo.Commands;
+using Dynamo.Controls;
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Media;
@@ -48,7 +49,9 @@ namespace Dynamo.Search
             {
                 DynamoCommands.Search.Execute(null);
                 Keyboard.Focus(this.SearchTextBox);
-                SearchTextBox.InputBindings.AddRange(dynSettings.Bench.InputBindings);
+                var view = WPF.FindUpVisualTree<DynamoView>(this);
+                //SearchTextBox.InputBindings.AddRange(dynSettings.Bench.InputBindings);
+                SearchTextBox.InputBindings.AddRange(view.InputBindings);
             };
 
             SearchTextBox.GotKeyboardFocus += delegate
