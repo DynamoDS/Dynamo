@@ -6,8 +6,8 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoColorsAndBrushes.xaml" />
-                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoConverters.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/UI/Themes/DynamoConverters.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
