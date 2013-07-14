@@ -13,9 +13,7 @@
 //limitations under the License.
 
 using System;
-using System.Windows;
 using System.Windows.Input;
-using Dynamo.Search;
 using Dynamo.Utilities;
 
 namespace Dynamo.Commands

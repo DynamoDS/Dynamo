@@ -36,11 +36,10 @@ namespace Dynamo.PackageManager
 
         void PackageManagerLoginView_Loaded(object sender, RoutedEventArgs e)
         {
+            viewModel = (PackageManagerLoginViewModel) DataContext;
+
             this.webBrowser.LoadCompleted += viewModel.WebBrowserNavigatedEvent;
             this.LoginContainerStackPanel.IsVisibleChanged += delegate { if (this.LoginContainerStackPanel.Visibility == Visibility.Visible) viewModel.NavigateToLogin(); };
-
-            viewModel = dynSettings.Controller.PackageManagerLoginViewModel;
-            this.DataContext = viewModel;
         }
 
         /// <summary>

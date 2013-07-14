@@ -86,7 +86,7 @@ namespace Dynamo.Controls
                 {
                     DataContext = dynSettings.Controller.PackageManagerPublishViewModel
                 };
-            //mainGrid.Children.Add(pmPublishView);
+            mainGrid.Children.Add(pmPublishView);
 
             //FUNCTION NAME PROMPT
             _vm.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
