@@ -2987,8 +2987,8 @@ namespace Dynamo.Controls
     
         private void HideSearch()
         {
-            dynSettings.Controller.PackageManagerPublishViewModel.OnRequestHidePackageManagerPublish(this, EventArgs.Empty);
-            dynSettings.Controller.PackageManagerLoginViewModel.OnRequestHidePackageManagerLogin(this, EventArgs.Empty);
+            dynSettings.Controller.PackageManagerPublishViewModel.Visible = Visibility.Collapsed;
+            dynSettings.Controller.PackageManagerLoginViewModel.Visible = Visibility.Collapsed;
             dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
         }
 
