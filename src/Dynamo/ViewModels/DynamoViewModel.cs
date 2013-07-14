@@ -27,12 +27,18 @@ using NUnit.Framework;
 
 namespace Dynamo.Controls
 {
+    public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
+
+    public class FunctionNamePromptEventArgs:EventArgs
+    {
+        public string Name { get; set; }
+        public string Category { get; set; }
+        public bool Success { get; set; }
+    }
 
     public class DynamoViewModel:dynViewModelBase
     {
-
-        #region properties
-
+        #region events
         public event EventHandler RequestLayoutUpdate;
         public event EventHandler WorkspaceChanged;
 
@@ -41,6 +47,7 @@ namespace Dynamo.Controls
             if (RequestLayoutUpdate != null)
                 RequestLayoutUpdate(this, e);
         }
+        
         public virtual void OnWorkspaceChanged(object sender, EventArgs e)
         {
             if (WorkspaceChanged != null)
@@ -48,7 +55,20 @@ namespace Dynamo.Controls
                 WorkspaceChanged(this, e);
             }
         }
-        
+
+        public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
+        public virtual void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
+        {
+            if (RequestsFunctionNamePrompt != null)
+            {
+                RequestsFunctionNamePrompt(this, e);
+            }
+        }
+
+        #endregion
+
+        #region properties
+
         private DynamoModel _model;
         private string logText;
         private ConnectorType connectorType;
@@ -681,60 +701,21 @@ namespace Dynamo.Controls
             return true;
         }
 
-        public bool ShowNewFunctionDialog(ref string name, ref string category)
-        {
-            string error = "";
-
-            do
-            {
-                var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
-                dialog.nameBox.Text = name;
-                dialog.categoryBox.Text = category;
-
-                if (dialog.ShowDialog() != true)
-                {
-                    return false;
-                }
-
-                name = dialog.Text;
-                category = dialog.Category;
-
-                if (Controller.CustomNodeLoader.Contains(name))
-                {
-                    error = "A custom node with the given name already exists.";
-                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
-                }
-                else if ( Controller.BuiltInTypesByNickname.ContainsKey(name) )
-                {
-                    error = "A built-in node with the given name already exists.";
-                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
-                }
-                else if (category.Equals(""))
-                {
-                    error = "You must enter a new category or choose one from the existing categories.";
-                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
-
-                }
-                else
-                {
-                    error = "";
-                }
-
-            } while (!error.Equals(""));
-
-            return true;
-        }
-
         private void ShowNewFunctionDialogAndMakeFunction()
         {
+            //trigger the event to request the display
+            //of the function name dialogue
+            var args = new FunctionNamePromptEventArgs();
+            OnRequestsFunctionNamePrompt(this, args);
+
             string name = "", category = "";
-            if (ShowNewFunctionDialog(ref name, ref category))
+            //if (ShowNewFunctionDialog(ref name, ref category))
+            if(args.Success)
             {
-                NewFunction(Guid.NewGuid(), name, category, true);
+                //NewFunction(Guid.NewGuid(), name, category, true);
+                NewFunction(Guid.NewGuid(), args.Name, args.Category, true);
             }
+
         }
 
         private bool CanShowNewFunctionDialogCommand()
@@ -3008,22 +2989,26 @@ namespace Dynamo.Controls
         {
             dynSettings.Controller.PackageManagerPublishViewModel.OnRequestHidePackageManagerPublish(this, EventArgs.Empty);
             dynSettings.Controller.PackageManagerLoginViewModel.OnRequestHidePackageManagerLogin(this, EventArgs.Empty);
-            dynSettings.Controller.SearchViewModel.OnRequestHideSearch(this, EventArgs.Empty);
+            dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
         }
 
         private bool CanHideSearch()
         {
-            return true;
+            if(dynSettings.Controller.SearchViewModel.Visible == Visibility.Visible)
+                return true;
+            return false;
         }
 
         private void ShowSearch()
         {
-            dynSettings.Controller.SearchViewModel.OnRequestShowSearch(this, EventArgs.Empty);
+            dynSettings.Controller.SearchViewModel.Visible = Visibility.Visible;
         }
 
         private bool CanShowSearch()
         {
-            return true;
+            if(dynSettings.Controller.SearchViewModel.Visible == Visibility.Collapsed)
+                return true;
+            return false;
         }
 
         private void FocusSearch()

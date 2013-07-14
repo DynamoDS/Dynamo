@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Diagnostics;
+using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Utilities;
 
@@ -69,19 +70,90 @@ namespace Dynamo.Controls
                                                                      _timer.Elapsed));
             DynamoLoader.LoadSamplesMenu(dynSettings.Bench);
 
-            var search = new SearchView();
-            search.DataContext = dynSettings.Controller.SearchViewModel;
+            //SEARCH
+            var search = new SearchView {DataContext = dynSettings.Controller.SearchViewModel};
             sidebarGrid.Children.Add(search);
             dynSettings.Controller.SearchViewModel.Visible = Visibility.Visible;
 
-            var pmLoginView = new PackageManager.PackageManagerLoginView();
-            pmLoginView.DataContext = dynSettings.Controller.PackageManagerLoginViewModel;
+            //PACKAGE MANAGER
+            var pmLoginView = new PackageManager.PackageManagerLoginView
+                {
+                    DataContext = dynSettings.Controller.PackageManagerLoginViewModel
+                };
             //mainGrid.Children.Add(pmLoginView);
 
-            var pmPublishView = new PackageManager.PackageManagerPublishView();
-            pmPublishView.DataContext = dynSettings.Controller.PackageManagerPublishViewModel;
+            var pmPublishView = new PackageManager.PackageManagerPublishView
+                {
+                    DataContext = dynSettings.Controller.PackageManagerPublishViewModel
+                };
             //mainGrid.Children.Add(pmPublishView);
 
+            //FUNCTION NAME PROMPT
+            _vm.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
+
+        }
+
+        /// <summary>
+        /// Handles the request for the presentation of the function name prompt
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void _vm_RequestsFunctionNamePrompt(object sender, FunctionNamePromptEventArgs e)
+        {
+            ShowNewFunctionDialog(e);
+        }
+
+        /// <summary>
+        /// Presents the function name dialogue. Returns true if the user enters
+        /// a function name and category.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
+        {
+            string error = "";
+
+            do
+            {
+                var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
+                dialog.nameBox.Text = e.Name;
+                dialog.categoryBox.Text = e.Category;
+
+                if (dialog.ShowDialog() != true)
+                {
+                    e.Success = false;
+                }
+
+                e.Name = dialog.Text;
+                e.Category = dialog.Category;
+
+                if (dynSettings.Controller.CustomNodeLoader.Contains(e.Name))
+                {
+                    error = "A custom node with the given name already exists.";
+                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
+                }
+                else if (dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(e.Name))
+                {
+                    error = "A built-in node with the given name already exists.";
+                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
+                }
+                else if (e.Category.Equals(""))
+                {
+                    error = "You must enter a new category or choose one from the existing categories.";
+                    System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
+                }
+                else
+                {
+                    error = "";
+                }
+
+            } while (!error.Equals(""));
+
+            e.Success = true;
         }
 
         private void WindowClosing(object sender, CancelEventArgs  e)
