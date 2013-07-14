@@ -22,7 +22,7 @@ using System.Reflection;
 
 using Autodesk.Revit;
 using Autodesk.Revit.DB;
-
+using Dynamo.Controls;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
@@ -1945,8 +1945,10 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
         }
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a drop down list to the window
             combo = new ComboBox();
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;

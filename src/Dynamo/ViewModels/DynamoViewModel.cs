@@ -2792,8 +2792,8 @@ namespace Dynamo.Controls
                                                 string name,
                                                 string category,
                                                 bool display,
-                                                double workspaceOffsetX = DynamoView.CANVAS_OFFSET_X,
-                                                double workspaceOffsetY = DynamoView.CANVAS_OFFSET_Y)
+                                                double workspaceOffsetX = 0,
+                                                double workspaceOffsetY = 0)
         {
             //Add an entry to the funcdict
             var workSpace = new FuncWorkspace(

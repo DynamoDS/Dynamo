@@ -12,8 +12,10 @@ namespace Dynamo.Revit
 {
     public partial class dynRevitTransactionNode : dynNodeModel, IDrawable
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             base.SetupCustomUIElements(nodeUI);
 
             var mi = new MenuItem
