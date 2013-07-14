@@ -2719,7 +2719,7 @@ namespace Dynamo.Nodes
         public dynNodeButton() : base()
         {
             var dict = new ResourceDictionary();
-            var uri = new Uri("/DynamoElements;component/Themes/DynamoModern.xaml", UriKind.Relative);
+            var uri = new Uri("/DynamoElements;component/UI/Themes/DynamoModern.xaml", UriKind.Relative);
             dict.Source = uri;
             Style = (Style)dict["SNodeTextButton"];
 
