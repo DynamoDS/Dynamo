@@ -183,13 +183,14 @@ namespace Dynamo
                     //Reset flag
                     runAgain = false;
 
-                    if (dynSettings.Bench != null)
-                    {
-                        //Run this method again from the main thread
-                        dynSettings.Bench.Dispatcher.BeginInvoke(new Action(
-                                                                     delegate { RunExpression(_showErrors); }
-                                                                     ));
-                    }
+                    //if (dynSettings.Bench != null)
+                    //{
+                    //    //Run this method again from the main thread
+                    //    dynSettings.Bench.Dispatcher.BeginInvoke(new Action(
+                    //                                                 delegate { RunExpression(_showErrors); }
+                    //                                                 ));
+                    //}
+                    dynSettings.Controller.DispatchOnUIThread(() => RunExpression(_showErrors));
                 }
                 else
                 {
@@ -225,18 +226,18 @@ namespace Dynamo
                 //Evaluate the expression
                 FScheme.Value expr = this.FSchemeEnv.Evaluate(runningExpression);
 
-                if (dynSettings.Bench != null)
-                {
-                    //Print some more stuff if we're in debug mode
-                    if (RunInDebug && expr != null)
-                    {
-// NOPE
-                        //dynSettings.Bench.Dispatcher.Invoke(new Action(
-                        //                            () =>
-                        //                            dynSettings.Controller.DynamoViewModel.Log(FScheme.print(expr))
-                        //                            ));
-                    }
-                }
+//                if (dynSettings.Bench != null)
+//                {
+//                    //Print some more stuff if we're in debug mode
+//                    if (RunInDebug && expr != null)
+//                    {
+//// NOPE
+//                        //dynSettings.Bench.Dispatcher.Invoke(new Action(
+//                        //                            () =>
+//                        //                            dynSettings.Controller.DynamoViewModel.Log(FScheme.print(expr))
+//                        //                            ));
+//                    }
+//                }
             }
             catch (CancelEvaluationException ex)
             {

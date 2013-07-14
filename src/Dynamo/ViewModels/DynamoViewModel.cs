@@ -28,6 +28,7 @@ using NUnit.Framework;
 namespace Dynamo.Controls
 {
     public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
+    public delegate void ImageSaveEventHandler(object sender, ImageSaveEventArgs e);
 
     public class FunctionNamePromptEventArgs:EventArgs
     {
@@ -40,14 +41,13 @@ namespace Dynamo.Controls
     {
         #region events
         public event EventHandler RequestLayoutUpdate;
-        public event EventHandler WorkspaceChanged;
-
         public virtual void OnRequestLayoutUpdate(object sender, EventArgs e)
         {
             if (RequestLayoutUpdate != null)
                 RequestLayoutUpdate(this, e);
         }
         
+        public event EventHandler WorkspaceChanged;
         public virtual void OnWorkspaceChanged(object sender, EventArgs e)
         {
             if (WorkspaceChanged != null)
@@ -65,6 +65,24 @@ namespace Dynamo.Controls
             }
         }
 
+        public event EventHandler RequestClose;
+        public virtual void OnRequestClose(Object sender, EventArgs e)
+        {
+            if (RequestClose != null)
+            {
+                RequestClose(this, e);
+            }
+        }
+
+        public event ImageSaveEventHandler RequestSaveImage;
+        public virtual void OnRequestSaveImage(Object sender, ImageSaveEventArgs e)
+        {
+            if (RequestSaveImage != null)
+            {
+                RequestSaveImage(this, e);
+            }
+        }
+        
         #endregion
 
         #region properties
@@ -859,7 +877,8 @@ namespace Dynamo.Controls
                 return;
             this.Cleanup();
             exitInvoked = true;
-            dynSettings.Bench.Close();
+            //dynSettings.Bench.Close();
+            OnRequestClose(this, EventArgs.Empty);
         }
 
         public bool exitInvoked = false;
@@ -1217,61 +1236,63 @@ namespace Dynamo.Controls
 
         public void SaveImage(object parameters)
         {
-            string imagePath = parameters as string;
+            OnRequestSaveImage(this, new ImageSaveEventArgs(parameters.ToString()));
 
-            if (!string.IsNullOrEmpty(imagePath))
-            {
-                var bench = dynSettings.Bench;
+            //string imagePath = parameters as string;
 
-                if (bench == null)
-                {
-                    DynamoLogger.Instance.Log("Cannot export bench as image without UI.  No image wil be exported.");
-                    return;
-                }
+            //if (!string.IsNullOrEmpty(imagePath))
+            //{
+            //    var bench = dynSettings.Bench;
+                
+            //    if (bench == null)
+            //    {
+            //        DynamoLogger.Instance.Log("Cannot export bench as image without UI.  No image wil be exported.");
+            //        return;
+            //    }
 
-                var control = WPF.FindChild<DragCanvas>(bench, null);
+            //    var control = WPF.FindChild<DragCanvas>(bench, null);
 
-                double width = 1;
-                double height = 1;
+            //    double width = 1;
+            //    double height = 1;
 
-                // connectors are most often within the bounding box of the nodes and notes
+            //    // connectors are most often within the bounding box of the nodes and notes
 
-                foreach (dynNodeModel n in _model.CurrentSpace.Nodes)
-                {
-                    width = Math.Max(n.X + n.Width, width);
-                    height = Math.Max(n.Y + n.Height, height);
-                }
+            //    foreach (dynNodeModel n in _model.CurrentSpace.Nodes)
+            //    {
+            //        width = Math.Max(n.X + n.Width, width);
+            //        height = Math.Max(n.Y + n.Height, height);
+            //    }
 
-                foreach (dynNoteModel n in _model.CurrentSpace.Notes)
-                {
-                    width = Math.Max(n.X + n.Width, width);
-                    height = Math.Max(n.Y + n.Height, height);
-                }
+            //    foreach (dynNoteModel n in _model.CurrentSpace.Notes)
+            //    {
+            //        width = Math.Max(n.X + n.Width, width);
+            //        height = Math.Max(n.Y + n.Height, height);
+            //    }
 
-                var rtb = new RenderTargetBitmap((int) width,
-                                                 (int) height, 96, 96,
-                                                 System.Windows.Media.PixelFormats.Default);
+            //    var rtb = new RenderTargetBitmap((int) width,
+            //                                     (int) height, 96, 96,
+            //                                     System.Windows.Media.PixelFormats.Default);
 
-                rtb.Render(control);
+            //    rtb.Render(control);
 
-                //endcode as PNG
-                var pngEncoder = new PngBitmapEncoder();
-                pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+            //    //endcode as PNG
+            //    var pngEncoder = new PngBitmapEncoder();
+            //    pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
 
-                try
-                {
-                    using (var stm = File.Create(imagePath))
-                    {
-                        pngEncoder.Save(stm);
-                    }
-                }
-                catch
-                {
-                    DynamoLogger.Instance.Log("Failed to save the Workspace an image.");
-                }
+            //    try
+            //    {
+            //        using (var stm = File.Create(imagePath))
+            //        {
+            //            pngEncoder.Save(stm);
+            //        }
+            //    }
+            //    catch
+            //    {
+            //        DynamoLogger.Instance.Log("Failed to save the Workspace an image.");
+            //    }
                 
 
-            }
+            //}
         }
 
         private bool CanSaveImage(object parameters)
@@ -3083,6 +3104,16 @@ namespace Dynamo.Controls
         public ViewEventArgs(System.Windows.Controls.UserControl v)
         {
             View = v;
+        }
+    }
+
+    public class ImageSaveEventArgs : EventArgs
+    {
+        public string Path { get; set; }
+
+        public ImageSaveEventArgs(string path)
+        {
+            Path = path;
         }
     }
 

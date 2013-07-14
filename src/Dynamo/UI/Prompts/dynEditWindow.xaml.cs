@@ -14,7 +14,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
+using Dynamo.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
@@ -27,7 +27,8 @@ namespace Dynamo.Nodes
         public dynEditWindow()
         {
             InitializeComponent();
-            this.Owner = dynSettings.Bench;
+            //this.Owner = dynSettings.Bench;
+            this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             this.editText.Focus();
         }

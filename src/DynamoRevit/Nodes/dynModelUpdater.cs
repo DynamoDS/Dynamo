@@ -62,7 +62,7 @@ namespace Dynamo
         private void processUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted, IEnumerable<ElementId> added)
         {
             //Document doc = data.GetDocument();
-            var bench = dynSettings.Bench; // MDJ HOOK
+            //var bench = dynSettings.Bench; // MDJ HOOK
 
             #region Modified
             var modDict = this.updateDict[ChangeTypeEnum.Modify];

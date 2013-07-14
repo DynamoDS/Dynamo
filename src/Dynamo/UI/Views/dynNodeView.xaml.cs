@@ -19,6 +19,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Nodes;
+using Dynamo.Prompts;
 using Dynamo.Utilities;
 
 namespace Dynamo.Controls
@@ -72,6 +73,13 @@ namespace Dynamo.Controls
         void dynNodeView_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel.NodeLogic.DispatchedToUI += new DispatchedToUIThreadHandler(NodeLogic_DispatchedToUI);
+            ViewModel.RequestShowNodeHelp += new dynNodeViewModel.NodeHelpEventHandler(ViewModel_RequestShowNodeHelp);
+        }
+
+        void ViewModel_RequestShowNodeHelp(object sender, NodeHelpEventArgs e)
+        {
+            var helpDialog = new NodeHelpPrompt(e.Model);
+            helpDialog.Show();
         }
 
         void NodeLogic_DispatchedToUI(object sender, UIDispatcherEventArgs e)
@@ -149,7 +157,9 @@ namespace Dynamo.Controls
             if (ViewModel == null) return;
 
             dynSettings.ReturnFocusToSearch();
-            dynSettings.Bench.mainGrid.Focus();
+            //dynSettings.Bench.mainGrid.Focus();
+            var view = WPF.FindUpVisualTree<DynamoView>(this);
+            view.mainGrid.Focus();
             ViewModel.SelectCommand.Execute();
         }
 

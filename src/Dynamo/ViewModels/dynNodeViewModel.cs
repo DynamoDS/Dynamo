@@ -37,6 +37,7 @@ namespace Dynamo.Controls
         #region delegates
         public delegate void SetToolTipDelegate(string message);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
+        public delegate void NodeHelpEventHandler(object sender, NodeHelpEventArgs e);
         #endregion
 
         #region private members
@@ -278,6 +279,18 @@ namespace Dynamo.Controls
 
         #endregion
 
+        #region events
+        public event NodeHelpEventHandler RequestShowNodeHelp;
+        public virtual void OnRequestShowNodeHelp(Object sender, NodeHelpEventArgs e)
+        {
+            if (RequestShowNodeHelp != null)
+            {
+                RequestShowNodeHelp(this, e);
+            }
+        }
+        
+        #endregion
+
         #region commands
 
         public DelegateCommand DeleteCommand { get; set; }
@@ -407,8 +420,10 @@ namespace Dynamo.Controls
 
         private void ShowHelp()
         {
-            var helpDialog = new NodeHelpPrompt(this.NodeModel);
-            helpDialog.Show();
+            //var helpDialog = new NodeHelpPrompt(this.NodeModel);
+            //helpDialog.Show();
+
+            OnRequestShowNodeHelp(this, new NodeHelpEventArgs(NodeModel));
         }
 
         private bool CanShowHelp()
@@ -617,6 +632,15 @@ namespace Dynamo.Controls
             return true;
         }
 
+    }
+
+    public class NodeHelpEventArgs : EventArgs
+    {
+        public dynNodeModel Model { get; set; }
+        public NodeHelpEventArgs(dynNodeModel model)
+        {
+            Model = model;
+        }
     }
 }
 

@@ -33,6 +33,7 @@ using RestSharp.Serializers;
 
 namespace Dynamo.PackageManager
 {
+    public delegate void LoginStateEventHandler(object sender, LoginStateEventArgs e);
     /// <summary>
     ///     A thin wrapper on the Greg rest client for performing IO with
     ///     the Package Manager
@@ -83,6 +84,17 @@ namespace Dynamo.PackageManager
 
         #endregion
 
+        #region events
+        public event LoginStateEventHandler RequestSetLoginState;
+        public virtual void OnRequestSetLoginState(Object sender, LoginStateEventArgs e)
+        {
+            if (RequestSetLoginState != null)
+            {
+                RequestSetLoginState(this, e);
+            }
+        }
+        #endregion
+
         /// <summary>
         ///     The class constructor.
         /// </summary>
@@ -113,19 +125,29 @@ namespace Dynamo.PackageManager
                             Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(req);
                         if (response.success)
                         {
-                            dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+                            //dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+                            //    {
+                            //        foreach (PackageHeader header in response.content)
+                            //        {
+                            //            dynSettings.Controller.SearchViewModel.Add(header);
+                            //        }
+                            //    }));
+
+                            dynSettings.Controller.DispatchOnUIThread(() =>
                                 {
                                     foreach (PackageHeader header in response.content)
                                     {
                                         dynSettings.Controller.SearchViewModel.Add(header);
                                     }
-                                }));
+                                });
                         }
                     }
                     catch
                     {
-                        dynSettings.Bench.Dispatcher.BeginInvoke(
-                            (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to refresh available nodes from server.")));
+                        //dynSettings.Bench.Dispatcher.BeginInvoke(
+                        //    (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to refresh available nodes from server.")));
+
+                        dynSettings.Controller.DispatchOnUIThread(() => dynSettings.Controller.DynamoViewModel.Log("Failed to refresh available nodes from server."));
                     }
                 };
             new Thread(start).Start();
@@ -204,17 +226,25 @@ namespace Dynamo.PackageManager
                     {
                         ResponseWithContentBody<PackageHeader> ret =
                             Client.ExecuteAndDeserializeWithContent<PackageHeader>(packageUpload);
-                        dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
-                            {
-                                dynSettings.Controller.DynamoViewModel.Log("Message form server: " + ret.message);
-                                LoadedPackageHeaders.Add(funDef, ret.content);
-                                SavePackageHeader(ret.content);
-                            }));
+                        //dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+                        //    {
+                        //        dynSettings.Controller.DynamoViewModel.Log("Message form server: " + ret.message);
+                        //        LoadedPackageHeaders.Add(funDef, ret.content);
+                        //        SavePackageHeader(ret.content);
+                        //    }));
+
+                        dynSettings.Controller.DispatchOnUIThread((() =>
+                        {
+                            dynSettings.Controller.DynamoViewModel.Log("Message form server: " + ret.message);
+                            LoadedPackageHeaders.Add(funDef, ret.content);
+                            SavePackageHeader(ret.content);
+                        }));
                     }
                     catch
                     {
-                        dynSettings.Bench.Dispatcher.BeginInvoke(
-                            (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
+                        //dynSettings.Bench.Dispatcher.BeginInvoke(
+                        //    (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
+                        dynSettings.Controller.DispatchOnUIThread((() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
                     }
                 };
             new Thread(start).Start();
@@ -232,16 +262,24 @@ namespace Dynamo.PackageManager
                     {
                         ResponseWithContentBody<PackageHeader> ret =
                             Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgVersUpload);
-                        dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
-                            {
-                                dynSettings.Controller.DynamoViewModel.Log(ret.message);
-                                SavePackageHeader(ret.content);
-                            }));
+                        //dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+                        //    {
+                        //        dynSettings.Controller.DynamoViewModel.Log(ret.message);
+                        //        SavePackageHeader(ret.content);
+                        //    }));
+
+                        dynSettings.Controller.DispatchOnUIThread((() =>
+                        {
+                            dynSettings.Controller.DynamoViewModel.Log(ret.message);
+                            SavePackageHeader(ret.content);
+                        }));
                     }
                     catch
                     {
-                        dynSettings.Bench.Dispatcher.BeginInvoke(
-                            (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
+                        //dynSettings.Bench.Dispatcher.BeginInvoke(
+                        //    (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
+
+                        dynSettings.Controller.DispatchOnUIThread((() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
                     }
                 };
             new Thread(start).Start();
@@ -270,9 +308,11 @@ namespace Dynamo.PackageManager
             }
             catch
             {
-                dynSettings.Bench.Dispatcher.BeginInvoke(
-                    (Action)
-                    (() => dynSettings.Controller.DynamoViewModel.Log(
+                //dynSettings.Bench.Dispatcher.BeginInvoke(
+                //    (Action)
+                //    (() => dynSettings.Controller.DynamoViewModel.Log(
+                //        "Failed to write package header information, won't be under source control.")));
+                dynSettings.Controller.DispatchOnUIThread((() => dynSettings.Controller.DynamoViewModel.Log(
                         "Failed to write package header information, won't be under source control.")));
             }
         }
@@ -322,17 +362,27 @@ namespace Dynamo.PackageManager
 
                         SavePackageHeader(p.content);
 
-                        dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+                        //dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+                        //    {
+                        //        Controller.DynamoViewModel.OpenDefinition(path);
+                        //        dynSettings.Controller.DynamoViewModel.Log("Successfully imported package " + p.content.name);
+                        //        callback(funcDefGuid);
+                        //    }));
+
+                        dynSettings.Controller.DispatchOnUIThread((() =>
                             {
                                 Controller.DynamoViewModel.OpenDefinition(path);
-                                dynSettings.Controller.DynamoViewModel.Log("Successfully imported package " + p.content.name);
+                                dynSettings.Controller.DynamoViewModel.Log("Successfully imported package " +
+                                                                           p.content.name);
                                 callback(funcDefGuid);
                             }));
                     }
                     catch
                     {
-                        dynSettings.Bench.Dispatcher.BeginInvoke(
-                            (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to load package " + p.content.name)));
+                        //dynSettings.Bench.Dispatcher.BeginInvoke(
+                        //    (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to load package " + p.content.name)));
+
+                        dynSettings.Controller.DispatchOnUIThread((() => dynSettings.Controller.DynamoViewModel.Log("Failed to load package " + p.content.name)));
                     }
                 };
             new Thread(start).Start();
@@ -350,14 +400,27 @@ namespace Dynamo.PackageManager
                     {
                         Client.GetAccessTokenAsync(
                             (s) =>
-                            Client.IsAuthenticatedAsync(
-                                (auth) => dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+                            //Client.IsAuthenticatedAsync(
+                            //    (auth) => dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+                            //        {
+                            //            if (auth)
+                            //            {
+                            //                // TODO: these elements should observe the package manager state
+                            //                dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
+                            //                dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
+                            //                IsLoggedIn = true;
+                            //            }
+                            //        }))));
+
+                        Client.IsAuthenticatedAsync(
+                                (auth) => dynSettings.Controller.DispatchOnUIThread((() =>
                                     {
                                         if (auth)
                                         {
                                             // TODO: these elements should observe the package manager state
-                                            dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
-                                            dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
+                                            //dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
+                                            //dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
+                                            OnRequestSetLoginState(this, new LoginStateEventArgs("Logged in", false));
                                             IsLoggedIn = true;
                                         }
                                     }))));
@@ -469,6 +532,18 @@ namespace Dynamo.PackageManager
         public void HidePackageControlInformation()
         {
             //dynSettings.Bench.packageControlLabel.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    public class LoginStateEventArgs:EventArgs
+    {
+        public string Text { get; set; }
+        public bool Enabled { get; set; }
+
+        public LoginStateEventArgs(string text, bool enabled)
+        {
+            Text = text;
+            Enabled = enabled;
         }
     }
 }
