@@ -283,22 +283,24 @@ namespace Dynamo.Nodes
             return Value.NewNumber(Measure.Item.Length);
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add an edit window option to the 
             //main context window
             var editWindowItem = new System.Windows.Controls.MenuItem();
             editWindowItem.Header = "Edit...";
             editWindowItem.IsCheckable = false;
 
-            NodeUI.MainContextMenu.Items.Add(editWindowItem);
+            nodeUI.MainContextMenu.Items.Add(editWindowItem);
 
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
             //add a text box to the input grid of the control
             var tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            NodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = false;

@@ -21,7 +21,6 @@ using System.Windows.Input;
 using System.Collections.ObjectModel;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
-using Dynamo.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism.Commands;
@@ -300,7 +299,7 @@ namespace Dynamo.Controls
         public DelegateCommand ShowHelpCommand { get; set; }
         public DelegateCommand ViewCustomNodeWorkspaceCommand { get; set; }
         public DelegateCommand<object> SetLayoutCommand { get; set; }
-        public DelegateCommand<dynNodeView> SetupCustomUIElementsCommand { get; set; }
+        public DelegateCommand<object> SetupCustomUIElementsCommand { get; set; }
         public DelegateCommand ValidateConnectionsCommand { get; set; }
         public DelegateCommand ToggleIsVisibleCommand { get; set; }
         public DelegateCommand ToggleIsUpstreamVisibleCommand { get; set; }
@@ -327,7 +326,7 @@ namespace Dynamo.Controls
             ShowHelpCommand = new DelegateCommand(ShowHelp, CanShowHelp);
             ViewCustomNodeWorkspaceCommand = new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
-            SetupCustomUIElementsCommand = new DelegateCommand<dynNodeView>(SetupCustomUIElements, CanSetupCustomUIElements);
+            SetupCustomUIElementsCommand = new DelegateCommand<object>(SetupCustomUIElements, CanSetupCustomUIElements);
             ValidateConnectionsCommand = new DelegateCommand(ValidateConnections, CanValidateConnections);
             ToggleIsVisibleCommand = new DelegateCommand(ToggleIsVisible, CanVisibilityBeToggled);
             ToggleIsUpstreamVisibleCommand = new DelegateCommand(ToggleIsUpstreamVisible, CanUpstreamVisibilityBeToggled);
@@ -584,12 +583,12 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void SetupCustomUIElements(dynNodeView NodeUI)
+        private void SetupCustomUIElements(object NodeUI)
         {
             nodeLogic.SetupCustomUIElements(NodeUI);
         }
 
-        private bool CanSetupCustomUIElements(dynNodeView NodeUI)
+        private bool CanSetupCustomUIElements(object NodeUI)
         {
             return true;
         }

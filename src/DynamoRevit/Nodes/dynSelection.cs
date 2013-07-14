@@ -23,6 +23,7 @@ using System.Linq;
 using System.Xml;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.Revit;
@@ -120,8 +121,10 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a button to the inputGrid on the dynElement
             var selectButton = new dynNodeButton
             {
@@ -332,8 +335,10 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a button to the inputGrid on the dynElement
             _selectButton = new dynNodeButton
             {

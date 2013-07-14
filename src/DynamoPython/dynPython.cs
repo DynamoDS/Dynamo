@@ -20,6 +20,7 @@ using System.Windows.Input;
 using System.Xml;
 
 using Dynamo.Connectors;
+using Dynamo.Controls;
 using DynamoPython;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -59,8 +60,10 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //topControl.Height = 200;
             //topControl.Width = 300;
 

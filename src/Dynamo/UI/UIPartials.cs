@@ -22,8 +22,10 @@ namespace Dynamo.Nodes
 {
     public abstract partial class dynVariableInput : dynNodeWithOneOutput
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             System.Windows.Controls.Button addButton = new dynNodeButton();
             addButton.Content = "+";
             addButton.Width = 20;
@@ -55,8 +57,10 @@ namespace Dynamo.Nodes
     public partial class dynSublists : dynBasicInteractive<string>
     {
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a text box to the input grid of the control
             var tb = new dynTextBox
             {
@@ -90,8 +94,10 @@ namespace Dynamo.Nodes
 
     public partial class dynBreakpoint : dynNodeWithOneOutput
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a text box to the input grid of the control
             button = new dynNodeButton();
             button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -118,8 +124,10 @@ namespace Dynamo.Nodes
 
     public abstract partial class dynBasicInteractive<T> : dynNodeWithOneOutput
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add an edit window option to the 
             //main context window
             var editWindowItem = new System.Windows.Controls.MenuItem
@@ -136,8 +144,10 @@ namespace Dynamo.Nodes
 
     public partial class dynDoubleInput : dynDouble
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a text box to the input grid of the control
             var tb = new dynTextBox
             {
@@ -171,8 +181,10 @@ namespace Dynamo.Nodes
     public partial class dynAngleInput : dynDouble
     {
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a text box to the input grid of the control
             var tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -201,8 +213,10 @@ namespace Dynamo.Nodes
 
     public partial class dynDoubleSliderInput : dynDouble
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a slider control to the input grid of the control
             var tb_slider = new Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -313,8 +327,10 @@ namespace Dynamo.Nodes
 
     public partial class dynBoolSelector : dynBool
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a text box to the input grid of the control
             rbTrue = new System.Windows.Controls.RadioButton();
             rbFalse = new System.Windows.Controls.RadioButton();
@@ -362,8 +378,10 @@ namespace Dynamo.Nodes
 
     public partial class dynStringInput : dynString
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             base.SetupCustomUIElements(nodeUI);
 
             //add a text box to the input grid of the control
@@ -395,8 +413,10 @@ namespace Dynamo.Nodes
 
     public partial class dynStringFilename : dynBasicInteractive<string>
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a button to the inputGrid on the dynElement
             var readFileButton = new dynNodeButton();
 
@@ -453,8 +473,10 @@ namespace Dynamo.Nodes
 
     public abstract partial class dynDropDrownBase : dynNodeWithOneOutput
     {
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             base.SetupCustomUIElements(nodeUI);
 
             //add a drop down list to the window
@@ -498,8 +520,10 @@ namespace Dynamo.Nodes
 
     public abstract partial class dynEnum : dynNodeWithOneOutput
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             var comboBox = new ComboBox
             {
                 MinWidth = 150,
@@ -528,8 +552,10 @@ namespace Dynamo.Nodes
 
     public partial class dynFormula : dynMathBase
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             var tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
@@ -553,8 +579,10 @@ namespace Dynamo.Nodes
 
     public partial class dynImageFileReader : dynFileReaderBase
     {
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             image1 = new System.Windows.Controls.Image
             {
                 //Width = 320,
@@ -577,16 +605,20 @@ namespace Dynamo.Nodes
 
     public partial class dynFunction : dynBuiltinFunction
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             nodeUI.MouseDoubleClick += new System.Windows.Input.MouseButtonEventHandler(ui_MouseDoubleClick);
         }
     }
 
     public partial class dynOutput : dynNodeModel
     {
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a text box to the input grid of the control
             tb = new TextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -615,8 +647,10 @@ namespace Dynamo.Nodes
 
     public partial class dynSymbol : dynNodeModel
     {
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a text box to the input grid of the control
             tb = new TextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -645,8 +679,10 @@ namespace Dynamo.Nodes
 
     public partial class dynWatch : dynNodeWithOneOutput
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             watchTree = new WatchTree();
 
             //nodeUI.inputGrid.Children.Add(watchTree);
@@ -661,8 +697,10 @@ namespace Dynamo.Nodes
 
     public partial class dynWatch3D : dynNodeWithOneOutput
     {
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             MenuItem mi = new MenuItem();
             mi.Header = "Zoom to Fit";
             mi.Click += new RoutedEventHandler(mi_Click);
@@ -740,8 +778,10 @@ namespace Dynamo.Nodes
 
     public partial class dynArduino : dynNodeWithOneOutput
     {
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             string[] serialPortNames = System.IO.Ports.SerialPort.GetPortNames();
 
             foreach (string portName in serialPortNames)
