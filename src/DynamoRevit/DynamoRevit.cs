@@ -208,10 +208,15 @@ namespace Dynamo.Applications
                         Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
                         string context = r.Replace(m_revit.Application.VersionName, "");
 
+                        //they changed the application version name conventions for vasari
+                        //it no longer has a version year so we can't compare it to other versions
+                        //TODO:come up with a more stable way to test for Vasari beta 3
+                        if (context == "Vasari")
+                            context = "Vasari 2014";
+
                         dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
 
-                        dynSettings.Bench = new DynamoView();
-                        dynSettings.Bench.DataContext = dynamoController.DynamoViewModel;
+                        dynSettings.Bench = new DynamoView {DataContext = dynamoController.DynamoViewModel};
                         dynamoController.UIDispatcher = dynSettings.Bench.Dispatcher;
                         dynamoView = dynSettings.Bench;
 

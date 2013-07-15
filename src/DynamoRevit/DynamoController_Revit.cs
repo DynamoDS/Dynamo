@@ -198,13 +198,14 @@ namespace Dynamo
             if (val.IsContainer)
             {
                 var drawable = ((Value.Container)val).Item;
+
                 if(drawable is XYZ)
                 {
-                    dynRevitTransactionNode.DrawXYZ(rd, (XYZ)drawable);
+                    dynRevitTransactionNode.DrawXYZ(rd, drawable);
                 }
-                else
+                else if(drawable is GeometryObject)
                 {
-                    dynRevitTransactionNode.DrawGeometryObject(rd, (GeometryObject)drawable);
+                    dynRevitTransactionNode.DrawGeometryObject(rd, drawable);
                 }
             }
         }
