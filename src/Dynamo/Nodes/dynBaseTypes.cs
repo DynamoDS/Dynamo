@@ -21,7 +21,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Windows;
 using System.Xml;
 using System.Web;
 
@@ -2585,9 +2584,6 @@ namespace Dynamo.Nodes
     [NodeSearchTags("true", "truth", "false")]
     public partial class dynBoolSelector : dynBool
     {
-        System.Windows.Controls.RadioButton rbTrue;
-        System.Windows.Controls.RadioButton rbFalse;
-
         public dynBoolSelector()
         {
             RegisterAllPorts();
