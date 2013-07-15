@@ -95,12 +95,14 @@ namespace Dynamo.Nodes
 
     public partial class dynBreakpoint : dynNodeWithOneOutput
     {
+        //System.Windows.Controls.Button button;
+
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            button = new dynNodeButton();
+            var button = new dynNodeButton();
             button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             button.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             //inputGrid.RowDefinitions.Add(new RowDefinition());
@@ -121,6 +123,13 @@ namespace Dynamo.Nodes
             };
             button.SetBinding(UIElement.IsEnabledProperty, bindingVal);
         }
+
+        void button_Click(object sender, RoutedEventArgs e)
+        {
+            Deselect();
+            Enabled = false;
+        }
+
     }
 
     public abstract partial class dynBasicInteractive<T> : dynNodeWithOneOutput

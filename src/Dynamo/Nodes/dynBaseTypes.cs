@@ -2251,8 +2251,6 @@ namespace Dynamo.Nodes
     [NodeDescription("Halts execution until user clicks button.")]
     public partial class dynBreakpoint : dynNodeWithOneOutput
     {
-        System.Windows.Controls.Button button;
-
         public dynBreakpoint()
         {
             InPortData.Add(new PortData("", "Object to inspect", typeof(object)));
@@ -2261,12 +2259,6 @@ namespace Dynamo.Nodes
         }
 
         private bool Enabled { get; set; }
-
-        void button_Click(object sender, RoutedEventArgs e)
-        {
-            Deselect();
-            Enabled = false;
-        }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
