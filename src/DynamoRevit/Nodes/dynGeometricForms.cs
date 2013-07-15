@@ -432,13 +432,103 @@ namespace Dynamo.Nodes
 
             ModelCurveArray myModelCurves = new ModelCurveArray();
       
-            CurveLoop curveLoop = new CurveLoop();
+            Plane thisPlane = null;
+            Line oneLine = null;
+
             List<ElementId> refIds = new List<ElementId>();
+            XYZ loopStart = new XYZ();
+            XYZ otherEnd = new XYZ();
+            int index = 0;
+            double tolerance = 0.000000001;
             foreach( var refCurve in refCurveList)
             {
-                curveLoop.Append(refCurve.GeometryCurve);
+                if (index == 0)
+                {
+                    loopStart = refCurve.GeometryCurve.Evaluate(0.0, true);
+                    otherEnd = refCurve.GeometryCurve.Evaluate(1.0, true);
+                }
+                else //if (index > 0)
+                {
+                    XYZ startXYZ = refCurve.GeometryCurve.Evaluate(0.0, true);
+                    XYZ endXYZ = refCurve.GeometryCurve.Evaluate(1.0, true);
+                    if (index == 1)
+                    {
+                        if (startXYZ.DistanceTo(otherEnd) > tolerance && endXYZ.DistanceTo(otherEnd) > tolerance &&
+                            (startXYZ.DistanceTo(loopStart) > tolerance || endXYZ.DistanceTo(loopStart) > tolerance))
+                        {
+                            XYZ temp = loopStart;
+                            loopStart = otherEnd;
+                            otherEnd = temp;
+                        }
+                        if (startXYZ.DistanceTo(otherEnd) > tolerance && endXYZ.DistanceTo(otherEnd) < tolerance)
+                            otherEnd = startXYZ;
+                        else if (startXYZ.DistanceTo(otherEnd) <tolerance && endXYZ.DistanceTo(otherEnd) >tolerance)
+                            otherEnd = endXYZ;
+                        else
+                            throw new Exception("Gap between curves in chain of reference curves.");
+                    }                 
+                }
+                if (refCurve.GeometryCurve is Line)
+                {
+                    Line thisLine = refCurve.GeometryCurve as Line;
+                    if (thisPlane != null)
+                    {
+                        if (Math.Abs(thisPlane.Normal.DotProduct(thisLine.Direction)) > tolerance)
+                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                        if (Math.Abs(thisPlane.Normal.DotProduct(thisLine.Origin - thisPlane.Origin)) > tolerance)
+                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                    }
+                    else if (oneLine == null)
+                        oneLine = thisLine;
+                    else
+                    {
+                        if (Math.Abs(oneLine.Direction.DotProduct(thisLine.Direction)) > 1.0 - tolerance)
+                        {
+                            double projAdjust = oneLine.Direction.DotProduct(oneLine.Origin - thisLine.Origin);
+                            XYZ adjustedOrigin = thisLine.Origin + projAdjust * oneLine.Direction;
+                            if (adjustedOrigin.DistanceTo(oneLine.Origin) > tolerance)
+                                throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                        }
+                        else
+                        {
+                            XYZ norm = oneLine.Direction.CrossProduct(thisLine.Direction);
+                            norm = norm.Normalize();
+                            thisPlane = new Plane(norm, oneLine.Origin);
+                            if (Math.Abs(thisPlane.Normal.DotProduct(thisLine.Origin - thisPlane.Origin)) > tolerance)
+                                throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                        }
+
+                    }
+                }
+                else
+                {
+                    CurveLoop curveLoop = new CurveLoop();
+                    curveLoop.Append(refCurve.GeometryCurve);
+                    if (!curveLoop.HasPlane())
+                        throw new Exception(" Planar Ref Curve Chain fails: curve is not planar.");
+                    Plane curvePlane = curveLoop.GetPlane();
+                    if (thisPlane == null && oneLine == null)
+                        thisPlane = curveLoop.GetPlane();
+                    else if (thisPlane != null)
+                    {
+                        if (Math.Abs(thisPlane.Normal.DotProduct(curvePlane.Normal)) < 1.0 - tolerance)
+                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                        if (Math.Abs(thisPlane.Normal.DotProduct(curvePlane.Origin - thisPlane.Origin)) > tolerance)
+                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                    }
+                    else if (oneLine != null)
+                    {
+                        thisPlane = curvePlane;
+                        if (Math.Abs(thisPlane.Normal.DotProduct(oneLine.Direction)) > tolerance)
+                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                        if (Math.Abs(thisPlane.Normal.DotProduct(oneLine.Origin - thisPlane.Origin)) > tolerance)
+                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                    }
+                }
+
                 refIds.Add(refCurve.Id);
                 myModelCurves.Append(refCurve);
+                index++;
             }
 
             foreach (ElementId oldId in this.Elements)
@@ -453,8 +543,8 @@ namespace Dynamo.Nodes
                 if (!this.Elements.Contains(newId))
                     this.Elements.Add(newId);
             }
-            if (!curveLoop.HasPlane())
-                throw new Exception(" Planar Ref Curve Chain fails: not planar");
+            //if (!curveLoop.HasPlane())
+            //    throw new Exception(" Planar Ref Curve Chain fails: not planar");
             return Value.NewContainer(myModelCurves);
         }
     }
