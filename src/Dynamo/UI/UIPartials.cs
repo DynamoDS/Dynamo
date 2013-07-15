@@ -683,7 +683,7 @@ namespace Dynamo.Nodes
         {
             var nodeUI = ui as dynNodeView;
 
-            watchTree = new WatchTree();
+            var watchTree = new WatchTree();
 
             //nodeUI.inputGrid.Children.Add(watchTree);
             nodeUI.grid.Children.Add(watchTree);
