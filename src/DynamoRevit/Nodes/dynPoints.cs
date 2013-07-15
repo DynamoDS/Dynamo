@@ -43,115 +43,32 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
+            var xyz = (XYZ)((Value.Container)input).Item;
 
-            //If we are receiving a list, we must create reference points for each XYZ in the list.
-            if (input.IsList)
+            ReferencePoint pt;
+
+            if (this.Elements.Any())
             {
-                var xyzList = (input as Value.List).Item;
-
-                //Counter to keep track of how many ref points we've made. We'll use this to delete old
-                //elements later.
-                int count = 0;
-
-                //We create our output by...
-                var result = Utils.SequenceToFSharpList(
-                   xyzList.Select(
-                    //..taking each element in the list and...
-                      delegate(Value x)
-                      {
-                          ReferencePoint pt;
-                          //...if we already have elements made by this node in a previous run...
-                          if (this.Elements.Count > count)
-                          {
-                              Element e;
-                              //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count],typeof(ReferencePoint), out e))
-                              {
-                                  //...and if we're successful, update it's position... 
-                                  pt = e as ReferencePoint;
-                                  pt.Position = (XYZ)((Value.Container)x).Item;
-                              }
-                              else
-                              {
-                                  //...otherwise, we can make a new reference point and replace it in the list of
-                                  //previously created points.
-                                  pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
-                                     (XYZ)((Value.Container)x).Item
-                                  );
-                                  this.Elements[count] = pt.Id;
-                              }
-                          }
-                          //...otherwise...
-                          else
-                          {
-                              //...we create a new point...
-                              pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
-                                 (XYZ)((Value.Container)x).Item
-                              );
-                              //...and store it in the element list for future runs.
-                              this.Elements.Add(pt.Id);
-                          }
-                          //Finally, we update the counter, and return a new Value containing the reference point.
-                          //This Value will be placed in the Value.List that will be passed downstream from this
-                          //node.
-                          count++;
-                          return Value.NewContainer(pt);
-                      }
-                   )
-                );
-
-                //Now that we've created all the Reference Points from this run, we delete all of the
-                //extra ones from the previous run.
-                foreach (var e in this.Elements.Skip(count))
+                Element e;
+                if (dynUtils.TryGetElement(this.Elements[0],typeof(ReferencePoint), out e))
                 {
-                    this.DeleteElement(e);
+                    //..and if we do, update it's position.
+                    pt = (ReferencePoint)e;
+                    pt.Position = xyz;
                 }
-
-                //Fin
-                return Value.NewList(result);
-            }
-            //If we're not receiving a list, we will just assume we received one XYZ.
-            else
-            {
-                XYZ xyz = (XYZ)((Value.Container)input).Item;
-
-                ReferencePoint pt;
-
-                //If we've made any elements previously...
-                if (this.Elements.Any())
-                {
-                    Element e;
-                    //...try to get the first one...
-                    if (dynUtils.TryGetElement(this.Elements[0],typeof(ReferencePoint), out e))
-                    {
-                        //..and if we do, update it's position.
-                        pt = e as ReferencePoint;
-                        pt.Position = xyz;
-                    }
-                    else
-                    {
-                        //...otherwise, just make a new one and replace it in the list.
-                        pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
-                        this.Elements[0] = pt.Id;
-                    }
-
-                    //We still delete all extra elements, since in the previous run we might have received a list.
-                    foreach (var el in this.Elements.Skip(1))
-                    {
-                        this.DeleteElement(el);
-                    }
-                }
-                //...otherwise...
                 else
                 {
-                    //...just make a point and store it.
                     pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
-                    this.Elements.Add(pt.Id);
+                    this.Elements[0] = pt.Id;
                 }
-
-                //Fin
-                return Value.NewContainer(pt);
             }
+            else
+            {
+                pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
+                this.Elements.Add(pt.Id);
+            }
+
+            return Value.NewContainer(pt);
         }
     }
 
@@ -231,15 +148,14 @@ namespace Dynamo.Nodes
 
             object arg0 = ((Value.Container)args[0]).Item;
 
-            Autodesk.Revit.DB.Face f;
-            Reference r = arg0 as Reference;
+            Face f;
+            var r = arg0 as Reference;
             if (r != null)
-                f = dynRevitSettings.Doc.Document.GetElement(r.ElementId).GetGeometryObjectFromReference(r) as Autodesk.Revit.DB.Face;
+                f = (Face)dynRevitSettings.Doc.Document.GetElement(r.ElementId).GetGeometryObjectFromReference(r);
             else
-                f = arg0 as Autodesk.Revit.DB.Face;
+                f = (Face)arg0;
 
-            //PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, uv);
-            XYZ facePoint = f.Evaluate(uv);
+            var facePoint = f.Evaluate(uv);
 
             ReferencePoint pt = null;
 
@@ -248,8 +164,7 @@ namespace Dynamo.Nodes
                 Element e;
                 if (dynUtils.TryGetElement(this.Elements[0],typeof(ReferencePoint), out e))
                 {
-                    pt = e as ReferencePoint;
-                    //pt.SetPointElementReference(facePoint);
+                    pt = (ReferencePoint)e;
                     pt.Position = facePoint;
                 }
                 else
@@ -271,7 +186,6 @@ namespace Dynamo.Nodes
             }
 
             return Value.NewContainer(pt);
-
         }
     }
 
@@ -293,34 +207,34 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            foreach (ElementId el in this.Elements)
-            {
-                Element e;
-                if (dynUtils.TryGetElement(el,typeof(ReferencePoint), out e))
-                {
-                    this.UIDocument.Document.Delete(el);
-                }
-            }
-            ReferencePoint p = null;
-
-            ReferencePoint pt = ((Value.Container)args[0]).Item as ReferencePoint;
-            XYZ norm = ((Value.Container)args[1]).Item as XYZ;
+            var pt = (ReferencePoint)((Value.Container)args[0]).Item;
+            var norm = (XYZ)((Value.Container)args[1]).Item;
             double dist = ((Value.Number)args[2]).Item;
 
-            XYZ location = null;
-            PointElementReference per = pt.GetPointElementReference();
+            ReferencePoint p;
 
-            if (pt.GetPointElementReference().GetType() == typeof(PointOnFace))
+            var newLocation = pt.Position + norm.Normalize().Multiply(dist);
+
+            if (Elements.Any())
             {
-                //gather information about the point
-                PointOnFace pof = per as PointOnFace;
-                Reference faceRef = pof.GetFaceReference();
-                Autodesk.Revit.DB.Face f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
-                location = f.Evaluate(pof.UV);
-
-                p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(location + norm.Normalize().Multiply(dist));
+                Element el;
+                if (dynUtils.TryGetElement(Elements[0], typeof (ReferencePoint), out el))
+                {
+                    //move the point to the new offset
+                    p = (ReferencePoint) el;
+                    p.Position = newLocation;
+                    Elements[0] = p.Id;
+                }
+                else
+                {
+                    p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(newLocation);
+                    Elements[0] = p.Id;
+                }
+            }
+            else
+            {
+                p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(newLocation);
                 this.Elements.Add(p.Id);
-
             }
 
             return Value.NewContainer(p);

@@ -139,6 +139,8 @@
                         <MenuItem  Header="_X Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalDistribute"/>
                     </MenuItem>
                     <MenuItem  Header="_New Node From Selection"  Name="NodeFromSelection" Command="{Binding NodeFromSelectionCommand}" />
+                    <MenuItem  Header="_Find Nodes From Selected Elements" Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityConverter}}"  
+                               Name="ShowElementsInContext" Command="{Binding FindNodesFromSelectionCommand}" />
                 </ContextMenu>
             </Canvas.ContextMenu>
 

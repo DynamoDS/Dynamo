@@ -66,6 +66,9 @@ limitations under the License.
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -113,6 +116,7 @@ limitations under the License.
     <Compile Include="Models\dynModelBase.cs" />
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
+    <Compile Include="Nodes\dynExcel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
     <Compile Include="Nodes\Watch\WatchViewModel.cs" />
     <Compile Include="Prompts\CrashPrompt.xaml.cs">

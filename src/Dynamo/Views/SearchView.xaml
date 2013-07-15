@@ -13,28 +13,44 @@
              x:Name="SearchControl" 
              MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoConverters.xaml"/>
+                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoColorsAndBrushes.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     <Grid Background="Black" >
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <StackPanel Name="RSearchBoxStackPanel" Orientation="Horizontal" Grid.Row="0">
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
             <Image  Margin="7,0,7,0"
-Source="..\Images\search_24.png" Opacity="1">
+Source="..\Images\search_24.png" Opacity="1" Grid.Column="0">
             </Image>
 
             <TextBox Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,15,5,10" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Width="188" Text="{Binding Path=SearchText,Mode=TwoWay}">
+                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="200">
             </TextBox>
 
             <Button Name="BackButton" Margin="1, 0, 1, 0" Width="42" FontSize="24" Foreground="White" ToolTip="Go Back" 
-                      Style="{DynamicResource ResourceKey=SImageButton}" Click="Back_Click" Tag="..\Images\back_24.png"/>
+                      Style="{DynamicResource ResourceKey=SImageButton}" Click="Back_Click" Tag="..\Images\back_24.png" Grid.Column="2"/>
 
             <Button Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include extended Revit API" 
-                      Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\add_32_white.png" Click="ibtnServiceController_MouseLeftButtonUp">
+                      Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\add_32_white.png" Click="ibtnServiceController_MouseLeftButtonUp" Grid.Column="3">
 
                 <Button.ContextMenu>
 
@@ -51,9 +67,8 @@ Source="..\Images\search_24.png" Opacity="1">
                 </Button.ContextMenu>
 
             </Button>
-
-        </StackPanel>
-
+        </Grid>
+        
         <ScrollViewer Visibility="{Binding BrowserVisibility}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
                       VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" >
 
@@ -233,8 +248,28 @@ Source="..\Images\search_24.png" Opacity="1">
 
                     </HierarchicalDataTemplate>
 
+                    <HierarchicalDataTemplate DataType="{x:Type searchElements:TopSearchElement}">
+                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
+                            
+                            <TextBlock.ToolTip>
+                                <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+                                    <TextBlock Name="tt_longText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                             Text="{Binding Path=Description}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+                                </Grid>
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                    </HierarchicalDataTemplate>
+                    
                     <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
+                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
+                            
+                            <TextBlock.ToolTip>
+                                <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+                                    <TextBlock Name="tt_longText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                             Text="{Binding Path=Description}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+                                </Grid>
+                            </TextBlock.ToolTip>
+                        </TextBlock>
                         
                         <!--<Grid>
                             
@@ -275,13 +310,7 @@ Source="..\Images\search_24.png" Opacity="1">
 
     </Grid>
 
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
+
 
 </UserControl>
   

@@ -3,24 +3,29 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Dynamo.Controls;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Autodesk.Revit.DB;
-
-using Value = Dynamo.FScheme.Value;
-using Microsoft.FSharp.Collections;
-using Dynamo.Connectors;
-using Dynamo.FSchemeInterop;
-using HelixToolkit.Wpf;
-
-using System.Windows.Media;
+using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 using System.Xml;
 
+using Autodesk.Revit.DB;
+
+using Microsoft.FSharp.Collections;
+
+using Dynamo.Utilities;
+using Value = Dynamo.FScheme.Value;
+using Dynamo.Connectors;
+using Dynamo.FSchemeInterop;
+using Dynamo.Controls;
+using Dynamo.Nodes;
+
+using HelixToolkit.Wpf;
+
+
+
+
 namespace Dynamo.Revit
 {
-    public abstract class dynRevitTransactionNode : dynNodeModel, IDrawable
+    public abstract partial class dynRevitTransactionNode : dynNodeModel, IDrawable
     {
         protected object drawableObject = null;
         protected Func<object, RenderDescription> drawMethod = null;
@@ -57,6 +62,14 @@ namespace Dynamo.Revit
             private set
             {
                 elements[runCount] = value;
+            }
+        }
+
+        public List<ElementId> AllElements
+        {
+            get
+            {
+                return elements.SelectMany(x=>x.Select(y=>y)).ToList();
             }
         }
 
@@ -102,6 +115,8 @@ namespace Dynamo.Revit
 
             elements.Clear();
 
+            var sb = new StringBuilder();
+            
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
                 if (subNode.Name == "Run")
@@ -113,7 +128,7 @@ namespace Dynamo.Revit
                     {
                         if (element.Name == "Element")
                         {
-                            var eid = subNode.InnerText;
+                            var eid = element.InnerText;
                             try
                             {
                                 var id = UIDocument.Document.GetElement(eid).Id;
@@ -122,12 +137,15 @@ namespace Dynamo.Revit
                             }
                             catch (NullReferenceException)
                             {
-                                dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
+                                //dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
+                                sb.AppendLine("Element with UID \"" + eid + "\" not found in Document.");
                             }
                         }
                     }
                 }
             }
+
+            dynSettings.Controller.DynamoViewModel.Log(sb.ToString());
         }
 
         internal void RegisterAllElementsDeleteHook()
@@ -448,7 +466,9 @@ namespace Dynamo.Revit
                 var elems = elements[i];
                 foreach (var e in elems)
                 {
-                    UIDocument.Document.Delete(e);
+                    Element el = UIDocument.Document.GetElement(e);
+                    if(el!=null)
+                        UIDocument.Document.Delete(e);
                 }
                 elems.Clear();
             }
@@ -527,7 +547,8 @@ namespace Dynamo.Revit
                            controller.CancelTransaction();
                            throw ex;
                        }
-                   }
+                   },
+                   false
                 );
 
                 #endregion
@@ -755,10 +776,16 @@ namespace Dynamo.Revit
         {
             throw new NotImplementedException();
         }
+
     }
 
     public class dynRevitTransactionNodeWithOneOutput : dynRevitTransactionNode
     {
+        public virtual bool acceptsListOfLists(FScheme.Value value)
+        {
+            return false;
+        }
+
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             //THE OLD WAY
@@ -791,9 +818,11 @@ namespace Dynamo.Revit
                 int j = 0;
                 foreach (var arg in args)
                 {
+                    var portAtThis = portComparison.ElementAt(j);
+
                     //incoming value is list and expecting single
-                    if (portComparison.ElementAt(j).Item1 == typeof(Value.List) &&
-                        portComparison.ElementAt(j).Item2 != typeof(Value.List))
+                    if (portAtThis.Item1 == typeof(Value.List) &&
+                        portAtThis.Item2 != typeof(Value.List))
                     {
                         //leave as list
                         argSets.Add(((Value.List)arg).Item);
@@ -802,7 +831,7 @@ namespace Dynamo.Revit
                     else
                     {
                         //check if we have a list of lists, if so, then don't wrap
-                        if (Utils.IsListOfLists(arg))
+                        if (Utils.IsListOfLists(arg) && !acceptsListOfLists(arg))
                             //leave as list
                             argSets.Add(((Value.List)arg).Item);
                         else

@@ -7,9 +7,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using Dynamo.Controls;
+using Dynamo.FSchemeInterop;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.Selection;
+using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 using System.Xml;
 

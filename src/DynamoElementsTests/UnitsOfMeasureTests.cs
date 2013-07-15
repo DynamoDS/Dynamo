@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -28,13 +29,13 @@ namespace DynamoElementsTests
 
             //inch tests
             var inch = new DynamoLength<Inch>(12.0);
-            Assert.AreEqual("30.48 cm", inch.ToDisplayString(DynamoUnitDisplayType.CENTIMETERS));
-            Assert.AreEqual("1.00 ft", inch.ToDisplayString(DynamoUnitDisplayType.DECIMAL_FEET));
-            Assert.AreEqual("12.00 in", inch.ToDisplayString(DynamoUnitDisplayType.DECIMAL_INCHES));
+            Assert.AreEqual(string.Format("{0} cm", (30.48).ToString(CultureInfo.CurrentCulture)), inch.ToDisplayString(DynamoUnitDisplayType.CENTIMETERS));
+            Assert.AreEqual(string.Format("{0} ft", (1.0).ToString("0.00", CultureInfo.CurrentCulture)), inch.ToDisplayString(DynamoUnitDisplayType.DECIMAL_FEET));
+            Assert.AreEqual(string.Format("{0} in", (12.00).ToString("0.00", CultureInfo.CurrentCulture)), inch.ToDisplayString(DynamoUnitDisplayType.DECIMAL_INCHES));
             Assert.AreEqual("1' 0\"", inch.ToDisplayString(DynamoUnitDisplayType.FRACTIONAL_FEET_INCHES));
             Assert.AreEqual("12\"", inch.ToDisplayString(DynamoUnitDisplayType.FRACTIONAL_INCHES));
-            Assert.AreEqual("0.30 m", inch.ToDisplayString(DynamoUnitDisplayType.METERS));
-            Assert.AreEqual("304.80 mm", inch.ToDisplayString(DynamoUnitDisplayType.MILLIMETERS));
+            Assert.AreEqual(string.Format("{0} m", (0.30).ToString("0.00", CultureInfo.CurrentCulture)), inch.ToDisplayString(DynamoUnitDisplayType.METERS));
+            Assert.AreEqual(string.Format("{0} mm", (304.80).ToString("0.00", CultureInfo.CurrentCulture)), inch.ToDisplayString(DynamoUnitDisplayType.MILLIMETERS));
 
             //test inches internal unit storage
             inch.FromDisplayString("1' 2 1/2\"", DynamoUnitDisplayType.FRACTIONAL_INCHES);

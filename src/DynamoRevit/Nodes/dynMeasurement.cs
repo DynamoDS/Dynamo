@@ -82,7 +82,7 @@ namespace Dynamo.Nodes
     [NodeName("Surface Domain")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("An element which measures the domain of a surface in U and V.")]
-    public class dynSurfaceDomain : dynRevitTransactionNodeWithOneOutput
+    public class dynSurfaceDomain : dynNodeWithOneOutput
     {
         public dynSurfaceDomain()
         {
@@ -103,7 +103,7 @@ namespace Dynamo.Nodes
 
             Reference faceRef = arg0 as Reference;
             if (faceRef != null)
-                f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             else
                 f = arg0 as Autodesk.Revit.DB.Face;
 

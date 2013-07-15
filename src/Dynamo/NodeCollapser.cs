@@ -12,7 +12,7 @@ using Microsoft.Practices.Prism;
 
 namespace Dynamo.Utilities
 {
-    class NodeCollapser
+    static class NodeCollapser
     {
         /// <summary>
         ///     Collapse a set of nodes in a given workspace.  Has the side effects of prompting the user
@@ -28,7 +28,7 @@ namespace Dynamo.Utilities
 
             //First, prompt the user to enter a name
             string newNodeName ="", newNodeCategory ="";
-            if ( !dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory))
+            if (!dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory))
             {
                 return;
             }
@@ -45,11 +45,10 @@ namespace Dynamo.Utilities
 
             //Step 1: determine which nodes will be inputs to the new node
             var inputs = new HashSet<Tuple<dynNodeModel, int, Tuple<int, dynNodeModel>>>(
-                    selectedNodeSet
-                        .SelectMany(node => Enumerable.Range(0, node.InPortData.Count)
-                            .Where(node.HasInput)
-                            .Select(data => Tuple.Create(node, data, node.Inputs[data]))
-                                                 .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
+                selectedNodeSet.SelectMany(
+                    node => Enumerable.Range(0, node.InPortData.Count).Where(node.HasInput)
+                        .Select(data => Tuple.Create(node, data, node.Inputs[data]))
+                        .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
             var outputs = new HashSet<Tuple<dynNodeModel, int, Tuple<int, dynNodeModel>>>(
                 selectedNodeSet.SelectMany(
@@ -227,6 +226,8 @@ namespace Dynamo.Utilities
 
             #region Process inputs
 
+            var uniqueInputSenders = new Dictionary<Tuple<dynNodeModel, int>, dynSymbol>();
+
             //Step 3: insert variables (reference step 1)
             foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
             {
@@ -238,47 +239,57 @@ namespace Dynamo.Utilities
                 dynNodeModel inputNode = input.Item2.Item3.Item2;
                 int inputData = input.Item2.Item3.Item1;
 
-//MVVM : replace NodeUI reference with node
-                inConnectors.Add(new Tuple<dynNodeModel, int, int>(inputNode, inputData, inputIndex));
+                dynSymbol node;
 
-                //Create Symbol Node
-                var node = new dynSymbol
+                var key = Tuple.Create(inputNode, inputData);
+                if (uniqueInputSenders.ContainsKey(key))
                 {
-                    Symbol = inputReceiverNode.InPortData[inputReceiverData].NickName
-                };
+                    node = uniqueInputSenders[key];
+                }
+                else
+                {
+                    //MVVM : replace NodeUI reference with node
+                    inConnectors.Add(Tuple.Create(inputNode, inputData, inputIndex));
 
-                //MVVM : Don't make direct reference to view here
-                //dynNodeView nodeUI = node.NodeUI;
-                
-                var elNameAttrib =
-                    node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
-                if (elNameAttrib != null)
-                {
-                    node.NickName = elNameAttrib.Name;
+                    //Create Symbol Node
+                    node = new dynSymbol
+                    {
+                        Symbol = inputReceiverNode.InPortData[inputReceiverData].NickName
+                    };
+
+                    //MVVM : Don't make direct reference to view here
+                    //dynNodeView nodeUI = node.NodeUI;
+
+                    var elNameAttrib =
+                        node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
+                    if (elNameAttrib != null)
+                    {
+                        node.NickName = elNameAttrib.Name;
+                    }
+
+                    node.GUID = Guid.NewGuid();
+
+                    //store the element in the elements list
+                    newNodeWorkspace.Nodes.Add(node);
+                    node.WorkSpace = newNodeWorkspace;
+
+                    node.DisableReporting();
+
+                    //MVVM : Do not add view directly to canvas
+                    /*dynSettings.Bench.WorkBench.Children.Add(nodeUI);
+
+                    //Place it in an appropriate spot
+                    Canvas.SetLeft(nodeUI, 0);
+                    Canvas.SetTop(nodeUI, inputIndex * (50 + node.NodeUI.Height));
+
+                    dynSettings.Bench.WorkBench.UpdateLayout();*/
+                    node.X = 0;
+                    node.Y = inputIndex * (50 + node.Height);
+
+                    uniqueInputSenders[key] = node;
                 }
 
-                node.GUID = Guid.NewGuid();
-
-                //store the element in the elements list
-                newNodeWorkspace.Nodes.Add(node);
-                node.WorkSpace = newNodeWorkspace;
-
-                node.DisableReporting();
-
-                //MVVM : Do not add view directly to canvas
-                /*dynSettings.Bench.WorkBench.Children.Add(nodeUI);
-
-                //Place it in an appropriate spot
-                Canvas.SetLeft(nodeUI, 0);
-                Canvas.SetTop(nodeUI, inputIndex * (50 + node.NodeUI.Height));
-
-                dynSettings.Bench.WorkBench.UpdateLayout();*/
-                node.X = 0;
-                node.Y = inputIndex*(50 + node.Height);
-
-
-                var curriedNode = curriedNodeArgs.FirstOrDefault(
-                    x => x.OuterNode == inputNode);
+                var curriedNode = curriedNodeArgs.FirstOrDefault(x => x.OuterNode == inputNode);
 
                 if (curriedNode == null)
                 {
@@ -406,9 +417,12 @@ namespace Dynamo.Utilities
                 {
                     // we create the connectors in the current space later
 //MVVM : replaced multiple dynNodeView refrences with dynNode
-                    outConnectors.Add(new Tuple<dynNodeModel, int, int>(outputReceiverNode,
-                                                                     outportList.FindIndex(x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
-                                                                     outputReceiverData));
+                    outConnectors.Add(
+                        Tuple.Create(
+                            outputReceiverNode,
+                            outportList.FindIndex(
+                                x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
+                            outputReceiverData));
                 }
                 else
                 {

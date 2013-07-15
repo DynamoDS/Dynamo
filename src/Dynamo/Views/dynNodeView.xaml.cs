@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
@@ -178,5 +179,19 @@ namespace Dynamo.Controls
                     return null;
             }
         }
+
+        private void NickNameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount > 1)
+            {
+                if (this.ViewModel != null && this.ViewModel.RenameCommand.CanExecute())
+                {
+                    this.ViewModel.RenameCommand.Execute();
+                }   
+
+                e.Handled = true;
+            }
+        }
+
     }
 }
