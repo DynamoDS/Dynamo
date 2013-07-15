@@ -444,7 +444,7 @@ namespace Dynamo.Nodes
             readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-            tb = new TextBox();
+            var tb = new TextBox();
             if (string.IsNullOrEmpty(Value))
                 Value = "No file selected.";
 

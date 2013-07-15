@@ -32,7 +32,6 @@ using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
-using TextBox = System.Windows.Controls.TextBox;
 using System.Globalization;
 
 namespace Dynamo.Nodes
@@ -2701,7 +2700,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Allows you to select a file on the system to get its filename.")]
     public partial class dynStringFilename : dynBasicInteractive<string>
     {
-        TextBox tb;
+        //TextBox tb;
 
         public dynStringFilename()
         {

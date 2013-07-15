@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Dynamo.Nodes;
 using Dynamo.Controls;
-using System.Windows.Controls;
 using Dynamo.Connectors;
-using System.Windows;
-using Dynamo.Commands;
 using Microsoft.Practices.Prism;
 
 namespace Dynamo.Utilities
