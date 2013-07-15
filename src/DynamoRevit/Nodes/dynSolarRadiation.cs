@@ -120,10 +120,7 @@ namespace Dynamo.Nodes
         void analysisResultButt_Click(object sender, RoutedEventArgs e)
         {
             PickedAnalysisResult =
-               dynRevitSettings.SelectionHelper.RequestAnalysisResultInstanceSelection(
-                  dynRevitSettings.Doc,
-                  "Select Analysis Result Object"
-               );
+               dynRevitSettings.SelectionHelper.RequestAnalysisResultInstanceSelection("Select Analysis Result Object");
 
             if (PickedAnalysisResult != null)
             {

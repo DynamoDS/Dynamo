@@ -902,6 +902,8 @@ namespace Dynamo.Nodes
         {
             if(!args[0].IsList)
                 throw new Exception("A list is required to slice.");
+            if(args.Length != 2)
+                throw new Exception("A number is required to specify the sublist length.");
 
             FSharpList<Value> lst = ((Value.List)args[0]).Item;
             var n = (int)Math.Round(((Value.Number)args[1]).Item);
@@ -913,7 +915,6 @@ namespace Dynamo.Nodes
             {
                 return Value.NewList(lst);
             }
-
 
             List<Value> finalList = new List<Value>();
             List<Value> currList = new List<Value>();
@@ -991,7 +992,7 @@ namespace Dynamo.Nodes
             startIndices.Reverse();
 
             //get indices along 'top' of array
-            for (int i = 0; i < n - 1; i++)
+            for (int i = 0; i < n; i++)
             {
                 startIndices.Add(i);
             }
@@ -1065,7 +1066,7 @@ namespace Dynamo.Nodes
             var startIndices = new List<int>();
 
             //get indices along 'top' of array
-            for (int i = 1; i < (int)n; i++)
+            for (int i = 0; i < (int)n; i++)
             {
                 startIndices.Add(i);
             }
@@ -2697,12 +2698,16 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            var tb = new dynTextBox();
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            var tb = new dynTextBox
+                {
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                    VerticalAlignment = System.Windows.VerticalAlignment.Top
+                };
+
             nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
+
             tb.IsNumeric = true;
             tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
@@ -2841,11 +2846,11 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a slider control to the input grid of the control
-            tb_slider = new System.Windows.Controls.Slider();
+            tb_slider = new Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             
-            tb_slider.Width = 100;
+            tb_slider.MinWidth = 150;
 
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.None;
 
@@ -2855,33 +2860,36 @@ namespace Dynamo.Nodes
             };
 
             mintb = new dynTextBox();
-            mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             mintb.Width = double.NaN;
 
             mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             // input value textbox
             valtb = new dynTextBox();
-            valtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            valtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             valtb.Width = double.NaN;
             valtb.Margin = new Thickness(0,0,10,0);
 
             maxtb = new dynTextBox();
-            maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             maxtb.Width = double.NaN;
-            //maxtb.IsNumeric = true;
 
             maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
-            var wp = new WrapPanel();
-            wp.Children.Add(valtb);
-            wp.Children.Add(mintb);
-            wp.Children.Add(tb_slider);
-            wp.Children.Add(maxtb);
-            nodeUI.inputGrid.Children.Add(wp);
+            var sliderGrid = new Grid();
+            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition{Width = new GridLength(1, GridUnitType.Auto)});
+            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition{Width = new GridLength(1, GridUnitType.Auto)});
+            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+
+            sliderGrid.Children.Add(valtb);
+            sliderGrid.Children.Add(mintb);
+            sliderGrid.Children.Add(tb_slider);
+            sliderGrid.Children.Add(maxtb);
+
+            Grid.SetColumn(valtb, 0);
+            Grid.SetColumn(mintb, 1);
+            Grid.SetColumn(tb_slider, 2);
+            Grid.SetColumn(maxtb, 3);
+            nodeUI.inputGrid.Children.Add(sliderGrid);
 
             maxtb.DataContext = this;
             tb_slider.DataContext = this;
@@ -3074,20 +3082,10 @@ namespace Dynamo.Nodes
             rbFalse.Content = "0";
             rbFalse.Padding = new Thickness(5,0,0,0);
 
-            RowDefinition rd = new RowDefinition();
-            ColumnDefinition cd1 = new ColumnDefinition();
-            ColumnDefinition cd2 = new ColumnDefinition();
-            nodeUI.inputGrid.ColumnDefinitions.Add(cd1);
-            nodeUI.inputGrid.ColumnDefinitions.Add(cd2);
-            nodeUI.inputGrid.RowDefinitions.Add(rd);
-
-            nodeUI.inputGrid.Children.Add(rbTrue);
-            nodeUI.inputGrid.Children.Add(rbFalse);
-
-            System.Windows.Controls.Grid.SetColumn(rbTrue, 0);
-            System.Windows.Controls.Grid.SetRow(rbTrue, 0);
-            System.Windows.Controls.Grid.SetColumn(rbFalse, 1);
-            System.Windows.Controls.Grid.SetRow(rbFalse, 0);
+            var wp = new WrapPanel {HorizontalAlignment = HorizontalAlignment.Center};
+            wp.Children.Add(rbTrue);
+            wp.Children.Add(rbFalse);
+            nodeUI.inputGrid.Children.Add(wp);
 
             //rbFalse.IsChecked = true;
             rbTrue.Checked += new System.Windows.RoutedEventHandler(rbTrue_Checked);
