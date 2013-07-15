@@ -2317,11 +2317,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", type.Name, type));
         }
 
-        public virtual void editWindowItem_Click(object sender, RoutedEventArgs e)
-        {
-            //override in child classes
-        }
-
         public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
