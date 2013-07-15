@@ -353,7 +353,6 @@ namespace Dynamo
         [IsInteractive(false)]
         public partial class dynOutput : dynNodeModel
         {
-            TextBox tb;
             private string symbol = "";
 
             public dynOutput()
@@ -361,11 +360,6 @@ namespace Dynamo
                 InPortData.Add(new PortData("", "", typeof(object)));
 
                 RegisterAllPorts();
-            }
-
-            void tb_TextChanged(object sender, TextChangedEventArgs e)
-            {
-                Symbol = tb.Text;
             }
 
             public override bool RequiresRecalc
@@ -417,7 +411,7 @@ namespace Dynamo
         [IsInteractive(false)]
         public partial class dynSymbol : dynNodeModel
         {
-            TextBox tb;
+            
             private string symbol = "";
 
             public dynSymbol()
@@ -425,11 +419,6 @@ namespace Dynamo
                 OutPortData.Add(new PortData("", "Symbol", typeof(object)));
 
                 RegisterAllPorts();
-            }
-
-            void tb_TextChanged(object sender, TextChangedEventArgs e)
-            {
-                Symbol = tb.Text;
             }
 
             public override bool RequiresRecalc
