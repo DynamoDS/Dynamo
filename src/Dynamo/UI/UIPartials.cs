@@ -150,6 +150,12 @@ namespace Dynamo.Nodes
 
             editWindowItem.Click += editWindowItem_Click;
         }
+
+        public virtual void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+            //override in child classes
+        }
+
     }
 
     public partial class dynDoubleInput : dynDouble
