@@ -34,6 +34,9 @@ namespace Dynamo.Nodes
         ReferencePoint _revitPoint = null;
         CurveByPoints _curveByPoints = null;
 
+        ReferencePoint _startPoint = null;
+        ReferencePoint _endPoint = null;
+
         public dynASMToRevitNode()
         {
             InPortData.Add(new PortData("Geometry", "Input Geometry. Should have type of Autodesk.LibG...", typeof(Value.Container)));
@@ -50,45 +53,89 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            //Autodesk.LibG.Geometry geometry = (Autodesk.LibG.Geometry)((Value.Container)args[0]).Item;
+            Autodesk.LibG.Geometry geometry = (Autodesk.LibG.Geometry)((Value.Container)args[0]).Item;
 
-            //Autodesk.LibG.Point point = geometry as Autodesk.LibG.Point;
+            Autodesk.LibG.Point point = geometry as Autodesk.LibG.Point;
 
-            //if (point != null)
-            //{
-            //    XYZ xyz = new XYZ(point.x(), point.y(), point.z());
+            if (point != null)
+            {
+                XYZ xyz = new XYZ(point.x(), point.y(), point.z());
 
-            //    if (_revitPoint == null)
-            //    {
-            //        _revitPoint = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
-            //        this.Elements.Add(_revitPoint.Id);
-            //    }
-            //    else
-            //    {
-            //        _revitPoint.Position = xyz;
-            //    }
+                if (_revitPoint == null)
+                {
+                    _revitPoint = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
+                    this.Elements.Add(_revitPoint.Id);
+                }
+                else
+                {
+                    _revitPoint.Position = xyz;
+                }
 
-            //    return Value.NewContainer(_revitPoint);
-            //}
+                return Value.NewContainer(_revitPoint);
+            }
 
-            //// Line
-            //Autodesk.LibG.Line line = geometry as Autodesk.LibG.Line;
+            Autodesk.LibG.Line line = geometry as Autodesk.LibG.Line;
 
-            //if (line != null)
+            if (line != null)
+            {
+                ReferencePointArray refPoints = new ReferencePointArray();
+
+                Autodesk.LibG.Point start_point = line.start_point();
+                Autodesk.LibG.Point end_point = line.end_point();
+
+                if (_curveByPoints == null)
+                {
+                    _startPoint = ReferencePointFromPoint(start_point);
+                    _endPoint = ReferencePointFromPoint(end_point);
+
+                    refPoints.Append(_startPoint);
+                    refPoints.Append(_endPoint);
+
+                    _curveByPoints = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPoints);
+                    this.Elements.Add(_curveByPoints.Id);
+                }
+                else
+                {
+                    _startPoint.Position = new XYZ(start_point.x(), start_point.y(), start_point.z());
+                    _endPoint.Position = new XYZ(end_point.x(), end_point.y(), end_point.z());
+                }
+
+                return Value.Container.NewContainer(_curveByPoints);
+            }
+
+            //Autodesk.LibG.BSplineCurve bspline = geometry as Autodesk.LibG.BSplineCurve;
+            
+            //if (bspline != null)
             //{
             //    ReferencePointArray refPoints = new ReferencePointArray();
 
-            //    ReferencePoint start = 
+            //    for (int i = 0; i <= 15; ++i)
+            //    {
+            //        double param = (double)i / 15.0;
+            //        Autodesk.LibG.Point p = bspline.point_at_parameter(param);
+            //        ReferencePoint refPoint = ReferencePointFromPoint(p);
+            //        refPoints.Append(refPoint);
+            //    }
 
             //    if (_curveByPoints == null)
             //    {
-            //        _curveByPoints = this.UIDocument.Document.FamilyCreate.NewCurveByPoints()
+            //        _curveByPoints = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPoints);
+            //        this.Elements.Add(_curveByPoints.Id);
             //    }
+            //    else
+            //    {
+            //        _curveByPoints.SetPoints(refPoints);
+            //    }
+
+            //    foreach (ReferencePoint refPoint in refPoints)
+            //    {
+            //        refPoint.Visible = false;
+            //    }
+
+            //    return Value.Container.NewContainer(_curveByPoints);
             //}
 
-
-            return Value.NewContainer(null);
-            // BSplineCurve
+            return Value.Container.NewContainer(null);
 
             // Surface
 

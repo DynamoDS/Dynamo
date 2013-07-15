@@ -1320,4 +1320,39 @@ namespace Dynamo.Nodes
         }
     }
 
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013, Context.VASARI_2014)]
+    [NodeName("Export To SAT")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Export Geometry to a SAT file.")]
+    public class ExportSATNode : LibGNode
+    {
+        public ExportSATNode()
+        {
+            InPortData.Add(new PortData("File Name", "File name of .SAT file", typeof(Value.String)));
+            InPortData.Add(new PortData("Geometry", "List of Geometry to export", typeof(Value.List)));
+
+            OutPortData.Add(new PortData("Geometry", "Exported Geometry", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            GeometryList geometry = new GeometryList();
+
+            String file_name = ((Value.String)args[0]).Item;
+            var input = (args[1] as Value.List).Item;            
+
+            foreach (Value v in input)
+            {
+                Geometry g = ((Value.Container)v).Item as Geometry;
+                geometry.Add(g);
+            }
+
+            ASMExporter.export_geometry(file_name, geometry);
+
+            return args[1];
+        }
+    }
+
 }
