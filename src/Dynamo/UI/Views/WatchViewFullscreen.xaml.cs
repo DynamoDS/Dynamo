@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Media3D;
@@ -12,16 +13,97 @@ namespace Dynamo.Controls
     /// <summary>
     /// Interaction logic for WatchControl.xaml
     /// </summary>
-    public partial class WatchViewFullscreen : UserControl
+    public partial class WatchViewFullscreen : UserControl, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
         Point _rightMousePoint;
         private Watch3DFullscreenViewModel _vm;
 
-        //List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
+        protected List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
+        public List<Point3D> _pointsCache = new List<Point3D>();
+        public List<Point3D> _linesCache = new List<Point3D>();
+        public List<Point3D> _xAxisCache = new List<Point3D>();
+        public List<Point3D> _yAxisCache = new List<Point3D>();
+        public List<Point3D> _zAxisCache = new List<Point3D>();
+        public Mesh3D _meshCache = new Mesh3D();
+
+        public Material HelixMeshMaterial
+        {
+            get { return Materials.White; }
+        }
+
+        public List<Point3D> HelixPoints
+        {
+            get { return _pointsCache; }
+            set
+            {
+                _pointsCache = value;
+                NotifyPropertyChanged("HelixPoints");
+            }
+        }
+
+        public List<Point3D> HelixLines
+        {
+            get { return _linesCache; }
+            set
+            {
+                _linesCache = value;
+                NotifyPropertyChanged("HelixLines");
+            }
+        }
+
+        public List<Point3D> HelixXAxes
+        {
+            get { return _xAxisCache; }
+            set
+            {
+                _xAxisCache = value;
+                NotifyPropertyChanged("HelixXAxes");
+            }
+        }
+
+        public List<Point3D> HelixYAxes
+        {
+            get { return _yAxisCache; }
+            set
+            {
+                _yAxisCache = value;
+                NotifyPropertyChanged("HelixYAxes");
+            }
+        }
+
+        public List<Point3D> HelixZAxes
+        {
+            get { return _zAxisCache; }
+            set
+            {
+                _zAxisCache = value;
+                NotifyPropertyChanged("HelixZAxes");
+            }
+        }
+
+        public Mesh3D HelixMesh
+        {
+            get { return _meshCache; }
+            set
+            {
+                _meshCache = value;
+                NotifyPropertyChanged("HelixMesh");
+            }
+        }
 
         public WatchViewFullscreen()
         {
             InitializeComponent();
+            watch_view.DataContext = this;
             this.Loaded += new RoutedEventHandler(WatchViewFullscreen_Loaded);
         }
 
@@ -50,12 +132,14 @@ namespace Dynamo.Controls
             if (!dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing)
                 return;
 
-            RenderDrawables();
+            Dispatcher.Invoke(new Action(RenderDrawables));
+            //RenderDrawables();
         }
 
         void Controller_RequestsRedraw(object sender, System.EventArgs e)
         {
-            RenderDrawables();
+            Dispatcher.Invoke(new Action(RenderDrawables));
+            //RenderDrawables();
         }
 
         private void RenderDrawables()
@@ -96,12 +180,12 @@ namespace Dynamo.Controls
             //RaisePropertyChanged("HelixYAxes");
             //RaisePropertyChanged("HelixZAxes");
 
-            _vm.HelixPoints = points;
-            _vm.HelixLines = lines;
-            _vm.HelixMesh = MergeMeshes(meshes);
-            _vm.HelixXAxes = xAxes;
-            _vm.HelixYAxes = yAxes;
-            _vm.HelixZAxes = zAxes;
+            HelixPoints = points;
+            HelixLines = lines;
+            HelixMesh = MergeMeshes(meshes);
+            HelixXAxes = xAxes;
+            HelixYAxes = yAxes;
+            HelixZAxes = zAxes;
         }
 
         Mesh3D MergeMeshes(List<Mesh3D> meshes)
