@@ -2,24 +2,53 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using Microsoft.Office.Interop.Excel;
 
 namespace Dynamo.Nodes
 {
+
+    public class ExcelInterop {
+    
+        private static Microsoft.Office.Interop.Excel.Application _excelApp;
+        public static Microsoft.Office.Interop.Excel.Application ExcelApp
+        {
+            get 
+            {
+                _excelApp = _excelApp ?? RegisterAndGetApp();
+                return _excelApp;
+            }
+        }
+
+        private static Application RegisterAndGetApp()
+        {
+            var app = new Application();
+            dynSettings.Controller.DynamoModel.CleaningUp += DynamoModelOnCleaningUp;
+            return app;
+        }
+
+        private static void DynamoModelOnCleaningUp(object sender, EventArgs eventArgs)
+        {
+            _excelApp.Workbooks.Cast<Workbook>().ToList().ForEach((wb) => wb.Close());
+            _excelApp.Quit();
+            Marshal.ReleaseComObject(_excelApp);
+        }
+
+    }
+
     [NodeName("Open Excel Workbook")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Opens an Excel file and returns the Workbook inside.  If the filename does not exist, returns null.")]
     public class dynReadExcelFile : dynFileReaderBase
     {
 
-        private static Microsoft.Office.Interop.Excel.Application _excel;
-
         public dynReadExcelFile()
         {
-            _excel = new Microsoft.Office.Interop.Excel.Application();
             OutPortData.Add(new PortData("workbook", "The workbook opened from the file", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
         }
@@ -28,9 +57,17 @@ namespace Dynamo.Nodes
         {
             storedPath = ((FScheme.Value.String)args[0]).Item;
 
+            var workbookOpen =
+                ExcelInterop.ExcelApp.Workbooks.Cast<Microsoft.Office.Interop.Excel.Workbook>().FirstOrDefault(e => e.FullName == storedPath);
+
+            if (workbookOpen != null)
+            {
+                return FScheme.Value.NewContainer(workbookOpen);
+            }
+
             if (File.Exists(storedPath))
             {
-                var workbook = _excel.Workbooks.Open(storedPath);
+                var workbook = ExcelInterop.ExcelApp.Workbooks.Open(storedPath, true, false);
                 return FScheme.Value.NewContainer(workbook);
             }
 
@@ -58,31 +95,6 @@ namespace Dynamo.Nodes
             var l = workbook.Worksheets.Cast<Microsoft.Office.Interop.Excel.Worksheet>().Select(FScheme.Value.NewContainer);
 
             return FScheme.Value.NewList(Utils.SequenceToFSharpList(l));
-        }
-
-    }
-
-    [NodeName("Get Excel Worksheet By Index")]
-    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
-    [NodeDescription("Get a particular Worksheet from an Excel Workbook by index.")]
-    public class dynGetExcelWorksheetByIndex : dynNodeWithOneOutput
-    {
-
-        public dynGetExcelWorksheetByIndex()
-        {
-            InPortData.Add(new PortData("workbook", "The excel workbook", typeof(FScheme.Value.Container)));
-            InPortData.Add(new PortData("index", "Index of the worksheet to get", typeof(FScheme.Value.Number)));
-            OutPortData.Add(new PortData("worksheet", "The worksheet at the given index", typeof(FScheme.Value.Container)));
-            RegisterAllPorts();
-        }
-
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            var workbook = (Microsoft.Office.Interop.Excel.Workbook)((FScheme.Value.Container)args[0]).Item;
-            var index = (int)Math.Round(((FScheme.Value.Number)args[1]).Item);
-            var sheet = workbook.Worksheets.Cast<Microsoft.Office.Interop.Excel.Worksheet>().ElementAtOrDefault(index);
-
-            return FScheme.Value.NewContainer(sheet);
         }
 
     }
@@ -207,9 +219,9 @@ namespace Dynamo.Nodes
         public dynAddExcelWorksheetToWorkbook()
         {
             InPortData.Add(new PortData("workbook", "The Excel Worksheet to write to", typeof(FScheme.Value.Container)));
-            InPortData.Add(new PortData("name", "Name of new worksheet to add", typeof(FScheme.Value.String)));
+            InPortData.Add(new PortData("name", "Name of new Worksheet to add", typeof(FScheme.Value.String)));
 
-            OutPortData.Add(new PortData("workbook", "The excel Workbook after adding the Worksheet", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("worksheet", "The Worksheet newly added to the Workbook", typeof(FScheme.Value.Container)));
 
             RegisterAllPorts();
         }
@@ -219,11 +231,30 @@ namespace Dynamo.Nodes
             var wb = (Microsoft.Office.Interop.Excel.Workbook)((FScheme.Value.Container)args[0]).Item;
             var name = ((FScheme.Value.String)args[1]).Item;
 
-            var ws = new Microsoft.Office.Interop.Excel.Worksheet();
-            ws.Name = name;
-            wb.Worksheets.Add(ws);
+            var worksheet = wb.Worksheets.Add();
+            worksheet.Name = name;
 
             return FScheme.Value.NewContainer(wb);
+        }
+
+    }
+
+    [NodeName("New Excel Workbook")]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeDescription("Create a new Excel Workbook object.")]
+    public class dynNewExcelWorkbook : dynNodeWithOneOutput
+    {
+
+        public dynNewExcelWorkbook()
+        {
+            OutPortData.Add(new PortData("workbook", "The new Excel Workbook ", typeof(FScheme.Value.Container)));
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            var workbook = ExcelInterop.ExcelApp.Workbooks.Add();
+            return FScheme.Value.NewContainer(workbook);
         }
 
     }
@@ -244,11 +275,29 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        public override bool RequiresRecalc
+        {
+            get { return true; }
+            set
+            {
+
+            }
+        }
+
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var wb = (Microsoft.Office.Interop.Excel.Workbook)((FScheme.Value.Container)args[0]).Item;
-            var name = (Microsoft.Office.Interop.Excel.Workbook)((FScheme.Value.Container)args[1]).Item;
-            wb.SaveAs(name);
+            var name = ((FScheme.Value.String)args[1]).Item;
+
+            if (wb.FullName == name)
+            {
+                wb.Save();
+            }
+            else
+            {
+                wb.SaveAs(name);
+            }
+            
             return FScheme.Value.NewContainer(wb);
         }
 
