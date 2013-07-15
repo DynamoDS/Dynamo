@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using Dynamo.Connectors;
@@ -113,6 +115,7 @@ namespace Dynamo.Controls
         public string NickName
         {
             get { return nodeLogic.NickName; }
+            set { nodeLogic.NickName = value; }
         }
 
         public string OldValue
@@ -189,6 +192,11 @@ namespace Dynamo.Controls
         public ElementState State
         {
             get { return nodeLogic.State; }
+        }
+
+        public string Description
+        {
+            get { return nodeLogic.Description; }
         }
         
         //public double DropShadowOpacity
@@ -278,6 +286,7 @@ namespace Dynamo.Controls
         public DelegateCommand<string> SetLacingTypeCommand { get; set; }
         public DelegateCommand<object> SetStateCommand { get; set; }
         public DelegateCommand SelectCommand { get; set; }
+        public DelegateCommand RenameCommand { get; set; }
         public DelegateCommand ShowHelpCommand { get; set; }
         public DelegateCommand ViewCustomNodeWorkspaceCommand { get; set; }
         public DelegateCommand<object> SetLayoutCommand { get; set; }
@@ -306,6 +315,7 @@ namespace Dynamo.Controls
             SetStateCommand = new DelegateCommand<object>(SetState, CanSetState);
             SelectCommand = new DelegateCommand(Select, CanSelect);
             ShowHelpCommand = new DelegateCommand(ShowHelp, CanShowHelp);
+            RenameCommand = new DelegateCommand(ShowRename, CanShowRename);
             ViewCustomNodeWorkspaceCommand = new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
             SetupCustomUIElementsCommand = new DelegateCommand<dynNodeView>(SetupCustomUIElements, CanSetupCustomUIElements);
@@ -406,6 +416,32 @@ namespace Dynamo.Controls
         }
 
         private bool CanShowHelp()
+        {
+            return true;
+        }
+
+        private void ShowRename()
+        {
+            var editWindow = new dynEditWindow { DataContext = this };
+
+            var bindingVal = new Binding("NickName")
+            {
+                Mode = BindingMode.TwoWay,
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
+
+            editWindow.Title = "Edit Node Name";
+
+            if (editWindow.ShowDialog() != true)
+            {
+                return;
+            }
+        }
+
+        private bool CanShowRename()
         {
             return true;
         }

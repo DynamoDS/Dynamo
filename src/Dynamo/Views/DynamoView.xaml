@@ -110,7 +110,7 @@
         </Grid.RowDefinitions>
         
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MaxWidth="300"/>
+            <ColumnDefinition Width="Auto" MaxWidth="600"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -502,7 +502,7 @@
                     Visibility="Visible"
                     Grid.Row="3"
                     Grid.Column="0" 
-                    Grid.ColumnSpan="3" SourceUpdated="LogScroller_OnSourceUpdated">
+                    Grid.ColumnSpan="3">
             <ScrollViewer.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Clear" Command="{Binding ClearLogCommand}"/>
@@ -513,10 +513,10 @@
                     Foreground="#FF888888" BorderThickness="0" BorderBrush="#00000000" Background="Black"
                     Margin="0" TextWrapping="Wrap"
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
-                    IsTabStop="False" FontFamily="Consolas" />
+                    IsTabStop="False" FontFamily="Consolas" TextChanged="TextBoxBase_OnTextChanged" />
         </ScrollViewer>
 
-        <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
+        <Grid Height="Auto" Width="Auto" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black"/>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 

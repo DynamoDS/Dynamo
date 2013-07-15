@@ -138,7 +138,7 @@ namespace Dynamo.Nodes
 
         }
 
-        WatchNode Process(Value eIn, ref string content, string prefix, int count)
+        WatchNode Process(Value eIn, ref string content, string prefix, int count, bool isListMember = false)
         {
             content += prefix + string.Format("[{0}]:", count.ToString());
 
@@ -148,12 +148,9 @@ namespace Dynamo.Nodes
             {
                 if ((eIn as Value.Container).Item != null)
                 {
-                    //TODO: make clickable hyperlinks to show the element in Revit
-                    //http://stackoverflow.com/questions/7890159/programmatically-make-textblock-with-hyperlink-in-between-text
-
                     content += (eIn as Value.Container).Item.ToString();
 
-                    node = new WatchNode((eIn as Value.Container).Item.ToString());
+                    node = new WatchNode((eIn as Value.Container).Item.ToString(), isListMember, count);
 
                     handlerManager.ProcessNode((eIn as Value.Container).Item, node);
                     
@@ -163,7 +160,7 @@ namespace Dynamo.Nodes
             else if (eIn.IsFunction)
             {
                 content += eIn.ToString() + "\n";
-                node = new WatchNode("<function>");
+                node = new WatchNode("<function>", isListMember, count);
             }
             else if (eIn.IsList)
             {
@@ -173,27 +170,27 @@ namespace Dynamo.Nodes
 
                 var list = (eIn as Value.List).Item;
 
-                node = new WatchNode(list.IsEmpty ? "Empty List" : "List");
+                node = new WatchNode(list.IsEmpty ? "Empty List" : "List", isListMember, count);
 
                 foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
-                    node.Children.Add(Process(e.Element, ref content, newPrefix, e.Index));
+                    node.Children.Add( Process(e.Element, ref content, newPrefix, e.Index, true) );
                 }
             }
             else if (eIn.IsNumber)
             {
                 content += (eIn as Value.Number).Item.ToString() + "\n";
-                node = new WatchNode((eIn as Value.Number).Item.ToString());
+                node = new WatchNode((eIn as Value.Number).Item.ToString(), isListMember, count);
             }
             else if (eIn.IsString)
             {
                 content += (eIn as Value.String).Item.ToString() + "\n";
-                node = new WatchNode((eIn as Value.String).Item.ToString());
+                node = new WatchNode((eIn as Value.String).Item.ToString(), isListMember, count);
             }
             else if (eIn.IsSymbol)
             {
                 content += (eIn as Value.Symbol).Item.ToString() + "\n";
-                node = new WatchNode((eIn as Value.Symbol).Item.ToString());
+                node = new WatchNode((eIn as Value.Symbol).Item.ToString(), isListMember, count);
             }
 
             return node;

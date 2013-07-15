@@ -19,6 +19,7 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Resources;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
@@ -204,11 +205,18 @@ namespace Dynamo.Applications
 
                         //show the window
 
-                        string context = m_revit.Application.VersionName; // string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
+                        Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
+                        string context = r.Replace(m_revit.Application.VersionName, "");
+
+                        //they changed the application version name conventions for vasari
+                        //it no longer has a version year so we can't compare it to other versions
+                        //TODO:come up with a more stable way to test for Vasari beta 3
+                        if (context == "Vasari")
+                            context = "Vasari 2014";
+
                         dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
 
-                        dynSettings.Bench = new DynamoView();
-                        dynSettings.Bench.DataContext = dynamoController.DynamoViewModel;
+                        dynSettings.Bench = new DynamoView {DataContext = dynamoController.DynamoViewModel};
                         dynamoController.UIDispatcher = dynSettings.Bench.Dispatcher;
                         dynamoView = dynSettings.Bench;
 
@@ -357,7 +365,9 @@ namespace Dynamo.Applications
                 dynRevitSettings.DefaultLevel = defaultLevel;
 
                 //create dynamo
-                string context = string.Format("{0} {1}", m_revit.Application.VersionName, m_revit.Application.VersionNumber);
+                Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
+                string context = r.Replace(m_revit.Application.VersionName, "");
+
                 var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
 
                 //flag to run evalauation synchronously, helps to 

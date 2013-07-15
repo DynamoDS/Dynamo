@@ -15,6 +15,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
@@ -27,9 +29,19 @@ using System.Windows.Media.Media3D;
 namespace Dynamo.Nodes
 {
 
-    public abstract class dynParticleSystemBase : dynNodeWithOneOutput, IDrawable
+    public abstract class dynParticleSystemBase : dynNodeWithMultipleOutputs, IDrawable
     {
         internal ParticleSystem particleSystem;
+
+        internal dynParticleSystemBase()
+        {
+            dynSettings.Controller.RequestsRedraw += Controller_RequestsRedraw;
+        }
+
+        void Controller_RequestsRedraw(object sender, EventArgs e)
+        {
+            Draw();
+        }
 
         public RenderDescription RenderDescription
         {
@@ -45,7 +57,7 @@ namespace Dynamo.Nodes
             if (particleSystem == null)
                 return;
 
-            for(int i=0; i<particleSystem.numberOfParticles(); i++) 
+            for (int i = 0; i < particleSystem.numberOfParticles(); i++)
             {
                 Particle p = particleSystem.getParticle(i);
                 XYZ pos = p.getPosition();
@@ -60,16 +72,16 @@ namespace Dynamo.Nodes
                 }
             }
 
-            for (int i = 0; i < particleSystem.numberOfSprings(); i++) 
+            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
             {
                 ParticleSpring ps = particleSystem.getSpring(i);
                 XYZ pos1 = ps.getOneEnd().getPosition();
                 XYZ pos2 = ps.getTheOtherEnd().getPosition();
 
-                if(i*2+1 < this.RenderDescription.lines.Count())
+                if (i * 2 + 1 < this.RenderDescription.lines.Count())
                 {
-                    this.RenderDescription.lines[i*2] = new Point3D(pos1.X, pos1.Y, pos1.Z);
-                    this.RenderDescription.lines[i*2+1] = new Point3D(pos2.X, pos2.Y, pos2.Z);
+                    this.RenderDescription.lines[i * 2] = new Point3D(pos1.X, pos1.Y, pos1.Z);
+                    this.RenderDescription.lines[i * 2 + 1] = new Point3D(pos2.X, pos2.Y, pos2.Z);
                 }
                 else
                 {
@@ -81,30 +93,43 @@ namespace Dynamo.Nodes
                 }
             }
         }
-
     }
 
     [NodeName("Create Particle System")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
-    [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
+    [NodeDescription("A node which allows you to drive the position of elements via a particle system.")]
     class dynDynamicRelaxation :  dynParticleSystemBase
     {
-        int oldNumX = -1;
-        int oldNumY = -1;
-
+        private double _d;
+        private double _m;
+        private double _s;
+        private double _r;
+        private double _g;
+        private int _fixPtCount;
+        private bool _use_rl;
+        private double _rlf;
+        private double _threshold;
+        private bool _reset = false;
+        private FSharpList<Value> _points;
+        private FSharpList<Value> _curves;
+ 
         public dynDynamicRelaxation()
         {
             InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(Value.List)));
+            InPortData.Add(new PortData("curves", "Curves to use as springs.", typeof(Value.List)));
             InPortData.Add(new PortData("d", "Dampening.", typeof(Value.Number)));
-            InPortData.Add(new PortData("s", "Spring Constant.", typeof(Value.Number)));
-            InPortData.Add(new PortData("r", "Rest Length.", typeof(Value.Number)));
+            InPortData.Add(new PortData("s", "Spring constant.", typeof(Value.Number)));
+            InPortData.Add(new PortData("rl", "Rest length.", typeof(Value.Number)));
+            InPortData.Add(new PortData("use_rl", "Should the rest length be considered (true), or should we use the rest length factor instead (false)?.", typeof(Value.Number)));
+            InPortData.Add(new PortData("rlf", "Rest length factor. If use rest length factor is set to false," +
+                " rest length will be ignored and this factor will be used to determine the rest length as a factor of the spring's initial size.", typeof(Value.Number)));
             InPortData.Add(new PortData("m", "Nodal Mass.", typeof(Value.Number)));
-            InPortData.Add(new PortData("numX", "Number of Particles in X.", typeof(Value.Number)));
-            InPortData.Add(new PortData("numY", "Number of Particles in Y.", typeof(Value.Number)));
             InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(Value.Number)));
+            InPortData.Add(new PortData("threshold", "The convergence threshold. When the maximum nodal velocity falls below this number, the particle system is flagged \"converged\".", typeof(Value.Number)));
 
             OutPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
-            
+            OutPortData.Add(new PortData("f", "Member forces.", typeof(Value.List)));
+
             RegisterAllPorts();
 
             particleSystem = new ParticleSystem();
@@ -223,163 +248,153 @@ namespace Dynamo.Nodes
 
         }
 
-        // geometric test, fairly expensive. obsoleted by CreateParticleByElementID and GetParticleFromElementID
-        //public ReferencePoint FindRefPointFromXYZ(XYZ xyz)         
-        //{
-        //    Element el;
-        //    ReferencePoint rp;
+        private void CreateSpringsFromCurves(IEnumerable<Value> curves, IEnumerable<Value> points)
+        {
+            //create all the fixed points first
+            foreach (var pt in points)
+            {
+                var xyz = (XYZ) ((Value.Container) pt).Item;
+                particleSystem.makeParticle(_m, xyz, true);
+            }
 
-        //    foreach(ElementId id in this.Elements)
-        //    {
+            //create all the springs, checking for existing particles
+            foreach (var crv in curves)
+            {
+                var curve = (Curve) ((Value.Container) crv).Item;
+                XYZ start = curve.get_EndPoint(0);
+                XYZ end = curve.get_EndPoint(1);
 
-        //        dynUtils.TryGetElement(id, out el);
-        //        rp = el as ReferencePoint;
+                //find an existing particle to use
+                Particle a = particleSystem.getParticleByXYZ(start);
+                Particle b = particleSystem.getParticleByXYZ(end);
 
-        //        if (rp != null && rp.Position.IsAlmostEqualTo(xyz))// note this is not gauranteed to be unique. there may be mulitple coincident refpoints and this utill will only return the first found
-        //        {
-        //            return rp;
+                //if not, create a particle
+                if (a == null)
+                    a = particleSystem.makeParticle(_m, start, false);
+                if (b == null)
+                    b = particleSystem.makeParticle(_m, end, false);
 
-        //        }
-        //    }
+                if (_use_rl)
+                    particleSystem.makeSpring(a, b, _r, _s, _d);
+                else
+                {
+                    double restLength = start.DistanceTo(end)*_rlf;
+                    particleSystem.makeSpring(a, b, restLength, _s, _d);
+                }
+                    
+            }
 
-        //    return null;
-        //}
-
-        // geometric test, fairly expensive. 
-        //public ReferencePoint FindRefPointWithCoincidentXYZ(ReferencePoint rp)
-        //{
-        //    Element el;
-        //    ReferencePoint rp2;
-
-        //    foreach (ElementId id in this.Elements) // compare to inputed points
-        //    {
-        //        dynUtils.TryGetElement(id, out el);
-        //        rp2 = el as ReferencePoint;
-
-        //        if (rp != null && rp2 != null && rp.Position.IsAlmostEqualTo(rp2.Position))// note this is not gauranteed to be unique. there may be mulitple coincident refpoints and this utill will only return the first found
-        //        {
-        //            return rp2; // found a match
-        //        }
-        //    }
-
-        //    return null;
-        //}
+        }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            _points = ((Value.List)args[0]).Item;//point list
+            _curves = ((Value.List)args[1]).Item;//spring list
+            _d = ((Value.Number)args[2]).Item;//dampening
+            _s = ((Value.Number)args[3]).Item;//spring constant
+            _r = ((Value.Number)args[4]).Item;//rest length
+            _use_rl = Convert.ToBoolean(((Value.Number)args[5]).Item);//use rest length
+            _rlf = ((Value.Number)args[6]).Item;//rest length factor
+            _m = ((Value.Number)args[7]).Item;//nodal mass
+            _g = ((Value.Number)args[8]).Item;//gravity z component
+            _threshold = ((Value.Number) args[9]).Item; //convergence threshold
 
-            var input = args[0];//point list
-            double d = ((Value.Number)args[1]).Item;//dampening
-            double s = ((Value.Number)args[2]).Item;//spring constant
-            double r = ((Value.Number)args[3]).Item;//rest length
-            double m = ((Value.Number)args[4]).Item;//nodal mass
-            int numX = (int)((Value.Number)args[5]).Item;//number of particles in X
-            int numY = (int)((Value.Number)args[6]).Item;//number of particles in Y
-            double g = ((Value.Number)args[7]).Item;//gravity z component
+            //if we are in the evaluate, this has been
+            //marked dirty and we should set it to unconverged
+            //in case one of the inputs has changed.
+            particleSystem.setConverged(false);
+            particleSystem.setGravity(_g);
+            particleSystem.setThreshold(_threshold);
 
             //if the particle system has a different layout, then
             //clear it instead of updating
-            bool reset = false;
-            if(oldNumX == -1 || 
-                oldNumY == -1 || 
-                oldNumX != numX || 
-                oldNumY != numY ||
-                particleSystem.numberOfParticles() == 0)
+            if(particleSystem.numberOfParticles() == 0 ||
+                _fixPtCount != _points.Count() ||
+                _curves.Count() != particleSystem.numberOfSprings() ||
+                _reset)
             {
-                reset = true;
-                particleSystem.Clear();
-                oldNumX = numX;
-                oldNumY = numY;
-
-                //if we have an existing RenderDescription
-                //then clear it
-                if (dynSettings.Controller.UIDispatcher != null)
-                {
-                    dynSettings.Controller.UIDispatcher.Invoke(new Action(
-                       delegate
-                       {
-                           if (this.RenderDescription != null)
-                               this.RenderDescription.ClearAll();
-                       }
-                    ));
-                }
-            }
-
-            particleSystem.setGravity(g);
-
-            ReferencePoint pt1;
-            ReferencePoint pt2;
-
-            //If we are receiving a list, we must create fixed particles for each reference point in the list.
-            if (input.IsList)
-            {
-                var pointList = (input as Value.List).Item;
-
-                Array pointArray = pointList.ToArray();
-
-                for (int i = 0; i < pointArray.Length-1; i++)
-                {
-
-                    pt1 = (ReferencePoint)((Value.Container)pointArray.GetValue(i)).Item as ReferencePoint;
-                    pt2 = (ReferencePoint)((Value.Container)pointArray.GetValue(i + 1)).Item as ReferencePoint;
-
-                    (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt1.Id, ChangeTypeEnum.Modify, UpdateStart);
-                    (dynSettings.Controller as DynamoController_Revit).Updater.RegisterChangeHook(pt2.Id, ChangeTypeEnum.Modify, UpdateEnd);
-
-                    if (reset)
-                    {
-                        CreateChainWithTwoFixedEnds(pt1, pt2, numX, d, r, s, m);
-                    }
-                    else
-                    {
-                        //update the spring values
-                        for (int j = 0; j < particleSystem.numberOfSprings(); j++)
-                        {
-                            ParticleSpring spring = particleSystem.getSpring(j);
-                            spring.setDamping(d);
-                            spring.setRestLength(r);
-                            spring.setSpringConstant(s);
-                        }
-                        for (int j = 0; j < particleSystem.numberOfParticles(); j++)
-                        {
-                            Particle p = particleSystem.getParticle(j);
-                            p.setMass(m);
-                        }
-
-                        particleSystem.getParticle(0).setPosition(pt1.Position);
-                        particleSystem.getParticle(particleSystem.numberOfParticles()-1).setPosition(pt2.Position);
-                    }
-                }
-
-                return Value.NewContainer(particleSystem);
+                ResetSystem(_points, _curves);
             }
             else
             {
-                throw new Exception("You must pass in a list of reference points.");
+                UpdateSystem();
             }
 
-            //setupLineTest(numX, numY, d, r, s, m);
+            FSharpList<Value> forces = FSharpList<Value>.Empty;
+            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
+            {
+                forces = FSharpList<Value>.Cons(Value.NewNumber(particleSystem.getSpring(i).getResidualForce()), forces);
+            }
+            forces.Reverse();
+
+            FSharpList<Value> results = FSharpList<Value>.Empty;
+            results = FSharpList<Value>.Cons(Value.NewList(forces), results);
+            results = FSharpList<Value>.Cons(Value.NewContainer(particleSystem), results);
+
             //return Value.NewContainer(particleSystem);
+            return Value.NewList(results);
+
         }
 
-        public void UpdateStart(List<ElementId> updated)
+        private void UpdateSystem()
         {
-            ReferencePoint rp = dynRevitSettings.Doc.Document.GetElement(updated[0]) as ReferencePoint;
-            if (rp != null)
+            //update the spring values
+            for (int j = 0; j < particleSystem.numberOfSprings(); j++)
             {
-                Particle p = particleSystem.getParticle(0);
-                p.setPosition(rp.Position);
+                ParticleSpring spring = particleSystem.getSpring(j);
+                spring.setDamping(_d);
+                if (!_use_rl)
+                    spring.setRestLength(_r);
+                spring.setSpringConstant(_s);
+            }
+            for (int j = 0; j < particleSystem.numberOfParticles(); j++)
+            {
+                Particle p = particleSystem.getParticle(j);
+                p.setMass(_m);
             }
         }
 
-        public void UpdateEnd(List<ElementId> updated)
+        private void ResetSystem(FSharpList<Value> points, FSharpList<Value> curves)
         {
-            ReferencePoint rp = dynRevitSettings.Doc.Document.GetElement(updated[0]) as ReferencePoint;
-            if (rp != null)
-            {
-                Particle p = particleSystem.getParticle(particleSystem.numberOfParticles()-1);
-                p.setPosition(rp.Position);
-            }
+            if (points == null || curves == null)
+                return;
+
+            //particleSystem.Clear();
+            particleSystem = null;
+            particleSystem = new ParticleSystem();
+
+            _fixPtCount = points.Count();
+
+            particleSystem.setConverged(false);
+            particleSystem.setGravity(_g);
+            particleSystem.setThreshold(_threshold);
+
+            CreateSpringsFromCurves(curves, points);
+
+            DispatchOnUIThread(new Action(dynSettings.Controller.RequestClearDrawables));
+
+            _reset = false;
+        }
+
+        public override void  SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        {
+ 	         base.SetupCustomUIElements(nodeUI);
+            
+            var resetButt = new Button()
+                {
+                    Content = "Reset",
+                    ToolTip = "Resets the system to its initial state.",
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Top
+                };
+
+            resetButt.Click += delegate
+                {
+                    _reset = true;
+                    RequiresRecalc = true;
+                };
+
+            nodeUI.inputGrid.Children.Add(resetButt);
         }
     }
 
@@ -473,14 +488,18 @@ namespace Dynamo.Nodes
     [NodeDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     [IsInteractive(true)]
-    public class dynDynamicRelaxationStep: dynNodeWithOneOutput
+    public class dynDynamicRelaxationStep: dynNodeWithMultipleOutputs
     {
+        private ParticleSystem particleSystem;
+
         public dynDynamicRelaxationStep()
         {
             InPortData.Add(new PortData("ps", "Particle System to simulate", typeof(Value.Container)));
             InPortData.Add(new PortData("step", "Time to step.", typeof(Value.Number)));
             InPortData.Add(new PortData("interval", "An execution interval.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("data", "Relaxation data.", typeof(Value.Container)));
+            
+            OutPortData.Add(new PortData("max_v", "Maximum nodal velocity.", typeof(Value.Number))); 
+            OutPortData.Add(new PortData("converged?", "Has the maximum nodal velocity dropped below the threshold set for the system?", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -491,10 +510,16 @@ namespace Dynamo.Nodes
             double timeStep = ((Value.Number)args[1]).Item;
             particleSystem.step(timeStep);//in ms
 
+            //trigger an intermittent update on the controller
+            //this is useful for when this node is used in an infinite
+            //loop and you need to draw its contents
+            dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
+
             return Value.NewList(Utils.MakeFSharpList<Value>(
-                new Value[]{Value.NewContainer(particleSystem),Value.NewNumber(particleSystem.getMaxResidualForce())})
+                new Value[] { Value.NewNumber(particleSystem.getMaxNodalVelocity()), Value.NewNumber(Convert.ToInt16(particleSystem.getConverged())) })
                 );
         }
+
     }
 
     [NodeName("XYZs from Particle System")]

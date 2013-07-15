@@ -8,6 +8,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Revit;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Value = Dynamo.FScheme.Value;
 
@@ -32,6 +33,24 @@ namespace Dynamo
             dynRevitSettings.Revit.Application.DocumentClosed += Application_DocumentClosed;
             dynRevitSettings.Revit.Application.DocumentOpened += Application_DocumentOpened;
 
+            //allow the showing of elements in context
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements =
+                new Action(FindNodesFromSelection);
+        }
+
+        void FindNodesFromSelection()
+        {
+            var selectedIds = dynRevitSettings.Doc.Selection.Elements.Cast<Element>().Select(x=>x.Id);
+            var transNodes = dynSettings.Controller.DynamoModel.CurrentSpace.Nodes.Where(x => x is dynRevitTransactionNode).Cast<dynRevitTransactionNode>();
+            var foundNodes = transNodes.Where(x => x.AllElements.Intersect(selectedIds).Any());
+
+            if (foundNodes.Any())
+            {
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(foundNodes.First(), null));
+                DynamoSelection.Instance.ClearSelection();
+                foundNodes.ToList().ForEach(x=>DynamoSelection.Instance.Selection.Add(x));
+            }
         }
 
         void Application_DocumentOpened(object sender, Autodesk.Revit.DB.Events.DocumentOpenedEventArgs e)
@@ -179,13 +198,14 @@ namespace Dynamo
             if (val.IsContainer)
             {
                 var drawable = ((Value.Container)val).Item;
+
                 if(drawable is XYZ)
                 {
-                    dynRevitTransactionNode.DrawXYZ(rd, (XYZ)drawable);
+                    dynRevitTransactionNode.DrawXYZ(rd, drawable);
                 }
                 else if (drawable is GeometryObject)
                 {
-                    dynRevitTransactionNode.DrawGeometryObject(rd, (GeometryObject)drawable);
+                    dynRevitTransactionNode.DrawGeometryObject(rd, drawable);
                 }
             }
         }

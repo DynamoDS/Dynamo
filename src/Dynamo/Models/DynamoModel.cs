@@ -6,6 +6,8 @@ using Dynamo.Nodes;
 
 namespace Dynamo
 {
+    public delegate void CleanupHandler(object sender, EventArgs e);
+
     /// <summary>
     /// The Dynamo model.
     /// </summary>
@@ -104,6 +106,15 @@ namespace Dynamo
         public static bool RunEnabled { get; set; }
 
         public static bool RunInDebug { get; set; }
+
+        public event CleanupHandler CleaningUp;
+
+        public virtual void OnCleanup(EventArgs e)
+        {
+            if (CleaningUp != null)
+                CleaningUp(this, e);
+        }
+
     }
 
     public class DynamoModelUpdateArgs : EventArgs

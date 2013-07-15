@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -28,15 +29,21 @@ namespace Dynamo
     public static partial class Context
     {
         public const string NONE = "None";
-        public const string REVIT_2013 = "Autodesk Revit 2013";
-        public const string REVIT_2014 = "Autodesk Revit 2014";
-        public const string VASARI_2013 = "Autodesk Vasari 2013";
-        public const string VASARI_2014 = "Autodesk Vasari 2014";
+        public const string REVIT_2013 = "Revit 2013";
+        public const string REVIT_2014 = "Revit 2014";
+        public const string VASARI_2013 = "Vasari 2013";
+        public const string VASARI_2014 = "Vasari 2014";
     }
 
     public class DynamoController
     {
         #region properties
+
+        private Dictionary<Guid, RenderDescription> _renderDescriptions = new Dictionary<Guid, RenderDescription>();
+        public Dictionary<Guid, RenderDescription> RenderDescriptions
+        {
+            get { return _renderDescriptions; }
+        }
 
         private readonly SortedDictionary<string, TypeLoadData> builtinTypesByNickname =
             new SortedDictionary<string, TypeLoadData>();
@@ -119,6 +126,35 @@ namespace Dynamo
                 RequestNodeSelect(sender, e);
         }
 
+        public delegate void RunCompletedHandler(object controller, bool success);
+        public event RunCompletedHandler RunCompleted;
+        public virtual void OnRunCompleted(object sender, bool success)
+        {
+            if (RunCompleted != null)
+                RunCompleted(sender, success);
+        }
+
+        public event EventHandler RequestsRedraw;
+        public virtual void OnRequestsRedraw(object sender, EventArgs e)
+        {
+            if (RequestsRedraw != null)
+                RequestsRedraw(sender, e);
+        }
+
+        public event EventHandler NodeSubmittedForRendering;
+        public virtual void OnNodeSubmittedForRendering(object sender, EventArgs e)
+        {
+            if (NodeSubmittedForRendering != null)
+                NodeSubmittedForRendering(sender, e);
+        }
+
+        public event EventHandler NodeRemovedFromRendering;
+        public virtual void OnNodeRemovedFromRendering(object sender, EventArgs e)
+        {
+            if (NodeRemovedFromRendering != null)
+                NodeRemovedFromRendering(sender, e);
+        }
+
         #endregion
 
         #region Constructor and Initialization
@@ -159,15 +195,14 @@ namespace Dynamo
 
             DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);
 
-            if(dynSettings.Bench != null)
-                DynamoLoader.LoadSamplesMenu(dynSettings.Bench);
-
             //run tests
             if (FScheme.RunTests(dynSettings.Controller.DynamoViewModel.Log))
             {
-                if (dynSettings.Bench != null)
-                    this.DynamoViewModel.Log("All Tests Passed. Core library loaded OK.");
+                dynSettings.Controller.DynamoViewModel.Log("All Tests Passed. Core library loaded OK.");
             }
+
+            NodeSubmittedForRendering += new EventHandler(Controller_NodeSubmittedForRendering);
+            NodeRemovedFromRendering += new EventHandler(Controller_NodeRemovedFromRendering);
         }
 
         #endregion
@@ -288,14 +323,6 @@ namespace Dynamo
                 EvaluationThread(null, null);
         }
 
-        public delegate void RunCompletedHandler(object controller, bool success);
-        public event RunCompletedHandler RunCompleted;
-        public virtual void OnRunCompleted(object sender, bool success)
-        {
-            if (RunCompleted != null)
-                RunCompleted(sender, success);
-        }
-        
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
             //Get our entry points (elements with nothing connected to output)
@@ -478,7 +505,48 @@ namespace Dynamo
         {
         }
 
+        /// <summary>
+        /// Callback for node being unregistered from rendering
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Controller_NodeRemovedFromRendering(object sender, EventArgs e)
+        {
+            var node = sender as dynNodeModel;
+            if (_renderDescriptions.ContainsKey(node.GUID))
+                _renderDescriptions.Remove(node.GUID);
+        }
+
+        /// <summary>
+        /// Callback for the node being registered for rendering.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Controller_NodeSubmittedForRendering(object sender, EventArgs e)
+        {
+            var node = sender as dynNodeModel;
+            if (!_renderDescriptions.ContainsKey(node.GUID))
+            {
+                //don't allow an empty render description
+                IDrawable d = node as IDrawable;
+                if (d.RenderDescription == null)
+                    d.RenderDescription = new RenderDescription();
+                _renderDescriptions.Add(node.GUID, d.RenderDescription);
+            }
+
+        }
+
     #endregion
 
+        public void RequestRedraw()
+        {
+            OnRequestsRedraw(this, EventArgs.Empty);
+        }
+
+        public void RequestClearDrawables()
+        {
+            var drawables = DynamoModel.Nodes.Where(x => x is IDrawable);
+            drawables.ToList().ForEach(x=>((IDrawable)x).RenderDescription.ClearAll());
+        }
     }
 }
