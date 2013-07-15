@@ -599,7 +599,7 @@ namespace Dynamo.Nodes
         {
             var nodeUI = ui as dynNodeView;
 
-            image1 = new System.Windows.Controls.Image
+            var image1 = new System.Windows.Controls.Image
             {
                 //Width = 320,
                 //Height = 240,
@@ -631,6 +631,8 @@ namespace Dynamo.Nodes
 
     public partial class dynOutput : dynNodeModel
     {
+        TextBox tb;
+
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
@@ -659,10 +661,22 @@ namespace Dynamo.Nodes
             tb.TextChanged += tb_TextChanged;
         }
 
+        void tb_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Symbol = tb.Text;
+        }
+
     }
 
     public partial class dynSymbol : dynNodeModel
     {
+        TextBox tb;
+
+        void tb_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Symbol = tb.Text;
+        }
+
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
