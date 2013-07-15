@@ -33,7 +33,6 @@ namespace Dynamo.Utilities
         }
 
         public static HashSet<string> LoadedAssemblyNames = new HashSet<string>();
-
         public static Dictionary<string, List<Type>> AssemblyPathToTypesLoaded = new Dictionary<string, List<Type>>();
 
         /// <summary>
@@ -126,6 +125,12 @@ namespace Dynamo.Utilities
             return t.Namespace == "Dynamo.Nodes" &&
                    !t.IsAbstract &&
                    t.IsSubclassOf(typeof(dynNodeModel));
+        }
+
+        public static void UnloadTypesFromAssembly(string assemblyPath)
+        {
+
+            //AssemblyPathToTypesLoaded.
         }
 
         /// <summary>
@@ -236,6 +241,8 @@ namespace Dynamo.Utilities
                 }
             }
         }
+
+
 
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
