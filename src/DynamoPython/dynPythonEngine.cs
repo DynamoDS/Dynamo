@@ -33,11 +33,6 @@ namespace DynamoPython
                 code = "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n" + code;
             }
 
-            if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
-            {
-                code = "import clr\nclr.AddReference('LibGNet')\nfrom Autodesk.LibG import *\n" + code;
-            }
-
             this.source = engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
         }
 

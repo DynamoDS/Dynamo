@@ -183,7 +183,7 @@ namespace Dynamo
                 {
                     dynRevitTransactionNode.DrawXYZ(rd, (XYZ)drawable);
                 }
-                else
+                else if (drawable is GeometryObject)
                 {
                     dynRevitTransactionNode.DrawGeometryObject(rd, (GeometryObject)drawable);
                 }
