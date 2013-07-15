@@ -852,8 +852,8 @@ namespace Dynamo.Controls
 
         public void Cleanup()
         {
+            this.Model.OnCleanup(null);
             DynamoLogger.Instance.FinishLogging();
-            
         }
 
         private bool CanCleanup()
@@ -871,6 +871,7 @@ namespace Dynamo.Controls
             if (!AskUserToSaveWorkspacesOrCancel(allowCancelBool))
                 return;
             this.Cleanup();
+            
             exitInvoked = true;
             dynSettings.Bench.Close();
         }
