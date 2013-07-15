@@ -154,11 +154,12 @@ Source="..\..\Images\search_24.png" Opacity="1">
                             <Border BorderBrush="DimGray" BorderThickness="0,0,0,1">
 
                                     <Grid Width ="441" Name="SearchEle" VerticalAlignment="Stretch" HorizontalAlignment="Left" >
-
+                                        
                                         <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" MaxWidth="200" Foreground="AliceBlue" Padding="10,5,0,10"/>
 
                                         <TextBlock FontSize="11" Name="downloadState" Text="{Binding Path=DownloadState, Converter={StaticResource PackageDownloadStateToStringConverter}}" Foreground="Azure" HorizontalAlignment="Right" Padding="10, 5, 10, 0"/>
                                         <TextBlock FontSize="10" Name="keywords" Text="{Binding Path=VersionName}" HorizontalAlignment="Right" Foreground="Gray"  Padding="10, 20, 10, 0"/>
+                                        <TextBlock FontSize="10" Name="error" Text="{Binding Path=ErrorString}" HorizontalAlignment="Left" Foreground="White"  Padding="10, 25, 10, 0"/>
 
                                         <Line X1="0" X2="441" Stroke="DimGray" Y1="0" Y2="0" />
 

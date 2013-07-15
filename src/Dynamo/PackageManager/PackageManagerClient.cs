@@ -387,10 +387,6 @@ namespace Dynamo.PackageManager
                         var pkgRemove = dynSettings.PackageLoader.InstalledPackageNames[dynamoPackageDownload.Name];
 
                         pkgRemove.Uninstall();
-                        // unload package
-                        // unload types from search
-                        // unload assembly
-                        // remove folder
                     }
 
                     if (dynamoPackageDownload.Extract(out dynPkg))
@@ -405,7 +401,7 @@ namespace Dynamo.PackageManager
                 }
                 catch (Exception e)
                 {
-                    dynamoPackageDownload.Error("Something is wrong with the download.  Please attempt to restart.");
+                    dynamoPackageDownload.Error(e.Message);
                 }
             };
             new Thread(start).Start();

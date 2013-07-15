@@ -20,11 +20,19 @@ namespace Dynamo.PackageManager
         public PackageLoader()
         {
             this.PackagesDirectory = DefaultPackagesDirectory;
+            if (!Directory.Exists(this.PackagesDirectory))
+            {
+                Directory.CreateDirectory(this.PackagesDirectory);
+            }
         }
 
         public PackageLoader(string packagesDirectory)
         {
             this.PackagesDirectory = packagesDirectory;
+            if (!Directory.Exists(this.PackagesDirectory))
+            {
+                Directory.CreateDirectory(this.PackagesDirectory);
+            }
         }
 
         private ObservableDictionary<string, DynamoInstalledPackage> _installedPackageNames = new ObservableDictionary<string, DynamoInstalledPackage>();
@@ -56,6 +64,8 @@ namespace Dynamo.PackageManager
 
         private void UpdateInstalledPackages()
         {
+            InstalledPackageNames.Clear();
+
             // enumerate directories in absolute packages directory
             foreach (var dir in Directory.EnumerateDirectories(AbsolutePackagesDirectory))
             {
@@ -86,6 +96,11 @@ namespace Dynamo.PackageManager
             }
         }
 
-        
+        internal void UninstallPackages()
+        {
+            // load some sort of file to make sure we can save b 
+            throw new NotImplementedException();
+        }
+
     }
 }
