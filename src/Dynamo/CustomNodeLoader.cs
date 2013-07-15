@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
@@ -12,7 +11,6 @@ using Dynamo.Controls;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 using Dynamo.Commands;
-using NUnit.Core;
 using NUnit.Framework;
 
 namespace Dynamo.Utilities
@@ -577,8 +575,8 @@ namespace Dynamo.Utilities
 
                 string funName = null;
                 string category = "";
-                double cx = DynamoView.CANVAS_OFFSET_X;
-                double cy = DynamoView.CANVAS_OFFSET_Y;
+                double cx = 0;
+                double cy = 0;
                 double zoom = 1.0;
                 string id = "";
 

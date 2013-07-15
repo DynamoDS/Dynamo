@@ -2383,7 +2383,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class dynString : dynBasicInteractive<string>
+    public abstract partial class dynString : dynBasicInteractive<string>
     {
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -2393,28 +2393,6 @@ namespace Dynamo.Nodes
         public override string PrintExpression()
         {
             return "\"" + base.PrintExpression() + "\"";
-        }
-
-        public override void editWindowItem_Click(object sender, RoutedEventArgs e)
-        {
-
-            dynEditWindow editWindow = new dynEditWindow();
-            
-            editWindow.DataContext = this;
-            var bindingVal = new System.Windows.Data.Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new StringDisplay(),
-                NotifyOnValidationError = false,
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
-
-            if (editWindow.ShowDialog() != true)
-            {
-                return;
-            }
         }
     }
 
