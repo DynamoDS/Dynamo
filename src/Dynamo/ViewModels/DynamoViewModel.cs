@@ -10,7 +10,6 @@ using System.Reflection;
 using System.Runtime.Remoting;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media.Imaging;
 using System.Xml;
 using System.Globalization;
 
@@ -21,8 +20,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 
 using Microsoft.Practices.Prism.Commands;
-
-using NUnit.Core;
 using NUnit.Framework;
 
 namespace Dynamo.Controls
@@ -1732,8 +1729,8 @@ namespace Dynamo.Controls
 
                 string funName = null;
                 string category = "";
-                double cx = DynamoView.CANVAS_OFFSET_X;
-                double cy = DynamoView.CANVAS_OFFSET_Y;
+                double cx = 0;
+                double cy = 0;
                 double zoom = 1.0;
                 string id = "";
 
@@ -2489,8 +2486,8 @@ namespace Dynamo.Controls
                 TimeSpan previousElapsed = sw.Elapsed;
                 Log(string.Format("{0} elapsed for loading xml.", sw.Elapsed));
 
-                double cx = DynamoView.CANVAS_OFFSET_X;
-                double cy = DynamoView.CANVAS_OFFSET_Y;
+                double cx = 0;
+                double cy = 0;
                 double zoom = 1.0;
 
                 foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))

@@ -15,8 +15,6 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Utilities;
-
-using NUnit.Core;
 using NUnit.Framework;
 
 namespace Dynamo
@@ -163,6 +161,14 @@ namespace Dynamo
                 DispatchedToUI(this, e);
         }
 
+        public delegate void CrashPromptHandler(object sender, DispatcherUnhandledExceptionEventArgs e);
+        public event CrashPromptHandler RequestsCrashPrompt;
+        public void OnRequestsCrashPrompt(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            if (RequestsCrashPrompt != null)
+                RequestsCrashPrompt(this, e);
+        }
+
         #endregion
 
         #region Constructor and Initialization
@@ -194,8 +200,8 @@ namespace Dynamo
 
             FSchemeEnvironment = env;
 
-            DynamoViewModel.Model.CurrentSpace.X = DynamoView.CANVAS_OFFSET_X;
-            DynamoViewModel.Model.CurrentSpace.Y = DynamoView.CANVAS_OFFSET_Y;
+            DynamoViewModel.Model.CurrentSpace.X = 0;
+            DynamoViewModel.Model.CurrentSpace.Y = 0;
 
             dynSettings.Controller.DynamoViewModel.Log(String.Format(
                 "Dynamo -- Build {0}",
@@ -571,4 +577,17 @@ namespace Dynamo
             OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
         }
     }
+
+    public class CancelEvaluationException : Exception
+    {
+        public bool Force;
+
+        public CancelEvaluationException(bool force)
+            : base("Run Cancelled")
+        {
+            Force = force;
+        }
+    }
+
+
 }

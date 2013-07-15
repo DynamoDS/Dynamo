@@ -53,7 +53,6 @@ using NUnit.Core;
 using NUnit.Core.Filters;
 using NUnit.Framework;
 using NUnit.Util;
-using MessageBoxOptions = System.Windows.MessageBoxOptions;
 
 #endif
 
@@ -274,10 +273,12 @@ namespace Dynamo.Applications
             handledCrash = true;
 
             var exceptionMessage = args.Exception.Message;
-            var stackTrace = args.Exception.StackTrace;
+            //var stackTrace = args.Exception.StackTrace;
 
-            var prompt = new CrashPrompt(exceptionMessage + "\n\n" + stackTrace);
-            prompt.ShowDialog();
+            //var prompt = new CrashPrompt(exceptionMessage + "\n\n" + stackTrace);
+            //prompt.ShowDialog();
+
+            dynSettings.Controller.OnRequestsCrashPrompt(this, args);
 
             try
             {

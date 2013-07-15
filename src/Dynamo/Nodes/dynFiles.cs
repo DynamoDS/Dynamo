@@ -366,7 +366,7 @@ namespace Dynamo.Nodes
             while (!watcher.Changed)
             {
                 if (Controller.RunCancelled)
-                    throw new Dynamo.Controls.CancelEvaluationException(false);
+                    throw new CancelEvaluationException(false);
 
                 Thread.Sleep(10);
                 tick += 10;

@@ -13,13 +13,11 @@
 //limitations under the License.
 
 using System;
-using System.Windows;
 using System.Collections.Generic;
 using Microsoft.FSharp.Collections;
 using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
 using HelixToolkit.Wpf;
-using Dynamo.Controls;
 using System.Windows.Media.Media3D;
 using Dynamo.Utilities;
 
@@ -31,8 +29,6 @@ namespace Dynamo.Nodes
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview")]
     public partial class dynWatch3D : dynNodeWithOneOutput
     {
-        WatchView _watchView;
-
         private PointsVisual3D _points;
         private LinesVisual3D _lines;
         private List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
@@ -54,11 +50,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-        }
-
-        void mi_Click(object sender, RoutedEventArgs e)
-        {
-            _watchView.watch_view.ZoomExtents();
         }
 
         private void GetUpstreamIDrawable(List<IDrawable> drawables, Dictionary<int, Tuple<int, dynNodeModel>> inputs)
@@ -93,72 +84,6 @@ namespace Dynamo.Nodes
                     }
                 }
             }
-        }
-
-        void CompositionTarget_Rendering(object sender, EventArgs e)
-        {
-            if (_isRendering)
-                return;
-
-            if (!_requiresRedraw)
-                return;
-
-            _isRendering = true;
-
-            Points = null;
-            Lines = null;
-            _lines.Points = null;
-            _points.Points = null;
-
-            Points = new Point3DCollection();
-            Lines = new Point3DCollection();
-            Meshes = new List<Mesh3D>();
-
-            // a list of all the upstream IDrawable nodes
-            List<IDrawable> drawables = new List<IDrawable>();
-
-            GetUpstreamIDrawable(drawables, Inputs);
-
-            foreach (IDrawable d in drawables)
-            {
-                d.Draw();
-
-                foreach (Point3D p in d.RenderDescription.points)
-                {
-                    Points.Add(p);
-                }
-
-                foreach (Point3D p in d.RenderDescription.lines)
-                {
-                    Lines.Add(p);
-                }
-
-                foreach (Mesh3D mesh in d.RenderDescription.meshes)
-                {
-                    Meshes.Add(mesh);
-                }
-            }
-
-            _lines.Points = Lines;
-            _points.Points = Points;
-
-            // remove old meshes from the renderer
-            foreach (MeshVisual3D mesh in _meshes)
-            {
-                _watchView.watch_view.Children.Remove(mesh);
-            }
-
-            _meshes.Clear();
-
-            foreach (Mesh3D mesh in Meshes)
-            {
-                MeshVisual3D vismesh = MakeMeshVisual3D(mesh);
-                _watchView.watch_view.Children.Add(vismesh);
-                _meshes.Add(vismesh);
-            }
-
-            _requiresRedraw = false;
-            _isRendering = false;
         }
 
         MeshVisual3D MakeMeshVisual3D(Mesh3D mesh)

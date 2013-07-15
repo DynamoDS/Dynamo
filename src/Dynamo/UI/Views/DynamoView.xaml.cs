@@ -23,6 +23,7 @@ using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using Dynamo.Nodes;
+using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Utilities;
@@ -99,6 +100,13 @@ namespace Dynamo.Controls
             _vm.RequestSaveImage += new ImageSaveEventHandler(_vm_RequestSaveImage);
 
             dynSettings.Controller.PackageManagerClient.RequestSetLoginState += new LoginStateEventHandler(PackageManagerClient_RequestSetLoginState);
+            dynSettings.Controller.RequestsCrashPrompt += new DynamoController.CrashPromptHandler(Controller_RequestsCrashPrompt);
+        }
+
+        void Controller_RequestsCrashPrompt(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            var prompt = new CrashPrompt(e.Exception.Message + "\n\n" + e.Exception.StackTrace);
+            prompt.ShowDialog();
         }
 
         void PackageManagerClient_RequestSetLoginState(object sender, LoginStateEventArgs e)
@@ -392,17 +400,4 @@ namespace Dynamo.Controls
             }
         }
     }
-
-    public class CancelEvaluationException : Exception
-    {
-        public bool Force;
-
-        public CancelEvaluationException(bool force)
-            : base("Run Cancelled")
-        {
-            Force = force;
-        }
-    }
-
-
 }

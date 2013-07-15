@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -697,6 +698,8 @@ namespace Dynamo.Nodes
 
     public partial class dynWatch3D : dynNodeWithOneOutput
     {
+        WatchView _watchView;
+
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
@@ -756,6 +759,77 @@ namespace Dynamo.Nodes
             _watchView.Margin = new Thickness(5, 0, 5, 5);
             backgroundRect.Margin = new Thickness(5, 0, 5, 5);
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
+        }
+
+        void CompositionTarget_Rendering(object sender, EventArgs e)
+        {
+            if (_isRendering)
+                return;
+
+            if (!_requiresRedraw)
+                return;
+
+            _isRendering = true;
+
+            Points = null;
+            Lines = null;
+            _lines.Points = null;
+            _points.Points = null;
+
+            Points = new Point3DCollection();
+            Lines = new Point3DCollection();
+            Meshes = new List<Mesh3D>();
+
+            // a list of all the upstream IDrawable nodes
+            List<IDrawable> drawables = new List<IDrawable>();
+
+            GetUpstreamIDrawable(drawables, Inputs);
+
+            foreach (IDrawable d in drawables)
+            {
+                d.Draw();
+
+                foreach (Point3D p in d.RenderDescription.points)
+                {
+                    Points.Add(p);
+                }
+
+                foreach (Point3D p in d.RenderDescription.lines)
+                {
+                    Lines.Add(p);
+                }
+
+                foreach (Mesh3D mesh in d.RenderDescription.meshes)
+                {
+                    Meshes.Add(mesh);
+                }
+            }
+
+            _lines.Points = Lines;
+            _points.Points = Points;
+
+            // remove old meshes from the renderer
+            foreach (MeshVisual3D mesh in _meshes)
+            {
+                _watchView.watch_view.Children.Remove(mesh);
+            }
+
+            _meshes.Clear();
+
+            foreach (Mesh3D mesh in Meshes)
+            {
+                MeshVisual3D vismesh = MakeMeshVisual3D(mesh);
+                _watchView.watch_view.Children.Add(vismesh);
+                _meshes.Add(vismesh);
+            }
+
+            _requiresRedraw = false;
+            _isRendering = false;
+        }
+
+        void mi_Click(object sender, RoutedEventArgs e)
+        {
+            _watchView.watch_view.ZoomExtents();
         }
 
     }
@@ -950,5 +1024,27 @@ namespace Dynamo.Nodes
 
     }
 
-    
+    public abstract partial class dynString : dynBasicInteractive<string>
+    {
+        public override void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+
+            var editWindow = new dynEditWindow {DataContext = this};
+
+            var bindingVal = new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new StringDisplay(),
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
+
+            if (editWindow.ShowDialog() != true)
+            {
+                return;
+            }
+        }
+    }
 }
