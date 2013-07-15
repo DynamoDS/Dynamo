@@ -348,8 +348,8 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            rbTrue = new System.Windows.Controls.RadioButton();
-            rbFalse = new System.Windows.Controls.RadioButton();
+            var rbTrue = new System.Windows.Controls.RadioButton();
+            var rbFalse = new System.Windows.Controls.RadioButton();
             rbTrue.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             rbFalse.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 

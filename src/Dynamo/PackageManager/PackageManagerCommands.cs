@@ -16,12 +16,10 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using System.Windows.Controls;
 
 namespace Dynamo.Commands
 {
