@@ -1,28 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
-using System.ComponentModel;
-using System.IO.Ports;
-using System.Threading;
-using Microsoft.FSharp.Collections;
-using HelixToolkit.Wpf;
-using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.FSchemeInterop;
-using Dynamo.Controls;
-using Value = Dynamo.FScheme.Value;
+using HelixToolkit.Wpf;
 
 namespace Dynamo.Controls
 {
@@ -31,36 +14,120 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class WatchViewFullscreen : UserControl
     {
-        System.Windows.Point _rightMousePoint;
+        Point _rightMousePoint;
+        private Watch3DFullscreenViewModel _vm;
 
-        List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
+        //List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
 
         public WatchViewFullscreen()
         {
             InitializeComponent();
-            
+            this.Loaded += new RoutedEventHandler(WatchViewFullscreen_Loaded);
+        }
+
+        void WatchViewFullscreen_Loaded(object sender, RoutedEventArgs e)
+        {
             MouseLeftButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_MouseButtonIgnore);
             MouseLeftButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseButtonIgnore);
             MouseRightButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseRightButtonUp);
             PreviewMouseRightButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
-            MenuItem mi = new MenuItem();
-            mi.Header = "Zoom to Fit";
+            var mi = new MenuItem { Header = "Zoom to Fit" };
             mi.Click += new RoutedEventHandler(mi_Click);
 
             MainContextMenu.Items.Add(mi);
 
-            //System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
-            //Canvas.SetZIndex(backgroundRect, -10);
-            //backgroundRect.IsHitTestVisible = false;
-            //BrushConverter bc = new BrushConverter();
-            //Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
-            //backgroundRect.Stroke = strokeBrush;
-            //backgroundRect.StrokeThickness = 1;
-            //SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
-            //backgroundRect.Fill = backgroundBrush;
+            dynSettings.Controller.RequestsRedraw += new System.EventHandler(Controller_RequestsRedraw);
+            dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(Controller_RunCompleted);
+            _vm = DataContext as Watch3DFullscreenViewModel;
+        }
 
-            //inputGrid.Children.Add(backgroundRect);
+        void Controller_RunCompleted(object controller, bool success)
+        {
+            if (!_vm.ParentWorkspace.IsCurrentSpace)
+                return;
+
+            if (!dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing)
+                return;
+
+            RenderDrawables();
+        }
+
+        void Controller_RequestsRedraw(object sender, System.EventArgs e)
+        {
+            RenderDrawables();
+        }
+
+        private void RenderDrawables()
+        {
+            var points = new List<Point3D>();
+            var lines = new List<Point3D>();
+            var meshes = new List<Mesh3D>();
+            var xAxes = new List<Point3D>();
+            var yAxes = new List<Point3D>();
+            var zAxes = new List<Point3D>();
+
+            foreach (KeyValuePair<Guid, RenderDescription> kvp in dynSettings.Controller.RenderDescriptions)
+            {
+                var rd = kvp.Value as RenderDescription;
+
+                if (rd == null)
+                    continue;
+
+                points.AddRange(rd.points);
+                lines.AddRange(rd.lines);
+                meshes.AddRange(rd.meshes);
+                xAxes.AddRange(rd.xAxisPoints);
+                yAxes.AddRange(rd.yAxisPoints);
+                zAxes.AddRange(rd.zAxisPoints);
+            }
+
+            //_pointsCache = points;
+            //_linesCache = lines;
+            //_meshCache = MergeMeshes(meshes);
+            //_xAxisCache = xAxes;
+            //_yAxisCache = yAxes;
+            //_zAxisCache = zAxes;
+
+            //RaisePropertyChanged("HelixPoints");
+            //RaisePropertyChanged("HelixLines");
+            //RaisePropertyChanged("HelixMesh");
+            //RaisePropertyChanged("HelixXAxes");
+            //RaisePropertyChanged("HelixYAxes");
+            //RaisePropertyChanged("HelixZAxes");
+
+            _vm.HelixPoints = points;
+            _vm.HelixLines = lines;
+            _vm.HelixMesh = MergeMeshes(meshes);
+            _vm.HelixXAxes = xAxes;
+            _vm.HelixYAxes = yAxes;
+            _vm.HelixZAxes = zAxes;
+        }
+
+        Mesh3D MergeMeshes(List<Mesh3D> meshes)
+        {
+            if (meshes.Count == 0)
+                return null;
+
+            var positions = new List<Point3D>();
+            var triangleIndices = new List<int>();
+
+            int offset = 0;
+            foreach (Mesh3D m in meshes)
+            {
+                positions.AddRange(m.Vertices);
+
+                foreach (int[] face in m.Faces)
+                {
+                    triangleIndices.Add(face[0] + offset);
+                    triangleIndices.Add(face[1] + offset);
+                    triangleIndices.Add(face[2] + offset);
+                }
+
+                offset = positions.Count;
+            }
+
+            return new Mesh3D(positions, triangleIndices);
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)
