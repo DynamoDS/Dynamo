@@ -1,6 +1,6 @@
 ﻿namespace Dynamo.Nodes
 {
-    interface IViewModelView<T>
+    public interface IViewModelView<T>
     {
         T ViewModel { get; }
     }

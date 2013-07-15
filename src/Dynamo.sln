@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoAsm", "DynamoAsm\Dyna
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoArduino", "DynamoArduino\DynamoArduino.csproj", "{9589D7A5-12BE-446B-BBFF-B8C4951EDB13}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoWatch3D", "DynamoWatch3D\DynamoWatch3D.csproj", "{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Dynamo.vsmdi
@@ -179,6 +181,16 @@ Global
 		{9589D7A5-12BE-446B-BBFF-B8C4951EDB13}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9589D7A5-12BE-446B-BBFF-B8C4951EDB13}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9589D7A5-12BE-446B-BBFF-B8C4951EDB13}.Release|x86.ActiveCfg = Release|Any CPU
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

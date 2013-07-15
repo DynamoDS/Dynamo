@@ -41,7 +41,7 @@
         </Grid>
     </UserControl.ToolTip>
 
-    <Grid Name="grid" Canvas.ZIndex="3" Margin="0">
+    <Grid Name="grid" x:FieldModifier="public" Canvas.ZIndex="3" Margin="0">
         
         
         <Grid.RowDefinitions>
