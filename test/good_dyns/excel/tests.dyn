@@ -2,12 +2,8 @@
   <dynElements>
     <Dynamo.Nodes.dynReadExcelFile type="Dynamo.Nodes.dynReadExcelFile" guid="5bcaf85c-4279-4412-86a2-580de0084184" nickname="Open Excel Workbook" x="341" y="78.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="b607a995-30c3-44b9-84b3-a7c2927f8d10" nickname="File Path" x="19" y="50.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="C:\Users\boyerp\Dropbox\Github\Autodesk\Dynamo\test\good_dyns\excel\tests.xlsx" />
+      <System.String value="C:\Users\boyerp\Dropbox\Github\Autodesk\Dynamo\test\good_dyns\excel\test.xlsx" />
     </Dynamo.Nodes.dynStringFilename>
-    <Dynamo.Nodes.dynGetExcelWorksheetByIndex type="Dynamo.Nodes.dynGetExcelWorksheetByIndex" guid="36e429a5-92a9-4cf7-9f95-53170f21978c" nickname="Get Excel Worksheet By Index" x="643.392857142857" y="104.591428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="44da00b6-6f2b-4f73-96b5-1a32d2cf6df6" nickname="Number" x="332.5" y="255.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="0" />
-    </Dynamo.Nodes.dynDoubleInput>
     <Dynamo.Nodes.dynGetDataFromExcelWorksheet type="Dynamo.Nodes.dynGetDataFromExcelWorksheet" guid="7f04febc-5244-4121-8b02-3a4eb824706a" nickname="Get Data From Excel Worksheet" x="967.732142857143" y="92.7828571428572" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynWriteDataToExcelWorksheet type="Dynamo.Nodes.dynWriteDataToExcelWorksheet" guid="d0240f6f-ebab-422f-97b5-74c9e38f8bea" nickname="Write Data To Excel Worksheet" x="981.660714285715" y="370.997142857143" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="0ef26913-e38f-4815-b241-8df90f527ded" nickname="Number" x="801.482142857143" y="352.425714285714" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
@@ -26,16 +22,17 @@
       <Input name="expr3" />
     </Dynamo.Nodes.dynBegin>
     <Dynamo.Nodes.dynAddExcelWorksheetToWorkbook type="Dynamo.Nodes.dynAddExcelWorksheetToWorkbook" guid="408f806d-0e35-4876-b805-1996ee49f75b" nickname="Add Excel Worksheet To Workbook" x="976.571428571429" y="544.832857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynGetExcelWorksheetByName type="Dynamo.Nodes.dynGetExcelWorksheetByName" guid="88545fef-4b6c-434e-8e04-e4a0e980949b" nickname="Get Excel Worksheet By Name" x="603.707353864397" y="151.975714285714" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="24a097db-0223-44fc-a108-72f5aa3013c6" nickname="String" x="399.421639578683" y="240.547142857143" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="Sheet1" />
+    </Dynamo.Nodes.dynStringInput>
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="5bcaf85c-4279-4412-86a2-580de0084184" start_index="0" end="36e429a5-92a9-4cf7-9f95-53170f21978c" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="5bcaf85c-4279-4412-86a2-580de0084184" start_index="0" end="8316c1e6-1615-4b52-b2e7-a5a7f6b4eb98" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="5bcaf85c-4279-4412-86a2-580de0084184" start_index="0" end="408f806d-0e35-4876-b805-1996ee49f75b" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="5bcaf85c-4279-4412-86a2-580de0084184" start_index="0" end="88545fef-4b6c-434e-8e04-e4a0e980949b" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="b607a995-30c3-44b9-84b3-a7c2927f8d10" start_index="0" end="5bcaf85c-4279-4412-86a2-580de0084184" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="b607a995-30c3-44b9-84b3-a7c2927f8d10" start_index="0" end="8316c1e6-1615-4b52-b2e7-a5a7f6b4eb98" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="36e429a5-92a9-4cf7-9f95-53170f21978c" start_index="0" end="7f04febc-5244-4121-8b02-3a4eb824706a" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="36e429a5-92a9-4cf7-9f95-53170f21978c" start_index="0" end="d0240f6f-ebab-422f-97b5-74c9e38f8bea" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="44da00b6-6f2b-4f73-96b5-1a32d2cf6df6" start_index="0" end="36e429a5-92a9-4cf7-9f95-53170f21978c" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="d0240f6f-ebab-422f-97b5-74c9e38f8bea" start_index="0" end="d7cf45a1-1830-484e-8875-4161de7acd9b" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="0ef26913-e38f-4815-b241-8df90f527ded" start_index="0" end="d0240f6f-ebab-422f-97b5-74c9e38f8bea" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="343c099e-950d-49cb-9d46-073e8b68f028" start_index="0" end="d0240f6f-ebab-422f-97b5-74c9e38f8bea" end_index="2" portType="0" />
@@ -43,6 +40,9 @@
     <Dynamo.Connectors.dynConnectorModel start="7b59eb87-826c-430c-8db2-214504272c1a" start_index="0" end="408f806d-0e35-4876-b805-1996ee49f75b" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="8316c1e6-1615-4b52-b2e7-a5a7f6b4eb98" start_index="0" end="d7cf45a1-1830-484e-8875-4161de7acd9b" end_index="2" portType="0" />
     <Dynamo.Connectors.dynConnectorModel start="408f806d-0e35-4876-b805-1996ee49f75b" start_index="0" end="d7cf45a1-1830-484e-8875-4161de7acd9b" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="88545fef-4b6c-434e-8e04-e4a0e980949b" start_index="0" end="7f04febc-5244-4121-8b02-3a4eb824706a" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="88545fef-4b6c-434e-8e04-e4a0e980949b" start_index="0" end="d0240f6f-ebab-422f-97b5-74c9e38f8bea" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="24a097db-0223-44fc-a108-72f5aa3013c6" start_index="0" end="88545fef-4b6c-434e-8e04-e4a0e980949b" end_index="1" portType="0" />
   </dynConnectors>
   <dynNotes />
 </dynWorkspace>
