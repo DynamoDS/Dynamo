@@ -184,24 +184,10 @@ namespace Dynamo.Controls
         {
             if (e.ClickCount > 1)
             {
-                //show an edit window
-                var editWindow = new dynEditWindow {DataContext = this.DataContext};
-
-                var bindingVal = new Binding("DataContext.NickName")
+                if (this.ViewModel != null && this.ViewModel.RenameCommand.CanExecute())
                 {
-                    Mode = BindingMode.TwoWay,
-                    NotifyOnValidationError = false,
-                    Source = this,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-                };
-                editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
-
-                editWindow.Title = "Edit Node Name";
-
-                if (editWindow.ShowDialog() != true)
-                {
-                    return;
-                }
+                    this.ViewModel.RenameCommand.Execute();
+                }   
 
                 e.Handled = true;
             }
