@@ -1,0 +1,12 @@
+<dynWorkspace X="0" Y="0" zoom="1">
+  <dynElements>
+    <Dynamo.Nodes.dynReadExcelFile type="Dynamo.Nodes.dynReadExcelFile" guid="5bcaf85c-4279-4412-86a2-580de0084184" nickname="Open Excel Workbook" x="351" y="84.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="b607a995-30c3-44b9-84b3-a7c2927f8d10" nickname="File Path" x="19" y="50.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="C:\Users\boyerp\Dropbox\Github\Autodesk\Dynamo\test\good_dyns\excel\tests.xlsx" />
+    </Dynamo.Nodes.dynStringFilename>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="b607a995-30c3-44b9-84b3-a7c2927f8d10" start_index="0" end="5bcaf85c-4279-4412-86a2-580de0084184" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

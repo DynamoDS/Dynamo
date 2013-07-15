@@ -42,13 +42,12 @@ namespace Dynamo.Nodes
     [NodeName("Get Worksheets From Excel Workbook")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Get the list of Worksheets from an Excel Workbook.")]
-    public class dynGetWorksheetsFromWorkbook : dynNodeWithOneOutput
+    public class dynGetWorksheetsFromExcelWorkbook : dynNodeWithOneOutput
     {
 
-        public dynGetWorksheetsFromWorkbook()
+        public dynGetWorksheetsFromExcelWorkbook()
         {
             InPortData.Add(new PortData("workbook", "The excel workbook", typeof(FScheme.Value.Container)));
-            InPortData.Add(new PortData("index", "Index of the worksheet to get", typeof(FScheme.Value.Number)));
             OutPortData.Add(new PortData("worksheets", "A list of worksheets", typeof(FScheme.Value.List)));
             RegisterAllPorts();
         }
@@ -122,7 +121,6 @@ namespace Dynamo.Nodes
         public dynGetDataFromExcelWorksheet()
         {
             InPortData.Add(new PortData("worksheet", "The excel workbook", typeof(FScheme.Value.Container)));
-            InPortData.Add(new PortData("name", "Name of the worksheet to get", typeof(FScheme.Value.Number)));
             OutPortData.Add(new PortData("worksheet", "The worksheet with the given name", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
         }
@@ -178,7 +176,20 @@ namespace Dynamo.Nodes
             var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)((FScheme.Value.Container)args[0]).Item;
             var row = (int)Math.Round(((FScheme.Value.Number)args[1]).Item);
             var col = (int)Math.Round(((FScheme.Value.Number)args[2]).Item);
-            var data = ((FScheme.Value.Container)args[3]).Item;
+            object data;
+
+            if (args[3] is FScheme.Value.String)
+            {
+                data = ((FScheme.Value.String)args[3]).Item;
+            }
+            else if (args[3] is FScheme.Value.Number)
+            {
+                data = ((FScheme.Value.Number)args[3]).Item;
+            }
+            else 
+            {
+                throw new Exception("Can only write numbers or strings to an Excel Cell");
+            }
 
             worksheet.Cells[row, col] = data;
 
