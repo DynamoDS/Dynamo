@@ -83,27 +83,27 @@ namespace Dynamo.PackageManager
         {
             if (this.DownloadState != State.Downloaded)
             {
-                pkg = null;
-                return false;
+                throw new Exception("The package cannot be extracted unless it is downloaded. ");
             }
 
             this.DownloadState = State.Installing;
 
             // unzip, place files
             var unzipPath = Greg.Utility.FileUtilities.UnZip(DownloadPath);
+            if (!Directory.Exists(unzipPath))
+            {
+                throw new Exception("The package was found to be empty and was not installed.");
+            }
             
             var installedPath = BuildInstallDirectoryString();
-
             Directory.CreateDirectory(installedPath);
 
-            //Now Create all of the directories
-            foreach (string dirPath in Directory.GetDirectories(unzipPath, "*",
-                SearchOption.AllDirectories))
+            // Now create all of the directories
+            foreach (string dirPath in Directory.GetDirectories(unzipPath, "*", SearchOption.AllDirectories))
                 Directory.CreateDirectory(dirPath.Replace(unzipPath, installedPath));
 
-            //Copy all the files
-            foreach (string newPath in Directory.GetFiles(unzipPath, "*.*",
-                SearchOption.AllDirectories))
+            // Copy all the files
+            foreach (string newPath in Directory.GetFiles(unzipPath, "*.*", SearchOption.AllDirectories))
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
@@ -133,15 +133,16 @@ namespace Dynamo.PackageManager
             this.VersionName = versionName;
         }
 
-        // do everything necessary to make the host aware of the package
-        // may require a restart
         public bool RegisterWithHost()
         {
-            dynSettings.PackageLoader.AppendBinarySearchPath();
-            DynamoLoader.LoadBuiltinTypes();
+            dynSettings.Bench.Dispatcher.BeginInvoke((Action)(() =>
+            {
+                dynSettings.PackageLoader.AppendBinarySearchPath();
+                DynamoLoader.LoadBuiltinTypes();
 
-            dynSettings.PackageLoader.AppendCustomNodeSearchPaths(dynSettings.CustomNodeLoader);
-            DynamoLoader.LoadCustomNodes();
+                dynSettings.PackageLoader.AppendCustomNodeSearchPaths(dynSettings.CustomNodeLoader);
+                DynamoLoader.LoadCustomNodes();
+            }));
             
             return false;
         }
