@@ -910,4 +910,19 @@ namespace Dynamo.Nodes
             }
         }
     }
+
+    public class dynNodeButton : System.Windows.Controls.Button
+    {
+        public dynNodeButton()
+            : base()
+        {
+            var dict = new ResourceDictionary();
+            var uri = new Uri("/DynamoElements;component/UI/Themes/DynamoModern.xaml", UriKind.Relative);
+            dict.Source = uri;
+            Style = (Style)dict["SNodeTextButton"];
+
+            this.Margin = new Thickness(1, 0, 1, 0);
+        }
+
+    }
 }
