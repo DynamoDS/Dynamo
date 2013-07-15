@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Media.Media3D;
-using HelixToolkit.Wpf;
 
 namespace Dynamo.Nodes
 {
@@ -8,7 +7,7 @@ namespace Dynamo.Nodes
     {
         public Point3DCollection points = null;
         public Point3DCollection lines = null;
-        public List<Mesh3D> meshes = null;
+        public List<object> meshes = null;
         public Point3DCollection xAxisPoints = null;
         public Point3DCollection yAxisPoints = null;
         public Point3DCollection zAxisPoints = null;
@@ -17,7 +16,7 @@ namespace Dynamo.Nodes
         {
             points = new Point3DCollection();
             lines = new Point3DCollection();
-            meshes = new List<Mesh3D>();
+            meshes = new List<object>();
             xAxisPoints = new Point3DCollection();
             yAxisPoints = new Point3DCollection();
             zAxisPoints = new Point3DCollection();

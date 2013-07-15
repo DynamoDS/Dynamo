@@ -160,7 +160,7 @@ namespace Dynamo.Controls
 
                 points.AddRange(rd.points);
                 lines.AddRange(rd.lines);
-                meshes.AddRange(rd.meshes);
+                meshes.AddRange(rd.meshes.ConvertAll(x=>(Mesh3D)x));
                 xAxes.AddRange(rd.xAxisPoints);
                 yAxes.AddRange(rd.yAxisPoints);
                 zAxes.AddRange(rd.zAxisPoints);
