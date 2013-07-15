@@ -35,7 +35,6 @@ namespace Dynamo.Nodes
     [NodeSearchTags("print", "output", "display")]
     public partial class dynWatch: dynNodeWithOneOutput
     {
-        public WatchTree watchTree;
         public WatchTreeBranch watchTreeBranch;
 
         private class WatchHandlers
