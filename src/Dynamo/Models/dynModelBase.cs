@@ -19,7 +19,6 @@ namespace Dynamo
             get { return X + Width / 2; }
             set { 
                 this.X = value - this.Width/2;
-                RaisePropertyChanged("X");
             }
         }
 
@@ -29,7 +28,6 @@ namespace Dynamo
             set
             {
                 this.Y = value - this.Height / 2;
-                RaisePropertyChanged("Y");
             }
         }
 
