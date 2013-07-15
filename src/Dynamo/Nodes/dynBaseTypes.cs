@@ -22,9 +22,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
-//using System.Windows.Controls;
-//using System.Windows.Forms;
-//using System.Windows.Media;
 using System.Xml;
 using System.Web;
 
@@ -36,8 +33,6 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using TextBox = System.Windows.Controls.TextBox;
-using System.Windows.Input;
-using System.Windows.Data;
 using System.Globalization;
 
 namespace Dynamo.Nodes
@@ -2968,113 +2963,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    #endregion
-
-    #region Value Conversion
-    [ValueConversion(typeof(double), typeof(String))]
-    public class DoubleDisplay : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            //source -> target
-            string val = ((double) value).ToString("0.000",CultureInfo.CurrentCulture);
-            Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
-            return value == null ? "" : val;
-
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            //target -> source
-            //return value.ToString();
-
-            double val = 0.0;
-            double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
-            Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
-            return val;
-        }
-    }
-
-
-    public class RadianToDegreesConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            double radians = System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
-            return radians;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            double degrees = System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
-            return degrees;
-        }
-    }
-
-    public class StringDisplay : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            //source -> target
-            return value==null?"": HttpUtility.UrlDecode(value.ToString());
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            //target -> source
-            return HttpUtility.UrlEncode(value.ToString());
-        }
-    }
-
-    public class FilePathDisplay : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            //source->target
-
-            var maxChars = 30;
-            //var str = value.ToString();
-            var str = HttpUtility.UrlDecode(value.ToString());
-
-            if (string.IsNullOrEmpty(str))
-            {
-                return "No file selected.";
-            }
-            else if (str.Length > maxChars)
-            {
-                return str.Substring(0, 10 ) + "..." + str.Substring(str.Length - maxChars+10, maxChars-10);
-            }
-
-            return str;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            //target->source
-            return HttpUtility.UrlEncode(value.ToString());
-        }
-    }
-
-    public class InverseBoolDisplay : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (value is bool)
-            {
-                return !(bool)value;
-            }
-            return value;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (value is bool)
-            {
-                return !(bool)value;
-            }
-            return value;
-        }
-    }
     #endregion
 
     /// <summary>
