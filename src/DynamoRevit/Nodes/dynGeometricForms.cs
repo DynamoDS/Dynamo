@@ -447,7 +447,7 @@ namespace Dynamo.Nodes
                     loopStart = refCurve.GeometryCurve.Evaluate(0.0, true);
                     otherEnd = refCurve.GeometryCurve.Evaluate(1.0, true);
                 }
-                if (index > 0)
+                else //if (index > 0)
                 {
                     XYZ startXYZ = refCurve.GeometryCurve.Evaluate(0.0, true);
                     XYZ endXYZ = refCurve.GeometryCurve.Evaluate(1.0, true);
@@ -506,18 +506,19 @@ namespace Dynamo.Nodes
                     curveLoop.Append(refCurve.GeometryCurve);
                     if (!curveLoop.HasPlane())
                         throw new Exception(" Planar Ref Curve Chain fails: curve is not planar.");
+                    Plane curvePlane = curveLoop.GetPlane();
                     if (thisPlane == null && oneLine == null)
                         thisPlane = curveLoop.GetPlane();
                     else if (thisPlane != null)
                     {
-                        if (Math.Abs(thisPlane.Normal.DotProduct(curveLoop.GetPlane().Normal)) < 1.0 - tolerance)
+                        if (Math.Abs(thisPlane.Normal.DotProduct(curvePlane.Normal)) < 1.0 - tolerance)
                             throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                        if (Math.Abs(thisPlane.Normal.DotProduct(curveLoop.GetPlane().Origin - thisPlane.Origin)) > tolerance)
+                        if (Math.Abs(thisPlane.Normal.DotProduct(curvePlane.Origin - thisPlane.Origin)) > tolerance)
                             throw new Exception(" Planar Ref Curve Chain fails: not planar");
                     }
                     else if (oneLine != null)
                     {
-                        thisPlane = curveLoop.GetPlane();
+                        thisPlane = curvePlane;
                         if (Math.Abs(thisPlane.Normal.DotProduct(oneLine.Direction)) > tolerance)
                             throw new Exception(" Planar Ref Curve Chain fails: not planar");
                         if (Math.Abs(thisPlane.Normal.DotProduct(oneLine.Origin - thisPlane.Origin)) > tolerance)
