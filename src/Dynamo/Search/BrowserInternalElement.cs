@@ -68,7 +68,7 @@ namespace Dynamo.Nodes.Search
                 return;
 
             this.Parent.IsExpanded = true;
-            this.Parent.Visibility = Visibility.Visible;
+            this.Parent.Visibility = true;
 
             var parent = Parent as BrowserInternalElement;
             if (parent != null)

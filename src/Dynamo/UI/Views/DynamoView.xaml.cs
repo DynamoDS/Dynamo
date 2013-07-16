@@ -78,7 +78,7 @@ namespace Dynamo.Controls
             //SEARCH
             var search = new SearchView {DataContext = dynSettings.Controller.SearchViewModel};
             sidebarGrid.Children.Add(search);
-            dynSettings.Controller.SearchViewModel.Visible = Visibility.Visible;
+            dynSettings.Controller.SearchViewModel.Visible = true;
 
             //PACKAGE MANAGER
             var pmLoginView = new PackageManagerLoginView

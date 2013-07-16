@@ -326,10 +326,10 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Themes\DynamoConverters.xaml">
+    <Resource Include="UI\Themes\DynamoConverters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </Resource>
     <Page Include="UI\Themes\DynamoModern.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

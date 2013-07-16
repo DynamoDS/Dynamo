@@ -3005,26 +3005,26 @@ namespace Dynamo.Controls
     
         private void HideSearch()
         {
-            dynSettings.Controller.PackageManagerPublishViewModel.Visible = Visibility.Collapsed;
-            dynSettings.Controller.PackageManagerLoginViewModel.Visible = Visibility.Collapsed;
-            dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
+            dynSettings.Controller.PackageManagerPublishViewModel.Visible = false;
+            dynSettings.Controller.PackageManagerLoginViewModel.Visible = false;
+            dynSettings.Controller.SearchViewModel.Visible = false;
         }
 
         private bool CanHideSearch()
         {
-            if(dynSettings.Controller.SearchViewModel.Visible == Visibility.Visible)
+            if(dynSettings.Controller.SearchViewModel.Visible == true)
                 return true;
             return false;
         }
 
         private void ShowSearch()
         {
-            dynSettings.Controller.SearchViewModel.Visible = Visibility.Visible;
+            dynSettings.Controller.SearchViewModel.Visible = true;
         }
 
         private bool CanShowSearch()
         {
-            if(dynSettings.Controller.SearchViewModel.Visible == Visibility.Collapsed)
+            if(dynSettings.Controller.SearchViewModel.Visible == false)
                 return true;
             return false;
         }

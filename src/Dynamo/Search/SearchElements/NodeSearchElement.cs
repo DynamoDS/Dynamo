@@ -77,8 +77,8 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// Whether the description of this node should be visible or not
         /// </summary>
-        private Visibility _descriptionVisibility = Visibility.Collapsed;
-        public Visibility DescriptionVisibility
+        private bool _descriptionVisibility = false;
+        public bool DescriptionVisibility
         {
             get { return _descriptionVisibility; }
             set
@@ -165,13 +165,13 @@ namespace Dynamo.Search.SearchElements
 
         private void ToggleIsVisible()
         {
-            if (this.DescriptionVisibility != Visibility.Visible)
+            if (this.DescriptionVisibility != true)
             {
-                this.DescriptionVisibility = Visibility.Visible;
+                this.DescriptionVisibility = true;
             }
             else
             {
-                this.DescriptionVisibility = Visibility.Collapsed;
+                this.DescriptionVisibility = false;
             }
         }
 

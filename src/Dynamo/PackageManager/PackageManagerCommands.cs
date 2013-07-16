@@ -136,7 +136,7 @@ namespace Dynamo.Commands
                 _init = true;
             }
 
-            dynSettings.Controller.PackageManagerLoginViewModel.Visible = Visibility.Visible;
+            dynSettings.Controller.PackageManagerLoginViewModel.Visible = true;
         }
 
         public event EventHandler CanExecuteChanged

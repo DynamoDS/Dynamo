@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows;
+//using System.Windows;
 using System.Windows.Input;
 using Dynamo.Commands;
 using Dynamo.Nodes;
@@ -33,22 +33,22 @@ namespace Dynamo.Search
         /// <summary>
         ///     Indicates whether the node browser is visible or not
         /// </summary>
-        private Visibility _browserVisibility = Visibility.Visible;
-        public Visibility BrowserVisibility
-        {
-            get { return _browserVisibility; }
-            set { _browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
-        }
+        //private bool _browserVisibility = Visibility.Visible;
+        //public Visibility BrowserVisibility
+        //{
+        //    get { return _browserVisibility; }
+        //    set { _browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
+        //}
 
         /// <summary>
         ///     Indicates whether the node browser is visible or not
         /// </summary>
-        private Visibility _searchVisibility = Visibility.Collapsed;
-        public Visibility SearchVisibility
-        {
-            get { return _searchVisibility; }
-            set { _searchVisibility = value; RaisePropertyChanged("SearchVisibility"); }
-        }
+        //private Visibility _searchVisibility = Visibility.Collapsed;
+        //public Visibility SearchVisibility
+        //{
+        //    get { return _searchVisibility; }
+        //    set { _searchVisibility = value; RaisePropertyChanged("SearchVisibility"); }
+        //}
 
         /// <summary>
         ///     Regions property
@@ -160,9 +160,8 @@ namespace Dynamo.Search
         /// <value>
         ///     Tells whether the View is visible or not
         /// </value>
-        private Visibility _visible;
-
-        public Visibility Visible
+        private bool _visible;
+        public bool Visible
         {
             get { return _visible; }
             set
@@ -244,7 +243,7 @@ namespace Dynamo.Search
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             SearchResults = new ObservableCollection<SearchElementBase>();
             MaxNumSearchResults = 20;
-            Visible = Visibility.Collapsed;
+            Visible = false;
             _SearchText = "";
             IncludeRevitAPIElements = false; // revit api
             Regions = new ObservableDictionary<string, RegionBase>();
@@ -457,7 +456,7 @@ namespace Dynamo.Search
         /// <param name="query"> The search query </param>
         internal void SearchAndUpdateResults(string query)
         {
-            if (Visible != Visibility.Visible)
+            if (Visible != true)
                 return;
 
             Task<IEnumerable<SearchElementBase>>.Factory.StartNew(() =>
@@ -488,11 +487,11 @@ namespace Dynamo.Search
                                 foreach (var ele in BrowserRootCategories)
                                 {
                                     ele.CollapseToLeaves();
-                                    ele.SetVisibilityToLeaves(Visibility.Visible);
+                                    ele.SetVisibilityToLeaves(true);
                                 }
 
                                 // hide the top result
-                                _topResult.Visibility = Visibility.Collapsed;
+                                _topResult.Visibility = false;
 
                                 return;
                             }
@@ -501,7 +500,7 @@ namespace Dynamo.Search
                             foreach (var root in BrowserRootCategories)
                             {
                                 root.CollapseToLeaves();
-                                root.SetVisibilityToLeaves(Visibility.Collapsed);
+                                root.SetVisibilityToLeaves(false);
                             }
 
                             //// if there are any results, add the top result 
@@ -510,7 +509,7 @@ namespace Dynamo.Search
                                 _topResult.Items.Clear();
                                 _topResult.AddChild( new TopSearchElement( t.Result.ElementAt(0) ) );
 
-                                _topResult.SetVisibilityToLeaves(Visibility.Visible);
+                                _topResult.SetVisibilityToLeaves(true);
                                 _topResult.IsExpanded = true;
                             }
                             
@@ -519,7 +518,7 @@ namespace Dynamo.Search
                             {
                                 if (t.Result.Contains(ele))
                                 {
-                                    ele.Visibility = Visibility.Visible;
+                                    ele.Visibility = true;
                                     ele.ExpandToRoot();
                                 }
                             }
@@ -560,7 +559,7 @@ namespace Dynamo.Search
         /// <param name="query"> The search query </param>
         internal void SearchAndUpdateResultsSync(string query)
         {
-            if (Visible != Visibility.Visible)
+            if (Visible != true)
                 return;
 
             var result = Search(query);
