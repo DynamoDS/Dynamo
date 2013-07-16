@@ -939,6 +939,8 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("line1", "First Line", typeof(Value.Container)));
             InPortData.Add(new PortData("line2", "Second Line", typeof(Value.Container)));
             OutPortData.Add(new PortData("bisector", "Bisector Line", typeof(Value.Container)));
+
+            RegisterAllPorts();
         }
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -979,6 +981,8 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("points", "Points to Fit Arc Through", typeof(Value.List)));
             OutPortData.Add(new PortData("arc", "Best Fit Arc", typeof(Value.Container)));
+
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

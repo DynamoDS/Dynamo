@@ -66,7 +66,6 @@ namespace Dynamo.Controls
             _timer.Stop();
             dynSettings.Controller.DynamoViewModel.Log(string.Format("{0} elapsed for loading Dynamo main window.",
                                                                      _timer.Elapsed));
-
             DynamoLoader.LoadSamplesMenu(dynSettings.Bench);
         }
 
@@ -96,11 +95,6 @@ namespace Dynamo.Controls
 
             Canvas.SetLeft(el, pos.X - dragOffset.X);
             Canvas.SetTop(el, pos.Y - dragOffset.Y);
-        }
-
-        private void LogScroller_OnSourceUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
-        {
-            LogScroller.ScrollToEnd();
         }
 
         // the key press event is being intercepted before it can get to
@@ -152,6 +146,10 @@ namespace Dynamo.Controls
             }
         }
 
+        private void TextBoxBase_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            LogScroller.ScrollToBottom();
+        }
     }
 
     public class CancelEvaluationException : Exception

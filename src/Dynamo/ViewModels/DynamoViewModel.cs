@@ -659,9 +659,9 @@ namespace Dynamo.Controls
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = fi.Name;
             }
-            else if (_model.CurrentSpace is FuncWorkspace)
+            else if (_model.CurrentSpace is FuncWorkspace && dynSettings.Controller.CustomNodeLoader.SearchPath.Any())
             {
-                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath;
+                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath[0];
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -852,8 +852,8 @@ namespace Dynamo.Controls
 
         public void Cleanup()
         {
+            this.Model.OnCleanup(null);
             DynamoLogger.Instance.FinishLogging();
-            
         }
 
         private bool CanCleanup()
@@ -871,6 +871,7 @@ namespace Dynamo.Controls
             if (!AskUserToSaveWorkspacesOrCancel(allowCancelBool))
                 return;
             this.Cleanup();
+            
             exitInvoked = true;
             dynSettings.Bench.Close();
         }
@@ -1079,9 +1080,9 @@ namespace Dynamo.Controls
             //paste contents in
             DynamoSelection.Instance.Selection.RemoveAll();
 
-            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynNodeModel);
+            var nodes = dynSettings.Controller.ClipBoard.OfType<dynNodeModel>();
 
-            var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnectorModel);
+            var connectors = dynSettings.Controller.ClipBoard.OfType<dynConnectorModel>();
 
             foreach (dynNodeModel node in nodes)
             {
@@ -1155,10 +1156,37 @@ namespace Dynamo.Controls
             //process the queue again to create the connectors
             dynSettings.Controller.ProcessCommandQueue();
 
+            var notes = dynSettings.Controller.ClipBoard.OfType<dynNoteModel>();
+
+            foreach (dynNoteModel note in notes)
+            {
+                var newGUID = Guid.NewGuid();
+
+                var sameSpace = _model.CurrentSpace.Notes.Any(x => x.GUID == note.GUID);
+                var newX = sameSpace ? note.X + 20 : note.X;
+                var newY = sameSpace ? note.Y + 20 : note.Y;
+
+                var noteData = new Dictionary<string, object>()
+                {
+                    { "x", newX },
+                    { "y", newY },
+                    { "text", note.Text },
+                    { "guid", newGUID }
+                };
+
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(AddNoteCommand, noteData));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(
+                    AddToSelectionCommand, 
+                    _model.CurrentSpace.Notes.FirstOrDefault(x => x.GUID == newGUID)));
+            }
+
+            dynSettings.Controller.ProcessCommandQueue();
+
             foreach (var de in nodeLookup)
             {
-                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(AddToSelectionCommand,
-                    _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == (Guid)de.Value)));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(
+                    AddToSelectionCommand,
+                    _model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == de.Value)));
             }
 
             dynSettings.Controller.ProcessCommandQueue();
@@ -1527,9 +1555,7 @@ namespace Dynamo.Controls
 
         private void AddNote(object parameters)
         {
-            var inputs = (Dictionary<string, object>)parameters;
-
-            inputs = inputs ?? new Dictionary<string, object>();
+            var inputs = parameters as Dictionary<string, object> ?? new Dictionary<string, object>();
 
             // by default place note at center
             var x = 0.0;
@@ -1551,7 +1577,10 @@ namespace Dynamo.Controls
                 inputs.Add("transformFromOuterCanvasCoordinates", true);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered( this, new ModelEventArgs(n, inputs) );
             }
-                
+
+            object id;
+            if (inputs.TryGetValue("guid", out id))
+                n.GUID = (Guid)id;
 
             n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
             var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspaceModel)inputs["workspace"];
@@ -1633,15 +1662,11 @@ namespace Dynamo.Controls
         {
             sw.WriteLine(message);
             LogText = sw.ToString();
-           
+
             if (DynamoCommands.WriteToLogCmd.CanExecute(null))
             {
                 DynamoCommands.WriteToLogCmd.Execute(message);
             }
-
-            //MVVM: Replaced with event handler on source changed
-            //if (LogScroller != null)
-            //    LogScroller.ScrollToBottom();
         }
 
         private void PostUIActivation()
@@ -1742,7 +1767,11 @@ namespace Dynamo.Controls
                 {
                     //View the home workspace, then open the bench file
                     if (!ViewingHomespace)
-                        ViewHomeWorkspace(); //TODO: Refactor
+                        ViewHomeWorkspace();
+
+                    Controller.CustomNodeLoader.AddDirectoryToSearchPath(Path.GetDirectoryName(xmlPath));
+                    Controller.CustomNodeLoader.UpdateSearchPath();
+
                     return OpenWorkspace(xmlPath);
                 }
                 else if (Controller.CustomNodeLoader.Contains(funName))
@@ -2021,6 +2050,7 @@ namespace Dynamo.Controls
                     SaveFunction(def, false);
 
                 Controller.PackageManagerClient.LoadPackageHeader(def, funName);
+
                 nodeWorkspaceWasLoaded(def, children, parents);
 
                 //set the zoom and trigger events
@@ -2246,6 +2276,7 @@ namespace Dynamo.Controls
                     //Call OnSave for all saved elements
                     foreach (dynNodeModel el in functionWorkspace.Nodes)
                         el.onSave();
+
 
                     #endregion
 
@@ -2759,7 +2790,10 @@ namespace Dynamo.Controls
         {
             //Add an entry to the funcdict
             var workSpace = new FuncWorkspace(
-                name, category, workspaceOffsetX, workspaceOffsetY);
+                name, category, workspaceOffsetX, workspaceOffsetY)
+                {
+                    WatchChanges = true
+                };
 
             _model.Workspaces.Add(workSpace);
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 using System.Xml;
@@ -114,6 +115,8 @@ namespace Dynamo.Revit
 
             elements.Clear();
 
+            var sb = new StringBuilder();
+            
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
                 if (subNode.Name == "Run")
@@ -125,7 +128,7 @@ namespace Dynamo.Revit
                     {
                         if (element.Name == "Element")
                         {
-                            var eid = subNode.InnerText;
+                            var eid = element.InnerText;
                             try
                             {
                                 var id = UIDocument.Document.GetElement(eid).Id;
@@ -134,12 +137,15 @@ namespace Dynamo.Revit
                             }
                             catch (NullReferenceException)
                             {
-                                dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
+                                //dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
+                                sb.AppendLine("Element with UID \"" + eid + "\" not found in Document.");
                             }
                         }
                     }
                 }
             }
+
+            dynSettings.Controller.DynamoViewModel.Log(sb.ToString());
         }
 
         internal void RegisterAllElementsDeleteHook()
@@ -541,7 +547,8 @@ namespace Dynamo.Revit
                            controller.CancelTransaction();
                            throw ex;
                        }
-                   }
+                   },
+                   false
                 );
 
                 #endregion
@@ -774,6 +781,11 @@ namespace Dynamo.Revit
 
     public class dynRevitTransactionNodeWithOneOutput : dynRevitTransactionNode
     {
+        public virtual bool acceptsListOfLists(FScheme.Value value)
+        {
+            return false;
+        }
+
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             //THE OLD WAY
@@ -806,9 +818,11 @@ namespace Dynamo.Revit
                 int j = 0;
                 foreach (var arg in args)
                 {
+                    var portAtThis = portComparison.ElementAt(j);
+
                     //incoming value is list and expecting single
-                    if (portComparison.ElementAt(j).Item1 == typeof(Value.List) &&
-                        portComparison.ElementAt(j).Item2 != typeof(Value.List))
+                    if (portAtThis.Item1 == typeof(Value.List) &&
+                        portAtThis.Item2 != typeof(Value.List))
                     {
                         //leave as list
                         argSets.Add(((Value.List)arg).Item);
@@ -817,7 +831,7 @@ namespace Dynamo.Revit
                     else
                     {
                         //check if we have a list of lists, if so, then don't wrap
-                        if (Utils.IsListOfLists(arg))
+                        if (Utils.IsListOfLists(arg) && !acceptsListOfLists(arg))
                             //leave as list
                             argSets.Add(((Value.List)arg).Item);
                         else

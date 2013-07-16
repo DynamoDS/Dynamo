@@ -29,20 +29,39 @@
     <UserControl.ToolTip>
         <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
             <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <TextBlock Name="tt_longText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                           Text="{Binding Path=ToolTipText}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=ToolTipText, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+
+            <!-- Errors -->
+                
+                <TextBlock Name="tt_errorTitle" TextWrapping="Wrap" 
+                           Text="Error Message" FontSize="11" Margin="2" FontWeight="Bold" Foreground="Red"
+                           Visibility="{Binding Path=ToolTipText, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+                <TextBlock Name="tt_errorText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                           Text="{Binding Path=ToolTipText}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Foreground="Red"
+                           Visibility="{Binding Path=ToolTipText, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+
+            <!-- Description -->
+                
+                <TextBlock Name="tt_name" TextWrapping="Wrap" 
+                           Text="{Binding Path=NickName}" FontSize="11" FontWeight="Bold" TextTrimming="WordEllipsis" Margin="2" 
+                           Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
                 <TextBlock Name="tt_descript" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                           Text="{Binding Path=Description}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="Visible"/>
-                <TextBlock Name="tt_lastValueName" HorizontalAlignment="Stretch" 
-                           VerticalAlignment="Top" Text="Current:" FontSize="11" FontWeight="Bold" Margin="2" Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
-                <TextBlock Name="tt_lastValue" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                           Text="{Binding Path=OldValue}"  FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
+                           Text="{Binding Path=Description}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" 
+                           Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
+
+            <!-- Last value -->
+                
+                <TextBlock Name="tt_lastValueName" 
+                           VerticalAlignment="Top" Text="Current Value" FontSize="11" FontWeight="Bold" Margin="2, 7, 2, 2" 
+                           Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
+                <TextBlock Name="tt_lastValue" TextWrapping="Wrap" 
+                           Text="{Binding Path=OldValue}"  FontSize="11" TextTrimming="WordEllipsis" Margin="2" 
+                           Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
+                
             </StackPanel>
         </Grid>
     </UserControl.ToolTip>
 
     <Grid Name="grid" Canvas.ZIndex="3" Margin="0">
-        
         
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -78,6 +97,8 @@
                 <MenuItem Name="isUpstreamVisible_cm" Header="Preview Upstream" 
                           IsChecked="{Binding Path=IsUpstreamVisible}"
                           Command="{Binding Path=ToggleIsUpstreamVisibleCommand}"/>
+                <MenuItem Name="rename_cm" Header="Rename Node..." 
+                          Command="{Binding Path=RenameCommand}"/>
                 <MenuItem Name="help_cm" Header="Help..." 
                           Command="{Binding Path=ShowHelpCommand}"/>
             </ContextMenu>
@@ -85,9 +106,9 @@
 
         <Grid Canvas.ZIndex="4" Grid.Row="1" Margin="3,5,3,5" Grid.Column="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*" MinWidth="40"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -133,18 +154,18 @@
         </StackPanel>
 
         <!-- INPUT GRID -->
-            
-        <Grid Name="inputGrid"
-            x:FieldModifier="public"
-            VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch"
-            Height="Auto"
-            Width="Auto"
-            Background="Transparent"
-              Margin="5,0,5,0"
-              Canvas.ZIndex="5"  
-              IsEnabled="{Binding Path=IsInteractionEnabled}" Grid.Column="1" Grid.Row="0"/>
-            
+            <Grid Name="inputGrid"
+                x:FieldModifier="public"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Height="Auto"
+                Width="Auto"
+                Background="Transparent"
+                Margin="5,0,5,0"
+                Canvas.ZIndex="5"  
+                IsEnabled="{Binding Path=IsInteractionEnabled}"
+                Grid.Column="1" Grid.Row="0"/>
+
         </Grid>
         
         <TextBlock Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}" 
@@ -159,19 +180,19 @@
         <TextBlock  Name="nickNameBlock" 
                          VerticalAlignment="Top" 
                          HorizontalAlignment="Stretch"
-                         TextTrimming="CharacterEllipsis"
                          Text="{Binding NickName, UpdateSourceTrigger=PropertyChanged}"
                             Margin="2,2,2,0"
                          Padding="5"
                          FontSize="11"
                          FontWeight="Bold" 
                          TextAlignment="Center" 
-                         IsHitTestVisible="False" 
+                         IsHitTestVisible="True" 
                          Canvas.ZIndex="5" 
                          Height ="25"
                          Background="{x:Null}" FontStyle="Normal" Foreground="LightGray"
                     Visibility="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynWorkspaceView}}, Converter={StaticResource ZoomToVisibilityConverter}}"
-            Grid.Row="0" Grid.Column="0">
+            Grid.Row="0" Grid.Column="0"
+                  MouseDown="NickNameBlock_OnMouseDown">
         </TextBlock>
         
         <!-- CENTER CANVAS -->
