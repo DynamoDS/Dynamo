@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Windows;
 using System.Linq;
-using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;

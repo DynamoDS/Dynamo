@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
 using System.Windows.Media;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism;
 using Microsoft.Practices.Prism.Commands;
 using Brush = System.Windows.Media.Brush;
 
@@ -204,14 +198,14 @@ namespace Dynamo.Connectors
         /// Returns visible if the connectors is in the current space and the 
         /// model's current connector type is BEZIER
         /// </summary>
-        public Visibility BezVisibility
+        public bool BezVisibility
         {
             get
             {
                 if (dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.BEZIER &&
                     dynSettings.Controller.DynamoViewModel.IsShowingConnectors)
-                    return Visibility.Visible;
-                return Visibility.Hidden;
+                    return true;
+                return false;
             }
             set
             {
@@ -223,14 +217,14 @@ namespace Dynamo.Connectors
         /// Returns visible if the connectors is in the current space and the 
         /// model's current connector type is POLYLINE
         /// </summary>
-        public Visibility PlineVisibility
+        public bool PlineVisibility
         {
             get
             {
                 if (dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.POLYLINE && 
                     dynSettings.Controller.DynamoViewModel.IsShowingConnectors)
-                    return Visibility.Visible;
-                return Visibility.Hidden;
+                    return true;
+                return false;
             }
             set
             {
@@ -333,13 +327,13 @@ namespace Dynamo.Connectors
                 case "ConnectorType":
                     if (dynSettings.Controller.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
                     {
-                        BezVisibility = Visibility.Visible;
-                        PlineVisibility = Visibility.Hidden;
+                        BezVisibility = true;
+                        PlineVisibility = false;
                     }
                     else
                     {
-                        BezVisibility = Visibility.Hidden;
-                        PlineVisibility = Visibility.Visible;
+                        BezVisibility = false;
+                        PlineVisibility = true;
                     }
                     Redraw();
                     break;
@@ -411,7 +405,7 @@ namespace Dynamo.Connectors
 
             var offset = 0.0;
             double distance = 0;
-            if ( this.BezVisibility == Visibility.Visible )
+            if ( this.BezVisibility == true)
             {
                 distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
                 offset = .45 * distance;
