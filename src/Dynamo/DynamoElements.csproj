@@ -214,7 +214,7 @@ limitations under the License.
     <Compile Include="DynamoController.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
-    <Compile Include="Nodes\dynIDrawable.cs" />
+    <Compile Include="Interfaces\dynIDrawable.cs" />
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
     <Compile Include="PackageManager\Login\PackageManagerLoginViewModel.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
