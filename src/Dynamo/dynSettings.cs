@@ -14,9 +14,7 @@
 
 using System;
 using System.Collections.Generic;
-using Dynamo.Controls;
 using Dynamo.PackageManager;
-using System.Windows.Input;
 
 namespace Dynamo.Utilities
 {
