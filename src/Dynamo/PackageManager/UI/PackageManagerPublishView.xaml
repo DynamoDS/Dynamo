@@ -3,13 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI"
+        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI" xmlns:local="clr-namespace:Dynamo.PackageManager"
         mc:Ignorable="d" 
-             Height="470" Width="700" Name="PublishInfoControl" Visibility="{Binding Path=Visible}">
+             Height="470" Width="700" Name="PublishInfoControl" Title="Publish a Dynamo Package" Visibility="{Binding Path=Visible}">
   
   <Grid Background="Black">
-      
-      <Grid.ColumnDefinitions>
+
+        <Grid.ColumnDefinitions>
           <ColumnDefinition Width="300"></ColumnDefinition>
           <ColumnDefinition Width="*"></ColumnDefinition>
       </Grid.ColumnDefinitions>
@@ -29,31 +29,55 @@
 
             <StackPanel Name="FieldArrangement" Orientation="Vertical" Margin="10">
                 
-                <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,0,0,15" FontSize="10" Text="PUBLISH A PACKAGE"/>
+                <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,0,0,15" FontSize="10" Text="PACKAGE PROPERTIES"/>
 
-                <Label Content="Title" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" />
-                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="TitleInput" Padding="5" Text="{Binding Path=Title, Mode=TwoWay}" />
+                <Label Content="Name" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
+                    <Label.ToolTip>
+                        <TextBox>A unique name for the package.  Note that your package will be rejected if this name is already present in the database.</TextBox>
+                    </Label.ToolTip>
+                </Label>
+                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="TitleInput" Padding="5" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <Label Content="Description" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" />
-                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}"  Name="DescriptionInput" Padding="5" Height="50" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Path=Description, Mode=TwoWay}" />
+                <Label Content="Description" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
+                    <Label.ToolTip>
+                        <TextBox>A description that helps people understand what the package might be used for.</TextBox>
+                    </Label.ToolTip>
+                </Label>
+                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="DescriptionInput" Padding="5" Height="50" TextWrapping="Wrap" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <Label Content="Keywords (separated by spaces)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="KeywordsInput" Padding="5" Text="{Binding Path=Keywords, Mode=TwoWay}" />
-
-                <Label Content="Version (major minor build)" Height="28" Margin="0,10,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                <Label Content="Version (major minor build)" Height="28" Margin="0,10,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
+                    <Label.ToolTip>
+                        <TextBox>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</TextBox>
+                    </Label.ToolTip>
+                </Label>
                 <StackPanel Orientation="Horizontal">
-                    <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionMajor" Width ="40" Margin="0,5,5,5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=MajorVersion, Mode=TwoWay}"/>
-                    <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionMinor" Width ="40" Margin="5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=MinorVersion, Mode=TwoWay}"/>
-                    <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionBuild" Width ="40" Margin="5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=BuildVersion, Mode=TwoWay}"/>
+                    <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionMajor" Width ="40" Margin="0,5,5,5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionMinor" Width ="40" Margin="5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionBuild" Width ="40" Margin="5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
 
-                <Label Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="LicenseLabel" VerticalAlignment="Top">
-                    The default is the MIT license.
+                <!--<Label Content="Group (optional)" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="GroupLabel" VerticalAlignment="Top"> 
+                    <Label.ToolTip><TextBox>A group might help define who</TextBox></Label.ToolTip>
                 </Label>
+                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="GroupInput" Padding="5" Height="50" TextWrapping="Wrap" Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
+
+                <Label Content="Keywords (optional)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
+                    <Label.ToolTip>
+                        <TextBox>Keywords help find your package in the database.  Separate them by spaces.</TextBox>
+                    </Label.ToolTip>
+                </Label>
+                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="KeywordsInput" Padding="5" Text="{Binding Path=Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <Label Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="LicenseLabel" VerticalAlignment="Top">
+                    Disclaimer:  At this point the package manager is EXPERIMENTAL.  Your package may disappear suddenly from the database.  
+                </Label>
+
+                <Label Foreground="Red" FontWeight="Bold" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="Error" VerticalAlignment="Top" Content="{Binding ErrorString}"/>
 
                 <Button Style="{DynamicResource ResourceKey=STextButton}" Width="70" Margin="10" HorizontalAlignment="Right" Command="{Binding Path=SubmitCommand}" >Submit</Button>
 
             </StackPanel>
+            
         </Border>
 
         <Grid Grid.Column="0" Grid.ColumnSpan="1">

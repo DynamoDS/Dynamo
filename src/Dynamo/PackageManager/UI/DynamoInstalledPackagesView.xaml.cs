@@ -18,8 +18,9 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class DynamoInstalledPackagesView : Window
     {
-        public DynamoInstalledPackagesView()
+        public DynamoInstalledPackagesView( PackageManagerClient client )
         {
+            this.DataContext = client;
             InitializeComponent();
         }
     }

@@ -150,6 +150,8 @@ namespace Dynamo.PackageManager
         /// <param name="keywords"> Keywords to describe the user-defined node </param>
         /// <param name="license"> A license string (e.g. "MIT") </param>
         /// <param name="group"> The "group" for the package (e.g. DynamoTutorial) </param>
+        /// <param name="files"></param>
+        /// <param name="deps"></param>
         /// <returns> Returns null if it fails to get the xmlDoc, otherwise a valid PackageUpload </returns>
         public PackageUpload GetPackageUpload(FunctionDefinition funDef, string version, string description,
                                               List<string> keywords, string license, string group, List<string> files, List<PackageDependency> deps )
@@ -158,12 +160,9 @@ namespace Dynamo.PackageManager
             string name = funDef.Workspace.Name;
             var contents = "";
             string engineVersion = "0.1.0"; //nope
-
             string engineMetadata = "";
 
-            var pkg = PackageUpload.MakeDynamoPackage(name, version, description, keywords, license,
-                                                                contents,
-                                                                engineVersion, engineMetadata, files, deps);
+            var pkg = PackageUpload.MakeDynamoPackage(name, version, description, keywords, license, contents, engineVersion, engineMetadata, files, deps);
             return pkg;
         }
 
@@ -184,6 +183,8 @@ namespace Dynamo.PackageManager
         /// <param name="keywords"> Keywords to describe the user-defined node </param>
         /// <param name="license"> A license string (e.g. "MIT") </param>
         /// <param name="group"> The "group" for the package (e.g. DynamoTutorial) </param>
+        /// <param name="files"></param>
+        /// <param name="deps"></param>
         /// <returns>Returns null if it fails to get the xmlDoc, otherwise a valid PackageVersionUpload  </returns>
         public PackageVersionUpload GetPackageVersionUpload(FunctionDefinition funDef, PackageHeader packageHeader,
                                                             string version,

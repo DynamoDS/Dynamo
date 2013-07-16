@@ -64,11 +64,7 @@ namespace Dynamo.Commands
                 return;
             }
 
-            if (!init)
-            {
-                _view = new PackageManagerPublishView(dynSettings.Controller.PackageManagerPublishCustomNodeViewModel);
-                init = true;
-            }
+            
             
             if (funcDef is FunctionDefinition)
             {
@@ -88,6 +84,12 @@ namespace Dynamo.Commands
             {
                 dynSettings.Controller.DynamoViewModel.Log("Failed to obtain function definition from node.");
                 return;
+            }
+
+            if (!init)
+            {
+                _view = new PackageManagerPublishView(dynSettings.Controller.PackageManagerPublishCustomNodeViewModel);
+                init = true;
             }
             
         }
