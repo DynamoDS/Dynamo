@@ -158,27 +158,13 @@ namespace Dynamo.Controls
                 if (rd == null)
                     continue;
 
-                points.AddRange(rd.points);
-                lines.AddRange(rd.lines);
+                points.AddRange(rd.points.ConvertAll(x=>(Point3D)x));
+                lines.AddRange(rd.lines.ConvertAll(x => (Point3D)x));
                 meshes.AddRange(rd.meshes.ConvertAll(x=>(Mesh3D)x));
-                xAxes.AddRange(rd.xAxisPoints);
-                yAxes.AddRange(rd.yAxisPoints);
-                zAxes.AddRange(rd.zAxisPoints);
+                xAxes.AddRange(rd.xAxisPoints.ConvertAll(x => (Point3D)x));
+                yAxes.AddRange(rd.yAxisPoints.ConvertAll(x => (Point3D)x));
+                zAxes.AddRange(rd.zAxisPoints.ConvertAll(x => (Point3D)x));
             }
-
-            //_pointsCache = points;
-            //_linesCache = lines;
-            //_meshCache = MergeMeshes(meshes);
-            //_xAxisCache = xAxes;
-            //_yAxisCache = yAxes;
-            //_zAxisCache = zAxes;
-
-            //RaisePropertyChanged("HelixPoints");
-            //RaisePropertyChanged("HelixLines");
-            //RaisePropertyChanged("HelixMesh");
-            //RaisePropertyChanged("HelixXAxes");
-            //RaisePropertyChanged("HelixYAxes");
-            //RaisePropertyChanged("HelixZAxes");
 
             HelixPoints = points;
             HelixLines = lines;

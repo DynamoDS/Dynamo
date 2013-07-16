@@ -1,25 +1,25 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Media.Media3D;
+//using System.Windows.Media.Media3D;
 
 namespace Dynamo.Nodes
 {
     public class RenderDescription
     {
-        public Point3DCollection points = null;
-        public Point3DCollection lines = null;
+        public List<object> points = null;
+        public List<object> lines = null;
         public List<object> meshes = null;
-        public Point3DCollection xAxisPoints = null;
-        public Point3DCollection yAxisPoints = null;
-        public Point3DCollection zAxisPoints = null;
+        public List<object> xAxisPoints = null;
+        public List<object> yAxisPoints = null;
+        public List<object> zAxisPoints = null;
 
         public RenderDescription()
         {
-            points = new Point3DCollection();
-            lines = new Point3DCollection();
+            points = new List<object>();
+            lines = new List<object>();
             meshes = new List<object>();
-            xAxisPoints = new Point3DCollection();
-            yAxisPoints = new Point3DCollection();
-            zAxisPoints = new Point3DCollection();
+            xAxisPoints = new List<object>();
+            yAxisPoints = new List<object>();
+            zAxisPoints = new List<object>();
         }
 
         public void ClearAll()
