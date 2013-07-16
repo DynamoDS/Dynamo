@@ -30,7 +30,6 @@ using System.Windows.Media;
 using System.Linq;
 using System.Windows.Threading;
 using System.Xml.Serialization;
-using Dynamo.Nodes.Prompts;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -53,6 +52,7 @@ using NUnit.Core;
 using NUnit.Core.Filters;
 using NUnit.Framework;
 using NUnit.Util;
+using Application = System.Windows.Application;
 
 #endif
 
@@ -214,6 +214,33 @@ namespace Dynamo.Applications
                             context = "Vasari 2014";
 
                         dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
+
+                        var app = new Application();
+
+                        var converters = new ResourceDictionary
+                        {
+                            Source = new Uri("/DynamoElements;component/UI/Themes/DynamoConverters.xaml", UriKind.Relative)
+                        };
+                        app.Resources.MergedDictionaries.Add(converters);
+
+                        var colors = new ResourceDictionary
+                        {
+                            Source =
+                                new Uri("/DynamoElements;component/UI/Themes/DynamoColorsAndBrushes.xaml", UriKind.Relative)
+                        };
+                        app.Resources.MergedDictionaries.Add(colors);
+
+                        var modern = new ResourceDictionary
+                        {
+                            Source = new Uri("/DynamoElements;component/UI/Themes/DynamoModern.xaml", UriKind.Relative)
+                        };
+                        app.Resources.MergedDictionaries.Add(modern);
+
+                        var text = new ResourceDictionary
+                        {
+                            Source = new Uri("/DynamoElements;component/UI/Themes/DynamoText.xaml", UriKind.Relative)
+                        };
+                        app.Resources.MergedDictionaries.Add(text);
 
                         var ui = new DynamoView {DataContext = dynamoController.DynamoViewModel};
                         dynamoController.UIDispatcher = ui.Dispatcher;

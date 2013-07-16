@@ -45,11 +45,6 @@ namespace DynamoSandbox
                     };
                 app.Resources.MergedDictionaries.Add(text);
 
-                //Application.LoadComponent(new Uri("/DynamoElements;component/UI/Themes/DynamoColorsAndBrushes.xaml", UriKind.Relative));
-                //Application.LoadComponent(new Uri("/DynamoElements;component/UI/Themes/DynamoModern.xaml", UriKind.Relative));
-                //Application.LoadComponent(new Uri("/DynamoElements;component/UI/Themes/DynamoText.xaml", UriKind.Relative));
-                //Application.LoadComponent(new Uri("/DynamoElements;component/UI/Themes/DynamoConverters.xaml",UriKind.Relative));
-
                 //create the view
                 var ui = new DynamoView();
                 ui.DataContext = controller.DynamoViewModel;
