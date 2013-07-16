@@ -20,11 +20,11 @@ namespace Dynamo.Nodes.Search
         /// <param name="items">The accumulator</param>
         public void GetVisibleLeaves(ref List<BrowserItem> items)
         {
-           if (this.Visibility == Visibility.Visible && this.Items.Count == 0)
+           if (this.Visibility == true && this.Items.Count == 0)
            {
                items.Add(this);
            }
-           else if (this.Visibility != Visibility.Visible)
+           else if (this.Visibility != true)
            {
                return;
            }
@@ -86,7 +86,7 @@ namespace Dynamo.Nodes.Search
         /// <summary>
         /// Hide element and all its children
         /// </summary>
-        public void SetVisibilityToLeaves(Visibility visibility)
+        public void SetVisibilityToLeaves(bool visibility)
         {
             this.Visibility = visibility;
             foreach (var ele in Items)
@@ -98,8 +98,8 @@ namespace Dynamo.Nodes.Search
         /// <summary>
         /// Whether the item is visible or not
         /// </summary>
-        private Visibility _visibility = Visibility.Visible;
-        public Visibility Visibility
+        private bool _visibility = true;
+        public bool Visibility
         {
             get
             {

@@ -44,7 +44,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     Tells whether the browser is visible
         /// </value>
-        private Visibility _browserVisible;
+        private bool _browserVisible;
 
         /// <summary>
         ///     Visible property
@@ -52,7 +52,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     Tells whether the login UI is visible
         /// </value>
-        private Visibility _visible;
+        private bool _visible;
 
         /// <summary>
         ///     Client property
@@ -87,7 +87,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     Specifies whether the browser is visible, observed by View
         /// </value>
-        public Visibility BrowserVisible
+        public bool BrowserVisible
         {
             get { return _browserVisible; }
             set
@@ -106,7 +106,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     Specifies whether the View is visible, observed by View
         /// </value>
-        public Visibility Visible
+        public bool Visible
         {
             get { return _visible; }
             set
@@ -129,8 +129,8 @@ namespace Dynamo.PackageManager
         {
             Client = client;
             BrowserUri = new Uri("http://www.google.com");
-            Visible = Visibility.Collapsed;
-            BrowserVisible = Visibility.Collapsed;
+            Visible = false;
+            BrowserVisible = false;
         }
 
         /// <summary>
@@ -156,11 +156,11 @@ namespace Dynamo.PackageManager
             if (e.Uri.AbsoluteUri.IndexOf("google", StringComparison.Ordinal) > -1)
                 return;
 
-            BrowserVisible = Visibility.Visible;
+            BrowserVisible = true;
 
             if (e.Uri.AbsoluteUri.IndexOf("Allow", StringComparison.Ordinal) > -1)
             {
-                Visible = Visibility.Hidden;
+                Visible = false;
                 Client.GetAccessToken();
             }
         }

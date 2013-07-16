@@ -58,8 +58,8 @@ namespace Dynamo.PackageManager
             /// Visible property </summary>
             /// <value>
             /// Tells whether the publish UI is visible</value>
-            private Visibility _visible;
-            public Visibility Visible
+            private bool _visible;
+            public bool Visible
             {
                 get { return _visible; }
                 set
@@ -198,7 +198,7 @@ namespace Dynamo.PackageManager
                 {
                     _FunctionDefinition = value;
                     this.RaisePropertyChanged(() => this.Name );
-                    this.Visible = Visibility.Visible;
+                    this.Visible = true;
                     this.RaisePropertyChanged(() => this.Visible);
                 }
             }
@@ -232,7 +232,7 @@ namespace Dynamo.PackageManager
             Client = client;
             this.SubmitCommand = new DelegateCommand<object>(this.OnSubmit, this.CanSubmit);
             this.Clear();
-            this.Visible = Visibility.Collapsed;
+            this.Visible = false;
         }
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace Dynamo.PackageManager
                 {
                     Client.Publish(pkg, this.FunctionDefinition);
                     dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
-                    this.Visible = Visibility.Collapsed;
+                    this.Visible = false;
                 }
             }
             else // new version
@@ -280,7 +280,7 @@ namespace Dynamo.PackageManager
                 {
                     Client.Publish(pkgVersion);
                     dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
-                    this.Visible = Visibility.Collapsed;
+                    this.Visible = false;
                 }
             }
         }

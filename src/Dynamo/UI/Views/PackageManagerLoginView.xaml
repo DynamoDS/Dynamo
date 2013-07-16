@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ns="clr-namespace:Dynamo.PackageManager"
              mc:Ignorable="d" 
-             d:DesignWidth="350" Visibility="{Binding Path=Visible}">
+             d:DesignWidth="350" Visibility="{Binding Path=Visible, Converter={StaticResource BoolToHiddenVisibilityConverter}}">
 
   <Grid Background="Black">
 
@@ -25,7 +25,8 @@
       <ResourceDictionary>
         <ResourceDictionary.MergedDictionaries>
           <ResourceDictionary Source="/DynamoElements;component/UI/Themes/DynamoModern.xaml" />
-        </ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DynamoElements;component/UI/Themes/DynamoConverters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
       </ResourceDictionary>
     </UserControl.Resources>
       
