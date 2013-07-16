@@ -138,6 +138,7 @@ namespace Dynamo
             }
         }
 
+        public DelegateCommand SelectAllCommand { get; set; }
         public DelegateCommand<object> HideCommand { get; set; }
         public DelegateCommand<object> CrossSelectCommand { get; set; }
         public DelegateCommand<object> ContainSelectCommand { get; set; }
@@ -314,6 +315,7 @@ namespace Dynamo
             SetZoomCommand = new DelegateCommand<object>(SetZoom, CanSetZoom);
             FindByIdCommand = new DelegateCommand<object>(FindById, CanFindById);
             AlignSelectedCommand = new DelegateCommand<string>(AlignSelected, CanAlignSelected);
+            SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
             FindNodesFromSelectionCommand = new DelegateCommand(FindNodesFromSelection, CanFindNodesFromSelection);
 
             DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
@@ -432,6 +434,17 @@ namespace Dynamo
                     RaisePropertyChanged("FilePath");
                     break;
             }
+        }
+
+        private void SelectAll()
+        {
+            DynamoSelection.Instance.ClearSelection();
+            this.Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
+        }
+
+        private bool CanSelectAll()
+        {
+            return true;
         }
 
         public double GetSelectionAverageX()

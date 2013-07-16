@@ -457,13 +457,12 @@ namespace Dynamo.Controls
 
         private void SelectAll()
         {
-            DynamoSelection.Instance.ClearSelection();
-            this.Model.CurrentSpace.Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele) );
+            this.CurrentSpaceViewModel.SelectAllCommand.Execute();
         }
 
         private bool CanSelectAll()
         {
-            return true;
+            return this.CurrentSpaceViewModel.SelectAllCommand.CanExecute();
         }
 
         private bool CanSave()
