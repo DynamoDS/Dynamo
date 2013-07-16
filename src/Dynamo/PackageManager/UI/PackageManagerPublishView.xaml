@@ -5,27 +5,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI" xmlns:local="clr-namespace:Dynamo.PackageManager"
         mc:Ignorable="d" 
-             Height="470" Width="700" Name="PublishInfoControl" Title="Publish a Dynamo Package" Visibility="{Binding Path=Visible}">
+             Height="590" Width="700" Name="PublishInfoControl" Title="Publish a Dynamo Package" Visibility="{Binding Path=Visible}">
   
   <Grid Background="Black">
 
-        <Grid.ColumnDefinitions>
+      <Grid.ColumnDefinitions>
           <ColumnDefinition Width="300"></ColumnDefinition>
           <ColumnDefinition Width="*"></ColumnDefinition>
       </Grid.ColumnDefinitions>
       
       <Grid.RowDefinitions>
           <RowDefinition Height="*"></RowDefinition>
-      </Grid.RowDefinitions>
+          <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
 
         <Border Grid.Column="1" Grid.ColumnSpan="1" Name="BrowserContainer" >
 
-                <Border.Background>
-                    <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                        <GradientStop Color="#444" Offset="0.0" />
-                        <GradientStop Color="#222" Offset="1.0" />
-                    </LinearGradientBrush>
-                </Border.Background>
+            <Border.Background>
+                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#444" Offset="0.0" />
+                    <GradientStop Color="#222" Offset="1.0" />
+                </LinearGradientBrush>
+            </Border.Background>
 
             <StackPanel Name="FieldArrangement" Orientation="Vertical" Margin="10">
                 
@@ -33,7 +34,7 @@
 
                 <Label Content="Name" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
                     <Label.ToolTip>
-                        <TextBox>A unique name for the package.  Note that your package will be rejected if this name is already present in the database.</TextBox>
+                        <TextBox>A unique name for the package.  </TextBox>
                     </Label.ToolTip>
                 </Label>
                 <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="TitleInput" Padding="5" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -43,9 +44,9 @@
                         <TextBox>A description that helps people understand what the package might be used for.</TextBox>
                     </Label.ToolTip>
                 </Label>
-                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="DescriptionInput" Padding="5" Height="50" TextWrapping="Wrap" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Style="{DynamicResource SDarkTextBox}" Name="DescriptionInput" Padding="5" Height="50" TextWrapping="Wrap" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <Label Content="Version (major minor build)" Height="28" Margin="0,10,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
+                <Label Content="Version (major minor build)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
                     <Label.ToolTip>
                         <TextBox>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</TextBox>
                     </Label.ToolTip>
@@ -56,11 +57,13 @@
                     <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionBuild" Width ="40" Margin="5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
 
-                <!--<Label Content="Group (optional)" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="GroupLabel" VerticalAlignment="Top"> 
-                    <Label.ToolTip><TextBox>A group might help define who</TextBox></Label.ToolTip>
+                <Label Content="Group (optional)" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="GroupLabel" VerticalAlignment="Top"> 
+                    <Label.ToolTip><TextBox>A group to help categorize this package.  Might be useful for a collection of packages related to a firm, school, etc.</TextBox></Label.ToolTip>
                 </Label>
-                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="GroupInput" Padding="5" Height="50" TextWrapping="Wrap" Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
-
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="GroupInput" Width ="200" Padding="5" TextWrapping="Wrap" Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+                
                 <Label Content="Keywords (optional)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
                     <Label.ToolTip>
                         <TextBox>Keywords help find your package in the database.  Separate them by spaces.</TextBox>
@@ -68,9 +71,9 @@
                 </Label>
                 <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="KeywordsInput" Padding="5" Text="{Binding Path=Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <Label Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="LicenseLabel" VerticalAlignment="Top">
-                    Disclaimer:  At this point the package manager is EXPERIMENTAL.  Your package may disappear suddenly from the database.  
-                </Label>
+                <TextBlock Foreground="DarkGray" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="LicenseLabel" TextWrapping="Wrap" VerticalAlignment="Top">
+                    Disclaimer:  The package manager is experimental.  Packages may be removed from the database unexpectedly.  
+                </TextBlock>
 
                 <Label Foreground="Red" FontWeight="Bold" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="Error" VerticalAlignment="Top" Content="{Binding ErrorString}"/>
 

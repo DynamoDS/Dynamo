@@ -66,7 +66,7 @@ namespace Dynamo.Search.SearchElements
 
             if (result == MessageBoxResult.OK)
             {
-                var dl = new DynamoPackageDownload(this.Header, this.Header.versions[0].version); // download the most recent version
+                var dl = new PackageDownloadHandle(this.Header, this.Header.versions[0].version); // download the most recent version
                 dynSettings.Controller.PackageManagerClient.DownloadAndInstall(dl);
             }
 

@@ -16,10 +16,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.PackageManager.UI;
 using Dynamo.Utilities;
+using Greg.Requests;
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
@@ -32,8 +34,32 @@ namespace Dynamo.PackageManager
     {
         #region Properties
 
-            // <summary>
-            /// Client property </summary>
+
+            /// <summary>
+            /// This dialog is in one of two states.  Uploading or the user is filling out the dialog
+            /// </summary>
+            private bool _uploading = false;
+            public bool Uploading
+            {
+                get { return _uploading; }
+                set
+                {
+                    if (this._uploading != value)
+                    {
+                        this._uploading = value;
+                        this.RaisePropertyChanged("Uploading");
+                    }
+                }
+            }
+
+            /// <summary>
+            /// A handle for the package upload so the user can know the state of the upload.
+            /// </summary>
+            public PackageUploadHandle UploadHandle { get; set; }
+
+            /// <summary>
+            /// Client property 
+            /// </summary>
             /// <value>
             /// The PackageManagerClient object for performing OAuth calls</value>
             public PackageManagerClient Client { get; internal set; }
@@ -128,24 +154,24 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            ///// <summary>
-            ///// Name property </summary>
-            ///// <value>
-            ///// The name of the node to be uploaded </value>
-            //private string _group = "";
-            //public string Group
-            //{
-            //    get { return _group; }
-            //    set
-            //    {
-            //        if (this._group != value)
-            //        {
-            //            this._group = value;
-            //            this.RaisePropertyChanged("Group");
-            //            ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
-            //        }
-            //    }
-            //}
+            /// <summary>
+            /// Name property </summary>
+            /// <value>
+            /// The name of the node to be uploaded </value>
+            private string _group = "";
+            public string Group
+            {
+                get { return _group; }
+                set
+                {
+                    if (this._group != value)
+                    {
+                        this._group = value;
+                        this.RaisePropertyChanged("Group");
+                        ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
+                    }
+                }
+            }
 
             /// <summary>
             /// Description property </summary>
@@ -178,6 +204,11 @@ namespace Dynamo.PackageManager
                 {
                     if (this._Keywords != value)
                     {
+                        value = value.Replace(',', ' ').ToLower().Trim();
+                        var options = RegexOptions.None;
+                        var regex = new Regex(@"[ ]{2,}", options);
+                        value = regex.Replace(value, @" ");
+
                         this._Keywords = value;
                         this.RaisePropertyChanged("Keywords");
                         KeywordList = value.Split(' ').Where(x => x.Length > 0).ToList();
@@ -311,7 +342,7 @@ namespace Dynamo.PackageManager
         {
             Client = client;
 
-            this.SubmitCommand = new DelegateCommand<object>(this.OnSubmit, this.CanSubmit);
+            this.SubmitCommand = new DelegateCommand<object>(this.Submit, this.CanSubmit);
             this.Clear();
             this.Visible = Visibility.Collapsed;
         }
@@ -337,32 +368,24 @@ namespace Dynamo.PackageManager
 
         /// <summary>
         /// Delegate used to submit the element</summary>
-        private void OnSubmit(object arg)
+        private void Submit(object arg)
         {
-            if (!this.IsNewVersion)
-            {
-                var pkg = Client.GetPackageUpload(this.FunctionDefinition,
-                                                  this.FullVersion,
-                                                  this.Description, this.KeywordList, "MIT", "global" );
-                if (pkg != null)
-                {
-                    Client.Publish(pkg, this.FunctionDefinition);
-                    this.Visible = Visibility.Collapsed;
-                }
-            }
-            else // new version
-            {
-                var pkgVersion = Client.GetPackageVersionUpload(this.FunctionDefinition,
-                                                                this.PackageHeader,
-                                                                this.FullVersion,
-                                                                this.Description, this.KeywordList, "MIT", "global");
-                if (pkgVersion != null)
-                {
-                    Client.Publish(pkgVersion);
-                    dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
-                    this.Visible = Visibility.Collapsed;
-                }
-            }
+
+            var files = new List<string>();
+            var deps = new List<PackageDependency>();
+            var handle =  Client.PublishNewPackage(   
+                                                    this.IsNewVersion,
+                                                    this.Name,
+                                                    this.FullVersion,
+                                                    this.Description,
+                                                    this.KeywordList,
+                                                    "MIT",
+                                                    this.Group,
+                                                    files,
+                                                    deps);
+            this.Uploading = true;
+            this.UploadHandle = handle;
+            
         }
 
         private string _ErrorString = "";
@@ -396,12 +419,6 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
-            if (this.Group.Length < 3)
-            {
-                this.ErrorString = "Name must be at least 3 characters.";
-                return false;
-            }
-
             if (this.MinorVersion.Length <= 0)
             {
                 this.ErrorString = "You must provide a Minor version as a non-negative integer.";
@@ -419,6 +436,8 @@ namespace Dynamo.PackageManager
                 this.ErrorString = "You must provide a Build version as a non-negative integer.";
                 return false;
             }
+
+            this.ErrorString = "";
 
             return true;
         }
