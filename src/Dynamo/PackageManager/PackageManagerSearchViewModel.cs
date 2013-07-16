@@ -107,7 +107,7 @@ namespace Dynamo.PackageManager
             SearchAndUpdateResults("*");
         }
 
-        public ObservableCollection<DynamoPackageDownload> Downloads
+        public ObservableCollection<PackageDownloadHandle> Downloads
         {
             get { return PackageManagerClient.Downloads; }
         }

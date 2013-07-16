@@ -17,31 +17,31 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
-            if (value is DynamoPackageDownload.State )
+            if (value is PackageDownloadHandle.State )
             {
-                var st = ( DynamoPackageDownload.State ) value;
+                var st = ( PackageDownloadHandle.State ) value;
 
-                if (st == DynamoPackageDownload.State.Downloaded)
+                if (st == PackageDownloadHandle.State.Downloaded)
                 {
                     return "Downloaded";
                 }
-                else if (st == DynamoPackageDownload.State.Downloading)
+                else if (st == PackageDownloadHandle.State.Downloading)
                 {
                     return "Downloading";
                 }
-                else if (st == DynamoPackageDownload.State.Error)
+                else if (st == PackageDownloadHandle.State.Error)
                 {
                     return "Error";
                 }
-                else if (st == DynamoPackageDownload.State.Installed)
+                else if (st == PackageDownloadHandle.State.Installed)
                 {
                     return "Installed";
                 }
-                else if (st == DynamoPackageDownload.State.Installing)
+                else if (st == PackageDownloadHandle.State.Installing)
                 {
                     return "Installing";
                 }
-                else  if (st == DynamoPackageDownload.State.Uninitialized)
+                else  if (st == PackageDownloadHandle.State.Uninitialized)
                 {
                     return "Starting";
                 }
