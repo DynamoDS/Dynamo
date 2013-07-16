@@ -250,7 +250,7 @@ namespace Dynamo.Applications
                         new WindowInteropHelper(dynamoView).Owner = mwHandle;
 
                         handledCrash = false;
-
+                        
                         dynamoView.WindowStartupLocation = WindowStartupLocation.Manual;
 
                         Rectangle bounds = Screen.PrimaryScreen.Bounds;

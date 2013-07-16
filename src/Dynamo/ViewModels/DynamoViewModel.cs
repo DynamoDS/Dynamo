@@ -147,9 +147,6 @@ namespace Dynamo.Controls
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
-        public DelegateCommand ShowSearchCommand { get; set; }
-        public DelegateCommand HideSearchCommand { get; set; }
-        public DelegateCommand FocusSearchCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -423,9 +420,6 @@ namespace Dynamo.Controls
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
-            ShowSearchCommand = new DelegateCommand(ShowSearch, CanShowSearch);
-            HideSearchCommand = new DelegateCommand(HideSearch, CanHideSearch);
-            FocusSearchCommand = new DelegateCommand(FocusSearch, CanFocusSearch);
 
             #endregion
         }
@@ -2984,42 +2978,6 @@ namespace Dynamo.Controls
         }
 
         private bool CanGoHomeView()
-        {
-            return true;
-        }
-    
-        private void HideSearch()
-        {
-            dynSettings.Controller.PackageManagerPublishViewModel.Visible = false;
-            dynSettings.Controller.PackageManagerLoginViewModel.Visible = false;
-            dynSettings.Controller.SearchViewModel.Visible = false;
-        }
-
-        private bool CanHideSearch()
-        {
-            if(dynSettings.Controller.SearchViewModel.Visible == true)
-                return true;
-            return false;
-        }
-
-        private void ShowSearch()
-        {
-            dynSettings.Controller.SearchViewModel.Visible = true;
-        }
-
-        private bool CanShowSearch()
-        {
-            if(dynSettings.Controller.SearchViewModel.Visible == false)
-                return true;
-            return false;
-        }
-
-        private void FocusSearch()
-        {
-            dynSettings.Controller.SearchViewModel.OnRequestFocusSearch(this, EventArgs.Empty);
-        }
-
-        private bool CanFocusSearch()
         {
             return true;
         }

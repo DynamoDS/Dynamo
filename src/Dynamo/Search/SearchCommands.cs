@@ -15,75 +15,122 @@
 using System;
 using System.Windows.Input;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Commands
 {
 
     public static partial class DynamoCommands
     {
-        //private static FocusSearchCommand focusSearch;
-        //public static FocusSearchCommand FocusSearch
-        //{
-        //    get
-        //    {
-        //        if (focusSearch == null)
-        //            focusSearch = new FocusSearchCommand();
-        //        return focusSearch;
-        //    }
-        //}
+        private static DelegateCommand focusSearch;
+        public static DelegateCommand FocusSearchCommand
+        {
+            get
+            {
+                if (focusSearch == null)
+                    focusSearch = new DelegateCommand(FocusSearch, CanFocusSearch);
+                return focusSearch;
+            }
+        }
 
-        private static SearchCommand search;
-        public static SearchCommand Search
+        private static DelegateCommand search;
+        public static DelegateCommand SearchCommand
         {
             get
             {
                 if (search == null)
-                    search = new SearchCommand();
+                    search = new DelegateCommand(Search, CanSearch);
                 return search;
             }
         }
 
-        //private static ShowSearchCommand showSearch;
-        //public static ShowSearchCommand ShowSearch
-        //{
-        //    get
-        //    {
-        //        if (showSearch == null)
-        //            showSearch = new ShowSearchCommand();
-        //        return showSearch;
-        //    }
-        //}
+        private static DelegateCommand showSearch;
+        public static DelegateCommand ShowSearchCommand
+        {
+            get
+            {
+                if (showSearch == null)
+                    showSearch = new DelegateCommand(ShowSearch, CanShowSearch);
+                return showSearch;
+            }
+        }
 
-        //private static HideSearchCommand hideSearch;
-        //public static HideSearchCommand HideSearch
-        //{
-        //    get
-        //    {
-        //        if (hideSearch == null)
-        //            hideSearch = new HideSearchCommand();
-        //        return hideSearch;
-        //    }
-        //}
-    }
+        private static DelegateCommand hideSearch;
+        public static DelegateCommand HideSearchCommand
+        {
+            get
+            {
+                if (hideSearch == null)
+                    hideSearch = new DelegateCommand(HideSearch, CanHideSearch);
+                return hideSearch;
+            }
+        }
 
-    public class SearchCommand : ICommand
-    {
-        public void Execute(object parameters)
+        private static void Search()
         {
             dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
         }
 
-        public event EventHandler CanExecuteChanged
+        private static bool CanSearch()
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            return true;
         }
 
-        public bool CanExecute(object parameters)
+        private static void HideSearch()
+        {
+            dynSettings.Controller.PackageManagerPublishViewModel.Visible = false;
+            dynSettings.Controller.PackageManagerLoginViewModel.Visible = false;
+            dynSettings.Controller.SearchViewModel.Visible = false;
+        }
+
+        private static bool CanHideSearch()
+        {
+            if (dynSettings.Controller.SearchViewModel.Visible == true)
+                return true;
+            return false;
+        }
+
+        private static void ShowSearch()
+        {
+            dynSettings.Controller.SearchViewModel.Visible = true;
+        }
+
+        private static bool CanShowSearch()
+        {
+            if (dynSettings.Controller.SearchViewModel.Visible == false)
+                return true;
+            return false;
+        }
+
+        private static void FocusSearch()
+        {
+            dynSettings.Controller.SearchViewModel.OnRequestFocusSearch(dynSettings.Controller.DynamoViewModel, EventArgs.Empty);
+        }
+
+        private static bool CanFocusSearch()
         {
             return true;
         }
     }
+
+    //public class SearchCommand : ICommand
+    //{
+    //    public void Execute(object parameters)
+    //    {
+    //        dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
+    //    }
+
+    //    public event EventHandler CanExecuteChanged
+    //    {
+    //        add { CommandManager.RequerySuggested += value; }
+    //        remove { CommandManager.RequerySuggested -= value; }
+    //    }
+
+    //    public bool CanExecute(object parameters)
+    //    {
+    //        return true;
+    //    }
+    //}
 
     //public class HideSearchCommand : ICommand
     //{
