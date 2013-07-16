@@ -59,7 +59,7 @@ Source="/DynamoElements;component/UI/Images/search_24.png" Opacity="1" Grid.Colu
 
                         <ContextMenu.ItemTemplate>
                             <DataTemplate>
-                                <MenuItem Header="{Binding Key}" Command="{Binding Value}" IsChecked="{Binding Value.Loaded}" IsCheckable="True"/>
+                                <MenuItem Header="{Binding Key}" Command="{Binding Value}" IsChecked="{Binding Value.Loaded}" CommandParameter="{Binding Value}" IsCheckable="True"/>
                             </DataTemplate>
                         </ContextMenu.ItemTemplate>
 
@@ -70,7 +70,7 @@ Source="/DynamoElements;component/UI/Images/search_24.png" Opacity="1" Grid.Colu
             </Button>
         </Grid>
         
-        <ScrollViewer Visibility="{Binding BrowserVisibility}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
+        <ScrollViewer Visibility="{Binding BrowserVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
                       VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" >
 
             <ScrollViewer.Resources>
@@ -130,7 +130,7 @@ Source="/DynamoElements;component/UI/Images/search_24.png" Opacity="1" Grid.Colu
                     <Setter Property="Focusable" Value="False"></Setter>
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded}"></Setter>
                     <Setter Property="IsSelected" Value="{Binding IsSelected}"></Setter>
-                    <Setter Property="Visibility" Value="{Binding Visibility}"></Setter>
+                    <Setter Property="Visibility" Value="{Binding Visibility, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}"></Setter>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">

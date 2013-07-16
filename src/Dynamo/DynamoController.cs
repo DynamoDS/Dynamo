@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Input;
+//using System.Windows.Input;
 using System.Windows.Threading;
 
 using Dynamo.Controls;
@@ -15,7 +15,10 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.Commands;
 using NUnit.Framework;
+
+using Microsoft.Practices.Prism;
 
 namespace Dynamo
 {
@@ -234,7 +237,7 @@ namespace Dynamo
         /// command arguments
         /// </summary>
         /// <param name="command">The command to run</param>
-        public void RunCommand(ICommand command)
+        public void RunCommand(DelegateCommand<object> command)
         {
             this.RunCommand(command, null);
         }
@@ -245,7 +248,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="command">The command to run</param>
         /// <param name="args">Arguments to give to the command</param>
-        public void RunCommand(ICommand command, object args)
+        public void RunCommand(DelegateCommand<object> command, object args)
         {
             var commandAndParams = Tuple.Create<object, object>(command, args);
             this.CommandQueue.Enqueue(commandAndParams);
@@ -265,7 +268,7 @@ namespace Dynamo
             while (commandQueue.Count > 0)
             {
                 var cmdData = commandQueue.Dequeue();
-                var cmd = cmdData.Item1 as ICommand;
+                var cmd = cmdData.Item1 as DelegateCommand<object>;
                 if (cmd != null)
                 {
                     if (cmd.CanExecute(cmdData.Item2))

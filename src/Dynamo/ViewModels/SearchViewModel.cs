@@ -33,12 +33,12 @@ namespace Dynamo.Search
         /// <summary>
         ///     Indicates whether the node browser is visible or not
         /// </summary>
-        //private bool _browserVisibility = Visibility.Visible;
-        //public Visibility BrowserVisibility
-        //{
-        //    get { return _browserVisibility; }
-        //    set { _browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
-        //}
+        private bool _browserVisibility = true;
+        public bool BrowserVisibility
+        {
+            get { return _browserVisibility; }
+            set { _browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
+        }
 
         /// <summary>
         ///     Indicates whether the node browser is visible or not
@@ -57,7 +57,7 @@ namespace Dynamo.Search
         ///     Specifies different regions to search over.  The command toggles whether searching
         ///     over that field or not.
         /// </value>
-        public ObservableDictionary<string, RegionBase> Regions { get; set; }
+        public ObservableDictionary<string, RegionBase<object>> Regions { get; set; }
 
         /// <summary>
         ///     IncludeRevitAPIElements property
@@ -246,9 +246,11 @@ namespace Dynamo.Search
             Visible = false;
             _SearchText = "";
             IncludeRevitAPIElements = false; // revit api
-            Regions = new ObservableDictionary<string, RegionBase>();
+            Regions = new ObservableDictionary<string, RegionBase<object>>();
             //Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
-            Regions.Add("Include Experimental Revit API Nodes", new RevitAPIRegion());
+            var region = new RevitAPIRegion<object>(RevitAPIRegionExecute, RevitAPIRegionCanExecute);
+            region.RaiseCanExecuteChanged();
+            Regions.Add("Include Experimental Revit API Nodes", new RevitAPIRegion<object>(RevitAPIRegionExecute, RevitAPIRegionCanExecute));
 
             _topResult = this.AddRootCategory("Top Result");
             this.AddRootCategory(BuiltinNodeCategories.CORE);
@@ -259,6 +261,17 @@ namespace Dynamo.Search
             this.AddRootCategory(BuiltinNodeCategories.IO);
             this.AddRootCategory(BuiltinNodeCategories.SCRIPTING);
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
+        }
+
+        static void RevitAPIRegionExecute(object parameter)
+        {
+            dynSettings.Controller.SearchViewModel.IncludeRevitAPIElements = !dynSettings.Controller.SearchViewModel.IncludeRevitAPIElements;
+            dynSettings.ReturnFocusToSearch();
+        }
+
+        static bool RevitAPIRegionCanExecute(object parameter)
+        {
+            return true;
         }
 
 
