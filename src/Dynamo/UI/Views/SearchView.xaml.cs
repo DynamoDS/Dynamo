@@ -49,7 +49,7 @@ namespace Dynamo.Search
 
             SearchTextBox.IsVisibleChanged += delegate
             {
-                DynamoCommands.Search.Execute(null);
+                DynamoCommands.SearchCommand.Execute();
                 Keyboard.Focus(this.SearchTextBox);
                 var view = WPF.FindUpVisualTree<DynamoView>(this);
                 //SearchTextBox.InputBindings.AddRange(dynSettings.Bench.InputBindings);

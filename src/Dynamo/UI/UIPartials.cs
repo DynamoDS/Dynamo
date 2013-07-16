@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,16 +6,13 @@ using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
 using Dynamo.Controls;
 using Dynamo.Utilities;
-using HelixToolkit.Wpf;
 using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
 using DialogResult = System.Windows.Forms.DialogResult;
 using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using MenuItem = System.Windows.Controls.MenuItem;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Nodes
@@ -390,6 +386,17 @@ namespace Dynamo.Nodes
             rbFalse.SetBinding(System.Windows.Controls.RadioButton.IsCheckedProperty, rbFalseBinding);
         }
 
+        void rbFalse_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //Value = false;
+            dynSettings.ReturnFocusToSearch();
+        }
+
+        void rbTrue_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //Value = true;
+            dynSettings.ReturnFocusToSearch();
+        }
     }
 
     public partial class dynStringInput : dynString

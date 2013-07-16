@@ -190,6 +190,7 @@ limitations under the License.
       <DependentUpon>WatchViewFullscreen.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\WebBrowserUtility.cs" />
     <Compile Include="UI\WPF.cs">
       <SubType>Code</SubType>
     </Compile>

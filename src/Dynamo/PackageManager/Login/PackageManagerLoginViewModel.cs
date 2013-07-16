@@ -13,12 +13,8 @@
 //limitations under the License.
 
 using System;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager
@@ -146,93 +142,14 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     The method called when the browser changes its url.
-        /// </summary>
-        /// <param name="sender">Originating object for the event </param>
-        /// <param name="e">Parameters describing the navigation</param>
-        public void WebBrowserNavigatedEvent(object sender, NavigationEventArgs e)
-        {
-            SetSilent( ((WebBrowser) sender), true);
-            if (e.Uri.AbsoluteUri.IndexOf("google", StringComparison.Ordinal) > -1)
-                return;
-
-            BrowserVisible = true;
-
-            if (e.Uri.AbsoluteUri.IndexOf("Allow", StringComparison.Ordinal) > -1)
-            {
-                Visible = false;
-                Client.GetAccessToken();
-            }
-        }
-
-
-        /// <summary>
-        ///     SILENCE the errors with the web browser
-        /// </summary>
-        /// <param name="browser"> The browser to silence </param>
-        /// <param name="silent">Parameters describing the navigation</param>
-        public static void SetSilent(WebBrowser browser, bool silent)
-        {
-            if (browser == null)
-                throw new ArgumentNullException("browser");
-
-            // get an IWebBrowser2 from the document
-            IOleServiceProvider sp = browser.Document as IOleServiceProvider;
-            if (sp != null)
-            {
-                Guid IID_IWebBrowserApp = new Guid("0002DF05-0000-0000-C000-000000000046");
-                Guid IID_IWebBrowser2 = new Guid("D30C1661-CDAF-11d0-8A3E-00C04FC9E26E");
-
-                object webBrowser;
-                sp.QueryService(ref IID_IWebBrowserApp, ref IID_IWebBrowser2, out webBrowser);
-                if (webBrowser != null)
-                {
-                    webBrowser.GetType().InvokeMember("Silent", BindingFlags.Instance | BindingFlags.Public | BindingFlags.PutDispProperty, null, webBrowser, new object[] { silent });
-                }
-            }
-        }
-
-        /// <summary>
         ///     Do some fancy stuff with COM
         /// </summary>
         [ComImport, Guid("6D5140C1-7436-11CE-8034-00AA006009FA"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        private interface IOleServiceProvider
+        public interface IOleServiceProvider
         {
             [PreserveSig]
             int QueryService([In] ref Guid guidService, [In] ref Guid riid, [MarshalAs(UnmanagedType.IDispatch)] out object ppvObject);
         }
 
     }
-
-    /// <summary>
-    ///     A helper utility class used to help bind the WebBrowser to the ViewModel
-    /// </summary>
-    public static class WebBrowserUtility
-    {
-        public static readonly DependencyProperty BindableSourceProperty =
-            DependencyProperty.RegisterAttached("BindableSource", typeof (string), typeof (WebBrowserUtility),
-                                                new UIPropertyMetadata(null, BindableSourcePropertyChanged));
-
-        public static string GetBindableSource(DependencyObject obj)
-        {
-            return (string) obj.GetValue(BindableSourceProperty);
-        }
-
-        public static void SetBindableSource(DependencyObject obj, string value)
-        {
-            obj.SetValue(BindableSourceProperty, value);
-        }
-
-        public static void BindableSourcePropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
-        {
-            var browser = o as WebBrowser;
-            if (browser != null)
-            {
-                var uri = e.NewValue as string;
-                browser.Source = uri != null ? new Uri(uri) : null;
-            }
-        }
-    }
-
-
 }

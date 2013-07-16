@@ -98,7 +98,7 @@ namespace Dynamo.Search
             {
                 _SearchText = value;
                 RaisePropertyChanged("SearchText");
-                DynamoCommands.Search.Execute(null);
+                DynamoCommands.SearchCommand.Execute();
             }
         }
 

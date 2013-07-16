@@ -2601,17 +2601,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        void rbFalse_Checked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            //Value = false;
-            dynSettings.ReturnFocusToSearch();
-        }
-
-        void rbTrue_Checked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            //Value = true;
-            dynSettings.ReturnFocusToSearch();
-        }
     }
 
     [NodeName("String")]

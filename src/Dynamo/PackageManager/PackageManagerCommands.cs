@@ -23,29 +23,29 @@ using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Commands
 {
-    public class LoginCommand : ICommand
-    {
-        public LoginCommand()
-        {
+    //public class LoginCommand : ICommand
+    //{
+    //    public LoginCommand()
+    //    {
 
-        }
+    //    }
 
-        public void Execute(object parameters)
-        {
+    //    public void Execute(object parameters)
+    //    {
             
-        }
+    //    }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
+    //    public event EventHandler CanExecuteChanged
+    //    {
+    //        add { CommandManager.RequerySuggested += value; }
+    //        remove { CommandManager.RequerySuggested -= value; }
+    //    }
 
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
-    }
+    //    public bool CanExecute(object parameters)
+    //    {
+    //        return true;
+    //    }
+    //}
 
     //public class ShowNodePublishInfoCommand : ICommand
     //{
