@@ -498,6 +498,8 @@ namespace Dynamo
             double y)
             : base(name, e, c, x, y)
         {
+            WatchChanges = true; 
+            HasUnsavedChanges = true;
             Category = category;
         }
 

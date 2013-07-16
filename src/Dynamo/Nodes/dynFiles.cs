@@ -19,6 +19,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Linq;
 using Dynamo.Connectors;
+using Dynamo.FSchemeInterop;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -27,6 +28,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.Windows.Interop;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Dynamo.Nodes
 {
@@ -59,7 +61,7 @@ namespace Dynamo.Nodes
             handler = new FileSystemEventHandler(watcher_FileChanged);
 
             InPortData.Add(new PortData("path", "Path to the file", typeof(Value.String)));
-            OutPortData.Add(new PortData("contents", "File contents", typeof(Value.String)));
+            
 
             //NodeUI.RegisterInputsAndOutput();
         }
@@ -78,7 +80,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Read File")]
+    [NodeName("Read Text File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Reads data from a file.")]
     public class dynFileReader : dynNodeWithOneOutput
@@ -145,6 +147,8 @@ namespace Dynamo.Nodes
         }
     }
 
+   
+
     [NodeName("Read Image File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Reads data from an image file.")]
@@ -157,6 +161,7 @@ namespace Dynamo.Nodes
 
             InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
             InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
+            OutPortData.Add(new PortData("contents", "File contents", typeof(Value.String)));
             RegisterAllPorts();
         }
 

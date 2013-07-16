@@ -72,6 +72,17 @@ namespace Dynamo.Nodes
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
             nodeUI.UpdateLayout();
+
+            nodeUI.MouseDown += new MouseButtonEventHandler(nodeUI_MouseDown);
+        }
+
+        void nodeUI_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount >= 2)
+            {
+                editWindowItem_Click(this, null);
+                e.Handled = true;
+            }
         }
 
         //TODO: Make this smarter

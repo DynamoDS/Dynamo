@@ -15,6 +15,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
@@ -106,7 +108,11 @@ namespace Dynamo.Nodes
         private int _fixPtCount;
         private bool _use_rl;
         private double _rlf;
-
+        private double _threshold;
+        private bool _reset = false;
+        private FSharpList<Value> _points;
+        private FSharpList<Value> _curves;
+ 
         public dynDynamicRelaxation()
         {
             InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(Value.List)));
@@ -119,6 +125,7 @@ namespace Dynamo.Nodes
                 " rest length will be ignored and this factor will be used to determine the rest length as a factor of the spring's initial size.", typeof(Value.Number)));
             InPortData.Add(new PortData("m", "Nodal Mass.", typeof(Value.Number)));
             InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(Value.Number)));
+            InPortData.Add(new PortData("threshold", "The convergence threshold. When the maximum nodal velocity falls below this number, the particle system is flagged \"converged\".", typeof(Value.Number)));
 
             OutPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
             OutPortData.Add(new PortData("f", "Member forces.", typeof(Value.List)));
@@ -281,8 +288,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var points = ((Value.List)args[0]).Item;//point list
-            var curves = ((Value.List)args[1]).Item;//spring list
+            _points = ((Value.List)args[0]).Item;//point list
+            _curves = ((Value.List)args[1]).Item;//spring list
             _d = ((Value.Number)args[2]).Item;//dampening
             _s = ((Value.Number)args[3]).Item;//spring constant
             _r = ((Value.Number)args[4]).Item;//rest length
@@ -290,45 +297,27 @@ namespace Dynamo.Nodes
             _rlf = ((Value.Number)args[6]).Item;//rest length factor
             _m = ((Value.Number)args[7]).Item;//nodal mass
             _g = ((Value.Number)args[8]).Item;//gravity z component
+            _threshold = ((Value.Number) args[9]).Item; //convergence threshold
+
+            //if we are in the evaluate, this has been
+            //marked dirty and we should set it to unconverged
+            //in case one of the inputs has changed.
+            particleSystem.setConverged(false);
+            particleSystem.setGravity(_g);
+            particleSystem.setThreshold(_threshold);
 
             //if the particle system has a different layout, then
             //clear it instead of updating
-            bool reset = false;
             if(particleSystem.numberOfParticles() == 0 ||
-                _fixPtCount != points.Count() ||
-                curves.Count() != particleSystem.numberOfSprings())
+                _fixPtCount != _points.Count() ||
+                _curves.Count() != particleSystem.numberOfSprings() ||
+                _reset)
             {
-                reset = true;
-                particleSystem.Clear();
-                if (dynSettings.Controller.UIDispatcher != null)
-                {
-                    dynSettings.Controller.UIDispatcher.Invoke(new Action(()=> RenderDescription.ClearAll()));
-                }
-                _fixPtCount = points.Count();
-            }
-
-            particleSystem.setGravity(_g);
-
-            if (reset)
-            {
-                CreateSpringsFromCurves(curves, points);
+                ResetSystem(_points, _curves);
             }
             else
             {
-                //update the spring values
-                for (int j = 0; j < particleSystem.numberOfSprings(); j++)
-                {
-                    ParticleSpring spring = particleSystem.getSpring(j);
-                    spring.setDamping(_d);
-                    if(!_use_rl)
-                        spring.setRestLength(_r);
-                    spring.setSpringConstant(_s);
-                }
-                for (int j = 0; j < particleSystem.numberOfParticles(); j++)
-                {
-                    Particle p = particleSystem.getParticle(j);
-                    p.setMass(_m);
-                }
+                UpdateSystem();
             }
 
             FSharpList<Value> forces = FSharpList<Value>.Empty;
@@ -336,7 +325,6 @@ namespace Dynamo.Nodes
             {
                 forces = FSharpList<Value>.Cons(Value.NewNumber(particleSystem.getSpring(i).getResidualForce()), forces);
             }
-
             forces.Reverse();
 
             FSharpList<Value> results = FSharpList<Value>.Empty;
@@ -348,6 +336,66 @@ namespace Dynamo.Nodes
 
         }
 
+        private void UpdateSystem()
+        {
+            //update the spring values
+            for (int j = 0; j < particleSystem.numberOfSprings(); j++)
+            {
+                ParticleSpring spring = particleSystem.getSpring(j);
+                spring.setDamping(_d);
+                if (!_use_rl)
+                    spring.setRestLength(_r);
+                spring.setSpringConstant(_s);
+            }
+            for (int j = 0; j < particleSystem.numberOfParticles(); j++)
+            {
+                Particle p = particleSystem.getParticle(j);
+                p.setMass(_m);
+            }
+        }
+
+        private void ResetSystem(FSharpList<Value> points, FSharpList<Value> curves)
+        {
+            if (points == null || curves == null)
+                return;
+
+            //particleSystem.Clear();
+            particleSystem = null;
+            particleSystem = new ParticleSystem();
+
+            _fixPtCount = points.Count();
+
+            particleSystem.setConverged(false);
+            particleSystem.setGravity(_g);
+            particleSystem.setThreshold(_threshold);
+
+            CreateSpringsFromCurves(curves, points);
+
+            DispatchOnUIThread(new Action(dynSettings.Controller.RequestClearDrawables));
+
+            _reset = false;
+        }
+
+        public override void  SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        {
+ 	         base.SetupCustomUIElements(nodeUI);
+            
+            var resetButt = new Button()
+                {
+                    Content = "Reset",
+                    ToolTip = "Resets the system to its initial state.",
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Top
+                };
+
+            resetButt.Click += delegate
+                {
+                    _reset = true;
+                    RequiresRecalc = true;
+                };
+
+            nodeUI.inputGrid.Children.Add(resetButt);
+        }
     }
 
     [NodeName("Create Particle System on Face")]
@@ -440,7 +488,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     [IsInteractive(true)]
-    public class dynDynamicRelaxationStep: dynNodeWithOneOutput
+    public class dynDynamicRelaxationStep: dynNodeWithMultipleOutputs
     {
         private ParticleSystem particleSystem;
 
@@ -449,7 +497,9 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("ps", "Particle System to simulate", typeof(Value.Container)));
             InPortData.Add(new PortData("step", "Time to step.", typeof(Value.Number)));
             InPortData.Add(new PortData("interval", "An execution interval.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("data", "Relaxation data.", typeof(Value.Container)));
+            
+            OutPortData.Add(new PortData("max_v", "Maximum nodal velocity.", typeof(Value.Number))); 
+            OutPortData.Add(new PortData("converged?", "Has the maximum nodal velocity dropped below the threshold set for the system?", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
@@ -466,7 +516,7 @@ namespace Dynamo.Nodes
             dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
 
             return Value.NewList(Utils.MakeFSharpList<Value>(
-                new Value[]{Value.NewContainer(particleSystem),Value.NewNumber(particleSystem.getMaxResidualForce())})
+                new Value[] { Value.NewNumber(particleSystem.getMaxNodalVelocity()), Value.NewNumber(Convert.ToInt16(particleSystem.getConverged())) })
                 );
         }
 

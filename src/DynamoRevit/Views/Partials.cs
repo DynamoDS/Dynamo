@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Controls;
+
+using Autodesk.Revit.DB;
+
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -33,10 +34,22 @@ namespace Dynamo.Revit
 
             //select the elements
             dynRevitSettings.Doc.Selection.Elements.Clear();
-            AllElements.ForEach(x=>dynRevitSettings.Doc.Selection.Elements.Add(dynRevitSettings.Doc.Document.GetElement(x)));
+
+            var existingElements = new List<Element>();
+
+            foreach (var id in AllElements)
+            {
+                Element el;
+                if (dynUtils.TryGetElement(id, typeof (Element), out el))
+                {
+                    existingElements.Add(el);
+                }
+            }
+
+            existingElements.ForEach(x => dynRevitSettings.Doc.Selection.Elements.Add(x));
 
             //show the elements
-            dynRevitSettings.Doc.ShowElements(Elements);
+            dynRevitSettings.Doc.ShowElements(existingElements.Select(x => x.Id).ToList());
         }
     }
 }
