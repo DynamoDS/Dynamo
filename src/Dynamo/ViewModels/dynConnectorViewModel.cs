@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Media;
+using System.Drawing;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
-using Brush = System.Windows.Media.Brush;
+using Point = System.Windows.Point;
 
 namespace Dynamo.Connectors
 {
@@ -242,8 +241,14 @@ namespace Dynamo.Connectors
             HighlightCommand = new DelegateCommand(Highlight, CanHighlight);
             UnHighlightCommand = new DelegateCommand(Unhighlight, CanUnHighlight);
 
-            var bc = new BrushConverter();
-            StrokeBrush = (Brush)bc.ConvertFrom("#777");
+            //var bc = new BrushConverter();
+            //StrokeBrush = (Brush)bc.ConvertFrom("#777");
+            const string colour = "#777";
+            Color c = Color.FromArgb(
+            Convert.ToByte(colour.Substring(1,1),16),
+            Convert.ToByte(colour.Substring(2,1),16),
+            Convert.ToByte(colour.Substring(3,1),16));
+            StrokeBrush = new SolidBrush(c);
 
             IsConnecting = true;
             _activeStartPort = port;
@@ -261,8 +266,14 @@ namespace Dynamo.Connectors
             HighlightCommand = new DelegateCommand(Highlight, CanHighlight);
             UnHighlightCommand = new DelegateCommand(Unhighlight, CanUnHighlight);
 
-            var bc = new BrushConverter();
-            StrokeBrush = (Brush)bc.ConvertFrom("#777");
+            //var bc = new BrushConverter();
+            //StrokeBrush = (Brush)bc.ConvertFrom("#777");
+            const string colour = "#777";
+            Color c = Color.FromArgb(
+            Convert.ToByte(colour.Substring(1, 1), 16),
+            Convert.ToByte(colour.Substring(2, 1), 16),
+            Convert.ToByte(colour.Substring(3, 1), 16));
+            StrokeBrush = new SolidBrush(c);
 
             _model = model;
             
