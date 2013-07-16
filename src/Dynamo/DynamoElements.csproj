@@ -94,6 +94,7 @@ limitations under the License.
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -112,6 +113,7 @@ limitations under the License.
     <Compile Include="DynamoLogger.cs" />
     <Compile Include="DynamoRunner.cs" />
     <Compile Include="DynamoSelection.cs" />
+    <Compile Include="SettingsManager.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Models\dynModelBase.cs" />

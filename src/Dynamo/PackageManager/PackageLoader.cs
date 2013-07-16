@@ -98,8 +98,7 @@ namespace Dynamo.PackageManager
 
         internal void UninstallPackages()
         {
-            // load some sort of file to make sure we can save b 
-            throw new NotImplementedException();
+            
         }
 
     }

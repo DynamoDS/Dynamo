@@ -42,7 +42,7 @@ namespace Dynamo.PackageManager
             /// IsNewVersion property </summary>
             /// <value>
             /// Specifies whether we're negotiating uploading a new version </value>
-            private bool _isNewVersion;
+            private bool _isNewVersion = false;
             public bool IsNewVersion
             {
                 get { return _isNewVersion; }
@@ -60,7 +60,7 @@ namespace Dynamo.PackageManager
             /// Dependencies property </summary>
             /// <value>
             /// The set of dependencies  </value>
-            private PackageDependencyRootViewModel _dependencies;
+            private PackageDependencyRootViewModel _dependencies = null;
             public List<PackageDependencyRootViewModel> Dependencies
             {
                 get { 
@@ -77,7 +77,7 @@ namespace Dynamo.PackageManager
             /// AdditionalFiles property </summary>
             /// <value>
             /// Tells whether the publish UI is visible</value>
-            private ObservableCollection<string> _additionalFiles;
+            private ObservableCollection<string> _additionalFiles = new ObservableCollection<string>();
             public ObservableCollection<string> AdditionalFiles
             {
                 get { return _additionalFiles; }
@@ -95,7 +95,7 @@ namespace Dynamo.PackageManager
             /// Visible property </summary>
             /// <value>
             /// Tells whether the publish UI is visible</value>
-            private Visibility _visible;
+            private Visibility _visible = Visibility.Visible;
             public Visibility Visible
             {
                 get { return _visible; }
@@ -113,13 +113,45 @@ namespace Dynamo.PackageManager
             /// Name property </summary>
             /// <value>
             /// The name of the node to be uploaded </value>
-            public string Name { get { return (FunctionDefinition != null) ? FunctionDefinition.Workspace.Name : ""; }}
+            private string _name = "";
+            public string Name
+            {
+                get { return _name; }
+                set
+                {
+                    if (this._name != value)
+                    {
+                        this._name = value;
+                        this.RaisePropertyChanged("Name");
+                        ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
+                    }
+                }
+            }
+
+            ///// <summary>
+            ///// Name property </summary>
+            ///// <value>
+            ///// The name of the node to be uploaded </value>
+            //private string _group = "";
+            //public string Group
+            //{
+            //    get { return _group; }
+            //    set
+            //    {
+            //        if (this._group != value)
+            //        {
+            //            this._group = value;
+            //            this.RaisePropertyChanged("Group");
+            //            ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
+            //        }
+            //    }
+            //}
 
             /// <summary>
             /// Description property </summary>
             /// <value>
             /// The description to be uploaded </value>
-            private string _Description;
+            private string _Description = "";
             public string Description
             {
                 get { return _Description; }
@@ -138,7 +170,7 @@ namespace Dynamo.PackageManager
             /// Keywords property </summary>
             /// <value>
             /// A string of space-delimited keywords</value>
-            private string _Keywords;
+            private string _Keywords = "";
             public string Keywords
             {
                 get { return _Keywords; }
@@ -170,7 +202,7 @@ namespace Dynamo.PackageManager
             /// MinorVersion property </summary>
             /// <value>
             /// The second element of the version</value>
-            private string _MinorVersion;
+            private string _MinorVersion = "";
             public string MinorVersion
             {
                 get { return _MinorVersion; }
@@ -178,6 +210,9 @@ namespace Dynamo.PackageManager
                 {
                     if (this._MinorVersion != value)
                     {
+                        int val;
+                        if (!Int32.TryParse(value, out val) || value == "") return;
+
                         this._MinorVersion = value;
                         this.RaisePropertyChanged("MinorVersion");
                         ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
@@ -189,7 +224,7 @@ namespace Dynamo.PackageManager
             /// BuildVersion property </summary>
             /// <value>
             /// The third element of the version</value>
-            private string _BuildVersion;
+            private string _BuildVersion = "";
             public string BuildVersion
             {
                 get { return _BuildVersion; }
@@ -197,6 +232,9 @@ namespace Dynamo.PackageManager
                 {
                     if (this._BuildVersion != value)
                     {
+                        int val;
+                        if (!Int32.TryParse(value, out val) || value == "") return;
+
                         this._BuildVersion = value;
                         this.RaisePropertyChanged("BuildVersion");
                         ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
@@ -208,7 +246,7 @@ namespace Dynamo.PackageManager
             /// MajorVersion property </summary>
             /// <value>
             /// The first element of the version</value>
-            private string _MajorVersion;
+            private string _MajorVersion = "";
             public string MajorVersion
             {
                 get { return _MajorVersion; }
@@ -216,6 +254,9 @@ namespace Dynamo.PackageManager
                 {
                     if (this._MajorVersion != value)
                     {
+                        int val;
+                        if (!Int32.TryParse(value, out val) || value == "") return;
+
                         this._MajorVersion = value;
                         this.RaisePropertyChanged("MajorVersion");
                         ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
@@ -234,6 +275,7 @@ namespace Dynamo.PackageManager
                 set
                 {
                     _FunctionDefinition = value;
+                    this.Name = FunctionDefinition.Workspace.Name;
                     this.RaisePropertyChanged(() => this.Name );
                     this.Visible = Visibility.Visible;
                     this.RaisePropertyChanged(() => this.Visible);
@@ -255,6 +297,7 @@ namespace Dynamo.PackageManager
                 this.MajorVersion = versionSplit[0];
                 this.MinorVersion = versionSplit[1];
                 this.BuildVersion = versionSplit[2];
+                this.Name = value.name;
                 this.Keywords = String.Join(" ", value.keywords);
                 this._packageHeader = value;
             }}
@@ -267,6 +310,7 @@ namespace Dynamo.PackageManager
         public PackageManagerPublishCustomNodeViewModel(PackageManagerClient client)
         {
             Client = client;
+
             this.SubmitCommand = new DelegateCommand<object>(this.OnSubmit, this.CanSubmit);
             this.Clear();
             this.Visible = Visibility.Collapsed;
@@ -295,39 +339,88 @@ namespace Dynamo.PackageManager
         /// Delegate used to submit the element</summary>
         private void OnSubmit(object arg)
         {
-            //if (!this.IsNewVersion)
-            //{
-            //    var pkg = Client.GetPackageUpload(this.FunctionDefinition,
-            //                                                            this.FullVersion,
-            //                                                            this.Description, this.KeywordList, "MIT", "global");
-            //    if (pkg != null)
-            //    {
-            //        Client.Publish(pkg, this.FunctionDefinition);
-            //        dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
-            //        this.Visible = Visibility.Collapsed;
-            //    }
-            //}
-            //else // new version
-            //{
-            //    var pkgVersion = Client.GetPackageVersionUpload(this.FunctionDefinition,
-            //                                                    this.PackageHeader,
-            //                                                    this.FullVersion,
-            //                                                    this.Description, this.KeywordList, "MIT", "global");
-            //    if (pkgVersion != null)
-            //    {
-            //        Client.Publish(pkgVersion);
-            //        dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
-            //        this.Visible = Visibility.Collapsed;
-            //    }
-            //}
+            if (!this.IsNewVersion)
+            {
+                var pkg = Client.GetPackageUpload(this.FunctionDefinition,
+                                                  this.FullVersion,
+                                                  this.Description, this.KeywordList, "MIT", "global" );
+                if (pkg != null)
+                {
+                    Client.Publish(pkg, this.FunctionDefinition);
+                    this.Visible = Visibility.Collapsed;
+                }
+            }
+            else // new version
+            {
+                var pkgVersion = Client.GetPackageVersionUpload(this.FunctionDefinition,
+                                                                this.PackageHeader,
+                                                                this.FullVersion,
+                                                                this.Description, this.KeywordList, "MIT", "global");
+                if (pkgVersion != null)
+                {
+                    Client.Publish(pkgVersion);
+                    dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
+                    this.Visible = Visibility.Collapsed;
+                }
+            }
+        }
+
+        private string _ErrorString = "";
+        public string ErrorString
+        {
+            get { return _ErrorString; }
+            set
+            {
+                if (this._ErrorString != value)
+                {
+                    this._ErrorString = value;
+                    this.RaisePropertyChanged("ErrorString");
+                }
+            }
         }
 
         /// <summary>
         /// Delegate used to submit the element </summary>
         private bool CanSubmit(object arg)
         {
-            return (this.Client.IsLoggedIn && this.Description.Length > 3 && this.Name.Length > 0 && this.KeywordList.Count > 0 && 
-                    this.MinorVersion.Length > 0 && this.MajorVersion.Length > 0 && this.BuildVersion.Length > 0);
+
+            if (Description.Length <= 10)
+            {
+                this.ErrorString = "Description must be longer than 10 characters.";
+                return false;
+            }
+
+            if (this.Name.Length < 3)
+            {
+                this.ErrorString = "Name must be at least 3 characters.";
+                return false;
+            }
+
+            if (this.Group.Length < 3)
+            {
+                this.ErrorString = "Name must be at least 3 characters.";
+                return false;
+            }
+
+            if (this.MinorVersion.Length <= 0)
+            {
+                this.ErrorString = "You must provide a Minor version as a non-negative integer.";
+                return false;
+            }
+
+            if (this.MajorVersion.Length <= 0)
+            {
+                this.ErrorString = "You must provide a Major version as a non-negative integer.";
+                return false;
+            }
+
+            if (this.BuildVersion.Length <= 0)
+            {
+                this.ErrorString = "You must provide a Build version as a non-negative integer.";
+                return false;
+            }
+
+            return true;
         }
 
     }

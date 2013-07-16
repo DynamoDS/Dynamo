@@ -638,6 +638,7 @@ namespace Dynamo
             var query = Workspace.Nodes
                                  .Where(node => node is dynFunction)
                                  .Select(node => (node as dynFunction).Definition)
+                                 .Where((def) => def != this)
                                  .Distinct();
 
             foreach (var definition in query)

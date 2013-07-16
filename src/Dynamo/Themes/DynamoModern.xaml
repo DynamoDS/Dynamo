@@ -308,18 +308,19 @@
                     <Border Name="borderText" BorderThickness="1px" BorderBrush="#444">
 
                                 <TextBox
-                             Name="text"
-                             HorizontalAlignment="Stretch" 
-                             Padding="5"
-                             Background="Transparent"
-                             Foreground="AliceBlue"
-                             FontSize="14"
-                             CaretBrush="White"
-                             VerticalAlignment="Stretch" 
-                             BorderThickness="0"
-                             HorizontalScrollBarVisibility="Disabled"
-                             VerticalScrollBarVisibility="Disabled"
-                             TextWrapping="NoWrap" />
+                                     Name="text"
+                                     HorizontalAlignment="Stretch" 
+                                     Padding="5"
+                                     Background="Transparent"
+                                     Foreground="AliceBlue"
+                                     FontSize="14"
+                                     CaretBrush="White"
+                                     VerticalAlignment="Stretch" 
+                                     BorderThickness="0"
+                                     HorizontalScrollBarVisibility="Disabled"
+                                     VerticalScrollBarVisibility="Disabled"
+                                     TextWrapping="NoWrap" 
+                                     Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text}"/>
 
                         </Border>
 

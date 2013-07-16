@@ -11,13 +11,14 @@ namespace Dynamo.PackageManager
     {
         public PackageManagerPublishView(PackageManagerPublishCustomNodeViewModel customNodeViewModel)
         {
-            InitializeComponent();
+            
             this.DataContext = customNodeViewModel;
 
             this.Owner = dynSettings.Bench;
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-            this.TitleInput.Focus();
+            InitializeComponent();
+
         }
     }
 

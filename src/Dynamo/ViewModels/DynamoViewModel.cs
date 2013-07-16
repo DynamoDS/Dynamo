@@ -88,6 +88,7 @@ namespace Dynamo.Controls
         public DelegateCommand<object> SaveAsCommand { get; set; }
         public DelegateCommand ClearCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
+        public DelegateCommand ShowInstalledPackagesCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand LayoutAllCommand { get; set; }
         public DelegateCommand NewHomeWorkspaceCommand { get; set; }
@@ -373,6 +374,7 @@ namespace Dynamo.Controls
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResultCommand);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
+            ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveCommand = new DelegateCommand(Save, CanSave);
             OpenCommand = new DelegateCommand<object>(Open, CanOpen);
@@ -1240,6 +1242,17 @@ namespace Dynamo.Controls
         }
 
         private bool CanShowPackageManagerSearch()
+        {
+            return true;
+        }
+
+        private void ShowInstalledPackages()
+        {
+            var window = new DynamoInstalledPackagesView(this.Controller.PackageManagerClient);
+            window.Show();
+        }
+
+        private bool CanShowInstalledPackages()
         {
             return true;
         }
