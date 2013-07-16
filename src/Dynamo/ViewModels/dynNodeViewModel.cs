@@ -35,7 +35,6 @@ namespace Dynamo.Controls
     {
         #region delegates
         public delegate void SetToolTipDelegate(string message);
-        public delegate void UpdateLayoutDelegate(FrameworkElement el);
         public delegate void NodeHelpEventHandler(object sender, NodeHelpEventArgs e);
         #endregion
 

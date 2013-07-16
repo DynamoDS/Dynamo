@@ -195,15 +195,15 @@ namespace Dynamo
             }
         }
 
-        public Visibility EditNameVisibility
-        {
-            get
-            {
-                if (_model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
-                    return Visibility.Visible;
-                return Visibility.Collapsed;
-            }
-        }
+        //public bool EditNameVisibility
+        //{
+        //    get
+        //    {
+        //        if (_model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
+        //            return true;
+        //        return false;
+        //    }
+        //}
 
         public bool CanEditName
         {

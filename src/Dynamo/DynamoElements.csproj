@@ -322,22 +322,22 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Themes\DynamoColorsAndBrushes.xaml">
+    <Resource Include="UI\Themes\DynamoColorsAndBrushes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </Resource>
     <Resource Include="UI\Themes\DynamoConverters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Resource>
-    <Page Include="UI\Themes\DynamoModern.xaml">
+    <Resource Include="UI\Themes\DynamoModern.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Themes\DynamoText.xaml">
+    </Resource>
+    <Resource Include="UI\Themes\DynamoText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </Resource>
     <Page Include="UI\Views\DynamoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

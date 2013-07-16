@@ -258,10 +258,6 @@
                 <MenuItem Header="_Go To Project Wiki" Command="{Binding Path=GoToWikiCommand}"  Name="wiki"/>
 
             </MenuItem>
-
-            <!--<MenuItem Header="Debug" Visibility="{Binding DebugMenuVisibility}">
-                <MenuItem Header="Run Tests" Command="{Binding Path=RunUITestsCommand}"/>
-            </MenuItem>-->
         </Menu>
 
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 

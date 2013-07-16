@@ -11,6 +11,8 @@ using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Media;
 using Dynamo.Utilities;
 using Dynamo.Search;
+using ContextMenu = System.Windows.Controls.ContextMenu;
+using MenuItem = System.Windows.Controls.MenuItem;
 
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
@@ -118,6 +120,5 @@ namespace Dynamo.Search
         {
             Console.WriteLine(sender);
         }
-
     }
 } ;

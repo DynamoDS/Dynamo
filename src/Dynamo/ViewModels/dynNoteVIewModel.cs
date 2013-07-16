@@ -67,15 +67,15 @@ namespace Dynamo.Nodes
 
         public DelegateCommand SelectCommand { get; set; }
 
-        public Visibility NoteVisibility
-        {
-            get
-            {
-                if(dynSettings.Controller.DynamoViewModel.CurrentSpace.Notes.Contains(_model))
-                    return Visibility.Visible;
-                return Visibility.Hidden;
-            }
-        }
+        //public bool NoteVisibility
+        //{
+        //    get
+        //    {
+        //        if(dynSettings.Controller.DynamoViewModel.CurrentSpace.Notes.Contains(_model))
+        //            return true;
+        //        return false;
+        //    }
+        //}
         
         #endregion
 
@@ -137,9 +137,9 @@ namespace Dynamo.Nodes
         {
             switch (e.PropertyName)
             {
-                case "CurrentSpace":
-                    RaisePropertyChanged("NoteVisibility");
-                    break;
+                //case "CurrentSpace":
+                //    RaisePropertyChanged("NoteVisibility");
+                //    break;
             }
         }
 

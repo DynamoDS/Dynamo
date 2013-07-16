@@ -305,21 +305,6 @@ namespace Dynamo.Controls
 
         }
 
-        public Visibility DebugMenuVisibility
-        {
-            get 
-            {
-                bool showDebugMenu = false;
-#if DEBUG
-                showDebugMenu = true;
-#endif
-                if (showDebugMenu)
-                    return Visibility.Visible;
-
-                return Visibility.Hidden;
-            }
-        }
-
         public bool IsUILocked
         {
             get { return uiLocked; }
