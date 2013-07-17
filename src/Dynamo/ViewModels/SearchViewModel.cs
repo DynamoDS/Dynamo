@@ -729,13 +729,15 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="workspace">A dynWorkspace to add</param>
         /// <param name="name">The name to use</param>
-        public void Add(string name, string category, Guid functionId)
+        public void Add(string name, string category, string description, Guid functionId)
         {
             if (name == "Home")
                 return;
 
             // create the node in search
-            var nodeEle = new NodeSearchElement(name, functionId);
+            var nodeEle = new NodeSearchElement(name, description, functionId);
+            
+
             SearchDictionary.Add(nodeEle, nodeEle.Name);
             SearchDictionary.Add(nodeEle, category + "." + nodeEle.Name);
 
@@ -841,13 +843,17 @@ namespace Dynamo.Search
             SearchDictionary.Remove((ele) => (ele).Name == oldName);
         }
 
-
         public void Remove(string nodeName)
         {
 
             SearchDictionary.Remove((ele) => (ele).Name == nodeName);
             _browserLeaves.RemoveAll((ele) => (ele).Name == nodeName);
-            // remove from categories!
+            var category = NodeCategories[nodeName];
+            category.NumElements--;
+            if (category.NumElements == 0)
+            {
+                this.RemoveCategory(category.Name);
+            }
 
         }
     }
