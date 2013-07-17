@@ -38,7 +38,20 @@ namespace Dynamo.Nodes
 
         public override bool acceptsListOfLists(FScheme.Value value)
         {
-            return !Utils.IsListOfListsOfLists(value);
+            if (Utils.IsListOfListsOfLists(value))
+                return false;
+
+            FSharpList<Value> vals = ((Value.List)value).Item;
+            if (!vals.Any() || !(vals[0] is Value.List))
+                return true;
+            FSharpList<Value> firstListInList = ((Value.List)vals[0]).Item;
+            if (!firstListInList.Any() || !(firstListInList[0] is Value.Container))
+                return true;
+            var var1 = ((Value.Container)firstListInList[0]).Item;
+            if (var1 is ModelCurveArray)
+                return false;
+
+            return true;
         }
 
         bool matchOrAddFormCurveToReferenceCurveMap(Form formElement, ReferenceArrayArray refArrArr, bool doMatch)
@@ -88,7 +101,9 @@ namespace Dynamo.Nodes
                     ElementId oldRefId = oldRef.ElementId;
                     ElementId newRefId = newRef.ElementId;
 
-                    if (doMatch && sformCurveToReferenceCurveMap[newRefId] != oldRefId)
+                    if (doMatch && (!sformCurveToReferenceCurveMap.ContainsKey(newRefId) ||
+                                    sformCurveToReferenceCurveMap[newRefId] != oldRefId)
+                       )
                     {
                         return false;
                     }
