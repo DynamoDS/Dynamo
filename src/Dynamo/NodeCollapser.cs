@@ -451,11 +451,10 @@ namespace Dynamo.Utilities
 
             //set the name on the node
             collapsedNode.NickName = newNodeName;
-
             currentWorkspace.Nodes.Remove(collapsedNode);
 
             // save and load the definition from file
-            dynSettings.Controller.CustomNodeLoader.SetNodeInfo(newNodeName, newNodeCategory, newNodeDefinition.FunctionId, "");
+            dynSettings.Controller.CustomNodeLoader.SetNodeInfo(newNodeName, newNodeCategory, "", newNodeDefinition.FunctionId, "");
             var path = dynSettings.Controller.DynamoViewModel.SaveFunctionOnly(newNodeDefinition);
             dynSettings.Controller.CustomNodeLoader.SetNodePath(newNodeDefinition.FunctionId, path);
             dynSettings.Controller.SearchViewModel.Add(newNodeName, newNodeCategory, newNodeDefinition.FunctionId);

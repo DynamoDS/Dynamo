@@ -33,7 +33,6 @@ namespace Dynamo
         ///     The date of the last save.
         /// </summary>
         private DateTime _lastSaved;
-
         public DateTime LastSaved
         {
             get { return _lastSaved; }
@@ -41,6 +40,20 @@ namespace Dynamo
             {
                 _lastSaved = value;
                 RaisePropertyChanged("LastSaved");
+            }
+        }
+
+        /// <summary>
+        ///     A description of the workspace
+        /// </summary>
+        private string _description = "";
+        public string Description
+        {
+            get { return _description; }
+            set
+            {
+                _description = value;
+                RaisePropertyChanged("Description");
             }
         }
 
@@ -374,6 +387,7 @@ namespace Dynamo
                 root.SetAttribute("X", workSpace.X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", workSpace.Y.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("zoom", workSpace.Zoom.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Description", workSpace.Description);
 
                 if (!savingHomespace) //If we are not saving the home space
                 {
@@ -464,6 +478,8 @@ namespace Dynamo
         }
 
         #endregion
+
+        
     }
 
     internal static class WorkspaceHelpers

@@ -113,6 +113,7 @@ limitations under the License.
     <Compile Include="DynamoLogger.cs" />
     <Compile Include="DynamoRunner.cs" />
     <Compile Include="DynamoSelection.cs" />
+    <Compile Include="PackageManager\PackageUploadHandle.cs" />
     <Compile Include="SettingsManager.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Models\DynamoModel.cs" />
@@ -120,7 +121,7 @@ limitations under the License.
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
-    <Compile Include="PackageManager\DynamoPackageDownload.cs" />
+    <Compile Include="PackageManager\PackageDownloadHandle.cs" />
     <Compile Include="PackageManager\PackageLoader.cs" />
     <Compile Include="PackageManager\PackageManagerSearchViewModel.cs" />
     <Compile Include="PackageManager\UI\DynamoInstalledPackagesView.xaml.cs">

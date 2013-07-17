@@ -87,7 +87,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     Tells which package headers are currently loaded
         /// </value>
-        public Dictionary<FunctionDefinition, PackageHeader> LoadedPackageHeaders { get; internal set; }
+        public Dictionary<FunctionDefinition, PackageUploadRequestBody> LoadedPackageHeaders { get; internal set; }
 
         #endregion
 
@@ -100,45 +100,45 @@ namespace Dynamo.PackageManager
             Controller = controller;
 
             //IAuthProvider provider = new RevitOxygenProvider(Autodesk.Revit.AdWebServicesBase.GetInstance());
-           
-            LoadedPackageHeaders = new Dictionary<FunctionDefinition, PackageHeader>();
+
+            LoadedPackageHeaders = new Dictionary<FunctionDefinition, PackageUploadRequestBody>();
             Client = new Client(null, "http://54.225.215.247");
             Worker = new BackgroundWorker();
             IsLoggedIn = false;
         }
 
-        /// <summary>
-        ///     Asynchronously pull the package headers from the server and update search
-        /// </summary>
-        public void RefreshAvailable()
-        {
-            ThreadStart start = () =>
-                {
-                    HeaderCollectionDownload req = HeaderCollectionDownload.ByEngine("dynamo");
+        ///// <summary>
+        /////     Asynchronously pull the package headers from the server and update search
+        ///// </summary>
+        //public void RefreshAvailable()
+        //{
+        //    ThreadStart start = () =>
+        //        {
+        //            HeaderCollectionDownload req = HeaderCollectionDownload.ByEngine("dynamo");
 
-                    try
-                    {
-                        ResponseWithContentBody<List<PackageHeader>> response =
-                            Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(req);
-                        if (response.success)
-                        {
-                            dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
-                                {
-                                    foreach (PackageHeader header in response.content)
-                                    {
-                                        dynSettings.Controller.SearchViewModel.Add(header);
-                                    }
-                                }));
-                        }
-                    }
-                    catch
-                    {
-                        dynSettings.Bench.Dispatcher.BeginInvoke(
-                            (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to refresh available nodes from server.")));
-                    }
-                };
-            new Thread(start).Start();
-        }
+        //            try
+        //            {
+        //                ResponseWithContentBody<List<PackageUploadRequestBody>> response =
+        //                    Client.ExecuteAndDeserializeWithContent<List<PackageUploadRequestBody>>(req);
+        //                if (response.success)
+        //                {
+        //                    dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+        //                        {
+        //                            foreach (PackageUploadRequestBody header in response.content)
+        //                            {
+        //                                dynSettings.Controller.SearchViewModel.Add(header);
+        //                            }
+        //                        }));
+        //                }
+        //            }
+        //            catch
+        //            {
+        //                dynSettings.Bench.Dispatcher.BeginInvoke(
+        //                    (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to refresh available nodes from server.")));
+        //            }
+        //        };
+        //    new Thread(start).Start();
+        //}
 
         internal List<Search.SearchElements.PackageManagerSearchElement> Search(string search, int MaxNumSearchResults)
         {
@@ -156,159 +156,22 @@ namespace Dynamo.PackageManager
                                             string group,
                                             IEnumerable<string> files,
                                             IEnumerable<PackageDependency> deps,
-                                            IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs)
+                                            IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs, string rootDirectoryIfPackageVersion = "" )
         {
 
             if (!isNewVersion)
             {
-                var pkg = GetPackageUpload(name, version, description, keywords, license, group, files, deps,
+                return PublishNewPackage( name, version, description, keywords, license, group, files, deps,
                                             nodeNameDescriptionPairs);
-                return Publish(pkg);
             }
             else
             {
-                var pkg = GetPackageVersionUpload(null, version, description, keywords, license, group, files, deps,
-                            nodeNameDescriptionPairs);
-                return Publish(pkg);
+                return PublishNewPackageVersion(name, version, description, keywords, group, rootDirectoryIfPackageVersion, files, deps,
+                                            nodeNameDescriptionPairs);
             }
+
         }
 
-        /// <summary>
-        ///     Create a PackageUpload object from the given data
-        /// </summary>
-        /// <param name="name">The name of the package</param>
-        /// <param name="version"> The version, specified in X.Y.Z form</param>
-        /// <param name="description"> A description of the user-defined node </param>
-        /// <param name="keywords"> Keywords to describe the user-defined node </param>
-        /// <param name="license"> A license string (e.g. "MIT") </param>
-        /// <param name="group"> The "group" for the package (e.g. DynamoTutorial) </param>
-        /// <param name="files"></param>
-        /// <param name="deps"></param>
-        /// <param name="nodeNameDescriptionPairs"></param>
-        /// <returns> Returns null if it fails to get the xmlDoc, otherwise a valid PackageUpload </returns>
-        private PackageUpload GetPackageUpload(     string name,
-                                                    string version, 
-                                                    string description,
-                                                    IEnumerable<string> keywords, 
-                                                    string license, 
-                                                    string group, 
-                                                    IEnumerable<string> files, 
-                                                    IEnumerable<PackageDependency> deps, 
-                                                    IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs)
-        {
-            // form dynamo dependent data
-            string contents = String.Join(", ",
-                                          nodeNameDescriptionPairs.Select((pair) => pair.Item1 + " - " + pair.Item2));
-            string engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            string engineMetadata = "";
-
-            // create a directory where the package will be stored
-            var dirInfo = Directory.CreateDirectory(Path.Combine(dynSettings.PackageLoader.PackagesDirectory, name));
-
-            // build the directory substructure
-            var binDir = dirInfo.CreateSubdirectory("bin");
-            var dyfDir = dirInfo.CreateSubdirectory("dyf");
-            var extraDir = dirInfo.CreateSubdirectory("extra");
-
-            // build the package header json, which will be stored with the pkg
-            var pkgHeader = new Dynamo.PackageManager.PackageHeader
-            {
-                description = description,
-                engine_version = engineVersion,
-                group = group,
-                keywords = keywords.ToList(),
-                name = name,
-                version = version
-            };
-            var jsSer = new JsonSerializer();
-            var pkgHeaderStr = jsSer.Serialize(pkgHeader);
-            
-            // write the pkg header to the root directory of the pkg
-            File.WriteAllText(Path.Combine(dirInfo.FullName, "pkg.json"), pkgHeaderStr);
-
-            var dirs = new List<string>();
-
-            // copy the files to their destination
-            foreach (var file in files)
-            {
-
-                if (file == null) continue;
-                if (!File.Exists(file)) continue;
-
-                if (file.EndsWith("dyf"))
-                {
-                    File.Copy(file, Path.Combine(dyfDir.FullName, Path.GetFileName(file)));
-                }
-                else if (file.EndsWith("dll") || file.EndsWith("exe"))
-                {
-                    File.Copy(file, Path.Combine(binDir.FullName, Path.GetFileName(file)));
-                }
-                else
-                {
-                    File.Copy(file, Path.Combine(extraDir.FullName, Path.GetFileName(file)));
-                }
-
-            }
-            
-            // zip up the folder and get its path 
-            var zipPath = Greg.Utility.FileUtilities.Zip(dirs);
-            var content = new List<string> {zipPath};
-
-            var pkg = PackageUpload.MakeDynamoPackage(  name, 
-                                                        version, 
-                                                        description, 
-                                                        keywords, 
-                                                        license, 
-                                                        contents, 
-                                                        engineVersion, 
-                                                        engineMetadata, 
-                                                        content,
-                                                        deps);
-            return pkg;
-        }
-
-        /// <summary>
-        ///     Create a PackageVersionUpload object from the given data
-        /// </summary>
-        /// <param name="packageHeader"> The PackageHeader object </param>
-        /// <param name="version"> The version, specified in X.Y.Z form</param>
-        /// <param name="description"> A description of the user-defined node </param>
-        /// <param name="keywords"> Keywords to describe the user-defined node </param>
-        /// <param name="license"> A license string (e.g. "MIT") </param>
-        /// <param name="group"> The "group" for the package (e.g. DynamoTutorial) </param>
-        /// <param name="files"></param>
-        /// <param name="deps"></param>
-        /// <returns>Returns null if it fails to get the xmlDoc, otherwise a valid PackageVersionUpload  </returns>
-        private PackageVersionUpload GetPackageVersionUpload(PackageHeader packageHeader,
-                                                            string version,
-                                                            string description, 
-                                                            IEnumerable<string> keywords, 
-                                                            string license,
-                                                            string group, 
-                                                            IEnumerable<string> files, 
-                                                            IEnumerable<PackageDependency> deps, 
-                                                            IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs)
-        {
-
-            string contents = String.Join(", ",
-                                          nodeNameDescriptionPairs.Select((pair) => pair.Item1 + " - " + pair.Item2));
-            string engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            string engineMetadata = ""; 
-
-            // compile all of this stuff into the correct form
-
-            var pkg = new PackageVersionUpload( packageHeader.name, 
-                                                version, 
-                                                description, 
-                                                keywords, 
-                                                contents,  
-                                                "dynamo",  
-                                                engineVersion,
-                                                engineMetadata, 
-                                                files.ToList(), 
-                                                deps ); 
-            return pkg;
-        }
 
         ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
         public ObservableCollection<PackageUploadHandle> Uploads
@@ -320,62 +183,208 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Attempt to upload PackageUpload
         /// </summary>
-        /// <param name="packageUpload"> The PackageUpload object - the payload </param>
-        /// <param name="funDef">
-        ///     The function definition for the user-defined node - necessary to
-        ///     update the LoadedPackageHeaders array on load
-        /// </param>
-        private PackageUploadHandle Publish(PackageUpload packageUpload)
+        private PackageUploadHandle PublishNewPackage(string name,
+                                                        string version,
+                                                        string description,
+                                                        IEnumerable<string> keywords,
+                                                        string license,
+                                                        string group,
+                                                        IEnumerable<string> files,
+                                                        IEnumerable<PackageDependency> deps,
+                                                        IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs)
         {
+            // form dynamo dependent data
+            string contents = String.Join(", ",
+                                          nodeNameDescriptionPairs.Select((pair) => pair.Item1 + " - " + pair.Item2));
+            string engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            string engineMetadata = "";
+
+            // build the package header json, which will be stored with the pkg
+            var pkgHeader = new PackageUploadRequestBody(name, version, description, keywords, license, contents, "dynamo",
+                                                         engineVersion, engineMetadata, group, deps);
+
+            var s = new PackageUploadHandle(pkgHeader);
 
             ThreadStart start = () =>
                 {
-                    try
+                    try 
                     {
-                        ResponseWithContentBody<PackageHeader> ret =
-                            Client.ExecuteAndDeserializeWithContent<PackageHeader>(packageUpload);
-                        dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+
+                        // create a directory where the package will be stored
+                        var rootDir = Directory.CreateDirectory(Path.Combine(dynSettings.PackageLoader.PackagesDirectory, name));
+
+                        // build the directory substructure
+                        var binDir = rootDir.CreateSubdirectory("bin");
+                        var dyfDir = rootDir.CreateSubdirectory("dyf");
+                        var extraDir = rootDir.CreateSubdirectory("extra");
+
+                        // build the package header json, which will be stored with the pkg
+                        var jsSer = new JsonSerializer();
+                        var pkgHeaderStr = jsSer.Serialize(pkgHeader);
+
+                        // write the pkg header to the root directory of the pkg
+                        var headerPath = Path.Combine(rootDir.FullName, "pkg.json");
+                        if (File.Exists(headerPath)) File.Delete(headerPath);
+                        File.WriteAllText(headerPath, pkgHeaderStr);
+
+                        // copy the files to their destination
+                        foreach (var file in files)
+                        {
+
+                            if (file == null) continue;
+                            if (!File.Exists(file)) continue;
+
+                            if (file.EndsWith("dyf"))
                             {
-                                dynSettings.Controller.DynamoViewModel.Log("Message from server: " + ret.message);
-                                SavePackageHeader(ret.content);
-                            }));
+                                File.Copy(file, Path.Combine(dyfDir.FullName, Path.GetFileName(file)));
+                            }
+                            else if (file.EndsWith("dll") || file.EndsWith("exe"))
+                            {
+                                File.Copy(file, Path.Combine(binDir.FullName, Path.GetFileName(file)));
+                            }
+                            else
+                            {
+                                File.Copy(file, Path.Combine(extraDir.FullName, Path.GetFileName(file)));
+                            }
+
+                        }
+
+                        // zip up the folder and get its path 
+                        var zipPath = Greg.Utility.FileUtilities.Zip(rootDir.FullName);
+
+                        var pkgUpload = new PackageUpload(  name,
+                                                            version,
+                                                            description,
+                                                            keywords,
+                                                            license,
+                                                            contents,
+                                                            "dynamo",
+                                                            engineVersion,
+                                                            engineMetadata,
+                                                            group,
+                                                            zipPath,
+                                                            deps);  
+
+                        var ret = Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgUpload);
+                        if (!ret.success)
+                        {
+                            s.Error(ret.message);
+                            return;
+                        }
+                        s.Done(ret.content);
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        dynSettings.Bench.Dispatcher.BeginInvoke(
-                            (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
+                        s.Error(e.GetType() + ": " + e.Message);
                     }
                 };
             new Thread(start).Start();
+
+            return s;
 
         }
 
         /// <summary>
-        ///     Attempt to upload PackageVersionUpload
+        ///     Attempt to upload PackageUpload
         /// </summary>
-        /// <param name="pkgVersUpload"> The PackageUpload object - the payload </param>
-        private PackageUploadHandle Publish(PackageVersionUpload pkgVersUpload)
+        private PackageUploadHandle PublishNewPackageVersion(   string name,
+                                                                string version,
+                                                                string description,
+                                                                IEnumerable<string> keywords,
+                                                                string group,
+                                                                string rootDirectory,
+                                                                IEnumerable<string> files,
+                                                                IEnumerable<PackageDependency> deps,
+                                                                IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs)
         {
+            // form dynamo dependent data
+            string contents = String.Join(", ",
+                                          nodeNameDescriptionPairs.Select((pair) => pair.Item1 + " - " + pair.Item2));
+            string engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            string engineMetadata = "";
+
+            // build the package header json, which will be stored with the pkg
+            var pkgHeader = new PackageVersionUploadRequestBody(name, version, description, keywords, contents, "dynamo", 
+                                                                    engineVersion, engineMetadata, group, deps);
+
+            var s = new PackageUploadHandle(pkgHeader);
 
             ThreadStart start = () =>
+            {
+                try
                 {
-                    try
+                    // use the existing directory where the pkg will be stored
+                    var rootDir = new DirectoryInfo(rootDirectory);
+
+                    // build the directory substructure, this does nothing if this already exists
+                    var binDir = rootDir.CreateSubdirectory("bin");
+                    var dyfDir = rootDir.CreateSubdirectory("dyf");
+                    var extraDir = rootDir.CreateSubdirectory("extra");
+
+                    // build the package header json, which will be stored with the pkg
+                    var jsSer = new JsonSerializer();
+                    var pkgHeaderStr = jsSer.Serialize(pkgHeader);
+
+                    // write the pkg header to the root directory of the pkg
+                    var headerPath = Path.Combine(rootDirectory, "pkg.json");
+                    if (File.Exists(headerPath)) File.Delete(headerPath);
+                    File.WriteAllText(headerPath, pkgHeaderStr);
+
+                    // zip up the folder and get its path 
+                    var zipPath = Greg.Utility.FileUtilities.Zip(rootDirectory);
+
+                    // copy the files to their destination
+                    foreach (var file in files)
                     {
-                        ResponseWithContentBody<PackageHeader> ret =
-                            Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgVersUpload);
-                        dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
-                            {
-                                dynSettings.Controller.DynamoViewModel.Log(ret.message);
-                                SavePackageHeader(ret.content);
-                            }));
+
+                        if (file == null) continue;
+                        if (!File.Exists(file)) continue;
+
+                        if (file.EndsWith("dyf"))
+                        {
+                            File.Copy(file, Path.Combine(dyfDir.FullName, Path.GetFileName(file)));
+                        }
+                        else if (file.EndsWith("dll") || file.EndsWith("exe"))
+                        {
+                            File.Copy(file, Path.Combine(binDir.FullName, Path.GetFileName(file)));
+                        }
+                        else
+                        {
+                            File.Copy(file, Path.Combine(extraDir.FullName, Path.GetFileName(file)));
+                        }
+
                     }
-                    catch
+
+                    var pkgUpload = new PackageVersionUpload(   name,
+                                                                version,
+                                                                description,
+                                                                keywords,
+                                                                contents,
+                                                                "dynamo",
+                                                                engineVersion,
+                                                                engineMetadata,
+                                                                group,
+                                                                zipPath,
+                                                                deps ); 
+
+
+                    var ret = Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgUpload);
+                    if (!ret.success)
                     {
-                        dynSettings.Bench.Dispatcher.BeginInvoke(
-                            (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
+                        s.Error(ret.message);
+                        return;
                     }
-                };
+                    s.Done(ret.content);
+                    
+                }
+                catch (Exception e)
+                {
+                    s.Error(e.GetType() + ": " + e.Message);
+                }
+            };
             new Thread(start).Start();
+
+            return s;
 
         }
 
@@ -422,9 +431,6 @@ namespace Dynamo.PackageManager
                     // download the package
                     var m = new HeaderDownload(id);
                     ResponseWithContentBody<PackageHeader> p = Client.ExecuteAndDeserializeWithContent<PackageHeader>(m);
-
-                    
-                    
                 };
             new Thread(start).Start();
         }

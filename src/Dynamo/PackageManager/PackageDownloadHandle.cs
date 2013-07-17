@@ -5,8 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Dynamo.Utilities;
+using Greg.Requests;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
+using RestSharp;
 
 namespace Dynamo.PackageManager
 {
@@ -32,7 +34,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public PackageHeader Header { get; private set; }
+        public Greg.Responses.PackageHeader Header { get; private set; }
         public string Name { get { return Header.name; } }
 
         private string _downloadPath;
@@ -46,7 +48,7 @@ namespace Dynamo.PackageManager
             
         }
 
-        public PackageDownloadHandle(PackageHeader header, string version)
+        public PackageDownloadHandle(Greg.Responses.PackageHeader header, string version)
         {
             this.Header = header;
             this.DownloadPath = "";
@@ -147,23 +149,24 @@ namespace Dynamo.PackageManager
             return false;
         }
 
-        public DynamoInstalledPackage FromXML()
-        {
-            // open a
-            return null;
-        }
-
         // location of all files
         public void Uninstall()
         {
             // remove this package completely
         }
 
-        public bool ToXML()
+        internal static DynamoInstalledPackage FromJson(string headerPath)
         {
-            // open and deserialize a package
-            // 
-            return true;
+            var des = new RestSharp.Deserializers.JsonDeserializer();
+
+            var pkgHeader = File.ReadAllText(headerPath);
+            var res = new RestResponse();
+            res.Content = pkgHeader;
+
+            var body = des.Deserialize<PackageUploadRequestBody>(res);
+
+            return new DynamoInstalledPackage(Path.GetDirectoryName(headerPath), body.name, body.version);
+
         }
     }
 

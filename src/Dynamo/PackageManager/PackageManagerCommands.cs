@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -25,24 +26,6 @@ using System.Windows.Controls;
 
 namespace Dynamo.Commands
 {
-    public class LoginCommand : ICommand
-    {
-        public void Execute(object parameters)
-        {
-            
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
-    }
 
     public class ShowNodePublishInfoCommand : ICommand
     {
@@ -59,24 +42,21 @@ namespace Dynamo.Commands
 
             if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false && !PackageManagerClient.DEBUG_MODE)
             {
-                DynamoCommands.ShowLoginCmd.Execute(null);
                 dynSettings.Controller.DynamoViewModel.Log("Must login first to publish a node.");
                 return;
             }
 
-            
-            
             if (funcDef is FunctionDefinition)
             {
                 var f = funcDef as FunctionDefinition;
 
-                dynSettings.Controller.PackageManagerPublishCustomNodeViewModel.FunctionDefinition =
-                    f;
+                dynSettings.Controller.PackageManagerPublishCustomNodeViewModel.FunctionDefinitions =
+                    new List<FunctionDefinition> {f};
 
                 // we're submitting a new version
                 if ( dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders.ContainsKey(f) )
                 {
-                    dynSettings.Controller.PackageManagerPublishCustomNodeViewModel.PackageHeader =
+                    dynSettings.Controller.PackageManagerPublishCustomNodeViewModel.BaseVersionHeader =
                         dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders[f];
                 }
             }
@@ -92,58 +72,6 @@ namespace Dynamo.Commands
                 init = true;
             }
             
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
-    }
-
-    public class ShowLoginCommand : ICommand
-    {
-        private bool _init;
-
-        public void Execute(object parameters)
-        {
-            if (!_init)
-            {
-                //var loginView = new PackageManagerLoginView(dynSettings.Controller.PackageManagerLoginViewModel);
-
-                ////MVVM: event on current workspace model view now adds views to canvas
-                ////dynSettings.Bench.outerCanvas.Children.Add(loginView);
-                ////Canvas.SetBottom(loginView, 0);
-                ////Canvas.SetRight(loginView, 0);
-
-                //dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(loginView));
-
-                _init = true;
-            }
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
-    }
-
-    public class RefreshRemotePackagesCommand : ICommand
-    {
-        public void Execute(object parameters)
-        {
-            dynSettings.Controller.PackageManagerClient.RefreshAvailable();
         }
 
         public event EventHandler CanExecuteChanged
@@ -276,37 +204,5 @@ namespace Dynamo.Commands
             }
         }
 
-        private static RefreshRemotePackagesCommand refreshRemotePackagesCmd;
-        public static RefreshRemotePackagesCommand RefreshRemotePackagesCmd
-        {
-            get
-            {
-                if (refreshRemotePackagesCmd == null)
-                    refreshRemotePackagesCmd = new RefreshRemotePackagesCommand();
-                return refreshRemotePackagesCmd;
-            }
-        }
-
-        private static ShowLoginCommand showLoginCmd;
-        public static ShowLoginCommand ShowLoginCmd
-        {
-            get
-            {
-                if (showLoginCmd == null)
-                    showLoginCmd = new ShowLoginCommand();
-                return showLoginCmd;
-            }
-        }
-
-        private static LoginCommand loginCmd;
-        public static LoginCommand LoginCmd
-        {
-            get
-            {
-                if (loginCmd == null)
-                    loginCmd = new LoginCommand();
-                return loginCmd;
-            }
-        }
     }
 }

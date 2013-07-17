@@ -1753,6 +1753,7 @@ namespace Dynamo.Controls
 
                 string funName = null;
                 string category = "";
+                string description = "";
                 double cx = DynamoView.CANVAS_OFFSET_X;
                 double cy = DynamoView.CANVAS_OFFSET_Y;
                 double zoom = 1.0;
@@ -1771,6 +1772,8 @@ namespace Dynamo.Controls
                             zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("Name"))
                             funName = att.Value;
+                        else if (att.Name.Equals("Description"))
+                            description = att.Value;
                         else if (att.Name.Equals("Category"))
                             category = att.Value;
                         else if (att.Name.Equals("ID"))
@@ -1821,6 +1824,7 @@ namespace Dynamo.Controls
                     );
 
                 dynWorkspaceModel ws = def.Workspace;
+                ws.Description = description;
 
                 //this.Log("Opening definition " + xmlPath + "...");
 
@@ -2077,8 +2081,6 @@ namespace Dynamo.Controls
                 if (canLoad)
                     SaveFunction(def, false);
 
-                Controller.PackageManagerClient.LoadPackageHeader(def, funName);
-
                 nodeWorkspaceWasLoaded(def, children, parents);
 
                 //set the zoom and trigger events
@@ -2277,7 +2279,7 @@ namespace Dynamo.Controls
                         Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId);
                     }
 
-                    Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId, path);
+                    Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, functionWorkspace.Description, definition.FunctionId, path);
 
                     #region Compile Function and update all nodes
 
@@ -2513,6 +2515,7 @@ namespace Dynamo.Controls
                 double cx = DynamoView.CANVAS_OFFSET_X;
                 double cy = DynamoView.CANVAS_OFFSET_Y;
                 double zoom = 1.0;
+                string description = "";
 
                 foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
                 {
@@ -2530,6 +2533,10 @@ namespace Dynamo.Controls
                         {
                             zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
+                        else if (att.Name.Equals("Description"))
+                        {
+                            description = att.Value;
+                        }
                     }
                 }
 
@@ -2538,6 +2545,8 @@ namespace Dynamo.Controls
                 _model.CurrentSpace.X = cx;
                 _model.CurrentSpace.Y = cy;
                 _model.CurrentSpace.Zoom = zoom;
+                _model.CurrentSpace.Description = description;
+
                 var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == _model.CurrentSpace);
                 vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 

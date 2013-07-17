@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Dynamo.Utilities;
+using Greg.Requests;
+using RestSharp;
 
 
 namespace Dynamo.PackageManager
@@ -69,7 +71,7 @@ namespace Dynamo.PackageManager
             // enumerate directories in absolute packages directory
             foreach (var dir in Directory.EnumerateDirectories(AbsolutePackagesDirectory))
             {
-                var headerPath = Path.Combine(dir, "package_header.json");
+                var headerPath = Path.Combine(dir, "pkg.json");
                 var pkgName = Path.GetFileName(dir);
 
                 DynamoInstalledPackage installedPkg = null;
@@ -77,8 +79,7 @@ namespace Dynamo.PackageManager
                 // get the package name and the installed version
                 if (File.Exists(headerPath))
                 {
-                    // deserialize pkg header 
-                    // contains version, more info
+                    installedPkg = DynamoInstalledPackage.FromJson(headerPath);
                 }
                 else // no pkg header, we don't know anything about this package
                 {
@@ -101,5 +102,24 @@ namespace Dynamo.PackageManager
             
         }
 
+        public bool IsUnderPackageControl(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsUnderPackageControl(FunctionDefinition path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsUnderPackageControl(Type t)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DynamoInstalledPackage GetInstalledPackage(string path)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
