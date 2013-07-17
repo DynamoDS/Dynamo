@@ -15,8 +15,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using System.Windows.Input;
 using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
@@ -252,7 +250,7 @@ namespace Dynamo.PackageManager
         /// SubmitCommand property </summary>
         /// <value>
         /// A command which, when executed, submits the current package</value>
-        public ICommand SubmitCommand { get; private set; }
+        public DelegateCommand<object> SubmitCommand { get; private set; }
 
         /// <summary>
         /// Delegate used to submit the element</summary>
