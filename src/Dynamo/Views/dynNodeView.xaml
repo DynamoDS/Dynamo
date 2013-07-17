@@ -97,6 +97,8 @@
                 <MenuItem Name="isUpstreamVisible_cm" Header="Preview Upstream" 
                           IsChecked="{Binding Path=IsUpstreamVisible}"
                           Command="{Binding Path=ToggleIsUpstreamVisibleCommand}"/>
+                <MenuItem Name="rename_cm" Header="Rename Node..." 
+                          Command="{Binding Path=RenameCommand}"/>
                 <MenuItem Name="help_cm" Header="Help..." 
                           Command="{Binding Path=ShowHelpCommand}"/>
             </ContextMenu>

@@ -1019,7 +1019,7 @@ namespace Dynamo.Nodes
             get
             {
                 return _selectionText = (SelectedElements != null && SelectedElements.Count > 0)
-                                            ? "Curve IDs:" + formatSelectionText(SelectedElements)
+                                            ? "Element IDs:" + formatSelectionText(SelectedElements)
                                             : "Nothing Selected";
             }
             set
