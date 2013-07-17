@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
 using Dynamo.Search.SearchElements;
+using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Nodes.Search
@@ -140,62 +139,93 @@ namespace Dynamo.Nodes.Search
             }
         }
 
-        public ToggleIsExpandedCommand _toggleIsExpanded;
-        public ToggleIsExpandedCommand ToggleIsExpanded
+        public DelegateCommand _toggleIsExpanded;
+        public DelegateCommand ToggleIsExpanded
         {
             get
             {
                 if (_toggleIsExpanded == null)
-                    _toggleIsExpanded = new ToggleIsExpandedCommand(this);
+                    _toggleIsExpanded = new DelegateCommand(ToggleIsExpandedExecute, CanToggleIsExpandedCanExecute);
                 return _toggleIsExpanded;
             }
         }
 
-        public class ToggleIsExpandedCommand : ICommand
+        private void ToggleIsExpandedExecute()
         {
-            private BrowserItem item;
-
-            public ToggleIsExpandedCommand(BrowserItem i)
+            if (this is SearchElementBase)
             {
-                this.item = i;
+                ((SearchElementBase)this).Execute();
+                return;
             }
-
-            public void Execute(object parameters)
+            var endState = !this.IsExpanded;
+            if (this is BrowserInternalElement)
             {
-                if (item is SearchElementBase)
+                foreach (var ele in ((BrowserInternalElement)this).Siblings)
                 {
-                    ((SearchElementBase) item).Execute();
-                    return;
+                    ele.IsExpanded = false;
                 }
-                var endState = !item.IsExpanded;
-                if (item is BrowserInternalElement)
-                {
-                    foreach (var ele in ((BrowserInternalElement) item).Siblings)
-                    {
-                        ele.IsExpanded = false;
-                    }
-                }
-
-                if (item is BrowserRootElement)
-                {
-                    foreach (var ele in ((BrowserRootElement)item).Siblings)
-                    {
-                        ele.IsExpanded = false;
-                    }
-                }
-                item.IsExpanded = endState;
             }
 
-            public event EventHandler CanExecuteChanged
+            if (this is BrowserRootElement)
             {
-                add { CommandManager.RequerySuggested += value; }
-                remove { CommandManager.RequerySuggested -= value; }
+                foreach (var ele in ((BrowserRootElement)this).Siblings)
+                {
+                    ele.IsExpanded = false;
+                }
             }
-
-            public bool CanExecute(object parameters)
-            {
-                return true;
-            }
+            this.IsExpanded = endState;
         }
+
+        private bool CanToggleIsExpandedCanExecute()
+        {
+            return true;
+        }
+
+        //public class ToggleIsExpandedCommand : ICommand
+        //{
+            //private BrowserItem item;
+
+            //public ToggleIsExpandedCommand(BrowserItem i)
+            //{
+            //    this.item = i;
+            //}
+
+            //public void Execute(object parameters)
+            //{
+            //    if (item is SearchElementBase)
+            //    {
+            //        ((SearchElementBase) item).Execute();
+            //        return;
+            //    }
+            //    var endState = !item.IsExpanded;
+            //    if (item is BrowserInternalElement)
+            //    {
+            //        foreach (var ele in ((BrowserInternalElement) item).Siblings)
+            //        {
+            //            ele.IsExpanded = false;
+            //        }
+            //    }
+
+            //    if (item is BrowserRootElement)
+            //    {
+            //        foreach (var ele in ((BrowserRootElement)item).Siblings)
+            //        {
+            //            ele.IsExpanded = false;
+            //        }
+            //    }
+            //    item.IsExpanded = endState;
+            //}
+
+            //public event EventHandler CanExecuteChanged
+            //{
+            //    add { CommandManager.RequerySuggested += value; }
+            //    remove { CommandManager.RequerySuggested -= value; }
+            //}
+
+            //public bool CanExecute(object parameters)
+            //{
+            //    return true;
+            //}
+        //}
     }
 }
