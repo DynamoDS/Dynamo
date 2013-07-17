@@ -1,14 +1,22 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using Microsoft.FSharp.Collections;
 using Binding = System.Windows.Data.Binding;
+using Brush = System.Windows.Media.Brush;
+using Color = System.Windows.Media.Color;
 using ComboBox = System.Windows.Controls.ComboBox;
 using DialogResult = System.Windows.Forms.DialogResult;
 using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
@@ -600,32 +608,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    public partial class dynImageFileReader : dynFileReaderBase
-    {
-        public override void SetupCustomUIElements(object ui)
-        {
-            var nodeUI = ui as dynNodeView;
-
-            var image1 = new System.Windows.Controls.Image
-            {
-                //Width = 320,
-                //Height = 240,
-                MaxWidth = 400,
-                MaxHeight = 400,
-                Margin = new Thickness(5),
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
-                Name = "image1",
-                VerticalAlignment = System.Windows.VerticalAlignment.Center
-            };
-
-            //nodeUI.inputGrid.Children.Add(image1);
-            nodeUI.grid.Children.Add(image1);
-            image1.SetValue(Grid.RowProperty, 2);
-            image1.SetValue(Grid.ColumnProperty, 0);
-            image1.SetValue(Grid.ColumnSpanProperty, 3);
-        }
-    }
-
     public partial class dynFunction : dynBuiltinFunction
     {
         public override void SetupCustomUIElements(object ui)
@@ -938,5 +920,88 @@ namespace Dynamo.Nodes
             this.Margin = new Thickness(1, 0, 1, 0);
         }
 
+    }
+
+    [NodeName("Read Image File")]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeDescription("Reads data from an image file.")]
+    public class dynImageFileReader : dynFileReaderBase
+    {
+        System.Windows.Controls.Image image1;
+
+        public dynImageFileReader()
+        {
+
+            InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
+            InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            storedPath = ((FScheme.Value.String)args[0]).Item;
+            double xDiv = ((FScheme.Value.Number)args[1]).Item;
+            double yDiv = ((FScheme.Value.Number)args[2]).Item;
+
+            FSharpList<FScheme.Value> result = FSharpList<FScheme.Value>.Empty;
+            if (File.Exists(storedPath))
+            {
+                try
+                {
+                    using (var bmp = new Bitmap(storedPath))
+                    {
+                        DispatchOnUIThread(delegate
+                        {
+                            // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
+                            // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
+                            // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
+
+                            var hbitmap = bmp.GetHbitmap();
+                            var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
+                            image1.Source = imageSource;
+                        });
+
+                        // Do some processing
+                        for (int y = 0; y < yDiv; y++)
+                        {
+                            for (int x = 0; x < xDiv; x++)
+                            {
+                                System.Drawing.Color pixelColor = bmp.GetPixel(x * (int)(bmp.Width / xDiv), y * (int)(bmp.Height / yDiv));
+                                result = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(pixelColor), result);
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    dynSettings.Controller.DynamoViewModel.Log(e.ToString());
+                }
+
+
+                return FScheme.Value.NewList(result);
+            }
+            else
+                return FScheme.Value.NewList(FSharpList<FScheme.Value>.Empty);
+        }
+
+        public override void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            image1 = new System.Windows.Controls.Image
+            {
+                MaxWidth = 400,
+                MaxHeight = 400,
+                Margin = new Thickness(5),
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                Name = "image1",
+                VerticalAlignment = System.Windows.VerticalAlignment.Center
+            };
+
+            nodeUI.grid.Children.Add(image1);
+            image1.SetValue(Grid.RowProperty, 2);
+            image1.SetValue(Grid.ColumnProperty, 0);
+            image1.SetValue(Grid.ColumnSpanProperty, 3);
+        }
     }
 }

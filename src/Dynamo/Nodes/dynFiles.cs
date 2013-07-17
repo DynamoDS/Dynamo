@@ -22,7 +22,7 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using System.Drawing;
-using System.Windows.Media.Imaging;
+//using System.Windows.Media.Imaging;
 using System.Windows.Interop;
 
 namespace Dynamo.Nodes
@@ -139,85 +139,6 @@ namespace Dynamo.Nodes
             }
             else
                 return Value.NewString("");
-        }
-    }
-
-    [NodeName("Read Image File")]
-    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
-    [NodeDescription("Reads data from an image file.")]
-    public partial class dynImageFileReader : dynFileReaderBase
-    {
-        System.Windows.Controls.Image image1;
-
-        public dynImageFileReader()
-        {
-
-            InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
-            InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            storedPath = ((Value.String)args[0]).Item;
-            double xDiv = ((Value.Number)args[1]).Item;
-            double yDiv = ((Value.Number)args[2]).Item;
-
-            FSharpList<Value> result = FSharpList<Value>.Empty;
-            if (File.Exists(storedPath))
-            {
-
-                    try
-                    {
-                        using (Bitmap bmp = new Bitmap(storedPath))
-                        {
-
-                            //NodeUI.Dispatcher.Invoke(new Action(
-                            //    delegate
-                            //    {
-                            //        // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
-                            //        // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
-                            //        // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
-
-                            //        var hbitmap = bmp.GetHbitmap();
-                            //        var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
-                            //        image1.Source = imageSource;
-                            //    }
-                            //));
-
-                            //MVVM: now using node model's dispatch on ui thread method
-                            DispatchOnUIThread(delegate
-                            {
-                                // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
-                                // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
-                                // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
-
-                                var hbitmap = bmp.GetHbitmap();
-                                var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
-                                image1.Source = imageSource;
-                            });
-
-                            // Do some processing
-                            for (int y = 0; y < yDiv; y++)
-                            {
-                                for (int x = 0; x < xDiv; x++)
-                                {
-                                    Color pixelColor = bmp.GetPixel(x * (int)(bmp.Width / xDiv), y * (int)(bmp.Height / yDiv));
-                                    result = FSharpList<Value>.Cons(Value.NewContainer(pixelColor), result);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        dynSettings.Controller.DynamoViewModel.Log(e.ToString());
-                    }
-
-
-                return Value.NewList(result);
-            }
-            else
-                return Value.NewList(FSharpList<Value>.Empty);
         }
     }
 
