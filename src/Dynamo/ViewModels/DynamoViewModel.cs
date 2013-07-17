@@ -32,6 +32,12 @@ namespace Dynamo.Controls
         public string Name { get; set; }
         public string Category { get; set; }
         public bool Success { get; set; }
+
+        public FunctionNamePromptEventArgs()
+        {
+            Name = "";
+            Category = "";
+        }
     }
 
     public class DynamoViewModel:dynViewModelBase
@@ -3039,9 +3045,9 @@ namespace Dynamo.Controls
 
     public class ViewEventArgs : EventArgs
     {
-        public System.Windows.Controls.UserControl View { get; set; }
+        public object View { get; set; }
 
-        public ViewEventArgs(System.Windows.Controls.UserControl v)
+        public ViewEventArgs(object v)
         {
             View = v;
         }

@@ -72,7 +72,7 @@ namespace Dynamo.Views
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)
         {
-            UserControl view = (e as ViewEventArgs).View;
+            UserControl view = (UserControl)((e as ViewEventArgs).View);
             outerCanvas.Children.Add(view);
             Canvas.SetBottom(view, 0);
             Canvas.SetRight(view, 0);
