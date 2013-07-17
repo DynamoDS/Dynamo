@@ -4,8 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-//using System.Windows;
-using System.Windows.Input;
 using Dynamo.Commands;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
@@ -632,31 +630,6 @@ namespace Dynamo.Search
 
             return SearchDictionary.Search(search, MaxNumSearchResults);
 
-        }
-
-        /// <summary>
-        ///     A KeyHandler method used by SearchView, increments decrements and executes based on input.
-        /// </summary>
-        /// <param name="sender">Originating object for the KeyHandler </param>
-        /// <param name="e">Parameters describing the key push</param>
-        public void KeyHandler(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                ExecuteSelected();
-            }
-            else if (e.Key == Key.Tab)
-            {
-                PopulateSearchTextWithSelectedResult();
-            }
-            else if (e.Key == Key.Down)
-            {
-                SelectNext();
-            }
-            else if (e.Key == Key.Up)
-            {
-                SelectPrevious();
-            }
         }
 
         /// <summary>

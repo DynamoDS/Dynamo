@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Forms;
 using System.Windows.Input;
 using Dynamo.Commands;
 using Dynamo.Controls;
@@ -10,9 +9,6 @@ using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Media;
 using Dynamo.Utilities;
-using Dynamo.Search;
-using ContextMenu = System.Windows.Controls.ContextMenu;
-using MenuItem = System.Windows.Controls.MenuItem;
 
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
@@ -35,6 +31,8 @@ namespace Dynamo.Search
     /// </summary>
     public partial class SearchView : UserControl
     {
+        private SearchViewModel _viewModel;
+
         public SearchView()
         {
             InitializeComponent();
@@ -43,9 +41,9 @@ namespace Dynamo.Search
 
         void SearchView_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = dynSettings.Controller.SearchViewModel;
+            DataContext = _viewModel = dynSettings.Controller.SearchViewModel;
 
-            PreviewKeyDown += dynSettings.Controller.SearchViewModel.KeyHandler;
+            PreviewKeyDown += KeyHandler;
 
             SearchTextBox.IsVisibleChanged += delegate
             {
@@ -73,6 +71,32 @@ namespace Dynamo.Search
 
             dynSettings.Controller.SearchViewModel.RequestFocusSearch += new EventHandler(SearchViewModel_RequestFocusSearch);
             dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += new EventHandler(SearchViewModel_RequestReturnFocusToSearch);
+        }
+
+
+        /// <summary>
+        ///     A KeyHandler method used by SearchView, increments decrements and executes based on input.
+        /// </summary>
+        /// <param name="sender">Originating object for the KeyHandler </param>
+        /// <param name="e">Parameters describing the key push</param>
+        public void KeyHandler(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                _viewModel.ExecuteSelected();
+            }
+            else if (e.Key == Key.Tab)
+            {
+                _viewModel.PopulateSearchTextWithSelectedResult();
+            }
+            else if (e.Key == Key.Down)
+            {
+                _viewModel.SelectNext();
+            }
+            else if (e.Key == Key.Up)
+            {
+                _viewModel.SelectPrevious();
+            }
         }
 
         void SearchViewModel_RequestReturnFocusToSearch(object sender, EventArgs e)
