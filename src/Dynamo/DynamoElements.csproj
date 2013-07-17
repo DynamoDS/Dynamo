@@ -113,6 +113,7 @@ limitations under the License.
     <Compile Include="DynamoLogger.cs" />
     <Compile Include="DynamoRunner.cs" />
     <Compile Include="DynamoSelection.cs" />
+    <Compile Include="PackageManager\LocalPackage.cs" />
     <Compile Include="PackageManager\PackageUploadHandle.cs" />
     <Compile Include="SettingsManager.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />

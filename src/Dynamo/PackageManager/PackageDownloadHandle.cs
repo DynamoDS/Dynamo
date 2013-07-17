@@ -81,7 +81,7 @@ namespace Dynamo.PackageManager
 
         }
 
-        public bool Extract( out DynamoInstalledPackage pkg )
+        public bool Extract( out LocalPackage pkg )
         {
             if (this.DownloadState != State.Downloaded)
             {
@@ -109,7 +109,7 @@ namespace Dynamo.PackageManager
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
-            pkg = new DynamoInstalledPackage(installedPath, Header.name, VersionName);
+            pkg = new LocalPackage(installedPath, Header.name, VersionName);
 
             return true;
         }
@@ -117,81 +117,5 @@ namespace Dynamo.PackageManager
         // cancel, install, redownload
 
     }
-
-    public class DynamoInstalledPackage : NotificationObject
-    {
-        public string Name { get; set; }
-
-        public string CustomNodeDirectory
-        {
-            get { return Path.Combine(this.Directory, "dyf"); }
-        }
-
-        public string BinaryDirectory
-        {
-            get { return Path.Combine(this.Directory, "bin"); }
-        }
-
-        private string _directory;
-        public string Directory { get { return _directory; } set { _directory = value; RaisePropertyChanged("Directory"); } }
-
-        private string _versionName;
-        public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
-
-        public List<Type> LoadedTypes { get; set; }
-        public List<CustomNodeInfo> LoadedCustomNodes { get; set; } 
-
-        public DynamoInstalledPackage(string directory, string name, string versionName )
-        {
-            this.Directory = directory;
-            this.Name = name;
-            this.VersionName = versionName;
-            this.LoadedTypes = new List<Type>();
-            this.LoadedCustomNodes = new List<CustomNodeInfo>();
-        }
-
-        public void RegisterWithHost()
-        {
-            dynSettings.Bench.Dispatcher.BeginInvoke((Action)(() =>
-            {
-                LoadedTypes = 
-                    GetAssemblies().Select(DynamoLoader.LoadNodesFromAssembly).SelectMany(x => x).ToList();
-
-                LoadedCustomNodes = DynamoLoader.LoadCustomNodes(CustomNodeDirectory).ToList();
-
-            }));
-        }
-
-        public List<Assembly> GetAssemblies()
-        {
-            return
-                (new DirectoryInfo(BinaryDirectory))
-                    .EnumerateFiles("*.dll")
-                    .Select((fileInfo) => Assembly.LoadFrom(fileInfo.FullName)).ToList();
-        }
-       
-        // location of all files
-        public void Uninstall()
-        {
-            throw new NotImplementedException();
-            // remove this package completely
-        }
-
-        internal static DynamoInstalledPackage FromJson(string headerPath)
-        {
-            var des = new RestSharp.Deserializers.JsonDeserializer();
-
-            var pkgHeader = File.ReadAllText(headerPath);
-            var res = new RestResponse();
-            res.Content = pkgHeader;
-
-            var body = des.Deserialize<PackageUploadRequestBody>(res);
-
-            return new DynamoInstalledPackage(Path.GetDirectoryName(headerPath), body.name, body.version);
-
-        }
-    }
-
-
 
 }

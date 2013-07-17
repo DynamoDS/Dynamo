@@ -454,10 +454,11 @@ namespace Dynamo.Utilities
             currentWorkspace.Nodes.Remove(collapsedNode);
 
             // save and load the definition from file
-            dynSettings.Controller.CustomNodeLoader.SetNodeInfo(newNodeName, newNodeCategory, "", newNodeDefinition.FunctionId, "");
+            var customNodeInfo = new CustomNodeInfo(newNodeDefinition.FunctionId, newNodeName, newNodeCategory, "", "");
+            dynSettings.Controller.CustomNodeLoader.SetNodeInfo(customNodeInfo);
             var path = dynSettings.Controller.DynamoViewModel.SaveFunctionOnly(newNodeDefinition);
             dynSettings.Controller.CustomNodeLoader.SetNodePath(newNodeDefinition.FunctionId, path);
-            dynSettings.Controller.SearchViewModel.Add(newNodeName, newNodeCategory, newNodeDefinition.FunctionId);
+            dynSettings.Controller.SearchViewModel.Add(newNodeName, newNodeCategory, "No description provided", newNodeDefinition.FunctionId);
 
             dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
                 {

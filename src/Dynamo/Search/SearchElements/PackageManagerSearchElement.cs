@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Commands;
@@ -52,27 +53,30 @@ namespace Dynamo.Search.SearchElements
         public override void Execute()
         {
             string message = "";
-            if (dynSettings.PackageLoader.InstalledPackageNames.ContainsKey(this.Name))
+            if (dynSettings.PackageLoader.LocalPackages.Any(pkg => this.Name == pkg.Name))
             {
-                message = "Dynamo has already installed " + this.Name + ".  Dynamo will need to OVERWRITE this package.";
+                message = "Dynamo has already installed " + this.Name + ".  Please uninstall the existing package before downloading.";
+                MessageBox.Show(message, "Cannot Download Package", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
-            else
-            {
-                message = "Are you sure you want to install " + this.Name + "?";
-            }
+
+            message = "Are you sure you want to install " + this.Name +"?";
 
             var result = MessageBox.Show(message, "Package Download Confirmation",
                             MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.OK)
             {
-                var dl = new PackageDownloadHandle(this.Header, this.Header.versions[0].version); // download the most recent version
+                var dl = new PackageDownloadHandle(this.Header, this.Version); // download the most recent version
                 dynSettings.Controller.PackageManagerClient.DownloadAndInstall(dl);
             }
 
         }
 
         #region Properties 
+            
+            public string Version { get { return Header.versions[Header.versions.Count - 1].version; } }
+            
             /// <summary>
             /// Header property </summary>
             /// <value>

@@ -28,7 +28,7 @@ namespace Dynamo.Utilities
             this.Name = name;
             this.Category = category;
             this.Description = description;
-            this.Path = Path;
+            this.Path = path;
         }
 
         public Guid Guid { get; set; }
@@ -310,7 +310,7 @@ namespace Dynamo.Utilities
             this.NodeNames.Add(info.Name, info.Guid);
             this.SetNodeCategory(info.Guid, info.Category);
             this.SetNodeDescription(info.Guid, info.Description);
-            this.SetNodePath(info.Guid, info.Description);
+            this.SetNodePath(info.Guid, info.Path);
         }
 
         /// <summary>

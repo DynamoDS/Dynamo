@@ -179,7 +179,8 @@ namespace Dynamo
             CustomNodeLoader = new CustomNodeLoader(pluginsPath);
             dynSettings.PackageLoader = new PackageLoader();
 
-            dynSettings.PackageLoader.UninstallPackages();
+            dynSettings.PackageLoader.DoCachedPackageUninstalls();
+            dynSettings.PackageLoader.LoadPackages();
 
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);

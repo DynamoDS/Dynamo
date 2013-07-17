@@ -35,6 +35,11 @@ namespace Dynamo.Utilities
         public static HashSet<string> LoadedAssemblyNames = new HashSet<string>();
         public static Dictionary<string, List<Type>> AssemblyPathToTypesLoaded = new Dictionary<string, List<Type>>();
 
+        internal static void LoadPackages()
+        {
+            dynSettings.PackageLoader.LoadPackages();
+        }
+
         /// <summary>
         ///     Enumerate local library assemblies and add them to DynamoController's
         ///     dictionaries and search.  
@@ -43,8 +48,6 @@ namespace Dynamo.Utilities
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
         internal static void LoadBuiltinTypes()
         {
-            dynSettings.PackageLoader.AppendBinarySearchPath();
-
             string location = GetDynamoDirectory();
 
             #region determine assemblies to load
@@ -352,6 +355,8 @@ namespace Dynamo.Utilities
         /// </summary>
         public static IEnumerable<CustomNodeInfo> LoadCustomNodes(string path)
         {
+            if (!Directory.Exists(path))
+                return new List<CustomNodeInfo>();
 
             var customNodeLoader = dynSettings.CustomNodeLoader;
             var searchViewModel = dynSettings.Controller.SearchViewModel;
