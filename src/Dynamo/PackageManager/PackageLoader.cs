@@ -44,7 +44,10 @@ namespace Dynamo.PackageManager
 
         private IEnumerable<LocalPackage> ScanAllPackageDirectories()
         {
-            return Directory.EnumerateDirectories(RootPackagesDirectory).Select(ScanPackageDirectory);
+            return
+                Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly)
+                         .Select(ScanPackageDirectory)
+                         .ToList();
         }
 
         public LocalPackage ScanPackageDirectory(string directory)

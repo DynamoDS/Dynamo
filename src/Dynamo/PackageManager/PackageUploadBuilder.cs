@@ -13,41 +13,124 @@ namespace Dynamo.PackageManager
     static class PackageUploadBuilder
     {
 
-        public static PackageUploadRequestBody BuildNewPackageRequestBody(  string name,
-                                                                            string version,
-                                                                            string description,
-                                                                            IEnumerable<string> keywords,
-                                                                            string license,
-                                                                            string group,
-                                                                            IEnumerable<PackageDependency> deps,
-                                                                            IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs)    
+        public static PackageUploadRequestBody NewPackageHeader(    string name,
+                                                                    string version,
+                                                                    string description,
+                                                                    IEnumerable<string> keywords,
+                                                                    string license,
+                                                                    string group,
+                                                                    IEnumerable<PackageDependency> deps,
+                                                                    IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs)    
         {
-            // form dynamo dependent data
-            string contents = String.Join(", ",
+            var contents = String.Join(", ",
                                           nodeNameDescriptionPairs.Select((pair) => pair.Item1 + " - " + pair.Item2));
-            string engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            string engineMetadata = "";
+            var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            var engineMetadata = "";
 
-            // build the package header json, which will be stored with the pkg
             return new PackageUploadRequestBody(name, version, description, keywords, license, contents, "dynamo",
                                                          engineVersion, engineMetadata, group, deps);
-        } 
+        }
 
-        public static PackageUpload BuildNewPackage(PackageUploadRequestBody pkgHeader,
-                                                    IEnumerable<string> files,
-                                                    PackageUploadHandle uploadHandle )
+        public static PackageUpload NewPackage( PackageUploadRequestBody pkgHeader,
+                                                IEnumerable<string> files,
+                                                PackageUploadHandle uploadHandle )
         {
-            // tell progress
+
             uploadHandle.UploadState = PackageUploadHandle.State.Copying;
 
+            // modify the file system for package
+            DirectoryInfo rootDir, dyfDir, binDir, extraDir;
+            FormPackageDirectory(dynSettings.PackageLoader.RootPackagesDirectory, pkgHeader.name, out rootDir, out  dyfDir, out binDir, out extraDir);
+            WritePackageHeader(pkgHeader, rootDir);
+            CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
+            RemapCustomNodeFilePaths(files, dyfDir.FullName);
+            RemoveDyfFiles(files);
+
+            uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
+
+            var zipPath = Greg.Utility.FileUtilities.Zip(rootDir.FullName);
+            return BuildPackageUpload(pkgHeader, zipPath);
+
+        }
+
+        public static PackageUpload NewPackage(LocalPackage pkg, PackageUploadHandle packageUploadHandle)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public static PackageVersionUpload NewPackageVersion(LocalPackage pkg, PackageUploadHandle uploadHandle)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static PackageVersionUpload NewPackageVersion(PackageUploadRequestBody pkg, IEnumerable<string> files, PackageUploadHandle uploadHandle)
+        {
+            throw new NotImplementedException();
+        }
+
+    #region Utility methods
+
+        private static PackageUpload BuildPackageUpload(PackageUploadRequestBody pkgHeader, string zipPath )
+        {
+            return new PackageUpload(  pkgHeader.name,
+                                        pkgHeader.version,
+                                        pkgHeader.description,
+                                        pkgHeader.keywords,
+                                        pkgHeader.license,
+                                        pkgHeader.contents,
+                                        "dynamo",
+                                        pkgHeader.engine_version,
+                                        pkgHeader.engine_metadata,
+                                        pkgHeader.group,
+                                        zipPath,
+                                        pkgHeader.dependencies);    
+        }
+
+        private static void RemapCustomNodeFilePaths( IEnumerable<string> filePaths, string dyfRoot )
+        {
+            filePaths
+                .Where(x => x.EndsWith(".dyf"))
+                .Select( path => dynSettings.CustomNodeLoader.GuidFromPath(path))
+                .Select( guid => dynSettings.CustomNodeLoader.GetFunctionDefinition(guid) )
+                .ToList()
+                .ForEach( func =>
+                    {
+                        var newPath = Path.Combine(dyfRoot, Path.GetFileName(func.Workspace.FilePath));
+                        func.Workspace.FilePath = newPath;
+                        dynSettings.CustomNodeLoader.SetNodePath(func.FunctionId, newPath);
+                    });
+        }
+
+        private static void RemoveDyfFiles(IEnumerable<string> filePaths)
+        {
+            filePaths
+                .Where(x => x.EndsWith(".dyf") && File.Exists(x))
+                .ToList()
+                .ForEach( File.Delete );
+        }
+
+        private static DirectoryInfo TryCreateDirectory(string path)
+        {
+            return Directory.Exists(path) ? new DirectoryInfo(path) : Directory.CreateDirectory(path);
+        }
+
+        private static void FormPackageDirectory(string packageDirectory, string packageName, out DirectoryInfo root, out DirectoryInfo dyfDir, out DirectoryInfo binDir, out DirectoryInfo extraDir )
+        {
             // create a directory where the package will be stored
-            var rootDir = Directory.CreateDirectory(Path.Combine(dynSettings.PackageLoader.RootPackagesDirectory, pkgHeader.name));
+            var rootPath = Path.Combine(packageDirectory, packageName);
+            var dyfPath = Path.Combine(rootPath, "dyf");
+            var binPath = Path.Combine(rootPath, "bin");
+            var extraPath = Path.Combine(rootPath, "extra");
 
-            // build the directory substructure
-            var binDir = rootDir.CreateSubdirectory("bin");
-            var dyfDir = rootDir.CreateSubdirectory("dyf");
-            var extraDir = rootDir.CreateSubdirectory("extra");
+            root = TryCreateDirectory(rootPath);
+            dyfDir = TryCreateDirectory(dyfPath);
+            binDir = TryCreateDirectory(binPath);
+            extraDir = TryCreateDirectory(extraPath);
+        }
 
+        private static void WritePackageHeader(PackageUploadRequestBody pkgHeader, DirectoryInfo rootDir)
+        {
             // build the package header json, which will be stored with the pkg
             var jsSer = new JsonSerializer();
             var pkgHeaderStr = jsSer.Serialize(pkgHeader);
@@ -56,7 +139,11 @@ namespace Dynamo.PackageManager
             var headerPath = Path.Combine(rootDir.FullName, "pkg.json");
             if (File.Exists(headerPath)) File.Delete(headerPath);
             File.WriteAllText(headerPath, pkgHeaderStr);
+        }
 
+        private static void CopyFilesIntoPackageDirectory(IEnumerable<string> files, DirectoryInfo dyfDir,
+                                                          DirectoryInfo binDir, DirectoryInfo extraDir)
+        {
             // copy the files to their destination
             foreach (var file in files)
             {
@@ -78,69 +165,10 @@ namespace Dynamo.PackageManager
                 }
 
             }
-
-            // remap all of the custom node paths
-            RemapCustomNodeFilePaths(files, dyfDir.FullName);
-
-            // delete all of the original dyf files
-            RemoveCopiedDyfFiles(files);
-
-            // tell handle about progress
-            uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
-
-            // zip up the folder and get its path 
-            var zipPath = Greg.Utility.FileUtilities.Zip(rootDir.FullName);
-
-            var pkgUpload = new PackageUpload(  pkgHeader.name,
-                                                pkgHeader.version,
-                                                pkgHeader.description,
-                                                pkgHeader.keywords,
-                                                pkgHeader.license,
-                                                pkgHeader.contents,
-                                                "dynamo",
-                                                pkgHeader.engine_version,
-                                                pkgHeader.engine_metadata,
-                                                pkgHeader.group,
-                                                zipPath,
-                                                pkgHeader.dependencies);
-            return pkgUpload;
-
         }
 
-        public static PackageUpload BuildNewPackage(LocalPackage pkg, PackageUploadHandle packageUploadHandle)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static void RemapCustomNodeFilePaths( IEnumerable<string> filePaths, string dyfRoot )
-        {
-            filePaths
-                .Where(x => x.EndsWith(".dyf"))
-                .Select( path => dynSettings.CustomNodeLoader.GuidFromPath(path))
-                .Select( guid => dynSettings.CustomNodeLoader.GetFunctionDefinition(guid) )
-                .ToList()
-                .ForEach( func =>
-                    {
-                        var newPath = Path.Combine(dyfRoot, Path.GetFileName(func.Workspace.FilePath));
-                        func.Workspace.FilePath = newPath);
-                        dynSettings.CustomNodeLoader.SetNodePath(func.FunctionId, newPath);
-                    });
-        }
-
-        private static void RemoveCopiedDyfFiles(IEnumerable<string> filePaths)
-        {
-            filePaths
-                .Where(x => x.EndsWith(".dyf") && File.Exists(x))
-                .ToList()
-                .ForEach( File.Delete );
-        }
-
-        public static PackageVersionUpload BuildPackageVersion(LocalPackage pkg, PackageUploadHandle uploadHandle)
-        {
-            throw new NotImplementedException();
-        }
+#endregion
 
 
-        
     }
 }
