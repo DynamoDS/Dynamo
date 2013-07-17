@@ -435,7 +435,7 @@ namespace Dynamo.PackageManager
                 var path = def.Workspace.FilePath;
                 if (dynSettings.PackageLoader.IsUnderPackageControl(path))
                 {
-                    var pkg = dynSettings.PackageLoader.GetInstalledPackage(path);
+                    var pkg = dynSettings.PackageLoader.GetLocalPackage(path);
 
                     if (!pkgNames.Contains(path))
                     {
@@ -449,7 +449,7 @@ namespace Dynamo.PackageManager
                     var pathDep = defDep.Workspace.FilePath;
                     if (dynSettings.PackageLoader.IsUnderPackageControl(pathDep))
                     {
-                        var pkg = dynSettings.PackageLoader.GetInstalledPackage(pathDep);
+                        var pkg = dynSettings.PackageLoader.GetLocalPackage(pathDep);
 
                         if (!pkgNames.Contains(pkg.Name))
                         {
@@ -465,7 +465,7 @@ namespace Dynamo.PackageManager
             {
                 if (dynSettings.PackageLoader.IsUnderPackageControl(file))
                 {
-                    var pkg = dynSettings.PackageLoader.GetInstalledPackage(file);
+                    var pkg = dynSettings.PackageLoader.GetLocalPackage(file);
 
                     if (!pkgNames.Contains(pkg.Name))
                     {

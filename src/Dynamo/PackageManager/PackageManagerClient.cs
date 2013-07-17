@@ -211,7 +211,7 @@ namespace Dynamo.PackageManager
                     {
 
                         // create a directory where the package will be stored
-                        var rootDir = Directory.CreateDirectory(Path.Combine(dynSettings.PackageLoader.PackagesDirectory, name));
+                        var rootDir = Directory.CreateDirectory(Path.Combine(dynSettings.PackageLoader.RelativePackagesDirectory, name));
 
                         // build the directory substructure
                         var binDir = rootDir.CreateSubdirectory("bin");
@@ -474,8 +474,8 @@ namespace Dynamo.PackageManager
             set { _downloads = value; }
         }
 
-        ObservableCollection<DynamoInstalledPackage> _installedPackages = new ObservableCollection<DynamoInstalledPackage>();
-        public ObservableCollection<DynamoInstalledPackage> InstalledPackages
+        ObservableCollection<LocalPackage> _installedPackages = new ObservableCollection<LocalPackage>();
+        public ObservableCollection<LocalPackage> InstalledPackages
         {
             get { return _installedPackages; }
             set { _installedPackages = value; }
@@ -502,18 +502,15 @@ namespace Dynamo.PackageManager
                     var response = Client.Execute(pkgDownload);
                     var pathDl = PackageDownload.GetFileFromResponse(response);
                     packageDownloadHandle.Done(pathDl);
-                    DynamoInstalledPackage dynPkg;
+                    LocalPackage dynPkg;
 
-                    if (dynSettings.PackageLoader.InstalledPackageNames.ContainsKey(packageDownloadHandle.Name))
-                    {
-                        var pkgRemove = dynSettings.PackageLoader.InstalledPackageNames[packageDownloadHandle.Name];
-
-                        pkgRemove.Uninstall();
-                    }
+                    var firstOrDefault = dynSettings.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
+                    if ( firstOrDefault != null)
+                        firstOrDefault.Uninstall();
 
                     if (packageDownloadHandle.Extract(out dynPkg))
                     {
-                        dynPkg.RegisterWithHost();
+                        dynPkg.Load();
                         packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                     }
                     else

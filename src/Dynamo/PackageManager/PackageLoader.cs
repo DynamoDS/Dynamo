@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,113 +14,103 @@ namespace Dynamo.PackageManager
     public class PackageLoader
     {
 
-        public static string DefaultPackagesDirectory = "dynamo_packages";
+        public static string DefaultRelativePackagesDirectory = "dynamo_packages";
+        public string RootPackagesDirectory { get; private set; }
 
-        public string PackagesDirectory { get; set; }
-
-        public string AbsolutePackagesDirectory { get { return Path.Combine(DynamoLoader.GetDynamoDirectory(), PackagesDirectory); }}
-
-        public PackageLoader()
+        public PackageLoader() : this( Path.Combine (DynamoLoader.GetDynamoDirectory(), DefaultRelativePackagesDirectory) )
         {
-            this.PackagesDirectory = DefaultPackagesDirectory;
-            if (!Directory.Exists(this.PackagesDirectory))
+        }
+
+        public PackageLoader(string overridePackageDirectory)
+        {
+            this.RootPackagesDirectory = overridePackageDirectory;
+            if (!Directory.Exists(this.RootPackagesDirectory))
             {
-                Directory.CreateDirectory(this.PackagesDirectory);
+                Directory.CreateDirectory(this.RootPackagesDirectory);
             }
         }
 
-        public PackageLoader(string packagesDirectory)
+        private ObservableCollection<LocalPackage> _localPackages = new ObservableCollection<LocalPackage>();
+        public ObservableCollection<LocalPackage> LocalPackages { get { return _localPackages; } }
+
+        /// <summary>
+        ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
+        /// </summary>
+        internal void LoadPackages()
         {
-            this.PackagesDirectory = packagesDirectory;
-            if (!Directory.Exists(this.PackagesDirectory))
-            {
-                Directory.CreateDirectory(this.PackagesDirectory);
-            }
+            this.ScanAllPackageDirectories();
+            LocalPackages.ToList().ForEach( (pkg) => pkg.Load() );
         }
 
-        private ObservableDictionary<string, DynamoInstalledPackage> _installedPackageNames = new ObservableDictionary<string, DynamoInstalledPackage>();
-        public ObservableDictionary<string, DynamoInstalledPackage> InstalledPackageNames { get { return _installedPackageNames;  } }
-
-        internal void AppendCustomNodeSearchPaths(CustomNodeLoader customNodeLoader)
+        private void ScanAllPackageDirectories()
         {
-            UpdateInstalledPackages();
-
-            foreach (var ele in InstalledPackageNames)
-            {
-                var dyfPath = Path.Combine(ele.Value.Directory, "dyf");
-                if ( Directory.Exists(dyfPath))
-                    customNodeLoader.AddDirectoryToSearchPath(dyfPath);
-            }
+            LocalPackages.Clear();
+            Directory.EnumerateDirectories(RootPackagesDirectory).ToList().ForEach(ScanPackageDirectory);
         }
 
-        internal void AppendBinarySearchPath()
+        public void ScanPackageDirectory(string directory)
         {
-            UpdateInstalledPackages();
-
-            foreach (var ele in InstalledPackageNames)
+            try
             {
-                var binPath = Path.Combine(ele.Value.Directory, "bin");
-                if (Directory.Exists(binPath))
-                    DynamoLoader.AddBinarySearchPath(binPath);
-            }
-        }
+                var headerPath = Path.Combine(directory, "pkg.json");
+                var pkgName = Path.GetFileName(directory);
 
-        private void UpdateInstalledPackages()
-        {
-            InstalledPackageNames.Clear();
-
-            // enumerate directories in absolute packages directory
-            foreach (var dir in Directory.EnumerateDirectories(AbsolutePackagesDirectory))
-            {
-                var headerPath = Path.Combine(dir, "pkg.json");
-                var pkgName = Path.GetFileName(dir);
-
-                DynamoInstalledPackage installedPkg = null;
+                LocalPackage discoveredPkg = null;
 
                 // get the package name and the installed version
                 if (File.Exists(headerPath))
                 {
-                    installedPkg = DynamoInstalledPackage.FromJson(headerPath);
-                }
-                else // no pkg header, we don't know anything about this package
-                {
-                    installedPkg = new DynamoInstalledPackage(dir, pkgName, "unknown");
-                }
-
-                if (InstalledPackageNames.ContainsKey(pkgName))
-                {
-                    InstalledPackageNames[pkgName] = installedPkg;
+                    discoveredPkg = LocalPackage.FromJson(headerPath);
                 }
                 else
                 {
-                    InstalledPackageNames.Add(pkgName, installedPkg);
+                    throw new Exception(headerPath + " contains a package without a header.  Ignoring it.");
+                }
+
+                if (LocalPackages.All(pkg => pkg.Name != discoveredPkg.Name))
+                {
+                    LocalPackages.Add(discoveredPkg);
+                }
+                else
+                {
+                    // todo: tell user that dup pkg was found
+                    throw new Exception("A duplicate of the package called " + discoveredPkg.Name +
+                                              " was found at " + discoveredPkg.RootDirectory + ".  Ignoring it.");
                 }
             }
-        }
-
-        internal void UninstallPackages()
-        {
+            catch (Exception e)
+            {
+                DynamoLogger.Instance.Log("Exception encountered scanning the package directory at " + this.RootPackagesDirectory );
+                DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
+            }
             
         }
 
         public bool IsUnderPackageControl(string path)
         {
-            throw new NotImplementedException();
+            return LocalPackages.Any(ele => ele.ContainsFile(path));
         }
 
-        public bool IsUnderPackageControl(FunctionDefinition path)
+        public bool IsUnderPackageControl(FunctionDefinition def)
         {
-            throw new NotImplementedException();
+            return IsUnderPackageControl(def.Workspace.FilePath);
         }
 
         public bool IsUnderPackageControl(Type t)
         {
-            throw new NotImplementedException();
+            return LocalPackages.Any(package => package.LoadedTypes.Contains(t));
         }
 
-        public DynamoInstalledPackage GetInstalledPackage(string path)
+        public LocalPackage GetLocalPackage(string path)
         {
-            throw new NotImplementedException();
+            return LocalPackages.FirstOrDefault(pkg => pkg.RootDirectory == path);
+        }
+
+        internal void DoCachedPackageUninstalls()
+        {
+            // scan dynSettings for cached packages to unload
+            // unload them
+            // throw new NotImplementedException();
         }
     }
 }

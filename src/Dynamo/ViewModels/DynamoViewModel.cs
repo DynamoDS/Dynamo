@@ -2276,10 +2276,12 @@ namespace Dynamo.Controls
 
                     if (addToSearch)
                     {
-                        Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId);
+                        Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category, functionWorkspace.Description, definition.FunctionId);
                     }
 
-                    Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, functionWorkspace.Description, definition.FunctionId, path);
+                    var customNodeInfo = new CustomNodeInfo(definition.FunctionId, functionWorkspace.Name, functionWorkspace.Category,
+                                                            functionWorkspace.Description, path);
+                    Controller.CustomNodeLoader.SetNodeInfo(customNodeInfo);
 
                     #region Compile Function and update all nodes
 
@@ -2845,7 +2847,7 @@ namespace Dynamo.Controls
             Controller.CustomNodeLoader.AddFunctionDefinition(functionDefinition.FunctionId, functionDefinition);
 
             // add the element to search
-            Controller.SearchViewModel.Add(name, category, id);
+            Controller.SearchViewModel.Add(name, category, "No description provided", id);
 
             if (display)
             {
