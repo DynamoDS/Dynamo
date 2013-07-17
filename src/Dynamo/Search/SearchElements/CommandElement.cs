@@ -14,8 +14,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Input;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -30,7 +30,7 @@ namespace Dynamo.Search.SearchElements
         /// Command property </summary>
         /// <value>
         /// The command to be executed by this search element </value>
-        public ICommand Command { get; private set; }
+        public DelegateCommand Command { get; private set; }
 
         /// <summary>
         /// Type property </summary>
@@ -74,7 +74,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description">A description of what the command does, to be shown in search.</param>
         /// <param name="tags">Some descriptive terms to be shown in search.</param>
         /// <param name="command">The command to be execute in the Execute() method - with no parameters</param>
-        public CommandElement(string name, string description, IEnumerable<string> tags, ICommand command)
+        public CommandElement(string name, string description, IEnumerable<string> tags, DelegateCommand command)
         {
             this.Command = command;
             this._name = name;

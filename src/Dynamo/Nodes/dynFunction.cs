@@ -15,7 +15,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-//using System.Windows.Controls;
 using System.Xml;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
@@ -69,12 +68,6 @@ namespace Dynamo
             public new string Name 
             {
                 get { return this.Definition.Workspace.Name; }
-            }
-
-            void ui_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-            {
-                Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(_def.FunctionId);
-                e.Handled = true;
             }
 
             FunctionDefinition _def;
