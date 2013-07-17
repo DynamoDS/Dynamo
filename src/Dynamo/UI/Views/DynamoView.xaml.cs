@@ -205,6 +205,7 @@ namespace Dynamo.Controls
                 if (dialog.ShowDialog() != true)
                 {
                     e.Success = false;
+                    return;
                 }
 
                 e.Name = dialog.Text;
