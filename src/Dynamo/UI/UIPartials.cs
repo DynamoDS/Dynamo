@@ -634,6 +634,13 @@ namespace Dynamo.Nodes
 
             nodeUI.MouseDoubleClick += new System.Windows.Input.MouseButtonEventHandler(ui_MouseDoubleClick);
         }
+
+        void ui_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(_def.FunctionId);
+            e.Handled = true;
+        }
+
     }
 
     public partial class dynOutput : dynNodeModel
