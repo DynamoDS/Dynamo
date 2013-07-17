@@ -515,7 +515,7 @@ namespace Dynamo
             : base(name, e, c, x, y)
         {
             WatchChanges = true; 
-            HasUnsavedChanges = true;
+            HasUnsavedChanges = false;
             Category = category;
         }
 

@@ -390,7 +390,7 @@ namespace Dynamo.PackageManager
             
         }
 
-        private HashSet<string> GetAllFiles()
+        private IEnumerable<string> GetAllFiles()
         {
             var files = new HashSet<string>();
 
@@ -424,7 +424,7 @@ namespace Dynamo.PackageManager
             return files;
         }
 
-        private List<PackageDependency> GetAllDependencies()
+        private IEnumerable<PackageDependency> GetAllDependencies()
         {
 
             var pkgNames = new HashSet<string>();
@@ -478,7 +478,7 @@ namespace Dynamo.PackageManager
             return pkgDeps;
         }
 
-        private List<Tuple<string, string>> GetAllNodeNameDescriptionPairs()
+        private IEnumerable<Tuple<string, string>> GetAllNodeNameDescriptionPairs()
         {
             var funcDefs = new HashSet<Guid>();
             var list = new List<Tuple<string, string>>();
@@ -509,18 +509,18 @@ namespace Dynamo.PackageManager
 
             }
 
-            return new List<Tuple<string, string>>();
+            return list;
         }
 
-        private string _ErrorString = "";
+        private string _errorString = "";
         public string ErrorString
         {
-            get { return _ErrorString; }
+            get { return _errorString; }
             set
             {
-                if (this._ErrorString != value)
+                if (this._errorString != value)
                 {
-                    this._ErrorString = value;
+                    this._errorString = value;
                     this.RaisePropertyChanged("ErrorString");
                 }
             }
