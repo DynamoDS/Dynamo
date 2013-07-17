@@ -301,7 +301,12 @@ namespace Dynamo.Controls
 
             //we know the data context will have the is connecting property
             //but we don't want an explicit reference to it
-            if (!(bool)DataContext.GetType().GetProperty("IsConnecting").GetValue(DataContext, null))
+            //the datacontext will be the workspace elements collection
+            //which after the full UI separation now lives on the view
+            //but, the isconnecting property lives on the ViewModel and we
+            //store a reference to that on the view
+            var vm = DataContext.GetType().GetProperty("ViewModel").GetValue(DataContext, null);
+            if (!(bool)vm.GetType().GetProperty("IsConnecting").GetValue(vm, null))
             {
                 //test if we're hitting the background
                 // Retrieve the coordinate of the mouse position.
@@ -310,41 +315,6 @@ namespace Dynamo.Controls
 
                 if (DynamoSelection.Instance.Selection.Count == 0)
                     return;
-
-                //MVVM: We've changed the selection to contain models, not views,
-                //so the hit test code has been altered to use the Rect of the model.
-                //hitResultsList.Clear();
-
-                //// Set up a callback to receive the hit test result enumeration.
-                //VisualTreeHelper.HitTest(this, null,
-                //        new HitTestResultCallback(MyHitTestResult),
-                //        new PointHitTestParameters(pt));
-
-                ////if you hit a selectable object
-                //foreach (DependencyObject dobj in hitResultsList)
-                //{
-                //    Debug.WriteLine(string.Format("Testing {0} for hit.", dobj.GetType().ToString()));
-                //    ISelectable sel = ElementClicked(dobj) as ISelectable;    //, typeof(ISelectable));
-                //    if (sel != null)
-                //    {
-                //        Debug.WriteLine(string.Format("Hit selectable {0}.", sel.GetType().ToString()));
-                //        base.OnMouseLeftButtonDown(e);
-
-                //        //this.isDragInProgress = false;
-
-                //        // Cache the mouse cursor location.
-                //        this.origCursorLocation = e.GetPosition(this);
-                //        Debug.WriteLine(string.Format("ResetCursorLocation point x:{0} y:{0}", this.origCursorLocation.X, this.origCursorLocation.Y));
-
-                //        //if (this.selection.Count == 0)
-                //        //    return;
-
-                //        this.isDragInProgress = true;
-
-                //        e.Handled = true;
-                //        return;
-                //    }
-                //}
 
                 //for every node in the current selection, see whether the mouse
                 //coordinates are within its rectangle. if so, start dragging.

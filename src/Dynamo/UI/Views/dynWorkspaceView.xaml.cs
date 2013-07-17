@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,15 +19,40 @@ namespace Dynamo.Views
     /// <summary>
     /// Interaction logic for dynWorkspaceView.xaml
     /// </summary>
-    public partial class dynWorkspaceView : UserControl
+    public partial class dynWorkspaceView : UserControl, INotifyPropertyChanged
     {
         private bool isWindowSelecting;
         private Point mouseDownPos;
         private Dynamo.Controls.DragCanvas WorkBench = null;
+        public dynWorkspaceViewModel ViewModel { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private CompositeCollection _workspaceElementsCollection = new CompositeCollection();
+        public CompositeCollection WorkspaceElementsCollection
+        {
+            get { return _workspaceElementsCollection; }
+            set
+            {
+                _workspaceElementsCollection = value;
+                //RaisePropertyChanged("Nodes");
+                //RaisePropertyChanged("WorkspaceElements");
+                NotifyPropertyChanged("WorkspaceElements");
+            }
+        }
 
         public dynWorkspaceView()
         {
             InitializeComponent();
+
+            WorkspaceElements.DataContext = this;
 
             selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
             DataContextChanged += new DependencyPropertyChangedEventHandler(dynWorkspaceView_DataContextChanged);
@@ -43,6 +69,31 @@ namespace Dynamo.Views
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Workspace loaded.");
+            
+            ViewModel = DataContext as dynWorkspaceViewModel;
+
+            //setup the composite collection
+            var nodesColl = new CollectionContainer { Collection = ViewModel.Nodes };
+            WorkspaceElementsCollection.Add(nodesColl);
+
+            var connColl = new CollectionContainer { Collection = ViewModel.Connectors };
+            WorkspaceElementsCollection.Add(connColl);
+
+            var notesColl = new CollectionContainer { Collection = ViewModel.Notes };
+            WorkspaceElementsCollection.Add(notesColl);
+
+            ViewModel.RequestAddViewModelToCollection += _viewModel_RequestAddViewModelToCollection;
+            ViewModel.RequestRemoveViewModelFromCollection +=ViewModel_RequestRemoveViewModelFromCollection;
+        }
+
+        void  ViewModel_RequestRemoveViewModelFromCollection(object sender, ViewModelEventArgs e)
+        {
+ 	        WorkspaceElementsCollection.Remove(e.ViewModel);
+        }
+
+        void _viewModel_RequestAddViewModelToCollection(object sender, ViewModelEventArgs e)
+        {
+            WorkspaceElementsCollection.Add(e.ViewModel);
         }
 
         /// <summary>

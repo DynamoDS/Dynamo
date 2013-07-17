@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Data;
+//using System.Windows.Data;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
@@ -20,6 +20,7 @@ namespace Dynamo
     public delegate void NoteEventHandler(object sender, EventArgs e);
     public delegate void ViewEventHandler(object sender, EventArgs e);
     public delegate void ZoomEventHandler(object sender, EventArgs e);
+    public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
 
     public class dynWorkspaceViewModel: dynViewModelBase
     {
@@ -35,6 +36,8 @@ namespace Dynamo
         public event NodeEventHandler RequestCenterViewOnElement;
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
+        public event ViewModelAdditionEventHandler RequestAddViewModelToCollection;
+        public event ViewModelAdditionEventHandler RequestRemoveViewModelFromCollection;
 
         private bool _watchEscapeIsDown = false;
 
@@ -90,22 +93,22 @@ namespace Dynamo
                 RequestAddViewToOuterCanvas(this, e);
         }
 
+        public virtual void OnRequestAddViewModelToCollection(object sender, ViewModelEventArgs e)
+        {
+            if (RequestAddViewModelToCollection != null)
+                RequestAddViewModelToCollection(this, e);
+        }
+
+        public virtual void OnRequestRemoveViewModelFromCollection(object sender, ViewModelEventArgs e)
+        {
+            if (RequestRemoveViewModelFromCollection != null)
+                RequestRemoveViewModelFromCollection(this, e);
+        }
+
         ObservableCollection<dynConnectorViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
         private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();
         ObservableCollection<dynNodeViewModel> _nodes = new ObservableCollection<dynNodeViewModel>();
         ObservableCollection<dynNoteViewModel> _notes = new ObservableCollection<dynNoteViewModel>();
-        
-        private CompositeCollection _workspaceElements = new CompositeCollection();
-        public CompositeCollection WorkspaceElements
-        {
-            get { return _workspaceElements; }
-            set
-            {
-                _workspaceElements = value;
-                RaisePropertyChanged("Nodes");
-                RaisePropertyChanged("WorkspaceElements");
-            }
-        }
 
         public ObservableCollection<dynConnectorViewModel> Connectors
         {
@@ -183,12 +186,14 @@ namespace Dynamo
             {
                 if (value != null)
                 {
-                    WorkspaceElements.Add(value);
+                    //WorkspaceElements.Add(value);
+                    OnRequestAddViewModelToCollection(this, new ViewModelEventArgs(value));
                     activeConnector = value;
                 }    
                 else
                 {
-                    WorkspaceElements.Remove(activeConnector);
+                    //WorkspaceElements.Remove(activeConnector);
+                    OnRequestRemoveViewModelFromCollection(this, new ViewModelEventArgs(activeConnector));
                 }
                 
                 RaisePropertyChanged("ActiveConnector");
@@ -285,14 +290,6 @@ namespace Dynamo
         {
             _model = model;
 
-            var nodesColl = new CollectionContainer { Collection = Nodes };
-            WorkspaceElements.Add(nodesColl);
-
-            var connColl = new CollectionContainer { Collection = Connectors };
-            WorkspaceElements.Add(connColl);
-
-            var notesColl = new CollectionContainer { Collection = Notes };
-            WorkspaceElements.Add(notesColl);
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
@@ -810,10 +807,10 @@ namespace Dynamo
         }
     }
 
-    public class NodeViewEventArgs:EventArgs
+    public class ViewModelEventArgs:EventArgs
     {
-        dynNodeViewModel ViewModel { get; set; }
-        public NodeViewEventArgs(dynNodeViewModel vm)
+        public dynViewModelBase ViewModel { get; set; }
+        public ViewModelEventArgs(dynViewModelBase vm)
         {
             ViewModel = vm;
         }
