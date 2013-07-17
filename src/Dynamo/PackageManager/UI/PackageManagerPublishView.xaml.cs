@@ -9,10 +9,10 @@ namespace Dynamo.PackageManager
     /// </summary>
     public partial class PackageManagerPublishView : Window
     {
-        public PackageManagerPublishView(PackageManagerPublishCustomNodeViewModel customNodeViewModel)
+        public PackageManagerPublishView(PublishCustomNodesViewModel customNodesViewModel)
         {
             
-            this.DataContext = customNodeViewModel;
+            this.DataContext = customNodesViewModel;
 
             this.Owner = dynSettings.Bench;
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;

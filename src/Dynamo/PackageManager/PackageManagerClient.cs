@@ -210,60 +210,7 @@ namespace Dynamo.PackageManager
                     try 
                     {
 
-                        // create a directory where the package will be stored
-                        var rootDir = Directory.CreateDirectory(Path.Combine(dynSettings.PackageLoader.RelativePackagesDirectory, name));
-
-                        // build the directory substructure
-                        var binDir = rootDir.CreateSubdirectory("bin");
-                        var dyfDir = rootDir.CreateSubdirectory("dyf");
-                        var extraDir = rootDir.CreateSubdirectory("extra");
-
-                        // build the package header json, which will be stored with the pkg
-                        var jsSer = new JsonSerializer();
-                        var pkgHeaderStr = jsSer.Serialize(pkgHeader);
-
-                        // write the pkg header to the root directory of the pkg
-                        var headerPath = Path.Combine(rootDir.FullName, "pkg.json");
-                        if (File.Exists(headerPath)) File.Delete(headerPath);
-                        File.WriteAllText(headerPath, pkgHeaderStr);
-
-                        // copy the files to their destination
-                        foreach (var file in files)
-                        {
-
-                            if (file == null) continue;
-                            if (!File.Exists(file)) continue;
-
-                            if (file.EndsWith("dyf"))
-                            {
-                                File.Copy(file, Path.Combine(dyfDir.FullName, Path.GetFileName(file)));
-                            }
-                            else if (file.EndsWith("dll") || file.EndsWith("exe"))
-                            {
-                                File.Copy(file, Path.Combine(binDir.FullName, Path.GetFileName(file)));
-                            }
-                            else
-                            {
-                                File.Copy(file, Path.Combine(extraDir.FullName, Path.GetFileName(file)));
-                            }
-
-                        }
-
-                        // zip up the folder and get its path 
-                        var zipPath = Greg.Utility.FileUtilities.Zip(rootDir.FullName);
-
-                        var pkgUpload = new PackageUpload(  name,
-                                                            version,
-                                                            description,
-                                                            keywords,
-                                                            license,
-                                                            contents,
-                                                            "dynamo",
-                                                            engineVersion,
-                                                            engineMetadata,
-                                                            group,
-                                                            zipPath,
-                                                            deps);  
+                        var pkgUpload = PackageUploadBuilder.BuildNewPackage(pkgHeader, files, deps, )
 
                         var ret = Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgUpload);
                         if (!ret.success)
