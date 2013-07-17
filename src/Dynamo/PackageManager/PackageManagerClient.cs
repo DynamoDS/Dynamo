@@ -140,7 +140,7 @@ namespace Dynamo.PackageManager
         //    new Thread(start).Start();
         //}
 
-        internal List<Search.SearchElements.PackageManagerSearchElement> Search(string search, int MaxNumSearchResults)
+        internal List<PackageManagerSearchElement> Search(string search, int MaxNumSearchResults)
         {
             var nv = new Greg.Requests.Search(search);
             var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
@@ -156,22 +156,64 @@ namespace Dynamo.PackageManager
                                             string group,
                                             IEnumerable<string> files,
                                             IEnumerable<PackageDependency> deps,
-                                            IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs, string rootDirectoryIfPackageVersion = "" )
+                                            IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs, 
+                                            string rootDirectoryIfPackageVersion = "" )
         {
 
             if (!isNewVersion)
             {
-                return PublishNewPackage( name, version, description, keywords, license, group, files, deps,
-                                            nodeNameDescriptionPairs);
+                var pkgHeader = PackageUploadBuilder.BuildNewPackageRequestBody(   name,
+                                                                                   version,
+                                                                                   description,
+                                                                                   keywords,
+                                                                                   license,
+                                                                                   group,
+                                                                                   deps,
+                                                                                   nodeNameDescriptionPairs);   
+
+                var packageUploadHandle = new PackageUploadHandle(pkgHeader);
+                return PublishNewPackage( pkgHeader, files, packageUploadHandle );
+
             }
             else
             {
+                
                 return PublishNewPackageVersion(name, version, description, keywords, group, rootDirectoryIfPackageVersion, files, deps,
                                             nodeNameDescriptionPairs);
             }
 
         }
 
+
+
+        public PackageUploadHandle ResumeNewPublishUpload(  LocalPackage pkg,
+                                                            PackageUploadHandle packageUploadHandle )
+        {
+            ThreadStart start = () =>
+            {
+                try
+                {
+                    var pkgUpload = PackageUploadBuilder.BuildNewPackage(pkg, packageUploadHandle);
+                    var ret = Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgUpload);
+
+                    if (!ret.success)
+                    {
+                        packageUploadHandle.Error(ret.message);
+                        return;
+                    }
+
+                    packageUploadHandle.Done(ret.content);
+
+                }
+                catch (Exception e)
+                {
+                    packageUploadHandle.Error(e.GetType() + ": " + e.Message);
+                }
+            };
+            new Thread(start).Start();
+
+            return packageUploadHandle;
+        }
 
         ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
         public ObservableCollection<PackageUploadHandle> Uploads
@@ -183,51 +225,35 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Attempt to upload PackageUpload
         /// </summary>
-        private PackageUploadHandle PublishNewPackage(string name,
-                                                        string version,
-                                                        string description,
-                                                        IEnumerable<string> keywords,
-                                                        string license,
-                                                        string group,
-                                                        IEnumerable<string> files,
-                                                        IEnumerable<PackageDependency> deps,
-                                                        IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs)
+        private PackageUploadHandle PublishNewPackage(  PackageUploadRequestBody pkgHeader, 
+                                                        IEnumerable<string> files, 
+                                                        PackageUploadHandle packageUploadHandle )
         {
-            // form dynamo dependent data
-            string contents = String.Join(", ",
-                                          nodeNameDescriptionPairs.Select((pair) => pair.Item1 + " - " + pair.Item2));
-            string engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            string engineMetadata = "";
-
-            // build the package header json, which will be stored with the pkg
-            var pkgHeader = new PackageUploadRequestBody(name, version, description, keywords, license, contents, "dynamo",
-                                                         engineVersion, engineMetadata, group, deps);
-
-            var s = new PackageUploadHandle(pkgHeader);
 
             ThreadStart start = () =>
                 {
-                    try 
+                    try
                     {
-
-                        var pkgUpload = PackageUploadBuilder.BuildNewPackage(pkgHeader, files, deps, )
-
+                        var pkgUpload = PackageUploadBuilder.BuildNewPackage(pkgHeader, files, packageUploadHandle);
                         var ret = Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgUpload);
+
                         if (!ret.success)
                         {
-                            s.Error(ret.message);
+                            packageUploadHandle.Error(ret.message);
                             return;
                         }
-                        s.Done(ret.content);
+
+                        packageUploadHandle.Done(ret.content);
+
                     }
                     catch (Exception e)
                     {
-                        s.Error(e.GetType() + ": " + e.Message);
+                        packageUploadHandle.Error(e.GetType() + ": " + e.Message);
                     }
                 };
             new Thread(start).Start();
 
-            return s;
+            return packageUploadHandle;
 
         }
 
