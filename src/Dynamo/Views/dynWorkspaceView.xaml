@@ -128,7 +128,9 @@
 
             <Canvas.ContextMenu>
                 <ContextMenu>
-                    <MenuItem  Header="_Align Selection"  Name="Align">
+                    <MenuItem  Header="_Select All"  Name="SelectAll" Command="{Binding SelectAllCommand}" />
+                    
+                    <MenuItem  Header="_Align"  Name="Align">
                         <MenuItem  Header="_X Average"  Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalCenter"/>
                         <MenuItem  Header="_Left" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalLeft"/>
                         <MenuItem  Header="_Right" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalRight"/>
@@ -138,8 +140,9 @@
                         <MenuItem  Header="_Y Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalDistribute"/>
                         <MenuItem  Header="_X Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalDistribute"/>
                     </MenuItem>
+
                     <MenuItem  Header="_New Node From Selection"  Name="NodeFromSelection" Command="{Binding NodeFromSelectionCommand}" />
-                    <MenuItem  Header="_Find Nodes From Selected Elements" Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityConverter}}"  
+                    <MenuItem  Header="_Nodes From Selected Geometry" Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityConverter}}"  
                                Name="ShowElementsInContext" Command="{Binding FindNodesFromSelectionCommand}" />
                 </ContextMenu>
             </Canvas.ContextMenu>
