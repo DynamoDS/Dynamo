@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Dynamo.Utilities;
 using Greg.Requests;
@@ -11,6 +12,27 @@ namespace Dynamo.PackageManager
 {
     static class PackageUploadBuilder
     {
+
+        public static PackageUploadRequestBody BuildNewPackageRequestBody(  string name,
+                                                                            string version,
+                                                                            string description,
+                                                                            IEnumerable<string> keywords,
+                                                                            string license,
+                                                                            string group,
+                                                                            IEnumerable<PackageDependency> deps,
+                                                                            IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs)    
+        {
+            // form dynamo dependent data
+            string contents = String.Join(", ",
+                                          nodeNameDescriptionPairs.Select((pair) => pair.Item1 + " - " + pair.Item2));
+            string engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            string engineMetadata = "";
+
+            // build the package header json, which will be stored with the pkg
+            return new PackageUploadRequestBody(name, version, description, keywords, license, contents, "dynamo",
+                                                         engineVersion, engineMetadata, group, deps);
+        } 
+
         public static PackageUpload BuildNewPackage(PackageUploadRequestBody pkgHeader,
                                                     IEnumerable<string> files,
                                                     PackageUploadHandle uploadHandle )
@@ -85,6 +107,11 @@ namespace Dynamo.PackageManager
 
         }
 
+        public static PackageUpload BuildNewPackage(LocalPackage pkg, PackageUploadHandle packageUploadHandle)
+        {
+            throw new NotImplementedException();
+        }
+
         private static void RemapCustomNodeFilePaths( IEnumerable<string> filePaths, string dyfRoot )
         {
             filePaths
@@ -108,14 +135,12 @@ namespace Dynamo.PackageManager
                 .ForEach( File.Delete );
         }
 
-        public static void BuildPackageVersion()
+        public static PackageVersionUpload BuildPackageVersion(LocalPackage pkg, PackageUploadHandle uploadHandle)
         {
-            
+            throw new NotImplementedException();
         }
 
 
-
-
-
+        
     }
 }
