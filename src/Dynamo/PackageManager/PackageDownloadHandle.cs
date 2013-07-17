@@ -122,36 +122,58 @@ namespace Dynamo.PackageManager
     {
         public string Name { get; set; }
 
+        public string CustomNodeDirectory
+        {
+            get { return Path.Combine(this.Directory, "dyf"); }
+        }
+
+        public string BinaryDirectory
+        {
+            get { return Path.Combine(this.Directory, "bin"); }
+        }
+
         private string _directory;
         public string Directory { get { return _directory; } set { _directory = value; RaisePropertyChanged("Directory"); } }
 
         private string _versionName;
         public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
 
+        public List<Type> LoadedTypes { get; set; }
+        public List<CustomNodeInfo> LoadedCustomNodes { get; set; } 
+
         public DynamoInstalledPackage(string directory, string name, string versionName )
         {
             this.Directory = directory;
             this.Name = name;
             this.VersionName = versionName;
+            this.LoadedTypes = new List<Type>();
+            this.LoadedCustomNodes = new List<CustomNodeInfo>();
         }
 
-        public bool RegisterWithHost()
+        public void RegisterWithHost()
         {
             dynSettings.Bench.Dispatcher.BeginInvoke((Action)(() =>
             {
-                dynSettings.PackageLoader.AppendBinarySearchPath();
-                DynamoLoader.LoadBuiltinTypes();
+                LoadedTypes = 
+                    GetAssemblies().Select(DynamoLoader.LoadNodesFromAssembly).SelectMany(x => x).ToList();
 
-                dynSettings.PackageLoader.AppendCustomNodeSearchPaths(dynSettings.CustomNodeLoader);
-                DynamoLoader.LoadCustomNodes();
+                LoadedCustomNodes = DynamoLoader.LoadCustomNodes(CustomNodeDirectory).ToList();
+
             }));
-            
-            return false;
         }
 
+        public List<Assembly> GetAssemblies()
+        {
+            return
+                (new DirectoryInfo(BinaryDirectory))
+                    .EnumerateFiles("*.dll")
+                    .Select((fileInfo) => Assembly.LoadFrom(fileInfo.FullName)).ToList();
+        }
+       
         // location of all files
         public void Uninstall()
         {
+            throw new NotImplementedException();
             // remove this package completely
         }
 

@@ -43,9 +43,6 @@ namespace Dynamo.Utilities
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
         internal static void LoadBuiltinTypes()
         {
-            var searchViewModel = dynSettings.Controller.SearchViewModel;
-            var controller = dynSettings.Controller;
-
             dynSettings.PackageLoader.AppendBinarySearchPath();
 
             string location = GetDynamoDirectory();
@@ -141,7 +138,8 @@ namespace Dynamo.Utilities
         /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
         /// <param name="bench">The bench where logging errors will be sent</param>
-        private static void LoadNodesFromAssembly(Assembly assembly)
+        /// <Returns>The list of node types loaded from this assembly</Returns>
+        public static List<Type> LoadNodesFromAssembly(Assembly assembly)
         {
             var controller = dynSettings.Controller;
             var searchViewModel = dynSettings.Controller.SearchViewModel;
@@ -220,7 +218,7 @@ namespace Dynamo.Utilities
                         dynSettings.Controller.DynamoViewModel.Log("The type was " + t.FullName);
                         dynSettings.Controller.DynamoViewModel.Log(e);
                     }
-                    
+
                 }
             }
             catch (Exception e)
@@ -240,9 +238,9 @@ namespace Dynamo.Utilities
                     }
                 }
             }
+
+            return AssemblyPathToTypesLoaded[assembly.Location];
         }
-
-
 
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
@@ -325,36 +323,52 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Load Custom Nodes from the default directory - the "definitions"
-        ///     directory where the executing assembly is located..
+        ///     Load Custom Nodes from the CUstomNodeLoader search path and update search
         /// </summary>
-        /// <param name="bench">The logger is needed in order to tell how long it took.</param>
-        public static void LoadCustomNodes()
+        public static IEnumerable<CustomNodeInfo> LoadCustomNodes()
         {
 
             var customNodeLoader = dynSettings.CustomNodeLoader;
             var searchViewModel = dynSettings.Controller.SearchViewModel;
 
-            // custom node loader
-            var sw = new Stopwatch();
-            sw.Start();
-
-            dynSettings.PackageLoader.AppendCustomNodeSearchPaths(customNodeLoader);
-
-            customNodeLoader.UpdateSearchPath();
-            var nn = customNodeLoader.GetNodeNameCategoryAndGuidList();
+            var loadedNodes = customNodeLoader.UpdateSearchPath();
 
             // add nodes to search
-            foreach (var pair in nn)
+            foreach (var pair in loadedNodes)
             {
-                searchViewModel.Add(pair.Item1, pair.Item2, pair.Item3);
+                searchViewModel.Add(pair.Name, pair.Category, pair.Description, pair.Guid);
             }
             
-            sw.Stop();
-            DynamoCommands.WriteToLogCmd.Execute(string.Format("{0} ellapsed for loading definitions.", sw.Elapsed));
+            // update search view
+            searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
+
+            return loadedNodes;
+
+        }
+
+        /// <summary>
+        ///     Load Custom Nodes from the default directory - the "definitions"
+        ///     directory where the executing assembly is located..
+        /// </summary>
+        public static IEnumerable<CustomNodeInfo> LoadCustomNodes(string path)
+        {
+
+            var customNodeLoader = dynSettings.CustomNodeLoader;
+            var searchViewModel = dynSettings.Controller.SearchViewModel;
+
+            var loadedNodes = customNodeLoader.LoadNodesFromDirectory(path);
+            customNodeLoader.AddDirectoryToSearchPath(path);
+
+            // add nodes to search
+            foreach (var pair in loadedNodes)
+            {
+                searchViewModel.Add(pair.Name, pair.Category, pair.Description, pair.Guid);
+            }
 
             // update search view
             searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
+
+            return loadedNodes;
 
         }
 

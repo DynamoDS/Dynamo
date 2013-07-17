@@ -18,6 +18,27 @@ using NUnit.Framework;
 namespace Dynamo.Utilities
 {
     /// <summary>
+    /// A struct to keep track of custom nodes.
+    /// </summary>
+    public class CustomNodeInfo
+    {
+        public CustomNodeInfo(Guid guid, string name, string category, string description, string path)
+        {
+            this.Guid = guid;
+            this.Name = name;
+            this.Category = category;
+            this.Description = description;
+            this.Path = Path;
+        }
+
+        public Guid Guid { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
+        public string Description { get; set; }
+        public string Path { get; set; }
+    }
+
+    /// <summary>
     ///     Manages instantiation of custom nodes.  All custom nodes known to Dynamo should be stored
     ///     with this type.  This object implements late initialization of custom nodes by providing a 
     ///     single interface to initialize custom nodes.  
@@ -116,11 +137,12 @@ namespace Dynamo.Utilities
             this.loadedNodes[id] = def;
         }
 
+
         /// <summary>
         ///     Import a dyf file for eventual initialization
         /// </summary>
         /// <returns>False if we failed to get data from the path, otherwise true</returns>
-        public bool AddFileToPath(string file)
+        public CustomNodeInfo AddFileToPath(string file)
         {
             Guid guid;
             string name;
@@ -128,18 +150,21 @@ namespace Dynamo.Utilities
             string description;
             if (!GetHeaderFromPath(file, out guid, out name, out category, out description))
             {
-                return false;
+                return null;
             }
 
             // the node has already been loaded
             // from somewhere else
             if (Contains(guid))
             {
-                return false;
+                return null;
             }
 
-            this.SetNodeInfo(name, category, description, guid, file);
-            return true;
+            var info = new CustomNodeInfo(guid, name, category, description, file);
+
+            this.SetNodeInfo(info);
+
+            return info;
         }
 
         /// <summary>
@@ -200,8 +225,8 @@ namespace Dynamo.Utilities
         /// <param name="guid"></param>
         public void Remove(Guid guid)
         {
-            if (loadedNodes.ContainsKey(guid)) { }
-            loadedNodes.Remove(guid);
+            if (loadedNodes.ContainsKey(guid)) 
+                loadedNodes.Remove(guid);
             if (nodePaths.ContainsKey(guid))
                 nodePaths.Remove(guid);
             if (NodeCategories.ContainsKey(guid))
@@ -214,7 +239,6 @@ namespace Dynamo.Utilities
              });
 
             dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
-
         }
 
         /// <summary>
@@ -222,16 +246,21 @@ namespace Dynamo.Utilities
         ///     Does not instantiate the nodes.
         /// </summary>
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public bool UpdateSearchPath()
+        public IEnumerable<CustomNodeInfo> UpdateSearchPath()
         {
-            foreach (string dir in SearchPath)
-            {
-                foreach (string file in Directory.EnumerateFiles(dir, "*.dyf"))
-                {
-                    this.AddFileToPath(file);
-                }
-            }
-            return true;
+            return SearchPath.Select(LoadNodesFromDirectory).SelectMany(x => x);
+        }
+
+        /// <summary>
+        ///     Enumerates all of the files in the search path and get's their guids.
+        ///     Does not instantiate the nodes.
+        /// </summary>
+        /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
+        public IEnumerable<CustomNodeInfo> LoadNodesFromDirectory(string dir)
+        {
+            return Directory.EnumerateFiles(dir, "*.dyf")
+                            .Select(AddFileToPath)
+                            .Where(nodeInfo => nodeInfo != null);
         }
 
         /// <summary>
@@ -271,16 +300,17 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="guid">The unique id for the node.</param>
         /// <param name="path">The path for the node.</param>
-        public void SetNodeInfo(string name, string category, string description, Guid id, string path)
+        public void SetNodeInfo(CustomNodeInfo info)
         {
-            if (this.NodeNames.ContainsKey(name))
+
+            if (this.NodeNames.ContainsKey(info.Name))
             {
-                this.NodeNames.Remove(name);
+                this.NodeNames.Remove(info.Name);
             }
-            this.NodeNames.Add(name, id);
-            this.SetNodeCategory(id, category);
-            this.SetNodeDescription(id, description);
-            this.SetNodePath(id, path);
+            this.NodeNames.Add(info.Name, info.Guid);
+            this.SetNodeCategory(info.Guid, info.Category);
+            this.SetNodeDescription(info.Guid, info.Description);
+            this.SetNodePath(info.Guid, info.Description);
         }
 
         /// <summary>
