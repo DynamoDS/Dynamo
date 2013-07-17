@@ -49,6 +49,15 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
+        /// NodeDescriptions property </summary>
+        /// <value>Maps function ids to descriptions. </value>
+        public ObservableDictionary<Guid, string> NodeDescriptions
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// SearchPath property </summary>
         /// <value>This is a list of directories where this object will 
         /// search for dyf files.</value>
@@ -67,6 +76,8 @@ namespace Dynamo.Utilities
 
             NodeNames = new ObservableDictionary<string, Guid>();
             NodeCategories = new ObservableDictionary<Guid, string>();
+            NodeDescriptions = new ObservableDictionary<Guid, string>();
+
         }
 
         /// <summary>
@@ -114,7 +125,8 @@ namespace Dynamo.Utilities
             Guid guid;
             string name;
             string category;
-            if (!GetHeaderFromPath(file, out guid, out name, out category))
+            string description;
+            if (!GetHeaderFromPath(file, out guid, out name, out category, out description))
             {
                 return false;
             }
@@ -126,7 +138,7 @@ namespace Dynamo.Utilities
                 return false;
             }
 
-            this.SetNodeInfo(name, category, guid, file);
+            this.SetNodeInfo(name, category, description, guid, file);
             return true;
         }
 
@@ -259,7 +271,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="guid">The unique id for the node.</param>
         /// <param name="path">The path for the node.</param>
-        public void SetNodeInfo(string name, string category, Guid id, string path)
+        public void SetNodeInfo(string name, string category, string description, Guid id, string path)
         {
             if (this.NodeNames.ContainsKey(name))
             {
@@ -267,6 +279,7 @@ namespace Dynamo.Utilities
             }
             this.NodeNames.Add(name, id);
             this.SetNodeCategory(id, category);
+            this.SetNodeDescription(id, description);
             this.SetNodePath(id, path);
         }
 
@@ -284,6 +297,23 @@ namespace Dynamo.Utilities
             else
             {
                 this.NodeCategories.Add(id, category);
+            }
+        }
+
+        /// <summary>
+        ///     Sets the description for a custom node
+        /// </summary>
+        /// <param name="guid">The unique id for the node.</param>
+        /// <param name="category">The description for the node</param>
+        public void SetNodeDescription(Guid id, string description)
+        {
+            if (this.NodeDescriptions.ContainsKey(id))
+            {
+                this.NodeDescriptions[id] = description;
+            }
+            else
+            {
+                this.NodeDescriptions.Add(id, description);
             }
         }
 
@@ -481,7 +511,7 @@ namespace Dynamo.Utilities
         /// <param name="path">The path from which to get the guid</param>
         /// <param name="guid">A reference to the guid (OUT) Guid.Empty if function returns false. </param>
         /// <returns>Whether we successfully obtained the guid or not.  </returns>
-        public static bool GetHeaderFromPath(string path, out Guid guid, out string name, out string category)
+        public static bool GetHeaderFromPath(string path, out Guid guid, out string name, out string category, out string description)
         {
 
             try
@@ -489,6 +519,7 @@ namespace Dynamo.Utilities
                 var funName = "";
                 var id = "";
                 var cat = "";
+                var des = "";
 
                 #region Get xml document and parse
 
@@ -510,6 +541,10 @@ namespace Dynamo.Utilities
                         {
                             cat = att.Value;
                         }
+                        else if (att.Name.Equals("Description"))
+                        {
+                            des = att.Value;
+                        }
                     }
                 }
 
@@ -525,11 +560,11 @@ namespace Dynamo.Utilities
                 else
                 {
                     guid = Guid.Parse(id);
-
                 }
 
                 name = funName;
                 category = cat;
+                description = des;
                 return true;
 
             }
@@ -540,6 +575,7 @@ namespace Dynamo.Utilities
                 category = "";
                 guid = Guid.Empty;
                 name = "";
+                description = "";
                 return false;
             }
 
@@ -577,6 +613,7 @@ namespace Dynamo.Utilities
 
                 string funName = null;
                 string category = "";
+                string description = "";
                 double cx = DynamoView.CANVAS_OFFSET_X;
                 double cy = DynamoView.CANVAS_OFFSET_Y;
                 double zoom = 1.0;
@@ -597,6 +634,8 @@ namespace Dynamo.Utilities
                             funName = att.Value;
                         else if (att.Name.Equals("Category"))
                             category = att.Value;
+                        else if (att.Name.Equals("Description"))
+                            description = att.Value;
                         else if (att.Name.Equals("ID"))
                         {
                             id = att.Value;
@@ -623,6 +662,9 @@ namespace Dynamo.Utilities
                 {
                     WatchChanges = false
                 };
+
+                ws.Zoom = zoom;
+                ws.Description = description;
 
                 def = new FunctionDefinition(Guid.Parse(id))
                 {

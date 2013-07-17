@@ -45,7 +45,7 @@ namespace Dynamo.Search.Regions
         {
             if (Loaded)
             {
-                DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
+                //DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
             }
             else
             {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Dynamo.Utilities;
+using Greg.Requests;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -32,20 +33,21 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public PackageHeader Header { get; private set; }
+        public PackageUploadRequestBody Header { get; private set; }
+        public PackageVersionUploadRequestBody VersionHeader { get; private set; }
         public string Name { get { return Header.name; } }
+        public PackageHeader CompletedHeader { get; set; }
 
-        private string _versionName;
-        public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
+        public string VersionName { get { return Header != null ? Header.version : VersionHeader.version; } }
 
-        public PackageUploadHandle(PackageHeader header, string version)
+        public PackageUploadHandle(PackageUploadRequestBody header)
         {
             this.Header = header;
         }
 
-        public void Start()
+        public PackageUploadHandle(PackageVersionUploadRequestBody header)
         {
-            //dynSettings.Controller.PackageManagerClient.DownloadAndInstall(this);
+            this.VersionHeader = header;
         }
 
         public void Error(string errorString)
@@ -54,13 +56,12 @@ namespace Dynamo.PackageManager
             this.ErrorString = errorString;
         }
 
-        public void Done(string filePath)
+        public void Done(PackageHeader ph)
         {
+            this.CompletedHeader = ph;
             this.UploadState = State.Uploaded;
         }
 
     }
-
-
 
 }

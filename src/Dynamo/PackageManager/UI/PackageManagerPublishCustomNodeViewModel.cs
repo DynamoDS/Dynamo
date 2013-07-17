@@ -86,16 +86,15 @@ namespace Dynamo.PackageManager
             /// Dependencies property </summary>
             /// <value>
             /// The set of dependencies  </value>
-            private PackageDependencyRootViewModel _dependencies = null;
+            private List<PackageDependencyRootViewModel> _dependencies = null;
             public List<PackageDependencyRootViewModel> Dependencies
             {
-                get { 
-                    _dependencies = _dependencies ?? new PackageDependencyRootViewModel(FunctionDefinition);
-
-                    return new List<PackageDependencyRootViewModel>()
-                        {
-                            _dependencies
-                        };
+                get
+                {
+                    _dependencies = _dependencies ??
+                                    FunctionDefinitions.Select((def) => new PackageDependencyRootViewModel(def))
+                                                       .ToList();
+                    return _dependencies;
                 }
             }
 
@@ -299,39 +298,40 @@ namespace Dynamo.PackageManager
             /// FunctionDefinition property </summary>
             /// <value>
             /// The FuncDefinition for the current package to be uploaded</value>
-            private FunctionDefinition _FunctionDefinition;
-            public FunctionDefinition FunctionDefinition
+            private List<FunctionDefinition> _FunctionDefinitions;
+            public List<FunctionDefinition> FunctionDefinitions
             {
-                get { return _FunctionDefinition; }
+                get { return _FunctionDefinitions; }
                 set
                 {
-                    _FunctionDefinition = value;
-                    this.Name = FunctionDefinition.Workspace.Name;
-                    this.RaisePropertyChanged(() => this.Name );
-                    this.Visible = Visibility.Visible;
-                    this.RaisePropertyChanged(() => this.Visible);
+                    _FunctionDefinitions = value;
+                    this.Name = FunctionDefinitions[0].Workspace.Name;
                 }
             }
-
+            
             /// <summary>
-            /// PackageHeader property </summary>
+            /// BaseVersionHeader property </summary>
             /// <value>
             /// The PackageHeader if we're uploading a new verson, setting this updates
             /// almost all of the fields in this object</value>
-            private PackageHeader _packageHeader;
-            public PackageHeader PackageHeader { get { return _packageHeader; }
-            set
+            /// 
+            private PackageUploadRequestBody _dynamoBaseHeader;
+            public PackageUploadRequestBody BaseVersionHeader
             {
-                this.IsNewVersion = true;
-                this.Description = value.description;
-                string[] versionSplit = value.versions[value.versions.Count - 1].version.Split('.');
-                this.MajorVersion = versionSplit[0];
-                this.MinorVersion = versionSplit[1];
-                this.BuildVersion = versionSplit[2];
-                this.Name = value.name;
-                this.Keywords = String.Join(" ", value.keywords);
-                this._packageHeader = value;
-            }}
+                get { return _dynamoBaseHeader; }
+                set
+                {
+                    this.IsNewVersion = true;
+                    this.Description = value.description;
+                    string[] versionSplit = value.version.Split('.');
+                    this.MajorVersion = versionSplit[0];
+                    this.MinorVersion = versionSplit[1];
+                    this.BuildVersion = versionSplit[2];
+                    this.Name = value.name;
+                    this.Keywords = String.Join(" ", value.keywords);
+                    this._dynamoBaseHeader = value;
+                }
+            }
 
         #endregion
 
@@ -358,6 +358,7 @@ namespace Dynamo.PackageManager
             this.MinorVersion = "";
             this.MajorVersion = "";
             this.BuildVersion = "";
+            this._dynamoBaseHeader = null;
         }
 
         /// <summary>
@@ -371,21 +372,144 @@ namespace Dynamo.PackageManager
         private void Submit(object arg)
         {
 
-            var files = new List<string>();
-            var deps = new List<PackageDependency>();
-            var handle =  Client.PublishNewPackage(   
-                                                    this.IsNewVersion,
-                                                    this.Name,
-                                                    this.FullVersion,
-                                                    this.Description,
-                                                    this.KeywordList,
-                                                    "MIT",
-                                                    this.Group,
-                                                    files,
-                                                    deps);
-            this.Uploading = true;
-            this.UploadHandle = handle;
+            try
+            {
+                var files = GetAllFiles();
+                var deps = GetAllDependencies();
+                var nodeNameDescriptionPairs = GetAllNodeNameDescriptionPairs();
+
+                var handle = Client.Publish(this.IsNewVersion, Name, FullVersion, Description, KeywordList, "MIT", Group,
+                                            files, deps, nodeNameDescriptionPairs);
+                this.Uploading = true;
+                this.UploadHandle = handle;
+            }
+            catch (Exception e)
+            {
+                ErrorString = e.Message;
+            }
             
+        }
+
+        private HashSet<string> GetAllFiles()
+        {
+            var files = new HashSet<string>();
+
+            foreach (var def in FunctionDefinitions)
+            {
+                var path = def.Workspace.FilePath;
+
+                if (def.Workspace.HasUnsavedChanges || path == null)
+                    throw new Exception(def.Workspace.Name +
+                                        " has unsaved changes.  Please save them and try to submit again.");
+
+                if (!dynSettings.PackageLoader.IsUnderPackageControl(path)) continue; // will be covered by deps 
+
+                files.Add(path);
+
+                foreach (var defDep in def.Dependencies)
+                {
+                    var pathDep = defDep.Workspace.FilePath;
+                    if (def.Workspace.HasUnsavedChanges || pathDep == null)
+                        throw new Exception(def.Workspace.Name +
+                                            " has unsaved changes.  Please save them and try to submit again.");
+                    if (!dynSettings.PackageLoader.IsUnderPackageControl(pathDep)) continue; // will be covered by deps 
+
+                    files.Add(pathDep);
+                }
+
+            }
+
+            files.UnionWith(this.AdditionalFiles);
+
+            return files;
+        }
+
+        private List<PackageDependency> GetAllDependencies()
+        {
+
+            var pkgNames = new HashSet<string>();
+            var pkgDeps = new List<PackageDependency>();
+
+            foreach (var def in FunctionDefinitions)
+            {
+                var path = def.Workspace.FilePath;
+                if (dynSettings.PackageLoader.IsUnderPackageControl(path))
+                {
+                    var pkg = dynSettings.PackageLoader.GetInstalledPackage(path);
+
+                    if (!pkgNames.Contains(path))
+                    {
+                        pkgNames.Add(path);
+                        pkgDeps.Add(new PackageDependency(pkg.Name, pkg.VersionName));
+                    }   
+                }
+                    
+                foreach (var defDep in def.Dependencies)
+                {
+                    var pathDep = defDep.Workspace.FilePath;
+                    if (dynSettings.PackageLoader.IsUnderPackageControl(pathDep))
+                    {
+                        var pkg = dynSettings.PackageLoader.GetInstalledPackage(pathDep);
+
+                        if (!pkgNames.Contains(pkg.Name))
+                        {
+                            pkgNames.Add(pkg.Name);
+                            pkgDeps.Add(new PackageDependency(pkg.Name, pkg.VersionName));
+                        }
+                    }
+                }
+
+            }
+
+            foreach (var file in AdditionalFiles )
+            {
+                if (dynSettings.PackageLoader.IsUnderPackageControl(file))
+                {
+                    var pkg = dynSettings.PackageLoader.GetInstalledPackage(file);
+
+                    if (!pkgNames.Contains(pkg.Name))
+                    {
+                        pkgNames.Add(pkg.Name);
+                        pkgDeps.Add(new PackageDependency(pkg.Name, pkg.VersionName));
+                    }
+                }
+            }
+
+            return pkgDeps;
+        }
+
+        private List<Tuple<string, string>> GetAllNodeNameDescriptionPairs()
+        {
+            var funcDefs = new HashSet<Guid>();
+            var list = new List<Tuple<string, string>>();
+
+            foreach (var def in FunctionDefinitions)
+            {
+                var path = def.Workspace.FilePath;
+                if (!dynSettings.PackageLoader.IsUnderPackageControl(path)) continue; // will be covered by deps 
+
+                if (!funcDefs.Contains(def.FunctionId))
+                {
+                    funcDefs.Add(def.FunctionId);
+                    list.Add(new Tuple<string, string>( def.Workspace.Name, def.Workspace.Description ));
+                }  
+
+                foreach (var defDep in def.Dependencies)
+                {
+                    var pathDep = defDep.Workspace.FilePath;
+
+                    if (!dynSettings.PackageLoader.IsUnderPackageControl(pathDep)) continue; // will be covered by deps 
+
+                    if (!funcDefs.Contains(defDep.FunctionId))
+                    {
+                        funcDefs.Add(defDep.FunctionId);
+                        list.Add(new Tuple<string, string>(defDep.Workspace.Name, defDep.Workspace.Description));
+                    } 
+                }
+
+            }
+
+            return new List<Tuple<string, string>>();
         }
 
         private string _ErrorString = "";

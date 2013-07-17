@@ -31,7 +31,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// The class constructor. </summary>
         /// <param name="header">The PackageHeader object describing the element</param>
-        public PackageManagerSearchElement(PackageHeader header)
+        public PackageManagerSearchElement(Greg.Responses.PackageHeader header)
         {
             this.Header = header;
             this.Weight = 1;
@@ -77,7 +77,7 @@ namespace Dynamo.Search.SearchElements
             /// Header property </summary>
             /// <value>
             /// The PackageHeader used to instantiate this object </value>
-            public PackageHeader Header { get; internal set; }
+            public Greg.Responses.PackageHeader Header { get; internal set; }
 
             /// <summary>
             /// Type property </summary>
