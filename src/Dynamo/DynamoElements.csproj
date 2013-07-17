@@ -138,7 +138,7 @@ limitations under the License.
     <Compile Include="PackageManager\UI\PackageManagerPublishView.xaml.cs">
       <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PackageManager\UI\PackageManagerPublishCustomNodeViewModel.cs" />
+    <Compile Include="PackageManager\UI\PublishCustomNodesViewModel.cs" />
     <Compile Include="PackageManager\UI\PackageManagerSearchView.xaml.cs">
       <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
     </Compile>

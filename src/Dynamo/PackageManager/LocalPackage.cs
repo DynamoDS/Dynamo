@@ -25,6 +25,8 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(this.RootDirectory, "bin"); }
         }
 
+        public bool Loaded { get; set; }
+
         private string _rootDirectory;
         public string RootDirectory { get { return _rootDirectory; } set { _rootDirectory = value; RaisePropertyChanged("RootDirectory"); } }
 
@@ -36,6 +38,7 @@ namespace Dynamo.PackageManager
 
         public LocalPackage(string directory, string name, string versionName)
         {
+            this.Loaded = false;
             this.RootDirectory = directory;
             this.Name = name;
             this.VersionName = versionName;
@@ -51,10 +54,13 @@ namespace Dynamo.PackageManager
                     GetAssemblies().Select(DynamoLoader.LoadNodesFromAssembly).SelectMany(x => x).ToList();
                     
                 LoadedCustomNodes = DynamoLoader.LoadCustomNodes(CustomNodeDirectory).ToList();
+
+                Loaded = true;
             }
             catch (Exception e)
             {
-               
+                DynamoLogger.Instance.Log("Exception when attempting to load package " + this.Name + " from " + this.RootDirectory);
+                DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
             }
 
         }
@@ -98,5 +104,6 @@ namespace Dynamo.PackageManager
             return new LocalPackage(Path.GetDirectoryName(headerPath), body.name, body.version);
 
         }
+
     }
 }

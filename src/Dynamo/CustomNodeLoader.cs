@@ -100,6 +100,16 @@ namespace Dynamo.Utilities
             NodeDescriptions = new ObservableDictionary<Guid, string>();
 
         }
+        /// <summary> 
+        /// Get a function id from a guid assuming that the file is already loaded.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public Guid GuidFromPath(string path)
+        {
+            var pair = this.nodePaths.FirstOrDefault(x => x.Value == path);
+            return pair.Key;
+        }
 
         /// <summary>
         ///     Enumerates all of the node names.

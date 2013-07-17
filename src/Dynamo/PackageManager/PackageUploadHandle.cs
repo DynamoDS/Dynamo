@@ -15,7 +15,7 @@ namespace Dynamo.PackageManager
     {
         public enum State
         {
-            Uninitialized, Uploading, Uploaded, Error
+            Uninitialized, Copying, Compressing, Uploading, Uploaded, Error
         }
 
         private string _errorString = "";

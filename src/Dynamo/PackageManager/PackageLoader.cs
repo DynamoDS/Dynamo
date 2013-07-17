@@ -42,18 +42,16 @@ namespace Dynamo.PackageManager
             LocalPackages.ToList().ForEach( (pkg) => pkg.Load() );
         }
 
-        private void ScanAllPackageDirectories()
+        private IEnumerable<LocalPackage> ScanAllPackageDirectories()
         {
-            LocalPackages.Clear();
-            Directory.EnumerateDirectories(RootPackagesDirectory).ToList().ForEach(ScanPackageDirectory);
+            return Directory.EnumerateDirectories(RootPackagesDirectory).Select(ScanPackageDirectory);
         }
 
-        public void ScanPackageDirectory(string directory)
+        public LocalPackage ScanPackageDirectory(string directory)
         {
             try
             {
                 var headerPath = Path.Combine(directory, "pkg.json");
-                var pkgName = Path.GetFileName(directory);
 
                 LocalPackage discoveredPkg = null;
 
@@ -67,9 +65,11 @@ namespace Dynamo.PackageManager
                     throw new Exception(headerPath + " contains a package without a header.  Ignoring it.");
                 }
 
+                // prevent duplicates
                 if (LocalPackages.All(pkg => pkg.Name != discoveredPkg.Name))
                 {
                     LocalPackages.Add(discoveredPkg);
+                    return discoveredPkg; // success
                 }
                 else
                 {
@@ -83,7 +83,9 @@ namespace Dynamo.PackageManager
                 DynamoLogger.Instance.Log("Exception encountered scanning the package directory at " + this.RootPackagesDirectory );
                 DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
             }
-            
+
+            return null;
+
         }
 
         public bool IsUnderPackageControl(string path)
@@ -101,9 +103,24 @@ namespace Dynamo.PackageManager
             return LocalPackages.Any(package => package.LoadedTypes.Contains(t));
         }
 
-        public LocalPackage GetLocalPackage(string path)
+        public LocalPackage GetPackageFromRoot(string path)
         {
             return LocalPackages.FirstOrDefault(pkg => pkg.RootDirectory == path);
+        }
+
+        public LocalPackage GetOwnerPackage(Type t)
+        {
+            return LocalPackages.FirstOrDefault(package => package.LoadedTypes.Contains(t));
+        }
+
+        public LocalPackage GetOwnerPackage(FunctionDefinition def)
+        {
+            return GetOwnerPackage(def.Workspace.FilePath);
+        }
+
+        public LocalPackage GetOwnerPackage(string path)
+        {
+            return LocalPackages.FirstOrDefault(ele => ele.ContainsFile(path));
         }
 
         internal void DoCachedPackageUninstalls()
