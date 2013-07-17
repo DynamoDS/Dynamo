@@ -162,7 +162,7 @@ namespace Dynamo.PackageManager
 
             if (!isNewVersion)
             {
-                var pkgHeader = PackageUploadBuilder.BuildNewPackageRequestBody(   name,
+                var pkgHeader = PackageUploadBuilder.NewPackageHeader(   name,
                                                                                    version,
                                                                                    description,
                                                                                    keywords,
@@ -184,8 +184,6 @@ namespace Dynamo.PackageManager
 
         }
 
-
-
         public PackageUploadHandle ResumeNewPublishUpload(  LocalPackage pkg,
                                                             PackageUploadHandle packageUploadHandle )
         {
@@ -193,7 +191,7 @@ namespace Dynamo.PackageManager
             {
                 try
                 {
-                    var pkgUpload = PackageUploadBuilder.BuildNewPackage(pkg, packageUploadHandle);
+                    var pkgUpload = PackageUploadBuilder.NewPackage(pkg, packageUploadHandle);
                     var ret = Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgUpload);
 
                     if (!ret.success)
@@ -234,7 +232,7 @@ namespace Dynamo.PackageManager
                 {
                     try
                     {
-                        var pkgUpload = PackageUploadBuilder.BuildNewPackage(pkgHeader, files, packageUploadHandle);
+                        var pkgUpload = PackageUploadBuilder.NewPackage(pkgHeader, files, packageUploadHandle);
                         var ret = Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgUpload);
 
                         if (!ret.success)
