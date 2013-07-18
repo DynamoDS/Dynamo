@@ -1,12 +1,10 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Nodes
 {
-    public class dynNoteViewModel: dynViewModelBase
+    public partial class dynNoteViewModel: dynViewModelBase
     {
 
         #region Properties
@@ -65,8 +63,6 @@ namespace Dynamo.Nodes
             get { return _model.IsSelected; }
         }
 
-        public DelegateCommand SelectCommand { get; set; }
-
         //public bool NoteVisibility
         //{
         //    get
@@ -85,7 +81,6 @@ namespace Dynamo.Nodes
             model.PropertyChanged += note_PropertyChanged;
 
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
-            SelectCommand = new DelegateCommand(Select, CanSelect);
         }
 
         private void Select()

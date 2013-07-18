@@ -17,15 +17,13 @@ using System.Collections.Generic;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A search element representing a local node </summary>
-    public class NodeSearchElement : SearchElementBase
+    public partial class NodeSearchElement : SearchElementBase
     {
-
         #region Properties
 
         /// <summary>
@@ -87,11 +85,6 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        /// <summary>
-        /// Command for toggling visibility
-        /// </summary>
-        public DelegateCommand ToggleDescriptionVisibilityCommand { get; set; }
-
         #endregion
 
         /// <summary>
@@ -99,7 +92,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="node">The local node</param>
         public NodeSearchElement(dynNodeModel node)
         {
-            ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
+            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = node;
             this._name = Node.NickName;
             this.Weight = 1;
@@ -117,7 +110,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="tags"></param>
         public NodeSearchElement(string name, string description, List<string> tags)
         {
-            ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
+            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = null;
             this._name = name;
             this.Weight = 1;
@@ -136,7 +129,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="guid">The unique id for the custom node</param>
         public NodeSearchElement(string name, Guid guid)
         {
-            ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
+            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = null;
             this._name = name;
             this.Weight = 0.9;
@@ -153,7 +146,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="funcDef">The FunctionDefinition for a custom node</param>
         public NodeSearchElement(FunctionDefinition funcDef)
         {
-            ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
+            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = dynSettings.Controller.DynamoViewModel.CreateNode(funcDef.FunctionId.ToString());
             this._name = funcDef.Workspace.Name;
             this.Weight = 1.1;

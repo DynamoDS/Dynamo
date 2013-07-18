@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Windows.Input;
-using Dynamo.Utilities;
 
 namespace Dynamo.Search.Regions
 {
