@@ -30,6 +30,7 @@ using System.Windows.Media;
 using System.Linq;
 using System.Windows.Threading;
 using System.Xml.Serialization;
+using Dynamo.Commands;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -319,8 +320,8 @@ namespace Dynamo.Applications
 
             try
             {
-                dynamoController.DynamoViewModel.ExitCommand.Execute(false); // don't allow cancellation
-                dynamoController.DynamoViewModel.ReportABugCommand.Execute();
+                DynamoCommands.ExitCommand.Execute(false); // don't allow cancellation
+                DynamoCommands.ReportABugCommand.Execute();
             }
             catch
             {

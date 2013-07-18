@@ -15,9 +15,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
+using Dynamo.Commands;
+using Dynamo.Nodes;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Greg.Responses;
-using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager
@@ -90,7 +93,7 @@ namespace Dynamo.PackageManager
                     {
                         this._Description = value;
                         this.RaisePropertyChanged(() => this.Description);
-                        ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
+                        //((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
                     }
                 }
             }
@@ -110,7 +113,7 @@ namespace Dynamo.PackageManager
                         this._Keywords = value;
                         this.RaisePropertyChanged(() => this.Keywords);
                         KeywordList = value.Split(' ').Where(x => x.Length > 0).ToList();
-                        ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
+                        //((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
                     }
                 }
             }
@@ -141,7 +144,7 @@ namespace Dynamo.PackageManager
                     {
                         this._MinorVersion = value;
                         this.RaisePropertyChanged(() => this.MinorVersion);
-                        ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
+                        //((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
                     }
                 }
             }
@@ -160,7 +163,7 @@ namespace Dynamo.PackageManager
                     {
                         this._BuildVersion = value;
                         this.RaisePropertyChanged(() => this.BuildVersion);
-                        ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
+                        //((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
                     }
                 }
             }
@@ -179,7 +182,7 @@ namespace Dynamo.PackageManager
                     {
                         this._MajorVersion = value;
                         this.RaisePropertyChanged(() => this.MajorVersion);
-                        ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
+                        //((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
                     }
                 }
             }
@@ -222,13 +225,13 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-            /// <summary>
+        /// <summary>
         /// The class constructor. </summary>
         /// <param name="client"> Reference to to the PackageManagerClient object for the app </param>
         public PackageManagerPublishViewModel(PackageManagerClient client)
         {
             Client = client;
-            this.SubmitCommand = new DelegateCommand<object>(this.OnSubmit, this.CanSubmit);
+            //this.SubmitCommand = new DelegateCommand<object>(this.OnSubmit, this.CanSubmit);
             this.Clear();
             this.Visible = false;
         }
@@ -247,14 +250,8 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// SubmitCommand property </summary>
-        /// <value>
-        /// A command which, when executed, submits the current package</value>
-        public DelegateCommand<object> SubmitCommand { get; private set; }
-
-        /// <summary>
         /// Delegate used to submit the element</summary>
-        private void OnSubmit(object arg)
+        public void OnSubmit(object arg)
         {
             if (!this.IsNewVersion)
             {
@@ -285,10 +282,117 @@ namespace Dynamo.PackageManager
 
         /// <summary>
         /// Delegate used to submit the element </summary>
-        private bool CanSubmit(object arg)
+        internal bool CanSubmit(object arg)
         {
             return (this.Client.IsLoggedIn && this.Description.Length > 3 && this.Name.Length > 0 && this.KeywordList.Count > 0 && 
                     this.MinorVersion.Length > 0 && this.MajorVersion.Length > 0 && this.BuildVersion.Length > 0);
+        }
+
+        public void ShowNodePublishInfo(object funcDef)
+        {
+            if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false)
+            {
+                DynamoCommands.ShowLoginCmd.Execute();
+                dynSettings.Controller.DynamoViewModel.Log("Must login first to publish a node.");
+                return;
+            }
+
+            //if (!init)
+            //{
+            //var view = new PackageManagerPublishView(dynSettings.Controller.PackageManagerPublishViewModel);
+
+            //MVVM: we now have an event called on the current workspace view model to 
+            //add the view to its outer canvas
+            //dynSettings.Bench.outerCanvas.Children.Add(_view);
+            //Canvas.SetBottom(_view, 0);
+            //Canvas.SetRight(_view, 0);
+
+            //dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(view));
+
+            //    init = true;
+            //}
+
+            if (funcDef is FunctionDefinition)
+            {
+                var f = funcDef as FunctionDefinition;
+
+                dynSettings.Controller.PackageManagerPublishViewModel.FunctionDefinition =
+                    f;
+
+                // we're submitting a new version
+                if (dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders.ContainsKey(f))
+                {
+                    dynSettings.Controller.PackageManagerPublishViewModel.PackageHeader =
+                        dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders[f];
+                }
+            }
+            else
+            {
+                dynSettings.Controller.DynamoViewModel.Log("Failed to obtain function definition from node.");
+                return;
+            }
+
+        }
+
+        internal bool CanShowNodePublishInfo(object funcDef)
+        {
+            return true;
+        }
+
+        public void PublishCurrentWorkspace()
+        {
+            //this._client = dynSettings.Controller.PackageManagerClient;
+
+            if (dynSettings.Controller.DynamoViewModel.ViewingHomespace)
+            {
+                MessageBox.Show("You can't publish your the home workspace.", "Workspace Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                return;
+            }
+
+            var currentFunDef =
+                dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(dynSettings.Controller.DynamoViewModel.CurrentSpace);
+
+            if (currentFunDef != null)
+            {
+                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(currentFunDef);
+            }
+            else
+            {
+                MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+            }
+        }
+
+        internal bool CanPublishCurrentWorkspace()
+        {
+            return true;
+        }
+
+        public void PublishSelectedNode()
+        {
+            //var client = dynSettings.Controller.PackageManagerClient;
+
+            var nodeList = DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel && ((dynNodeModel)x) is dynFunction)
+                                        .Select(x => (((dynNodeModel)x) as dynFunction).Definition.FunctionId).ToList();
+
+            if (nodeList.Count != 1)
+            {
+                MessageBox.Show("You must select a single user-defined node.  You selected " + nodeList.Count + " nodes.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                return;
+            }
+
+            if (dynSettings.Controller.CustomNodeLoader.Contains(nodeList[0]))
+            {
+                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(nodeList[0]));
+            }
+            else
+            {
+                MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+            }
+        }
+
+        internal bool CanPublishSelectedNode()
+        {
+            return true;
         }
 
     }

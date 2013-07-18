@@ -382,7 +382,7 @@ namespace Dynamo.Commands
             get
             {
                 if(_addNoteCommand == null)
-                    AddNoteCommand = new DelegateCommand<object>(_vm.AddNote, _vm.CanAddNote);
+                    _addNoteCommand = new DelegateCommand<object>(_vm.AddNote, _vm.CanAddNote);
 
                 return _addNoteCommand;
             }
