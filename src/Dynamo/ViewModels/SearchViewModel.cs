@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Dynamo.Commands;
+//using Dynamo.Commands;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
@@ -86,7 +86,8 @@ namespace Dynamo.Search
             {
                 _SearchText = value;
                 RaisePropertyChanged("SearchText");
-                DynamoCommands.SearchCommand.Execute();
+                //DynamoCommands.SearchCommand.Execute();
+                Search();
             }
         }
 
@@ -835,6 +836,52 @@ namespace Dynamo.Search
         internal void Remove(string p)
         {
             throw new NotImplementedException();
+        }
+
+        public void Search()
+        {
+            dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
+        }
+
+        internal bool CanSearch()
+        {
+            return true;
+        }
+
+        internal void HideSearch()
+        {
+            dynSettings.Controller.PackageManagerPublishViewModel.Visible = false;
+            dynSettings.Controller.PackageManagerLoginViewModel.Visible = false;
+            dynSettings.Controller.SearchViewModel.Visible = false;
+        }
+
+        internal bool CanHideSearch()
+        {
+            if (dynSettings.Controller.SearchViewModel.Visible == true)
+                return true;
+            return false;
+        }
+
+        public void ShowSearch()
+        {
+            dynSettings.Controller.SearchViewModel.Visible = true;
+        }
+
+        internal bool CanShowSearch()
+        {
+            if (dynSettings.Controller.SearchViewModel.Visible == false)
+                return true;
+            return false;
+        }
+
+        public void FocusSearch()
+        {
+            dynSettings.Controller.SearchViewModel.OnRequestFocusSearch(dynSettings.Controller.DynamoViewModel, EventArgs.Empty);
+        }
+
+        internal bool CanFocusSearch()
+        {
+            return true;
         }
     }
 }

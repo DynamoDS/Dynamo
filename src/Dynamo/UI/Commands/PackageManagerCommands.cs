@@ -252,6 +252,12 @@ namespace Dynamo.Commands
         private static PackageManagerPublishViewModel _vm_pm_publish =
             dynSettings.Controller.PackageManagerPublishViewModel;
 
+        private static PackageManagerClient _pm_client =
+            dynSettings.Controller.PackageManagerClient;
+
+        private static PackageManagerLoginViewModel _vm_pm_login =
+            dynSettings.Controller.PackageManagerLoginViewModel;
+
         /// <summary>
         /// SubmitCommand property </summary>
         /// <value>
@@ -309,7 +315,7 @@ namespace Dynamo.Commands
             get
             {
                 if (_refreshRemotePackagesCmd == null)
-                    _refreshRemotePackagesCmd = new DelegateCommand(RefreshRemotePackages, CanRefreshRemotePackages);
+                    _refreshRemotePackagesCmd = new DelegateCommand(_pm_client.RefreshRemotePackages, _pm_client.CanRefreshRemotePackages);
                 return _refreshRemotePackagesCmd;
             }
         }
@@ -320,7 +326,7 @@ namespace Dynamo.Commands
             get
             {
                 if (_showLoginCmd == null)
-                    _showLoginCmd = new DelegateCommand(ShowLogin, CanShowLogin);
+                    _showLoginCmd = new DelegateCommand(_vm_pm_login.ShowLogin, _vm_pm_login.CanShowLogin);
                 return _showLoginCmd;
             }
         }
@@ -331,39 +337,10 @@ namespace Dynamo.Commands
             get
             {
                 if (_loginCmd == null)
-                    _loginCmd = new DelegateCommand(Login, CanLogin);
+                    _loginCmd = new DelegateCommand(_vm_pm_login.Login, _vm_pm_login.CanLogin);
                 return _loginCmd;
             }
         }
 
-        private static void RefreshRemotePackages()
-        {
-            dynSettings.Controller.PackageManagerClient.RefreshAvailable();
-        }
-
-        private static bool CanRefreshRemotePackages()
-        {
-            return true;
-        }
-
-        private static void ShowLogin()
-        {
-            dynSettings.Controller.PackageManagerLoginViewModel.Visible = true;
-        }
-
-        private static bool CanShowLogin()
-        {
-            return true;
-        }
-
-        private static void Login()
-        {
-            
-        }
-
-        private static bool CanLogin()
-        {
-            return true;
-        }
     }
 }

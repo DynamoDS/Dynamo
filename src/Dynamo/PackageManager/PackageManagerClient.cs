@@ -533,6 +533,16 @@ namespace Dynamo.PackageManager
         {
             //dynSettings.Bench.packageControlLabel.Visibility = Visibility.Collapsed;
         }
+
+        public void RefreshRemotePackages()
+        {
+            RefreshAvailable();
+        }
+
+        internal bool CanRefreshRemotePackages()
+        {
+            return true;
+        }
     }
 
     public class LoginStateEventArgs:EventArgs

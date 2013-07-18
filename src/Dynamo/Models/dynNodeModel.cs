@@ -5,13 +5,10 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using Dynamo.Selection;
 using Microsoft.FSharp.Collections;
-
-using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
-using Dynamo.Commands;
 using Value = Dynamo.FScheme.Value;
 using Microsoft.FSharp.Core;
 
@@ -775,10 +772,16 @@ namespace Dynamo.Nodes
                     Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                     dynSettings.Controller.DynamoViewModel.Log(ex);
 
-                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    //if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    //{
+                    //    DynamoCommands.WriteToLogCmd.Execute(ex.Message);
+                    //    DynamoCommands.WriteToLogCmd.Execute(ex.StackTrace);
+                    //}
+
+                    if (dynSettings.Controller.DynamoViewModel.CanWriteToLog(null))
                     {
-                        DynamoCommands.WriteToLogCmd.Execute(ex.Message);
-                        DynamoCommands.WriteToLogCmd.Execute(ex.StackTrace);
+                        dynSettings.Controller.DynamoViewModel.WriteToLog(ex.Message);
+                        dynSettings.Controller.DynamoViewModel.WriteToLog(ex.StackTrace);
                     }
 
                     //Controller.DynamoViewModel.ShowElement(this); // not good if multiple nodes are in error state

@@ -12,7 +12,7 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-using System;
+using Dynamo.Search;
 using Dynamo.Search.Regions;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
@@ -21,13 +21,16 @@ namespace Dynamo.Commands
 {
     public static partial class DynamoCommands
     {
+        private static SearchViewModel _vm_search =
+            dynSettings.Controller.SearchViewModel;
+
         private static DelegateCommand focusSearch;
         public static DelegateCommand FocusSearchCommand
         {
             get
             {
                 if (focusSearch == null)
-                    focusSearch = new DelegateCommand(FocusSearch, CanFocusSearch);
+                    focusSearch = new DelegateCommand(_vm_search.FocusSearch, _vm_search.CanFocusSearch);
                 return focusSearch;
             }
         }
@@ -38,7 +41,7 @@ namespace Dynamo.Commands
             get
             {
                 if (search == null)
-                    search = new DelegateCommand(Search, CanSearch);
+                    search = new DelegateCommand(_vm_search.Search, _vm_search.CanSearch);
                 return search;
             }
         }
@@ -49,7 +52,7 @@ namespace Dynamo.Commands
             get
             {
                 if (showSearch == null)
-                    showSearch = new DelegateCommand(ShowSearch, CanShowSearch);
+                    showSearch = new DelegateCommand(_vm_search.ShowSearch, _vm_search.CanShowSearch);
                 return showSearch;
             }
         }
@@ -60,55 +63,9 @@ namespace Dynamo.Commands
             get
             {
                 if (hideSearch == null)
-                    hideSearch = new DelegateCommand(HideSearch, CanHideSearch);
+                    hideSearch = new DelegateCommand(_vm_search.HideSearch, _vm_search.CanHideSearch);
                 return hideSearch;
             }
-        }
-
-        private static void Search()
-        {
-            dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
-        }
-
-        private static bool CanSearch()
-        {
-            return true;
-        }
-
-        private static void HideSearch()
-        {
-            dynSettings.Controller.PackageManagerPublishViewModel.Visible = false;
-            dynSettings.Controller.PackageManagerLoginViewModel.Visible = false;
-            dynSettings.Controller.SearchViewModel.Visible = false;
-        }
-
-        private static bool CanHideSearch()
-        {
-            if (dynSettings.Controller.SearchViewModel.Visible == true)
-                return true;
-            return false;
-        }
-
-        private static void ShowSearch()
-        {
-            dynSettings.Controller.SearchViewModel.Visible = true;
-        }
-
-        private static bool CanShowSearch()
-        {
-            if (dynSettings.Controller.SearchViewModel.Visible == false)
-                return true;
-            return false;
-        }
-
-        private static void FocusSearch()
-        {
-            dynSettings.Controller.SearchViewModel.OnRequestFocusSearch(dynSettings.Controller.DynamoViewModel, EventArgs.Empty);
-        }
-
-        private static bool CanFocusSearch()
-        {
-            return true;
         }
     }
 

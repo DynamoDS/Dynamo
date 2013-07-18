@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using Dynamo.Commands;
+//using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
@@ -155,12 +155,15 @@ namespace Dynamo
         {
             RaisePropertyChanged("FullscreenWatchVisible");
 
-            if (DynamoCommands.IsProcessingCommandQueue)
-                return;
+            //don't re-run the expression just to update the watch
+            //just redraw it
+            //if (DynamoCommands.IsProcessingCommandQueue)
+            //    return;
 
             //dynSettings.Controller.RunCommand( dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null );
-            dynSettings.Controller.DynamoViewModel.RunExpression(null);
+            //dynSettings.Controller.DynamoViewModel.RunExpression(null);
 
+            dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
         }
 
         public bool FullscreenWatchVisible
