@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Dynamo.Search.SearchElements;
-using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Nodes.Search
 {
-    public abstract class BrowserItem : NotificationObject
+    public abstract partial class BrowserItem : NotificationObject
     {
 
         public abstract ObservableCollection<BrowserItem> Items { get; set; }
@@ -135,17 +134,6 @@ namespace Dynamo.Nodes.Search
             {
                 _isExpanded = value;
                 RaisePropertyChanged("IsExpanded");
-            }
-        }
-
-        public DelegateCommand _toggleIsExpanded;
-        public DelegateCommand ToggleIsExpanded
-        {
-            get
-            {
-                if (_toggleIsExpanded == null)
-                    _toggleIsExpanded = new DelegateCommand(ToggleIsExpandedExecute, CanToggleIsExpandedCanExecute);
-                return _toggleIsExpanded;
             }
         }
 

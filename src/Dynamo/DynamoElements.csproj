@@ -102,6 +102,7 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\Commands\BrowserItemCommands.cs" />
     <Compile Include="UI\Commands\Commands.cs" />
     <Compile Include="DynamoCompletionData.cs" />
     <Compile Include="DynamoLogger.cs" />
@@ -121,6 +122,9 @@ limitations under the License.
     <Compile Include="Nodes\dynEquation.cs" />
     <Compile Include="UI\Commands\ConnectorCommands.cs" />
     <Compile Include="UI\Commands\NodeCommands.cs" />
+    <Compile Include="UI\Commands\NodeSearchElementCommands.cs" />
+    <Compile Include="UI\Commands\NoteCommands.cs" />
+    <Compile Include="UI\Commands\PortCommands.cs" />
     <Compile Include="UI\Commands\WorkspaceCommands.cs" />
     <Compile Include="UI\Converters.cs">
       <SubType>Code</SubType>

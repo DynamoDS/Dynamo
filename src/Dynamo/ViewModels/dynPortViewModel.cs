@@ -4,17 +4,14 @@ using System.Windows;
 using System.Linq;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Connectors
 {
-    public class dynPortViewModel : dynViewModelBase
+    public partial class dynPortViewModel : dynViewModelBase
     {
         private readonly dynPortModel _port;
         private readonly dynNodeModel _node;
 
-        public DelegateCommand SetCenterCommand { get; set; }
-        
         public dynPortModel PortModel
         {
             get { return _port; }
@@ -62,19 +59,12 @@ namespace Dynamo.Connectors
             get { return _node.State; }    
         }
 
-        public DelegateCommand ConnectCommand { get; set; }
-        public DelegateCommand HighlightCommand { get; set; }
-        public DelegateCommand UnHighlightCommand { get; set; }
-
         public dynPortViewModel(dynPortModel port, dynNodeModel node)
         {
             _node = node;
             _port = port;
             _port.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(_port_PropertyChanged);
             _node.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(_node_PropertyChanged);
-            ConnectCommand = new DelegateCommand(Connect, CanConnect);
-            HighlightCommand = new DelegateCommand(Highlight, CanHighlight);
-            UnHighlightCommand = new DelegateCommand(UnHighlight, CanUnHighlight);
         }
 
         void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
