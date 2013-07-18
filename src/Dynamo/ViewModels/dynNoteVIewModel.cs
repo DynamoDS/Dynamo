@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 
@@ -75,6 +76,15 @@ namespace Dynamo.Nodes
         
         #endregion
 
+        public event EventHandler RequestsSelection;
+        public virtual void OnRequestsSelection(Object sender, EventArgs e)
+        {
+            if (RequestsSelection != null)
+            {
+                RequestsSelection(this, e);
+            }
+        }
+
         public dynNoteViewModel(dynNoteModel model)
         {
             _model = model;
@@ -85,26 +95,28 @@ namespace Dynamo.Nodes
 
         private void Select()
         {
-            if (!_model.IsSelected)
-            {
-                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
-                {
-                    DynamoSelection.Instance.ClearSelection();
-                }
+            //if (!_model.IsSelected)
+            //{
+            //    if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
+            //    {
+            //        DynamoSelection.Instance.ClearSelection();
+            //    }
 
-                if (!DynamoSelection.Instance.Selection.Contains(_model))
-                {
-                    DynamoSelection.Instance.Selection.Add(_model);
-                }
+            //    if (!DynamoSelection.Instance.Selection.Contains(_model))
+            //    {
+            //        DynamoSelection.Instance.Selection.Add(_model);
+            //    }
 
-            }
-            else
-            {
-                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-                {
-                    DynamoSelection.Instance.Selection.Remove(_model);
-                }
-            }
+            //}
+            //else
+            //{
+            //    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            //    {
+            //        DynamoSelection.Instance.Selection.Remove(_model);
+            //    }
+            //}
+
+            OnRequestsSelection(this, EventArgs.Empty);
         }
 
         public void UpdateSizeFromView(double w, double h)
