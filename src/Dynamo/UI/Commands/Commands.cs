@@ -1,4 +1,7 @@
-﻿using Dynamo.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using Dynamo.Controls;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
 
@@ -8,7 +11,19 @@ namespace Dynamo.Commands
     public static partial class DynamoCommands
     {
         private static DynamoViewModel _vm = dynSettings.Controller.DynamoViewModel;
- 
+        private static readonly Queue<Tuple<object, object>> commandQueue = new Queue<Tuple<object, object>>();
+        private static bool isProcessingCommandQueue = false;
+
+        public static bool IsProcessingCommandQueue
+        {
+            get { return isProcessingCommandQueue; }
+        }
+
+        public static Queue<Tuple<object, object>> CommandQueue
+        {
+            get { return commandQueue; }
+        }
+
         #region fields
         private static DelegateCommand<object> writeToLogCmd;
         private static DelegateCommand _reportABug;
@@ -502,6 +517,63 @@ namespace Dynamo.Commands
             }
         }
 
+        #region CommandQueue
+
+        /// <summary>
+        /// Add a command to the CommandQueue and run ProcessCommandQueue(), providing null as the 
+        /// command arguments
+        /// </summary>
+        /// <param name="command">The command to run</param>
+        public static void RunCommand(DelegateCommand<object> command)
+        {
+            RunCommand(command, null);
+        }
+
+        /// <summary>
+        /// Add a command to the CommandQueue and run ProcessCommandQueue(), providing the given
+        /// arguments to the command
+        /// </summary>
+        /// <param name="command">The command to run</param>
+        /// <param name="args">Arguments to give to the command</param>
+        public static void RunCommand(DelegateCommand<object> command, object args)
+        {
+            var commandAndParams = Tuple.Create<object, object>(command, args);
+            CommandQueue.Enqueue(commandAndParams);
+            ProcessCommandQueue();
+        }
+
+        //private void Hooks_DispatcherInactive(object sender, EventArgs e)
+        //{
+        //    ProcessCommandQueue();
+        //}
+
+        /// <summary>
+        ///     Run all of the commands in the CommandQueue
+        /// </summary>
+        public static void ProcessCommandQueue()
+        {
+            while (commandQueue.Count > 0)
+            {
+                var cmdData = commandQueue.Dequeue();
+                var cmd = cmdData.Item1 as DelegateCommand<object>;
+                if (cmd != null)
+                {
+                    if (cmd.CanExecute(cmdData.Item2))
+                    {
+                        cmd.Execute(cmdData.Item2);
+                    }
+                }
+            }
+            commandQueue.Clear();
+
+            if (dynSettings.Controller.UIDispatcher != null)
+            {
+                DynamoLogger.Instance.Log(string.Format("dynSettings.Bench Thread : {0}",
+                                                       dynSettings.Controller.UIDispatcher.Thread.ManagedThreadId.ToString(CultureInfo.InvariantCulture)));
+            }
+        }
+
+        #endregion
     }
 
 }

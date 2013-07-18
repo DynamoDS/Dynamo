@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 //using System.Windows.Data;
+using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
@@ -167,7 +168,7 @@ namespace Dynamo
         {
             RaisePropertyChanged("FullscreenWatchVisible");
 
-            if (dynSettings.Controller.IsProcessingCommandQueue)
+            if (DynamoCommands.IsProcessingCommandQueue)
                 return;
 
             //dynSettings.Controller.RunCommand( dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null );
