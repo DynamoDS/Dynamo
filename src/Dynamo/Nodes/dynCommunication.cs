@@ -20,7 +20,6 @@ using System.IO;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes

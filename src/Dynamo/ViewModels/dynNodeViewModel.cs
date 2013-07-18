@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Collections.ObjectModel;
-using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;

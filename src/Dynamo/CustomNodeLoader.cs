@@ -7,11 +7,8 @@ using System.Xml;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using System.IO;
-using Dynamo.Connectors;
-using Dynamo.Controls;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
-//using Dynamo.Commands;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 
