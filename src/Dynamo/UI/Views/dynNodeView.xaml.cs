@@ -20,6 +20,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Nodes;
 using Dynamo.Prompts;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 
 namespace Dynamo.Controls
@@ -75,6 +76,28 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.DispatchedToUI += new DispatchedToUIThreadHandler(NodeLogic_DispatchedToUI);
             ViewModel.RequestShowNodeHelp += new dynNodeViewModel.NodeHelpEventHandler(ViewModel_RequestShowNodeHelp);
             ViewModel.RequestShowNodeRename += new EventHandler(ViewModel_RequestShowNodeRename);
+            ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
+        }
+
+        void ViewModel_RequestsSelection(object sender, EventArgs e)
+        {
+            if (!ViewModel.NodeLogic.IsSelected)
+            {
+                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    DynamoSelection.Instance.ClearSelection();
+                }
+
+                if (!DynamoSelection.Instance.Selection.Contains(ViewModel.NodeLogic))
+                    DynamoSelection.Instance.Selection.Add(ViewModel.NodeLogic);
+            }
+            else
+            {
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    DynamoSelection.Instance.Selection.Remove(ViewModel.NodeLogic);
+                }
+            }
         }
 
         void ViewModel_RequestShowNodeRename(object sender, EventArgs e)

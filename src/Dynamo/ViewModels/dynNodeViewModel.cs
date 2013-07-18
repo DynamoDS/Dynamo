@@ -294,6 +294,15 @@ namespace Dynamo.Controls
             }
         }
 
+        public event EventHandler RequestsSelection;
+        public virtual void OnRequestsSelection(Object sender, EventArgs e)
+        {
+            if (RequestsSelection != null)
+            {
+                RequestsSelection(this, e);
+            }
+        }
+
         #endregion
 
         #region constructors
@@ -634,6 +643,8 @@ namespace Dynamo.Controls
                     DynamoSelection.Instance.Selection.Remove(nodeLogic);
                 }
             }
+
+            OnRequestsSelection(this, EventArgs.Empty);
         }
 
         private bool CanSelect()
