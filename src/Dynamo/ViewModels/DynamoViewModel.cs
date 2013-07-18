@@ -1139,7 +1139,7 @@ namespace Dynamo.Controls
         ///     Attempts to save an element, assuming that the CurrentSpace.FilePath 
         ///     field is already  populated with a path has a filename associated with it. 
         /// </summary>
-        internal void Save()
+        public void Save()
         {
             if (!String.IsNullOrEmpty(_model.CurrentSpace.FilePath))
                 SaveAs(_model.CurrentSpace.FilePath);
