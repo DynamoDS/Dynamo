@@ -24,6 +24,7 @@ using System.Xml;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.Revit;

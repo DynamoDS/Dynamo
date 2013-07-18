@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Collections.Generic;
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;

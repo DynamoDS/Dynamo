@@ -8,6 +8,7 @@ using System.Windows;
 //using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;

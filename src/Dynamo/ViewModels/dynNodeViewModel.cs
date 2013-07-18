@@ -19,6 +19,7 @@ using System.Linq;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using Dynamo.Connectors;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.Selection;

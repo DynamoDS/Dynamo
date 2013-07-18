@@ -22,6 +22,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;

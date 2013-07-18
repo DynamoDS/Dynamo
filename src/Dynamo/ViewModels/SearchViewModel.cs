@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 //using Dynamo.Commands;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;

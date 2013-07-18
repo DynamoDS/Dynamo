@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using Dynamo.Connectors;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using System.Web;
 

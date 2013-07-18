@@ -14,9 +14,10 @@
 
 using System;
 using System.Diagnostics;
+using Dynamo.Connectors;
 using Dynamo.Nodes;
 
-namespace Dynamo.Connectors
+namespace Dynamo.Models
 {
     public enum ConnectorType { BEZIER, POLYLINE };
 

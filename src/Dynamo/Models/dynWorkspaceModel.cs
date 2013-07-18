@@ -7,15 +7,11 @@ using System.Linq;
 using System.Windows;
 using System.Xml;
 using System.Globalization;
-
-using Dynamo.Connectors;
-using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-
 using Microsoft.Practices.Prism.ViewModel;
 
-namespace Dynamo
+namespace Dynamo.Models
 {
     public abstract class dynWorkspaceModel : NotificationObject, ILocatable
     {

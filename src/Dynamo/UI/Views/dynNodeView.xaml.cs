@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;

@@ -18,6 +18,7 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Microsoft.FSharp.Collections;

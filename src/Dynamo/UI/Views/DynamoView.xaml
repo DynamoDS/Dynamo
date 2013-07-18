@@ -5,7 +5,7 @@
         xmlns:commands="clr-namespace:Dynamo.Commands;assembly=DynamoCore"
         xmlns:views="clr-namespace:Dynamo.Views"
         xmlns:utilities="clr-namespace:Dynamo.Utilities" 
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:models="clr-namespace:Dynamo.Models"
         x:Name="_this"
         Height="768" Width="1024"
         Closing="WindowClosing" 
@@ -362,7 +362,7 @@
                                             <Style TargetType="Canvas">
                                                 <Style.Triggers>
 
-                                                    <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type dynamo:HomeWorkspace}">
+                                                    <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspace}">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
 
@@ -416,12 +416,12 @@
                                                 <Setter Property="Foreground" Value="#999"></Setter>
                                             </DataTrigger>
                                             
-                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type dynamo:HomeWorkspace}">
+                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspace}">
                                                 <Setter Property="Text" Value="Home"/>
                                                 <Setter Property="FontWeight" Value="Bold"/>
                                             </DataTrigger>
                                             
-                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type dynamo:FuncWorkspace}">
+                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:FuncWorkspace}">
                                                 <Setter Property="Text" Value="{Binding Name}"/>
                                             </DataTrigger>
                                             

@@ -3,7 +3,7 @@ using System.Windows;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism.ViewModel;
 
-namespace Dynamo
+namespace Dynamo.Models
 {
     public abstract class dynModelBase : NotificationObject, ISelectable, ILocatable
     {

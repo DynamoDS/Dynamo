@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Revit;
 using Dynamo.Selection;

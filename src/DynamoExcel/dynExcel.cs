@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.Office.Interop.Excel;

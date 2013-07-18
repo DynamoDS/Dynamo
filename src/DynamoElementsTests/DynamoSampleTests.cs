@@ -7,6 +7,7 @@ using System.Threading;
 using Dynamo.Commands;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -136,7 +137,8 @@ namespace Dynamo.Tests
             var vm = controller.DynamoViewModel;
 
             string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\map_reduce_filter\map_reduce_filter.dyn");
-            DynamoCommands.RunCommand( DynamoCommands.OpenCommand, openPath );
+            //DynamoCommands.RunCommand( DynamoCommands.OpenCommand, openPath );
+            vm.Open(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(28, vm.CurrentSpace.Connectors.Count);
@@ -149,7 +151,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(2.0, ((dynDoubleInput)node1).Value);
             
             // run the expression
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            vm.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);

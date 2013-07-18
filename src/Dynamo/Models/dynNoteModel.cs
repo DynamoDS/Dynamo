@@ -1,4 +1,4 @@
-﻿namespace Dynamo.Nodes
+﻿namespace Dynamo.Models
 {
     public class dynNoteModel:dynModelBase
     {

@@ -18,6 +18,7 @@ using System.Linq;
 using System.Xml;
 using System.IO.Ports;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Connectors;
