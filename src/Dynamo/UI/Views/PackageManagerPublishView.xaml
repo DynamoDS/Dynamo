@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
+             xmlns:commands="clr-namespace:Dynamo.Commands;assembly=DynamoElements"
              d:DesignHeight="405" d:DesignWidth="350" Name="PublishInfoControl" Visibility="{Binding Path=Visible, Converter={StaticResource BooleanToVisibilityConverter}}">
   
   <Grid Background="Black">
@@ -29,7 +30,7 @@
         The default is the MIT license.
       </Label>
 
-      <Button Style="{DynamicResource ResourceKey=STextButton}" Width="70" Margin="10" HorizontalAlignment="Right" Command="{Binding Path=SubmitCommand}" >Submit</Button>
+            <Button Style="{DynamicResource ResourceKey=STextButton}" Width="70" Margin="10" HorizontalAlignment="Right" Command="{Binding Source=commands:DynamoCommands.SubmitCommand}" >Submit</Button>
       
     </StackPanel>
     

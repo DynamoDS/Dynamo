@@ -247,7 +247,7 @@ namespace Dynamo
                 if (ex.Force)
                     runAgain = false;
             }
-            catch (Exception ex)
+            catch
             {
                 /* Evaluation failed due to error */
 // NOPE

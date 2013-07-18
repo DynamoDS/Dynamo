@@ -931,7 +931,7 @@ namespace Dynamo.Nodes
             var finalList = new List<Value>();
             var currList = new List<Value>();
 
-            int count = 0;
+            //int count = 0;
 
             var startIndices = new List<int>();
             
@@ -1013,7 +1013,7 @@ namespace Dynamo.Nodes
             var finalList = new List<Value>();
             var currList = new List<Value>();
 
-            int count = 0;
+            //int count = 0;
 
             var startIndices = new List<int>();
 

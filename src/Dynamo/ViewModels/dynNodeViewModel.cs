@@ -44,9 +44,9 @@ namespace Dynamo.Controls
         dynNodeModel nodeLogic;
         public dynNodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; }}
         
-        int preferredHeight = 30;
+        //int preferredHeight = 30;
         private bool isFullyConnected = false;
-        private double dropShadowOpacity = 0;
+        //private double dropShadowOpacity = 0;
         
         #endregion
 

@@ -2,11 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dynamo="clr-namespace:Dynamo"
-        xmlns:controls="clr-namespace:Dynamo.Controls"
-        xmlns:commands="clr-namespace:Dynamo.Commands"
+        xmlns:commands="clr-namespace:Dynamo.Commands;assembly=DynamoElements"
         xmlns:views="clr-namespace:Dynamo.Views"
-        xmlns:search="clr-namespace:Dynamo.Search"
-        xmlns:packages="clr-namespace:Dynamo.PackageManager"
         xmlns:utilities="clr-namespace:Dynamo.Utilities" 
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         x:Name="_this"
@@ -33,71 +30,71 @@
     <Window.InputBindings>
         
         <KeyBinding Key="Tab"
-                                Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.SelectNeighborsCommand}}"/>
 
         <KeyBinding Key="Delete"
-                                Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.DeleteCommand}}"/>
         <KeyBinding Key="N"
                                 Modifiers="Control"
-                                Command="{Binding Path=DataContext.NewHomeWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.NewHomeWorkspaceCommand}}"/>
         <KeyBinding Key="N"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Path=DataContext.ShowNewFunctionDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowNewFunctionDialogCommand}}"/>
         <KeyBinding Key="Tab"
-                                Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.SelectNeighborsCommand}}"/>
 
         <KeyBinding Key="Delete"
-                                Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.DeleteCommand}}"/>
         <KeyBinding Key="C"
                                 Modifiers="Control"
-                                Command="{Binding Path=DataContext.CopyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.CopyCommand}}"/>
         <KeyBinding Key="D"
                                 Modifiers="Control"
-                                Command="{Binding Path=DataContext.CurrentSpaceViewModel.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"/>
         <KeyBinding Key="V"
                                 Modifiers="Control"
-                                Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.PasteCommand}}"/>
 
         <KeyBinding Key="G"
                                 Modifiers="Control"
-                                Command="{Binding Path=DataContext.ToggleCanNavigateBackgroundCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.ToggleCanNavigateBackgroundCommand}}"/>
 
         <KeyBinding Key="W"
                                 Modifiers="Control"
-                                Command="{Binding Path=DataContext.AddNoteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.AddNoteCommand}}"/>
         <KeyBinding Key="V"
                                 Modifiers="Control"
-                                Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.PasteCommand}}"/>
         <KeyBinding Key="S"
                                 Modifiers="Control"
-                                Command="{Binding Path=DataContext.ShowSaveDialogIfNeededAndSaveResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowSaveDialogIfNeededAndSaveResultCommand}}"/>
         <KeyBinding Key="S"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Path=DataContext.ShowSaveDialogAndSaveResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowSaveDialogAndSaveResultCommand}}"/>
         <KeyBinding Key="O"
                                 Modifiers="Control"
-                                Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowOpenDialogAndOpenResultCommand}}"/>
         <KeyBinding Key="H"
                                 Modifiers="Control"
-                                Command="{Binding Path=DataContext.HomeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.HomeCommand}}"/>
         <KeyBinding Key="Up"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Path=DataContext.ToggleConsoleShowingCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.ToggleConsoleShowingCommand}}"/>
         <KeyBinding Key="F4"
                 Modifiers="Alt"
-                                Command="{Binding Path=DataContext.ExitCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.ExitCommand}}"/>
         <KeyBinding Key="C"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Path=DataContext.ClearCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.ClearCommand}}"/>
 
         <KeyBinding Key="R"
                 Modifiers="Control"
-                    Command="{Binding Path=DataContext.ShowPackageManagerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowPackageManagerCommand}}"/>
 
 
         <KeyBinding Key="L"
                 Modifiers="Control+Shift"
-                    Command="{Binding Path=DataContext.LayoutAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Source={x:Static Member=commands:DynamoCommands.LayoutAllCommand}}"/>
         
     </Window.InputBindings>
 
@@ -124,14 +121,14 @@
             <MenuItem Header="_File" Name="fileMenu" Focusable="False">
 
                 <MenuItem Header="_New" Name="newMenu">
-                    <MenuItem Header="_Home Workspace..." Command="{Binding Path=NewHomeWorkspaceCommand}"  Name="newHomeWorkspace" InputGestureText="Ctrl+N">
+                    <MenuItem Header="_Home Workspace..." Command="{Binding Source={x:Static Member=commands:DynamoCommands.NewHomeWorkspaceCommand}}"  Name="newHomeWorkspace" InputGestureText="Ctrl+N">
                     </MenuItem>
 
-                    <MenuItem Header="_Custom Node..." Command="{Binding Path=ShowNewFunctionDialogCommand}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
+                    <MenuItem Header="_Custom Node..." Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowNewFunctionDialogCommand}}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
                     </MenuItem>
                 </MenuItem>
 
-                <MenuItem Header="_Open..." Command="{Binding Path=ShowOpenDialogAndOpenResultCommand}" Name="openButton" InputGestureText="Ctrl+O">
+                <MenuItem Header="_Open..." Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowOpenDialogAndOpenResultCommand}}" Name="openButton" InputGestureText="Ctrl+O">
 
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/UI/Images/openHS.png" Width="16" Height="16" />
@@ -139,14 +136,14 @@
                 </MenuItem>
                 <Separator />
 
-                <MenuItem Header="_Save" Command="{Binding Path=ShowSaveDialogIfNeededAndSaveResultCommand}" 
+                <MenuItem Header="_Save" Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowSaveDialogIfNeededAndSaveResultCommand}}" 
                           Name="saveThisButton" InputGestureText="Ctrl+S">
 
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/UI/Images/saveHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Focusable="False" Header="_Save As..." Command="{Binding Path=ShowSaveDialogAndSaveResultCommand}" 
+                <MenuItem Focusable="False" Header="_Save As..." Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowSaveDialogAndSaveResultCommand}}" 
                           Name="saveButton" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
 
                     <MenuItem.Icon>
@@ -154,11 +151,11 @@
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <MenuItem Focusable="False" Header="_Export Workspace As Image..." Command="{Binding Path=ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage"/>
+                <MenuItem Focusable="False" Header="_Export Workspace As Image..." Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowSaveImageDialogAndSaveResultCommand}}" Name="saveImage"/>
                 
                 
                 <Separator />
-                <MenuItem Focusable="False" Header="_Clear" Command="{Binding Path=ClearCommand}" Name="clearButton" 
+                <MenuItem Focusable="False" Header="_Clear" Command="{Binding Source={x:Static Member=commands:DynamoCommands.ClearCommand}}" Name="clearButton" 
                           InputGestureText="Ctrl+Shift+C" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
 
                     <MenuItem.Icon>
@@ -166,24 +163,24 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="_Exit" Command="{Binding Path=ExitCommand}"  Name="exit" InputGestureText="Alt+F4"/>
+                <MenuItem Header="_Exit" Command="{Binding Source={x:Static Member=commands:DynamoCommands.ExitCommand}}"  Name="exit" InputGestureText="Alt+F4"/>
             </MenuItem>
 
             <MenuItem Header="_Edit" Name="editMenu">
-                <MenuItem Focusable="False" Header="_Copy" Command="{Binding Path=CopyCommand}" Name="copy" InputGestureText="Ctrl+C"/>
-                <MenuItem Focusable="False" Header="_Paste" Command="{Binding Path=PasteCommand}"  Name="paste" InputGestureText="Ctrl+V"/>
+                <MenuItem Focusable="False" Header="_Copy" Command="{Binding Source={x:Static Member=commands:DynamoCommands.CopyCommand}}" Name="copy" InputGestureText="Ctrl+C"/>
+                <MenuItem Focusable="False" Header="_Paste" Command="{Binding Source={x:Static Member=commands:DynamoCommands.PasteCommand}}"  Name="paste" InputGestureText="Ctrl+V"/>
                 <Separator/>
-                <MenuItem Focusable="False" Header="_Create Note" Command="{Binding Path=AddNoteCommand}"  Name="noteMenuItem" InputGestureText="Ctrl+W" />
+                <MenuItem Focusable="False" Header="_Create Note" Command="{Binding Source={x:Static Member=commands:DynamoCommands.AddNoteCommand}}"  Name="noteMenuItem" InputGestureText="Ctrl+W" />
                 <MenuItem Focusable="False" Header="_Create Node From Selection" Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
                 <MenuItem  Header="_Align Selection"  Name="Align">
-                    <MenuItem  Header="_X Average"  Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalCenter"/>
-                    <MenuItem  Header="_Left" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalLeft"/>
-                    <MenuItem  Header="_Right" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalRight"/>
-                    <MenuItem  Header="_Y Average" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalCenter"/>
-                    <MenuItem  Header="_Top" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalTop"/>
-                    <MenuItem  Header="_Bottom" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalBottom"/>
-                    <MenuItem  Header="_Y Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalDistribute"/>
-                    <MenuItem  Header="_X Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalDistribute"/>
+                    <MenuItem  Header="_X Average"  Command="{Binding Source={x:Static Member=commands:DynamoCommands.AlignSelectedCommand}}" CommandParameter="HorizontalCenter"/>
+                    <MenuItem  Header="_Left" Command="{Binding Source={x:Static Member=commands:DynamoCommands.AlignSelectedCommand}}" CommandParameter="HorizontalLeft"/>
+                    <MenuItem  Header="_Right" Command="{Binding Source={x:Static Member=commands:DynamoCommands.AlignSelectedCommand}}" CommandParameter="HorizontalRight"/>
+                    <MenuItem  Header="_Y Average" Command="{Binding Source={x:Static Member=commands:DynamoCommands.AlignSelectedCommand}}" CommandParameter="VerticalCenter"/>
+                    <MenuItem  Header="_Top" Command="{Binding Source={x:Static Member=commands:DynamoCommands.AlignSelectedCommand}}" CommandParameter="VerticalTop"/>
+                    <MenuItem  Header="_Bottom" Command="{Binding Source={x:Static Member=commands:DynamoCommands.AlignSelectedCommand}}" CommandParameter="VerticalBottom"/>
+                    <MenuItem  Header="_Y Distribute" Command="{Binding Source={x:Static Member=commands:DynamoCommands.AlignSelectedCommand}}" CommandParameter="VerticalDistribute"/>
+                    <MenuItem  Header="_X Distribute" Command="{Binding Source={x:Static Member=commands:DynamoCommands.AlignSelectedCommand}}" CommandParameter="HorizontalDistribute"/>
                 </MenuItem>
             </MenuItem>
 
@@ -191,42 +188,42 @@
                 
                 <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
                           IsChecked="{Binding Path=FullscreenWatchShowing}"
-                          Command="{Binding Path=ToggleFullscreenWatchShowingCommand}" />
+                          Command="{Binding Source={x:Static Member=commands:DynamoCommands.ToggleFullscreenWatchShowingCommand}}" />
 
                 <MenuItem Header="Navigate Background"
                           IsEnabled="{Binding Path=FullscreenWatchShowing}"
                           IsChecked="{Binding Path=CanNavigateBackground}"
                           InputGestureText="Ctrl+G"
-                          Command="{Binding Path=ToggleCanNavigateBackgroundCommand}" />
+                          Command="{Binding Source={x:Static Member=commands:DynamoCommands.ToggleCanNavigateBackgroundCommand}}" />
 
                 <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                          Command="{Binding Path=ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
+                          Command="{Binding Source={x:Static Member=commands:DynamoCommands.ToggleConsoleShowingCommand}}" InputGestureText="Ctrl+Shift+Up"/>
 
                 <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
                     <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" 
                               IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
-                              Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="BEZIER" Header="Curves"/>
+                              Command="{Binding Source={x:Static Member=commands:DynamoCommands.SetConnectorTypeCommand}}" CommandParameter="BEZIER" Header="Curves"/>
 
                     <MenuItem Name="settings_plines" IsCheckable="True" 
 
                               IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
-                              Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
+                              Command="{Binding Source={x:Static Member=commands:DynamoCommands.SetConnectorTypeCommand}}" CommandParameter="POLYLINE" Header="Polylines"/>
                 </MenuItem>
 
                 <MenuItem Focusable="False" Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >
-                    <MenuItem Focusable="False" Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
-                    <MenuItem Focusable="False" Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
-                    <MenuItem Focusable="False" Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
+                    <MenuItem Focusable="False" Header="_Login" Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
+                    <MenuItem Focusable="False" Header="_Refresh Remote Packages" Command="{Binding Source={x:Static Member=commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
+                    <MenuItem Focusable="False" Header="_Publish Selected Node" Command="{Binding Source={x:Static Member=commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
 
-                    <MenuItem Focusable="False" Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
+                    <MenuItem Focusable="False" Header="_Publish Current Workspace " Command="{Binding Source={x:Static Member=commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
                 </MenuItem>
 
                 <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem"
                           IsChecked="{Binding Path=IsShowingConnectors}" 
-                          Command="{Binding Path=ShowHideConnectorsCommand}">
+                          Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowHideConnectorsCommand}}">
                 </MenuItem>
-                
-                <MenuItem Focusable="False" Header="_Go Home" IsCheckable="False" Name="GoHome" Command="{Binding Path=GoHomeCommand}">
+
+                <MenuItem Focusable="False" Header="_Go Home" IsCheckable="False" Name="GoHome" Command="{Binding Source={x:Static Member=commands:DynamoCommands.GoHomeCommand}}">
                 </MenuItem>
                 
                 <MenuItem Focusable="False" Header="_Find Node By Id" IsCheckable="False" Name="FindNodeById">
@@ -238,10 +235,10 @@
 
             </MenuItem>
 
-            <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
+            <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source=utilities:dynSettings.CustomNodes}">
                 <MenuItem.ItemTemplate>
                     <DataTemplate>
-                        <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path=DataContext.GoToWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                        <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Source={x:Static Member=commands:DynamoCommands.GoToWorkspaceCommand}}"/>
                     </DataTemplate>
                 </MenuItem.ItemTemplate>
             </MenuItem>
@@ -253,9 +250,9 @@
                         <Image Source="/DynamoElements;component/UI/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Report A Bug" Command="{Binding Path=ReportABugCommand}"  Name="bugCommand"/>
-                <MenuItem Header="_Go To Project Website" Command="{Binding Path=GoToSourceCodeCommand}"  Name="sourceCode"/>
-                <MenuItem Header="_Go To Project Wiki" Command="{Binding Path=GoToWikiCommand}"  Name="wiki"/>
+                <MenuItem Header="_Report A Bug" Command="{Binding Source={x:Static Member=commands:DynamoCommands.ReportABugCommand}}"  Name="bugCommand"/>
+                <MenuItem Header="_Go To Project Website" Command="{Binding Source={x:Static Member=commands:DynamoCommands.GoToSourceCodeCommand}}"  Name="sourceCode"/>
+                <MenuItem Header="_Go To Project Wiki" Command="{Binding Source={x:Static Member=commands:DynamoCommands.GoToWikiCommand}}"  Name="wiki"/>
 
             </MenuItem>
         </Menu>
@@ -532,12 +529,12 @@
 
             <Button Name="RunButton" Width="100" Content="Run" 
                     Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
-                    Command="{Binding Path=RunExpressionCommand}"
+                    Command="{Binding Source=RunExpressionCommand}"
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
             <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
-                      Command="{Binding Path=CancelRunCommand}" Margin="5"/>
+                      Command="{Binding Source=CancelRunCommand}" Margin="5"/>
             
             <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"
@@ -555,7 +552,7 @@
         <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" Visibility ="Hidden" HorizontalAlignment="Right">
 
             <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
-            <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>
+            <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static Member=commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>
             
         </DockPanel>
 

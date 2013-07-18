@@ -2099,7 +2099,7 @@ namespace Dynamo.Controls
             var args = new FunctionNamePromptEventArgs();
             OnRequestsFunctionNamePrompt(this, args);
 
-            string name = "", category = "";
+            //string name = "", category = "";
             //if (ShowNewFunctionDialog(ref name, ref category))
             if (args.Success)
             {

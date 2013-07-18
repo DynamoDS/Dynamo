@@ -88,7 +88,7 @@ namespace Dynamo.Nodes
         ElementState state;
         string toolTipText = "";
         //bool isSelected = false;
-        private bool _isCustomFunction = false;
+        //private bool _isCustomFunction = false;
         private bool interactionEnabled = true;
         private bool _isVisible;
         private bool _isUpstreamVisible;
@@ -764,7 +764,7 @@ namespace Dynamo.Nodes
 
                     ValidateConnections();
                 }
-                catch (CancelEvaluationException ex)
+                catch(CancelEvaluationException ex)
                 {
                     OnRunCancelled();
                     return FSharpOption<Value>.None;
@@ -788,6 +788,7 @@ namespace Dynamo.Nodes
                     if (dynSettings.Controller.Testing)
                         throw new Exception(ex.Message);
                 }
+                
 
                 OnEvaluate();
 

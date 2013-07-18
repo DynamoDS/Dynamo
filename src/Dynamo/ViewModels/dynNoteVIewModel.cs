@@ -135,12 +135,12 @@ namespace Dynamo.Nodes
         /// <param name="e"></param>
         void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
-            {
+            //switch (e.PropertyName)
+            //{
                 //case "CurrentSpace":
                 //    RaisePropertyChanged("NoteVisibility");
                 //    break;
-            }
+            //}
         }
 
         //respond to changes on the model's properties
