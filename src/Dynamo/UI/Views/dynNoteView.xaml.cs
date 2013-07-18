@@ -54,6 +54,37 @@ namespace Dynamo.Nodes
                         ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
                 };
             noteText.PreviewMouseDown += new MouseButtonEventHandler(noteText_PreviewMouseDown);
+
+            this.Loaded += new RoutedEventHandler(dynNoteView_Loaded);
+        }
+
+        void dynNoteView_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
+        }
+
+        void ViewModel_RequestsSelection(object sender, EventArgs e)
+        {
+            if (!ViewModel.Model.IsSelected)
+            {
+                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    DynamoSelection.Instance.ClearSelection();
+                }
+
+                if (!DynamoSelection.Instance.Selection.Contains(ViewModel.Model))
+                {
+                    DynamoSelection.Instance.Selection.Add(ViewModel.Model);
+                }
+
+            }
+            else
+            {
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    DynamoSelection.Instance.Selection.Remove(ViewModel.Model);
+                }
+            }
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
