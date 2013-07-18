@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 

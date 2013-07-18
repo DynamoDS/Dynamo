@@ -15,6 +15,7 @@ using System.Globalization;
 
 //using Dynamo.Commands;
 using Dynamo.Connectors;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;

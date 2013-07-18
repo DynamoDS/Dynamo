@@ -2,7 +2,7 @@
 using Dynamo.Search;
 using NUnit.Framework;
 
-namespace DynamoElementsTests
+namespace DynamoCoreTests
 {
 
     [TestFixture]

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoElements", "Dynamo\DynamoElements.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "Dynamo\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F25808D6-DF62-4732-9453-D4978079864C} = {F25808D6-DF62-4732-9453-D4978079864C}
 	EndProjectSection
@@ -20,7 +20,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoSandbox", "DynamoSand
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPython", "DynamoPython\DynamoPython.csproj", "{2B0F2800-6F62-4869-9074-088C5F6DCCA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoElementsTests", "DynamoElementsTests\DynamoElementsTests.csproj", "{472084ED-1067-4B2C-8737-3839A6143EB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreTests", "DynamoElementsTests\DynamoCoreTests.csproj", "{472084ED-1067-4B2C-8737-3839A6143EB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPythonTests", "DynamoPythonTests\DynamoPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
 EndProject

@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 using Dynamo.Measure;
 
-namespace DynamoElementsTests
+namespace DynamoCoreTests
 {
     [TestFixture]
     internal class UnitsOfMeasureTests

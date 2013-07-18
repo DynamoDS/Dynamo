@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    internal class DynamoElementsUiTests
+    internal class DynamoCoreUiTests
     {
         private DynamoViewModel _vm;
 
@@ -78,7 +78,7 @@ namespace Dynamo.Tests
         //public void CanOpenGoodFile()
         //{
         //    // NOTE rom PB: this test fails due to the fact that Bench is locked as it was never shown in these tests
-        //    //              The same test is present in DynamoElementsUITests.cs, where it succeeds
+        //    //              The same test is present in DynamoCoreUITests.cs, where it succeeds
         //    string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         //    string openPath = Path.Combine(directory, @"..\..\test\dynamo_elements_samples\working\multiplicationAndAdd.dyn");
         //    dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(_vm.OpenCommand, openPath));

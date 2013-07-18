@@ -19,7 +19,7 @@ using System.Xml;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    internal class DynamoElementsTests
+    internal class DynamoCoreTests
     {
         [SetUp]
         public void Init()

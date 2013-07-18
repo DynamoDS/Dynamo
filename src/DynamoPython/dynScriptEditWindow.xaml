@@ -17,7 +17,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/DynamoElements;component/UI/Themes/DynamoModern.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/DynamoCore;component/UI/Themes/DynamoModern.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

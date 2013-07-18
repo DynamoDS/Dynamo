@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Nodes;
 
-namespace Dynamo
+namespace Dynamo.Models
 {
     public delegate void CleanupHandler(object sender, EventArgs e);
 

@@ -8,8 +8,8 @@
     <ProjectGuid>{472084ED-1067-4B2C-8737-3839A6143EB2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DynamoElementsTests</RootNamespace>
-    <AssemblyName>DynamoElementsTests</AssemblyName>
+    <RootNamespace>Dynamo</RootNamespace>
+    <AssemblyName>DynamoCoreTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -59,9 +59,9 @@
     <Compile Include="UnitsOfMeasureTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
+    <ProjectReference Include="..\Dynamo\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
-      <Name>DynamoElements</Name>
+      <Name>DynamoCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
       <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
