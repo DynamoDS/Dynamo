@@ -192,14 +192,16 @@ namespace Dynamo.Tests
             var vm = controller.DynamoViewModel;
 
             string openPath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\sequence\sequence.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            vm.Open(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(5, vm.CurrentSpace.Connectors.Count);
             Assert.AreEqual(5, vm.CurrentSpace.Nodes.Count);
 
             // run the expression
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            vm.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -218,14 +220,16 @@ namespace Dynamo.Tests
             Assert.IsTrue(controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "Sequence2.dyf")));
 
             string openPath = Path.Combine(examplePath, "combine-with-three.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            vm.Open(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(13, vm.CurrentSpace.Connectors.Count);
             Assert.AreEqual(10, vm.CurrentSpace.Nodes.Count);
 
             // run the expression
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            vm.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -246,14 +250,16 @@ namespace Dynamo.Tests
             Assert.IsTrue(controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "Sum Numbers.dyf")));
 
             string openPath = Path.Combine(examplePath, "reduce-example.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            vm.Open(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(13, vm.CurrentSpace.Connectors.Count);
             Assert.AreEqual(11, vm.CurrentSpace.Nodes.Count);
 
             // run the expression
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            vm.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -272,14 +278,16 @@ namespace Dynamo.Tests
             Assert.IsTrue(controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf")));
 
             string openPath = Path.Combine(examplePath, "filter-example.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            vm.Open(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(6, vm.CurrentSpace.Connectors.Count);
             Assert.AreEqual(6, vm.CurrentSpace.Nodes.Count);
 
             // run the expression
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            vm.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -296,14 +304,16 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\sorting\");
 
             string openPath = Path.Combine(examplePath, "sorting.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            vm.Open(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(10, vm.CurrentSpace.Connectors.Count);
             Assert.AreEqual(11, vm.CurrentSpace.Nodes.Count);
 
             // run the expression
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            vm.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -320,9 +330,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
 
             string openPath = Path.Combine(examplePath, "Add.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(100);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(100);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = GetWatchNodeFromCurrentSpace(vm, "4c5889ac-7b91-4fb5-aaad-a2128b533279");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
@@ -336,9 +348,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
 
             string openPath = Path.Combine(examplePath, "Subtract.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(100);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(100);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = GetWatchNodeFromCurrentSpace(vm, "a574df4e-2dff-4c06-bbb6-e9467060085f");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
@@ -352,9 +366,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
 
             string openPath = Path.Combine(examplePath, "Multiply.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(100);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(100);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = GetWatchNodeFromCurrentSpace(vm, "4c650bcc-9f18-4d23-a769-34845fd50fab");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
@@ -368,9 +384,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
 
             string openPath = Path.Combine(examplePath, "Divide.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(100);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(100);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = GetWatchNodeFromCurrentSpace(vm, "4c650bcc-9f18-4d23-a769-34845fd50fab");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
@@ -384,9 +402,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
 
             string openPath = Path.Combine(examplePath, "Modulo.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(100);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(100);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = GetWatchNodeFromCurrentSpace(vm, "4a780dfb-74b1-453a-86ef-2f4a5c46792e");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
@@ -400,9 +420,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
 
             string openPath = Path.Combine(examplePath, "Ceiling.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(100);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(100);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = GetWatchNodeFromCurrentSpace(vm, "97e58c7f-9082-4980-997a-d290cf8055e1");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
@@ -416,9 +438,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
 
             string openPath = Path.Combine(examplePath, "Floor.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(100);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(100);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = GetWatchNodeFromCurrentSpace(vm, "fb52d286-ebcc-449c-989e-e4ea94831125");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
@@ -432,9 +456,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
 
             string openPath = Path.Combine(examplePath, "Power.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(100);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(100);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = GetWatchNodeFromCurrentSpace(vm, "6a7b150e-f053-4b29-b672-007aa1acde24");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
@@ -448,9 +474,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
 
             string openPath = Path.Combine(examplePath, "Round.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(100);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(100);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = GetWatchNodeFromCurrentSpace(vm, "430e086e-8cf0-4e89-abba-69dc1cd94058");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
@@ -464,9 +492,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
 
             string openPath = Path.Combine(examplePath, "Sine.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(100);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(100);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = GetWatchNodeFromCurrentSpace(vm, "4d9fb747-2e90-4571-9c8f-7d59ad14a939");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
@@ -480,9 +510,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
 
             string openPath = Path.Combine(examplePath, "Cosine.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(100);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(100);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = GetWatchNodeFromCurrentSpace(vm, "4d9fb747-2e90-4571-9c8f-7d59ad14a939");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
@@ -498,12 +530,14 @@ namespace Dynamo.Tests
                     var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\CASE");
                     string openPath = Path.Combine(examplePath, "case_flip_matrix.dyn");
 
-                    DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+                    //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+                    vm.Open(openPath);
 
                     Assert.AreEqual(dynSettings.Controller.DynamoModel.CurrentSpace.Nodes.Count, 11);
 
-                    DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-                    Thread.Sleep(100);
+                    //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+                    //Thread.Sleep(100);
+                    vm.RunExpression(null);
                 });
         }
 
@@ -514,9 +548,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns\math");
 
             string openPath = Path.Combine(examplePath, "Tangent.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(100);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(100);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = GetWatchNodeFromCurrentSpace(vm, "4d9fb747-2e90-4571-9c8f-7d59ad14a939");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
@@ -529,7 +565,8 @@ namespace Dynamo.Tests
             var vm = dynSettings.Controller.DynamoViewModel;
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\good_dyns");
             string openPath = Path.Combine(examplePath, "StringInputTest.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            vm.Open(openPath);
 
             dynStringInput strNode = (dynStringInput)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynStringInput);
             string expected =
@@ -547,9 +584,11 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
 
             //open and run the expression
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
             Thread.Sleep(300);
+            vm.Open(openPath);
+            vm.RunExpression(null);
 
             var watch = (dynWatch)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynWatch);
             FSharpList<FScheme.Value> listWatchVal = GetListFromFSchemeValue(watch.GetValue(0));
@@ -558,8 +597,9 @@ namespace Dynamo.Tests
             //change the value of the list
             var numNode = (dynDoubleInput)dynSettings.Controller.DynamoModel.Nodes.Last(x => x is dynDoubleInput);
             numNode.Value = 3;
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            Thread.Sleep(300);
+            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
+            //Thread.Sleep(300);
+            vm.RunExpression(null);
 
             listWatchVal = GetListFromFSchemeValue(watch.GetValue(0));
             Assert.AreEqual(3, listWatchVal.Length);
@@ -573,10 +613,13 @@ namespace Dynamo.Tests
         [Test]
         public void SliceList()
         {
+            var vm = dynSettings.Controller.DynamoViewModel;
+
             var data = new Dictionary<string, object>();
             data.Add("name", "Slice List");
-            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, data));
-            DynamoCommands.ProcessCommandQueue();
+            //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, data));
+            //DynamoCommands.ProcessCommandQueue();
+            vm.CreateNode(data);
 
             //Create a List
             //For a list of 0..20, this will have 21 elements
@@ -616,6 +659,8 @@ namespace Dynamo.Tests
         [Test]
         public void Diagonals()
         {
+            var vm = dynSettings.Controller.DynamoViewModel;
+
             //0   1   2   3   4
             //5   6   7   8   9
             //10  11  12  13  14
@@ -635,8 +680,9 @@ namespace Dynamo.Tests
             var list = Utils.MakeFSharpList(Enumerable.Range(0, 20).Select(x => FScheme.Value.NewNumber(x)).ToArray());
 
             var data = new Dictionary<string, object> {{"name", "Diagonal Left List"}};
-            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, data));
-            DynamoCommands.ProcessCommandQueue();
+            //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, data));
+            //DynamoCommands.ProcessCommandQueue();
+            vm.CreateNode(data);
 
             var leftNode = (dynDiagonalLeftList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynDiagonalLeftList);
             var args = FSharpList<FScheme.Value>.Empty;
@@ -646,7 +692,8 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(8, ((FScheme.Value.List)res).Item.Count());
 
-            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearCommand, null));
+            //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearCommand, null));
+            vm.Clear();
 
             //diagonal right
             //diagonal left
@@ -661,8 +708,9 @@ namespace Dynamo.Tests
             //4
 
             data = new Dictionary<string, object> {{"name", "Diagonal Right List"}};
-            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, data));
-            DynamoCommands.ProcessCommandQueue();
+            //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, data));
+            //DynamoCommands.ProcessCommandQueue();
+            vm.CreateNode(data);
 
             var rightNode = (dynDiagonalRightList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynDiagonalRightList);
             args = FSharpList<FScheme.Value>.Empty;
