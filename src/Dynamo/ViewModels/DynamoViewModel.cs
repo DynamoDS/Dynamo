@@ -1248,7 +1248,7 @@ namespace Dynamo.Controls
 
         private void ShowInstalledPackages()
         {
-            var window = new DynamoInstalledPackagesView(this.Controller.PackageManagerClient);
+            var window = new InstalledPackagesView();
             window.Show();
         }
 
