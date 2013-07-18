@@ -23,8 +23,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using System.Web;
-
-using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;

@@ -7,7 +7,6 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Microsoft.FSharp.Collections;
 using Dynamo.Utilities;
-using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Core;

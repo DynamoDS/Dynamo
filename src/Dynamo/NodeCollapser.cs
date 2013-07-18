@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Controls;
-using Dynamo.Connectors;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism;
 

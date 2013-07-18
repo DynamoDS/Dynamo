@@ -16,7 +16,6 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Linq;
-using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;

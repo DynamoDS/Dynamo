@@ -14,8 +14,6 @@
 
 using System;
 using System.Diagnostics;
-using Dynamo.Connectors;
-using Dynamo.Nodes;
 
 namespace Dynamo.Models
 {
