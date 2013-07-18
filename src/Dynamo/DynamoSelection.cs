@@ -72,6 +72,9 @@ namespace Dynamo.Selection
             }
         }
 
+        /// <summary>
+        /// Clears the selection
+        /// </summary>
         public void ClearSelection()
         {
             Instance.Selection.RemoveAll();
