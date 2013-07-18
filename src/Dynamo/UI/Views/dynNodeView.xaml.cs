@@ -215,6 +215,7 @@ namespace Dynamo.Controls
             //dynSettings.Bench.mainGrid.Focus();
             var view = WPF.FindUpVisualTree<DynamoView>(this);
             view.mainGrid.Focus();
+
             ViewModel.SelectCommand.Execute();
         }
 

@@ -627,6 +627,9 @@ namespace Dynamo.Controls
 
         private void Select()
         {
+            //this logic has been moved to the view
+            //because it depends on Keyboard modifiers.
+
             //if (!nodeLogic.IsSelected)
             //{
             //    if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
@@ -644,6 +647,9 @@ namespace Dynamo.Controls
             //        DynamoSelection.Instance.Selection.Remove(nodeLogic);
             //    }
             //}
+
+            //if the node is not already selected
+            //then clear the selection
 
             OnRequestsSelection(this, EventArgs.Empty);
         }
