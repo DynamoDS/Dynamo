@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Authentication;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
@@ -183,7 +184,7 @@ namespace Dynamo.PackageManager
 
             if (pkgResponse == null)
             {
-                return null;
+                throw new AuthenticationException("Are you logged in to Revit?");
             }
 
             if (!isNewVersion)
