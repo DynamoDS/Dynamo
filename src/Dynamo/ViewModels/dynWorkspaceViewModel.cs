@@ -407,6 +407,17 @@ namespace Dynamo
             }
         }
 
+        private void SelectAll()
+        {
+            DynamoSelection.Instance.ClearSelection();
+            this.Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
+        }
+
+        private bool CanSelectAll()
+        {
+            return true;
+        }
+
         public double GetSelectionAverageX()
         {
             return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)

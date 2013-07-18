@@ -67,7 +67,19 @@ namespace Dynamo.Commands
         private static DelegateCommand _toggleFullscreenWatchShowingCommand;
         private static DelegateCommand _toggleCanNavigateBackgroundCommand;
         private static DelegateCommand _goHomeCommand;
+        private static DelegateCommand _selectAllCommand;
+
         #endregion
+
+        public static DelegateCommand SelectAllCommand
+        {
+            get
+            {
+                if(_selectAllCommand == null)
+                    _selectAllCommand = new DelegateCommand(_vm.SelectAll, _vm.CanSelectAll);
+                return _selectAllCommand;
+            }
+        }
 
         public static DelegateCommand<object> WriteToLogCmd
         {

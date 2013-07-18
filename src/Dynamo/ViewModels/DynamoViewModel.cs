@@ -110,7 +110,7 @@ namespace Dynamo.Controls
         /// An observable collection of workspace view models which tracks the model
         /// </summary>
         private ObservableCollection<dynWorkspaceViewModel> _workspaces = new ObservableCollection<dynWorkspaceViewModel>();
-        
+
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
             get { return _workspaces; }
@@ -339,8 +339,6 @@ namespace Dynamo.Controls
             Controller = controller;
             sw = new StringWriter();
             ConnectorType = ConnectorType.BEZIER;
-
-            //DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
 
         }
 
@@ -2944,6 +2942,16 @@ namespace Dynamo.Controls
 
             return true;
 
+        }
+
+        public void SelectAll()
+        {
+            this.CurrentSpaceViewModel.SelectAllCommand.Execute();
+        }
+
+        internal bool CanSelectAll()
+        {
+            return this.CurrentSpaceViewModel.SelectAllCommand.CanExecute();
         }
     }
 

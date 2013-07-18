@@ -48,6 +48,10 @@
         <KeyBinding Key="C"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static Member=commands:DynamoCommands.CopyCommand}}"/>
+        <KeyBinding Key="A"
+                                Modifiers="Control"
+                                Command="{Binding Source={x:Static Member=commands:DynamoCommands.SelectAllCommand}}"/>
+
         <KeyBinding Key="D"
                                 Modifiers="Control"
                                 Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"/>
@@ -172,6 +176,8 @@
                 <Separator/>
                 <MenuItem Focusable="False" Header="_Create Note" Command="{Binding Source={x:Static Member=commands:DynamoCommands.AddNoteCommand}}"  Name="noteMenuItem" InputGestureText="Ctrl+W" />
                 <MenuItem Focusable="False" Header="_Create Node From Selection" Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
+                <MenuItem Focusable="False" Header="_Select All" Command="{Binding Source={x:Static Member=commands:DynamoCommands.SelectAllCommand}}"  Name="selectAll" InputGestureText="Ctrl+A"/>
+                <!--<MenuItem Focusable="False" Header="_Select Neighbors" Command="{Binding Path=ExpandSelectionCommand}"  Name="expandSelect" InputGestureText="Tab"/>-->
                 <MenuItem  Header="_Align Selection"  Name="Align">
                     <MenuItem  Header="_X Average"  Command="{Binding Source={x:Static Member=commands:DynamoCommands.AlignSelectedCommand}}" CommandParameter="HorizontalCenter"/>
                     <MenuItem  Header="_Left" Command="{Binding Source={x:Static Member=commands:DynamoCommands.AlignSelectedCommand}}" CommandParameter="HorizontalLeft"/>
