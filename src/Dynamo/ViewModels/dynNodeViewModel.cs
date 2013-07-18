@@ -626,23 +626,23 @@ namespace Dynamo.Controls
 
         private void Select()
         {
-            if (!nodeLogic.IsSelected)
-            {
-                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
-                {
-                    DynamoSelection.Instance.ClearSelection();
-                }
+            //if (!nodeLogic.IsSelected)
+            //{
+            //    if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
+            //    {
+            //        DynamoSelection.Instance.ClearSelection();
+            //    }
 
-                if (!DynamoSelection.Instance.Selection.Contains(nodeLogic))
-                    DynamoSelection.Instance.Selection.Add(nodeLogic);
-            }
-            else
-            {
-                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-                {
-                    DynamoSelection.Instance.Selection.Remove(nodeLogic);
-                }
-            }
+            //    if (!DynamoSelection.Instance.Selection.Contains(nodeLogic))
+            //        DynamoSelection.Instance.Selection.Add(nodeLogic);
+            //}
+            //else
+            //{
+            //    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            //    {
+            //        DynamoSelection.Instance.Selection.Remove(nodeLogic);
+            //    }
+            //}
 
             OnRequestsSelection(this, EventArgs.Empty);
         }
