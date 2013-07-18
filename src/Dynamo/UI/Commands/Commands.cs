@@ -103,7 +103,7 @@ namespace Dynamo.Commands
         {
             get
             {
-                if (_gotoSourceCommand != null)
+                if (_gotoSourceCommand == null)
                     _gotoSourceCommand = new DelegateCommand(_vm.GoToSourceCode, _vm.CanGoToSourceCode);
                 return _gotoSourceCommand;
             }
@@ -141,72 +141,74 @@ namespace Dynamo.Commands
 
         public static DelegateCommand ShowOpenDialogAndOpenResultCommand 
         {
-            get { return _showOpenDialogueAndOpenResultCommand; }
-            set
+            get
             {
                 if(_showOpenDialogueAndOpenResultCommand == null)
                     _showOpenDialogueAndOpenResultCommand = 
                         new DelegateCommand(_vm.ShowOpenDialogAndOpenResult, _vm.CanShowOpenDialogAndOpenResultCommand);
+                return _showOpenDialogueAndOpenResultCommand; 
             }
         }
 
         public static DelegateCommand ShowSaveDialogIfNeededAndSaveResultCommand
         {
-            get { return _showSaveDialogIfNeededAndSaveResultCommand; }
-            set
+            get
             {
                 if(_showSaveDialogIfNeededAndSaveResultCommand == null)
-                    ShowSaveDialogIfNeededAndSaveResultCommand =
+                    _showSaveDialogIfNeededAndSaveResultCommand =
                         new DelegateCommand(_vm.ShowSaveDialogIfNeededAndSaveResult, _vm.CanShowSaveDialogIfNeededAndSaveResultCommand);
+                 return _showSaveDialogIfNeededAndSaveResultCommand; 
             }
         }
 
         public static DelegateCommand ShowSaveDialogAndSaveResultCommand
         {
-            get { return _showSaveDialogAndSaveResultCommand; }
-            set
+            get
             {
                 if(_showSaveDialogAndSaveResultCommand == null)
                     _showSaveDialogAndSaveResultCommand =
                         new DelegateCommand(_vm.ShowSaveDialogAndSaveResult, _vm.CanShowSaveDialogAndSaveResult);
+                return _showSaveDialogAndSaveResultCommand; 
             }
         }
 
         public static DelegateCommand ShowNewFunctionDialogCommand
         {
-            get { return _showNewFunctionDialogCommand; }
-            set
+            get
             {
                 if(_showNewFunctionDialogCommand == null)
                     _showNewFunctionDialogCommand = new DelegateCommand(_vm.ShowNewFunctionDialogAndMakeFunction, _vm.CanShowNewFunctionDialogCommand);
-
+                return _showNewFunctionDialogCommand; 
             }
         }
 
         public static DelegateCommand<object> OpenCommand
         {
-            get { return _openCommand; }
-            set
+            get
             {
-                _openCommand = new DelegateCommand<object>(_vm.Open, _vm.CanOpen); ;
+                if(_openCommand == null)
+                    _openCommand = new DelegateCommand<object>(_vm.Open, _vm.CanOpen);
+                return _openCommand;
             }
         }
 
         public static DelegateCommand SaveCommand
         {
-            get { return _saveCommand; }
-            set
+            get
             {
-                _saveCommand = new DelegateCommand(_vm.Save, _vm.CanSave);
+                if(_saveCommand == null)
+                    _saveCommand = new DelegateCommand(_vm.Save, _vm.CanSave);
+                return _saveCommand;
             }
         }
 
         public static DelegateCommand<object> SaveAsCommand
         {
-            get { return _saveAsCommand; }
-            set
+            get
             {
-                _saveAsCommand = new DelegateCommand<object>(_vm.SaveAs, _vm.CanSaveAs);
+                if(_saveAsCommand == null)
+                    _saveAsCommand = new DelegateCommand<object>(_vm.SaveAs, _vm.CanSaveAs);
+                return _saveAsCommand; 
             }
         }
 

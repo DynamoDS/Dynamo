@@ -5,14 +5,12 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-//using System.Windows.Data;
 using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo
 {
@@ -23,7 +21,7 @@ namespace Dynamo
     public delegate void ZoomEventHandler(object sender, EventArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
 
-    public class dynWorkspaceViewModel: dynViewModelBase
+    public partial class dynWorkspaceViewModel: dynViewModelBase
     {
         #region Properties and Fields
         
@@ -137,17 +135,6 @@ namespace Dynamo
                 RaisePropertyChanged("Notes");
             }
         }
-
-        public DelegateCommand<object> HideCommand { get; set; }
-        public DelegateCommand<object> CrossSelectCommand { get; set; }
-        public DelegateCommand<object> ContainSelectCommand { get; set; }
-        public DelegateCommand UpdateSelectedConnectorsCommand { get; set; }
-        public DelegateCommand<object> SetCurrentOffsetCommand { get; set; }
-        public DelegateCommand NodeFromSelectionCommand { get; set; }
-        public DelegateCommand<object> SetZoomCommand { get; set; }
-        public DelegateCommand<object> FindByIdCommand { get; set; }
-        public DelegateCommand<string> AlignSelectedCommand { get; set; }
-        public DelegateCommand FindNodesFromSelectionCommand { get; set; }
 
         public string Name
         {
@@ -301,16 +288,6 @@ namespace Dynamo
             _model.Notes.CollectionChanged += Notes_CollectionChanged;
             _model.Connectors.CollectionChanged += Connectors_CollectionChanged;
             _model.PropertyChanged += ModelPropertyChanged;
-
-            HideCommand = new DelegateCommand<object>(Hide, CanHide);
-            CrossSelectCommand = new DelegateCommand<object>(CrossingSelect, CanCrossSelect);
-            ContainSelectCommand = new DelegateCommand<object>(ContainSelect, CanContainSelect);
-            SetCurrentOffsetCommand = new DelegateCommand<object>(SetCurrentOffset, CanSetCurrentOffset);
-            NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
-            SetZoomCommand = new DelegateCommand<object>(SetZoom, CanSetZoom);
-            FindByIdCommand = new DelegateCommand<object>(FindById, CanFindById);
-            AlignSelectedCommand = new DelegateCommand<string>(AlignSelected, CanAlignSelected);
-            FindNodesFromSelectionCommand = new DelegateCommand(FindNodesFromSelection, CanFindNodesFromSelection);
 
             DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
 
