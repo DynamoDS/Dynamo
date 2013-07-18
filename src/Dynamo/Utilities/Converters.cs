@@ -12,6 +12,52 @@ using Dynamo.PackageManager;
 
 namespace Dynamo.Controls
 {
+    public class PackageUploadStateToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is PackageUploadHandle.State)
+            {
+                var st = (PackageUploadHandle.State)value;
+
+                if (st == PackageUploadHandle.State.Compressing)
+                {
+                    return "Compressing";
+                }
+                else if (st == PackageUploadHandle.State.Copying)
+                {
+                    return "Copying";
+                }
+                else if (st == PackageUploadHandle.State.Error)
+                {
+                    return "Error";
+                }
+                else if (st == PackageUploadHandle.State.Ready)
+                {
+                    return "Ready";
+                }
+                else if (st == PackageUploadHandle.State.Uploaded)
+                {
+                    return "Uploaded";
+                }
+                else if (st == PackageUploadHandle.State.Uploading)
+                {
+                    return "Uploading";
+                }
+
+            }
+
+            return "Unknown";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PackageDownloadStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,

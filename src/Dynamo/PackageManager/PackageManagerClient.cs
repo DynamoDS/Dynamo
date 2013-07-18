@@ -218,7 +218,13 @@ namespace Dynamo.PackageManager
                 try
                 {
                     var pkgUpload = PackageUploadBuilder.NewPackage(pkg, packageUploadHandle);
-                    var ret = Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgUpload);
+
+                    var keywords = new List<string>();
+                    var nv = new PackageUpload("RootNode11", "0.1.0", "This is the best", keywords, "MIT",
+                                                             "SecondLevelNode1 - No description provided, ThirdLevelCustomNodeA1 - No description provided, ThirdLevelCustomNodeA2 - No description provided, SecondLevelNode2 - No description provided, ThirdLevelCustomNodeB1 - No description provided, ThirdLevelCustomNodeB2 - No description provided, RootNode - No description provided", "dynamo", "0.5.2.20207", "", "",
+                                                             @"C:\Users\boyerp\Desktop\Home2.zip", new List<PackageDependency>());
+
+                    var ret = Client.ExecuteAndDeserializeWithContent<PackageHeader>(nv);
 
                     if (!ret.success)
                     {

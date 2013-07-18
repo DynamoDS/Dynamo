@@ -49,6 +49,7 @@ namespace Dynamo.PackageManager
                     {
                         this._uploading = value;
                         this.RaisePropertyChanged("Uploading");
+                        ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
                     }
                 }
             }
@@ -70,8 +71,6 @@ namespace Dynamo.PackageManager
                     }
                 }
             }
-
-
 
             /// <summary>
             /// Client property 
@@ -133,24 +132,6 @@ namespace Dynamo.PackageManager
             }
 
             /// <summary>
-            /// Visible property </summary>
-            /// <value>
-            /// Tells whether the publish UI is visible</value>
-            private Visibility _visible = Visibility.Visible;
-            public Visibility Visible
-            {
-                get { return _visible; }
-                set
-                {
-                    if (this._visible != value)
-                    {
-                        this._visible = value;
-                        this.RaisePropertyChanged("Visible");
-                    }
-                }
-            }
-
-            /// <summary>
             /// Name property </summary>
             /// <value>
             /// The name of the node to be uploaded </value>
@@ -174,7 +155,7 @@ namespace Dynamo.PackageManager
             /// <value>
             /// The state of the current upload 
             /// </value>
-            private PackageUploadHandle.State _uploadState = PackageUploadHandle.State.Uninitialized;
+            private PackageUploadHandle.State _uploadState = PackageUploadHandle.State.Ready;
             public PackageUploadHandle.State UploadState
             {
                 get { return _uploadState; }
@@ -277,7 +258,7 @@ namespace Dynamo.PackageManager
                     {
                         int val;
                         if (!Int32.TryParse(value, out val) || value == "") return;
-
+                        if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                         this._MinorVersion = value;
                         this.RaisePropertyChanged("MinorVersion");
                         ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
@@ -299,7 +280,7 @@ namespace Dynamo.PackageManager
                     {
                         int val;
                         if (!Int32.TryParse(value, out val) || value == "") return;
-
+                        if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                         this._BuildVersion = value;
                         this.RaisePropertyChanged("BuildVersion");
                         ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
@@ -321,7 +302,7 @@ namespace Dynamo.PackageManager
                     {
                         int val;
                         if (!Int32.TryParse(value, out val) || value == "") return;
-
+                        if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                         this._MajorVersion = value;
                         this.RaisePropertyChanged("MajorVersion");
                         ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
@@ -378,31 +359,22 @@ namespace Dynamo.PackageManager
             Client = client;
 
             this.SubmitCommand = new DelegateCommand<object>(this.Submit, this.CanSubmit);
-            this.Clear();
-            this.Visible = Visibility.Collapsed;
         }
 
         private void UploadHandleOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (propertyChangedEventArgs.PropertyName == "UploadState")
             {
-                
+                if (((PackageUploadHandle) sender).UploadState == PackageUploadHandle.State.Error)
+                {
+                    this.ErrorString = ((PackageUploadHandle) sender).ErrorString;
+                }
+                this.UploadState = ((PackageUploadHandle) sender).UploadState;
+            } else if (propertyChangedEventArgs.PropertyName == "ErrorString")
+            {
+                this.ErrorString = ((PackageUploadHandle)sender).ErrorString;
+                this.Uploading = false;
             }
-        }
-
-        /// <summary>
-        /// Clear all of the properties displayed to the user</summary>
-        public void Clear()
-        {
-            this.Uploading = false;
-            this.IsNewVersion = false;
-            this.Keywords = "";
-            this.KeywordList = new List<string>();
-            this.Description = "";
-            this.MinorVersion = "";
-            this.MajorVersion = "";
-            this.BuildVersion = "";
-            this._dynamoBaseHeader = null;
         }
 
         /// <summary>
@@ -547,15 +519,15 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
-            if (this.MinorVersion.Length <= 0)
-            {
-                this.ErrorString = "You must provide a Minor version as a non-negative integer.";
-                return false;
-            }
-
             if (this.MajorVersion.Length <= 0)
             {
                 this.ErrorString = "You must provide a Major version as a non-negative integer.";
+                return false;
+            }
+
+            if (this.MinorVersion.Length <= 0)
+            {
+                this.ErrorString = "You must provide a Minor version as a non-negative integer.";
                 return false;
             }
 
@@ -565,7 +537,15 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
+            if ( Double.Parse( this.BuildVersion) + Double.Parse( this.MinorVersion) + Double.Parse( this.MajorVersion ) <= 0 )
+            {
+                this.ErrorString = "At least one of your version values must be greater than 0.";
+                return false;
+            }
+
             this.ErrorString = "";
+
+            if (this.Uploading) return false;
 
             return true;
         }

@@ -15,13 +15,13 @@ namespace Dynamo.PackageManager
     {
         public enum State
         {
-            Uninitialized, Copying, Compressing, Uploading, Uploaded, Error
+            Ready, Copying, Compressing, Uploading, Uploaded, Error
         }
 
         private string _errorString = "";
         public string ErrorString { get { return _errorString; } set { _errorString = value; RaisePropertyChanged("ErrorString"); } }
 
-        private State _uploadState = State.Uninitialized;
+        private State _uploadState = State.Ready;
 
         public State UploadState
         {
