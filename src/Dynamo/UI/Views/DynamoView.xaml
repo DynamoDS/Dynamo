@@ -241,7 +241,7 @@
 
             </MenuItem>
 
-            <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source=utilities:dynSettings.CustomNodes}">
+            <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source={x:Static Member=utilities:dynSettings.CustomNodes}}">
                 <MenuItem.ItemTemplate>
                     <DataTemplate>
                         <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Source={x:Static Member=commands:DynamoCommands.GoToWorkspaceCommand}}"/>
