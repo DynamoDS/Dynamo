@@ -76,6 +76,9 @@ limitations under the License.
     <Reference Include="NCalc">
       <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.core, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\NUnit\nunit.core.dll</HintPath>

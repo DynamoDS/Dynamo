@@ -103,6 +103,9 @@ namespace Dynamo.PackageManager
 
             LoadedPackageHeaders = new Dictionary<FunctionDefinition, PackageUploadRequestBody>();
             Client = new Client(null, "http://54.225.215.247");
+
+            
+
             Worker = new BackgroundWorker();
             IsLoggedIn = false;
         }
@@ -147,6 +150,21 @@ namespace Dynamo.PackageManager
             return pkgResponse.content.GetRange(0, Math.Min(MaxNumSearchResults, pkgResponse.content.Count())).Select((header) => new PackageManagerSearchElement(header)).ToList();
         }
 
+        private ResponseWithContentBody<PackageHeader> UploadDynamoPackageTest()
+        {
+            var keywords = new List<string>();
+            var nv = new PackageUpload("RootNode6", "0.1.0", "This is the best", keywords, "MIT",
+                                                     "SecondLevelNode1 - No description provided, ThirdLevelCustomNodeA1 - No description provided, ThirdLevelCustomNodeA2 - No description provided, SecondLevelNode2 - No description provided, ThirdLevelCustomNodeB1 - No description provided, ThirdLevelCustomNodeB2 - No description provided, RootNode - No description provided", "dynamo", "0.5.2.20207", "", "",
+                                                     @"C:\Users\boyerp\Desktop\Home2.zip", new List<PackageDependency>());
+
+            //var keywords = new List<string>() { "neat", "ok" };
+            //var nv = new PackageUpload("Third .NET Package4", "1.1.0", "description", keywords, "MIT",
+            //                                         "contents", "dynamo", "0.1.0", "", "group", new List<string>(), new List<PackageDependency>());
+            var response = Client.ExecuteAndDeserializeWithContent<PackageHeader>(nv);
+            //var response = pmc.ExecuteAndDeserialize(nv);
+            return response;
+        }
+
         public PackageUploadHandle Publish( bool isNewVersion, 
                                             string name,
                                             string version,
@@ -160,16 +178,24 @@ namespace Dynamo.PackageManager
                                             string rootDirectoryIfPackageVersion = "" )
         {
 
+            var nv = new ValidateAuth();
+            var pkgResponse = Client.ExecuteAndDeserialize(nv);
+
+            if (pkgResponse == null)
+            {
+                return null;
+            }
+
             if (!isNewVersion)
             {
                 var pkgHeader = PackageUploadBuilder.NewPackageHeader(   name,
-                                                                                   version,
-                                                                                   description,
-                                                                                   keywords,
-                                                                                   license,
-                                                                                   group,
-                                                                                   deps,
-                                                                                   nodeNameDescriptionPairs);   
+                                                                        version,
+                                                                        description,
+                                                                        keywords,
+                                                                        license,
+                                                                        group,
+                                                                        deps,
+                                                                        nodeNameDescriptionPairs);   
 
                 var packageUploadHandle = new PackageUploadHandle(pkgHeader);
                 return PublishNewPackage( pkgHeader, files, packageUploadHandle );
@@ -233,7 +259,7 @@ namespace Dynamo.PackageManager
                     try
                     {
                         var pkgUpload = PackageUploadBuilder.NewPackage(pkgHeader, files, packageUploadHandle);
-                        var ret = Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgUpload);
+                        var ret = Client.ExecuteAndDeserialize(pkgUpload);
 
                         if (!ret.success)
                         {
@@ -241,7 +267,7 @@ namespace Dynamo.PackageManager
                             return;
                         }
 
-                        packageUploadHandle.Done(ret.content);
+                        packageUploadHandle.Done(null);
 
                     }
                     catch (Exception e)
