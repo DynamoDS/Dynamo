@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Drawing;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.Commands;
 using Point = System.Windows.Point;
 
 namespace Dynamo.Connectors
 {
-    public class dynConnectorViewModel:dynViewModelBase
+    public partial class dynConnectorViewModel:dynViewModelBase
     {
 
         #region Properties
@@ -15,11 +14,6 @@ namespace Dynamo.Connectors
         public dynPortModel ActiveStartPort { get { return _activeStartPort; } internal set { _activeStartPort = value; } }
 
         private dynConnectorModel _model;
-
-        public DelegateCommand<object> ConnectCommand { get; set; }
-        public DelegateCommand RedrawCommand { get; set; }
-        public DelegateCommand HighlightCommand { get; set; }
-        public DelegateCommand UnHighlightCommand { get; set; }
 
         public dynConnectorModel ConnectorModel
         {
@@ -236,11 +230,6 @@ namespace Dynamo.Connectors
         //construct a view and start drawing.
         public dynConnectorViewModel(dynPortModel port)
         {
-            ConnectCommand = new DelegateCommand<object>(Connect, CanConnect);
-            RedrawCommand = new DelegateCommand(Redraw, CanRedraw);
-            HighlightCommand = new DelegateCommand(Highlight, CanHighlight);
-            UnHighlightCommand = new DelegateCommand(Unhighlight, CanUnHighlight);
-
             //var bc = new BrushConverter();
             //StrokeBrush = (Brush)bc.ConvertFrom("#777");
             const string colour = "#777";
@@ -261,11 +250,6 @@ namespace Dynamo.Connectors
 
         public dynConnectorViewModel(dynConnectorModel model)
         {
-            ConnectCommand = new DelegateCommand<object>(Connect, CanConnect);
-            RedrawCommand = new DelegateCommand(Redraw, CanRedraw);
-            HighlightCommand = new DelegateCommand(Highlight, CanHighlight);
-            UnHighlightCommand = new DelegateCommand(Unhighlight, CanUnHighlight);
-
             //var bc = new BrushConverter();
             //StrokeBrush = (Brush)bc.ConvertFrom("#777");
             const string colour = "#777";
