@@ -284,7 +284,16 @@ namespace Dynamo.Controls
                 RequestShowNodeHelp(this, e);
             }
         }
-        
+
+        public event EventHandler RequestShowNodeRename;
+        public virtual void OnRequestShowNodeRename(Object sender, EventArgs e)
+        {
+            if (RequestShowNodeRename != null)
+            {
+                RequestShowNodeRename(this, e);
+            }
+        }
+
         #endregion
 
         #region constructors
@@ -398,6 +407,34 @@ namespace Dynamo.Controls
         }
 
         private bool CanShowHelp()
+        {
+            return true;
+        }
+
+        private void ShowRename()
+        {
+            //var editWindow = new dynEditWindow { DataContext = this };
+
+            //var bindingVal = new Binding("NickName")
+            //{
+            //    Mode = BindingMode.TwoWay,
+            //    NotifyOnValidationError = false,
+            //    Source = this,
+            //    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            //};
+            //editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
+
+            //editWindow.Title = "Edit Node Name";
+
+            //if (editWindow.ShowDialog() != true)
+            //{
+            //    return;
+            //}
+
+            OnRequestShowNodeRename(this, EventArgs.Empty);
+        }
+
+        private bool CanShowRename()
         {
             return true;
         }

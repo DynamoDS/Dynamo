@@ -20,6 +20,9 @@ using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
+using System.Drawing;
+using System.Windows.Media.Imaging;
+using System.Windows.Interop;
 
 namespace Dynamo.Nodes
 {
@@ -52,7 +55,7 @@ namespace Dynamo.Nodes
             handler = new FileSystemEventHandler(watcher_FileChanged);
 
             InPortData.Add(new PortData("path", "Path to the file", typeof(Value.String)));
-            OutPortData.Add(new PortData("contents", "File contents", typeof(Value.String)));
+            
 
             //NodeUI.RegisterInputsAndOutput();
         }
@@ -71,7 +74,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Read File")]
+    [NodeName("Read Text File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Reads data from a file.")]
     public class dynFileReader : dynNodeWithOneOutput
@@ -159,9 +162,7 @@ namespace Dynamo.Nodes
 
             try
             {
-                StreamWriter writer = new StreamWriter(new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write));
-                writer.Write(text);
-                writer.Close();
+                File.WriteAllText(path, text);
             }
             catch (Exception e)
             {
