@@ -21,6 +21,7 @@ using System.Xml;
 
 using Dynamo.Connectors;
 using Dynamo.Controls;
+using Dynamo.Models;
 using DynamoPython;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;

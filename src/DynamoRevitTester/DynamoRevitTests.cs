@@ -7,6 +7,7 @@ using Autodesk.Revit.UI;
 using Dynamo;
 using Dynamo.Commands;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;

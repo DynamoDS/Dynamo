@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
+using Dynamo.Models;
 using Dynamo.Revit;
 using MIConvexHull;
 using Microsoft.FSharp.Collections;

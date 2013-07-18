@@ -2,9 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using Dynamo.Nodes;
 
-namespace Dynamo.Connectors
+namespace Dynamo.Models
 {
     /// <summary>
     /// Interaction logic for dynPort.xaml
@@ -102,7 +101,7 @@ namespace Dynamo.Connectors
             {
                 if (Owner != null)
                 {
-                    if (PortType == Dynamo.Connectors.PortType.INPUT)
+                    if (PortType == PortType.INPUT)
                     {
                         return Owner.InPortData[index].ToolTipString;
                     }

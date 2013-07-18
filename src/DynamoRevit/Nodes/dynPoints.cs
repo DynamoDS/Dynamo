@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Dynamo.FSchemeInterop;

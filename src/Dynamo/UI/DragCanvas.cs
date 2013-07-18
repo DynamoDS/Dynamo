@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using Dynamo.Models;
 using Dynamo.Selection;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 

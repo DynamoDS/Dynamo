@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;

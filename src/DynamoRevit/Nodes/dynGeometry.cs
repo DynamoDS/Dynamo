@@ -23,6 +23,7 @@ using System.Reflection;
 using Autodesk.Revit;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;

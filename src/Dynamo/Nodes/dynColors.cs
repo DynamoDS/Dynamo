@@ -15,6 +15,7 @@
 using System;
 using System.Drawing;
 using Dynamo.Connectors;
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 

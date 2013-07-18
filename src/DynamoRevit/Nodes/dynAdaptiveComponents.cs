@@ -9,6 +9,7 @@ using Autodesk.Revit.DB;
 
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
+using Dynamo.Models;
 using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;

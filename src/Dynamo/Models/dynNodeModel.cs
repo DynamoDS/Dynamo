@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using Dynamo.Nodes;
 using Dynamo.Selection;
 using Microsoft.FSharp.Collections;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
-using Value = Dynamo.FScheme.Value;
 using Microsoft.FSharp.Core;
 
-
-namespace Dynamo.Nodes
+namespace Dynamo.Models
 {
     public enum ElementState { DEAD, ACTIVE, ERROR };
 
@@ -45,7 +44,7 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="args">Arguments to the node. You are guaranteed to have as many arguments as you have InPorts at the time it is run.</param>
         /// <returns>An expression that is the result of the Node's evaluation. It will be passed along to whatever the OutPort is connected to.</returns>
-        public virtual void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        public virtual void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
             throw new NotImplementedException();
         }
@@ -256,8 +255,8 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Get the last computed value from the node.
         /// </summary>
-        public Value _oldValue = null;
-        public Value OldValue { 
+        public FScheme.Value _oldValue = null;
+        public FScheme.Value OldValue { 
             get
             {
                 return _oldValue;
@@ -624,7 +623,7 @@ namespace Dynamo.Nodes
             //If this is a partial application, then remember not to re-eval.
             if (partial)
             {
-                OldValue = Value.NewFunction(null); // cache an old value for display to the user
+                OldValue = FScheme.Value.NewFunction(null); // cache an old value for display to the user
                 RequiresRecalc = false;
             }
             
@@ -686,7 +685,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        private Value evalIfDirty(FSharpList<Value> args)
+        private FScheme.Value evalIfDirty(FSharpList<FScheme.Value> args)
         {
             // should I re-evaluate?
             if (OldValue == null || !SaveResult || RequiresRecalc)
@@ -696,7 +695,7 @@ namespace Dynamo.Nodes
                 var result = evaluateNode(args);
 
                 // if it was a failure, the old value is null
-                if (result.IsString && (result as Value.String).Item == _failureString)
+                if (result.IsString && (result as FScheme.Value.String).Item == _failureString)
                 {
                     OldValue = null;
                 }
@@ -715,16 +714,16 @@ namespace Dynamo.Nodes
         /// Wraps node evaluation logic so that it can be called in different threads.
         /// </summary>
         /// <returns>Some(Value) -> Result | None -> Run was cancelled</returns>
-        private delegate FSharpOption<Value> innerEvaluationDelegate();
+        private delegate FSharpOption<FScheme.Value> innerEvaluationDelegate();
 
-        public Dictionary<PortData, Value> evaluationDict = new Dictionary<PortData, Value>();
+        public Dictionary<PortData, FScheme.Value> evaluationDict = new Dictionary<PortData, FScheme.Value>();
 
-        public Value GetValue(int outPortIndex)
+        public FScheme.Value GetValue(int outPortIndex)
         {
             return evaluationDict.Values.ElementAt(outPortIndex);
         }
 
-        protected internal virtual Value evaluateNode(FSharpList<Value> args)
+        protected internal virtual FScheme.Value evaluateNode(FSharpList<FScheme.Value> args)
         {
             //Debug.WriteLine("Evaluating node...");
 
@@ -740,7 +739,7 @@ namespace Dynamo.Nodes
 
             innerEvaluationDelegate evaluation = delegate
             {
-                Value expr = null;
+                FScheme.Value expr = null;
 
                 try
                 {
@@ -752,7 +751,7 @@ namespace Dynamo.Nodes
 
                     expr = OutPortData.Count == 1
                         ? evaluationDict[OutPortData[0]]
-                        : Value.NewList(
+                        : FScheme.Value.NewList(
                             Utils.SequenceToFSharpList(
                                 evaluationDict.OrderBy(
                                     pair => OutPortData.IndexOf(pair.Key))
@@ -764,7 +763,7 @@ namespace Dynamo.Nodes
                 catch(CancelEvaluationException ex)
                 {
                     OnRunCancelled();
-                    return FSharpOption<Value>.None;
+                    return FSharpOption<FScheme.Value>.None;
                 }
                 catch (Exception ex)
                 {
@@ -797,15 +796,15 @@ namespace Dynamo.Nodes
 
                 RequiresRecalc = false;
 
-                return FSharpOption<Value>.Some(expr);
+                return FSharpOption<FScheme.Value>.Some(expr);
             };
 
             //C# doesn't have a Option type, so we'll just borrow F#'s instead.
-            FSharpOption<Value> result = isInteractive && dynSettings.Controller.UIDispatcher != null
-                ? (FSharpOption<Value>)dynSettings.Controller.UIDispatcher.Invoke(evaluation)
+            FSharpOption<FScheme.Value> result = isInteractive && dynSettings.Controller.UIDispatcher != null
+                ? (FSharpOption<FScheme.Value>)dynSettings.Controller.UIDispatcher.Invoke(evaluation)
                 : evaluation();
 
-            if (result == FSharpOption<Value>.None)
+            if (result == FSharpOption<FScheme.Value>.None)
             {
                 throw new CancelEvaluationException(false);
             }
@@ -814,7 +813,7 @@ namespace Dynamo.Nodes
                 if (result.Value != null)
                     return result.Value;
                 else
-                    return Value.NewString(_failureString);
+                    return FScheme.Value.NewString(_failureString);
             }
         }
 
@@ -825,7 +824,7 @@ namespace Dynamo.Nodes
 
         }
         
-        protected internal virtual void __eval_internal(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        protected internal virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
             var argList = new List<string>();
             if (args.Any())
@@ -1261,14 +1260,14 @@ namespace Dynamo.Nodes
         /// </summary>
         protected int runCount = 0;
 
-        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
             //if this element maintains a collcection of references
             //then clear the collection
             if (this is IClearable)
                 (this as IClearable).ClearReferences();
 
-            List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
+            List<FSharpList<FScheme.Value>> argSets = new List<FSharpList<FScheme.Value>>();
 
             //create a zip of the incoming args and the port data
             //to be used for type comparison
@@ -1280,8 +1279,8 @@ namespace Dynamo.Nodes
             //OR an argument which requires a list and gets a list of lists
             //AND argument lacing is not disabled
             if (args.Count() > 0 &&
-                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
-                listOfListComparison.Any(x => x.Item1 == true && x.Item2 == typeof(Value.List))) &&
+                (portComparison.Any(x => x.Item1 == typeof(FScheme.Value.List) && x.Item2 != typeof(FScheme.Value.List)) ||
+                listOfListComparison.Any(x => x.Item1 == true && x.Item2 == typeof(FScheme.Value.List))) &&
                 this.ArgumentLacing != LacingStrategy.Disabled)
             {
                 //if the argument is of the expected type, then
@@ -1290,11 +1289,11 @@ namespace Dynamo.Nodes
                 foreach (var arg in args)
                 {
                     //incoming value is list and expecting single
-                    if (portComparison.ElementAt(j).Item1 == typeof(Value.List) &&
-                        portComparison.ElementAt(j).Item2 != typeof(Value.List))
+                    if (portComparison.ElementAt(j).Item1 == typeof(FScheme.Value.List) &&
+                        portComparison.ElementAt(j).Item2 != typeof(FScheme.Value.List))
                     {
                         //leave as list
-                        argSets.Add(((Value.List)arg).Item);
+                        argSets.Add(((FScheme.Value.List)arg).Item);
                     }
                     //incoming value is list and expecting list
                     else
@@ -1302,7 +1301,7 @@ namespace Dynamo.Nodes
                         //check if we have a list of lists, if so, then don't wrap
                         if (Utils.IsListOfLists(arg))
                             //leave as list
-                            argSets.Add(((Value.List)arg).Item);
+                            argSets.Add(((FScheme.Value.List)arg).Item);
                         else
                             //wrap in list
                             argSets.Add(Utils.MakeFSharpList(arg));
@@ -1310,7 +1309,7 @@ namespace Dynamo.Nodes
                     j++;
                 }
 
-                IEnumerable<IEnumerable<Value>> lacedArgs = null;
+                IEnumerable<IEnumerable<FScheme.Value>> lacedArgs = null;
                 switch (this.ArgumentLacing)
                 {
                     case LacingStrategy.First:
@@ -1329,10 +1328,10 @@ namespace Dynamo.Nodes
 
                 //setup a list to hold the results
                 //each output will have its own results collection
-                List<FSharpList<Value>> results = new List<FSharpList<FScheme.Value>>();
+                List<FSharpList<FScheme.Value>> results = new List<FSharpList<FScheme.Value>>();
                 for (int i = 0; i < OutPortData.Count(); i++)
                 {
-                    results.Add(FSharpList<Value>.Empty);
+                    results.Add(FSharpList<FScheme.Value>.Empty);
                 }
                 //FSharpList<Value> result = FSharpList<Value>.Empty;
 
@@ -1351,8 +1350,8 @@ namespace Dynamo.Nodes
 
                     for (int k = 0; k < OutPortData.Count(); k++)
                     {
-                        FSharpList<Value> lst = ((Value.List)evalResult).Item;
-                        results[k] = FSharpList<Value>.Cons(lst[k], results[k]);
+                        FSharpList<FScheme.Value> lst = ((FScheme.Value.List)evalResult).Item;
+                        results[k] = FSharpList<FScheme.Value>.Cons(lst[k], results[k]);
                     }
                     runCount++;
                 }
@@ -1361,20 +1360,20 @@ namespace Dynamo.Nodes
                 //and send the results to the outputs
                 for (int i = 0; i < OutPortData.Count(); i++)
                 {
-                    outPuts[OutPortData[i]] = Value.NewList(results[i]);
+                    outPuts[OutPortData[i]] = FScheme.Value.NewList(results[i]);
                 }
 
             }
             else
             {
-                Value evalResult = Evaluate(args);
+                FScheme.Value evalResult = Evaluate(args);
 
                 runCount++;
 
                 if (!evalResult.IsList)
                     throw new Exception("Output value of the node is not a list.");
 
-                FSharpList<Value> lst = ((Value.List)evalResult).Item;
+                FSharpList<FScheme.Value> lst = ((FScheme.Value.List)evalResult).Item;
 
                 //the result of evaluation will be a list. we split that result
                 //and send the results to the outputs
@@ -1391,7 +1390,7 @@ namespace Dynamo.Nodes
                 dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
             }  
         }
-        public virtual Value Evaluate(FSharpList<Value> args)
+        public virtual FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             throw new NotImplementedException();
         }
@@ -1400,14 +1399,14 @@ namespace Dynamo.Nodes
 
     public abstract class dynNodeWithOneOutput : dynNodeModel
     {
-        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
             //if this element maintains a collcection of references
             //then clear the collection
             if(this is IClearable)
                 (this as IClearable).ClearReferences();
 
-            List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
+            List<FSharpList<FScheme.Value>> argSets = new List<FSharpList<FScheme.Value>>();
             
             //create a zip of the incoming args and the port data
             //to be used for type comparison
@@ -1420,8 +1419,8 @@ namespace Dynamo.Nodes
             //OR an argument which requires a list and gets a list of lists
             //AND argument lacing is not disabled
             if (args.Count() > 0 &&
-                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
-                listOfListComparison.Any(x => x.Item1 == true && x.Item2 == typeof(Value.List))) &&
+                (portComparison.Any(x => x.Item1 == typeof(FScheme.Value.List) && x.Item2 != typeof(FScheme.Value.List)) ||
+                listOfListComparison.Any(x => x.Item1 == true && x.Item2 == typeof(FScheme.Value.List))) &&
                 this.ArgumentLacing != LacingStrategy.Disabled)
             {
                 //if the argument is of the expected type, then
@@ -1430,11 +1429,11 @@ namespace Dynamo.Nodes
                 foreach (var arg in args)
                 {
                     //incoming value is list and expecting single
-                    if (portComparison.ElementAt(j).Item1 == typeof (Value.List) && 
-                        portComparison.ElementAt(j).Item2 != typeof (Value.List))
+                    if (portComparison.ElementAt(j).Item1 == typeof (FScheme.Value.List) && 
+                        portComparison.ElementAt(j).Item2 != typeof (FScheme.Value.List))
                     {
                         //leave as list
-                        argSets.Add(((Value.List)arg).Item);
+                        argSets.Add(((FScheme.Value.List)arg).Item);
                     }
                     //incoming value is list and expecting list
                     else
@@ -1442,7 +1441,7 @@ namespace Dynamo.Nodes
                         //check if we have a list of lists, if so, then don't wrap
                         if (Utils.IsListOfLists(arg))
                             //leave as list
-                            argSets.Add(((Value.List)arg).Item);
+                            argSets.Add(((FScheme.Value.List)arg).Item);
                         else
                             //wrap in list
                             argSets.Add(Utils.MakeFSharpList(arg));
@@ -1450,7 +1449,7 @@ namespace Dynamo.Nodes
                     j++;
                 }
 
-                IEnumerable<IEnumerable<Value>> lacedArgs = null;
+                IEnumerable<IEnumerable<FScheme.Value>> lacedArgs = null;
                 switch (this.ArgumentLacing)
                 {
                     case LacingStrategy.First:
@@ -1468,7 +1467,7 @@ namespace Dynamo.Nodes
                 }
 
                 //setup an empty list to hold results
-                FSharpList<Value> result = FSharpList<Value>.Empty;
+                FSharpList<FScheme.Value> result = FSharpList<FScheme.Value>.Empty;
 
                 //run the evaluate method for each set of 
                 //arguments in the cartesian result. do these
@@ -1477,10 +1476,10 @@ namespace Dynamo.Nodes
                 for (int i = lacedArgs.Count() - 1; i >= 0; i--)
                 {
                     var evalResult = Evaluate(Utils.MakeFSharpList(lacedArgs.ElementAt(i).ToArray()));
-                    result = FSharpList<Value>.Cons(evalResult, result);
+                    result = FSharpList<FScheme.Value>.Cons(evalResult, result);
                 }
 
-                outPuts[OutPortData[0]] = Value.NewList(result);
+                outPuts[OutPortData[0]] = FScheme.Value.NewList(result);
             }
             else
             {
@@ -1495,7 +1494,7 @@ namespace Dynamo.Nodes
             }  
         }
 
-        public virtual Value Evaluate(FSharpList<Value> args)
+        public virtual FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             throw new NotImplementedException();
         }

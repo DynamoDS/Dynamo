@@ -21,6 +21,7 @@ using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.UI;
 using Dynamo.Connectors;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;

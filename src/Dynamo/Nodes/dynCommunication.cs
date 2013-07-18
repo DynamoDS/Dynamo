@@ -17,6 +17,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Dynamo.Connectors;
@@ -72,9 +73,9 @@ namespace Dynamo.Nodes
     {
         public dynUDPListener()
         {
-            InPortData.Add(new Connectors.PortData("exec", "Execution Interval", typeof(Value.Number)));
-            InPortData.Add(new Connectors.PortData("udp port", "A UDP port to listen to.", typeof(object)));
-            OutPortData.Add(new Connectors.PortData("str", "The string returned from the web request.", typeof(Value.String)));
+            InPortData.Add(new PortData("exec", "Execution Interval", typeof(Value.Number)));
+            InPortData.Add(new PortData("udp port", "A UDP port to listen to.", typeof(object)));
+            OutPortData.Add(new PortData("str", "The string returned from the web request.", typeof(Value.String)));
 
             RegisterAllPorts();
         }

@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using Autodesk.Revit.DB;
 
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 
