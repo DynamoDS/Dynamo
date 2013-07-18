@@ -50,6 +50,7 @@ namespace Dynamo.Commands
             {
                 var f = funcDef as FunctionDefinition;
 
+                dynSettings.Controller.PublishCustomNodesViewModel = new PublishCustomNodesViewModel(dynSettings.Controller.PackageManagerClient);
                 dynSettings.Controller.PublishCustomNodesViewModel.FunctionDefinitions =
                     new List<FunctionDefinition> {f};
 

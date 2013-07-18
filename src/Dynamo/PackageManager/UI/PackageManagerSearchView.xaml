@@ -177,31 +177,31 @@ Source="..\..\Images\search_24.png" Opacity="1">
 
                                     <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Downloaded">
                                         <DataTrigger.Setters>
-                                            <Setter Property="Background" Value="Orange" TargetName="SearchEle" />
+                                            <Setter Property="Background" Value="Gray" TargetName="SearchEle" />
                                         </DataTrigger.Setters>
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Downloading">
                                         <DataTrigger.Setters>
-                                            <Setter Property="Background" Value="Green" TargetName="SearchEle" />
+                                            <Setter Property="Background" Value="Gray" TargetName="SearchEle" />
                                         </DataTrigger.Setters>
                                      </DataTrigger>
 
                                     <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Error">
                                         <DataTrigger.Setters>
-                                            <Setter Property="Background" Value="Red" TargetName="SearchEle" />
+                                            <Setter Property="Background" Value="LightCoral" TargetName="SearchEle" />
                                         </DataTrigger.Setters>
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Installed">
                                         <DataTrigger.Setters>
-                                            <Setter Property="Background" Value="DeepSkyBlue" TargetName="SearchEle" />
+                                            <Setter Property="Background" Value="LightBlue" TargetName="SearchEle" />
                                         </DataTrigger.Setters>
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Installing">
                                         <DataTrigger.Setters>
-                                            <Setter Property="Background" Value="DeepSkyBlue" TargetName="SearchEle" />
+                                            <Setter Property="Background" Value="Gray" TargetName="SearchEle" />
                                         </DataTrigger.Setters>
                                     </DataTrigger>
 
