@@ -13,7 +13,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Globalization;
 
-using Dynamo.Commands;
+//using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -703,9 +703,14 @@ namespace Dynamo.Controls
             sw.WriteLine(message);
             LogText = sw.ToString();
 
-            if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+            //if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+            //{
+            //    DynamoCommands.WriteToLogCmd.Execute(message);
+            //}
+
+            if (dynSettings.Controller.DynamoViewModel.CanWriteToLog(null))
             {
-                DynamoCommands.WriteToLogCmd.Execute(message);
+                dynSettings.Controller.DynamoViewModel.WriteToLog(message);
             }
         }
 
@@ -2125,10 +2130,16 @@ namespace Dynamo.Controls
                     //MessageBox.Show("Workbench could not be opened.");
                     Log("Workbench could not be opened.");
 
-                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    //if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    //{
+                    //    DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
+                    //    DynamoCommands.WriteToLogCmd.Execute(xmlPath);
+                    //}
+
+                    if (dynSettings.Controller.DynamoViewModel.CanWriteToLog(null))
                     {
-                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
-                        DynamoCommands.WriteToLogCmd.Execute(xmlPath);
+                        dynSettings.Controller.DynamoViewModel.WriteToLog("Workbench could not be opened.");
+                        dynSettings.Controller.DynamoViewModel.WriteToLog(xmlPath);
                     }
                 }
 
@@ -2529,12 +2540,18 @@ namespace Dynamo.Controls
                     vm.Watch3DViewModels.Add(new Watch3DFullscreenViewModel(vm));
                 }
 
+                //removed because we can reference the commands from here
+                //and also because this behavior was not great. instead we'll
+                //request just a redraw
+
                 //run the expression to refresh
-                if (DynamoCommands.IsProcessingCommandQueue)
-                    return;
+                //if (DynamoCommands.IsProcessingCommandQueue)
+                //    return;
 
                 //dynSettings.Controller.RunCommand(dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null);
-                RunExpression(null);
+                //RunExpression(null);
+
+                dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
 
                 FullscreenWatchShowing = true;
             }
@@ -2641,13 +2658,15 @@ namespace Dynamo.Controls
             dynNodeModel node = CreateNode(data["name"].ToString());
             if (node == null)
             {
-                DynamoCommands.WriteToLogCmd.Execute("Failed to create the node");
+                //DynamoCommands.WriteToLogCmd.Execute("Failed to create the node");
+                dynSettings.Controller.DynamoViewModel.WriteToLog("Failed to create the node");
                 return;
             }
 
             if ((node is dynSymbol || node is dynOutput) && _model.CurrentSpace is HomeWorkspace)
             {
-                DynamoCommands.WriteToLogCmd.Execute("Cannot place dynSymbol or dynOutput in HomeWorkspace");
+                //DynamoCommands.WriteToLogCmd.Execute("Cannot place dynSymbol or dynOutput in HomeWorkspace");
+                dynSettings.Controller.DynamoViewModel.WriteToLog("Cannot place dynSymbol or dynOutput in HomeWorkspace");
                 return;
             }
 
@@ -2700,7 +2719,8 @@ namespace Dynamo.Controls
             }
 
             string message = string.Format("Can not create instance of node {0}.", data["name"]);
-            DynamoCommands.WriteToLogCmd.Execute(message);
+            //DynamoCommands.WriteToLogCmd.Execute(message);
+            dynSettings.Controller.DynamoViewModel.WriteToLog(message);
             Log(message);
 
             return false;
@@ -2800,10 +2820,16 @@ namespace Dynamo.Controls
             {
                 dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
 
-                if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                //if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                //{
+                //    DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
+                //    DynamoCommands.WriteToLogCmd.Execute(UnlockLoadPath);
+                //}
+
+                if (dynSettings.Controller.DynamoViewModel.CanWriteToLog(null))
                 {
-                    DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
-                    DynamoCommands.WriteToLogCmd.Execute(UnlockLoadPath);
+                    dynSettings.Controller.DynamoViewModel.WriteToLog("Workbench could not be opened.");
+                    dynSettings.Controller.DynamoViewModel.WriteToLog(UnlockLoadPath);
                 }
             }
 

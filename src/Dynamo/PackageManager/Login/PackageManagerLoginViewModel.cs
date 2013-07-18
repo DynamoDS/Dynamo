@@ -15,6 +15,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager
@@ -151,5 +152,25 @@ namespace Dynamo.PackageManager
             int QueryService([In] ref Guid guidService, [In] ref Guid riid, [MarshalAs(UnmanagedType.IDispatch)] out object ppvObject);
         }
 
+
+        public void ShowLogin()
+        {
+            Visible = true;
+        }
+
+        internal bool CanShowLogin()
+        {
+            return true;
+        }
+
+        public void Login()
+        {
+
+        }
+
+        internal bool CanLogin()
+        {
+            return true;
+        }
     }
 }

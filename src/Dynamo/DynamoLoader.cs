@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Commands;
+//using Dynamo.Commands;
 using Dynamo.Search;
 using Dynamo.Controls;
 using System.Reflection;
@@ -229,7 +229,8 @@ namespace Dynamo.Utilities
             }
             
             sw.Stop();
-            DynamoCommands.WriteToLogCmd.Execute(string.Format("{0} ellapsed for loading definitions.", sw.Elapsed));
+            //DynamoCommands.WriteToLogCmd.Execute(string.Format("{0} ellapsed for loading definitions.", sw.Elapsed));
+            dynSettings.Controller.DynamoViewModel.WriteToLog(string.Format("{0} ellapsed for loading definitions.", sw.Elapsed));
 
             // update search view
             searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);

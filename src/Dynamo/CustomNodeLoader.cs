@@ -10,7 +10,7 @@ using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
-using Dynamo.Commands;
+//using Dynamo.Commands;
 using NUnit.Framework;
 
 namespace Dynamo.Utilities
@@ -612,7 +612,8 @@ namespace Dynamo.Utilities
 
                 #endregion
 
-                DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
+                //DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
+                dynSettings.Controller.DynamoViewModel.WriteToLog("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
                 var ws = new FuncWorkspace(
                     funName, category.Length > 0
@@ -839,7 +840,8 @@ namespace Dynamo.Utilities
                     }
                     catch
                     {
-                        DynamoCommands.WriteToLogCmd.Execute(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
+                        //DynamoCommands.WriteToLogCmd.Execute(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
+                        dynSettings.Controller.DynamoViewModel.WriteToLog(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
                     }
                 }
 
@@ -889,8 +891,11 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                DynamoCommands.WriteToLogCmd.Execute("There was an error opening the workbench.");
-                DynamoCommands.WriteToLogCmd.Execute(ex);
+                //DynamoCommands.WriteToLogCmd.Execute("There was an error opening the workbench.");
+                //DynamoCommands.WriteToLogCmd.Execute(ex);
+
+                dynSettings.Controller.DynamoViewModel.WriteToLog("There was an error opening the workbench.");
+                dynSettings.Controller.DynamoViewModel.WriteToLog(ex);
 
                 if (controller.Testing)
                     Assert.Fail(ex.Message);

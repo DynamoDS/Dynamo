@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Dynamo.Commands;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -292,7 +291,9 @@ namespace Dynamo.PackageManager
         {
             if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false)
             {
-                DynamoCommands.ShowLoginCmd.Execute();
+                //DynamoCommands.ShowLoginCmd.Execute();
+                dynSettings.Controller.PackageManagerLoginViewModel.ShowLogin();
+
                 dynSettings.Controller.DynamoViewModel.Log("Must login first to publish a node.");
                 return;
             }
@@ -354,7 +355,8 @@ namespace Dynamo.PackageManager
 
             if (currentFunDef != null)
             {
-                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(currentFunDef);
+                //DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(currentFunDef);
+                dynSettings.Controller.PackageManagerPublishViewModel.ShowNodePublishInfo(currentFunDef);
             }
             else
             {
@@ -382,7 +384,8 @@ namespace Dynamo.PackageManager
 
             if (dynSettings.Controller.CustomNodeLoader.Contains(nodeList[0]))
             {
-                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(nodeList[0]));
+                //DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(nodeList[0]));
+                dynSettings.Controller.PackageManagerPublishViewModel.ShowNodePublishInfo(dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(nodeList[0]));
             }
             else
             {
