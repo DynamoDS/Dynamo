@@ -12,12 +12,7 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-using System;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-using Dynamo.Nodes;
-using Dynamo.Selection;
+using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
 
@@ -254,13 +249,32 @@ namespace Dynamo.Commands
     
     public static partial class DynamoCommands
     {
+        private static PackageManagerPublishViewModel _vm_pm_publish =
+            dynSettings.Controller.PackageManagerPublishViewModel;
+
+        /// <summary>
+        /// SubmitCommand property </summary>
+        /// <value>
+        /// A command which, when executed, submits the current package</value>
+        private static DelegateCommand<object> _submitCommand;
+        public static DelegateCommand<object> SubmitCommand
+        {
+            get
+            {
+                if(_submitCommand == null)
+                    _submitCommand = new DelegateCommand<object>(_vm_pm_publish.OnSubmit, _vm_pm_publish.CanSubmit);
+                return _submitCommand;
+            }
+        }
+
         private static DelegateCommand<object> _showNodePublishInfoCmd;
         public static DelegateCommand<object> ShowNodeNodePublishInfoCmd
         {
             get
             {
                 if (_showNodePublishInfoCmd == null)
-                    _showNodePublishInfoCmd = new DelegateCommand<object>(ShowNodePublishInfo, CanShowNodePublishInfo);
+                    _showNodePublishInfoCmd =
+                        new DelegateCommand<object>(_vm_pm_publish.ShowNodePublishInfo, _vm_pm_publish.CanShowNodePublishInfo);
                 return _showNodePublishInfoCmd;
             }
         }
@@ -271,7 +285,8 @@ namespace Dynamo.Commands
             get
             {
                 if (_publishCurrentWorkspaceCmd == null)
-                    _publishCurrentWorkspaceCmd = new DelegateCommand(PublishCurrentWorkspace, CanPublishCurrentWorkspace);
+                    _publishCurrentWorkspaceCmd =
+                        new DelegateCommand(_vm_pm_publish.PublishCurrentWorkspace, _vm_pm_publish.CanPublishCurrentWorkspace);
                 return _publishCurrentWorkspaceCmd;
             }
         }
@@ -282,7 +297,8 @@ namespace Dynamo.Commands
             get
             {
                 if (_publishSelectedNodeCmd == null)
-                    _publishSelectedNodeCmd = new DelegateCommand(PublishSelectedNode, CanPublishSelectedNode);
+                    _publishSelectedNodeCmd =
+                        new DelegateCommand(_vm_pm_publish.PublishSelectedNode, _vm_pm_publish.CanPublishSelectedNode);
                 return _publishSelectedNodeCmd;
             }
         }
@@ -318,113 +334,6 @@ namespace Dynamo.Commands
                     _loginCmd = new DelegateCommand(Login, CanLogin);
                 return _loginCmd;
             }
-        }
-
-        private static void ShowNodePublishInfo(object funcDef)
-        {
-            if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false)
-            {
-                DynamoCommands.ShowLoginCmd.Execute();
-                dynSettings.Controller.DynamoViewModel.Log("Must login first to publish a node.");
-                return;
-            }
-
-            //if (!init)
-            //{
-                //var view = new PackageManagerPublishView(dynSettings.Controller.PackageManagerPublishViewModel);
-
-                //MVVM: we now have an event called on the current workspace view model to 
-                //add the view to its outer canvas
-                //dynSettings.Bench.outerCanvas.Children.Add(_view);
-                //Canvas.SetBottom(_view, 0);
-                //Canvas.SetRight(_view, 0);
-
-                //dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(view));
-
-            //    init = true;
-            //}
-            
-            if (funcDef is FunctionDefinition)
-            {
-                var f = funcDef as FunctionDefinition;
-
-                dynSettings.Controller.PackageManagerPublishViewModel.FunctionDefinition =
-                    f;
-
-                // we're submitting a new version
-                if ( dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders.ContainsKey(f) )
-                {
-                    dynSettings.Controller.PackageManagerPublishViewModel.PackageHeader =
-                        dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders[f];
-                }
-            }
-            else
-            {
-                dynSettings.Controller.DynamoViewModel.Log("Failed to obtain function definition from node.");
-                return;
-            }
-            
-        }
-
-        private static bool CanShowNodePublishInfo(object funcDef)
-        {
-            return true;
-        }
-
-        private static void PublishCurrentWorkspace()
-        {
-            //this._client = dynSettings.Controller.PackageManagerClient;
-            
-            if ( dynSettings.Controller.DynamoViewModel.ViewingHomespace )
-            {
-                MessageBox.Show("You can't publish your the home workspace.", "Workspace Error", MessageBoxButton.OK, MessageBoxImage.Question);
-                return;
-            }
-
-            var currentFunDef =
-                dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(dynSettings.Controller.DynamoViewModel.CurrentSpace);
-
-            if ( currentFunDef != null )
-            {
-                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(currentFunDef);
-            }
-            else
-            {
-                MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
-            }
-        }
-
-        private static bool CanPublishCurrentWorkspace()
-        {
-            return true;
-        }
-
-        private static void PublishSelectedNode()
-        {
-            //var client = dynSettings.Controller.PackageManagerClient;
-
-            var nodeList = DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel && ((dynNodeModel)x) is dynFunction)
-                                        .Select(x => (((dynNodeModel)x) as dynFunction).Definition.FunctionId).ToList();
-
-            if (nodeList.Count != 1)
-            {
-                MessageBox.Show("You must select a single user-defined node.  You selected " + nodeList.Count + " nodes.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
-                return;
-            }
-
-            if (dynSettings.Controller.CustomNodeLoader.Contains(nodeList[0]))
-            {
-                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(nodeList[0]));
-            }
-            else
-            {
-                MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
-            }
-        }
-
-        private static bool CanPublishSelectedNode()
-        {
-            return true;
         }
 
         private static void RefreshRemotePackages()

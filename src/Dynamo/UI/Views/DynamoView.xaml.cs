@@ -26,6 +26,7 @@ using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;
 using Dynamo.Search;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Commands;
 
@@ -102,6 +103,14 @@ namespace Dynamo.Controls
 
             dynSettings.Controller.PackageManagerClient.RequestSetLoginState += new LoginStateEventHandler(PackageManagerClient_RequestSetLoginState);
             dynSettings.Controller.RequestsCrashPrompt += new DynamoController.CrashPromptHandler(Controller_RequestsCrashPrompt);
+
+            DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+        }
+
+        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            DynamoCommands.CopyCommand.RaiseCanExecuteChanged();
+            DynamoCommands.PasteCommand.RaiseCanExecuteChanged();
         }
 
         void Controller_RequestsCrashPrompt(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

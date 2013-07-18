@@ -867,7 +867,8 @@ namespace Dynamo.Utilities
                         paramDict.Add("y", y);
                         paramDict.Add("text", text);
                         paramDict.Add("workspace", ws);
-                        dynSettings.Controller.DynamoViewModel.AddNoteCommand.Execute(paramDict);
+                        //dynSettings.Controller.DynamoViewModel.AddNoteCommand.Execute(paramDict);
+                        dynSettings.Controller.DynamoViewModel.AddNote(paramDict);
                     }
                 }
 

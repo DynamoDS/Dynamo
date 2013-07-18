@@ -18,8 +18,6 @@ using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-
-using Microsoft.Practices.Prism.Commands;
 using NUnit.Framework;
 
 namespace Dynamo.Controls
@@ -342,15 +340,15 @@ namespace Dynamo.Controls
             sw = new StringWriter();
             ConnectorType = ConnectorType.BEZIER;
 
-            DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+            //DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
 
         }
 
-        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            CopyCommand.RaiseCanExecuteChanged();
-            PasteCommand.RaiseCanExecuteChanged();
-        }
+        //void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        //{
+        //    CopyCommand.RaiseCanExecuteChanged();
+        //    PasteCommand.RaiseCanExecuteChanged();
+        //}
 
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -612,8 +610,11 @@ namespace Dynamo.Controls
                 paramDict.Add("text", de.Key.ToString());
                 paramDict.Add("workspace", _model.CurrentSpace);
 
-                if(AddNoteCommand.CanExecute(paramDict))
-                    AddNoteCommand.Execute(paramDict);
+                //if(AddNoteCommand.CanExecute(paramDict))
+                //    AddNoteCommand.Execute(paramDict);
+
+                if(CanAddNote(paramDict))
+                    AddNote(paramDict);
                 
                 y += 60;
 
@@ -661,7 +662,7 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private bool CanVisibilityBeToggled(object parameters)
+        internal bool CanVisibilityBeToggled(object parameters)
         {
             return true;
         }
@@ -1022,7 +1023,8 @@ namespace Dynamo.Controls
                         paramDict.Add("text", text);
                         paramDict.Add("workspace", ws);
                         //DynamoCommands.AddNoteCmd.Execute(paramDict);
-                        dynSettings.Controller.DynamoViewModel.AddNoteCommand.Execute(paramDict);
+                        //dynSettings.Controller.DynamoViewModel.AddNoteCommand.Execute(paramDict);
+                        AddNote(paramDict);
                     }
                 }
 
@@ -1662,7 +1664,8 @@ namespace Dynamo.Controls
                         paramDict.Add("y", y);
                         paramDict.Add("text", text);
                         paramDict.Add("workspace", _model.CurrentSpace);
-                        AddNoteCommand.Execute(paramDict);
+                        //AddNoteCommand.Execute(paramDict);
+                        AddNote(paramDict);
                     }
                 }
 
@@ -2307,7 +2310,9 @@ namespace Dynamo.Controls
                     { "guid", newGUID }
                 };
 
-                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(AddNoteCommand, noteData));
+                //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(AddNoteCommand, noteData));
+                AddNote(noteData);
+       
                 //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(
                 //    AddToSelectionCommand,
                 //    _model.CurrentSpace.Notes.FirstOrDefault(x => x.GUID == newGUID)));
@@ -2829,6 +2834,7 @@ namespace Dynamo.Controls
             var wsvm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == _model.CurrentSpace);
             wsvm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(0, 0)));
         }
+        
         internal bool CanGoHomeView()
         {
             return true;
@@ -2889,11 +2895,56 @@ namespace Dynamo.Controls
 
             SaveFunction(def);
         }
+        
         internal bool CanRefactorCustomNode()
         {
             return true;
         }
 
+        public void AddNote(object parameters)
+        {
+
+            var inputs = parameters as Dictionary<string, object> ?? new Dictionary<string, object>();
+
+            // by default place note at center
+            var x = 0.0;
+            var y = 0.0;
+
+            if (inputs != null && inputs.ContainsKey("x"))
+                x = (double)inputs["x"];
+
+            if (inputs != null && inputs.ContainsKey("y"))
+
+                y = (double)inputs["y"];
+
+            var n = new dynNoteModel(x, y);
+
+            //if we have null parameters, the note is being added
+            //from the menu, center the view on the note
+
+            if (parameters == null)
+            {
+                inputs.Add("transformFromOuterCanvasCoordinates", true);
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new ModelEventArgs(n, inputs));
+            }
+
+            object id;
+            if (inputs.TryGetValue("guid", out id))
+                n.GUID = (Guid)id;
+
+            n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
+            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspaceModel)inputs["workspace"];
+
+            ws.Notes.Add(n);
+
+        }
+
+        internal bool CanAddNote(object parameters)
+        {
+
+            return true;
+
+        }
     }
 
     public class TypeLoadData
