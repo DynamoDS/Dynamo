@@ -335,6 +335,7 @@ namespace Dynamo.Controls
             //DynamoCommands.ProcessCommandQueue();
 
             dynSettings.Controller.DynamoViewModel.AddToSelection(n);
+            
         }
 
         #endregion
