@@ -16,14 +16,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.Selection;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Controls
 {
@@ -31,7 +29,7 @@ namespace Dynamo.Controls
     /// Interaction logic for dynControl.xaml
     /// </summary>
     
-    public class dynNodeViewModel : dynViewModelBase
+    public partial class dynNodeViewModel : dynViewModelBase
     {
         #region delegates
         public delegate void SetToolTipDelegate(string message);
@@ -289,21 +287,6 @@ namespace Dynamo.Controls
         
         #endregion
 
-        #region commands
-
-        public DelegateCommand DeleteCommand { get; set; }
-        public DelegateCommand<string> SetLacingTypeCommand { get; set; }
-        public DelegateCommand<object> SetStateCommand { get; set; }
-        public DelegateCommand SelectCommand { get; set; }
-        public DelegateCommand ShowHelpCommand { get; set; }
-        public DelegateCommand ViewCustomNodeWorkspaceCommand { get; set; }
-        public DelegateCommand<object> SetLayoutCommand { get; set; }
-        public DelegateCommand<object> SetupCustomUIElementsCommand { get; set; }
-        public DelegateCommand ValidateConnectionsCommand { get; set; }
-        public DelegateCommand ToggleIsVisibleCommand { get; set; }
-        public DelegateCommand ToggleIsUpstreamVisibleCommand { get; set; }
-        #endregion
-
         #region constructors
 
         public dynNodeViewModel(dynNodeModel logic)
@@ -318,18 +301,6 @@ namespace Dynamo.Controls
             logic.PropertyChanged += logic_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
 
-            DeleteCommand = new DelegateCommand(DeleteNodeAndItsConnectors, CanDeleteNode);
-            SetLacingTypeCommand = new DelegateCommand<string>(new Action<string>(SetLacingType), CanSetLacingType);
-            SetStateCommand = new DelegateCommand<object>(SetState, CanSetState);
-            SelectCommand = new DelegateCommand(Select, CanSelect);
-            ShowHelpCommand = new DelegateCommand(ShowHelp, CanShowHelp);
-            ViewCustomNodeWorkspaceCommand = new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
-            SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
-            SetupCustomUIElementsCommand = new DelegateCommand<object>(SetupCustomUIElements, CanSetupCustomUIElements);
-            ValidateConnectionsCommand = new DelegateCommand(ValidateConnections, CanValidateConnections);
-            ToggleIsVisibleCommand = new DelegateCommand(ToggleIsVisible, CanVisibilityBeToggled);
-            ToggleIsUpstreamVisibleCommand = new DelegateCommand(ToggleIsUpstreamVisible, CanUpstreamVisibilityBeToggled);
-
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -342,8 +313,10 @@ namespace Dynamo.Controls
         void Controller_RequestNodeSelect(object sender, EventArgs e)
         {
             dynModelBase n = (e as ModelEventArgs).Model;
-            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(SelectCommand, n));
-            dynSettings.Controller.ProcessCommandQueue();
+            //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(SelectCommand, n));
+            //DynamoCommands.ProcessCommandQueue();
+
+            dynSettings.Controller.DynamoViewModel.AddToSelection(n);
         }
 
         #endregion

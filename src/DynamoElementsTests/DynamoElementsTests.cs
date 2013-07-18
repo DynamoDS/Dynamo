@@ -124,8 +124,8 @@ namespace Dynamo.Tests
         {
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string openPath = Path.Combine(directory, @"..\..\test\dynamo_elements_samples\working\multiplicationAndAdd\multiplicationAndAdd.dyn");
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.OpenCommand, openPath));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.OpenCommand, openPath));
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.AreEqual(5, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
         }
@@ -139,9 +139,9 @@ namespace Dynamo.Tests
             sumData.Add("y", 100.0);
 
             sumData.Add("name", "Add");
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
 
-            controller.ProcessCommandQueue();
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.AreEqual(controller.DynamoViewModel.CurrentSpace.Nodes.Count, 1);
         }
@@ -156,8 +156,8 @@ namespace Dynamo.Tests
             inputs.Add("text", "This is a test note.");
             inputs.Add("workspace", controller.DynamoViewModel.CurrentSpace);
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddNoteCommand, inputs));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddNoteCommand, inputs));
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.AreEqual(controller.DynamoViewModel.CurrentSpace.Notes.Count, 1);
         }
@@ -170,20 +170,20 @@ namespace Dynamo.Tests
             // select all of them one by one
             for (int i = 0; i < numNodes; i++)
             {
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
                                                                                      null));
-                Assert.DoesNotThrow(() => controller.ProcessCommandQueue());
+                Assert.DoesNotThrow(() => DynamoCommands.ProcessCommandQueue());
 
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand, 5));
-                Assert.DoesNotThrow(() => controller.ProcessCommandQueue());
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand, 5));
+                Assert.DoesNotThrow(() => DynamoCommands.ProcessCommandQueue());
 
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
                                                                                      "noodle"));
-                Assert.DoesNotThrow(() => controller.ProcessCommandQueue());
+                Assert.DoesNotThrow(() => DynamoCommands.ProcessCommandQueue());
 
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
                                                                                      new StringBuilder()));
-                Assert.DoesNotThrow(() => controller.ProcessCommandQueue());
+                Assert.DoesNotThrow(() => DynamoCommands.ProcessCommandQueue());
             }
         }
 
@@ -198,14 +198,14 @@ namespace Dynamo.Tests
                 var sumData = new Dictionary<string, object>();
 
                 sumData.Add("name", "Add");
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
-                controller.ProcessCommandQueue();
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
                                                                                      controller.DynamoViewModel.Model.Nodes[i]));
-                controller.ProcessCommandQueue();
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
@@ -217,8 +217,8 @@ namespace Dynamo.Tests
         public void CanClearLog()
         {
             Assert.AreNotEqual(0, controller.DynamoViewModel.LogText.Length);
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearLogCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearLogCommand, null));
+            DynamoCommands.ProcessCommandQueue();
             Assert.AreEqual(0, controller.DynamoViewModel.LogText.Length);
         }
 
@@ -227,8 +227,8 @@ namespace Dynamo.Tests
         [Test]
         public void CanClearWorkspaceWithEmptyWorkspace()
         {
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearCommand, null));
+            DynamoCommands.ProcessCommandQueue();
             Assert.AreEqual(0, controller.DynamoViewModel.Model.Nodes.Count());
         }
 
@@ -253,15 +253,15 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(0, controller.DynamoViewModel.Model.Nodes.Count());
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, numData1));
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, numData2));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, numData1));
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, numData2));
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.AreEqual(3, controller.DynamoViewModel.Model.Nodes.Count());
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearCommand, null));
+            DynamoCommands.ProcessCommandQueue();
             Assert.AreEqual(0, controller.DynamoViewModel.Model.Nodes.Count());
         }
 
@@ -275,20 +275,20 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "Add");
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
-                controller.ProcessCommandQueue();
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
                                                                                      controller.DynamoViewModel.Model.Nodes[i]));
-                controller.ProcessCommandQueue();
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCommand, null));
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.AreEqual(numNodes, controller.ClipBoard.Count);
         }
@@ -303,26 +303,26 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "Add");
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand,
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand,
                                                                                      sumData));
-                controller.ProcessCommandQueue();
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
                                                                                      controller.DynamoViewModel.Model.Nodes[i]));
-                controller.ProcessCommandQueue();
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCommand, null));
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.AreEqual(numNodes, controller.ClipBoard.Count);
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.PasteCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.PasteCommand, null));
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.AreEqual(numNodes * 2, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
         }
@@ -338,25 +338,25 @@ namespace Dynamo.Tests
                 var sumData = new Dictionary<string, object>();
 
                 sumData.Add("name", "Add");
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
-                controller.ProcessCommandQueue();
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
                                                                                      controller.DynamoViewModel.Model.Nodes[i]));
-                controller.ProcessCommandQueue();
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCommand, null));
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.AreEqual(numNodes, controller.ClipBoard.Count);
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.PasteCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.PasteCommand, null));
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.AreEqual(numNodes * 2, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
         }
@@ -372,28 +372,28 @@ namespace Dynamo.Tests
                 var sumData = new Dictionary<string, object>();
 
                 sumData.Add("name", "Add");
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
-                controller.ProcessCommandQueue();
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
                                                                                      controller.DynamoViewModel.Model.Nodes[i]));
-                controller.ProcessCommandQueue();
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCommand, null));
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.AreEqual(numNodes, controller.ClipBoard.Count);
 
             int numPastes = 3;
             for (int i = 1; i <= numPastes; i++)
             {
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.PasteCommand, null));
-                controller.ProcessCommandQueue();
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.PasteCommand, null));
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(numNodes, controller.ClipBoard.Count);
                 Assert.AreEqual(numNodes * (i + 1), controller.DynamoViewModel.CurrentSpace.Nodes.Count);
@@ -410,20 +410,20 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "Add");
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
-                controller.ProcessCommandQueue();
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
                                                                                      controller.DynamoViewModel.Model.Nodes[i]));
-                controller.ProcessCommandQueue();
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCommand, null));
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.AreEqual(numNodes, controller.ClipBoard.Count);
         }
@@ -434,8 +434,8 @@ namespace Dynamo.Tests
         [Test]
         public void CanLayoutAll()
         {
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.LayoutAllCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.LayoutAllCommand, null));
+            DynamoCommands.ProcessCommandQueue();
             Assert.AreNotEqual(0, controller.DynamoViewModel.Model.Nodes.Count());
         }
 
@@ -457,8 +457,8 @@ namespace Dynamo.Tests
         {
             string fn = "ruthlessTurtles.dyn";
             string path = Path.Combine(TempFolder, fn);
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveAsCommand, path));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveAsCommand, path));
+            DynamoCommands.ProcessCommandQueue();
 
             var tempFldrInfo = new DirectoryInfo(TempFolder);
             Assert.AreEqual(1, tempFldrInfo.GetFiles().Length);
@@ -474,16 +474,16 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "Add");
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
-                controller.ProcessCommandQueue();
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             }
 
             string fn = "ruthlessTurtles.dyn";
             string path = Path.Combine(TempFolder, fn);
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveAsCommand, path));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveAsCommand, path));
+            DynamoCommands.ProcessCommandQueue();
 
             var tempFldrInfo = new DirectoryInfo(TempFolder);
             Assert.AreEqual(1, tempFldrInfo.GetFiles().Length);
@@ -495,8 +495,8 @@ namespace Dynamo.Tests
         [Test]
         public void CannotSaveEmptyWorkspaceIfSaveIsCalledWithoutSettingPath()
         {
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveCommand, null));
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.IsNull(controller.DynamoViewModel.CurrentSpace.FilePath);
         }
@@ -510,14 +510,14 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "Add");
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
-                controller.ProcessCommandQueue();
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             }
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveCommand, null));
+            DynamoCommands.ProcessCommandQueue();
 
             Assert.IsNull(controller.DynamoViewModel.CurrentSpace.FilePath);
         }
@@ -546,8 +546,8 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "Add");
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
-                controller.ProcessCommandQueue();
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -561,7 +561,7 @@ namespace Dynamo.Tests
         {
             for (int i = 0; i < 20; i++)
             {
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.HomeCommand, null));
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.HomeCommand, null));
                 Assert.AreEqual(true, controller.DynamoViewModel.ViewingHomespace);
             }
         }
@@ -590,11 +590,11 @@ namespace Dynamo.Tests
             watch.Add("y", 300.0);
             watch.Add("name", "Dynamo.Nodes.dynWatch");
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, numData1));
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, numData2));
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, watch));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, numData1));
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, numData2));
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, watch));
+            DynamoCommands.ProcessCommandQueue();
 
             //update the layout so the following
             //connectors have visuals to transform to
@@ -615,7 +615,7 @@ namespace Dynamo.Tests
             cd1.Add("port_start", 0);
             cd1.Add("port_end", 0);
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCommand, cd1));
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCommand, cd1));
 
             var cd2 = new Dictionary<string, object>();
             cd2.Add("start", controller.DynamoViewModel.Model.Nodes[2]); //first number node
@@ -623,7 +623,7 @@ namespace Dynamo.Tests
             cd2.Add("port_start", 0); //first output
             cd2.Add("port_end", 1); //second input
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCommand, cd2));
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCommand, cd2));
 
             var cd3 = new Dictionary<string, object>();
             cd3.Add("start", controller.DynamoViewModel.Model.Nodes[0]); // add
@@ -631,12 +631,12 @@ namespace Dynamo.Tests
             cd3.Add("port_start", 0); //first output
             cd3.Add("port_end", 0); //second input
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCommand, cd3));
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCommand, cd3));
 
             controller.DynamoViewModel.LogText = "";
 
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.RunExpressionCommand, null));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.RunExpressionCommand, null));
+            DynamoCommands.ProcessCommandQueue();
 
             Thread.Sleep(250);
 
@@ -661,14 +661,14 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "Add");
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
-                controller.ProcessCommandQueue();
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
                                                                                      controller.DynamoViewModel.Model.Nodes[i]));
-                controller.ProcessCommandQueue();
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
@@ -676,9 +676,9 @@ namespace Dynamo.Tests
             // the number selected stays the same
             for (int i = 0; i < numNodes; i++)
             {
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
+                DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
                                                                                      controller.DynamoViewModel.Model.Nodes[i]));
-                controller.ProcessCommandQueue();
+                DynamoCommands.ProcessCommandQueue();
 
                 Assert.AreEqual(numNodes, DynamoSelection.Instance.Selection.Count);
             }
@@ -691,24 +691,24 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(directory, @"..\..\test\good_dyns\nodeLocationTest.dyn");
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-AR");
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.OpenCommand, openPath));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.OpenCommand, openPath));
+            DynamoCommands.ProcessCommandQueue();
             Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
             var node = dynSettings.Controller.DynamoModel.Nodes.First();
             Assert.AreEqual(217.952067513811, node.X);
             Assert.AreEqual(177.041832898393, node.Y);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("zu-ZA");
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.OpenCommand, openPath));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.OpenCommand, openPath));
+            DynamoCommands.ProcessCommandQueue();
             Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
             node = dynSettings.Controller.DynamoModel.Nodes.First();
             Assert.AreEqual(217.952067513811, node.X);
             Assert.AreEqual(177.041832898393, node.Y);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ja-JP");
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.OpenCommand, openPath));
-            controller.ProcessCommandQueue();
+            DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.OpenCommand, openPath));
+            DynamoCommands.ProcessCommandQueue();
             Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
             node = dynSettings.Controller.DynamoModel.Nodes.First();
             Assert.AreEqual(217.952067513811, node.X);

@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-//using System.Windows.Input;
 using System.Windows.Threading;
 
 using Dynamo.Controls;
@@ -15,10 +14,8 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.Commands;
+//using Microsoft.Practices.Prism.Commands;
 using NUnit.Framework;
-
-using Microsoft.Practices.Prism;
 
 namespace Dynamo
 {
@@ -53,9 +50,6 @@ namespace Dynamo
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
-        private readonly Queue<Tuple<object, object>> commandQueue = new Queue<Tuple<object, object>>();
-        
-        private bool isProcessingCommandQueue = false;
         private bool testing = false;
 
         public CustomNodeLoader CustomNodeLoader { get; internal set; }
@@ -83,16 +77,6 @@ namespace Dynamo
         {
             get { return clipBoard; }
             set { clipBoard = value; }
-        }
-
-        public bool IsProcessingCommandQueue
-        {
-            get { return isProcessingCommandQueue; }
-        }
-
-        public Queue<Tuple<object, object>> CommandQueue
-        {
-            get { return commandQueue; }
         }
 
         public SortedDictionary<string, TypeLoadData> BuiltInTypesByNickname
@@ -229,64 +213,6 @@ namespace Dynamo
             dynSettings.Controller = null;
             Selection.DynamoSelection.Instance.ClearSelection();
         }
-
-        #region CommandQueue
-
-        /// <summary>
-        /// Add a command to the CommandQueue and run ProcessCommandQueue(), providing null as the 
-        /// command arguments
-        /// </summary>
-        /// <param name="command">The command to run</param>
-        public void RunCommand(DelegateCommand<object> command)
-        {
-            this.RunCommand(command, null);
-        }
-
-        /// <summary>
-        /// Add a command to the CommandQueue and run ProcessCommandQueue(), providing the given
-        /// arguments to the command
-        /// </summary>
-        /// <param name="command">The command to run</param>
-        /// <param name="args">Arguments to give to the command</param>
-        public void RunCommand(DelegateCommand<object> command, object args)
-        {
-            var commandAndParams = Tuple.Create<object, object>(command, args);
-            this.CommandQueue.Enqueue(commandAndParams);
-            this.ProcessCommandQueue();
-        }
-
-        private void Hooks_DispatcherInactive(object sender, EventArgs e)
-        {
-            ProcessCommandQueue();
-        }
-
-        /// <summary>
-        ///     Run all of the commands in the CommandQueue
-        /// </summary>
-        public void ProcessCommandQueue()
-        {
-            while (commandQueue.Count > 0)
-            {
-                var cmdData = commandQueue.Dequeue();
-                var cmd = cmdData.Item1 as DelegateCommand<object>;
-                if (cmd != null)
-                {
-                    if (cmd.CanExecute(cmdData.Item2))
-                    {
-                        cmd.Execute(cmdData.Item2);
-                    }
-                }
-            }
-            commandQueue.Clear();
-
-            if (dynSettings.Controller.UIDispatcher!=null)
-            {
-                DynamoLogger.Instance.Log(string.Format("dynSettings.Bench Thread : {0}",
-                                                       dynSettings.Controller.UIDispatcher.Thread.ManagedThreadId.ToString(CultureInfo.InvariantCulture)));
-            }
-        }
-
-        #endregion
 
         #region Running
 

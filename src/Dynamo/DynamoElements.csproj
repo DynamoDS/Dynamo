@@ -118,6 +118,7 @@ limitations under the License.
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Search\SearchElements\TopSearchElement.cs" />
     <Compile Include="Nodes\dynEquation.cs" />
+    <Compile Include="UI\Commands\NodeCommands.cs" />
     <Compile Include="UI\Converters.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -2246,7 +2246,7 @@ namespace Dynamo.Controls
 
             //process the command queue so we have 
             //nodes to connect to
-            dynSettings.Controller.ProcessCommandQueue();
+            //DynamoCommands.ProcessCommandQueue();
 
             //update the layout to ensure that the visuals
             //are present in the tree to connect to
@@ -2290,7 +2290,7 @@ namespace Dynamo.Controls
             }
 
             //process the queue again to create the connectors
-            dynSettings.Controller.ProcessCommandQueue();
+            //DynamoCommands.ProcessCommandQueue();
 
             var notes = dynSettings.Controller.ClipBoard.OfType<dynNoteModel>();
 
@@ -2319,7 +2319,7 @@ namespace Dynamo.Controls
                 AddToSelection(_model.CurrentSpace.Notes.FirstOrDefault(x => x.GUID == newGUID));
             }
 
-            dynSettings.Controller.ProcessCommandQueue();
+            //DynamoCommands.ProcessCommandQueue();
 
             foreach (var de in nodeLookup)
             {
@@ -2329,7 +2329,7 @@ namespace Dynamo.Controls
                 AddToSelection(_model.CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == de.Value));
             }
 
-            dynSettings.Controller.ProcessCommandQueue();
+            //DynamoCommands.ProcessCommandQueue();
         }
 
         internal bool CanPaste(object parameters)
@@ -2532,7 +2532,7 @@ namespace Dynamo.Controls
                 }
 
                 //run the expression to refresh
-                if (dynSettings.Controller.IsProcessingCommandQueue)
+                if (DynamoCommands.IsProcessingCommandQueue)
                     return;
 
                 //dynSettings.Controller.RunCommand(dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null);
