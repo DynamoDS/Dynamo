@@ -268,6 +268,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ From Reference Point")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Extracts an XYZ from a Reference Point.")]
+    [NodeSearchTags("xyz", "derive", "from", "reference", "point")]
     public class dynXYZFromReferencePoint : dynXYZBase
     {
         public dynXYZFromReferencePoint()
