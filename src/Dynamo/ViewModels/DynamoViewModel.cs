@@ -2480,7 +2480,8 @@ namespace Dynamo.Controls
 
             foreach (ISelectable sel in sels)
             {
-                ((dynNodeModel)sel).SelectNeighbors();
+                if(sel is dynNodeModel)
+                    ((dynNodeModel)sel).SelectNeighbors();
             }
         }
 
