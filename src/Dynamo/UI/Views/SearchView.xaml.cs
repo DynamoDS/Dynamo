@@ -38,13 +38,6 @@ namespace Dynamo.Search
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(SearchView_Loaded);
-        }
-
-        void SearchView_Loaded(object sender, RoutedEventArgs e)
-        {
-            DataContext = _viewModel = dynSettings.Controller.SearchViewModel;
-
-            PreviewKeyDown += KeyHandler;
 
             SearchTextBox.IsVisibleChanged += delegate
             {
@@ -69,6 +62,13 @@ namespace Dynamo.Search
             {
                 SearchTextBox.Foreground = Brushes.Gray;
             };
+        }
+
+        void SearchView_Loaded(object sender, RoutedEventArgs e)
+        {
+            DataContext = _viewModel = dynSettings.Controller.SearchViewModel;
+
+            PreviewKeyDown += KeyHandler;
 
             dynSettings.Controller.SearchViewModel.RequestFocusSearch += new EventHandler(SearchViewModel_RequestFocusSearch);
             dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += new EventHandler(SearchViewModel_RequestReturnFocusToSearch);
