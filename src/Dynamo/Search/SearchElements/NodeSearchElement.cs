@@ -14,7 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
