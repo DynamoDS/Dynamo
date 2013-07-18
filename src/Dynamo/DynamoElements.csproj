@@ -102,7 +102,7 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands.cs" />
+    <Compile Include="UI\Commands\Commands.cs" />
     <Compile Include="DynamoCompletionData.cs" />
     <Compile Include="DynamoLogger.cs" />
     <Compile Include="DynamoRunner.cs" />
@@ -216,14 +216,14 @@ limitations under the License.
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="Interfaces\dynIDrawable.cs" />
-    <Compile Include="PackageManager\PackageManagerCommands.cs" />
+    <Compile Include="UI\Commands\PackageManagerCommands.cs" />
     <Compile Include="PackageManager\Login\PackageManagerLoginViewModel.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="PackageManager\Publish\PackageManagerPublishViewModel.cs" />
     <Compile Include="Search\Regions\PackageManagerRegion.cs" />
     <Compile Include="Search\Regions\RegionBase.cs" />
     <Compile Include="Search\Regions\RevitAPIRegion.cs" />
-    <Compile Include="Search\SearchCommands.cs" />
+    <Compile Include="UI\Commands\SearchCommands.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\PackageManagerSearchElement.cs" />
