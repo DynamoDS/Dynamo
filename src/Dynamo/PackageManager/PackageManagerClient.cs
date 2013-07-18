@@ -184,7 +184,7 @@ namespace Dynamo.PackageManager
 
             if (pkgResponse == null)
             {
-                throw new AuthenticationException("Are you logged in to Revit?");
+                throw new AuthenticationException("It looks like you're not logged into Autodesk 360.  Log in to submit a package.");
             }
 
             if (!isNewVersion)

@@ -129,8 +129,8 @@ limitations under the License.
     <Compile Include="PackageManager\PackageDownloadHandle.cs" />
     <Compile Include="PackageManager\PackageLoader.cs" />
     <Compile Include="PackageManager\PackageManagerSearchViewModel.cs" />
-    <Compile Include="PackageManager\UI\DynamoInstalledPackagesView.xaml.cs">
-      <DependentUpon>DynamoInstalledPackagesView.xaml</DependentUpon>
+    <Compile Include="PackageManager\UI\InstalledPackagesView.xaml.cs">
+      <DependentUpon>InstalledPackagesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\UI\PackageDependencyInternalViewModel.cs" />
     <Compile Include="PackageManager\UI\PackageDependencyViewModel.cs" />
@@ -272,7 +272,7 @@ limitations under the License.
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="PackageManager\UI\DynamoInstalledPackagesView.xaml">
+    <Page Include="PackageManager\UI\InstalledPackagesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
