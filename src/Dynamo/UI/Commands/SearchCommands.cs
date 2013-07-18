@@ -13,13 +13,12 @@
 //limitations under the License.
 
 using System;
-using System.Windows.Input;
+using Dynamo.Search.Regions;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Commands
 {
-
     public static partial class DynamoCommands
     {
         private static DelegateCommand focusSearch;
@@ -208,4 +207,20 @@ namespace Dynamo.Commands
     //        return (dynSettings.Controller.SearchViewModel.Visible != Visibility.Visible);
     //    }
     //}
+}
+
+namespace Dynamo.Search
+{
+    public partial class SearchViewModel
+    {
+        /// <summary>
+        ///     Regions property
+        /// </summary>
+        /// <value>
+        ///     Specifies different regions to search over.  The command toggles whether searching
+        ///     over that field or not.
+        /// </value>
+        public ObservableDictionary<string, RegionBase<object>> Regions { get; set; }
+    }
+
 }
