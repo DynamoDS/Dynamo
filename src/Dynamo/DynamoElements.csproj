@@ -227,9 +227,9 @@ limitations under the License.
     <Compile Include="PackageManager\Login\PackageManagerLoginViewModel.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="PackageManager\Publish\PackageManagerPublishViewModel.cs" />
-    <Compile Include="Search\Regions\PackageManagerRegion.cs" />
-    <Compile Include="Search\Regions\RegionBase.cs" />
-    <Compile Include="Search\Regions\RevitAPIRegion.cs" />
+    <Compile Include="UI\Commands\Regions\PackageManagerRegion.cs" />
+    <Compile Include="UI\Commands\Regions\RegionBase.cs" />
+    <Compile Include="UI\Commands\Regions\RevitAPIRegion.cs" />
     <Compile Include="UI\Commands\SearchCommands.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />

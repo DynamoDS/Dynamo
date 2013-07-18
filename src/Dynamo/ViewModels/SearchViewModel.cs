@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Dynamo.Commands;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
-using Dynamo.Search.Regions;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg.Responses;
@@ -18,7 +17,7 @@ namespace Dynamo.Search
     /// <summary>
     ///     This is the core ViewModel for searching
     /// </summary>
-    public class SearchViewModel : NotificationObject
+    public partial class SearchViewModel : NotificationObject
     {
         #region Properties
 
@@ -47,15 +46,6 @@ namespace Dynamo.Search
         //    get { return _searchVisibility; }
         //    set { _searchVisibility = value; RaisePropertyChanged("SearchVisibility"); }
         //}
-
-        /// <summary>
-        ///     Regions property
-        /// </summary>
-        /// <value>
-        ///     Specifies different regions to search over.  The command toggles whether searching
-        ///     over that field or not.
-        /// </value>
-        public ObservableDictionary<string, RegionBase<object>> Regions { get; set; }
 
         /// <summary>
         ///     IncludeRevitAPIElements property
@@ -226,6 +216,7 @@ namespace Dynamo.Search
             if (RequestReturnFocusToSearch != null)
                 RequestReturnFocusToSearch(this, e);
         }
+
         #endregion
 
 
@@ -244,11 +235,12 @@ namespace Dynamo.Search
             Visible = false;
             _SearchText = "";
             IncludeRevitAPIElements = false; // revit api
-            Regions = new ObservableDictionary<string, RegionBase<object>>();
-            //Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
-            var region = new RevitAPIRegion<object>(RevitAPIRegionExecute, RevitAPIRegionCanExecute);
-            region.RaiseCanExecuteChanged();
-            Regions.Add("Include Experimental Revit API Nodes", new RevitAPIRegion<object>(RevitAPIRegionExecute, RevitAPIRegionCanExecute));
+
+            //Regions = new ObservableDictionary<string, RegionBase<object>>();
+            ////Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
+            //var region = new RevitAPIRegion<object>(RevitAPIRegionExecute, RevitAPIRegionCanExecute);
+            //region.RaiseCanExecuteChanged();
+            //Regions.Add("Include Experimental Revit API Nodes", new RevitAPIRegion<object>(RevitAPIRegionExecute, RevitAPIRegionCanExecute));
 
             _topResult = this.AddRootCategory("Top Result");
             this.AddRootCategory(BuiltinNodeCategories.CORE);
@@ -261,13 +253,13 @@ namespace Dynamo.Search
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
         }
 
-        static void RevitAPIRegionExecute(object parameter)
+        public static void RevitAPIRegionExecute(object parameter)
         {
             dynSettings.Controller.SearchViewModel.IncludeRevitAPIElements = !dynSettings.Controller.SearchViewModel.IncludeRevitAPIElements;
             dynSettings.ReturnFocusToSearch();
         }
 
-        static bool RevitAPIRegionCanExecute(object parameter)
+        internal static bool RevitAPIRegionCanExecute(object parameter)
         {
             return true;
         }
