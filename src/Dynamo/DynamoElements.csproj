@@ -393,24 +393,6 @@ limitations under the License.
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="Microsoft.Office.Core">
-      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>5</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Excel">
-      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>7</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="VBIDE">
       <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>5</VersionMajor>

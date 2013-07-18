@@ -20,9 +20,6 @@ using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
-using System.Drawing;
-using System.Windows.Media.Imaging;
-using System.Windows.Interop;
 
 namespace Dynamo.Nodes
 {
