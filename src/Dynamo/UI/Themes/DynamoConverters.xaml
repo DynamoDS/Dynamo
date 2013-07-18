@@ -1,9 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoElements">
+                    xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCore">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DynamoElements;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+        <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <controls:WorkspaceTypeConverter x:Key="WorkspaceTypeConverter" />

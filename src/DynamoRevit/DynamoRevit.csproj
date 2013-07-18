@@ -174,9 +174,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
+    <ProjectReference Include="..\Dynamo\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
-      <Name>DynamoElements</Name>
+      <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">

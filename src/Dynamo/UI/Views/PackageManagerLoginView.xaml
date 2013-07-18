@@ -24,8 +24,8 @@
     <UserControl.Resources>
       <ResourceDictionary>
         <ResourceDictionary.MergedDictionaries>
-          <ResourceDictionary Source="/DynamoElements;component/UI/Themes/DynamoModern.xaml" />
-                <ResourceDictionary Source="/DynamoElements;component/UI/Themes/DynamoConverters.xaml" />
+          <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
             </ResourceDictionary.MergedDictionaries>
       </ResourceDictionary>
     </UserControl.Resources>
