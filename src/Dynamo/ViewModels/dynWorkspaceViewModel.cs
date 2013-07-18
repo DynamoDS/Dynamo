@@ -410,13 +410,13 @@ namespace Dynamo
             }
         }
 
-        private void SelectAll()
+        public void SelectAll()
         {
             DynamoSelection.Instance.ClearSelection();
             this.Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
         }
 
-        private bool CanSelectAll()
+        internal bool CanSelectAll()
         {
             return true;
         }
@@ -485,7 +485,7 @@ namespace Dynamo
                            .Max();
         }
 
-        private void AlignSelected(string alignType)
+        public void AlignSelected(string alignType)
         {
             if (DynamoSelection.Instance.Selection.Count <= 1) return;
 

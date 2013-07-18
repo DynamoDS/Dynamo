@@ -83,7 +83,7 @@ namespace Dynamo.Controls
                 RequestSaveImage(this, e);
             }
         }
-        
+
         #endregion
 
         #region properties
@@ -2802,7 +2802,8 @@ namespace Dynamo.Controls
 
         public void AlignSelected(string param)
         {
-            this.CurrentSpaceViewModel.AlignSelectedCommand.Execute(param);
+            //this.CurrentSpaceViewModel.AlignSelectedCommand.Execute(param);
+            this.CurrentSpaceViewModel.AlignSelected(param);
         }
 
         internal bool CanAlignSelected(string param)
@@ -2972,12 +2973,14 @@ namespace Dynamo.Controls
 
         public void SelectAll()
         {
-            this.CurrentSpaceViewModel.SelectAllCommand.Execute();
+            //this.CurrentSpaceViewModel.SelectAllCommand.Execute();
+            this.CurrentSpaceViewModel.SelectAll();
         }
 
         internal bool CanSelectAll()
         {
-            return this.CurrentSpaceViewModel.SelectAllCommand.CanExecute();
+            //return this.CurrentSpaceViewModel.SelectAllCommand.CanExecute();
+            return this.CurrentSpaceViewModel.CanSelectAll();
         }
     }
 
