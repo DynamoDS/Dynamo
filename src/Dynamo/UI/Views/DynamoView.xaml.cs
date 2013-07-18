@@ -29,7 +29,8 @@ using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.Commands;
+using Dynamo.ViewModels;
+using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 
 namespace Dynamo.Controls
 {

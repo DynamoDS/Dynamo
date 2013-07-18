@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Microsoft.Practices.Prism.ViewModel;
 
-namespace Dynamo.Nodes.Search
+namespace Dynamo.Search
 {
     public abstract partial class BrowserItem : NotificationObject
     {

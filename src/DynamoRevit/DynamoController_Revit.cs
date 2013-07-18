@@ -11,6 +11,7 @@ using Dynamo.Nodes;
 using Dynamo.Revit;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo

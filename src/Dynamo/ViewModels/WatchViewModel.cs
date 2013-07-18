@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Windows.Data;
 using Microsoft.Practices.Prism.ViewModel;
 
-namespace Dynamo.Nodes
+namespace Dynamo.ViewModels
 {
     public class WatchNode : NotificationObject
     {

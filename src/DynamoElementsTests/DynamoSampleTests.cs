@@ -4,14 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using Dynamo.Commands;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using NUnit.Framework;
+using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 
 namespace Dynamo.Tests
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Practices.Prism.Commands;
 
-namespace Dynamo.Nodes
+namespace Dynamo.ViewModels
 {
     public partial class dynNoteViewModel
     {

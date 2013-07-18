@@ -10,6 +10,8 @@ using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using System.Web;
+using Dynamo.UI.Commands;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
 {

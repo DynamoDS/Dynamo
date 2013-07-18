@@ -17,9 +17,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Dynamo.Commands;
-using Dynamo.Utilities;
 using Dynamo.Selection;
+using Dynamo.ViewModels;
+using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 
 namespace Dynamo.Nodes
 {

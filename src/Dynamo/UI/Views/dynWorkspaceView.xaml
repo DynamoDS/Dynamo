@@ -6,7 +6,8 @@
              xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:views="clr-namespace:Dynamo.Nodes.Views"
              xmlns:nodes="clr-namespace:Dynamo.Nodes" 
              xmlns:dynamo="clr-namespace:Dynamo"
-             xmlns:connectors="clr-namespace:Dynamo.Connectors"
+             xmlns:connectors="clr-namespace:Dynamo.Connectors" xmlns:commands="clr-namespace:Dynamo.UI.Commands"
+             xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              MouseLeftButtonDown="DynWorkspaceView_OnMouseLeftButtonDown"
@@ -47,7 +48,7 @@
             Visibility="{Binding FullScreenWatchVisible,-->
              
             <ItemsControl.Resources>
-                <DataTemplate DataType="{x:Type controls:Watch3DFullscreenViewModel}">
+                <DataTemplate DataType="{x:Type viewModels:Watch3DFullscreenViewModel}">
                     <controls:WatchViewFullscreen></controls:WatchViewFullscreen>
                 </DataTemplate>
             </ItemsControl.Resources>
@@ -77,15 +78,15 @@
 
                         <ItemsControl.Resources>
 
-                            <DataTemplate DataType="{x:Type controls:dynNodeViewModel}">
+                            <DataTemplate DataType="{x:Type viewModels:dynNodeViewModel}">
                                 <controls:dynNodeView></controls:dynNodeView>
                             </DataTemplate>
 
-                            <DataTemplate DataType="{x:Type nodes:dynNoteViewModel}">
+                            <DataTemplate DataType="{x:Type viewModels:dynNoteViewModel}">
                                 <nodes:dynNoteView></nodes:dynNoteView>
                             </DataTemplate>
 
-                            <DataTemplate DataType="{x:Type connectors:dynConnectorViewModel}">
+                            <DataTemplate DataType="{x:Type viewModels:dynConnectorViewModel}">
                                 <views:dynConnectorView></views:dynConnectorView>
                             </DataTemplate>
                         </ItemsControl.Resources>

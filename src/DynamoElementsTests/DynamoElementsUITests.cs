@@ -3,8 +3,8 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Threading;
 using Dynamo.Controls;
-using Dynamo.Commands;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using NUnit.Framework;
 
 namespace Dynamo.Tests

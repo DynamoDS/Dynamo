@@ -5,15 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Threading;
-
-using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
-using Dynamo.Search;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using NUnit.Framework;
 
 namespace Dynamo

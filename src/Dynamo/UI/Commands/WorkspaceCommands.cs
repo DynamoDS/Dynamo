@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.Practices.Prism.Commands;
 
-namespace Dynamo
+namespace Dynamo.ViewModels
 {
     public partial class dynWorkspaceViewModel
     {

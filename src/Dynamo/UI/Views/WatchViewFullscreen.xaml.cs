@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
 
 namespace Dynamo.Controls

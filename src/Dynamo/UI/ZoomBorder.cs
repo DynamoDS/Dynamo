@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.UI.Commands;
+using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Controls

@@ -5,15 +5,13 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-//using Dynamo.Commands;
-using Dynamo.Connectors;
-using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
-namespace Dynamo
+namespace Dynamo.ViewModels
 {
     public delegate void PointEventHandler(object sender, EventArgs e);
     public delegate void NodeEventHandler(object sender, EventArgs e);

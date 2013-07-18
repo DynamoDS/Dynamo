@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dynamo.Controls" xmlns:nodes="clr-namespace:Dynamo.Nodes"
+             xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="161" d:DesignWidth="410" 
              HorizontalAlignment="Stretch" 
@@ -46,11 +47,11 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <nodes:WatchTreeBranch x:Key="Tree">
+        <viewModels:WatchTreeBranch x:Key="Tree">
             <!--<local:WatchNode NodeLabel="A" Link="Blah"/>
             <local:WatchNode NodeLabel="B"/>
             <local:WatchNode NodeLabel="C" Link="Blah Blah Blah"/>-->
-        </nodes:WatchTreeBranch>
+        </viewModels:WatchTreeBranch>
         <Style TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsExpanded" Value="{Binding IsNodeExpanded}">
             </Setter>
@@ -62,7 +63,7 @@
                   Background="White" Opacity=".5" 
                   BorderBrush="{x:Null}">
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" DataType="{x:Type nodes:WatchNode}">
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" DataType="{x:Type viewModels:WatchNode}">
                     <StackPanel Orientation="Horizontal"
                                     Width="Auto">
                         <TextBlock Text="{Binding Path=NodeLabel}" 

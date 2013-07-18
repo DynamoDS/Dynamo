@@ -4,7 +4,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using Point = System.Windows.Point;
 
-namespace Dynamo.Connectors
+namespace Dynamo.ViewModels
 {
     public partial class dynConnectorViewModel:dynViewModelBase
     {

@@ -1,4 +1,4 @@
-﻿namespace Dynamo.Controls
+﻿namespace Dynamo.ViewModels
 {
     public class Watch3DFullscreenViewModel : dynViewModelBase
     {

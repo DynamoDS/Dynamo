@@ -12,16 +12,14 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
 using System.Globalization;
-
-//using Dynamo.Commands;
-using Dynamo.Connectors;
+using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
-namespace Dynamo.Controls
+namespace Dynamo.ViewModels
 {
     public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
     public delegate void ImageSaveEventHandler(object sender, ImageSaveEventArgs e);

@@ -30,7 +30,6 @@ using System.Windows.Media;
 using System.Linq;
 using System.Windows.Threading;
 using System.Xml.Serialization;
-using Dynamo.Commands;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -54,6 +53,7 @@ using NUnit.Core.Filters;
 using NUnit.Framework;
 using NUnit.Util;
 using Application = System.Windows.Application;
+using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 
 #endif
 

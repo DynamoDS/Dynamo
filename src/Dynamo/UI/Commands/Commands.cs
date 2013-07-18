@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Dynamo.Controls;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.Commands;
 
-namespace Dynamo.Commands
+namespace Dynamo.UI.Commands
 {
 
     public static partial class DynamoCommands
