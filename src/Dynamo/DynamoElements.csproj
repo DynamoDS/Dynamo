@@ -117,8 +117,6 @@ limitations under the License.
     <Compile Include="Nodes\Watch\WatchViewModel.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Search\BrowserItem.cs" />
-    <Compile Include="Search\SearchElements\TopSearchElement.cs" />
-    <Compile Include="Nodes\dynEquation.cs" />
     <Compile Include="UI\Commands\ConnectorCommands.cs" />
     <Compile Include="UI\Commands\NodeCommands.cs" />
     <Compile Include="UI\Commands\NodeSearchElementCommands.cs" />
@@ -204,8 +202,6 @@ limitations under the License.
     <Compile Include="UI\ZoomBorder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Search\BrowserInternalElement.cs" />
-    <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Search\SearchElements\TopSearchElement.cs" />
     <Compile Include="Nodes\dynFormula.cs" />
     <Compile Include="Units.cs" />
