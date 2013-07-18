@@ -84,6 +84,13 @@ namespace Dynamo.Views
 
             ViewModel.RequestAddViewModelToCollection += _viewModel_RequestAddViewModelToCollection;
             ViewModel.RequestRemoveViewModelFromCollection +=ViewModel_RequestRemoveViewModelFromCollection;
+
+            DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+        }
+
+        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
         }
 
         void  ViewModel_RequestRemoveViewModelFromCollection(object sender, ViewModelEventArgs e)

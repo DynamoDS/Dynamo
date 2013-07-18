@@ -292,7 +292,7 @@ namespace Dynamo
             _model.Connectors.CollectionChanged += Connectors_CollectionChanged;
             _model.PropertyChanged += ModelPropertyChanged;
 
-            DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
+            //DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
 
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
@@ -700,10 +700,10 @@ namespace Dynamo
                     .Select(x => (x as dynNodeModel)));
         }
 
-        private void NodeFromSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            NodeFromSelectionCommand.RaiseCanExecuteChanged();
-        }
+        //private void NodeFromSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
+        //{
+        //    NodeFromSelectionCommand.RaiseCanExecuteChanged();
+        //}
 
         private bool CanCreateNodeFromSelection()
         {

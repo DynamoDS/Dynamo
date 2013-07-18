@@ -401,9 +401,9 @@ namespace Dynamo.Controls
                 case "State":
                     RaisePropertyChanged("State");
                     break;
-                case "ArgumentLacing":
-                    SetLacingTypeCommand.RaiseCanExecuteChanged();
-                    break;
+                //case "ArgumentLacing":
+                //    SetLacingTypeCommand.RaiseCanExecuteChanged();
+                //    break;
             }
         }
 

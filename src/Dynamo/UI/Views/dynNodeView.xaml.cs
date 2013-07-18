@@ -77,6 +77,16 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeHelp += new dynNodeViewModel.NodeHelpEventHandler(ViewModel_RequestShowNodeHelp);
             ViewModel.RequestShowNodeRename += new EventHandler(ViewModel_RequestShowNodeRename);
             ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
+
+            ViewModel.NodeLogic.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(NodeLogic_PropertyChanged);
+        }
+
+        void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ArgumentLacing")
+            {
+                ViewModel.SetLacingTypeCommand.RaiseCanExecuteChanged();
+            }
         }
 
         void ViewModel_RequestsSelection(object sender, EventArgs e)
