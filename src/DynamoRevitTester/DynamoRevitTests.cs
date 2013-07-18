@@ -4,17 +4,15 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Dynamo;
-using Dynamo.Commands;
-using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using Microsoft.Practices.Prism;
-using NUnit.Core;
 using NUnit.Framework;
+using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using Value = Dynamo.FScheme.Value;
 
 namespace DynamoRevitTests

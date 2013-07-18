@@ -30,6 +30,8 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 //using Autodesk.Revit.DB;
 
 namespace Dynamo.Controls

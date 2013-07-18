@@ -12,6 +12,7 @@ using Dynamo.Controls;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 //using Dynamo.Commands;
+using Dynamo.ViewModels;
 using NUnit.Framework;
 
 namespace Dynamo.Utilities

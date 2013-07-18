@@ -1,8 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
-using Dynamo.Connectors;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Nodes.Views
 {

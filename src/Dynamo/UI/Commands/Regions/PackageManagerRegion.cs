@@ -3,18 +3,18 @@ using Dynamo.Search.Regions;
 using Dynamo.Utilities;
 using Dynamo.Search.SearchElements;
 
-namespace Dynamo.Commands
+namespace Dynamo.UI.Commands.Regions
 {
     public static partial class DynamoCommands
     {
 
-        private static Dynamo.Search.Regions.PackageManagerRegion<object> packageManagerRegion;
-        public static Dynamo.Search.Regions.PackageManagerRegion<object> PackageManagerRegionCommand
+        private static PackageManagerRegion<object> packageManagerRegion;
+        public static PackageManagerRegion<object> PackageManagerRegionCommand
         {
             get
             {
                 if (packageManagerRegion == null)
-                    packageManagerRegion = new Dynamo.Search.Regions.PackageManagerRegion<object>(PackageManagerRegionExecute, PackageManagerRegionCanExecute);
+                    packageManagerRegion = new PackageManagerRegion<object>(PackageManagerRegionExecute, PackageManagerRegionCanExecute);
                 return packageManagerRegion;
             }
         }
@@ -23,7 +23,7 @@ namespace Dynamo.Commands
         {
             if ((parameters as PackageManagerRegion<object>).Loaded == true)
             {
-                DynamoCommands.RefreshRemotePackagesCmd.Execute();
+                UI.Commands.DynamoCommands.RefreshRemotePackagesCmd.Execute();
             }
             else
             {
@@ -39,11 +39,6 @@ namespace Dynamo.Commands
             return true;
         }
     }
-
-}
-
-namespace Dynamo.Search.Regions
-{
 
     public class PackageManagerRegion<T> : RegionBase<T>
     {

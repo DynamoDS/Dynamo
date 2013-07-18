@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
+using Dynamo.Search;
 
 namespace Dynamo.Nodes.Search
 {

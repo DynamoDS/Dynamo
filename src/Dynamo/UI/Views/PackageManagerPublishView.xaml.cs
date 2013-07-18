@@ -1,5 +1,5 @@
 ﻿using System.Windows.Controls;
-using Dynamo.Commands;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.PackageManager
 {

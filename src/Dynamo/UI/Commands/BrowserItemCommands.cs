@@ -1,6 +1,6 @@
 ﻿using Microsoft.Practices.Prism.Commands;
 
-namespace Dynamo.Nodes.Search
+namespace Dynamo.Search
 {
     public partial class BrowserItem
     {

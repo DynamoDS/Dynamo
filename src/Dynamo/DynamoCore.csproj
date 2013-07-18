@@ -113,8 +113,8 @@ limitations under the License.
     <Compile Include="Models\dynModelBase.cs" />
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
-    <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
-    <Compile Include="Nodes\Watch\WatchViewModel.cs" />
+    <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
+    <Compile Include="ViewModels\WatchViewModel.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="UI\Commands\ConnectorCommands.cs" />
@@ -247,7 +247,7 @@ limitations under the License.
     <Compile Include="Models\dynNodeModel.cs" />
     <Compile Include="dynSettings.cs" />
     <Compile Include="Models\dynWorkspaceModel.cs" />
-    <Compile Include="Nodes\Watch\dynWatch.cs" />
+    <Compile Include="Nodes\dynWatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

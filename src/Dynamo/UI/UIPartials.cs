@@ -14,6 +14,7 @@ using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using Binding = System.Windows.Data.Binding;
 using Brush = System.Windows.Media.Brush;

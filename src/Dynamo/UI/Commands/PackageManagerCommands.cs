@@ -16,7 +16,7 @@ using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
 
-namespace Dynamo.Commands
+namespace Dynamo.UI.Commands
 {
     //public class LoginCommand : ICommand
     //{

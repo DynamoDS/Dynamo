@@ -1,5 +1,7 @@
 ﻿using Dynamo.Nodes.Search;
 using Dynamo.Search;
+using Dynamo.UI.Commands;
+using Dynamo.ViewModels;
 using NUnit.Framework;
 
 namespace DynamoCoreTests

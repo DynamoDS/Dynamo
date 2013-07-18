@@ -3,10 +3,9 @@ using System.Diagnostics;
 using System.Windows;
 using System.Linq;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 
-namespace Dynamo.Connectors
+namespace Dynamo.ViewModels
 {
     public partial class dynPortViewModel : dynViewModelBase
     {

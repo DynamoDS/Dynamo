@@ -16,15 +16,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Windows.Input;
 using System.Collections.ObjectModel;
 using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.Selection;
 
-namespace Dynamo.Controls
+namespace Dynamo.ViewModels
 {
     /// <summary>
     /// Interaction logic for dynControl.xaml

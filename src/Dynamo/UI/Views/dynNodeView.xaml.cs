@@ -23,6 +23,7 @@ using Dynamo.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
 {

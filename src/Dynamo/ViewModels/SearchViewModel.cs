@@ -4,16 +4,16 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-//using Dynamo.Commands;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
+using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
 
-namespace Dynamo.Search
+namespace Dynamo.ViewModels
 {
     /// <summary>
     ///     This is the core ViewModel for searching

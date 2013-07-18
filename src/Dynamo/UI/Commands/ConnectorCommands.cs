@@ -1,7 +1,6 @@
-﻿
-using Microsoft.Practices.Prism.Commands;
+﻿using Microsoft.Practices.Prism.Commands;
 
-namespace Dynamo.Connectors
+namespace Dynamo.ViewModels
 {
     public partial class dynConnectorViewModel
     {
