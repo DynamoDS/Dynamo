@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -55,7 +56,22 @@ namespace Dynamo.PackageManager
             /// <summary>
             /// A handle for the package upload so the user can know the state of the upload.
             /// </summary>
-            public PackageUploadHandle UploadHandle { get; set; }
+            private PackageUploadHandle _uploadHandle = null;
+            public PackageUploadHandle UploadHandle
+            {
+                get { return _uploadHandle; }
+                set
+                {
+                    if (this._uploadHandle != value)
+                    {
+                        this._uploadHandle = value;
+                        this._uploadHandle.PropertyChanged += UploadHandleOnPropertyChanged;
+                        this.RaisePropertyChanged("UploadHandle");
+                    }
+                }
+            }
+
+
 
             /// <summary>
             /// Client property 
@@ -149,6 +165,25 @@ namespace Dynamo.PackageManager
                         this._name = value;
                         this.RaisePropertyChanged("Name");
                         ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged();
+                    }
+                }
+            }
+
+            /// <summary>
+            /// UploadState property </summary>
+            /// <value>
+            /// The state of the current upload 
+            /// </value>
+            private PackageUploadHandle.State _uploadState = PackageUploadHandle.State.Uninitialized;
+            public PackageUploadHandle.State UploadState
+            {
+                get { return _uploadState; }
+                set
+                {
+                    if (this._uploadState != value)
+                    {
+                        this._uploadState = value;
+                        this.RaisePropertyChanged("UploadState");
                     }
                 }
             }
@@ -347,6 +382,14 @@ namespace Dynamo.PackageManager
             this.Visible = Visibility.Collapsed;
         }
 
+        private void UploadHandleOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName == "UploadState")
+            {
+                
+            }
+        }
+
         /// <summary>
         /// Clear all of the properties displayed to the user</summary>
         public void Clear()
@@ -381,6 +424,10 @@ namespace Dynamo.PackageManager
 
                 var handle = Client.Publish(this.IsNewVersion, Name, FullVersion, Description, KeywordList, "MIT", Group,
                                             files, deps, nodeNameDescriptionPairs);
+
+                if (handle == null)
+                    throw new Exception("Failed to authenticate.  Are you logged in?");
+
                 this.Uploading = true;
                 this.UploadHandle = handle;
             }

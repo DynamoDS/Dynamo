@@ -42,7 +42,7 @@ namespace Dynamo.PackageManager
             LocalPackages.ToList().ForEach( (pkg) => pkg.Load() );
         }
 
-        private IEnumerable<LocalPackage> ScanAllPackageDirectories()
+        private List<LocalPackage> ScanAllPackageDirectories()
         {
             return
                 Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly)
@@ -62,6 +62,8 @@ namespace Dynamo.PackageManager
                 if (File.Exists(headerPath))
                 {
                     discoveredPkg = LocalPackage.FromJson(headerPath);
+                    if (discoveredPkg == null)
+                        throw new Exception(headerPath + " contains a package with a malformed header.  Ignoring it.");
                 }
                 else
                 {

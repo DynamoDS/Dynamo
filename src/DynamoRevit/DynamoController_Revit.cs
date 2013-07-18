@@ -27,6 +27,7 @@ namespace Dynamo
             
             dynRevitSettings.Controller = this;
 
+            RegisterSingleSignOn();
             AddPythonBindings();
             AddWatchNodeHandler();
 
@@ -37,6 +38,12 @@ namespace Dynamo
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements =
                 new Action(FindNodesFromSelection);
+        }
+
+        void RegisterSingleSignOn()
+        {
+            var ads = Autodesk.Revit.AdWebServicesBase.GetInstance();
+            dynSettings.PackageManagerClient.Client.Provider = new Greg.RevitOxygenProvider(ads);
         }
 
         void FindNodesFromSelection()

@@ -177,14 +177,16 @@ namespace Dynamo
             string pluginsPath = Path.Combine(directory, "definitions");
 
             CustomNodeLoader = new CustomNodeLoader(pluginsPath);
+            
+            SearchViewModel = new SearchViewModel();
+            PackageManagerClient = new PackageManagerClient(this);
+            dynSettings.PackageManagerClient = PackageManagerClient;
+            PublishCustomNodesViewModel = new PublishCustomNodesViewModel(PackageManagerClient);
+
             dynSettings.PackageLoader = new PackageLoader();
 
             dynSettings.PackageLoader.DoCachedPackageUninstalls();
             dynSettings.PackageLoader.LoadPackages();
-
-            SearchViewModel = new SearchViewModel();
-            PackageManagerClient = new PackageManagerClient(this);
-            PublishCustomNodesViewModel = new PublishCustomNodesViewModel(PackageManagerClient);
 
             FSchemeEnvironment = env;
 

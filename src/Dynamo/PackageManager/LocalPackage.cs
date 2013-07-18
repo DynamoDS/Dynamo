@@ -7,6 +7,7 @@ using System.Text;
 using Dynamo.Utilities;
 using Greg.Requests;
 using Microsoft.Practices.Prism.ViewModel;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace Dynamo.PackageManager
@@ -93,15 +94,25 @@ namespace Dynamo.PackageManager
 
         internal static LocalPackage FromJson(string headerPath)
         {
-            var des = new RestSharp.Deserializers.JsonDeserializer();
 
-            var pkgHeader = File.ReadAllText(headerPath);
-            var res = new RestResponse();
-            res.Content = pkgHeader;
+            try
+            {
+                var pkgHeader = File.ReadAllText(headerPath);
+                var body = JsonConvert.DeserializeObject<PackageUploadRequestBody>(pkgHeader);
 
-            var body = des.Deserialize<PackageUploadRequestBody>(res);
+                if (body.name == null || body.version == null)
+                {
+                    throw new Exception("The header is missing a name or version field.");
+                }
 
-            return new LocalPackage(Path.GetDirectoryName(headerPath), body.name, body.version);
+                return new LocalPackage(Path.GetDirectoryName(headerPath), body.name, body.version);
+            }
+            catch (Exception e)
+            {
+                DynamoLogger.Instance.Log("Failed to form package from json header.");
+                DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
+                return null;
+            }
 
         }
 

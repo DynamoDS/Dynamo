@@ -66,12 +66,8 @@ namespace Dynamo.Commands
                 return;
             }
 
-            if (!init)
-            {
-                _view = new PackageManagerPublishView(dynSettings.Controller.PublishCustomNodesViewModel);
-                init = true;
-            }
-            
+            _view = new PackageManagerPublishView(dynSettings.Controller.PublishCustomNodesViewModel);
+
         }
 
         public event EventHandler CanExecuteChanged

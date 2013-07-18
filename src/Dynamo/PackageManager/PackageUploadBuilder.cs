@@ -43,8 +43,9 @@ namespace Dynamo.PackageManager
             FormPackageDirectory(dynSettings.PackageLoader.RootPackagesDirectory, pkgHeader.name, out rootDir, out  dyfDir, out binDir, out extraDir);
             WritePackageHeader(pkgHeader, rootDir);
             CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
+            RemoveDyfFiles(files, dyfDir);
             RemapCustomNodeFilePaths(files, dyfDir.FullName);
-            RemoveDyfFiles(files);
+            
 
             uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
 
@@ -102,10 +103,10 @@ namespace Dynamo.PackageManager
                     });
         }
 
-        private static void RemoveDyfFiles(IEnumerable<string> filePaths)
+        private static void RemoveDyfFiles(IEnumerable<string> filePaths, DirectoryInfo dyfDir)
         {
             filePaths
-                .Where(x => x.EndsWith(".dyf") && File.Exists(x))
+                .Where(x => x.EndsWith(".dyf") && File.Exists(x) && Path.GetDirectoryName(x) != dyfDir.FullName)
                 .ToList()
                 .ForEach( File.Delete );
         }
