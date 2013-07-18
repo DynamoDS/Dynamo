@@ -460,7 +460,7 @@ namespace Dynamo.Utilities
             dynSettings.Controller.CustomNodeLoader.SetNodePath(newNodeDefinition.FunctionId, path);
             dynSettings.Controller.SearchViewModel.Add(args.Name, args.Category, newNodeDefinition.FunctionId);
 
-            dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
+            dynSettings.Controller.DynamoViewModel.CreateNode(new Dictionary<string, object>()
                 {
                     {"name", collapsedNode.Definition.FunctionId.ToString() },
                     {"x", avgX },

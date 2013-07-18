@@ -204,8 +204,10 @@ namespace Dynamo.Search.SearchElements
                     {"transformFromOuterCanvasCoordinates", true},
                     {"guid", guid}
                 };
-            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.CreateNodeCommand, nodeParams));
-            dynSettings.Controller.ProcessCommandQueue();
+            //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.CreateNodeCommand, nodeParams));
+            //dynSettings.Controller.ProcessCommandQueue();
+
+            dynSettings.Controller.DynamoViewModel.CreateNode(nodeParams);
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);

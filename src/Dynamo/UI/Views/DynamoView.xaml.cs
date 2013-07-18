@@ -27,6 +27,7 @@ using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Utilities;
+using Dynamo.Commands;
 
 namespace Dynamo.Controls
 {
@@ -68,7 +69,7 @@ namespace Dynamo.Controls
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.RequestLayoutUpdate += vm_RequestLayoutUpdate;
-            _vm.PostUIActivationCommand.Execute();
+            DynamoCommands.PostUiActivationCommand.Execute();
 
             _timer.Stop();
             dynSettings.Controller.DynamoViewModel.Log(String.Format("{0} elapsed for loading Dynamo main window.",
@@ -251,7 +252,7 @@ namespace Dynamo.Controls
 
         private void WindowClosed(object sender, EventArgs e)
         {
-            _vm.CleanupCommand.Execute();
+            DynamoCommands.CleanupCommand.Execute();
         }
 
         private void OverlayCanvas_OnMouseMove(object sender, MouseEventArgs e)

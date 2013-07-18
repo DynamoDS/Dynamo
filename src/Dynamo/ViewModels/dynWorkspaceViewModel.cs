@@ -170,7 +170,9 @@ namespace Dynamo
             if (dynSettings.Controller.IsProcessingCommandQueue)
                 return;
 
-            dynSettings.Controller.RunCommand( dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null );
+            //dynSettings.Controller.RunCommand( dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null );
+            dynSettings.Controller.DynamoViewModel.RunExpression(null);
+
         }
 
         public bool FullscreenWatchVisible

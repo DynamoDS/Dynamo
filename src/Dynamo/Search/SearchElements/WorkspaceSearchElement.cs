@@ -43,12 +43,12 @@ namespace Dynamo.Search.SearchElements
             var name = this.Name;
             if (name == "Home")
             {
-                dynSettings.Controller.DynamoViewModel.HomeCommand.Execute();
+                dynSettings.Controller.DynamoViewModel.Home();
             }
             else
             {
                 var guid = this.Guid;
-                dynSettings.Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(guid);
+                dynSettings.Controller.DynamoViewModel.GoToWorkspace(guid);
             }
         }
 

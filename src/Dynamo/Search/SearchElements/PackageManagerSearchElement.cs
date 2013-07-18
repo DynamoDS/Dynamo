@@ -56,8 +56,17 @@ namespace Dynamo.Search.SearchElements
             if ( !dynSettings.Controller.CustomNodeLoader.Contains(guid) )
             {
                 // go get the node from online, place it in view asynchronously
-                dynSettings.Controller.PackageManagerClient.Download(this.Id, "", (finalGuid) => 
-                    dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
+                //dynSettings.Controller.PackageManagerClient.Download(this.Id, "", (finalGuid) => 
+                //    dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
+                //        {
+                //            { "name", guid.ToString() },
+                //            { "transformFromOuterCanvasCoordinates", true },
+                //            { "guid", Guid.NewGuid() }
+                //        })
+                //);
+
+                dynSettings.Controller.PackageManagerClient.Download(this.Id, "", (finalGuid) =>
+                    dynSettings.Controller.DynamoViewModel.CreateNode(new Dictionary<string, object>()
                         {
                             { "name", guid.ToString() },
                             { "transformFromOuterCanvasCoordinates", true },
@@ -68,7 +77,15 @@ namespace Dynamo.Search.SearchElements
             else
             {
                 // get the node from here
-                dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
+                //dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
+                //    {
+                //        {"name", this.Guid.ToString() },
+                //        {"transformFromOuterCanvasCoordinates", true},
+                //        {"guid", Guid.NewGuid() }
+                //    });
+
+                // get the node from here
+                dynSettings.Controller.DynamoViewModel.CreateNode(new Dictionary<string, object>()
                     {
                         {"name", this.Guid.ToString() },
                         {"transformFromOuterCanvasCoordinates", true},
