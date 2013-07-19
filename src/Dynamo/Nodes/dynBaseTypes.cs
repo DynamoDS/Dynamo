@@ -1891,6 +1891,41 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("e")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("e (base of natural logarithm) constant")]
+    [NodeSearchTags("statistics", "natural", "logarithm")]
+    [IsInteractive(false)]
+    public class dynEConstant : dynNodeModel
+    {
+        public dynEConstant()
+        {
+            OutPortData.Add(new PortData("2.71828...", "e", typeof(Value.Number)));
+            RegisterAllPorts();
+        }
+
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return false;
+            }
+            set { }
+        }
+
+        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        {
+            Dictionary<int, INode> result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new Dictionary<int, INode>();
+                result[outPort] = new NumberNode(Math.E);
+                preBuilt[this] = result;
+            }
+            return result[outPort];
+        }
+    }
+
     [NodeName("Pi")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Pi constant")]
