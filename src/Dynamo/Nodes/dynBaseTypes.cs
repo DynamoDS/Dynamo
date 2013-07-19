@@ -677,6 +677,38 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("True For All")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Tests to see if all elements in a sequence satisfy the given predicate.")]
+    public class dynAndMap : dynBuiltinFunction
+    {
+        public dynAndMap()
+            : base("andmap")
+        {
+            InPortData.Add(new PortData("p(x)", "The predicate used to test elements", typeof(object)));
+            InPortData.Add(new PortData("seq", "The sequence to test.", typeof(Value.List)));
+            OutPortData.Add(new PortData("all?", "Whether or not all elements satisfy the given predicate.", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+    }
+
+    [NodeName("True For Any")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Tests to see if any elements in a sequence satisfy the given predicate.")]
+    public class dynOrMap : dynBuiltinFunction
+    {
+        public dynOrMap()
+            : base("ormap")
+        {
+            InPortData.Add(new PortData("p(x)", "The predicate used to test elements", typeof(object)));
+            InPortData.Add(new PortData("seq", "The sequence to test.", typeof(Value.List)));
+            OutPortData.Add(new PortData("any?", "Whether or not any elements satisfy the given predicate.", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+    }
+
     [NodeName("Split Pair")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Deconstructs a list pair.")]
