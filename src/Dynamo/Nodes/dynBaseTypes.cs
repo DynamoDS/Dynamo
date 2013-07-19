@@ -22,13 +22,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
-using System.Web;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
+using RestSharp.Contrib;
 using Value = Dynamo.FScheme.Value;
 using System.Globalization;
 
