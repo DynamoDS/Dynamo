@@ -2973,7 +2973,7 @@ namespace Dynamo.Nodes
             double GetValue(Dictionary<string, double> idLookup);
         }
 
-        private class IdentifierToken : IDoubleInputToken
+        private struct IdentifierToken : IDoubleInputToken
         {
             private readonly string _id;
 
@@ -2988,7 +2988,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        private class DoubleToken : IDoubleInputToken
+        private struct DoubleToken : IDoubleInputToken
         {
             private readonly double _d;
 
