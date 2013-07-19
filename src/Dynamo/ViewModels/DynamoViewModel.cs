@@ -23,6 +23,8 @@ namespace Dynamo.ViewModels
     public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
     public delegate void ImageSaveEventHandler(object sender, ImageSaveEventArgs e);
 
+    public delegate void WorkspaceSaveEventHandler(object sender, WorkspaceSaveEventArgs e);
+
     public class FunctionNamePromptEventArgs:EventArgs
     {
         public string Name { get; set; }
@@ -79,6 +81,15 @@ namespace Dynamo.ViewModels
             if (RequestSaveImage != null)
             {
                 RequestSaveImage(this, e);
+            }
+        }
+
+        public event WorkspaceSaveEventHandler RequestUserSaveWorkflow;
+        public virtual void OnRequestUserSaveWorkflow(Object sender, WorkspaceSaveEventArgs e)
+        {
+            if (RequestUserSaveWorkflow != null)
+            {
+                RequestUserSaveWorkflow(this, e);
             }
         }
 
@@ -434,7 +445,7 @@ namespace Dynamo.ViewModels
         ///     workspace does not already have a path associated with it
         /// </summary>
         /// <param name="workspace">The workspace for which to show the dialog</param>
-        private void ShowSaveDialogIfNeededAndSave(dynWorkspaceModel workspace)
+        internal void ShowSaveDialogIfNeededAndSave(dynWorkspaceModel workspace)
         {
             if (workspace.FilePath != null)
             {
@@ -457,37 +468,43 @@ namespace Dynamo.ViewModels
         /// <returns>False if the user cancels, otherwise true</returns>
         public bool AskUserToSaveWorkspaceOrCancel(dynWorkspaceModel workspace, bool allowCancel = true)
         {
-            var dialogText = "";
-            if (workspace is FuncWorkspace)
-            {
-                dialogText = "You have unsaved changes to custom node workspace " + workspace.Name +
-                             "\n\n Would you like to save your changes?";
-            }
-            else // homeworkspace
-            {
-                if (string.IsNullOrEmpty(workspace.FilePath))
-                {
-                    dialogText = "You haven't saved your changes to the Home workspace. " +
-                                 "\n\n Would you like to save your changes?";
-                }
-                else
-                {
-                    dialogText = "You have unsaved changes to " + Path.GetFileName( workspace.FilePath ) +
-                    "\n\n Would you like to save your changes?";
-                }
-            }
+            //var dialogText = "";
+            //if (workspace is FuncWorkspace)
+            //{
+            //    dialogText = "You have unsaved changes to custom node workspace " + workspace.Name +
+            //                 "\n\n Would you like to save your changes?";
+            //}
+            //else // homeworkspace
+            //{
+            //    if (string.IsNullOrEmpty(workspace.FilePath))
+            //    {
+            //        dialogText = "You haven't saved your changes to the Home workspace. " +
+            //                     "\n\n Would you like to save your changes?";
+            //    }
+            //    else
+            //    {
+            //        dialogText = "You have unsaved changes to " + Path.GetFileName( workspace.FilePath ) +
+            //        "\n\n Would you like to save your changes?";
+            //    }
+            //}
 
-            var buttons = allowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = System.Windows.MessageBox.Show(dialogText, "Confirmation", buttons, MessageBoxImage.Question);
+            //var buttons = allowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
+            //var result = System.Windows.MessageBox.Show(dialogText, "Confirmation", buttons, MessageBoxImage.Question);
 
-            if (result == MessageBoxResult.Yes)
-            {
-                this.ShowSaveDialogIfNeededAndSave(workspace);
-            }
-            else if (result == MessageBoxResult.Cancel)
-            {
+            //if (result == MessageBoxResult.Yes)
+            //{
+            //    this.ShowSaveDialogIfNeededAndSave(workspace);
+            //}
+            //else if (result == MessageBoxResult.Cancel)
+            //{
+            //    return false;
+            //}
+            //return true;
+
+            var args = new WorkspaceSaveEventArgs(workspace, allowCancel);
+            OnRequestUserSaveWorkflow(this, args);
+            if (!args.Success)
                 return false;
-            }
             return true;
         }
 
@@ -500,7 +517,12 @@ namespace Dynamo.ViewModels
         {
             foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
             {
-                if (!AskUserToSaveWorkspaceOrCancel(wvm.Model, allowCancel))
+                //if (!AskUserToSaveWorkspaceOrCancel(wvm.Model, allowCancel))
+                //    return false;
+
+                var args = new WorkspaceSaveEventArgs(wvm.Model, allowCancel);
+                OnRequestUserSaveWorkflow(this, args);
+                if (!args.Success)
                     return false;
             }
             return true;
@@ -3054,6 +3076,19 @@ namespace Dynamo.ViewModels
         public ImageSaveEventArgs(string path)
         {
             Path = path;
+        }
+    }
+
+    public class WorkspaceSaveEventArgs : EventArgs
+    {
+        public dynWorkspaceModel Workspace { get; set; }
+        public bool AllowCancel { get; set; }
+        public bool Success { get; set; }
+        public WorkspaceSaveEventArgs(dynWorkspaceModel ws, bool allowCancel)
+        {
+            Workspace = ws;
+            AllowCancel = allowCancel;
+            Success = false;
         }
     }
 
