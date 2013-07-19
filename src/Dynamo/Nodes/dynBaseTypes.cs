@@ -207,8 +207,10 @@ namespace Dynamo.Nodes
             subButton.Click += delegate { RemoveInput(); RegisterAllPorts(); };
         }
 
-        protected abstract string getInputRootName();
-        protected virtual int getNewInputIndex()
+        protected abstract string GetInputRootName();
+        protected abstract string GetTooltipRootName();
+
+        protected virtual int GetNewInputIndex()
         {
             return InPortData.Count;
         }
@@ -237,7 +239,8 @@ namespace Dynamo.Nodes
 
         protected internal virtual void AddInput()
         {
-            InPortData.Add(new PortData(getInputRootName() + getNewInputIndex(), "", typeof(object)));
+            var idx = GetNewInputIndex();
+            InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx, typeof(object)));
         }
 
         public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
@@ -347,7 +350,7 @@ namespace Dynamo.Nodes
     {
         public dynNewList()
         {
-            InPortData.Add(new PortData("index0", "First item", typeof(object)));
+            InPortData.Add(new PortData("index0", "Item #1", typeof(object)));
             OutPortData.Add(new PortData("list", "A list", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -355,9 +358,19 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        protected override string getInputRootName()
+        protected override string GetInputRootName()
         {
             return "index";
+        }
+
+        protected override string GetTooltipRootName()
+        {
+            return "Item #";
+        }
+
+        protected override int GetNewInputIndex()
+        {
+            return base.GetNewInputIndex() + 1;
         }
 
         protected internal override void RemoveInput()
@@ -514,17 +527,22 @@ namespace Dynamo.Nodes
         public dynCombine()
         {
             InPortData.Add(new PortData("comb", "Combinator", typeof(object)));
-            InPortData.Add(new PortData("list1", "First list", typeof(Value.List)));
-            InPortData.Add(new PortData("list2", "Second list", typeof(Value.List)));
+            InPortData.Add(new PortData("list1", "List #1", typeof(Value.List)));
+            InPortData.Add(new PortData("list2", "List #2", typeof(Value.List)));
             OutPortData.Add(new PortData("combined", "Combined lists", typeof(Value.List)));
 
             RegisterAllPorts();
-            this.ArgumentLacing = LacingStrategy.Disabled;
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        protected override string getInputRootName()
+        protected override string GetInputRootName()
         {
             return "list";
+        }
+
+        protected override string GetTooltipRootName()
+        {
+            return "List #";
         }
 
         protected internal override void RemoveInput()
@@ -562,7 +580,7 @@ namespace Dynamo.Nodes
             {
                 for (; inputs > 2; inputs--)
                 {
-                    InPortData.Add(new PortData(getInputRootName() + getNewInputIndex(), "", typeof(object)));
+                    InPortData.Add(new PortData(GetInputRootName() + GetNewInputIndex(), "", typeof(object)));
                 }
 
                 RegisterAllPorts();
@@ -595,16 +613,21 @@ namespace Dynamo.Nodes
         public dynCartProd()
         {
             InPortData.Add(new PortData("comb", "Combinator", typeof(object)));
-            InPortData.Add(new PortData("list1", "First list", typeof(Value.List)));
-            InPortData.Add(new PortData("list2", "Second list", typeof(Value.List)));
+            InPortData.Add(new PortData("list1", "List #1", typeof(Value.List)));
+            InPortData.Add(new PortData("list2", "List #2", typeof(Value.List)));
             OutPortData.Add(new PortData("combined", "Combined lists", typeof(Value.List)));
 
             RegisterAllPorts();
         }
 
-        protected override string getInputRootName()
+        protected override string GetInputRootName()
         {
             return "list";
+        }
+
+        protected override string GetTooltipRootName()
+        {
+            return "List #";
         }
 
         protected internal override void RemoveInput()
@@ -637,7 +660,7 @@ namespace Dynamo.Nodes
             {
                 for (; inputs > 2; inputs--)
                 {
-                    InPortData.Add(new PortData(getInputRootName() + getNewInputIndex(), "", typeof(object)));
+                    InPortData.Add(new PortData(GetInputRootName() + GetNewInputIndex(), "", typeof(object)));
                 }
 
                 RegisterAllPorts();
@@ -2228,7 +2251,7 @@ namespace Dynamo.Nodes
     //TODO: Setup proper IsDirty smart execution management
     [NodeName("Perform All")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("Executes Values in a sequence")]
+    [NodeDescription("Evaluates all inputs in order, and returns result of the last input.")]
     [NodeSearchTags("begin")]
     public class dynBegin : dynVariableInput
     {
@@ -2247,12 +2270,17 @@ namespace Dynamo.Nodes
                 base.RemoveInput();
         }
 
-        protected override string getInputRootName()
+        protected override string GetInputRootName()
         {
             return "expr";
         }
 
-        protected override int getNewInputIndex()
+        protected override string GetTooltipRootName()
+        {
+            return "Expression #";
+        }
+
+        protected override int GetNewInputIndex()
         {
             return InPortData.Count + 1;
         }
@@ -2310,9 +2338,14 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        protected override string getInputRootName()
+        protected override string GetInputRootName()
         {
             return "arg";
+        }
+
+        protected override string GetTooltipRootName()
+        {
+            return "Argument #";
         }
 
         protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
@@ -3619,19 +3652,24 @@ namespace Dynamo.Nodes
     {
         public dynConcatStrings()
         {
-            InPortData.Add(new PortData("s1", "First string", typeof(Value.String)));
-            InPortData.Add(new PortData("s2", "Second string", typeof(Value.String)));
+            InPortData.Add(new PortData("s1", "String #1", typeof(Value.String)));
+            InPortData.Add(new PortData("s2", "String #2", typeof(Value.String)));
             OutPortData.Add(new PortData("combined", "Combined lists", typeof(Value.String)));
 
             RegisterAllPorts();
         }
 
-        protected override string getInputRootName()
+        protected override string GetInputRootName()
         {
             return "s";
         }
 
-        protected override int getNewInputIndex()
+        protected override string GetTooltipRootName()
+        {
+            return "String #";
+        }
+
+        protected override int GetNewInputIndex()
         {
             return InPortData.Count + 1;
         }
