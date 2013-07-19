@@ -2324,16 +2324,40 @@ namespace Dynamo.Nodes
         }
     }
 
-    //TODO: Setup proper IsDirty smart execution management
-    [NodeName("Apply")]
+    [NodeName("Apply Function to List")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("Applies arguments to a function")]
+    [NodeDescription("Applies a function to a list of arguments.")]
+    public class dynApplyList : dynNodeWithOneOutput
+    {
+        public dynApplyList()
+        {
+            InPortData.Add(new PortData("func", "Function", typeof(Value.Function)));
+            InPortData.Add(new PortData("args", "List of arguments to apply function to.", typeof(Value.List)));
+
+            OutPortData.Add(new PortData("result", "Result of function application.", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var f = ((Value.Function)args[0]).Item;
+            var fArgs = ((Value.List)args[1]).Item;
+
+            return f.Invoke(fArgs);
+        }
+    }
+
+    //TODO: Setup proper IsDirty smart execution management
+    [NodeName("Apply Function")]
+    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
+    [NodeDescription("Applies a function to arguments.")]
     public class dynApply1 : dynVariableInput
     {
         public dynApply1()
         {
-            InPortData.Add(new PortData("func", "Procedure", typeof(object)));
-            OutPortData.Add(new PortData("result", "Result", typeof(object)));
+            InPortData.Add(new PortData("func", "Function", typeof(object)));
+            OutPortData.Add(new PortData("result", "Result of function application.", typeof(object)));
 
             RegisterAllPorts();
         }
@@ -2348,19 +2372,12 @@ namespace Dynamo.Nodes
             return "Argument #";
         }
 
-        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
-            {
-                Error("All inputs must be connected.");
-                throw new Exception("Apply Node requires all inputs to be connected.");
-            }
-            return base.Build(preBuilt, outPort);
-        }
+            var f = ((Value.Function)args[0]).Item;
+            var fArgs = args.Tail;
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
-        {
-            return new ApplierNode(portNames);
+            return f.Invoke(fArgs);
         }
 
         protected internal override void RemoveInput()
