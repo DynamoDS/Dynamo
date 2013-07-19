@@ -210,9 +210,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Isometric View")]
+    [NodeName("Axonometric View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
-    [NodeDescription("Creates an isometric view.")]
+    [NodeDescription("Creates an axonometric view.")]
     public class dynIsometricView : dynViewBase
     {
         public dynIsometricView ()

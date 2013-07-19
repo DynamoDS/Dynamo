@@ -66,7 +66,7 @@ namespace Dynamo.Nodes
             "abs", "acos", "asin", "atan", "ceiling", "cos",
             "exp", "floor", "ieeeremainder", "log", "log10",
             "max", "min", "pow", "round", "sign", "sin", "sqrt",
-            "tan", "truncate", "in", "if"
+            "tan", "truncate", "in", "if", "pi", "π"
         };
 
         private void processFormula()
@@ -137,6 +137,8 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var e = new Expression(Formula, EvaluateOptions.IgnoreCase);
+
+            e.Parameters["pi"] = 3.14159265358979;
 
             var functionLookup = new Dictionary<string, Value>();
 
