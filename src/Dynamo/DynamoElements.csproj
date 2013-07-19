@@ -116,7 +116,6 @@ limitations under the License.
     <Compile Include="Models\dynModelBase.cs" />
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
-    <Compile Include="Nodes\dynExcel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
     <Compile Include="Nodes\Watch\WatchViewModel.cs" />
     <Compile Include="Prompts\CrashPrompt.xaml.cs">
