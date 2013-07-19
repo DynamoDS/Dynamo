@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.Windows.Interop;
-using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Dynamo.Nodes
 {

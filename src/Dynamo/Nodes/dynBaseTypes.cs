@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -1207,8 +1208,8 @@ namespace Dynamo.Nodes
             RegisterInputs();
         }
 
-        static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|{(?<id>\w(?:[^}\\]|(?:\\}))*)}");
-        static readonly string[] RangeSeparatorTokens = new[] { "..", "-", ":" };
+        internal static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|\[(?<id>\w(?:[^}\\]|(?:\\}))*)\]");
+        internal static readonly string[] RangeSeparatorTokens = { "..", "-", ":" };
 
         private static List<Tuple<int, int, int>> processText(string text, int maxVal, Func<string, int> idFoundCallback)
         {
@@ -2504,7 +2505,7 @@ namespace Dynamo.Nodes
 
         public void Commit()
         {
-            var expr = GetBindingExpression(TextBox.TextProperty);
+            var expr = GetBindingExpression(TextProperty);
             if (expr != null)
                 expr.UpdateSource();
 
@@ -2522,7 +2523,7 @@ namespace Dynamo.Nodes
             get { return base.Text; }
             set
             {
-                //base.Text = value;
+                base.Text = value;
                 Commit();
             }
         }
@@ -2669,7 +2670,7 @@ namespace Dynamo.Nodes
         public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
-            outEl.SetAttribute("value", ((double)Value).ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             dynEl.AppendChild(outEl);
         }
     }
@@ -2722,11 +2723,12 @@ namespace Dynamo.Nodes
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Creates a number.")]
-    public class dynDoubleInput : dynDouble
+    public class dynDoubleInput : dynNodeWithOneOutput
     {
-
         public dynDoubleInput()
         {
+            OutPortData.Add(new PortData("", "", typeof(Value.Number)));
+
             RegisterAllPorts();
         }
 
@@ -2734,23 +2736,22 @@ namespace Dynamo.Nodes
         {
             //add a text box to the input grid of the control
             var tb = new dynTextBox
-                {
-                    HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-                    VerticalAlignment = System.Windows.VerticalAlignment.Top
-                };
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Top,
+                IsNumeric = true,
+                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+            };
 
             nodeUI.inputGrid.Children.Add(tb);
-            System.Windows.Controls.Grid.SetColumn(tb, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 0);
-
-            tb.IsNumeric = true;
-            tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay(),
+                Converter = new DoubleInputDisplay(),
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
@@ -2760,34 +2761,233 @@ namespace Dynamo.Nodes
             tb.Text = "0.0";
         }
 
-        public override double Value
+
+        private List<IDoubleSequence> _parsed;
+        private string _value;
+
+        public string Value
         {
-            get
-            {
-                return base.Value;
-            }
+            get { return _value; }
             set
             {
-                if (base.Value == value)
+                if (_value != null && _value.Equals(value)) 
                     return;
 
-                base.Value = value;
-                //RaisePropertyChanged("Value");
+                _value = value;
+                RequiresRecalc = value != null;
+                RaisePropertyChanged("Value");
+
+                var idList = new List<string>();
+
+                try
+                {
+                    _parsed = ParseValue(idList);
+
+                    InPortData.Clear();
+
+                    foreach (var id in idList)
+                    {
+                        InPortData.Add(new PortData(id, "variable", typeof (Value.Number)));
+                    }
+
+                    RegisterInputs();
+                }
+                catch (Exception e)
+                {
+                    Error(e.Message);
+                }
             }
         }
 
-        protected override double DeserializeValue(string val)
+        private List<IDoubleSequence> ParseValue(List<string> identifiers)
         {
-            try
+            var idSet = new HashSet<string>(identifiers);
+            return Value.Replace(" ", "").Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(
+                delegate(string x)
+                {
+                    var rangeIdentifiers = x.Split(
+                        dynSublists.RangeSeparatorTokens,
+                        StringSplitOptions.RemoveEmptyEntries);
+
+                    if (rangeIdentifiers.Length > 3)
+                        throw new Exception("Bad range syntax: not of format \"start..[step..]end\"");
+
+                    if (rangeIdentifiers.Length == 0)
+                        throw new Exception("No identifiers found.");
+
+                    IDoubleInputToken startToken = ParseToken(rangeIdentifiers[0], idSet, identifiers);
+
+                    if (rangeIdentifiers.Length > 1)
+                    {
+                        IDoubleInputToken secondToken = ParseToken(rangeIdentifiers[1], idSet, identifiers);
+
+                        if (rangeIdentifiers.Length > 2)
+                            return new Sequence(startToken, secondToken, ParseToken(rangeIdentifiers[2], idSet, identifiers));
+
+                        return new Sequence(startToken, new DoubleToken(1), secondToken) as IDoubleSequence;
+                    }
+
+                    return new OneNumber(startToken) as IDoubleSequence;
+                }).ToList();
+        }
+
+        private static IDoubleInputToken ParseToken(string id, HashSet<string> identifiers, List<string> list)
+        {
+            double dbl;
+            if (double.TryParse(id, out dbl))
+                return new DoubleToken(dbl);
+
+            var match = dynSublists.IdentifierPattern.Match(id);
+            if (match.Success)
             {
-                return Convert.ToDouble(val, CultureInfo.InvariantCulture);
+                var tokenId = match.Groups["id"].Value;
+                if (!identifiers.Contains(tokenId))
+                {
+                    identifiers.Add(tokenId);
+                    list.Add(tokenId);
+                }
+                return new IdentifierToken(tokenId);
             }
-            catch
+
+            throw new Exception("Bad identifier syntax: \"" + id + "\"");
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var paramDict = InPortData.Select(x => x.NickName)
+                .Zip(args, Tuple.Create)
+                .ToDictionary(x => x.Item1, x => ((Value.Number)x.Item2).Item);
+
+            return _parsed.Count == 1
+                ? _parsed[0].GetValue(paramDict)
+                : FScheme.Value.NewList(Utils.SequenceToFSharpList(_parsed.Select(x => x.GetValue(paramDict))));
+        }
+
+        interface IDoubleSequence
+        {
+            Value GetValue(Dictionary<string, double> idLookup);
+        }
+
+        private class OneNumber : IDoubleSequence
+        {
+            private readonly IDoubleInputToken _token;
+
+            private Value _result;
+
+            public OneNumber(IDoubleInputToken t)
             {
-                return 0;
+                _token = t;
+
+                if (_token is DoubleToken)
+                    _result = GetValue(new Dictionary<string, double>());
+            }
+
+            public Value GetValue(Dictionary<string, double> idLookup)
+            {
+                return _result ?? (FScheme.Value.NewNumber(_token.GetValue(idLookup)));
             }
         }
 
+        private class Sequence : IDoubleSequence
+        {
+            private readonly IDoubleInputToken _start;
+            private readonly IDoubleInputToken _step;
+            private readonly IDoubleInputToken _end;
+
+            private Value _result;
+
+            public Sequence(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end)
+            {
+                _start = start;
+                _step = step;
+                _end = end;
+
+                if (_start is DoubleToken && _step is DoubleToken && _end is DoubleToken)
+                {
+                    _result = GetValue(new Dictionary<string, double>());
+                }
+            }
+
+            public Value GetValue(Dictionary<string, double> idLookup)
+            {
+                if (_result == null)
+                {
+                    var step = _step.GetValue(idLookup);
+
+                    if (step == 0)
+                        throw new Exception("Can't have 0 step.");
+
+                    var start = _start.GetValue(idLookup);
+                    var end = _end.GetValue(idLookup);
+
+                    var definedForwards = start < end;
+                    var countingUp = (step > 0 && definedForwards) || !definedForwards;
+
+                    return FScheme.Value.NewList(Utils.SequenceToFSharpList(
+                        countingUp ? CreateSequence(start, step, end) : CreateSequence(end, step, start)));
+                }
+                return _result;
+            }
+
+            private static IEnumerable<Value> CreateSequence(double start, double step, double end)
+            {
+                for (var i = start; i <= end; i += step)
+                    yield return FScheme.Value.NewNumber(i);
+            }
+        }
+
+        interface IDoubleInputToken
+        {
+            double GetValue(Dictionary<string, double> idLookup);
+        }
+
+        private class IdentifierToken : IDoubleInputToken
+        {
+            private readonly string _id;
+
+            public IdentifierToken(string id)
+            {
+                _id = id;
+            }
+
+            public double GetValue(Dictionary<string, double> idLookup)
+            {
+                return idLookup[_id];
+            }
+        }
+
+        private class DoubleToken : IDoubleInputToken
+        {
+            private readonly double _d;
+
+            public DoubleToken(double d)
+            {
+                _d = d;
+            }
+
+            public double GetValue(Dictionary<string, double> idLookup)
+            {
+                return _d;
+            }
+        }
+
+        private class DoubleInputDisplay : DoubleDisplay
+        {
+            public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                double dbl;
+                if (double.TryParse(value as string, out dbl))
+                {
+                    return base.Convert(dbl, targetType, parameter, culture);
+                }
+                return value ?? "";
+            }
+
+            public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return value;
+            }
+        }
     }
 
     [NodeName("Angle(deg.)")]
@@ -3598,23 +3798,23 @@ namespace Dynamo.Nodes
     [ValueConversion(typeof(double), typeof(String))]
     public class DoubleDisplay : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
             string val = ((double) value).ToString("0.000",CultureInfo.CurrentCulture);
-            Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
+            Debug.WriteLine("Converting {0} -> {1}", value, val);
             return value == null ? "" : val;
 
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //target -> source
             //return value.ToString();
 
             double val = 0.0;
             double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
-            Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
+            Debug.WriteLine("Converting {0} -> {1}", value, val);
             return val;
         }
     }
