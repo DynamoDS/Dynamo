@@ -25,13 +25,26 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager
 {
+    public delegate void ShowMessageEventHandler(object sender, ShowMessageEventArgs e);
+
     /// <summary>
     /// The ViewModel for Package publishing </summary>
     public class PackageManagerPublishViewModel : NotificationObject
     {
+        #region events
+        public event ShowMessageEventHandler RequestsShowMessage;
+        public virtual void OnRequestsShowMessage(object sender, ShowMessageEventArgs e)
+        {
+            if (RequestsShowMessage != null)
+            {
+                RequestsShowMessage(this, e);
+            }
+        }
+        #endregion
+
         #region Properties
 
-            // <summary>
+        // <summary>
             /// Client property </summary>
             /// <value>
             /// The PackageManagerClient object for performing OAuth calls</value>
@@ -347,7 +360,8 @@ namespace Dynamo.PackageManager
 
             if (dynSettings.Controller.DynamoViewModel.ViewingHomespace)
             {
-                MessageBox.Show("You can't publish your the home workspace.", "Workspace Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                //MessageBox.Show("You can't publish your the home workspace.", "Workspace Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                OnRequestsShowMessage(this, new ShowMessageEventArgs("You can't publish your the home workspace.", "Workspace Error"));
                 return;
             }
 
@@ -361,7 +375,8 @@ namespace Dynamo.PackageManager
             }
             else
             {
-                MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                //MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                OnRequestsShowMessage(this, new ShowMessageEventArgs("The selected symbol was not found in the workspace", "Selection Error"));
             }
         }
 
@@ -379,18 +394,20 @@ namespace Dynamo.PackageManager
 
             if (nodeList.Count != 1)
             {
-                MessageBox.Show("You must select a single user-defined node.  You selected " + nodeList.Count + " nodes.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                //MessageBox.Show("You must select a single user-defined node.  You selected " + nodeList.Count + " nodes.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                OnRequestsShowMessage(this, new ShowMessageEventArgs("You must select a single user-defined node.  You selected " + nodeList.Count + " nodes.", "Selection Error"));
                 return;
             }
 
             if (dynSettings.Controller.CustomNodeLoader.Contains(nodeList[0]))
             {
                 //DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(nodeList[0]));
-                dynSettings.Controller.PackageManagerPublishViewModel.ShowNodePublishInfo(dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(nodeList[0]));
+                dynSettings.Controller.PackageManagerPublishViewModel.ShowNodePublishInfo(dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(nodeList[0]));    
             }
             else
             {
-                MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                //MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                OnRequestsShowMessage(this, new ShowMessageEventArgs("The selected symbol was not found in the workspace", "Selection Error"));
             }
         }
 
@@ -401,4 +418,15 @@ namespace Dynamo.PackageManager
 
     }
 
+    public class ShowMessageEventArgs : EventArgs
+    {
+        public string Message { get; set; }
+        public string Title { get; set; }
+
+        public ShowMessageEventArgs(string message, string title)
+        {
+            Message = message;
+            Title = title;
+        }
+    }
 }

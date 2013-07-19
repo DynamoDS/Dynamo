@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using Dynamo.UI.Commands;
 
 namespace Dynamo.PackageManager
@@ -20,6 +21,12 @@ namespace Dynamo.PackageManager
         {
             viewModel = (PackageManagerPublishViewModel)DataContext;
             viewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(viewModel_PropertyChanged);
+            viewModel.RequestsShowMessage += new ShowMessageEventHandler(viewModel_RequestsShowMessage);
+        }
+
+        void viewModel_RequestsShowMessage(object sender, ShowMessageEventArgs e)
+        {
+            MessageBox.Show(e.Message, e.Title, MessageBoxButton.OK, MessageBoxImage.Question);
         }
 
         void viewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
