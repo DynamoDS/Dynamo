@@ -107,6 +107,46 @@ namespace Dynamo.Controls
             dynSettings.Controller.RequestsCrashPrompt += new DynamoController.CrashPromptHandler(Controller_RequestsCrashPrompt);
 
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+
+            _vm.RequestUserSaveWorkflow += new WorkspaceSaveEventHandler(_vm_RequestUserSaveWorkflow);
+        }
+
+        void _vm_RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
+        {
+            var dialogText = "";
+            if (e.Workspace is FuncWorkspace)
+            {
+                dialogText = "You have unsaved changes to custom node workspace " + e.Workspace.Name +
+                             "\n\n Would you like to save your changes?";
+            }
+            else // homeworkspace
+            {
+                if (string.IsNullOrEmpty(e.Workspace.FilePath))
+                {
+                    dialogText = "You haven't saved your changes to the Home workspace. " +
+                                 "\n\n Would you like to save your changes?";
+                }
+                else
+                {
+                    dialogText = "You have unsaved changes to " + Path.GetFileName(e.Workspace.FilePath) +
+                    "\n\n Would you like to save your changes?";
+                }
+            }
+
+            var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
+            var result = System.Windows.MessageBox.Show(dialogText, "Confirmation", buttons, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                _vm.ShowSaveDialogIfNeededAndSave(e.Workspace);
+            }
+            else if (result == MessageBoxResult.Cancel)
+            {
+                //return false;
+                e.Success = false;
+            }
+            //return true;
+            e.Success = true;
         }
 
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
