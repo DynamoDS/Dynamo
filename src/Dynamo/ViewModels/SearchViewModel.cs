@@ -370,8 +370,6 @@ namespace Dynamo.Search
         }
 
 
-
-
         /// <summary>
         ///     Add a category, given a delimited name
         /// </summary>
@@ -441,7 +439,7 @@ namespace Dynamo.Search
         ///     Asynchronously performs a search and updates the observable SearchResults property.
         /// </summary>
         /// <param name="query"> The search query </param>
-        internal void SearchAndUpdateResults(string query)
+        public void SearchAndUpdateResults(string query)
         {
             if (Visible != Visibility.Visible)
                 return;
@@ -534,7 +532,7 @@ namespace Dynamo.Search
         ///     Synchronously performs a search using the current SearchText
         /// </summary>
         /// <param name="query"> The search query </param>
-        internal void SearchAndUpdateResultsSync()
+        public void SearchAndUpdateResultsSync()
         {
             SearchAndUpdateResultsSync(SearchText);
         }
@@ -544,10 +542,8 @@ namespace Dynamo.Search
         ///     on the current thread.
         /// </summary>
         /// <param name="query"> The search query </param>
-        internal void SearchAndUpdateResultsSync(string query)
+        public void SearchAndUpdateResultsSync(string query)
         {
-            if (Visible != Visibility.Visible)
-                return;
 
             var result = Search(query);
 
@@ -763,6 +759,8 @@ namespace Dynamo.Search
             var cat = this.AddCategory(category);
             cat.AddChild(item);
 
+            item.FullCategoryName = category;
+
             var searchEleItem = item as SearchElementBase;
             if (searchEleItem != null)
                 _browserLeaves.Add(searchEleItem);
@@ -845,15 +843,48 @@ namespace Dynamo.Search
 
         public void Remove(string nodeName)
         {
-
-            SearchDictionary.Remove((ele) => (ele).Name == nodeName);
-            _browserLeaves.RemoveAll((ele) => (ele).Name == nodeName);
-            var category = NodeCategories[nodeName];
-            category.NumElements--;
-            if (category.NumElements == 0)
+            // get the node, return if not found
+            var nodes = _browserLeaves.Where(x => x.Name == nodeName);
+            if (!nodes.Any())
             {
-                this.RemoveCategory(category.Name);
+                return;
             }
+
+            // remove from search dictionary
+            SearchDictionary.Remove((ele) => (ele).Name == nodeName);
+
+            // remove from browser leaves
+            _browserLeaves.Where(x => x.Name == nodeName).ToList().ForEach(x => _browserLeaves.Remove(x));
+
+            // get the category, if it doesn't exist, then remove it
+
+            foreach (var node in nodes)
+            {
+                var categoryName = ((SearchElementBase)node).FullCategoryName;
+                var parentCategoryName = ((BrowserInternalElement)node).Parent.Name;
+
+                if (!NodeCategories.ContainsKey(categoryName))
+                {
+                    return;
+                }
+
+                var pcategory = NodeCategories[parentCategoryName];
+                pcategory.NumElements--;
+
+                if (pcategory.NumElements == 0)
+                {
+                    this.RemoveCategory(pcategory.Name);
+                }
+
+                var category = NodeCategories[categoryName];
+                category.NumElements--;
+
+                if (category.NumElements == 0)
+                {
+                    this.RemoveCategory(category.Name);
+                }
+            }
+            
 
         }
     }

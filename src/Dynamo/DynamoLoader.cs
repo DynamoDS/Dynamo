@@ -353,7 +353,7 @@ namespace Dynamo.Utilities
         ///     Load Custom Nodes from the default directory - the "definitions"
         ///     directory where the executing assembly is located..
         /// </summary>
-        public static IEnumerable<CustomNodeInfo> LoadCustomNodes(string path)
+        public static List<CustomNodeInfo> LoadCustomNodes(string path)
         {
             if (!Directory.Exists(path))
                 return new List<CustomNodeInfo>();
@@ -361,7 +361,7 @@ namespace Dynamo.Utilities
             var customNodeLoader = dynSettings.CustomNodeLoader;
             var searchViewModel = dynSettings.Controller.SearchViewModel;
 
-            var loadedNodes = customNodeLoader.LoadNodesFromDirectory(path);
+            var loadedNodes = customNodeLoader.LoadNodesFromDirectory(path).ToList();
             customNodeLoader.AddDirectoryToSearchPath(path);
 
             // add nodes to search

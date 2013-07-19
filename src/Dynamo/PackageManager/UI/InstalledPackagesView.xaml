@@ -52,6 +52,7 @@
                                         <StackPanel Orientation="Horizontal" Margin="10,10,30,10" Width="320">
                                             <TextBlock Text="{Binding Path=Name}" FontSize="15" Margin="0,0,10,0" Foreground="Lavender"></TextBlock>
                                             <TextBlock Text="{Binding Path=VersionName}" FontSize="12" Foreground="DarkGray"></TextBlock>
+                                            
                                         </StackPanel>
 
                                         <StackPanel Orientation="Horizontal" Margin="10">
@@ -60,28 +61,65 @@
                                         </StackPanel>
                                         
                                     </StackPanel>
-                                        
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Name="GetLatestVersionButton" Margin="5" ToolTip="Check if there is a newer version of this package and download it." Content="Get Latest" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                        <Button Name="TypesButton" Margin="5" ToolTip="See the types loaded by this package" Content="Types" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                        <Button Name="PublishButton" Margin="5" ToolTip="Published a new version of this package" Content="Publish New Version" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                        <Button Name="UninstallButton" Margin="5" ToolTip="Uninstall this package" Content="Uninstall" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                        <Button Name="VoteButton" Margin="5" ToolTip="Vote for this package" Content="Vote" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                    
+                                    <StackPanel Orientation="Horizontal" Margin="10">
+                                        <TextBlock Text="Root Directory: " Foreground="Lavender"></TextBlock>
+                                        <TextBlock Text="{Binding Path=RootDirectory}" Foreground="Lavender"></TextBlock>
                                     </StackPanel>
 
-                            </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Name="GetLatestVersionButton"  Command="{Binding Path=GetLatestVersionCommand}" Margin="5" ToolTip="Check if there is a newer version of this package and download it." Content="Get Latest" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                        <Button Name="TypesButton" Command="{Binding Path=ToggleTypesVisibleInManagerCommand}" Margin="5" ToolTip="See the types loaded by this package" Content="Types" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                        <Button Name="MakeNewVersionButton" Command="{Binding Path=MakeNewVersionCommand}" Margin="5" ToolTip="Published a new version of this package" Content="Publish New Version" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                        <Button Name="UninstallButton" Command="{Binding Path=UninstallCommand}" Margin="5" ToolTip="Uninstall this package, only allowed if none of the types are currently in use" Content="Uninstall" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                        <Button Name="VoteButton" Command="{Binding Path=VoteCommand}" Margin="5" ToolTip="Vote for this package" Content="Vote" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                    </StackPanel>
+
+                                    <StackPanel Margin="5">
+
+                                        <Label Content="Custom nodes" FontWeight="Bold" Foreground="Lavender"></Label>
+                                        <ListBox Name="LoadedCustomNodes" ItemsSource="{Binding Path=LoadedCustomNodes}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Black" >
+
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="ListBoxItem">
+                                                    <Style.Resources>
+                                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                    </Style.Resources>
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+
+                                            <ListBox.ItemTemplate >
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Name}" Foreground="Lavender" />
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+
+                                        </ListBox>
+
+                                        <!--<Label Content="Compiled nodes" Foreground="Lavender"></Label>
+                                        <ListBox Name="CompiledNodes" ItemsSource="{Binding Path=LoadedTypes}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Black" >
+
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="ListBoxItem">
+                                                    <Style.Resources>
+                                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                    </Style.Resources>
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Name}" Foreground="Lavender" />
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+
+                                        </ListBox>-->
+                                    </StackPanel>
+                                </StackPanel>
 
                             </Border>
-
-                            <DataTemplate.Triggers>
-
-                                <!--<DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Node">
-                                <DataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Visible" TargetName="description" />
-                                </DataTrigger.Setters>
-                            </DataTrigger>-->
-
-                            </DataTemplate.Triggers>
 
                         </DataTemplate>
 

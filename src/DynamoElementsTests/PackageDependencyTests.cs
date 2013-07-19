@@ -14,7 +14,7 @@ using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 
-namespace DynamoElementsTests
+namespace Dynamo.Tests
 {
     [TestFixture]
     internal class PackageDependencyTests
