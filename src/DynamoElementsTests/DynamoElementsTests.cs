@@ -604,9 +604,9 @@ namespace Dynamo.Tests
 
 
             var num1 = controller.DynamoViewModel.Model.Nodes[1] as dynDoubleInput;
-            num1.Value = 2;
+            num1.Value = "2";
             var num2 = controller.DynamoViewModel.Model.Nodes[2] as dynDoubleInput;
-            num2.Value = 2;
+            num2.Value = "2";
 
             var cd1 = new Dictionary<string, object>();
             cd1.Add("start", controller.DynamoViewModel.Model.Nodes[1]);
