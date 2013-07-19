@@ -57,7 +57,7 @@ Source="..\..\Images\search_24.png" Opacity="1">
             </Grid>
 
             <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
-                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=PackageSearch}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" >
+                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=RSearchBoxStackPanel}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" >
 
                 <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" BorderThickness="0" Padding="0" Background="Black" SelectedIndex="{Binding Path=SelectedIndex}">
 
@@ -88,7 +88,7 @@ Source="..\..\Images\search_24.png" Opacity="1">
                                 <TextBlock FontSize="10" Name="keywords" Text="{Binding Path=Keywords}" HorizontalAlignment="Right" Foreground="Gray"  Padding="10, 20, 10, 0"/>
                                 <!--<TextBlock FontSize="11" Name="type" Text="{Binding Path=Type}" Foreground="Azure" HorizontalAlignment="Right" Padding="10, 5, 10, 0"/>-->
 
-                                    <Line X1="0" X2="441" Stroke="DimGray" Y1="0" Y2="0" />
+                                <Line X1="0" X2="441" Stroke="DimGray" Y1="0" Y2="0" />
 
                             </Grid>
 
@@ -123,8 +123,8 @@ Source="..\..\Images\search_24.png" Opacity="1">
 
             <StackPanel Name="Controls" Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" Background="#222">
 
-                <Button Name="ClearCompletedButton" Margin="1, 0, 1, 0" FontSize="12" Height="40" Foreground="White" ToolTip="Go Back" Content="Clear Finished"
-                      Style="{DynamicResource ResourceKey=STextButton}" Click="Clear_Completed_Click"/>
+                <Button Name="ClearCompletedButton" Margin="1, 0, 1, 0" FontSize="12" Height="40" Foreground="White" ToolTip="Clear Downloads That Have Been Installed" Content="Clear Completed"
+                      Style="{DynamicResource ResourceKey=STextButton}" Command="{Binding Path=ClearCompletedCommand}"/>
 
             </StackPanel>
 

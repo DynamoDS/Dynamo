@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager
@@ -52,11 +54,7 @@ namespace Dynamo.PackageManager
             {
                 if (_selectedIndex != value)
                 {
-                    //if (_visibleSearchResults.Count > _selectedIndex)
-                    //    _visibleSearchResults[_selectedIndex].IsSelected = false;
                     _selectedIndex = value;
-                    //if (_visibleSearchResults.Count > _selectedIndex)
-                    //    _visibleSearchResults[_selectedIndex].IsSelected = true;
                     RaisePropertyChanged("SelectedIndex");
                 }
             }
@@ -92,6 +90,19 @@ namespace Dynamo.PackageManager
         /// </summary>
         private List<BrowserItem> _visibleSearchResults = new List<BrowserItem>();
 
+        /// <summary>
+        ///     Command to clear the completed package downloads
+        /// </summary>
+        public DelegateCommand ClearCompletedCommand { get; set; }
+
+        /// <summary>
+        ///     Current downloads
+        /// </summary>
+        public ObservableCollection<PackageDownloadHandle> Downloads
+        {
+            get { return PackageManagerClient.Downloads; }
+        }
+
 #endregion Properties & Fields
 
         /// <summary>
@@ -102,14 +113,43 @@ namespace Dynamo.PackageManager
         {
             PackageManagerClient = client;
             SearchResults = new ObservableCollection<PackageManagerSearchElement>();
-            MaxNumSearchResults = 12;
+            MaxNumSearchResults = 1000;
+            ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
+            PackageManagerClient.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
 
-            SearchAndUpdateResults("*");
+            SearchAndUpdateResults("");
         }
 
-        public ObservableCollection<PackageDownloadHandle> Downloads
+        private void DownloadsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-            get { return PackageManagerClient.Downloads; }
+            if (args.NewItems != null)
+            {
+                foreach (var item in args.NewItems)
+                {
+                    var handle = (PackageDownloadHandle) item;
+                    handle.PropertyChanged += (o, eventArgs) => this.ClearCompletedCommand.RaiseCanExecuteChanged();
+                }
+            }
+
+            if (PackageManagerClient.Downloads.Count == 0)
+            {
+                this.ClearCompletedCommand.RaiseCanExecuteChanged();
+            }
+
+        } 
+
+        public void ClearCompleted()
+        {
+            PackageManagerClient.Downloads
+                .Where(x => x.DownloadState == PackageDownloadHandle.State.Installed)
+                .ToList()
+                .ForEach(x=>PackageManagerClient.Downloads.Remove(x));
+        }
+
+        public bool CanClearCompleted()
+        {
+            return PackageManagerClient.Downloads
+                                       .Any(x => x.DownloadState == PackageDownloadHandle.State.Installed);
         }
 
         /// <summary>
@@ -133,32 +173,6 @@ namespace Dynamo.PackageManager
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
         }
-
-        ///// <summary>
-        /////     Synchronously performs a search using the current SearchText
-        ///// </summary>
-        ///// <param name="query"> The search query </param>
-        //internal void SearchAndUpdateResultsSync()
-        //{
-        //    SearchAndUpdateResultsSync(SearchText);
-        //}
-
-        ///// <summary>
-        /////     Synchronously Performs a search and updates the observable SearchResults property
-        /////     on the current thread.
-        ///// </summary>
-        ///// <param name="query"> The search query </param>
-        //internal void SearchAndUpdateResultsSync(string query)
-        //{
-        //    var result = Search(query);
-
-        //    SearchResults.Clear();
-        //    foreach (var node in result)
-        //    {
-        //        SearchResults.Add(node);
-        //    }
-        //    SelectedIndex = 0;
-        //}
 
         /// <summary>
         ///     Increments the selected element by 1, unless it is the last element already
@@ -200,8 +214,25 @@ namespace Dynamo.PackageManager
         /// <param name="search"> The search query </param>
         internal List<PackageManagerSearchElement> Search(string search)
         {
-            search = String.Join("* ", search.Split(' ')) + "*"; // append wild card to each search
-            return PackageManagerClient.Search( search, MaxNumSearchResults);
+            bool emptySearch = false;
+            if (search == "")
+            {
+                search = "dyn*";
+                emptySearch = true;
+            }
+            else
+            {
+                search = String.Join("* ", search.Split(' ')) + "*"; // append wild card to each search
+            }
+            
+            var results = PackageManagerClient.Search( search, MaxNumSearchResults);
+
+            if (emptySearch)
+            {
+                results.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
+            }
+
+            return results;
         }
 
         /// <summary>

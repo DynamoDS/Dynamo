@@ -144,11 +144,11 @@ namespace Dynamo.PackageManager
         //    new Thread(start).Start();
         //}
 
-        internal List<PackageManagerSearchElement> Search(string search, int MaxNumSearchResults)
+        internal List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
         {
             var nv = new Greg.Requests.Search(search);
             var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
-            return pkgResponse.content.GetRange(0, Math.Min(MaxNumSearchResults, pkgResponse.content.Count())).Select((header) => new PackageManagerSearchElement(header)).ToList();
+            return pkgResponse.content.GetRange(0, Math.Min(maxNumSearchResults, pkgResponse.content.Count())).Select((header) => new PackageManagerSearchElement(header)).ToList();
         }
 
         private ResponseWithContentBody<PackageHeader> UploadDynamoPackageTest()
@@ -510,11 +510,12 @@ namespace Dynamo.PackageManager
 
                     var firstOrDefault = dynSettings.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                     if ( firstOrDefault != null)
-                        firstOrDefault.Uninstall();
+                        firstOrDefault.UninstallCommand.Execute();
 
                     if (packageDownloadHandle.Extract(out dynPkg))
                     {
                         dynPkg.Load();
+                        dynSettings.PackageLoader.LocalPackages.Add(dynPkg);
                         packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                     }
                     else

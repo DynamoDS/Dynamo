@@ -36,7 +36,7 @@ namespace Dynamo.Search.SearchElements
         {
             this.Header = header;
             this.Weight = 1;
-            if (header.keywords.Count > 0)
+            if (header.keywords != null && header.keywords.Count > 0)
             {
                 this.Keywords = String.Join(" ", header.keywords);
             } 

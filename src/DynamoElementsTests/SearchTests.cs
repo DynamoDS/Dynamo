@@ -2,7 +2,7 @@
 using Dynamo.Search;
 using NUnit.Framework;
 
-namespace DynamoElementsTests
+namespace Dynamo.Tests
 {
 
     [TestFixture]
@@ -79,6 +79,46 @@ namespace DynamoElementsTests
 
             model.RemoveCategory("Peter.Boyer");
 
+        }
+
+        [Test]
+        public void CanTryToRemoveElementFromSearchWithNonexistentName()
+        {
+            var model = new SearchViewModel();
+            model.Remove("NonExistentName");
+
+            model.SearchAndUpdateResultsSync("NonExistentName");
+            Assert.AreEqual(0, model.SearchResults.Count);
+        }
+
+        [Test]
+        public void CanRemoveElementCustomNodeByNameWithNestedCategory()
+        {
+            var model = new SearchViewModel();
+            model.Add("Peter", "Turnip.Greens", "A description", System.Guid.NewGuid());
+
+            model.SearchAndUpdateResultsSync("Peter");
+            Assert.AreEqual(1, model.SearchResults.Count);
+
+            model.Remove("Peter");
+            model.SearchAndUpdateResultsSync("Peter");
+
+            Assert.AreEqual(0, model.SearchResults.Count);
+        }
+
+        [Test]
+        public void CanRemoveElementCustomNodeByNameWithSingleCategory()
+        {
+            var model = new SearchViewModel();
+            model.Add("Peter", "Greens", "A description", System.Guid.NewGuid());
+
+            model.SearchAndUpdateResultsSync("Peter");
+            Assert.AreEqual(1, model.SearchResults.Count);
+
+            model.Remove("Peter");
+            model.SearchAndUpdateResultsSync("Peter");
+
+            Assert.AreEqual(0, model.SearchResults.Count);
         }
 
     }
