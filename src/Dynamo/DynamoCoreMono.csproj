@@ -6,7 +6,7 @@
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3AADBFD0-4711-49E9-99DF-6A40FD23B305}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>DynamoCoreMono</RootNamespace>
     <AssemblyName>DynamoCoreMono</AssemblyName>
   </PropertyGroup>
