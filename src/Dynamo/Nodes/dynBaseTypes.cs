@@ -210,7 +210,7 @@ namespace Dynamo.Nodes
         protected abstract string GetInputRootName();
         protected abstract string GetTooltipRootName();
 
-        protected virtual int GetNewInputIndex()
+        protected virtual int GetInputNameIndex()
         {
             return InPortData.Count;
         }
@@ -239,7 +239,7 @@ namespace Dynamo.Nodes
 
         protected internal virtual void AddInput()
         {
-            var idx = GetNewInputIndex();
+            var idx = GetInputNameIndex();
             InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx, typeof(object)));
         }
 
@@ -350,7 +350,7 @@ namespace Dynamo.Nodes
     {
         public dynNewList()
         {
-            InPortData.Add(new PortData("index0", "Item #1", typeof(object)));
+            InPortData.Add(new PortData("index0", "Item Index #0", typeof(object)));
             OutPortData.Add(new PortData("list", "A list", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -365,12 +365,7 @@ namespace Dynamo.Nodes
 
         protected override string GetTooltipRootName()
         {
-            return "Item #";
-        }
-
-        protected override int GetNewInputIndex()
-        {
-            return base.GetNewInputIndex() + 1;
+            return "Item Index #";
         }
 
         protected internal override void RemoveInput()
@@ -580,7 +575,7 @@ namespace Dynamo.Nodes
             {
                 for (; inputs > 2; inputs--)
                 {
-                    InPortData.Add(new PortData(GetInputRootName() + GetNewInputIndex(), "", typeof(object)));
+                    InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
                 }
 
                 RegisterAllPorts();
@@ -660,7 +655,7 @@ namespace Dynamo.Nodes
             {
                 for (; inputs > 2; inputs--)
                 {
-                    InPortData.Add(new PortData(GetInputRootName() + GetNewInputIndex(), "", typeof(object)));
+                    InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
                 }
 
                 RegisterAllPorts();
@@ -2280,7 +2275,7 @@ namespace Dynamo.Nodes
             return "Expression #";
         }
 
-        protected override int GetNewInputIndex()
+        protected override int GetInputNameIndex()
         {
             return InPortData.Count + 1;
         }
@@ -3686,7 +3681,7 @@ namespace Dynamo.Nodes
             return "String #";
         }
 
-        protected override int GetNewInputIndex()
+        protected override int GetInputNameIndex()
         {
             return InPortData.Count + 1;
         }
