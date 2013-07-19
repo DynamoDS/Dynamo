@@ -388,6 +388,8 @@ namespace Dynamo.ViewModels
                         _workspaces.Remove(_workspaces.ToList().First(x => x.Model == item));
                     break;
             }
+
+            RaisePropertyChanged("Workspaces");
         }
 
         internal bool CanSave()

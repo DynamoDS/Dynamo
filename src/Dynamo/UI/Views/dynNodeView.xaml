@@ -12,7 +12,7 @@
     PreviewKeyUp="OnPreviewKeyUp"
     MouseLeftButtonDown="topControl_MouseLeftButtonDown"
     MouseRightButtonDown="topControl_MouseRightButtonDown" 
-             MouseDoubleClick="dynNodeView_OnMouseDoubleClick" 
+
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">
    
