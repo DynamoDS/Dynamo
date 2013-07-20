@@ -707,8 +707,8 @@ namespace DynamoRevitTests
             //now change one of the number inputs and rerun
             //verify that there are still only two reference points in
             //the model
-            var node = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynDoubleInput).First();
-            ((dynBasicInteractive<double>)node).Value = 12.0;
+            var node = dynSettings.Controller.DynamoModel.Nodes.OfType<dynDoubleInput>().First();
+            node.Value = "12.0";
 
             dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
             fec = null;
@@ -976,8 +976,8 @@ namespace DynamoRevitTests
             Assert.AreEqual(5, ds.VSpacingRule.Number);
 
             //can we change the number of divisions
-            var numNode = (dynDoubleInput)dynRevitSettings.Controller.DynamoModel.Nodes.First(x => x is dynDoubleInput);
-            numNode.Value = 10;
+            var numNode = dynSettings.Controller.DynamoModel.Nodes.OfType<dynDoubleInput>().First();
+            numNode.Value = "10";
             dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
 
             //did it create a divided surface?
@@ -985,8 +985,8 @@ namespace DynamoRevitTests
             Assert.AreEqual(10, ds.VSpacingRule.Number);
 
             //does it throw an error when we try to set a negative number of divisions
-            numNode.Value = -5;
-            Assert.Throws(typeof(NUnit.Framework.AssertionException),
+            numNode.Value = "-5";
+            Assert.Throws(typeof(AssertionException),
                           () => dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true));
             
         }
