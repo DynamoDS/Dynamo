@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Formula")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
-    [NodeDescription("Design and compute mathematical expressions.")]
+    [NodeDescription("Design and compute mathematical expressions. Uses NCalc Syntax: http://ncalc.codeplex.com.")]
     [NodeSearchTags("Equation", "Arithmetic")]
     [IsInteractive(true)]
     public class dynFormula : dynMathBase
