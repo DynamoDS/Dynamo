@@ -727,16 +727,16 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Split Pair")]
+    [NodeName("Split List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Deconstructs a list pair.")]
     public class dynDeCons : dynNodeModel
     {
         public dynDeCons()
         {
-            InPortData.Add(new PortData("list", "", typeof(Value.List)));
-            OutPortData.Add(new PortData("first", "", typeof(object)));
-            OutPortData.Add(new PortData("rest", "", typeof(Value.List)));
+            InPortData.Add(new PortData("list", "A non-empty list", typeof(Value.List)));
+            OutPortData.Add(new PortData("first", "Head of the list", typeof(object)));
+            OutPortData.Add(new PortData("rest", "Tail of the list", typeof(Value.List)));
 
             RegisterAllPorts();
         }
@@ -750,16 +750,16 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Make Pair")]
+    [NodeName("Add to List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Constructs a list pair.")]
+    [NodeDescription("ADds an element to the beginning of a list.")]
     public class dynList : dynBuiltinFunction
     {
         public dynList()
             : base("cons")
         {
-            InPortData.Add(new PortData("first", "The new Head of the list", typeof(object)));
-            InPortData.Add(new PortData("rest", "The new Tail of the list", typeof(object)));
+            InPortData.Add(new PortData("item", "The new Head of the list", typeof(object)));
+            InPortData.Add(new PortData("list", "The new Tail of the list", typeof(object)));
             OutPortData.Add(new PortData("list", "Result List", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -838,11 +838,6 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            return Value.NewList(FSharpList<Value>.Empty);
-        }
-
         protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
@@ -903,9 +898,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("First in List")]
+    [NodeName("First of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Gets the first element of a list")]
+    [NodeDescription("Gets the Head of a list")]
     public class dynFirst : dynBuiltinFunction
     {
         public dynFirst()
@@ -918,22 +913,22 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("List Rest")]
+    [NodeName("Rest of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Gets the list with the first element removed.")]
+    [NodeDescription("Gets the Tail of a list (list with the first element removed).")]
     public class dynRest : dynBuiltinFunction
     {
         public dynRest()
             : base("rest")
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
-            OutPortData.Add(new PortData("rest", "List without the first element.", typeof(Value.List)));
+            OutPortData.Add(new PortData("rest", "Tail of the list.", typeof(Value.List)));
 
             RegisterAllPorts();
         }
     }
 
-    [NodeName("Slice List")]
+    [NodeName("Partition List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Create a lists of lists with each sub-list containing n elements.")]
     public class dynSlice : dynNodeWithOneOutput
@@ -962,13 +957,13 @@ namespace Dynamo.Nodes
             //if we have less elements in ther 
             //incoming list than the slice size,
             //just return the list
-            if (lst.Count<Value>() < n)
+            if (lst.Count() < n)
             {
                 return Value.NewList(lst);
             }
 
-            List<Value> finalList = new List<Value>();
-            List<Value> currList = new List<Value>();
+            var finalList = new List<Value>();
+            var currList = new List<Value>();
             int count = 0;
 
             foreach (Value v in lst)
@@ -985,12 +980,12 @@ namespace Dynamo.Nodes
                 }
             }
 
-            if (currList.Count<Value>() > 0)
+            if (currList.Any())
             {
                 finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
             }
 
-            return Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
+            return Value.NewList(Utils.MakeFSharpList(finalList.ToArray()));
 
         }
     }
@@ -1259,7 +1254,7 @@ namespace Dynamo.Nodes
         }
 
         internal static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|\[(?<id>\w(?:[^}\\]|(?:\\}))*)\]");
-        internal static readonly string[] RangeSeparatorTokens = { "..", "-", ":" };
+        internal static readonly string[] RangeSeparatorTokens = { "..", ":", };
 
         private static List<Tuple<int, int, int>> processText(string text, int maxVal, Func<string, int> idFoundCallback)
         {
@@ -2835,7 +2830,7 @@ namespace Dynamo.Nodes
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
 
-            tb.Text = "0.0";
+            tb.Text = Value ?? "0.0";
         }
 
 
@@ -2851,8 +2846,6 @@ namespace Dynamo.Nodes
                     return;
 
                 _value = value;
-                RequiresRecalc = value != null;
-                RaisePropertyChanged("Value");
 
                 var idList = new List<string>();
 
@@ -2873,6 +2866,25 @@ namespace Dynamo.Nodes
                 {
                     Error(e.Message);
                 }
+
+                RequiresRecalc = value != null;
+                RaisePropertyChanged("Value");
+            }
+        }
+
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            outEl.SetAttribute("value", Value);
+            dynEl.AppendChild(outEl);
+        }
+
+        public override void LoadNode(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes.Cast<XmlNode>().Where(subNode => subNode.Name.Equals(typeof(double).FullName)))
+            {
+                Value = subNode.Attributes[0].Value;
             }
         }
 
@@ -2997,11 +3009,18 @@ namespace Dynamo.Nodes
                     var start = _start.GetValue(idLookup);
                     var end = _end.GetValue(idLookup);
 
-                    var definedForwards = start < end;
-                    var countingUp = (step > 0 && definedForwards) || !definedForwards;
+                    if (step < 0)
+                    {
+                        step *= -1;
+                        var tmp = end;
+                        end = start;
+                        start = tmp;
+                    }
+
+                    var countingUp = start < end;
 
                     return FScheme.Value.NewList(Utils.SequenceToFSharpList(
-                        countingUp ? CreateSequence(start, step, end) : CreateSequence(end, step, start)));
+                        countingUp ? CreateSequence(start, step, end) : CreateSequence(end, step, start).Reverse()));
                 }
                 return _result;
             }
