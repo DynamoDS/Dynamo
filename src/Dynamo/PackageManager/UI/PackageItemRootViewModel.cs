@@ -13,15 +13,15 @@ namespace Dynamo.PackageManager.UI
         CustomNode, Assembly
     }
 
-    public class PackageDependencyRootViewModel : PackageDependencyViewModel
+    public class PackageItemRootViewModel : PackageItemViewModel
     {
         /// <summary>
         ///     The items inside of the browser item
         /// </summary>
-        private ObservableCollection<PackageDependencyViewModel> _items = new ObservableCollection<PackageDependencyViewModel>();
-        public override ObservableCollection<PackageDependencyViewModel> Items { get { return _items; } set { _items = value; } }
+        private ObservableCollection<PackageItemViewModel> _items = new ObservableCollection<PackageItemViewModel>();
+        public override ObservableCollection<PackageItemViewModel> Items { get { return _items; } set { _items = value; } }
 
-        public PackageDependencyRootViewModel(FunctionDefinition def)
+        public PackageItemRootViewModel(FunctionDefinition def)
         {
             this.Height = 32;
             this.DependencyType = DependencyType.CustomNode;
@@ -29,7 +29,7 @@ namespace Dynamo.PackageManager.UI
             this.BuildDependencies(new HashSet<object>());
         }
 
-        public PackageDependencyRootViewModel(Assembly assembly)
+        public PackageItemRootViewModel(Assembly assembly)
         {
             this.Height = 32;
             this.DependencyType = DependencyType.Assembly;

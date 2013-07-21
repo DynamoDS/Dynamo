@@ -67,7 +67,7 @@ namespace Dynamo.Search.SearchElements
 
             if (result == MessageBoxResult.OK)
             {
-                var dl = new PackageDownloadHandle(this.Header, this.Version); // download the most recent version
+                var dl = new PackageDownloadHandle(this.Header, this.LatestVersion); // download the most recent version
                 dynSettings.Controller.PackageManagerClient.DownloadAndInstall(dl);
             }
 
@@ -75,7 +75,19 @@ namespace Dynamo.Search.SearchElements
 
         #region Properties 
             
-            public string Version { get { return Header.versions[Header.versions.Count - 1].version; } }
+            public List<PackageVersion> Versions { get { return this.Header.versions; } }
+
+            public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
+
+            public int Votes { get { return this.Header.votes; } }
+
+            public int Downloads { get { return this.Header.downloads; } }
+
+            public string EngineVersion { get { return this.Header.engine_version; } }
+
+            public int UsedBy { get { return this.Header.used_by.Count; } } 
+
+            public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
             
             /// <summary>
             /// Header property </summary>

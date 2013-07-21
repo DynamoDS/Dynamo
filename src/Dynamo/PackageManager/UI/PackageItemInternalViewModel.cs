@@ -9,24 +9,24 @@ using Dynamo.Nodes.Search;
 
 namespace Dynamo.PackageManager.UI
 {
-    public class PackageDependencyInternalViewModel : PackageDependencyViewModel
+    public class PackageItemInternalViewModel : PackageItemViewModel
     {
         /// <summary>
         ///     The items inside the package
         /// </summary>
-        private ObservableCollection<PackageDependencyViewModel> _items = new ObservableCollection<PackageDependencyViewModel>();
-        public override ObservableCollection<PackageDependencyViewModel> Items { get { return _items; } set { _items = value; } }
+        private ObservableCollection<PackageItemViewModel> _items = new ObservableCollection<PackageItemViewModel>();
+        public override ObservableCollection<PackageItemViewModel> Items { get { return _items; } set { _items = value; } }
 
-        public PackageDependencyViewModel Parent { get; set; }
+        public PackageItemViewModel Parent { get; set; }
 
-        public PackageDependencyInternalViewModel(Assembly assembly, PackageDependencyViewModel parent)
+        public PackageItemInternalViewModel(Assembly assembly, PackageItemViewModel parent)
         {
             this.DependencyType = DependencyType.Assembly;
             this.Assembly = assembly;
             this.Parent = parent;
         }
 
-        public PackageDependencyInternalViewModel(FunctionDefinition def, PackageDependencyViewModel parent)
+        public PackageItemInternalViewModel(FunctionDefinition def, PackageItemViewModel parent)
         {
             this.DependencyType = DependencyType.CustomNode;
             this.Definition = def;

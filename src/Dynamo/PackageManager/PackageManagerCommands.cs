@@ -50,14 +50,14 @@ namespace Dynamo.Commands
             {
                 var f = funcDef as FunctionDefinition;
 
-                dynSettings.Controller.PublishCustomNodesViewModel = new PublishCustomNodesViewModel(dynSettings.Controller.PackageManagerClient);
-                dynSettings.Controller.PublishCustomNodesViewModel.FunctionDefinitions =
+                dynSettings.Controller.PublishPackageViewModel = new PublishPackageViewModel(dynSettings.Controller.PackageManagerClient);
+                dynSettings.Controller.PublishPackageViewModel.FunctionDefinitions =
                     new List<FunctionDefinition> {f};
 
                 // we're submitting a new version
                 if ( dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders.ContainsKey(f) )
                 {
-                    dynSettings.Controller.PublishCustomNodesViewModel.BaseVersionHeader =
+                    dynSettings.Controller.PublishPackageViewModel.BaseVersionHeader =
                         dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders[f];
                 }
             }
@@ -67,7 +67,7 @@ namespace Dynamo.Commands
                 return;
             }
 
-            _view = new PackageManagerPublishView(dynSettings.Controller.PublishCustomNodesViewModel);
+            _view = new PackageManagerPublishView(dynSettings.Controller.PublishPackageViewModel);
 
         }
 

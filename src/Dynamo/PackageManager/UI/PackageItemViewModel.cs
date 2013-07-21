@@ -8,9 +8,9 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager.UI
 {
-    public abstract class PackageDependencyViewModel : NotificationObject
+    public abstract class PackageItemViewModel : NotificationObject
     {
-        public abstract ObservableCollection<PackageDependencyViewModel> Items { get; set; }
+        public abstract ObservableCollection<PackageItemViewModel> Items { get; set; }
 
         /// <summary>
         /// The height of the element in search
@@ -30,7 +30,7 @@ namespace Dynamo.PackageManager.UI
         ///     Adds an element as a child of this one, while updating its parent and oldparent field
         /// </summary>
         /// <param name="elem">The element in question</param>
-        public void AddChild(PackageDependencyInternalViewModel elem)
+        public void AddChild(PackageItemInternalViewModel elem)
         {
             if (elem.Parent != null)
                 elem.Parent.Items.Remove(elem);
@@ -97,9 +97,9 @@ namespace Dynamo.PackageManager.UI
 
         public class ToggleIsExpandedCommand : ICommand
         {
-            private PackageDependencyViewModel _viewModel;
+            private PackageItemViewModel _viewModel;
 
-            public ToggleIsExpandedCommand(PackageDependencyViewModel i)
+            public ToggleIsExpandedCommand(PackageItemViewModel i)
             {
                 this._viewModel = i;
             }
@@ -150,7 +150,7 @@ namespace Dynamo.PackageManager.UI
                 foreach (var dep in Definition.DirectDependencies)
                 {
                     var discovered = discoveredDeps.Contains(dep);
-                    var packDep = new PackageDependencyInternalViewModel(dep, this)
+                    var packDep = new PackageItemInternalViewModel(dep, this)
                         {
                             AlreadyDiscovered = discovered
                         };
@@ -168,7 +168,7 @@ namespace Dynamo.PackageManager.UI
                 {
                     var depAss = Assembly.Load(dep);
                     var discovered = discoveredDeps.Contains(dep);
-                    var packDep = new PackageDependencyInternalViewModel(depAss, this)
+                    var packDep = new PackageItemInternalViewModel(depAss, this)
                     {
                         AlreadyDiscovered = discovered
                     };

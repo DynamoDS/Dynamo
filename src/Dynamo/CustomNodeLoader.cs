@@ -167,11 +167,10 @@ namespace Dynamo.Utilities
             // from somewhere else
             if (Contains(guid))
             {
-                return null;
+                return GetNodeInfo(guid);
             }
 
             var info = new CustomNodeInfo(guid, name, category, description, file);
-
             this.SetNodeInfo(info);
 
             return info;
@@ -193,9 +192,12 @@ namespace Dynamo.Utilities
             return whereTypesAreLoaded.Any();
         }
 
-        public List<Guid> GetIdsFromFolder(string dir)
+        public List<CustomNodeInfo> GetInfosFromFolder(string dir)
         {
-            return (from ele in nodePaths let guid = ele.Key let nodePath = ele.Value where nodePath.StartsWith(dir) select guid).ToList();
+            return Directory.EnumerateFiles(dir, "*.dyf")
+                     .Select(AddFileToPath)
+                     .Where(x => x != null)
+                     .ToList();
 
         } 
 
@@ -207,7 +209,7 @@ namespace Dynamo.Utilities
         public bool RemoveTypesLoadedFromFolder(string path)
         {
 
-            var guidsToRemove = GetIdsFromFolder(path);
+            var guidsToRemove = GetInfosFromFolder(path).Select(x => x.Guid);
             guidsToRemove.ToList().ForEach(this.Remove);
 
             return guidsToRemove.Any();
@@ -545,6 +547,25 @@ namespace Dynamo.Utilities
             return true;
         }
 
+        /// <summary>
+        ///     Get a guid from a specific path, internally this first calls GetDefinitionFromPath
+        /// </summary>
+        /// <param name="path">The path from which to get the guid</param>
+        /// <returns>The custom node info object - null if we failed</returns>
+        public static CustomNodeInfo GetHeaderFromPath(string path)
+        {
+            string name, category, description;
+            Guid id;
+            if (CustomNodeLoader.GetHeaderFromPath(path, out id, out name, out category, out description))
+            {
+                return new CustomNodeInfo(id, name, category, description, path);
+            }
+            else
+            {
+                return null;
+            }
+            
+        }
         /// <summary>
         ///     Get a guid from a specific path, internally this first calls GetDefinitionFromPath
         /// </summary>
@@ -1143,6 +1164,20 @@ namespace Dynamo.Utilities
             if (!Directory.Exists(p) || SearchPath.Contains(p)) return false;
             SearchPath.Add(p);
             return true;
+        }
+
+        internal CustomNodeInfo GetNodeInfo(Guid x)
+        {
+            var path = GetNodePath(x);
+            if (path == null)
+            {
+                return null;
+            }
+            var des = NodeDescriptions[x];
+            var cat = NodeCategories[x];
+            var name = this.NodeNames.FirstOrDefault(pair => pair.Value == x).Key;
+            return new CustomNodeInfo(x, name, cat, des, path);
+
         }
     }
 }

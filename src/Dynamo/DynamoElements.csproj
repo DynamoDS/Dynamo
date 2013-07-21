@@ -132,10 +132,10 @@ limitations under the License.
     <Compile Include="PackageManager\UI\InstalledPackagesView.xaml.cs">
       <DependentUpon>InstalledPackagesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PackageManager\UI\PackageDependencyInternalViewModel.cs" />
-    <Compile Include="PackageManager\UI\PackageDependencyViewModel.cs" />
-    <Compile Include="PackageManager\UI\PackageDependencyLeafViewModel.cs" />
-    <Compile Include="PackageManager\UI\PackageDependencyRootViewModel.cs" />
+    <Compile Include="PackageManager\UI\PackageItemInternalViewModel.cs" />
+    <Compile Include="PackageManager\UI\PackageItemViewModel.cs" />
+    <Compile Include="PackageManager\UI\PackageItemLeafViewModel.cs" />
+    <Compile Include="PackageManager\UI\PackageItemRootViewModel.cs" />
     <Compile Include="PackageManager\UI\PackageManagerDownloadView.xaml.cs">
       <DependentUpon>PackageManagerDownloadView.xaml</DependentUpon>
     </Compile>
