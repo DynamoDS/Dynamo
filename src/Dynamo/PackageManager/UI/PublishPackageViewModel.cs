@@ -31,7 +31,7 @@ namespace Dynamo.PackageManager
 {
     /// <summary>
     /// The ViewModel for Package publishing </summary>
-    public class PublishCustomNodesViewModel : NotificationObject
+    public class PublishPackageViewModel : NotificationObject
     {
         #region Properties
 
@@ -396,23 +396,25 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// The class constructor. </summary>
         /// <param name="client"> Reference to to the PackageManagerClient object for the app </param>
-        public PublishCustomNodesViewModel(PackageManagerClient client)
+        public PublishPackageViewModel(PackageManagerClient client)
         {
             Client = client;
             this.SubmitCommand = new DelegateCommand<object>(this.Submit, this.CanSubmit);
             this.Dependencies = new ObservableCollection<PackageDependency>();
         }
 
-        public static PublishCustomNodesViewModel FromLocalPackage(LocalPackage l)
+        public static PublishPackageViewModel FromLocalPackage(LocalPackage l)
         {
 
-            var vm = new PublishCustomNodesViewModel(dynSettings.PackageManagerClient)
+            var vm = new PublishPackageViewModel(dynSettings.PackageManagerClient)
                 {
                     IsNewVersion = true,
-                    Name = l.Name,
                     Group = l.Group,
                     Description = l.Description
                 };
+
+            vm.FunctionDefinitions =
+                l.LoadedCustomNodes.Select(x => dynSettings.CustomNodeLoader.GetFunctionDefinition(x.Guid)).ToList();
 
             if (l.VersionName != null)
             {
@@ -425,8 +427,7 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            vm.FunctionDefinitions =
-                l.LoadedCustomNodes.Select(x => dynSettings.CustomNodeLoader.GetFunctionDefinition(x.Guid)).ToList();
+            vm.Name = l.Name;
 
             return vm;
 
@@ -525,7 +526,6 @@ namespace Dynamo.PackageManager
             return files;
         }
 
-
         private void UpdateDependencies(){
             this.Dependencies.Clear();
             this.GetAllDependencies().ToList().ForEach(this.Dependencies.Add);
@@ -541,6 +541,7 @@ namespace Dynamo.PackageManager
                     .Where(dynSettings.PackageLoader.IsUnderPackageControl)
                     .Select(dynSettings.PackageLoader.GetOwnerPackage)
                     .Where(x => x != null)
+                    .Where(x => !(this.IsNewVersion && x.Name == this.Name))
                     .Distinct()
                     .Select(x => new PackageDependency(x.Name, x.VersionName));
 
@@ -551,7 +552,8 @@ namespace Dynamo.PackageManager
                 .Select(x => x.GetType())
                 .Where(dynSettings.PackageLoader.IsUnderPackageControl)
                 .Select(dynSettings.PackageLoader.GetOwnerPackage)
-                .Where(x=> x != null)
+                .Where(x => x != null)
+                .Where(x => !(this.IsNewVersion && x.Name == this.Name) )
                 .Distinct()
                 .Select(x => new PackageDependency(x.Name, x.VersionName));
 

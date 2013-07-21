@@ -195,7 +195,7 @@ namespace Dynamo.Utilities
         public List<CustomNodeInfo> GetInfosFromFolder(string dir)
         {
             return Directory.EnumerateFiles(dir, "*.dyf")
-                     .Select(AddFileToPath)
+                     .Select( AddFileToPath )
                      .Where(x => x != null)
                      .ToList();
 
