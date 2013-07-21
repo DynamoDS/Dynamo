@@ -732,7 +732,9 @@ namespace Dynamo.Search
 
             // create the node in search
             var nodeEle = new NodeSearchElement(name, description, functionId);
-            
+
+            if (SearchDictionary.Contains(nodeEle))
+                return;
 
             SearchDictionary.Add(nodeEle, nodeEle.Name);
             SearchDictionary.Add(nodeEle, category + "." + nodeEle.Name);

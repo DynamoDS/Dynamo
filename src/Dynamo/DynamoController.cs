@@ -58,7 +58,7 @@ namespace Dynamo
 
         public CustomNodeLoader CustomNodeLoader { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
-        public PublishCustomNodesViewModel PublishCustomNodesViewModel { get; internal set; }
+        public PublishPackageViewModel PublishPackageViewModel { get; internal set; }
         public PackageManagerClient PackageManagerClient { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
@@ -181,7 +181,7 @@ namespace Dynamo
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);
             dynSettings.PackageManagerClient = PackageManagerClient;
-            PublishCustomNodesViewModel = new PublishCustomNodesViewModel(PackageManagerClient);
+            PublishPackageViewModel = new PublishPackageViewModel(PackageManagerClient);
 
             dynSettings.PackageLoader = new PackageLoader();
 
