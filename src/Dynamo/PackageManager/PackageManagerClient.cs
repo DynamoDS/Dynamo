@@ -162,21 +162,10 @@ namespace Dynamo.PackageManager
             //var nv = new PackageUpload("Third .NET Package4", "1.1.0", "description", keywords, "MIT",
             //                                         "contents", "dynamo", "0.1.0", "", "group", new List<string>(), new List<PackageDependency>());
             var response = Client.ExecuteAndDeserializeWithContent<PackageHeader>(nv);
-            //var response = pmc.ExecuteAndDeserialize(nv);
             return response;
         }
 
-        public PackageUploadHandle Publish( bool isNewVersion, 
-                                            string name,
-                                            string version,
-                                            string description,
-                                            IEnumerable<string> keywords,
-                                            string license,
-                                            string group,
-                                            IEnumerable<string> files,
-                                            IEnumerable<PackageDependency> deps,
-                                            IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs, 
-                                            string rootDirectoryIfPackageVersion = "" )
+        public PackageUploadHandle Publish( LocalPackage l, List<string> files, bool isNewVersion )
         {
 
             var nv = new ValidateAuth();
@@ -184,66 +173,13 @@ namespace Dynamo.PackageManager
 
             if (pkgResponse == null)
             {
-                throw new AuthenticationException("It looks like you're not logged into Autodesk 360.  Log in to submit a package.");
+                throw new AuthenticationException(
+                    "It looks like you're not logged into Autodesk 360.  Log in to submit a package.");
             }
 
-            if (!isNewVersion)
-            {
-                var pkgHeader = PackageUploadBuilder.NewPackageHeader(   name,
-                                                                        version,
-                                                                        description,
-                                                                        keywords,
-                                                                        license,
-                                                                        group,
-                                                                        deps,
-                                                                        nodeNameDescriptionPairs);   
+            var packageUploadHandle = new PackageUploadHandle(l.Header);
+            return PublishPackage(isNewVersion, l, files, packageUploadHandle);
 
-                var packageUploadHandle = new PackageUploadHandle(pkgHeader);
-                return PublishNewPackage( pkgHeader, files, packageUploadHandle );
-
-            }
-            else
-            {
-                
-                return PublishNewPackageVersion(name, version, description, keywords, group, rootDirectoryIfPackageVersion, files, deps,
-                                            nodeNameDescriptionPairs);
-            }
-
-        }
-
-        public PackageUploadHandle ResumeNewPublishUpload(  LocalPackage pkg,
-                                                            PackageUploadHandle packageUploadHandle )
-        {
-            ThreadStart start = () =>
-            {
-                try
-                {
-                    var pkgUpload = PackageUploadBuilder.NewPackage(pkg, packageUploadHandle);
-
-                    var keywords = new List<string>();
-                    var nv = new PackageUpload("RootNode11", "0.1.0", "This is the best", keywords, "MIT",
-                                                             "SecondLevelNode1 - No description provided, ThirdLevelCustomNodeA1 - No description provided, ThirdLevelCustomNodeA2 - No description provided, SecondLevelNode2 - No description provided, ThirdLevelCustomNodeB1 - No description provided, ThirdLevelCustomNodeB2 - No description provided, RootNode - No description provided", "dynamo", "0.5.2.20207", "", "",
-                                                             @"C:\Users\boyerp\Desktop\Home2.zip", new List<PackageDependency>());
-
-                    var ret = Client.ExecuteAndDeserializeWithContent<PackageHeader>(nv);
-
-                    if (!ret.success)
-                    {
-                        packageUploadHandle.Error(ret.message);
-                        return;
-                    }
-
-                    packageUploadHandle.Done(ret.content);
-
-                }
-                catch (Exception e)
-                {
-                    packageUploadHandle.Error(e.GetType() + ": " + e.Message);
-                }
-            };
-            new Thread(start).Start();
-
-            return packageUploadHandle;
         }
 
         ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
@@ -253,20 +189,23 @@ namespace Dynamo.PackageManager
             set { _uploads = value; }
         }
 
-        /// <summary>
-        ///     Attempt to upload PackageUpload
-        /// </summary>
-        private PackageUploadHandle PublishNewPackage(  PackageUploadRequestBody pkgHeader, 
-                                                        IEnumerable<string> files, 
-                                                        PackageUploadHandle packageUploadHandle )
+        private PackageUploadHandle PublishPackage( bool isNewVersion, 
+                                                    LocalPackage l, 
+                                                    List<string> files,
+                                                    PackageUploadHandle packageUploadHandle )
         {
 
             ThreadStart start = () =>
                 {
                     try
                     {
-                        var pkgUpload = PackageUploadBuilder.NewPackage(pkgHeader, files, packageUploadHandle);
-                        var ret = Client.ExecuteAndDeserialize(pkgUpload);
+
+                        ResponseBody ret = isNewVersion ?
+                                               Client.ExecuteAndDeserialize(PackageUploadBuilder.NewPackageVersion(l,
+                                                                                                                     files,
+                                                                                                                     packageUploadHandle))
+                                               : Client.ExecuteAndDeserialize(PackageUploadBuilder.NewPackage(l, files,
+                                                                                                              packageUploadHandle));
 
                         if (!ret.success)
                         {
@@ -285,110 +224,6 @@ namespace Dynamo.PackageManager
             new Thread(start).Start();
 
             return packageUploadHandle;
-
-        }
-
-        /// <summary>
-        ///     Attempt to upload PackageUpload
-        /// </summary>
-        private PackageUploadHandle PublishNewPackageVersion(   string name,
-                                                                string version,
-                                                                string description,
-                                                                IEnumerable<string> keywords,
-                                                                string group,
-                                                                string rootDirectory,
-                                                                IEnumerable<string> files,
-                                                                IEnumerable<PackageDependency> deps,
-                                                                IEnumerable<Tuple<string, string>> nodeNameDescriptionPairs)
-        {
-            // form dynamo dependent data
-            string contents = String.Join(", ",
-                                          nodeNameDescriptionPairs.Select((pair) => pair.Item1 + " - " + pair.Item2));
-            string engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            string engineMetadata = "";
-
-            // build the package header json, which will be stored with the pkg
-            var pkgHeader = new PackageVersionUploadRequestBody(name, version, description, keywords, contents, "dynamo", 
-                                                                    engineVersion, engineMetadata, group, deps);
-
-            var s = new PackageUploadHandle(pkgHeader);
-
-            ThreadStart start = () =>
-            {
-                try
-                {
-                    // use the existing directory where the pkg will be stored
-                    var rootDir = new DirectoryInfo(rootDirectory);
-
-                    // build the directory substructure, this does nothing if this already exists
-                    var binDir = rootDir.CreateSubdirectory("bin");
-                    var dyfDir = rootDir.CreateSubdirectory("dyf");
-                    var extraDir = rootDir.CreateSubdirectory("extra");
-
-                    // build the package header json, which will be stored with the pkg
-                    var jsSer = new JsonSerializer();
-                    var pkgHeaderStr = jsSer.Serialize(pkgHeader);
-
-                    // write the pkg header to the root directory of the pkg
-                    var headerPath = Path.Combine(rootDirectory, "pkg.json");
-                    if (File.Exists(headerPath)) File.Delete(headerPath);
-                    File.WriteAllText(headerPath, pkgHeaderStr);
-
-                    // zip up the folder and get its path 
-                    var zipPath = Greg.Utility.FileUtilities.Zip(rootDirectory);
-
-                    // copy the files to their destination
-                    foreach (var file in files)
-                    {
-
-                        if (file == null) continue;
-                        if (!File.Exists(file)) continue;
-
-                        if (file.EndsWith("dyf"))
-                        {
-                            File.Copy(file, Path.Combine(dyfDir.FullName, Path.GetFileName(file)));
-                        }
-                        else if (file.EndsWith("dll") || file.EndsWith("exe"))
-                        {
-                            File.Copy(file, Path.Combine(binDir.FullName, Path.GetFileName(file)));
-                        }
-                        else
-                        {
-                            File.Copy(file, Path.Combine(extraDir.FullName, Path.GetFileName(file)));
-                        }
-
-                    }
-
-                    var pkgUpload = new PackageVersionUpload(   name,
-                                                                version,
-                                                                description,
-                                                                keywords,
-                                                                contents,
-                                                                "dynamo",
-                                                                engineVersion,
-                                                                engineMetadata,
-                                                                group,
-                                                                zipPath,
-                                                                deps ); 
-
-
-                    var ret = Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgUpload);
-                    if (!ret.success)
-                    {
-                        s.Error(ret.message);
-                        return;
-                    }
-                    s.Done(ret.content);
-                    
-                }
-                catch (Exception e)
-                {
-                    s.Error(e.GetType() + ": " + e.Message);
-                }
-            };
-            new Thread(start).Start();
-
-            return s;
 
         }
 
@@ -533,7 +368,6 @@ namespace Dynamo.PackageManager
             };
             new Thread(start).Start();
         }
-
 
     }
 }

@@ -345,6 +345,8 @@ namespace Dynamo.PackageManager
             get { return !HasDependencies; }
         }
 
+        public LocalPackage LocalPackage { get; set; }
+
         /// <summary>
         /// FunctionDefinition property </summary>
         /// <value>
@@ -428,6 +430,7 @@ namespace Dynamo.PackageManager
             }
 
             vm.Name = l.Name;
+            vm.LocalPackage = l;
 
             return vm;
 
@@ -463,18 +466,32 @@ namespace Dynamo.PackageManager
 
             try
             {
-                var files = GetAllFiles();
-                var deps = GetAllDependencies();
-                var nodeNameDescriptionPairs = GetAllNodeNameDescriptionPairs();
+                var newpkg = LocalPackage == null;
 
-                var handle = Client.Publish(this.IsNewVersion, Name, FullVersion, Description, KeywordList, "MIT", Group,
-                                            files, deps, nodeNameDescriptionPairs);
+                LocalPackage = LocalPackage ?? new LocalPackage("", this.Name, this.FullVersion);
+
+                LocalPackage.VersionName = FullVersion;
+                LocalPackage.Description = Description;
+                LocalPackage.Group = Group;
+                LocalPackage.Keywords = KeywordList;
+
+                var files = GetAllFiles().ToList();
+                
+                LocalPackage.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
+
+                LocalPackage.Dependencies.Clear();
+                GetAllDependencies().ToList().ForEach( LocalPackage.Dependencies.Add );
+
+                if (newpkg) dynSettings.PackageLoader.LocalPackages.Add( LocalPackage );
+
+                var handle = Client.Publish(LocalPackage, files, IsNewVersion);
 
                 if (handle == null)
                     throw new Exception("Failed to authenticate.  Are you logged in?");
 
                 this.Uploading = true;
                 this.UploadHandle = handle;
+
             }
             catch (Exception e)
             {

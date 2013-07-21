@@ -31,6 +31,11 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(this.RootDirectory, "bin"); }
         }
 
+        public string ExtraDirectory
+        {
+            get { return Path.Combine(this.RootDirectory, "extra"); }
+        }
+
         public bool Loaded { get; set; }
 
         private bool _typesVisibleInManager;
@@ -45,11 +50,19 @@ namespace Dynamo.PackageManager
         private string _versionName = "";
         public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
 
+        private string _license = "";
+        public string License { get { return _license; } set { _license = value; RaisePropertyChanged("License"); } }
+
+        private string _contents = "";
+        public string Contents { get { return _contents; } set { _contents = value; RaisePropertyChanged("Contents"); } }
+
         private IEnumerable<string> _keywords = new List<string>();
         public IEnumerable<string> Keywords { get { return _keywords; } set { _keywords = value; RaisePropertyChanged("Keywords"); } }
 
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
+
+        public PackageUploadRequestBody Header { get { return PackageUploadBuilder.NewPackageHeader(this);  } }
 
         public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
         public DelegateCommand GetLatestVersionCommand { get; set; }
@@ -60,6 +73,7 @@ namespace Dynamo.PackageManager
 
         public ObservableCollection<Type> LoadedTypes { get; set; }
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; set; }
+        public ObservableCollection<PackageDependency> Dependencies { get; set; }
 
         public LocalPackage(string directory, string name, string versionName)
         {
@@ -68,6 +82,7 @@ namespace Dynamo.PackageManager
             this.Name = name;
             this.VersionName = versionName;
             this.LoadedTypes = new ObservableCollection<Type>();
+            this.Dependencies = new ObservableCollection<PackageDependency>();
             this.LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
 
             ToggleTypesVisibleInManagerCommand = new DelegateCommand(ToggleTypesVisibleInManager, CanToggleTypesVisibleInManager);
@@ -78,6 +93,7 @@ namespace Dynamo.PackageManager
             DownVoteCommand = new DelegateCommand(DownVote, CanDownVote);
         }
 
+      
         public static LocalPackage FromJson(string headerPath)
         {
 
@@ -96,6 +112,9 @@ namespace Dynamo.PackageManager
                 pkg.Description = body.description;
                 pkg.Keywords = body.keywords;
                 pkg.VersionName = body.version;
+                pkg.License = body.license;
+                pkg.Contents = body.contents;
+                body.dependencies.ToList().ForEach(pkg.Dependencies.Add);
 
                 return pkg;
             }
@@ -243,5 +262,11 @@ namespace Dynamo.PackageManager
             return true;
         }
 
+
+
+
+
+
+        
     }
 }
