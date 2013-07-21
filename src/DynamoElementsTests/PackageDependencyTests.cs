@@ -161,7 +161,7 @@ namespace Dynamo.Tests
             var allDeps = funcRootNode.Definition.Dependencies;
             Assert.AreEqual(7, allDeps.Count());
 
-            var packageRoot = new PackageDependencyRootViewModel(funcRootNode.Definition);
+            var packageRoot = new PackageItemRootViewModel(funcRootNode.Definition);
             packageRoot.BuildDependencies(new HashSet<object>());
 
             Assert.AreEqual(2, packageRoot.Items.Count);

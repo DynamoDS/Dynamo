@@ -514,9 +514,12 @@ namespace Dynamo.PackageManager
 
                     if (packageDownloadHandle.Extract(out dynPkg))
                     {
-                        dynPkg.Load();
-                        dynSettings.PackageLoader.LocalPackages.Add(dynPkg);
-                        packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                        dynSettings.Controller.UIDispatcher.BeginInvoke((Action) (() =>
+                            {
+                                dynPkg.Load();
+                                dynSettings.PackageLoader.LocalPackages.Add(dynPkg);
+                                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                            }));
                     }
                     else
                     {

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
+using System.Windows.Threading;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Greg.Requests;
@@ -38,14 +39,24 @@ namespace Dynamo.PackageManager
         private string _rootDirectory;
         public string RootDirectory { get { return _rootDirectory; } set { _rootDirectory = value; RaisePropertyChanged("RootDirectory"); } }
 
-        private string _versionName;
+        private string _description = "";
+        public string Description { get { return _description; } set { _description = value; RaisePropertyChanged("Description"); } }
+
+        private string _versionName = "";
         public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
+
+        private IEnumerable<string> _keywords = new List<string>();
+        public IEnumerable<string> Keywords { get { return _keywords; } set { _keywords = value; RaisePropertyChanged("Keywords"); } }
+
+        private string _group = "";
+        public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
 
         public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
         public DelegateCommand GetLatestVersionCommand { get; set; }
         public DelegateCommand MakeNewVersionCommand { get; set; }
         public DelegateCommand UninstallCommand { get; set; }
-        public DelegateCommand VoteCommand { get; set; }
+        public DelegateCommand UpVoteCommand { get; set; }
+        public DelegateCommand DownVoteCommand { get; set; }
 
         public ObservableCollection<Type> LoadedTypes { get; set; }
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; set; }
@@ -63,7 +74,8 @@ namespace Dynamo.PackageManager
             GetLatestVersionCommand = new DelegateCommand(GetLatestVersion, CanGetLatestVersion);
             MakeNewVersionCommand = new DelegateCommand(MakeNewVersion, CanMakeNewVersion);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
-            VoteCommand = new DelegateCommand(Vote, CanVote);
+            UpVoteCommand = new DelegateCommand(UpVote, CanUpVote);
+            DownVoteCommand = new DelegateCommand(DownVote, CanDownVote);
         }
 
         public static LocalPackage FromJson(string headerPath)
@@ -79,7 +91,13 @@ namespace Dynamo.PackageManager
                     throw new Exception("The header is missing a name or version field.");
                 }
 
-                return new LocalPackage(Path.GetDirectoryName(headerPath), body.name, body.version);
+                var pkg = new LocalPackage(Path.GetDirectoryName(headerPath), body.name, body.version);
+                pkg.Group = body.group;
+                pkg.Description = body.description;
+                pkg.Keywords = body.keywords;
+                pkg.VersionName = body.version;
+
+                return pkg;
             }
             catch (Exception e)
             {
@@ -92,9 +110,10 @@ namespace Dynamo.PackageManager
 
         public void Load()
         {
+
             try
             {
-                GetAssemblies().Select(DynamoLoader.LoadNodesFromAssembly).SelectMany(x => x).ToList().ForEach( x => LoadedTypes.Add(x));
+                GetAssemblies().Select(DynamoLoader.LoadNodesFromAssembly).SelectMany(x => x).ToList().ForEach(x => LoadedTypes.Add(x));
                 DynamoLoader.LoadCustomNodes(CustomNodeDirectory).ForEach(x => LoadedCustomNodes.Add(x));
 
                 Loaded = true;
@@ -139,7 +158,7 @@ namespace Dynamo.PackageManager
         private void Uninstall()
         {
 
-            var res = MessageBox.Show("Are you sure you want to uninstall " + this.Name + "  " + this.VersionName + "?  This will delete the packages root directory.\n\n You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var res = MessageBox.Show("Are you sure you want to uninstall " + this.Name + "?  This will delete the packages root directory.\n\n You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (res == MessageBoxResult.No) return;
 
@@ -163,24 +182,45 @@ namespace Dynamo.PackageManager
             return !InUse();
         }
 
-        private void Vote()
+        private void UpVote()
         {
             throw new NotImplementedException();
         }
 
-        private bool CanVote()
+        private bool CanUpVote()
         {
             return false;
+        }
+
+        private void DownVote()
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool CanDownVote()
+        {
+            return false;
+        }
+
+        private void RefreshCustomNodesFromDirectory()
+        {
+            this.LoadedCustomNodes.Clear();
+            dynSettings.CustomNodeLoader
+                        .GetInfosFromFolder(this.CustomNodeDirectory)
+                        .ToList()
+                        .ForEach(x => this.LoadedCustomNodes.Add(x));
         }
 
         private void MakeNewVersion()
         {
-            throw new NotImplementedException();
+            this.RefreshCustomNodesFromDirectory();
+            var vm = PublishPackageViewModel.FromLocalPackage(this);
+            var e = new PackageManagerPublishView(vm);
         }
 
         private bool CanMakeNewVersion()
         {
-            return false;
+            return true;
         }
 
         private void GetLatestVersion()

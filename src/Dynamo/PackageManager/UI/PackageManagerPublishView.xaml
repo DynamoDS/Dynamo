@@ -47,7 +47,7 @@
                         <TextBlock>A unique name for the package.  </TextBlock>
                     </Label.ToolTip>
                 </Label>
-                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="TitleInput" Padding="5" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="TitleInput" Padding="5" IsEnabled ="{Binding Path=CanEditName}" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <Label Content="Description" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
                     <Label.ToolTip>
@@ -96,14 +96,23 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="2"></RowDefinition>
-                <RowDefinition MaxHeight="200" Height="100"></RowDefinition>
-                <RowDefinition Height="40" MaxHeight="40"></RowDefinition>
+                <RowDefinition MaxHeight="2" Height="2"></RowDefinition>
+                <RowDefinition Height="Auto" MinHeight="80"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Grid.RowSpan="4">
-                <Label Content="Package Contents" FontSize="14" Margin="0,10,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-                <ScrollViewer Margin="0" VerticalScrollBarVisibility="Visible" Name="BrowserScrollView" Background="Black" BorderThickness="0">
+            <Grid Grid.Row="0" Grid.RowSpan="1">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="*" ></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <DockPanel Background="#222" Grid.Row="0">
+                    <Label Content="Package Contents" FontSize="12" Margin="10,8,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                    <Button Style="{DynamicResource ResourceKey=SBadgeButton}" HorizontalAlignment="Right" Height="27" ToolTip="Add File To Package" Margin="5">+</Button>
+                </DockPanel>
+                
+                <ScrollViewer Grid.Row="1" Margin="0" VerticalScrollBarVisibility="Visible" Name="BrowserScrollView" Background="#222" BorderThickness="0">
 
                     <ScrollViewer.Resources>
 
@@ -126,7 +135,6 @@
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
-
                         </Style>
 
                         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
@@ -235,23 +243,23 @@
 
                     </ScrollViewer.Resources>
 
-                    <TreeView ItemsSource="{Binding Path=Dependencies}" Style="{StaticResource SearchTreeView}" BorderThickness="0">
+                    <TreeView ItemsSource="{Binding Path=PackageContents}" Style="{StaticResource SearchTreeView}" BorderThickness="0">
 
                         <TreeView.Resources>
 
-                            <HierarchicalDataTemplate DataType = "{x:Type packagemanager:PackageDependencyRootViewModel}" ItemsSource="{Binding Path=Items}" >
+                            <HierarchicalDataTemplate DataType = "{x:Type packagemanager:PackageItemRootViewModel}" ItemsSource="{Binding Path=Items}" >
 
                                 <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
 
                             </HierarchicalDataTemplate>
 
-                            <HierarchicalDataTemplate DataType = "{x:Type packagemanager:PackageDependencyInternalViewModel}" ItemsSource="{Binding Path=Items}">
+                            <HierarchicalDataTemplate DataType = "{x:Type packagemanager:PackageItemInternalViewModel}" ItemsSource="{Binding Path=Items}">
 
                                 <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
 
                             </HierarchicalDataTemplate>
 
-                            <HierarchicalDataTemplate DataType="{x:Type packagemanager:PackageDependencyLeafViewModel}">
+                            <HierarchicalDataTemplate DataType="{x:Type packagemanager:PackageItemLeafViewModel}">
 
                                 <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
 
@@ -262,27 +270,53 @@
                     </TreeView>
 
                 </ScrollViewer>
-            </StackPanel>
+            </Grid>
 
-            <!--<GridSplitter ResizeDirection="Rows" 
+            <GridSplitter ResizeDirection="Rows" 
                         Grid.Row="1" 
                         Grid.RowSpan="1"
                         Width="Auto" 
                         Height="2" 
                         HorizontalAlignment="Stretch" 
                         Margin="0" 
-                        Background="#777"/>
-            
-            <StackPanel Name="AdditionalFiles" Grid.Row="2">
-                <Label Content="Additional Files" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="AdditionalFilesLabel" VerticalAlignment="Top" />
-                <ScrollViewer>
-                    <ListBox ItemsSource="{Binding AdditionalFiles}" Background="Transparent" BorderThickness="0">
-                       
+                        Background="#333"/>
+
+            <Grid Name="Dependencies" Grid.Row="2">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <DockPanel Background="#222" Grid.Row="0" >
+                    <Label Content="Dependencies" FontSize="12" Margin="10,8,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                    <Button Style="{DynamicResource ResourceKey=SBadgeButton}" HorizontalAlignment="Right" Height="27" ToolTip="Add File To Package" Margin="5">+</Button>
+                </DockPanel>
+
+                <ScrollViewer Grid.Row="1" Grid.ZIndex="1">
+                    <ListBox ItemsSource="{Binding Dependencies}" Background="Transparent" BorderThickness="0">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Style.Resources>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                </Style.Resources>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Grid.Column="0" Text="{Binding Path=name}" Padding="5" Foreground="Gray" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
                     </ListBox>
                 </ScrollViewer>
-            </StackPanel>
-            
-            <Button Grid.Row="3" Style="{DynamicResource ResourceKey=STextButton}" >Add file...</Button>-->
+
+                <TextBlock Grid.Row="1" Grid.ZIndex="0" Grid.Column="0" Grid.ColumnSpan="1" Margin="10" TextAlignment="Center" Foreground="#888" Visibility="{Binding Path=HasNoDependencies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    None
+                </TextBlock>
+                
+            </Grid>
 
         </Grid>
 

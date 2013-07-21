@@ -273,23 +273,19 @@
                     <ControlTemplate>
 
                                     <Border x:Name="container" Background="Transparent" >
-                                        <Border x:Name="inner" Background="#444" CornerRadius="2">
-                                            <TextBlock x:Name="text" HorizontalAlignment="Center" Foreground="black" Margin="1" FontSize="11" FontWeight="Bold" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
+                                        <Border x:Name="inner" Background="#33000000" CornerRadius="2" Margin="3">
+                                            <TextBlock x:Name="text" HorizontalAlignment="Center" Margin="3" FontSize="11" Foreground="#BBB" FontWeight="Bold" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
                                         </Border>
                                     </Border>
 
                                     <ControlTemplate.Triggers>
 
                                         <Trigger Property="Button.IsMouseOver" Value="true">
-                                            <Setter TargetName="inner" Property = "Background" Value="#666"/>
+                                            <Setter TargetName="inner" Property ="Background" Value="#88000000"/>
                                         </Trigger>
-
-                                        <Trigger Property="IsEnabled" Value="true">
-                                            <Setter TargetName="text" Property = "Foreground" Value="black"/>
-                                        </Trigger>
-
+                                        
                                         <Trigger Property="IsEnabled" Value="false">
-                                            <Setter TargetName="text" Property = "Background" Value="#333"/>
+                                            <Setter TargetName="text" Property = "Foreground" Value="#666"/>
                                         </Trigger>
 
                                     </ControlTemplate.Triggers>
@@ -305,7 +301,7 @@
                     <Setter.Value>
                         <ControlTemplate>
 
-                    <Border Name="borderText" BorderThickness="1px" BorderBrush="#444">
+                        <Border Name="borderText" BorderThickness="1px" BorderBrush="#444">
 
                         <TextBox
                             Name="text"
@@ -317,6 +313,7 @@
                             AcceptsReturn ="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AcceptsReturn}"
                             MinLines ="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MinLines}"
                             MaxHeight ="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MaxHeight}"
+                            IsEnabled ="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsEnabled}"
                             CaretBrush="White"
                             VerticalAlignment="Stretch" 
                             BorderThickness="0"
@@ -336,10 +333,18 @@
 
                             <Trigger Property="IsKeyboardFocusWithin" Value="False">
                                 <Setter TargetName="borderText" Property ="Background" Value="#252525"/>
-      
-                                    </Trigger>
+                            </Trigger>
 
-                        </ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="text" Property ="Foreground" Value="#888"/>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="borderText" Property ="Background" Value="#252525"/>
+                                <Setter TargetName="text" Property ="Background" Value="Transparent"/>
+                            </Trigger>
+
+                    </ControlTemplate.Triggers>
 
                 </ControlTemplate>
             </Setter.Value>

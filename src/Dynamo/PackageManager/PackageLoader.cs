@@ -78,7 +78,6 @@ namespace Dynamo.PackageManager
                 }
                 else
                 {
-                    // todo: tell user that dup pkg was found
                     throw new Exception("A duplicate of the package called " + discoveredPkg.Name +
                                               " was found at " + discoveredPkg.RootDirectory + ".  Ignoring it.");
                 }
