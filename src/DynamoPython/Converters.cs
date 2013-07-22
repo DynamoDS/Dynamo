@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Dynamo;
+using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 
@@ -28,18 +29,7 @@ namespace DynamoPython
             else if (data is double)
                 return FScheme.Value.NewNumber(data);
             else if (data is IEnumerable<dynamic>)
-            {
-                FSharpList<FScheme.Value> result = FSharpList<FScheme.Value>.Empty;
-
-                data.reverse();
-
-                foreach (var x in data)
-                {
-                    result = FSharpList<FScheme.Value>.Cons(convertToValue(x), result);
-                }
-
-                return FScheme.Value.NewList(result);
-            }
+                return FScheme.Value.NewList(Utils.SequenceToFSharpList(data));
             //else if (data is PythonFunction)
             //{
             //   return FuncContainer.MakeFunction(
