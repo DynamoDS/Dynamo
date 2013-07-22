@@ -834,6 +834,44 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Shift List Indeces")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Shifts the indeces of a list by a given amount.")]
+    public class dynShiftList : dynNodeWithOneOutput
+    {
+        public dynShiftList()
+        {
+            InPortData.Add(
+                new PortData("amt", "Amount to shift the list indeces by.", typeof(Value.Number)));
+            InPortData.Add(new PortData("list", "List to shift indeces of.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "Shifted list", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var amt = (int)((Value.Number)args[0]).Item;
+            var list = ((Value.List)args[1]).Item;
+
+            if (amt == 0)
+                return Value.NewList(list);
+
+            if (amt < 0)
+            {
+                return Value.NewList(
+                    Utils.SequenceToFSharpList(
+                        list.Skip(-amt).Concat(list.Take(-amt))));
+            }
+
+            var len = list.Length;
+            return Value.NewList(
+                Utils.SequenceToFSharpList(
+                    list.Skip(len - amt).Concat(list.Take(len - amt))));
+        }
+    }
+
+
     [NodeName("Get From List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Gets an element from a list at a specified index.")]
