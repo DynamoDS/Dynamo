@@ -273,7 +273,7 @@
                     <ControlTemplate>
 
                                     <Border x:Name="container" Background="Transparent" >
-                                        <Border x:Name="inner" Background="#33000000" CornerRadius="2" Margin="3">
+                                        <Border x:Name="inner" Background="#55000000" CornerRadius="2" Margin="3">
                                             <TextBlock x:Name="text" HorizontalAlignment="Center" Margin="3" FontSize="11" Foreground="#BBB" FontWeight="Bold" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
                                         </Border>
                                     </Border>

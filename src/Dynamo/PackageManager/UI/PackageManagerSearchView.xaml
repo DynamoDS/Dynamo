@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Dynamo.PackageManager.UI.PackageManagerSearchView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Search Online For Packages" Name="PackageSearch"  Height="600" Width="480" MinWidth="480" MaxWidth="480">
+        Title="Online Package Search" Name="PackageSearch"  Height="600" Width="480" MinWidth="480" MaxWidth="480">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -13,30 +13,22 @@
         </ResourceDictionary>
     </Window.Resources>
     
-    <Grid>
-
-        <Grid.Background>
-            <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                <GradientStop Color="#444" Offset="0.0" />
-                <GradientStop Color="#333" Offset="1.0" />
-            </LinearGradientBrush>
-        </Grid.Background>
-
-        <Grid Margin="10">
+        <Grid>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="2"/>
-                <RowDefinition Height="150"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-        <Grid Background="Black" Grid.Row="1" MinHeight="200">
+        <Grid Background="Black" Grid.Row="0" MinHeight="200">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" Text="Search Returned No Results" TextAlignment="Center" Margin="20" Visibility="{Binding Path=HasResults, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
 
             <Grid Name="RSearchBoxStackPanel" Grid.Row="0">
                 <Grid.ColumnDefinitions>
@@ -153,14 +145,23 @@ Source="..\..\Images\search_24.png" Opacity="1">
             </ScrollViewer>
         </Grid>
 
-        <Grid Grid.Row="3" Background="Black" >
+        <GridSplitter ResizeDirection="Rows" 
+                        Grid.Row="1" 
+                        Grid.RowSpan="1"
+                        Width="Auto" 
+                        Height="2" 
+                        HorizontalAlignment="Stretch" 
+                        Margin="0" 
+                        Background="#333"/>
+
+        <Grid Grid.Row="2" Background="Black" >
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" MaxHeight="200"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Name="Controls" Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" Background="#222">
+            <StackPanel Name="Controls" Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" Background="#222" Visibility="{Binding Path=HasDownloads, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                 <Button Name="ClearCompletedButton" Margin="1, 0, 1, 0" ToolTip="Clear Downloads That Have Been Installed" Content="Clear Completed"
                       Style="{DynamicResource ResourceKey=SBadgeButton}" Command="{Binding Path=ClearCompletedCommand}"/>
@@ -256,8 +257,5 @@ Source="..\..\Images\search_24.png" Opacity="1">
             </ScrollViewer>
         </Grid>
     </Grid>
-    </Grid>
-    
-   
 
 </Window>
