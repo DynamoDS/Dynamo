@@ -81,9 +81,9 @@ namespace Dynamo.PackageManager
             get { return dynSettings.PackageManagerClient.Downloads.Count > 0; }
         }
 
-        public bool HasResults
+        public bool HasNoResults
         {
-            get { return this.SearchResults.Count > 0; }
+            get { return this.SearchResults.Count == 0; }
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace Dynamo.PackageManager
 
         private void SearchResultsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-            this.RaisePropertyChanged("HasResults");
+            this.RaisePropertyChanged("HasNoResults");
 
         } 
 

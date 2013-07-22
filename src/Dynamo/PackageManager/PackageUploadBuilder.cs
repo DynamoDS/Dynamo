@@ -151,20 +151,29 @@ namespace Dynamo.PackageManager
 
                 if (file == null) continue;
                 if (!File.Exists(file)) continue;
+                string destPath;
 
+                
                 if (file.EndsWith("dyf"))
                 {
-                    File.Copy(file, Path.Combine(dyfDir.FullName, Path.GetFileName(file)));
+                    destPath = Path.Combine(dyfDir.FullName, Path.GetFileName(file));
                 }
                 else if (file.EndsWith("dll") || file.EndsWith("exe"))
                 {
-                    File.Copy(file, Path.Combine(binDir.FullName, Path.GetFileName(file)));
+                    destPath = Path.Combine(binDir.FullName, Path.GetFileName(file));
                 }
                 else
                 {
-                    File.Copy(file, Path.Combine(extraDir.FullName, Path.GetFileName(file)));
+                    destPath = Path.Combine(extraDir.FullName, Path.GetFileName(file));
                 }
 
+                if (destPath == file) continue;
+                if (File.Exists(destPath))
+                {
+                    File.Delete(destPath);
+                }
+
+                File.Copy(file, destPath);
             }
         }
 

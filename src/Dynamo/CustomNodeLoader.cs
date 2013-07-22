@@ -249,7 +249,7 @@ namespace Dynamo.Utilities
                     NodeNames.Remove(pair.Key);
                     dynSettings.Controller.SearchViewModel.Remove(pair.Key);
              });
-
+            dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
             dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
         }
 

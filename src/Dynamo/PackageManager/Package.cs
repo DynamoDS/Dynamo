@@ -92,6 +92,10 @@ namespace Dynamo.PackageManager
 
         }
 
+        public static Package FromDirectory(string rootPath)
+        {
+            return Package.FromJson(Path.Combine(rootPath, "pkg.json"));
+        }
       
         public static Package FromJson(string headerPath)
         {
@@ -157,6 +161,7 @@ namespace Dynamo.PackageManager
 
         public bool ContainsFile(string path)
         {
+            if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return false;
             return Directory.EnumerateFiles(RootDirectory, "*", SearchOption.AllDirectories).Any(s => s == path);
         }
 

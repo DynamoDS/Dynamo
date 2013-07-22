@@ -28,7 +28,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" Text="Search Returned No Results" TextAlignment="Center" Margin="20" Visibility="{Binding Path=HasResults, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
+            <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" Text="Search Returned No Results" TextAlignment="Center" Margin="20" Visibility="{Binding Path=HasNoResults, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
             <Grid Name="RSearchBoxStackPanel" Grid.Row="0">
                 <Grid.ColumnDefinitions>
@@ -47,7 +47,7 @@ Source="..\..\Images\search_24.png" Opacity="1">
             </Grid>
 
             <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
-                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=RSearchBoxStackPanel}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" >
+                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=RSearchBoxStackPanel}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" Grid.ZIndex ="0" >
 
                 <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" BorderThickness="0" Padding="0" Background="Black" SelectedIndex="{Binding Path=SelectedIndex}">
 
