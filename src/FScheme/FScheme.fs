@@ -93,11 +93,11 @@ type Value =
 
 ///Converts an expression to a boolean value
 let ValueToBool = function
-    //Empty list or empty string is false, evaluate else branch.
+    //Empty list or empty string is false.
     | List([]) | String("") -> false
-    //Zero is false, evaluate else branch.
+    //Zero is false.
     | Number(n) when n = 0. -> false
-    //Everything else is true, evaluate then branch.
+    //Everything else is true.
     | _ -> true
 
 type Frame = Value ref [] ref
