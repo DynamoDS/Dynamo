@@ -10,7 +10,6 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 namespace Dynamo.ViewModels
 {
@@ -92,19 +91,6 @@ namespace Dynamo.ViewModels
                 RequestAddViewToOuterCanvas(this, e);
         }
 
-        public virtual void OnRequestAddViewModelToCollection(object sender, ViewModelEventArgs e)
-        {
-            if (RequestAddViewModelToCollection != null)
-                RequestAddViewModelToCollection(this, e);
-        }
-
-        public virtual void OnRequestRemoveViewModelFromCollection(object sender, ViewModelEventArgs e)
-        {
-            if (RequestRemoveViewModelFromCollection != null)
-                RequestRemoveViewModelFromCollection(this, e);
-        }
-
-
         private CompositeCollection _workspaceElements = new CompositeCollection();
         public CompositeCollection WorkspaceElements
         {
@@ -114,7 +100,6 @@ namespace Dynamo.ViewModels
                 _workspaceElements = value;
                 RaisePropertyChanged("Nodes");
                 RaisePropertyChanged("WorkspaceElements");
-                //NotifyPropertyChanged("WorkspaceElementsCollection");
             }
         }
 
@@ -194,13 +179,11 @@ namespace Dynamo.ViewModels
                 if (value != null)
                 {
                     WorkspaceElements.Add(value);
-                    //OnRequestAddViewModelToCollection(this, new ViewModelEventArgs(value));
                     activeConnector = value;
                 }    
                 else
                 {
                     WorkspaceElements.Remove(activeConnector);
-                    //OnRequestRemoveViewModelFromCollection(this, new ViewModelEventArgs(activeConnector));
                 }
                 
                 RaisePropertyChanged("ActiveConnector");

@@ -19,28 +19,16 @@ namespace Dynamo.Views
     /// <summary>
     /// Interaction logic for dynWorkspaceView.xaml
     /// </summary>
-    public partial class dynWorkspaceView : UserControl //, INotifyPropertyChanged
+    public partial class dynWorkspaceView : UserControl
     {
         private bool isWindowSelecting;
         private Point mouseDownPos;
         private Dynamo.Controls.DragCanvas WorkBench = null;
         public dynWorkspaceViewModel ViewModel { get; set; }
 
-        //public event PropertyChangedEventHandler PropertyChanged;
-        //private void NotifyPropertyChanged(string propertyName)
-        //{
-        //    if (PropertyChanged != null)
-        //    {
-        //        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        //    }
-        //}
-
-
         public dynWorkspaceView()
         {
             InitializeComponent();
-
-            //WorkspaceElements.DataContext = this;
 
             selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
             DataContextChanged += new DependencyPropertyChangedEventHandler(dynWorkspaceView_DataContextChanged);
@@ -60,9 +48,6 @@ namespace Dynamo.Views
             
             ViewModel = DataContext as dynWorkspaceViewModel;
 
-            //ViewModel.RequestAddViewModelToCollection += _viewModel_RequestAddViewModelToCollection;
-            //ViewModel.RequestRemoveViewModelFromCollection +=ViewModel_RequestRemoveViewModelFromCollection;
-
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
         }
 
@@ -70,16 +55,6 @@ namespace Dynamo.Views
         {
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
         }
-
-        //void  ViewModel_RequestRemoveViewModelFromCollection(object sender, ViewModelEventArgs e)
-        //{
-        //    WorkspaceElementsCollection.Remove(e.ViewModel);
-        //}
-
-        //void _viewModel_RequestAddViewModelToCollection(object sender, ViewModelEventArgs e)
-        //{
-        //    WorkspaceElementsCollection.Add(e.ViewModel);
-        //}
 
         /// <summary>
         /// Handler for the DataContextChangedEvent. Hanndles registration of event listeners.
