@@ -496,7 +496,7 @@ namespace Dynamo.Nodes
     [NodeName("Number Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Creates a sequence of numbers in the specified range.")]
-    [AlsoKnownAs("dynBuildSeq")]
+    [AlsoKnownAs("Dynamo.Nodes.dynBuildSeq")]
     public class dynNumberRange : dynBuiltinFunction
     {
         public dynNumberRange()
