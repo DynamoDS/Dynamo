@@ -24,7 +24,16 @@ namespace Dynamo.Views
         private bool isWindowSelecting;
         private Point mouseDownPos;
         private Dynamo.Controls.DragCanvas WorkBench = null;
-        public dynWorkspaceViewModel ViewModel { get; set; }
+        public dynWorkspaceViewModel ViewModel
+        {
+            get
+            {
+                if (this.DataContext is dynWorkspaceViewModel)
+                    return (dynWorkspaceViewModel)this.DataContext;
+                else
+                    return null;
+            }
+        }
 
         public dynWorkspaceView()
         {
@@ -45,9 +54,6 @@ namespace Dynamo.Views
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Workspace loaded.");
-            
-            ViewModel = DataContext as dynWorkspaceViewModel;
-
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
         }
 
@@ -63,13 +69,12 @@ namespace Dynamo.Views
         /// <param name="e"></param>
         void dynWorkspaceView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var vm = DataContext as dynWorkspaceViewModel;
-            vm.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
-            vm.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
-            vm.StopDragging += new EventHandler(vm_StopDragging);
-            vm.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
-            vm.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
-            vm.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+            ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
+            ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
+            ViewModel.StopDragging += new EventHandler(vm_StopDragging);
+            ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
+            ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
+            ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
         }
 
         void selectionCanvas_Loaded(object sender, RoutedEventArgs e)

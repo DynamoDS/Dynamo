@@ -809,8 +809,8 @@ namespace Dynamo.ViewModels
 
     public class ViewModelEventArgs:EventArgs
     {
-        public dynViewModelBase ViewModel { get; set; }
-        public ViewModelEventArgs(dynViewModelBase vm)
+        public dynNodeViewModel ViewModel { get; set; }
+        public ViewModelEventArgs(dynNodeViewModel vm)
         {
             ViewModel = vm;
         }
