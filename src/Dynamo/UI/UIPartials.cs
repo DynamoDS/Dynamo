@@ -36,24 +36,33 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Button addButton = new dynNodeButton();
             addButton.Content = "+";
             addButton.Width = 20;
+            //addButton.Height = 20;
             addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
             System.Windows.Controls.Button subButton = new dynNodeButton();
             subButton.Content = "-";
             subButton.Width = 20;
+            //subButton.Height = 20;
             subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             subButton.VerticalAlignment = System.Windows.VerticalAlignment.Top;
 
-            var wp = new WrapPanel
-                {
-                    VerticalAlignment = VerticalAlignment.Top,
-                    HorizontalAlignment = HorizontalAlignment.Center
-                };
+            WrapPanel wp = new WrapPanel();
+            wp.VerticalAlignment = VerticalAlignment.Top;
+            wp.HorizontalAlignment = HorizontalAlignment.Center;
             wp.Children.Add(addButton);
             wp.Children.Add(subButton);
 
             nodeUI.inputGrid.Children.Add(wp);
+
+            //nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            //nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+            //nodeUI.inputGrid.Children.Add(addButton);
+            //System.Windows.Controls.Grid.SetColumn(addButton, 0);
+
+            //nodeUI.inputGrid.Children.Add(subButton);
+            //System.Windows.Controls.Grid.SetColumn(subButton, 1);
 
             addButton.Click += delegate { AddInput(); RegisterAllPorts(); };
             subButton.Click += delegate { RemoveInput(); RegisterAllPorts(); };
@@ -164,7 +173,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class dynDoubleInput : dynDouble
+    public partial class dynDoubleInput : dynNodeWithOneOutput
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -173,29 +182,28 @@ namespace Dynamo.Nodes
             //add a text box to the input grid of the control
             var tb = new dynTextBox
             {
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-                VerticalAlignment = System.Windows.VerticalAlignment.Top
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Top,
+                IsNumeric = true,
+                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
             nodeUI.inputGrid.Children.Add(tb);
-            System.Windows.Controls.Grid.SetColumn(tb, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 0);
-
-            tb.IsNumeric = true;
-            tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay(),
+                Converter = new DoubleInputDisplay(),
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
 
-            tb.Text = "0.0";
+            tb.Text = Value ?? "0.0";
         }
 
     }
@@ -740,7 +748,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public class dynTextBox : System.Windows.Controls.TextBox
+    public class dynTextBox : TextBox
     {
         public event Action OnChangeCommitted;
 
@@ -806,7 +814,7 @@ namespace Dynamo.Nodes
 
         public void Commit()
         {
-            var expr = GetBindingExpression(TextBox.TextProperty);
+            var expr = GetBindingExpression(TextProperty);
             if (expr != null)
                 expr.UpdateSource();
 
@@ -824,7 +832,7 @@ namespace Dynamo.Nodes
             get { return base.Text; }
             set
             {
-                //base.Text = value;
+                base.Text = value;
                 Commit();
             }
         }

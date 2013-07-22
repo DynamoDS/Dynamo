@@ -761,7 +761,7 @@ namespace Dynamo.Controls
     [ValueConversion(typeof(double), typeof(String))]
     public class DoubleDisplay : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
             string val = ((double)value).ToString("0.000", CultureInfo.CurrentCulture);
@@ -770,7 +770,7 @@ namespace Dynamo.Controls
 
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //target -> source
             //return value.ToString();
@@ -779,6 +779,24 @@ namespace Dynamo.Controls
             double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
             //Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
             return val;
+        }
+    }
+
+    public class DoubleInputDisplay : DoubleDisplay
+    {
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double dbl;
+            if (double.TryParse(value as string, out dbl))
+            {
+                return base.Convert(dbl, targetType, parameter, culture);
+            }
+            return value ?? "";
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value;
         }
     }
 

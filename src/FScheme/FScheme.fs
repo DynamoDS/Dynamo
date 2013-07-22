@@ -495,6 +495,30 @@ let ForEach = function
         Dummy("for-each")
     | m -> malformed "for-each" <| List(m)
 
+let OrMap = function
+    | Function(f) :: lsts ->
+        let ls = List.map (function List(l) -> l | m -> failwith "bad ormap arg") lsts
+        let transposed = transpose ls
+        let rec ormap = function
+            | h :: t -> 
+                let r = f h
+                if ValueToBool r then r else ormap t
+            | [] -> Number(0.)
+        ormap transposed
+    | m -> malformed "ormap" <| List(m)
+
+let AndMap = function
+    | Function(f) :: lsts ->
+        let ls = List.map (function List(l) -> l | m -> failwith "bad andmap arg") lsts
+        let transposed = transpose ls
+        let rec andmap = function
+            | h :: t -> 
+                let r = f h
+                if ValueToBool r then andmap t else Number(0.)
+            | [] -> Number(1.)
+        andmap transposed
+    | m -> malformed "andmap" <| List(m)
+
 ///Sorts using natural ordering. Only works for primitive types (numbers, strings)
 let Sort = function
     //We expect a list of expressions as the only argument.
@@ -971,6 +995,8 @@ let CreateEnvironments() =
     AddDefaultBinding "flatten" (Function(Flatten))
     AddDefaultBinding "sqrt" (Function(Sqrt))
     AddDefaultBinding "transpose" (Function(Transpose))
+    AddDefaultBinding "andmap" (Function(AndMap))
+    AddDefaultBinding "ormap" (Function(OrMap))
 
     environment := [Seq.map (fun (_, x) -> x) !tempEnv |> Seq.toArray |> ref]
     compileEnvironment := [List.map (fun (x, _) -> x) !tempEnv]

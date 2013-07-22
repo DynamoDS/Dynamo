@@ -34,7 +34,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoArduino", "DynamoArdu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoWatch3D", "DynamoWatch3D\DynamoWatch3D.csproj", "{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoExcel", "DynamoExcel\DynamoExcel.csproj", "{601C9671-2C22-4526-AC3A-EBDF179A6E5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoMSOffice", "DynamoMSOffice\DynamoMSOffice.csproj", "{798656E4-733F-4ABC-8AF4-604412FC0BC0}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -193,16 +193,16 @@ Global
 		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Release|x86.ActiveCfg = Release|Any CPU
-		{601C9671-2C22-4526-AC3A-EBDF179A6E5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{601C9671-2C22-4526-AC3A-EBDF179A6E5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{601C9671-2C22-4526-AC3A-EBDF179A6E5C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{601C9671-2C22-4526-AC3A-EBDF179A6E5C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{601C9671-2C22-4526-AC3A-EBDF179A6E5C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{601C9671-2C22-4526-AC3A-EBDF179A6E5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{601C9671-2C22-4526-AC3A-EBDF179A6E5C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{601C9671-2C22-4526-AC3A-EBDF179A6E5C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{601C9671-2C22-4526-AC3A-EBDF179A6E5C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{601C9671-2C22-4526-AC3A-EBDF179A6E5C}.Release|x86.ActiveCfg = Release|Any CPU
+		{798656E4-733F-4ABC-8AF4-604412FC0BC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{798656E4-733F-4ABC-8AF4-604412FC0BC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{798656E4-733F-4ABC-8AF4-604412FC0BC0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{798656E4-733F-4ABC-8AF4-604412FC0BC0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{798656E4-733F-4ABC-8AF4-604412FC0BC0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{798656E4-733F-4ABC-8AF4-604412FC0BC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{798656E4-733F-4ABC-8AF4-604412FC0BC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{798656E4-733F-4ABC-8AF4-604412FC0BC0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{798656E4-733F-4ABC-8AF4-604412FC0BC0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{798656E4-733F-4ABC-8AF4-604412FC0BC0}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -599,18 +599,18 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, listWatchVal.Length);
 
             //change the value of the list
-            var numNode = (dynDoubleInput)dynSettings.Controller.DynamoModel.Nodes.Last(x => x is dynDoubleInput);
-            numNode.Value = 3;
-            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            //Thread.Sleep(300);
-            vm.RunExpression(null);
+            var numNode = (dynDoubleInput) controller.DynamoModel.Nodes.Last(x => x is dynDoubleInput);
+            numNode.Value = "3";
+            //controller.RunCommand(vm.RunExpressionCommand);
+            dynSettings.Controller.DynamoViewModel.RunExpression(null);
+            Thread.Sleep(300);
 
             listWatchVal = GetListFromFSchemeValue(watch.GetValue(0));
             Assert.AreEqual(3, listWatchVal.Length);
 
             //test the negative case to make sure it throws an error
-            numNode.Value = -1;
-            Assert.Throws<NUnit.Framework.AssertionException>(() => DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand));
+            numNode.Value = "-1";
+            Assert.Throws<NUnit.Framework.AssertionException>(() => vm.RunExpression(null));
 
         }
 

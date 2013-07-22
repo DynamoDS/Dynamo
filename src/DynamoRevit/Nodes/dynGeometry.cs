@@ -2639,6 +2639,7 @@ namespace Dynamo.Nodes
     [NodeName("Lines Through XYZ")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create a series of linear curves through a set of points.")]
+    [NodeSearchTags("lines", "line", "through", "passing", "thread", "xyz")]
     public class dynCurvesThroughPoints : dynCurveBase
     {
         public dynCurvesThroughPoints()
