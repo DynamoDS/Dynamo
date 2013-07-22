@@ -74,7 +74,7 @@
                                 />
                     </Canvas>
 
-                    <ItemsControl ItemsSource="{Binding WorkspaceElementsCollection}" Name="WorkspaceElements">
+                    <ItemsControl ItemsSource="{Binding WorkspaceElements}" Name="WorkspaceElements">
 
                         <ItemsControl.Resources>
 
