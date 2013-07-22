@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -103,6 +104,20 @@ namespace Dynamo.ViewModels
                 RequestRemoveViewModelFromCollection(this, e);
         }
 
+
+        private CompositeCollection _workspaceElements = new CompositeCollection();
+        public CompositeCollection WorkspaceElements
+        {
+            get { return _workspaceElements; }
+            set
+            {
+                _workspaceElements = value;
+                RaisePropertyChanged("Nodes");
+                RaisePropertyChanged("WorkspaceElements");
+                //NotifyPropertyChanged("WorkspaceElementsCollection");
+            }
+        }
+
         ObservableCollection<dynConnectorViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
         private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();
         ObservableCollection<dynNodeViewModel> _nodes = new ObservableCollection<dynNodeViewModel>();
@@ -178,14 +193,14 @@ namespace Dynamo.ViewModels
             {
                 if (value != null)
                 {
-                    //WorkspaceElements.Add(value);
-                    OnRequestAddViewModelToCollection(this, new ViewModelEventArgs(value));
+                    WorkspaceElements.Add(value);
+                    //OnRequestAddViewModelToCollection(this, new ViewModelEventArgs(value));
                     activeConnector = value;
                 }    
                 else
                 {
-                    //WorkspaceElements.Remove(activeConnector);
-                    OnRequestRemoveViewModelFromCollection(this, new ViewModelEventArgs(activeConnector));
+                    WorkspaceElements.Remove(activeConnector);
+                    //OnRequestRemoveViewModelFromCollection(this, new ViewModelEventArgs(activeConnector));
                 }
                 
                 RaisePropertyChanged("ActiveConnector");
@@ -282,6 +297,15 @@ namespace Dynamo.ViewModels
         {
             _model = model;
 
+            //setup the composite collection
+            var nodesColl = new CollectionContainer { Collection = Nodes };
+            _workspaceElements.Add(nodesColl);
+
+            var connColl = new CollectionContainer { Collection = Connectors };
+            _workspaceElements.Add(connColl);
+
+            var notesColl = new CollectionContainer { Collection = Notes };
+            _workspaceElements.Add(notesColl);
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes

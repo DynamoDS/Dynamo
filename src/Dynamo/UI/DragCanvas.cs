@@ -306,8 +306,8 @@ namespace Dynamo.Controls
             //which after the full UI separation now lives on the view
             //but, the isconnecting property lives on the ViewModel and we
             //store a reference to that on the view
-            var vm = DataContext.GetType().GetProperty("ViewModel").GetValue(DataContext, null);
-            if (!(bool)vm.GetType().GetProperty("IsConnecting").GetValue(vm, null))
+            //var vm = DataContext.GetType().GetProperty("ViewModel").GetValue(DataContext, null);
+            if (!(bool)DataContext.GetType().GetProperty("IsConnecting").GetValue(DataContext, null))
             {
                 //test if we're hitting the background
                 // Retrieve the coordinate of the mouse position.
