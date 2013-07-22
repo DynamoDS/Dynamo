@@ -393,8 +393,10 @@ namespace Dynamo.ViewModels
         ///     Recalculate the connector's points given the end point
         /// </summary>
         /// <param name="p2">The position of the end point</param>
-        public void Redraw(Point p2 )
+        public void Redraw(object parameter)
         {
+            Point p2 = (Point)parameter;
+
             //Debug.WriteLine("Redrawing...");
 
             CurvePoint3 = p2;
@@ -420,27 +422,27 @@ namespace Dynamo.ViewModels
 
         }
 
-        private bool CanRedraw()
+        private bool CanRedraw(object parameter)
         {
             return true;
         }
 
-        private void Highlight()
+        private void Highlight(object parameter)
         {
             StrokeThickness = HighlightThickness;
         }
 
-        private bool CanHighlight()
+        private bool CanHighlight(object parameter)
         {
             return true;
         }
 
-        private void Unhighlight()
+        private void Unhighlight(object parameter)
         {
             StrokeThickness = _strokeThickness;
         }
 
-        private bool CanUnHighlight()
+        private bool CanUnHighlight(object parameter)
         {
             return true;
         }

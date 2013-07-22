@@ -153,22 +153,22 @@ namespace Dynamo.PackageManager
         }
 
 
-        public void ShowLogin()
+        public void ShowLogin(object parameter)
         {
             Visible = true;
         }
 
-        internal bool CanShowLogin()
+        internal bool CanShowLogin(object parameter)
         {
             return true;
         }
 
-        public void Login()
+        public void Login(object parameter)
         {
 
         }
 
-        internal bool CanLogin()
+        internal bool CanLogin(object parameter)
         {
             return true;
         }

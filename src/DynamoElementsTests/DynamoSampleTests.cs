@@ -697,7 +697,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, ((FScheme.Value.List)res).Item.Count());
 
             //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearCommand, null));
-            vm.Clear();
+            vm.Clear(null);
 
             //diagonal right
             //diagonal left

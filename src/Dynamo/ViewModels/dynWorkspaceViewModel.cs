@@ -416,13 +416,13 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public void SelectAll()
+        public void SelectAll(object parameter)
         {
             DynamoSelection.Instance.ClearSelection();
             this.Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
         }
 
-        internal bool CanSelectAll()
+        internal bool CanSelectAll(object parameter)
         {
             return true;
         }
@@ -491,8 +491,10 @@ namespace Dynamo.ViewModels
                            .Max();
         }
 
-        public void AlignSelected(string alignType)
+        public void AlignSelected(object parameter)
         {
+            string alignType = parameter.ToString();
+
             if (DynamoSelection.Instance.Selection.Count <= 1) return;
 
             if (alignType == "HorizontalCenter")  // make vertial line of elements
@@ -586,7 +588,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanAlignSelected(string alignType)
+        private bool CanAlignSelected(object parameter)
         {
             return true;
         }
@@ -699,7 +701,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void CreateNodeFromSelection()
+        private void CreateNodeFromSelection(object parameter)
         {
             CollapseNodes(
                 DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel)
@@ -711,7 +713,7 @@ namespace Dynamo.ViewModels
         //    NodeFromSelectionCommand.RaiseCanExecuteChanged();
         //}
 
-        private bool CanCreateNodeFromSelection()
+        private bool CanCreateNodeFromSelection(object parameter)
         {
             if (DynamoSelection.Instance.Selection.Count(x => x is dynNodeModel) > 1)
             {
@@ -782,12 +784,12 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        private void FindNodesFromSelection()
+        private void FindNodesFromSelection(object parameter)
         {
             FindNodesFromElements();
         }
 
-        private bool CanFindNodesFromSelection()
+        private bool CanFindNodesFromSelection(object parameter)
         {
             if (FindNodesFromElements != null)
                 return true;

@@ -43,7 +43,7 @@ namespace Dynamo.Search.SearchElements
             var name = this.Name;
             if (name == "Home")
             {
-                dynSettings.Controller.DynamoViewModel.Home();
+                dynSettings.Controller.DynamoViewModel.Home(null);
             }
             else
             {

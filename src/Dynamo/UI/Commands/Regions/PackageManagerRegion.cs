@@ -8,22 +8,22 @@ namespace Dynamo.UI.Commands.Regions
     public static partial class DynamoCommands
     {
 
-        private static PackageManagerRegion<object> packageManagerRegion;
-        public static PackageManagerRegion<object> PackageManagerRegionCommand
+        private static PackageManagerRegion packageManagerRegion;
+        public static PackageManagerRegion PackageManagerRegionCommand
         {
             get
             {
                 if (packageManagerRegion == null)
-                    packageManagerRegion = new PackageManagerRegion<object>(PackageManagerRegionExecute, PackageManagerRegionCanExecute);
+                    packageManagerRegion = new PackageManagerRegion(PackageManagerRegionExecute, PackageManagerRegionCanExecute);
                 return packageManagerRegion;
             }
         }
 
         private static void PackageManagerRegionExecute(object parameters)
         {
-            if ((parameters as PackageManagerRegion<object>).Loaded == true)
+            if ((parameters as PackageManagerRegion).Loaded == true)
             {
-                UI.Commands.DynamoCommands.RefreshRemotePackagesCmd.Execute();
+                UI.Commands.DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
             }
             else
             {
@@ -40,9 +40,9 @@ namespace Dynamo.UI.Commands.Regions
         }
     }
 
-    public class PackageManagerRegion<T> : RegionBase<T>
+    public class PackageManagerRegion : RegionBase
     {
-        public PackageManagerRegion(Action<T> executeMethod, Func<T,bool> canExecuteMethod ):base(executeMethod, canExecuteMethod){}
+        public PackageManagerRegion(Action<object> executeMethod, System.Predicate<object> canExecuteMethod ):base(executeMethod, canExecuteMethod){}
 
         //public override bool CanExecute(object parameter)
         //{

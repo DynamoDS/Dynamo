@@ -25,13 +25,13 @@ namespace Dynamo.Nodes.Views
         private void Highlight(object sender, MouseEventArgs e)
         {
             if (DataContext is dynConnectorViewModel)
-                ViewModel.HighlightCommand.Execute();
+                ViewModel.HighlightCommand.Execute(null);
         }
 
         private void Unhighlight(object sender, MouseEventArgs e)
         {
             if (DataContext is dynConnectorViewModel)
-                ViewModel.UnHighlightCommand.Execute();
+                ViewModel.UnHighlightCommand.Execute(null);
         }
 
         public dynConnectorViewModel ViewModel

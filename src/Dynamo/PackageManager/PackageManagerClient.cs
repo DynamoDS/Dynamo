@@ -535,12 +535,12 @@ namespace Dynamo.PackageManager
             //dynSettings.Bench.packageControlLabel.Visibility = Visibility.Collapsed;
         }
 
-        public void RefreshRemotePackages()
+        public void RefreshRemotePackages(object parameter)
         {
             RefreshAvailable();
         }
 
-        internal bool CanRefreshRemotePackages()
+        internal bool CanRefreshRemotePackages(object parameter)
         {
             return true;
         }

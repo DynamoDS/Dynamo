@@ -42,7 +42,7 @@ namespace Dynamo.Search
 
             SearchTextBox.IsVisibleChanged += delegate
             {
-                DynamoCommands.SearchCommand.Execute();
+                DynamoCommands.SearchCommand.Execute(null);
                 Keyboard.Focus(this.SearchTextBox);
                 var view = WPF.FindUpVisualTree<DynamoView>(this);
                 //SearchTextBox.InputBindings.AddRange(dynSettings.Bench.InputBindings);
@@ -75,9 +75,9 @@ namespace Dynamo.Search
             dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += new EventHandler(SearchViewModel_RequestReturnFocusToSearch);
 
             //setup the regions on the view model
-            _viewModel.Regions = new ObservableDictionary<string, RegionBase<object>>();
+            _viewModel.Regions = new ObservableDictionary<string, RegionBase>();
             //Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
-            var region = new RevitAPIRegion<object>(SearchViewModel.RevitAPIRegionExecute, SearchViewModel.RevitAPIRegionCanExecute);
+            var region = new RevitAPIRegion(SearchViewModel.RevitAPIRegionExecute, SearchViewModel.RevitAPIRegionCanExecute);
             region.RaiseCanExecuteChanged();
             _viewModel.Regions.Add("Include Experimental Revit API Nodes", region);
 

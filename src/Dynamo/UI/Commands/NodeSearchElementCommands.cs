@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.Prism.Commands;
+﻿using Dynamo.UI.Commands;
 
 namespace Dynamo.Search.SearchElements
 {

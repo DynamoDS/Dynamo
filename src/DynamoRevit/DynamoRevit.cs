@@ -30,7 +30,6 @@ using System.Windows.Media;
 using System.Linq;
 using System.Windows.Threading;
 using System.Xml.Serialization;
-using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
 using Autodesk.Revit.Attributes;
@@ -41,6 +40,7 @@ using Autodesk.Revit.UI;
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using Dynamo.UI.Commands;
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
@@ -321,7 +321,7 @@ namespace Dynamo.Applications
             try
             {
                 DynamoCommands.ExitCommand.Execute(false); // don't allow cancellation
-                DynamoCommands.ReportABugCommand.Execute();
+                DynamoCommands.ReportABugCommand.Execute(null);
             }
             catch
             {
@@ -547,7 +547,7 @@ namespace Dynamo.Applications
             _testName = _test.TestName.Name;
         }
 
-        public void Run()
+        public void Run(object parameter)
         {
             OnTestStarted(EventArgs.Empty);
 
@@ -569,7 +569,7 @@ namespace Dynamo.Applications
             OnTestCompleted(EventArgs.Empty);
         }
 
-        public bool CanRun()
+        public bool CanRun(object parameter)
         {
             return true;
         }
@@ -698,25 +698,25 @@ namespace Dynamo.Applications
             RaisePropertyChanged("TestSummary");
         }
 
-        public void RunAllTests()
+        public void RunAllTests(object parameter)
         {
             Timer.Reset();
 
             foreach (DynamoRevitTest t in _tests)
             {
-                t.Run();
+                t.Run(null);
                 RaisePropertyChanged("TestSummary");
             }
 
-            Save();
+            Save(null);
         }
 
-        public bool CanRunAllTests()
+        public bool CanRunAllTests(object parameter)
         {
             return true;
         }
 
-        public void Save()
+        public void Save(object parameter)
         {
             try
             {
@@ -736,7 +736,7 @@ namespace Dynamo.Applications
             }
         }
 
-        public bool CanSave()
+        public bool CanSave(object parameter)
         {
             return true;
         }

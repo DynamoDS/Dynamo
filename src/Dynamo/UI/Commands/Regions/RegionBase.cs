@@ -1,13 +1,13 @@
 ﻿using System;
-using Microsoft.Practices.Prism.Commands;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.Search.Regions
 {
-    public abstract class RegionBase<T> : DelegateCommand<T>
+    public abstract class RegionBase : DelegateCommand
     {
         public bool Loaded { get; set; }
 
-        protected RegionBase(Action<T> executeMethod, Func<T,bool> canExecuteMethod)
+        protected RegionBase(Action<object> executeMethod, System.Predicate<object> canExecuteMethod)
             : base(executeMethod, canExecuteMethod)
         {
             Loaded = false;

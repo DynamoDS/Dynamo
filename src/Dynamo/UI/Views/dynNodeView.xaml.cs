@@ -187,7 +187,7 @@ namespace Dynamo.Controls
                     e.IsEnabled = enabledDict[e];
             }
 
-            ViewModel.ValidateConnectionsCommand.Execute();
+            ViewModel.ValidateConnectionsCommand.Execute(null);
         }
 
         public void CallUpdateLayout(FrameworkElement el)
@@ -226,7 +226,7 @@ namespace Dynamo.Controls
             var view = WPF.FindUpVisualTree<DynamoView>(this);
             view.mainGrid.Focus();
 
-            ViewModel.SelectCommand.Execute();
+            ViewModel.SelectCommand.Execute(null);
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -246,9 +246,9 @@ namespace Dynamo.Controls
         {
             if (e.ClickCount > 1)
             {
-                if (this.ViewModel != null && this.ViewModel.RenameCommand.CanExecute())
+                if (this.ViewModel != null && this.ViewModel.RenameCommand.CanExecute(null))
                 {
-                    this.ViewModel.RenameCommand.Execute();
+                    this.ViewModel.RenameCommand.Execute(null);
                 }   
 
                 e.Handled = true;

@@ -15,8 +15,12 @@
         Title="Dynamo"
         AllowsTransparency="False" 
         KeyDown="DynamoView_KeyDown"
-        KeyUp="DynamoView_KeyUp">
+        KeyUp="DynamoView_KeyUp" >
 
+    <Window.CommandBindings>
+        
+    </Window.CommandBindings>
+    
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

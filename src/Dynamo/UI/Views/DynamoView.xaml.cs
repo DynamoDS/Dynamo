@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -72,7 +73,7 @@ namespace Dynamo.Controls
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.RequestLayoutUpdate += vm_RequestLayoutUpdate;
-            DynamoCommands.PostUiActivationCommand.Execute();
+            DynamoCommands.PostUiActivationCommand.Execute(null);
 
             _timer.Stop();
             dynSettings.Controller.DynamoViewModel.Log(String.Format("{0} elapsed for loading Dynamo main window.",
@@ -109,6 +110,8 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
 
             _vm.RequestUserSaveWorkflow += new WorkspaceSaveEventHandler(_vm_RequestUserSaveWorkflow);
+
+            
         }
 
         void _vm_RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
@@ -303,7 +306,7 @@ namespace Dynamo.Controls
 
         private void WindowClosed(object sender, EventArgs e)
         {
-            DynamoCommands.CleanupCommand.Execute();
+            DynamoCommands.CleanupCommand.Execute(null);
         }
 
         private void OverlayCanvas_OnMouseMove(object sender, MouseEventArgs e)
