@@ -1,7 +1,6 @@
 ﻿<UserControl x:Class="Dynamo.Connectors.dynPortView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:connectors="clr-namespace:Dynamo.Connectors" 
     xmlns:controls="clr-namespace:Dynamo.Views"
     Height="20" 
     Width="Auto"

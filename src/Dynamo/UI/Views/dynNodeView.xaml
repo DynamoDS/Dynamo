@@ -118,8 +118,7 @@
         <!-- INPUT PORTS -->
 
         
-            <StackPanel Name="gridLeft" 
-            HorizontalAlignment="Left"
+            <DockPanel Name="gridLeft" 
             VerticalAlignment="Stretch"
             IsHitTestVisible="True" 
             Margin="0"
@@ -132,14 +131,18 @@
                         <connectors:dynPortView></connectors:dynPortView>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="{x:Type ContentPresenter}">
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                </ItemsControl>
             
-        </StackPanel>
+        </DockPanel>
         
         <!-- OUTPUT PORTS -->
         
-        <StackPanel Name="gridRight" 
-              HorizontalAlignment="Right" 
+        <DockPanel Name="gridRight" 
               VerticalAlignment="Stretch"
               IsHitTestVisible="True" 
               Background="Transparent"
@@ -150,8 +153,13 @@
                         <connectors:dynPortView></connectors:dynPortView>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="{x:Type ContentPresenter}">
+                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                </ItemsControl>
+        </DockPanel>
 
         <!-- INPUT GRID -->
             <Grid Name="inputGrid"
