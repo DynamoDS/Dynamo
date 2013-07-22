@@ -807,12 +807,37 @@ namespace Dynamo.Nodes
             : base("get")
         {
             InPortData.Add(new PortData("index", "Index of the element to extract", typeof(object)));
-            InPortData.Add(new PortData("list", "The list to extract elements from", typeof(Value.List)));
+            InPortData.Add(new PortData("list", "The list to extract the element from", typeof(Value.List)));
             OutPortData.Add(new PortData("element", "Extracted element", typeof(object)));
 
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Longest;
+        }
+    }
+
+    [NodeName("Remove From List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Removes an element from a list at a specified index.")]
+    public class dynRemoveFromList : dynNodeWithOneOutput
+    {
+        public dynRemoveFromList()
+        {
+            InPortData.Add(new PortData("index", "Index of the element to remove", typeof(object)));
+            InPortData.Add(new PortData("list", "The list to remove the element from", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "List with element removed", typeof(object)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var idx = (int)((Value.Number)args[0]).Item;
+            var lst = ((Value.List)args[1]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => i != idx)));
         }
     }
 
