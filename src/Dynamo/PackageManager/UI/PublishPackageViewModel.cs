@@ -50,9 +50,11 @@ namespace Dynamo.PackageManager
                 {
                     this._uploading = value;
                     this.RaisePropertyChanged("Uploading");
-                    ((DelegateCommand<object>) this.SubmitCommand).RaiseCanExecuteChanged();
+                    dynSettings.Controller.UIDispatcher.BeginInvoke(
+                        (Action) (() => ((DelegateCommand<object>) this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
+
         }
 
         /// <summary>
@@ -151,7 +153,8 @@ namespace Dynamo.PackageManager
                 {
                     this._name = value;
                     this.RaisePropertyChanged("Name");
-                    ((DelegateCommand<object>) this.SubmitCommand).RaiseCanExecuteChanged();
+                    dynSettings.Controller.UIDispatcher.BeginInvoke(
+                        (Action)(() => ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -200,7 +203,6 @@ namespace Dynamo.PackageManager
                 {
                     this._group = value;
                     this.RaisePropertyChanged("Group");
-                    ((DelegateCommand<object>) this.SubmitCommand).RaiseCanExecuteChanged();
                 }
             }
         }
@@ -220,7 +222,8 @@ namespace Dynamo.PackageManager
                 {
                     this._Description = value;
                     this.RaisePropertyChanged("Description");
-                    ((DelegateCommand<object>) this.SubmitCommand).RaiseCanExecuteChanged();
+                    dynSettings.Controller.UIDispatcher.BeginInvoke(
+                        (Action)(() => ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -246,7 +249,6 @@ namespace Dynamo.PackageManager
                     this._Keywords = value;
                     this.RaisePropertyChanged("Keywords");
                     KeywordList = value.Split(' ').Where(x => x.Length > 0).ToList();
-                    ((DelegateCommand<object>) this.SubmitCommand).RaiseCanExecuteChanged();
                 }
             }
         }
@@ -284,7 +286,8 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._MinorVersion = value;
                     this.RaisePropertyChanged("MinorVersion");
-                    ((DelegateCommand<object>) this.SubmitCommand).RaiseCanExecuteChanged();
+                    dynSettings.Controller.UIDispatcher.BeginInvoke(
+                        (Action)(() => ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -307,7 +310,8 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._BuildVersion = value;
                     this.RaisePropertyChanged("BuildVersion");
-                    ((DelegateCommand<object>) this.SubmitCommand).RaiseCanExecuteChanged();
+                    dynSettings.Controller.UIDispatcher.BeginInvoke(
+                        (Action)(() => ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -330,7 +334,8 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._MajorVersion = value;
                     this.RaisePropertyChanged("MajorVersion");
-                    ((DelegateCommand<object>) this.SubmitCommand).RaiseCanExecuteChanged();
+                    dynSettings.Controller.UIDispatcher.BeginInvoke(
+                        (Action)(() => ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -491,6 +496,8 @@ namespace Dynamo.PackageManager
                 this.Uploading = true;
                 this.UploadHandle = handle;
 
+
+
             }
             catch (Exception e)
             {
@@ -598,11 +605,8 @@ namespace Dynamo.PackageManager
             get { return _errorString; }
             set
             {
-                if (this._errorString != value)
-                {
-                    this._errorString = value;
-                    this.RaisePropertyChanged("ErrorString");
-                }
+                this._errorString = value;
+                this.RaisePropertyChanged("ErrorString");
             }
         }
 

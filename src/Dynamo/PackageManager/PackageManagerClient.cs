@@ -177,20 +177,21 @@ namespace Dynamo.PackageManager
         public PackageUploadHandle Publish( Package l, List<string> files, bool isNewVersion )
         {
 
-            try
+            int maxRetries = 5;
+            int count = 0;
+            var nv = new ValidateAuth();
+            ResponseBody pkgResponse = null;
+
+            while (pkgResponse == null && count < maxRetries)
             {
-                var nv = new ValidateAuth();
-                var pkgResponse = Client.ExecuteAndDeserialize(nv);
-                if (pkgResponse == null)
-                {
-                    throw new AuthenticationException(
-                        "It looks like you're not logged into Autodesk 360.  Log in to submit a package.");
-                }
+                count++;
+                pkgResponse = Client.ExecuteAndDeserialize(nv);
             }
-            catch
+
+            if (pkgResponse == null)
             {
                 throw new AuthenticationException(
-                    "Could not connect.  Do you have a connection to the internet?");
+                    "It looks like you're not logged into Autodesk 360.  Log in to submit a package.");
             }
 
             var packageUploadHandle = new PackageUploadHandle(l.Header);
@@ -215,15 +216,34 @@ namespace Dynamo.PackageManager
                 {
                     try
                     {
+                        int maxRetries = 5;
+                        int count = 0;
+                        ResponseBody ret = null;
+                        if (isNewVersion)
+                        {
+                            var pkg = PackageUploadBuilder.NewPackageVersion(l, files, packageUploadHandle);
+                            while (ret == null && count < maxRetries)
+                            {
+                                count++;
+                                ret = Client.ExecuteAndDeserialize(pkg);
+                            }
+                        }
+                        else
+                        {
+                            var pkg = PackageUploadBuilder.NewPackage(l, files, packageUploadHandle);
+                            while (ret == null && count < maxRetries)
+                            {
+                                count++;
+                                ret = Client.ExecuteAndDeserialize(pkg);
+                            }
+                        }
+                        if (ret == null)
+                        {
+                            packageUploadHandle.Error("Failed to submit.  Try again later.");
+                            return;
+                        }
 
-                        ResponseBody ret = isNewVersion ?
-                                               Client.ExecuteAndDeserialize(PackageUploadBuilder.NewPackageVersion(l,
-                                                                                                                     files,
-                                                                                                                     packageUploadHandle))
-                                               : Client.ExecuteAndDeserialize(PackageUploadBuilder.NewPackage(l, files,
-                                                                                                              packageUploadHandle));
-
-                        if (!ret.success)
+                        if (ret != null && !ret.success)
                         {
                             packageUploadHandle.Error(ret.message);
                             return;
@@ -300,26 +320,34 @@ namespace Dynamo.PackageManager
                 {
                     var response = Client.Execute(pkgDownload);
                     var pathDl = PackageDownload.GetFileFromResponse(response);
-                    packageDownloadHandle.Done(pathDl);
-                    Package dynPkg;
 
-                    var firstOrDefault = dynSettings.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
-                    if ( firstOrDefault != null)
-                        firstOrDefault.UninstallCommand.Execute();
-
-                    if (packageDownloadHandle.Extract(out dynPkg))
-                    {
-                        dynSettings.Controller.UIDispatcher.BeginInvoke((Action) (() =>
+                    dynSettings.Controller.UIDispatcher.BeginInvoke((Action) (() =>
+                        {
+                            try
                             {
-                                dynPkg.Load();
-                                dynSettings.PackageLoader.LocalPackages.Add(dynPkg);
-                                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
-                            }));
-                    }
-                    else
-                    {
-                        throw new Exception("Failed to extract the package");
-                    }
+                                packageDownloadHandle.Done(pathDl);
+
+                                Package dynPkg;
+
+                                var firstOrDefault = dynSettings.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
+                                if (firstOrDefault != null)
+                                    firstOrDefault.UninstallCommand.Execute();
+
+                                if (packageDownloadHandle.Extract(out dynPkg))
+                                {
+
+                                    var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory);
+                                    downloadPkg.Load();
+                                    dynSettings.PackageLoader.LocalPackages.Add(downloadPkg);
+                                    packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                packageDownloadHandle.Error(e.Message);
+                            }
+                        }));
+                    
                 }
                 catch (Exception e)
                 {

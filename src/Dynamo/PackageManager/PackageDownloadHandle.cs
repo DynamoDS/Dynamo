@@ -83,10 +83,6 @@ namespace Dynamo.PackageManager
 
         public bool Extract( out Package pkg )
         {
-            if (this.DownloadState != State.Downloaded)
-            {
-                throw new Exception("The package cannot be extracted unless it is downloaded. ");
-            }
 
             this.DownloadState = State.Installing;
 
