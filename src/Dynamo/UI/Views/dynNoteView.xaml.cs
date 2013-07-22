@@ -86,7 +86,7 @@ namespace Dynamo.Nodes
 
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.SelectCommand.Execute();
+            ViewModel.SelectCommand.Execute(null);
         }
 
         private void editItem_Click(object sender, RoutedEventArgs e)

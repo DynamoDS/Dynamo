@@ -138,7 +138,7 @@ namespace Dynamo.Search
             }
         }
 
-        private void ToggleIsExpandedExecute()
+        private void ToggleIsExpandedExecute(object parameter)
         {
             if (this is SearchElementBase)
             {
@@ -164,7 +164,7 @@ namespace Dynamo.Search
             this.IsExpanded = endState;
         }
 
-        private bool CanToggleIsExpandedCanExecute()
+        private bool CanToggleIsExpandedCanExecute(object parameter)
         {
             return true;
         }

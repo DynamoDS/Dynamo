@@ -306,7 +306,7 @@ namespace Dynamo.PackageManager
             if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false)
             {
                 //DynamoCommands.ShowLoginCmd.Execute();
-                dynSettings.Controller.PackageManagerLoginViewModel.ShowLogin();
+                dynSettings.Controller.PackageManagerLoginViewModel.ShowLogin(null);
 
                 dynSettings.Controller.DynamoViewModel.Log("Must login first to publish a node.");
                 return;
@@ -354,7 +354,7 @@ namespace Dynamo.PackageManager
             return true;
         }
 
-        public void PublishCurrentWorkspace()
+        public void PublishCurrentWorkspace(object parameter)
         {
             //this._client = dynSettings.Controller.PackageManagerClient;
 
@@ -380,12 +380,12 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal bool CanPublishCurrentWorkspace()
+        internal bool CanPublishCurrentWorkspace(object parameter)
         {
             return true;
         }
 
-        public void PublishSelectedNode()
+        public void PublishSelectedNode(object parameter)
         {
             //var client = dynSettings.Controller.PackageManagerClient;
 
@@ -411,7 +411,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal bool CanPublishSelectedNode()
+        internal bool CanPublishSelectedNode(object parameter)
         {
             return true;
         }

@@ -1,20 +1,20 @@
-﻿using Microsoft.Practices.Prism.Commands;
+﻿using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
     public partial class dynConnectorViewModel
     {
-        private DelegateCommand<object> _connectCommand;
+        private DelegateCommand _connectCommand;
         private DelegateCommand _redrawCommand;
         private DelegateCommand _highlightCommand;
         private DelegateCommand _unHighlightCommand;
 
-        public DelegateCommand<object> ConnectCommand
+        public DelegateCommand ConnectCommand
         {
             get
             {
                 if(_connectCommand == null)
-                    _connectCommand = new DelegateCommand<object>(Connect, CanConnect);
+                    _connectCommand = new DelegateCommand(Connect, CanConnect);
 
                 return _connectCommand;
             }

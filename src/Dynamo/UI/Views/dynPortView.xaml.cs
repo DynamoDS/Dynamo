@@ -63,7 +63,7 @@ namespace Dynamo.Connectors
         {
             dynSettings.ReturnFocusToSearch();
 
-            ViewModel.ConnectCommand.Execute();
+            ViewModel.ConnectCommand.Execute(null);
     
             //set the handled flag so that the element doesn't get dragged
             e.Handled = true;
@@ -88,13 +88,13 @@ namespace Dynamo.Connectors
         private void DynPort_OnMouseEnter(object sender, MouseEventArgs e)
         {
             if (ViewModel != null)
-                ViewModel.HighlightCommand.Execute();
+                ViewModel.HighlightCommand.Execute(null);
         }
 
         private void DynPort_OnMouseLeave(object sender, MouseEventArgs e)
         {
             if (ViewModel != null)
-                ViewModel.UnHighlightCommand.Execute();
+                ViewModel.UnHighlightCommand.Execute(null);
         }
 
         public dynPortViewModel ViewModel

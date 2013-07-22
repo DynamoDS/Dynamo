@@ -2,9 +2,9 @@
 
 namespace Dynamo.Search.Regions
 {
-    public class RevitAPIRegion<T> : RegionBase<T>
+    public class RevitAPIRegion : RegionBase
     {
-        public RevitAPIRegion(Action<T> executeMethod, Func<T,bool> canExecuteMethod) 
+        public RevitAPIRegion(Action<object> executeMethod, System.Predicate<object> canExecuteMethod) 
             : base(executeMethod, canExecuteMethod) { }
 
         //public override bool CanExecute(object parameter)

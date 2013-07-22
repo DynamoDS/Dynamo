@@ -231,7 +231,7 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(0, controller.DynamoViewModel.LogText.Length);
             //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearLogCommand, null));
             //DynamoCommands.ProcessCommandQueue();
-            vm.ClearLog();
+            vm.ClearLog(null);
 
             Assert.AreEqual(0, controller.DynamoViewModel.LogText.Length);
         }
@@ -281,7 +281,7 @@ namespace Dynamo.Tests
 
             //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearCommand, null));
             //DynamoCommands.ProcessCommandQueue();
-            vm.Clear();
+            vm.Clear(null);
 
             Assert.AreEqual(0, controller.DynamoViewModel.Model.Nodes.Count());
         }
@@ -473,7 +473,7 @@ namespace Dynamo.Tests
 
             //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.LayoutAllCommand, null));
             //DynamoCommands.ProcessCommandQueue();
-            vm.LayoutAll();
+            vm.LayoutAll(null);
 
             Assert.AreNotEqual(0, controller.DynamoViewModel.Model.Nodes.Count());
         }
@@ -566,7 +566,7 @@ namespace Dynamo.Tests
             //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveCommand, null));
             //DynamoCommands.ProcessCommandQueue();
 
-            vm.Save();
+            vm.Save(null);
 
             Assert.IsNull(controller.DynamoViewModel.CurrentSpace.FilePath);
         }

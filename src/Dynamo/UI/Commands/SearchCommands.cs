@@ -15,7 +15,6 @@
 using Dynamo.Search.Regions;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.UI.Commands
 {
@@ -179,6 +178,6 @@ namespace Dynamo.ViewModels
         ///     Specifies different regions to search over.  The command toggles whether searching
         ///     over that field or not.
         /// </value>
-        public ObservableDictionary<string, RegionBase<object>> Regions { get; set; }
+        public ObservableDictionary<string, RegionBase> Regions { get; set; }
     }
 }

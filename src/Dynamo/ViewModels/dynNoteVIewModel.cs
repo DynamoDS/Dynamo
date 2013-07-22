@@ -93,7 +93,7 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
         }
 
-        private void Select()
+        private void Select(object parameter)
         {
             //if (!_model.IsSelected)
             //{
@@ -126,7 +126,7 @@ namespace Dynamo.ViewModels
         }
 
 
-        private bool CanSelect()
+        private bool CanSelect(object parameter)
         {
             if (!DynamoSelection.Instance.Selection.Contains(_model))
             {

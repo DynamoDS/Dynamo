@@ -14,7 +14,6 @@
 
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.UI.Commands
 {
@@ -262,25 +261,25 @@ namespace Dynamo.UI.Commands
         /// SubmitCommand property </summary>
         /// <value>
         /// A command which, when executed, submits the current package</value>
-        private static DelegateCommand<object> _submitCommand;
-        public static DelegateCommand<object> SubmitCommand
+        private static DelegateCommand _submitCommand;
+        public static DelegateCommand SubmitCommand
         {
             get
             {
                 if(_submitCommand == null)
-                    _submitCommand = new DelegateCommand<object>(_vm_pm_publish.OnSubmit, _vm_pm_publish.CanSubmit);
+                    _submitCommand = new DelegateCommand(_vm_pm_publish.OnSubmit, _vm_pm_publish.CanSubmit);
                 return _submitCommand;
             }
         }
 
-        private static DelegateCommand<object> _showNodePublishInfoCmd;
-        public static DelegateCommand<object> ShowNodeNodePublishInfoCmd
+        private static DelegateCommand _showNodePublishInfoCmd;
+        public static DelegateCommand ShowNodeNodePublishInfoCmd
         {
             get
             {
                 if (_showNodePublishInfoCmd == null)
                     _showNodePublishInfoCmd =
-                        new DelegateCommand<object>(_vm_pm_publish.ShowNodePublishInfo, _vm_pm_publish.CanShowNodePublishInfo);
+                        new DelegateCommand(_vm_pm_publish.ShowNodePublishInfo, _vm_pm_publish.CanShowNodePublishInfo);
                 return _showNodePublishInfoCmd;
             }
         }

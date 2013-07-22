@@ -406,7 +406,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void ShowHelp()
+        private void ShowHelp(object parameter)
         {
             //var helpDialog = new NodeHelpPrompt(this.NodeModel);
             //helpDialog.Show();
@@ -414,12 +414,12 @@ namespace Dynamo.ViewModels
             OnRequestShowNodeHelp(this, new NodeHelpEventArgs(NodeModel));
         }
 
-        private bool CanShowHelp()
+        private bool CanShowHelp(object parameter)
         {
             return true;
         }
 
-        private void ShowRename()
+        private void ShowRename(object parameter)
         {
             //var editWindow = new dynEditWindow { DataContext = this };
 
@@ -442,24 +442,26 @@ namespace Dynamo.ViewModels
             OnRequestShowNodeRename(this, EventArgs.Empty);
         }
 
-        private bool CanShowRename()
+        private bool CanShowRename(object parameter)
         {
             return true;
         }
 
-        private bool CanDeleteNode()
+        private bool CanDeleteNode(object parameter)
         {
             return true;
         }
 
-        private void DeleteNodeAndItsConnectors()
+        private void DeleteNodeAndItsConnectors(object parameter)
         {
             //dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(this.nodeLogic);
             dynSettings.Controller.DynamoViewModel.Delete(nodeLogic);
         }
 
-        void SetLacingType(string parameter)
+        void SetLacingType(object param)
         {
+            string parameter = param.ToString();
+
             if (parameter == "First")
             {
                 NodeLogic.ArgumentLacing = LacingStrategy.First;
@@ -482,22 +484,24 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("Lacing");
         }
 
-        bool CanSetLacingType(string parameter)
+        bool CanSetLacingType(object param)
         {
+            string parameter = param.ToString();
+
             if (this.ArgumentLacing == LacingStrategy.Disabled)
                 return false;
 
             return true;
         }
 
-        private void ViewCustomNodeWorkspace()
+        private void ViewCustomNodeWorkspace(object parameter)
         {
             var f = (nodeLogic as dynFunction);
             if(f!= null)
                 dynSettings.Controller.DynamoViewModel.ViewCustomNodeWorkspace(f.Definition);
         }
 
-        private bool CanViewCustomNodeWorkspace()
+        private bool CanViewCustomNodeWorkspace(object parameter)
         {
             return nodeLogic.IsCustomFunction;
         }
@@ -569,34 +573,34 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void ToggleIsVisible()
+        private void ToggleIsVisible(object parameter)
         {
             this.nodeLogic.IsVisible = !this.nodeLogic.IsVisible;
             RaisePropertyChanged("IsVisible");
         }
 
-        private void ToggleIsUpstreamVisible()
+        private void ToggleIsUpstreamVisible(object parameter)
         {
             this.nodeLogic.IsUpstreamVisible = !this.nodeLogic.IsUpstreamVisible;
             RaisePropertyChanged("IsUpstreamVisible");
         }
 
-        private bool CanVisibilityBeToggled() 
+        private bool CanVisibilityBeToggled(object parameter) 
         {
             return true;
         }
 
-        private bool CanUpstreamVisibilityBeToggled()
+        private bool CanUpstreamVisibilityBeToggled(object parameter)
         {
             return true;
         }
 
-        private void ValidateConnections()
+        private void ValidateConnections(object parameter)
         {
             nodeLogic.ValidateConnections();
         }
 
-        private bool CanValidateConnections()
+        private bool CanValidateConnections(object parameter)
         {
             return true;
         }
@@ -623,7 +627,7 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        private void Select()
+        private void Select(object parameter)
         {
             //this logic has been moved to the view
             //because it depends on Keyboard modifiers.
@@ -652,7 +656,7 @@ namespace Dynamo.ViewModels
             OnRequestsSelection(this, EventArgs.Empty);
         }
 
-        private bool CanSelect()
+        private bool CanSelect(object parameter)
         {
             return true;
         }

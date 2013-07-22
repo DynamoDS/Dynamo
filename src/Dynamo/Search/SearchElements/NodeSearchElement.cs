@@ -156,7 +156,7 @@ namespace Dynamo.Search.SearchElements
             this._type = "Custom Node";
         }
 
-        private void ToggleIsVisible()
+        private void ToggleIsVisible(object parameter)
         {
             if (this.DescriptionVisibility != true)
             {

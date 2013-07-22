@@ -88,7 +88,7 @@ namespace Dynamo.ViewModels
                 _SearchText = value;
                 RaisePropertyChanged("SearchText");
                 //DynamoCommands.SearchCommand.Execute();
-                Search();
+                Search(null);
             }
         }
 
@@ -839,48 +839,48 @@ namespace Dynamo.ViewModels
             throw new NotImplementedException();
         }
 
-        public void Search()
+        public void Search(object parameter)
         {
             dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
         }
 
-        internal bool CanSearch()
+        internal bool CanSearch(object parameter)
         {
             return true;
         }
 
-        internal void HideSearch()
+        internal void HideSearch(object parameter)
         {
             dynSettings.Controller.PackageManagerPublishViewModel.Visible = false;
             dynSettings.Controller.PackageManagerLoginViewModel.Visible = false;
             dynSettings.Controller.SearchViewModel.Visible = false;
         }
 
-        internal bool CanHideSearch()
+        internal bool CanHideSearch(object parameter)
         {
             if (dynSettings.Controller.SearchViewModel.Visible == true)
                 return true;
             return false;
         }
 
-        public void ShowSearch()
+        public void ShowSearch(object parameter)
         {
             dynSettings.Controller.SearchViewModel.Visible = true;
         }
 
-        internal bool CanShowSearch()
+        internal bool CanShowSearch(object parameter)
         {
             if (dynSettings.Controller.SearchViewModel.Visible == false)
                 return true;
             return false;
         }
 
-        public void FocusSearch()
+        public void FocusSearch(object parameter)
         {
             dynSettings.Controller.SearchViewModel.OnRequestFocusSearch(dynSettings.Controller.DynamoViewModel, EventArgs.Empty);
         }
 
-        internal bool CanFocusSearch()
+        internal bool CanFocusSearch(object parameter)
         {
             return true;
         }

@@ -1,12 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
+using System.Windows.Input;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.UI.Commands
 {
+    public class DelegateCommand : ICommand
+    {
+        //http://wpftutorial.net/DelegateCommand.html
+
+        private readonly Predicate<object> _canExecute;
+        private readonly Action<object> _execute;
+
+        public event EventHandler CanExecuteChanged;
+        //{
+        //    add { CommandManager.RequerySuggested += value; } 
+        //    remove { CommandManager.RequerySuggested -= value; }
+        //}
+
+        public DelegateCommand(Action<object> execute)
+            : this(execute, null)
+        {
+        }
+
+        public DelegateCommand(Action<object> execute,
+                       Predicate<object> canExecute)
+        {
+            _execute = execute;
+            _canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            if (_canExecute == null)
+            {
+                return true;
+            }
+
+            return _canExecute(parameter);
+        }
+
+        public void Execute(object parameter)
+        {
+            _execute(parameter);
+            OnExecute();
+        }
+
+        public void RaiseCanExecuteChanged()
+        {
+            if (CanExecuteChanged != null)
+            {
+                CanExecuteChanged(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnExecute()
+        {
+            //http://joshsmithonwpf.wordpress.com/2007/10/25/logging-routed-commands/
+
+            var msg = new StringBuilder();
+
+            msg.AppendFormat("COMMAND: Name={0}", _execute.Method.Name);
+            //msg.AppendLine();
+
+            DynamoLogger.Instance.Log(msg.ToString());
+        }
+    }
 
     public static partial class DynamoCommands
     {
@@ -25,42 +87,42 @@ namespace Dynamo.UI.Commands
         }
 
         #region fields
-        private static DelegateCommand<object> writeToLogCmd;
+        private static DelegateCommand writeToLogCmd;
         private static DelegateCommand _reportABug;
         private static DelegateCommand _gotoWikiCommand;
         private static DelegateCommand _gotoSourceCommand;
-        private static DelegateCommand<object> _exitCommand;
+        private static DelegateCommand _exitCommand;
         private static DelegateCommand _cleanupCommand;
         private static DelegateCommand _showSaveImageDialogAndSaveResultCommand;
         private static DelegateCommand _showOpenDialogueAndOpenResultCommand;
         private static DelegateCommand _showSaveDialogIfNeededAndSaveResultCommand;
         private static DelegateCommand _showSaveDialogAndSaveResultCommand;
-        private static DelegateCommand<object> _runExpressionCommand;
+        private static DelegateCommand _runExpressionCommand;
         private static DelegateCommand _showPackageManagerCommand;
         private static DelegateCommand _showNewFunctionDialogCommand;
-        private static DelegateCommand<object> _openCommand;
+        private static DelegateCommand _openCommand;
         private static DelegateCommand _saveCommand;
-        private static DelegateCommand<object> _saveAsCommand;
+        private static DelegateCommand _saveAsCommand;
         private static DelegateCommand _clearCommand;
         private static DelegateCommand _homeCommand;
         private static DelegateCommand _layoutAllCommand;
         private static DelegateCommand _newHomeWorkspaceCommand;
-        private static DelegateCommand<object> _copyCommand;
-        private static DelegateCommand<object> _pasteCommand;
+        private static DelegateCommand _copyCommand;
+        private static DelegateCommand _pasteCommand;
         private static DelegateCommand _toggleConsoleShowingCommand;
         private static DelegateCommand _cancelRunCommand;
-        private static DelegateCommand<object> _saveImageCommand;
+        private static DelegateCommand _saveImageCommand;
         private static DelegateCommand _clearLogCommand;
-        private static DelegateCommand<object> _goToWorkspaceCommand;
-        private static DelegateCommand<object> _displayFunctionCommand;
-        private static DelegateCommand<object> _setConnectorTypeCommand;
-        private static DelegateCommand<object> _createNodeCommand;
-        private static DelegateCommand<object> _createConnectionCommand;
-        private static DelegateCommand<object> _addNoteCommand;
-        private static DelegateCommand<object> _deleteCommand;
-        private static DelegateCommand<object> _selectNeighborsCommand;
-        private static DelegateCommand<object> _addToSelectionCommand;
-        private static DelegateCommand<string> _alignSelectedCommand;
+        private static DelegateCommand _goToWorkspaceCommand;
+        private static DelegateCommand _displayFunctionCommand;
+        private static DelegateCommand _setConnectorTypeCommand;
+        private static DelegateCommand _createNodeCommand;
+        private static DelegateCommand _createConnectionCommand;
+        private static DelegateCommand _addNoteCommand;
+        private static DelegateCommand _deleteCommand;
+        private static DelegateCommand _selectNeighborsCommand;
+        private static DelegateCommand _addToSelectionCommand;
+        private static DelegateCommand _alignSelectedCommand;
         private static DelegateCommand _postUiActivationCommand;
         private static DelegateCommand _refactorCustomNodeCommand;
         private static DelegateCommand _showHideConnectorsCommand;
@@ -81,12 +143,12 @@ namespace Dynamo.UI.Commands
             }
         }
 
-        public static DelegateCommand<object> WriteToLogCmd
+        public static DelegateCommand WriteToLogCmd
         {
             get
             {
                 if (writeToLogCmd == null)
-                    writeToLogCmd = new DelegateCommand<object>(_vm.WriteToLog, _vm.CanWriteToLog);
+                    writeToLogCmd = new DelegateCommand(_vm.WriteToLog, _vm.CanWriteToLog);
                 return writeToLogCmd;
             }
         }
@@ -121,12 +183,12 @@ namespace Dynamo.UI.Commands
             }
         }
 
-        public static DelegateCommand<object> ExitCommand
+        public static DelegateCommand ExitCommand
         {
             get
             {
                 if(_exitCommand == null)
-                    _exitCommand = new DelegateCommand<object>(_vm.Exit, _vm.CanExit);
+                    _exitCommand = new DelegateCommand(_vm.Exit, _vm.CanExit);
                 return _exitCommand;
             }
         }
@@ -194,12 +256,12 @@ namespace Dynamo.UI.Commands
             }
         }
 
-        public static DelegateCommand<object> OpenCommand
+        public static DelegateCommand OpenCommand
         {
             get
             {
                 if(_openCommand == null)
-                    _openCommand = new DelegateCommand<object>(_vm.Open, _vm.CanOpen);
+                    _openCommand = new DelegateCommand(_vm.Open, _vm.CanOpen);
                 return _openCommand;
             }
         }
@@ -214,12 +276,12 @@ namespace Dynamo.UI.Commands
             }
         }
 
-        public static DelegateCommand<object> SaveAsCommand
+        public static DelegateCommand SaveAsCommand
         {
             get
             {
                 if(_saveAsCommand == null)
-                    _saveAsCommand = new DelegateCommand<object>(_vm.SaveAs, _vm.CanSaveAs);
+                    _saveAsCommand = new DelegateCommand(_vm.SaveAs, _vm.CanSaveAs);
                 return _saveAsCommand; 
             }
         }
@@ -266,22 +328,22 @@ namespace Dynamo.UI.Commands
             }
         }
 
-        public static DelegateCommand<object> CopyCommand
+        public static DelegateCommand CopyCommand
         {
             get
             {
                 if(_copyCommand == null)
-                    _copyCommand = new DelegateCommand<object>(_vm.Copy, _vm.CanCopy);
+                    _copyCommand = new DelegateCommand(_vm.Copy, _vm.CanCopy);
                 return _copyCommand;
             }
         }
 
-        public static DelegateCommand<object> PasteCommand
+        public static DelegateCommand PasteCommand
         {
             get
             {
                 if(_pasteCommand == null)
-                    _pasteCommand = new DelegateCommand<object>(_vm.Paste, _vm.CanPaste);
+                    _pasteCommand = new DelegateCommand(_vm.Paste, _vm.CanPaste);
                 return _pasteCommand;
             }
         }
@@ -307,12 +369,12 @@ namespace Dynamo.UI.Commands
             }
         }
 
-        public static DelegateCommand<object> SaveImageCommand
+        public static DelegateCommand SaveImageCommand
         {
             get
             {
                 if(_saveImageCommand == null)
-                    _saveImageCommand = new DelegateCommand<object>(_vm.SaveImage, _vm.CanSaveImage);
+                    _saveImageCommand = new DelegateCommand(_vm.SaveImage, _vm.CanSaveImage);
                 return _saveImageCommand;
             }
         }
@@ -327,13 +389,13 @@ namespace Dynamo.UI.Commands
             }
         }
 
-        public static DelegateCommand<object> RunExpressionCommand
+        public static DelegateCommand RunExpressionCommand
         {
             get
             {
                 if(_runExpressionCommand == null)
                     _runExpressionCommand = 
-                        new DelegateCommand<object>(_vm.RunExpression, _vm.CanRunExpression);
+                        new DelegateCommand(_vm.RunExpression, _vm.CanRunExpression);
                 return _runExpressionCommand;
             }
         }
@@ -348,115 +410,115 @@ namespace Dynamo.UI.Commands
             }
         }
 
-        public static DelegateCommand<object> GoToWorkspaceCommand
+        public static DelegateCommand GoToWorkspaceCommand
         {
             get
             {
                 if(_goToWorkspaceCommand == null)
-                    _goToWorkspaceCommand = new DelegateCommand<object>(_vm.GoToWorkspace, _vm.CanGoToWorkspace);
+                    _goToWorkspaceCommand = new DelegateCommand(_vm.GoToWorkspace, _vm.CanGoToWorkspace);
 
                 return _goToWorkspaceCommand;
             }
         }
 
-        public static DelegateCommand<object> DisplayFunctionCommand
+        public static DelegateCommand DisplayFunctionCommand
         {
             get
             {
                 if(_displayFunctionCommand == null)
                     _displayFunctionCommand = 
-                        new DelegateCommand<object>(_vm.DisplayFunction, _vm.CanDisplayFunction);
+                        new DelegateCommand(_vm.DisplayFunction, _vm.CanDisplayFunction);
 
                 return _displayFunctionCommand;
             }
         }
 
-        public static DelegateCommand<object> SetConnectorTypeCommand
+        public static DelegateCommand SetConnectorTypeCommand
         {
             get
             {
                 if(_setConnectorTypeCommand == null)
                     _setConnectorTypeCommand = 
-                        new DelegateCommand<object>(_vm.SetConnectorType, _vm.CanSetConnectorType);
+                        new DelegateCommand(_vm.SetConnectorType, _vm.CanSetConnectorType);
 
                 return _setConnectorTypeCommand;
             }
         }
 
-        public static DelegateCommand<object> CreateNodeCommand
+        public static DelegateCommand CreateNodeCommand
         {
             get
             {
                 if(_createNodeCommand == null)
-                    _createNodeCommand = new DelegateCommand<object>(_vm.CreateNode, _vm.CanCreateNode);
+                    _createNodeCommand = new DelegateCommand(_vm.CreateNode, _vm.CanCreateNode);
 
                 return _createNodeCommand;
             }
         }
 
-        public static DelegateCommand<object> CreateConnectionCommand
+        public static DelegateCommand CreateConnectionCommand
         {
             get
             {
                 if(_createConnectionCommand == null)
                     _createConnectionCommand = 
-                        new DelegateCommand<object>(_vm.CreateConnection, _vm.CanCreateConnection);
+                        new DelegateCommand(_vm.CreateConnection, _vm.CanCreateConnection);
 
                 return _createConnectionCommand;
             }
         }
 
-        public static DelegateCommand<object> AddNoteCommand
+        public static DelegateCommand AddNoteCommand
         {
             get
             {
                 if(_addNoteCommand == null)
-                    _addNoteCommand = new DelegateCommand<object>(_vm.AddNote, _vm.CanAddNote);
+                    _addNoteCommand = new DelegateCommand(_vm.AddNote, _vm.CanAddNote);
 
                 return _addNoteCommand;
             }
         }
 
-        public static DelegateCommand<object> DeleteCommand
+        public static DelegateCommand DeleteCommand
         {
             get
             {
                 if(_deleteCommand == null)
-                    _deleteCommand = new DelegateCommand<object>(_vm.Delete, _vm.CanDelete);
+                    _deleteCommand = new DelegateCommand(_vm.Delete, _vm.CanDelete);
                 return _deleteCommand;
             }
         }
 
-        public static DelegateCommand<object> SelectNeighborsCommand
+        public static DelegateCommand SelectNeighborsCommand
         {
             get
             {
                 if(_selectNeighborsCommand == null)
                     _selectNeighborsCommand = 
-                        new DelegateCommand<object>(_vm.SelectNeighbors, _vm.CanSelectNeighbors);
+                        new DelegateCommand(_vm.SelectNeighbors, _vm.CanSelectNeighbors);
 
                 return _selectNeighborsCommand;
             }
         }
 
-        public static DelegateCommand<object> AddToSelectionCommand
+        public static DelegateCommand AddToSelectionCommand
         {
             get
             {
                 if(_addToSelectionCommand == null)
                     _addToSelectionCommand = 
-                        new DelegateCommand<object>(_vm.AddToSelection, _vm.CanAddToSelection);
+                        new DelegateCommand(_vm.AddToSelection, _vm.CanAddToSelection);
 
                 return _addToSelectionCommand;
             }
         }
 
-        public static DelegateCommand<string> AlignSelectedCommand
+        public static DelegateCommand AlignSelectedCommand
         {
             get
             {
                 if(_alignSelectedCommand == null)
-                    _alignSelectedCommand = new DelegateCommand<string>(_vm.AlignSelected, _vm.CanAlignSelected);;
+                    _alignSelectedCommand = new DelegateCommand(_vm.AlignSelected, _vm.CanAlignSelected);;
                 return _alignSelectedCommand;
             }
         }
@@ -538,7 +600,7 @@ namespace Dynamo.UI.Commands
         /// command arguments
         /// </summary>
         /// <param name="command">The command to run</param>
-        public static void RunCommand(DelegateCommand<object> command)
+        public static void RunCommand(DelegateCommand command)
         {
             RunCommand(command, null);
         }
@@ -549,7 +611,7 @@ namespace Dynamo.UI.Commands
         /// </summary>
         /// <param name="command">The command to run</param>
         /// <param name="args">Arguments to give to the command</param>
-        public static void RunCommand(DelegateCommand<object> command, object args)
+        public static void RunCommand(DelegateCommand command, object args)
         {
             var commandAndParams = Tuple.Create<object, object>(command, args);
             CommandQueue.Enqueue(commandAndParams);
@@ -569,7 +631,7 @@ namespace Dynamo.UI.Commands
             while (commandQueue.Count > 0)
             {
                 var cmdData = commandQueue.Dequeue();
-                var cmd = cmdData.Item1 as DelegateCommand<object>;
+                var cmd = cmdData.Item1 as DelegateCommand;
                 if (cmd != null)
                 {
                     if (cmd.CanExecute(cmdData.Item2))

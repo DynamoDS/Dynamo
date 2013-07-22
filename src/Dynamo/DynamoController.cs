@@ -201,6 +201,7 @@ namespace Dynamo
 
             NodeSubmittedForRendering += new EventHandler(Controller_NodeSubmittedForRendering);
             NodeRemovedFromRendering += new EventHandler(Controller_NodeRemovedFromRendering);
+
         }
 
         #endregion

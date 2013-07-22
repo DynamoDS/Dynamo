@@ -1,19 +1,18 @@
-﻿
-using Microsoft.Practices.Prism.Commands;
+﻿using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
     public partial class dynWorkspaceViewModel
     {
-        private DelegateCommand<object> _hideCommand;
-        private DelegateCommand<object> _crossSelectCommand;
-        private DelegateCommand<object> _containSelectCommand;
+        private DelegateCommand _hideCommand;
+        private DelegateCommand _crossSelectCommand;
+        private DelegateCommand _containSelectCommand;
         //private DelegateCommand _updateSelectedConnectorsCommand;
-        private DelegateCommand<object> _setCurrentOffsetCommand;
+        private DelegateCommand _setCurrentOffsetCommand;
         private DelegateCommand _nodeFromSelectionCommand;
-        private DelegateCommand<object> _setZoomCommand;
-        private DelegateCommand<object> _findByIdCommand;
-        private DelegateCommand<string> _alignSelectedCommand;
+        private DelegateCommand _setZoomCommand;
+        private DelegateCommand _findByIdCommand;
+        private DelegateCommand _alignSelectedCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
         private DelegateCommand _selectAllCommand;
 
@@ -27,34 +26,34 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand<object> HideCommand
+        public DelegateCommand HideCommand
         {
             get
             {
                 if(_hideCommand == null)
-                    _hideCommand = new DelegateCommand<object>(Hide, CanHide);
+                    _hideCommand = new DelegateCommand(Hide, CanHide);
 
                 return _hideCommand;
             }
         }
 
-        public DelegateCommand<object> CrossSelectCommand
+        public DelegateCommand CrossSelectCommand
         {
             get
             {
                 if(_crossSelectCommand == null)
-                    _crossSelectCommand = new DelegateCommand<object>(CrossingSelect, CanCrossSelect);
+                    _crossSelectCommand = new DelegateCommand(CrossingSelect, CanCrossSelect);
 
                 return _crossSelectCommand;
             }
         }
 
-        public DelegateCommand<object> ContainSelectCommand
+        public DelegateCommand ContainSelectCommand
         {
             get
             {
                 if(_containSelectCommand == null)
-                    _containSelectCommand = new DelegateCommand<object>(ContainSelect, CanContainSelect);
+                    _containSelectCommand = new DelegateCommand(ContainSelect, CanContainSelect);
 
                 return _containSelectCommand;
             }
@@ -70,12 +69,12 @@ namespace Dynamo.ViewModels
         //    }
         //}
 
-        public DelegateCommand<object> SetCurrentOffsetCommand
+        public DelegateCommand SetCurrentOffsetCommand
         {
             get
             {
                 if(_setCurrentOffsetCommand == null)
-                    _setCurrentOffsetCommand = new DelegateCommand<object>(SetCurrentOffset, CanSetCurrentOffset);
+                    _setCurrentOffsetCommand = new DelegateCommand(SetCurrentOffset, CanSetCurrentOffset);
 
                 return _setCurrentOffsetCommand;
             }
@@ -92,34 +91,34 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand<object> SetZoomCommand
+        public DelegateCommand SetZoomCommand
         {
             get
             {
                 if(_setZoomCommand == null)
-                    _setZoomCommand = new DelegateCommand<object>(SetZoom, CanSetZoom);
+                    _setZoomCommand = new DelegateCommand(SetZoom, CanSetZoom);
                 return _setZoomCommand;
             }
 
         }
 
-        public DelegateCommand<object> FindByIdCommand
+        public DelegateCommand FindByIdCommand
         {
             get
             {
                 if(_findByIdCommand == null)
-                    _findByIdCommand = new DelegateCommand<object>(FindById, CanFindById);
+                    _findByIdCommand = new DelegateCommand(FindById, CanFindById);
 
                 return _findByIdCommand;
             }
         }
 
-        public DelegateCommand<string> AlignSelectedCommand
+        public DelegateCommand AlignSelectedCommand
         {
             get
             {
                 if(_alignSelectedCommand == null)
-                    _alignSelectedCommand = new DelegateCommand<string>(AlignSelected, CanAlignSelected);
+                    _alignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected);
 
                 return _alignSelectedCommand;
             }

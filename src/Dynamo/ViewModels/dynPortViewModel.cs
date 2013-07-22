@@ -115,7 +115,7 @@ namespace Dynamo.ViewModels
             _port.Center = center;
         }
 
-        private void Connect()
+        private void Connect(object parameter)
         {
             // if this is a 
             if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting)
@@ -194,28 +194,28 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanConnect()
+        private bool CanConnect(object parameter)
         {
             return true;
         }
 
-        private void Highlight()
+        private void Highlight(object parameter)
         {
            var connectorViewModels = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Connectors.Where(
                 x => _port.Connectors.Contains(x.ConnectorModel));
         }
 
-        private bool CanHighlight()
+        private bool CanHighlight(object parameter)
         {
             return true;
         }
 
-        private void UnHighlight()
+        private void UnHighlight(object parameter)
         {
             
         }
 
-        private bool CanUnHighlight()
+        private bool CanUnHighlight(object parameter)
         {
             return true;
         }

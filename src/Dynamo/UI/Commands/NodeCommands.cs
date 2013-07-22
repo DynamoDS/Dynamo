@@ -1,17 +1,17 @@
-﻿using Microsoft.Practices.Prism.Commands;
+﻿using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
     public partial class dynNodeViewModel
     {
         private DelegateCommand _deleteCommand1;
-        private DelegateCommand<string> _setLacingTypeCommand;
-        private DelegateCommand<object> _setStateCommand;
+        private DelegateCommand _setLacingTypeCommand;
+        private DelegateCommand _setStateCommand;
         private DelegateCommand _selectCommand;
         private DelegateCommand _showHelpCommand;
         private DelegateCommand _viewCustomNodeWorkspaceCommand;
-        private DelegateCommand<object> _setLayoutCommand;
-        private DelegateCommand<object> _setupCustomUiElementsCommand;
+        private DelegateCommand _setLayoutCommand;
+        private DelegateCommand _setupCustomUiElementsCommand;
         private DelegateCommand _validateConnectionsCommand;
         private DelegateCommand _toggleIsVisibleCommand;
         private DelegateCommand _toggleIsUpstreamVisibleCommand;
@@ -39,25 +39,25 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand<string> SetLacingTypeCommand
+        public DelegateCommand SetLacingTypeCommand
         {
             get
             {
                 if(_setLacingTypeCommand == null)
                     _setLacingTypeCommand 
-                        = new DelegateCommand<string>(SetLacingType, CanSetLacingType);
+                        = new DelegateCommand(SetLacingType, CanSetLacingType);
 
                 return _setLacingTypeCommand;
             }
         }
 
-        public DelegateCommand<object> SetStateCommand
+        public DelegateCommand SetStateCommand
         {
             get
             {
                 if(_setStateCommand == null)
                     _setStateCommand = 
-                        new DelegateCommand<object>(SetState, CanSetState);
+                        new DelegateCommand(SetState, CanSetState);
 
                 return _setStateCommand;
             }
@@ -99,25 +99,25 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand<object> SetLayoutCommand
+        public DelegateCommand SetLayoutCommand
         {
             get
             {
                 if(_setLayoutCommand == null)
                     _setLayoutCommand = 
-                        new DelegateCommand<object>(SetLayout, CanSetLayout);
+                        new DelegateCommand(SetLayout, CanSetLayout);
 
                 return _setLayoutCommand;
             }
         }
 
-        public DelegateCommand<object> SetupCustomUIElementsCommand
+        public DelegateCommand SetupCustomUIElementsCommand
         {
             get
             {
                 if(_setupCustomUiElementsCommand == null)
                     _setupCustomUiElementsCommand = 
-                        new DelegateCommand<object>(SetupCustomUIElements, CanSetupCustomUIElements);
+                        new DelegateCommand(SetupCustomUIElements, CanSetupCustomUIElements);
 
                 return _setupCustomUiElementsCommand;
             }

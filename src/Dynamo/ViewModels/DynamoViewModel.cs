@@ -392,7 +392,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("Workspaces");
         }
 
-        internal bool CanSave()
+        internal bool CanSave(object parameter)
         {
             return true;
         }
@@ -542,7 +542,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void Clear()
+        public void Clear(object parameter)
         {
             IsUILocked = true;
 
@@ -559,22 +559,22 @@ namespace Dynamo.ViewModels
             IsUILocked = false;
         }
 
-        internal bool CanClear()
+        internal bool CanClear(object parameter)
         {
             return true;
         }
 
-        public void Home()
+        public void Home(object parameter)
         {
             ViewHomeWorkspace();
         }
 
-        internal bool CanGoHome()
+        internal bool CanGoHome(object parameter)
         {
             return _model.CurrentSpace != _model.HomeSpace;
         }
 
-        public void LayoutAll()
+        public void LayoutAll(object parameter)
         {
             IsUILocked = true;
 
@@ -677,7 +677,7 @@ namespace Dynamo.ViewModels
             IsUILocked = false;
         }
 
-        internal bool CanLayoutAll()
+        internal bool CanLayoutAll(object parameter)
         {
             return true;
         }
@@ -1161,7 +1161,7 @@ namespace Dynamo.ViewModels
         ///     Attempts to save an element, assuming that the CurrentSpace.FilePath 
         ///     field is already  populated with a path has a filename associated with it. 
         /// </summary>
-        public void Save()
+        public void Save(object parameter)
         {
             if (!String.IsNullOrEmpty(_model.CurrentSpace.FilePath))
                 SaveAs(_model.CurrentSpace.FilePath);
@@ -1909,33 +1909,33 @@ namespace Dynamo.ViewModels
 
             return false;
         }
-        
-        public void ReportABug()
+
+        public void ReportABug(object parameter)
         {
             Process.Start("https://github.com/ikeough/Dynamo/issues?state=open");
         }
-        
-        internal bool CanReportABug()
+
+        internal bool CanReportABug(object parameter)
         {
             return true;
         }
-        
-        public void GoToWiki()
+
+        public void GoToWiki(object parameter)
         {
             Process.Start("https://github.com/ikeough/Dynamo/wiki");
         }
-        
-        internal bool CanGoToWiki()
+
+        internal bool CanGoToWiki(object parameter)
         {
             return true;
         }
-        
-        public void GoToSourceCode()
+
+        public void GoToSourceCode(object parameter)
         {
             Process.Start("https://github.com/ikeough/Dynamo");
         }
-        
-        internal bool CanGoToSourceCode()
+
+        internal bool CanGoToSourceCode(object parameter)
         {
             return true;
         }
@@ -1949,7 +1949,7 @@ namespace Dynamo.ViewModels
             }
             if (!dynSettings.Controller.DynamoViewModel.AskUserToSaveWorkspacesOrCancel(allowCancelBool))
                 return;
-            Cleanup();
+            Cleanup(null);
             dynSettings.Controller.DynamoViewModel.exitInvoked = true;
             dynSettings.Controller.DynamoViewModel.OnRequestClose(dynSettings.Controller.DynamoViewModel, EventArgs.Empty);
         }
@@ -1958,19 +1958,19 @@ namespace Dynamo.ViewModels
         {
             return !dynSettings.Controller.DynamoViewModel.exitInvoked;
         }
-        
-        public void Cleanup()
+
+        public void Cleanup(object parameter)
         {
             DynamoLogger.Instance.FinishLogging();
 
         }
-        
-        internal bool CanCleanup()
+
+        internal bool CanCleanup(object parameter)
         {
             return true;
         }
-        
-        public void ShowSaveImageDialogAndSaveResult()
+
+        public void ShowSaveImageDialogAndSaveResult(object parameter)
         {
             var vm = dynSettings.Controller.DynamoViewModel;
 
@@ -2004,13 +2004,13 @@ namespace Dynamo.ViewModels
             }
 
         }
-        
-        internal bool CanShowSaveImageDialogAndSaveResult()
+
+        internal bool CanShowSaveImageDialogAndSaveResult(object parameter)
         {
             return true;
         }
-        
-        public void ShowOpenDialogAndOpenResult()
+
+        public void ShowOpenDialogAndOpenResult(object parameter)
         {
             var vm = dynSettings.Controller.DynamoViewModel;
 
@@ -2056,13 +2056,13 @@ namespace Dynamo.ViewModels
                     Open(_fileDialog.FileName);
             }
         }
-        
-        internal bool CanShowOpenDialogAndOpenResultCommand()
+
+        internal bool CanShowOpenDialogAndOpenResultCommand(object parameter)
         {
             return true;
         }
-        
-        public void ShowSaveDialogIfNeededAndSaveResult()
+
+        public void ShowSaveDialogIfNeededAndSaveResult(object parameter)
         {
             var vm = dynSettings.Controller.DynamoViewModel;
 
@@ -2070,25 +2070,25 @@ namespace Dynamo.ViewModels
             {
                 //if (SaveCommand.CanExecute())
                 //    SaveCommand.Execute();
-                if(CanSave())
-                    Save();
+                if(CanSave(parameter))
+                    Save(parameter);
             }
             else
             {
                 //if (ShowSaveDialogAndSaveResultCommand.CanExecute())
                 //    ShowSaveDialogAndSaveResultCommand.Execute();
 
-                if (CanShowSaveDialogAndSaveResult())
-                    ShowSaveDialogAndSaveResult();
+                if (CanShowSaveDialogAndSaveResult(parameter))
+                    ShowSaveDialogAndSaveResult(parameter);
             }
         }
-        
-        internal bool CanShowSaveDialogIfNeededAndSaveResultCommand()
+
+        internal bool CanShowSaveDialogIfNeededAndSaveResultCommand(object parameter)
         {
             return true;
         }
-        
-        public void ShowSaveDialogAndSaveResult()
+
+        public void ShowSaveDialogAndSaveResult(object parameter)
         {
             var vm = dynSettings.Controller.DynamoViewModel;
 
@@ -2111,13 +2111,13 @@ namespace Dynamo.ViewModels
                 vm.SaveAs(_fileDialog.FileName);
             }
         }
-        
-        internal bool CanShowSaveDialogAndSaveResult()
+
+        internal bool CanShowSaveDialogAndSaveResult(object parameter)
         {
             return true;
         }
-        
-        public void ShowNewFunctionDialogAndMakeFunction()
+
+        public void ShowNewFunctionDialogAndMakeFunction(object parameter)
         {
             //trigger the event to request the display
             //of the function name dialogue
@@ -2133,8 +2133,8 @@ namespace Dynamo.ViewModels
             }
 
         }
-        
-        internal bool CanShowNewFunctionDialogCommand()
+
+        internal bool CanShowNewFunctionDialogCommand(object parameter)
         {
             return true;
         }
@@ -2177,7 +2177,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void MakeNewHomeWorkspace()
+        public void MakeNewHomeWorkspace(object parameter)
         {
             // if the workspace is unsaved, prompt to save
             // otherwise overwrite the home workspace with new workspace
@@ -2185,11 +2185,11 @@ namespace Dynamo.ViewModels
             {
                 this.Model.CurrentSpace = this.Model.HomeSpace;
                 //ClearCommand.Execute();
-                Clear();
+                Clear(null);
             }
         }
 
-        internal bool CanMakeNewHomeWorkspace()
+        internal bool CanMakeNewHomeWorkspace(object parameter)
         {
             return true;
         }
@@ -2373,7 +2373,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void ToggleConsoleShowing()
+        public void ToggleConsoleShowing(object parameter)
         {
             if (ConsoleShowing)
             {
@@ -2385,7 +2385,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool CanToggleConsoleShowing()
+        internal bool CanToggleConsoleShowing(object parameter)
         {
             return true;
         }
@@ -2456,12 +2456,12 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void CancelRun()
+        public void CancelRun(object parameter)
         {
             dynSettings.Controller.RunCancelled = true;
         }
 
-        internal bool CanCancelRun()
+        internal bool CanCancelRun(object parameter)
         {
             return true;
         }
@@ -2469,7 +2469,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Clear the UI log.
         /// </summary>
-        public void ClearLog()
+        public void ClearLog(object parameter)
         {
             sw.Flush();
             sw.Close();
@@ -2477,7 +2477,7 @@ namespace Dynamo.ViewModels
             LogText = sw.ToString();
         }
 
-        internal bool CanClearLog()
+        internal bool CanClearLog(object parameter)
         {
             return true;
         }
@@ -2512,18 +2512,18 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void ShowPackageManager()
+        public void ShowPackageManager(object parameter)
         {
             //dynSettings.Bench.PackageManagerLoginStateContainer.Visibility = Visibility.Visible;
             //dynSettings.Bench.PackageManagerMenu.Visibility = Visibility.Visible;
         }
 
-        internal bool CanShowPackageManager()
+        internal bool CanShowPackageManager(object parameter)
         {
             return true;
         }
 
-        public void ToggleCanNavigateBackground()
+        public void ToggleCanNavigateBackground(object parameter)
         {
             if (!FullscreenWatchShowing)
                 return;
@@ -2538,12 +2538,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool CanToggleCanNavigateBackground()
+        internal bool CanToggleCanNavigateBackground(object parameter)
         {
             return true;
         }
 
-        public void ToggleFullscreenWatchShowing()
+        public void ToggleFullscreenWatchShowing(object parameter)
         {
             if (FullscreenWatchShowing)
             {
@@ -2580,7 +2580,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool CanToggleFullscreenWatchShowing()
+        internal bool CanToggleFullscreenWatchShowing(object parameter)
         {
             return true;
         }
@@ -2790,13 +2790,13 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 0;
         }
 
-        public void ShowConnectors()
+        public void ShowConnectors(object parameter)
         {
             if (isShowingConnectors == false)
                 isShowingConnectors = true;
         }
 
-        internal bool CanShowConnectors()
+        internal bool CanShowConnectors(object parameter)
         {
             return true;
         }
@@ -2823,18 +2823,18 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void AlignSelected(string param)
+        public void AlignSelected(object param)
         {
             //this.CurrentSpaceViewModel.AlignSelectedCommand.Execute(param);
-            this.CurrentSpaceViewModel.AlignSelected(param);
+            this.CurrentSpaceViewModel.AlignSelected(param.ToString());
         }
 
-        internal bool CanAlignSelected(string param)
+        internal bool CanAlignSelected(object param)
         {
             return true;
         }
 
-        public void PostUIActivation()
+        public void PostUIActivation(object parameter)
         {
             DynamoLoader.LoadCustomNodes(Controller.CustomNodeLoader, Controller.SearchViewModel);
 
@@ -2868,7 +2868,7 @@ namespace Dynamo.ViewModels
 
         }
 
-        internal bool CanDoPostUIActivation()
+        internal bool CanDoPostUIActivation(object parameter)
         {
             return true;
         }
@@ -2876,14 +2876,14 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Resets the offset and the zoom for a view
         /// </summary>
-        public void GoHomeView()
+        public void GoHomeView(object parameter)
         {
             _model.CurrentSpace.Zoom = 1.0;
             var wsvm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == _model.CurrentSpace);
             wsvm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(0, 0)));
         }
-        
-        internal bool CanGoHomeView()
+
+        internal bool CanGoHomeView(object parameter)
         {
             return true;
         }
@@ -2892,7 +2892,7 @@ namespace Dynamo.ViewModels
         ///     Update a custom node after refactoring.  Updates search and all instances of the node.
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
-        public void RefactorCustomNode()
+        public void RefactorCustomNode(object parameter)
         {
 
             //Bench.workspaceLabel.Content = Bench.editNameBox.Text;
@@ -2943,8 +2943,8 @@ namespace Dynamo.ViewModels
 
             SaveFunction(def);
         }
-        
-        internal bool CanRefactorCustomNode()
+
+        internal bool CanRefactorCustomNode(object parameter)
         {
             return true;
         }
@@ -2994,16 +2994,16 @@ namespace Dynamo.ViewModels
 
         }
 
-        public void SelectAll()
+        public void SelectAll(object parameter)
         {
             //this.CurrentSpaceViewModel.SelectAllCommand.Execute();
-            this.CurrentSpaceViewModel.SelectAll();
+            this.CurrentSpaceViewModel.SelectAll(null);
         }
 
-        internal bool CanSelectAll()
+        internal bool CanSelectAll(object parameter)
         {
             //return this.CurrentSpaceViewModel.SelectAllCommand.CanExecute();
-            return this.CurrentSpaceViewModel.CanSelectAll();
+            return this.CurrentSpaceViewModel.CanSelectAll(null);
         }
     }
 
