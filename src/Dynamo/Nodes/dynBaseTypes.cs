@@ -547,6 +547,7 @@ namespace Dynamo.Nodes
                 start += step;
             }
         }
+    }
 
     [NodeName("Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
