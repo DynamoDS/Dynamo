@@ -425,16 +425,32 @@ let RandomDbl = function
     | m  -> malformed "random" <| List(m)
 
 //List Functions
-let Car =     function [List(h :: _)]       -> h                                      | m -> malformed "car"    <| List(m)
-let Cdr =     function [List(_ :: t)]       -> List(t)                                | m -> malformed "cdr"    <| List(m)
-let Cons =    function [h; List(t)]         -> (List(h :: t))                         | m -> malformed "cons"   <| List(m)
-let Get =     function [Number(n); List(l)] -> l.Item (int n)                         | m -> malformed "get"    <| List(m)
-let Rev =     function [List(l)]            -> List(List.rev l)                       | m -> malformed "reverse"<| List(m)
-let Len =     function [List(l)]            -> Number(double l.Length)                | m -> malformed "len"    <| List(m)
-let Append =  function [List(l1); List(l2)] -> List(List.append l1 l2)                | m -> malformed "append" <| List(m)
-let Take =    function [Number(n); List(l)] -> List(Seq.take (int n) l |> List.ofSeq) | m -> malformed "take"   <| List(m)
-let Drop =    function [Number(n); List(l)] -> List(Seq.skip (int n) l |> List.ofSeq) | m -> malformed "drop"   <| List(m)
-let IsEmpty = function [List(l)]            -> Number(if l.IsEmpty then 1. else 0.)   | m -> malformed "empty?" <| List(m)
+let Car =     function [List(h :: _)]       -> h                                      | m -> malformed "car"     <| List(m)
+let Cdr =     function [List(_ :: t)]       -> List(t)                                | m -> malformed "cdr"     <| List(m)
+let Cons =    function [h; List(t)]         -> (List(h :: t))                         | m -> malformed "cons"    <| List(m)
+let Get =     function [Number(n); List(l)] -> l.Item (int n)                         | m -> malformed "get"     <| List(m)
+let Rev =     function [List(l)]            -> List(List.rev l)                       | m -> malformed "reverse" <| List(m)
+let Len =     function [List(l)]            -> Number(double l.Length)                | m -> malformed "len"     <| List(m)
+let Append =  function [List(l1); List(l2)] -> List(List.append l1 l2)                | m -> malformed "append"  <| List(m)
+let IsEmpty = function [List(l)]            -> Number(if l.IsEmpty then 1. else 0.)   | m -> malformed "empty?"  <| List(m)
+
+let Take = function 
+    | [Number(n); List(l)] ->
+        let n = (int n)
+        if n >= 0 then
+            List(Seq.take n l |> List.ofSeq) 
+        else
+            List(Seq.skip ((List.length l) + n) l |> List.ofSeq)
+    | m -> malformed "take" <| List(m)
+
+let Drop = function
+    | [Number(n); List(l)] -> 
+        let n = (int n)
+        if n >= 0 then
+            List(Seq.skip n l |> List.ofSeq)
+        else
+            List(Seq.take ((List.length l) + n) l |> List.ofSeq)
+    | m -> malformed "drop" <| List(m)
 
 let private transpose lists =
     let rec transpose' acc lists rev =
