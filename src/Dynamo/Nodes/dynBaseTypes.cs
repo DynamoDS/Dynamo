@@ -841,6 +841,31 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Remove Every Nth")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Removes every nth element from a list.")]
+    public class dynRemoveEveryNth : dynNodeWithOneOutput
+    {
+        public dynRemoveEveryNth()
+        {
+            InPortData.Add(new PortData("n", "All indeces that are a multiple of this number will be removed.", typeof(object)));
+            InPortData.Add(new PortData("list", "The list to remove elements from.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "List with elements removed.", typeof(object)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var n = (int)((Value.Number)args[0]).Item;
+            var lst = ((Value.List)args[1]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => i % n != 0)));
+        }
+    }
+
     [NodeName("Empty List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("An empty list")]
