@@ -132,10 +132,7 @@ limitations under the License.
     <Compile Include="UI\MouseClickManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
-      <DependentUpon>CrashPrompt.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="UI\Prompts\CrashPrompt.xaml.cs" />
     <Compile Include="UI\Prompts\dynEditWindow.xaml.cs">
       <DependentUpon>dynEditWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
