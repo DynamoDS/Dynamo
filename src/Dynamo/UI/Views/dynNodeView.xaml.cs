@@ -42,6 +42,17 @@ namespace Dynamo.Controls
             get { return inputGrid; }
         }
 
+        public dynNodeViewModel ViewModel
+        {
+            get
+            {
+                if (this.DataContext is dynNodeViewModel)
+                    return (dynNodeViewModel)this.DataContext;
+                else
+                    return null;
+            }
+        }
+
         #region constructors
 
         public dynNodeView()
@@ -227,23 +238,12 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        private void dynNodeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            var viewModel = DataContext as dynNodeViewModel;
-            if (viewModel != null)
-                viewModel.ViewCustomNodeWorkspaceCommand.Execute();
-        }
-
-        public dynNodeViewModel ViewModel
-        {
-            get
-            {
-                if (this.DataContext is dynNodeViewModel)
-                    return (dynNodeViewModel)this.DataContext;
-                else
-                    return null;
-            }
-        }
+        //private void dynNodeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        //{
+        //    var viewModel = DataContext as dynNodeViewModel;
+        //    if (viewModel != null)
+        //        viewModel.ViewCustomNodeWorkspaceCommand.Execute();
+        //}
 
         private void NickNameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
