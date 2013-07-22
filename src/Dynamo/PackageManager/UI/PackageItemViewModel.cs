@@ -73,7 +73,7 @@ namespace Dynamo.PackageManager.UI
         /// <summary>
         /// Is the element expanded in the browser
         /// </summary>
-        private bool _isExpanded = true;
+        private bool _isExpanded = false;
         public bool IsExpanded
         {
             get { return _isExpanded; }

@@ -13,7 +13,7 @@ namespace Dynamo.PackageManager
     static class PackageUploadBuilder
     {
 
-        public static PackageUploadRequestBody NewPackageHeader( LocalPackage l )
+        public static PackageUploadRequestBody NewPackageHeader( Package l )
         {
             var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var engineMetadata = "";
@@ -22,13 +22,13 @@ namespace Dynamo.PackageManager
                                                          engineVersion, engineMetadata, l.Group, l.Dependencies );
         }
 
-        public static PackageUpload NewPackage(LocalPackage pkg, List<string> files, PackageUploadHandle uploadHandle)
+        public static PackageUpload NewPackage(Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
             var zipPath = DoPackageFileOperationsAndZip(pkg, files, uploadHandle);
             return BuildPackageUpload(pkg.Header, zipPath);
         }
 
-        public static PackageVersionUpload NewPackageVersion(LocalPackage pkg, List<string> files, PackageUploadHandle uploadHandle)
+        public static PackageVersionUpload NewPackageVersion(Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
             var zipPath = DoPackageFileOperationsAndZip(pkg, files, uploadHandle);
             return BuildPackageVersionUpload(pkg.Header, zipPath);
@@ -37,7 +37,7 @@ namespace Dynamo.PackageManager
 
     #region Utility methods
 
-        private static string DoPackageFileOperationsAndZip(LocalPackage pkg, List<string> files, PackageUploadHandle uploadHandle)
+        private static string DoPackageFileOperationsAndZip(Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
             uploadHandle.UploadState = PackageUploadHandle.State.Copying;
 

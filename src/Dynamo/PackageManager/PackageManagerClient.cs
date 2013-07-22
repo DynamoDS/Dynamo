@@ -105,8 +105,6 @@ namespace Dynamo.PackageManager
             LoadedPackageHeaders = new Dictionary<FunctionDefinition, PackageUploadRequestBody>();
             Client = new Client(null, "http://54.225.215.247");
 
-            
-
             Worker = new BackgroundWorker();
             IsLoggedIn = false;
         }
@@ -126,7 +124,7 @@ namespace Dynamo.PackageManager
         //                    Client.ExecuteAndDeserializeWithContent<List<PackageUploadRequestBody>>(req);
         //                if (response.success)
         //                {
-        //                    dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+        //                    dynSettings.Bench.Dispatcher.BeginInvoke((Action)(() =>
         //                        {
         //                            foreach (PackageUploadRequestBody header in response.content)
         //                            {
@@ -138,7 +136,7 @@ namespace Dynamo.PackageManager
         //            catch
         //            {
         //                dynSettings.Bench.Dispatcher.BeginInvoke(
-        //                    (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to refresh available nodes from server.")));
+        //                    (Action)(() => dynSettings.Controller.DynamoViewModel.Log("Failed to refresh available nodes from server.")));
         //            }
         //        };
         //    new Thread(start).Start();
@@ -146,9 +144,20 @@ namespace Dynamo.PackageManager
 
         internal List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
         {
-            var nv = new Greg.Requests.Search(search);
-            var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
-            return pkgResponse.content.GetRange(0, Math.Min(maxNumSearchResults, pkgResponse.content.Count())).Select((header) => new PackageManagerSearchElement(header)).ToList();
+            try
+            {
+                var nv = new Greg.Requests.Search(search);
+                var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
+                return
+                    pkgResponse.content.GetRange(0, Math.Min(maxNumSearchResults, pkgResponse.content.Count()))
+                               .Select((header) => new PackageManagerSearchElement(header))
+                               .ToList();
+            }
+            catch
+            {
+                return new List<PackageManagerSearchElement>();
+            }
+            
         }
 
         private ResponseWithContentBody<PackageHeader> UploadDynamoPackageTest()
@@ -165,16 +174,23 @@ namespace Dynamo.PackageManager
             return response;
         }
 
-        public PackageUploadHandle Publish( LocalPackage l, List<string> files, bool isNewVersion )
+        public PackageUploadHandle Publish( Package l, List<string> files, bool isNewVersion )
         {
 
-            var nv = new ValidateAuth();
-            var pkgResponse = Client.ExecuteAndDeserialize(nv);
-
-            if (pkgResponse == null)
+            try
+            {
+                var nv = new ValidateAuth();
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
+                if (pkgResponse == null)
+                {
+                    throw new AuthenticationException(
+                        "It looks like you're not logged into Autodesk 360.  Log in to submit a package.");
+                }
+            }
+            catch
             {
                 throw new AuthenticationException(
-                    "It looks like you're not logged into Autodesk 360.  Log in to submit a package.");
+                    "Could not connect.  Do you have a connection to the internet?");
             }
 
             var packageUploadHandle = new PackageUploadHandle(l.Header);
@@ -190,7 +206,7 @@ namespace Dynamo.PackageManager
         }
 
         private PackageUploadHandle PublishPackage( bool isNewVersion, 
-                                                    LocalPackage l, 
+                                                    Package l, 
                                                     List<string> files,
                                                     PackageUploadHandle packageUploadHandle )
         {
@@ -257,67 +273,11 @@ namespace Dynamo.PackageManager
             }
         }
 
-        /// <summary>
-        ///     Asynchronously download a specific user-defined node from the server
-        /// </summary>
-        /// <param name="id"> The id that uniquely defines the package, usually obtained from a PackageHeader </param>
-        /// <param name="version"> A version name for the download </param>
-        /// <param name="callback"> Delegate to execute upon receiving the package </param>
-        public void Download(string id, string version, Action<Guid> callback)
-        {
-            ThreadStart start = () =>
-                {   
-                    // download the package
-                    var m = new HeaderDownload(id);
-                    ResponseWithContentBody<PackageHeader> p = Client.ExecuteAndDeserializeWithContent<PackageHeader>(m);
-                };
-            new Thread(start).Start();
-        }
-
-
-        /// <summary>
-        ///     Attempts to load a PackageHeader from the Packages directory, if successful, stores the PackageHeader
-        /// </summary>
-        /// <param name="funcDef"> The FunctionDefinition to which the loaded user-defined node is to be assigned </param>
-        /// <param name="name">
-        ///     The name of the package, necessary for looking it up in Packages. Note that
-        ///     two package version cannot exist side by side.
-        /// </param>
-        public void LoadPackageHeader(FunctionDefinition funcDef, string name)
-        {
-            try
-            {
-                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string pluginsPath = Path.Combine(directory, "packages");
-
-                // find the file matching the expected name
-                string[] files = Directory.GetFiles(pluginsPath, name + ".json");
-
-                if (files.Length == 1) // There can only be one!
-                {
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                dynSettings.Controller.DynamoViewModel.Log("Failed to open the package header information.");
-                dynSettings.Controller.DynamoViewModel.Log(ex);
-                Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
-            }
-        } 
-
         ObservableCollection<PackageDownloadHandle> _downloads = new ObservableCollection<PackageDownloadHandle>();
         public ObservableCollection<PackageDownloadHandle> Downloads
         {
             get { return _downloads; }
             set { _downloads = value; }
-        }
-
-        ObservableCollection<LocalPackage> _installedPackages = new ObservableCollection<LocalPackage>();
-        public ObservableCollection<LocalPackage> InstalledPackages
-        {
-            get { return _installedPackages; }
-            set { _installedPackages = value; }
         }
 
         internal void ClearInstalled()
@@ -341,7 +301,7 @@ namespace Dynamo.PackageManager
                     var response = Client.Execute(pkgDownload);
                     var pathDl = PackageDownload.GetFileFromResponse(response);
                     packageDownloadHandle.Done(pathDl);
-                    LocalPackage dynPkg;
+                    Package dynPkg;
 
                     var firstOrDefault = dynSettings.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                     if ( firstOrDefault != null)
@@ -369,5 +329,10 @@ namespace Dynamo.PackageManager
             new Thread(start).Start();
         }
 
+
+        internal void GoToWebsite()
+        {
+            Process.Start(Client.BaseUrl);
+        }
     }
 }

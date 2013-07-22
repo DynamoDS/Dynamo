@@ -983,8 +983,6 @@ namespace Dynamo.Utilities
 
                 ws.FilePath = xmlPath;
 
-                controller.PackageManagerClient.LoadPackageHeader(def, funName);
-
                 var expression = CompileFunction(def);
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), expression);
 

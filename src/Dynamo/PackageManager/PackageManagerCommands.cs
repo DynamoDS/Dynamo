@@ -50,16 +50,23 @@ namespace Dynamo.Commands
             {
                 var f = funcDef as FunctionDefinition;
 
+                var pkg = dynSettings.PackageLoader.GetOwnerPackage(f);
+
+                if (dynSettings.PackageLoader.GetOwnerPackage(f) != null)
+                {
+                    var m = MessageBox.Show("This node is part of the dynamo package called \"" + pkg.Name + "\" - do you want to submit a new version of this package?  \n\nIf you're submitting this package for the first time, use the Manage Installed Packages.. dialog to submit the package.", "Package Control", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (m == MessageBoxResult.Yes)
+                    {
+                        pkg.PublishNewPackageVersionCommand.Execute();
+                    }
+
+                    return;
+                }
+
                 dynSettings.Controller.PublishPackageViewModel = new PublishPackageViewModel(dynSettings.Controller.PackageManagerClient);
                 dynSettings.Controller.PublishPackageViewModel.FunctionDefinitions =
                     new List<FunctionDefinition> {f};
 
-                // we're submitting a new version
-                if ( dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders.ContainsKey(f) )
-                {
-                    dynSettings.Controller.PublishPackageViewModel.BaseVersionHeader =
-                        dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders[f];
-                }
             }
             else
             {
@@ -164,7 +171,7 @@ namespace Dynamo.Commands
             return true;
         }
     }
-    
+
     public static partial class DynamoCommands
     {
 

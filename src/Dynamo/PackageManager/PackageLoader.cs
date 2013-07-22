@@ -30,8 +30,8 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private ObservableCollection<LocalPackage> _localPackages = new ObservableCollection<LocalPackage>();
-        public ObservableCollection<LocalPackage> LocalPackages { get { return _localPackages; } }
+        private ObservableCollection<Package> _localPackages = new ObservableCollection<Package>();
+        public ObservableCollection<Package> LocalPackages { get { return _localPackages; } }
 
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
@@ -42,7 +42,7 @@ namespace Dynamo.PackageManager
             LocalPackages.ToList().ForEach( (pkg) => pkg.Load() );
         }
 
-        private List<LocalPackage> ScanAllPackageDirectories()
+        private List<Package> ScanAllPackageDirectories()
         {
             return
                 Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly)
@@ -50,18 +50,18 @@ namespace Dynamo.PackageManager
                          .ToList();
         }
 
-        public LocalPackage ScanPackageDirectory(string directory)
+        public Package ScanPackageDirectory(string directory)
         {
             try
             {
                 var headerPath = Path.Combine(directory, "pkg.json");
 
-                LocalPackage discoveredPkg = null;
+                Package discoveredPkg = null;
 
                 // get the package name and the installed version
                 if (File.Exists(headerPath))
                 {
-                    discoveredPkg = LocalPackage.FromJson(headerPath);
+                    discoveredPkg = Package.FromJson(headerPath);
                     if (discoveredPkg == null)
                         throw new Exception(headerPath + " contains a package with a malformed header.  Ignoring it.");
                 }
@@ -107,22 +107,22 @@ namespace Dynamo.PackageManager
             return LocalPackages.Any(package => package.LoadedTypes.Contains(t));
         }
 
-        public LocalPackage GetPackageFromRoot(string path)
+        public Package GetPackageFromRoot(string path)
         {
             return LocalPackages.FirstOrDefault(pkg => pkg.RootDirectory == path);
         }
 
-        public LocalPackage GetOwnerPackage(Type t)
+        public Package GetOwnerPackage(Type t)
         {
             return LocalPackages.FirstOrDefault(package => package.LoadedTypes.Contains(t));
         }
 
-        public LocalPackage GetOwnerPackage(FunctionDefinition def)
+        public Package GetOwnerPackage(FunctionDefinition def)
         {
             return GetOwnerPackage(def.Workspace.FilePath);
         }
 
-        public LocalPackage GetOwnerPackage(string path)
+        public Package GetOwnerPackage(string path)
         {
             return LocalPackages.FirstOrDefault(ele => ele.ContainsFile(path));
         }

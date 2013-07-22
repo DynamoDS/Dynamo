@@ -81,7 +81,7 @@ namespace Dynamo.PackageManager
 
         }
 
-        public bool Extract( out LocalPackage pkg )
+        public bool Extract( out Package pkg )
         {
             if (this.DownloadState != State.Downloaded)
             {
@@ -109,7 +109,7 @@ namespace Dynamo.PackageManager
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
-            pkg = new LocalPackage(installedPath, Header.name, VersionName);
+            pkg = new Package(installedPath, Header.name, VersionName);
 
             return true;
         }

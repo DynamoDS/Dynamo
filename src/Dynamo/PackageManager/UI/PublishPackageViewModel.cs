@@ -345,7 +345,7 @@ namespace Dynamo.PackageManager
             get { return !HasDependencies; }
         }
 
-        public LocalPackage LocalPackage { get; set; }
+        public Package Package { get; set; }
 
         /// <summary>
         /// FunctionDefinition property </summary>
@@ -405,12 +405,11 @@ namespace Dynamo.PackageManager
             this.Dependencies = new ObservableCollection<PackageDependency>();
         }
 
-        public static PublishPackageViewModel FromLocalPackage(LocalPackage l)
+        public static PublishPackageViewModel FromLocalPackage(Package l)
         {
 
             var vm = new PublishPackageViewModel(dynSettings.PackageManagerClient)
                 {
-                    IsNewVersion = true,
                     Group = l.Group,
                     Description = l.Description
                 };
@@ -430,7 +429,7 @@ namespace Dynamo.PackageManager
             }
 
             vm.Name = l.Name;
-            vm.LocalPackage = l;
+            vm.Package = l;
 
             return vm;
 
@@ -466,25 +465,25 @@ namespace Dynamo.PackageManager
 
             try
             {
-                var newpkg = LocalPackage == null;
+                var newpkg = Package == null;
 
-                LocalPackage = LocalPackage ?? new LocalPackage("", this.Name, this.FullVersion);
+                Package = Package ?? new Package("", this.Name, this.FullVersion);
 
-                LocalPackage.VersionName = FullVersion;
-                LocalPackage.Description = Description;
-                LocalPackage.Group = Group;
-                LocalPackage.Keywords = KeywordList;
+                Package.VersionName = FullVersion;
+                Package.Description = Description;
+                Package.Group = Group;
+                Package.Keywords = KeywordList;
 
                 var files = GetAllFiles().ToList();
                 
-                LocalPackage.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
+                Package.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
 
-                LocalPackage.Dependencies.Clear();
-                GetAllDependencies().ToList().ForEach( LocalPackage.Dependencies.Add );
+                Package.Dependencies.Clear();
+                GetAllDependencies().ToList().ForEach( Package.Dependencies.Add );
 
-                if (newpkg) dynSettings.PackageLoader.LocalPackages.Add( LocalPackage );
+                if (newpkg) dynSettings.PackageLoader.LocalPackages.Add( Package );
 
-                var handle = Client.Publish(LocalPackage, files, IsNewVersion);
+                var handle = Client.Publish(Package, files, IsNewVersion);
 
                 if (handle == null)
                     throw new Exception("Failed to authenticate.  Are you logged in?");
@@ -535,7 +534,9 @@ namespace Dynamo.PackageManager
             // omit files currently already under package control
             var files =
                 allFuncs.Select(f => f.Workspace.FilePath)
-                        .Where(p => !dynSettings.PackageLoader.IsUnderPackageControl(p));
+                        .Where(p =>
+                                (dynSettings.PackageLoader.IsUnderPackageControl(p) &&
+                                dynSettings.PackageLoader.GetOwnerPackage(p).Name == this.Name) || !dynSettings.PackageLoader.IsUnderPackageControl(p));
 
             // union with additional files
             files = files.Union(this.AdditionalFiles);
@@ -558,7 +559,7 @@ namespace Dynamo.PackageManager
                     .Where(dynSettings.PackageLoader.IsUnderPackageControl)
                     .Select(dynSettings.PackageLoader.GetOwnerPackage)
                     .Where(x => x != null)
-                    .Where(x => !(this.IsNewVersion && x.Name == this.Name))
+                    .Where(x => (x.Name != this.Name))
                     .Distinct()
                     .Select(x => new PackageDependency(x.Name, x.VersionName));
 
@@ -570,7 +571,7 @@ namespace Dynamo.PackageManager
                 .Where(dynSettings.PackageLoader.IsUnderPackageControl)
                 .Select(dynSettings.PackageLoader.GetOwnerPackage)
                 .Where(x => x != null)
-                .Where(x => !(this.IsNewVersion && x.Name == this.Name) )
+                .Where(x => (x.Name != this.Name) )
                 .Distinct()
                 .Select(x => new PackageDependency(x.Name, x.VersionName));
 
@@ -585,7 +586,9 @@ namespace Dynamo.PackageManager
             // collect the name-description pairs for every custom node
             return
                 AllFuncDefs()
-                    .Where(x => !dynSettings.PackageLoader.IsUnderPackageControl(x))
+                    .Where(p =>
+                                (dynSettings.PackageLoader.IsUnderPackageControl(p) &&
+                                dynSettings.PackageLoader.GetOwnerPackage(p).Name == this.Name) || !dynSettings.PackageLoader.IsUnderPackageControl(p))
                         .Select(x => new Tuple<string, string>(x.Workspace.Name, !String.IsNullOrEmpty(x.Workspace.Description) ? x.Workspace.Description : "No description provided" ));
         }
 

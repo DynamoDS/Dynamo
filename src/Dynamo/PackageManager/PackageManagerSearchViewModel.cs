@@ -76,6 +76,16 @@ namespace Dynamo.PackageManager
         /// </value>
         public int MaxNumSearchResults { get; set; }
 
+        public bool HasDownloads
+        {
+            get { return dynSettings.PackageManagerClient.Downloads.Count > 0; }
+        }
+
+        public bool HasResults
+        {
+            get { return this.SearchResults.Count > 0; }
+        }
+
         /// <summary>
         ///     PackageManagerClient property
         /// </summary>
@@ -116,7 +126,7 @@ namespace Dynamo.PackageManager
             MaxNumSearchResults = 1000;
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
             PackageManagerClient.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
-
+            this.SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchAndUpdateResults("");
         }
 
@@ -135,6 +145,14 @@ namespace Dynamo.PackageManager
             {
                 this.ClearCompletedCommand.RaiseCanExecuteChanged();
             }
+
+            this.RaisePropertyChanged("HasDownloads");
+
+        }
+
+        private void SearchResultsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            this.RaisePropertyChanged("HasResults");
 
         } 
 
