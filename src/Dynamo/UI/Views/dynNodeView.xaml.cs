@@ -42,16 +42,7 @@ namespace Dynamo.Controls
             get { return inputGrid; }
         }
 
-        public dynNodeViewModel ViewModel
-        {
-            get
-            {
-                if (this.DataContext is dynNodeViewModel)
-                    return (dynNodeViewModel)this.DataContext;
-                else
-                    return null;
-            }
-        }
+        public dynNodeViewModel ViewModel { get; set; }
 
         #region constructors
 
@@ -86,6 +77,12 @@ namespace Dynamo.Controls
 
         void dynNodeView_Loaded(object sender, RoutedEventArgs e)
         {
+            //This is an annoying bug in WPF for .net 4.0
+            //You need to cache a reference to the data context or
+            //when switching back and forth between tabs, the element's
+            //data context will come back as disconnected.
+            ViewModel = this.DataContext as dynNodeViewModel;
+
             ViewModel.NodeLogic.DispatchedToUI += new DispatchedToUIThreadHandler(NodeLogic_DispatchedToUI);
             ViewModel.RequestShowNodeHelp += new dynNodeViewModel.NodeHelpEventHandler(ViewModel_RequestShowNodeHelp);
             ViewModel.RequestShowNodeRename += new EventHandler(ViewModel_RequestShowNodeRename);

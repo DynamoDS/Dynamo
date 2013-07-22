@@ -29,7 +29,7 @@ namespace Dynamo.Views
             get
             {
                 if (this.DataContext is dynWorkspaceViewModel)
-                    return (dynWorkspaceViewModel)this.DataContext;
+                    return this.DataContext as dynWorkspaceViewModel;
                 else
                     return null;
             }

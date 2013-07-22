@@ -266,7 +266,7 @@
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
                 Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#999">
             
-            <TabControl ItemsSource="{Binding Workspaces, UpdateSourceTrigger=PropertyChanged}" Name="WorkspaceTabs" 
+            <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs" 
                         SelectedIndex="{Binding CurrentWorkspaceIndex}" Background="#222" Padding ="0" SelectionChanged="WorkspaceTabs_SelectionChanged">
                 
                 <TabControl.Resources>
