@@ -493,13 +493,13 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Number Sequence")]
+    [NodeName("Number Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Creates a sequence of numbers")]
-    [NodeSearchTags("range")]
-    public class dynBuildSeq : dynBuiltinFunction
+    [NodeDescription("Creates a sequence of numbers in the specified range.")]
+    [AlsoKnownAs("dynBuildSeq")]
+    public class dynNumberRange : dynBuiltinFunction
     {
-        public dynBuildSeq()
+        public dynNumberRange()
             : base("build-list")
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(Value.Number)));
@@ -512,6 +512,41 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Longest;
         }
     }
+
+    [NodeName("Number Sequence")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Creates a sequence of numbers.")]
+    public class dynNumberSeq : dynNodeWithOneOutput
+    {
+        public dynNumberSeq()
+        {
+            InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(Value.Number)));
+            InPortData.Add(new PortData("amount", "Amount of numbers in the sequence", typeof(Value.Number)));
+            InPortData.Add(new PortData("step", "Space between numbers", typeof(Value.Number)));
+            OutPortData.Add(new PortData("seq", "New sequence", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var start = (int)((Value.Number)args[0]).Item;
+            var amount = (int)((Value.Number)args[1]).Item;
+            var step = (int)((Value.Number)args[2]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(MakeSequence(start, amount, step)));
+        }
+
+        private IEnumerable<Value> MakeSequence(int start, int amount, int step)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                yield return Value.NewNumber(start);
+                start += step;
+            }
+        }
 
     [NodeName("Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
