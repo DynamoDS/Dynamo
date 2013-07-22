@@ -29,16 +29,7 @@ namespace Dynamo.Nodes
     public partial class dynNoteView : UserControl, IViewModelView<dynNoteViewModel>
     {
         
-        public dynNoteViewModel ViewModel
-        {
-            get
-            {
-                if (this.DataContext is dynNoteViewModel)
-                    return (dynNoteViewModel)this.DataContext;
-                else
-                    return null;
-            }
-        }
+        public dynNoteViewModel ViewModel { get; set; }
 
         public dynNoteView()
         {
@@ -60,6 +51,7 @@ namespace Dynamo.Nodes
 
         void dynNoteView_Loaded(object sender, RoutedEventArgs e)
         {
+            ViewModel = this.DataContext as dynNoteViewModel;
             ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
         }
 
