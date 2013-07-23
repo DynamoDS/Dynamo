@@ -163,12 +163,14 @@ namespace Dynamo.Views
 
         void zoomBorder_MouseMove(object sender, MouseEventArgs e)
         {
-            (DataContext as dynWorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
+            if(e.MiddleButton == MouseButtonState.Pressed)
+                (DataContext as dynWorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
         }
 
         void zoomBorder_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            (DataContext as dynWorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
+            if (e.MiddleButton == MouseButtonState.Pressed)
+                (DataContext as dynWorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
         }
 
         void vm_CurrentOffsetChanged(object sender, EventArgs e)

@@ -46,7 +46,7 @@ namespace Dynamo.UI.Commands
         public void Execute(object parameter)
         {
             _execute(parameter);
-            OnExecute();
+            OnExecute(parameter);
         }
 
         public void RaiseCanExecuteChanged()
@@ -57,13 +57,14 @@ namespace Dynamo.UI.Commands
             }
         }
 
-        private void OnExecute()
+        private void OnExecute(object parameter)
         {
             //http://joshsmithonwpf.wordpress.com/2007/10/25/logging-routed-commands/
 
             var msg = new StringBuilder();
 
-            msg.AppendFormat("COMMAND: Name={0}", _execute.Method.Name);
+            var paramStr = parameter == null ? "null" : parameter.ToString();
+            msg.AppendFormat("COMMAND: Name={0}, Parameter={1}", _execute.Method.Name, paramStr);
             //msg.AppendLine();
 
             DynamoLogger.Instance.Log(msg.ToString());
