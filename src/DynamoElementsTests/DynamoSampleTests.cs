@@ -556,7 +556,7 @@ namespace Dynamo.Tests
 
             //change the value of the list
             var numNode = (dynDoubleInput) controller.DynamoModel.Nodes.Last(x => x is dynDoubleInput);
-            numNode.Value = 3;
+            numNode.Value = "3";
             controller.RunCommand(vm.RunExpressionCommand);
             Thread.Sleep(300);
 
@@ -564,7 +564,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, listWatchVal.Length);
 
             //test the negative case to make sure it throws an error
-            numNode.Value = -1;
+            numNode.Value = "-1";
             Assert.Throws<NUnit.Framework.AssertionException>(() => controller.RunCommand(vm.RunExpressionCommand));
 
         }

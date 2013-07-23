@@ -93,11 +93,11 @@ type Value =
 
 ///Converts an expression to a boolean value
 let ValueToBool = function
-    //Empty list or empty string is false, evaluate else branch.
+    //Empty list or empty string is false.
     | List([]) | String("") -> false
-    //Zero is false, evaluate else branch.
+    //Zero is false.
     | Number(n) when n = 0. -> false
-    //Everything else is true, evaluate then branch.
+    //Everything else is true.
     | _ -> true
 
 type Frame = Value ref [] ref
@@ -425,16 +425,32 @@ let RandomDbl = function
     | m  -> malformed "random" <| List(m)
 
 //List Functions
-let Car =     function [List(h :: _)]       -> h                                      | m -> malformed "car"    <| List(m)
-let Cdr =     function [List(_ :: t)]       -> List(t)                                | m -> malformed "cdr"    <| List(m)
-let Cons =    function [h; List(t)]         -> (List(h :: t))                         | m -> malformed "cons"   <| List(m)
-let Get =     function [Number(n); List(l)] -> l.Item (int n)                         | m -> malformed "get"    <| List(m)
-let Rev =     function [List(l)]            -> List(List.rev l)                       | m -> malformed "reverse"<| List(m)
-let Len =     function [List(l)]            -> Number(double l.Length)                | m -> malformed "len"    <| List(m)
-let Append =  function [List(l1); List(l2)] -> List(List.append l1 l2)                | m -> malformed "append" <| List(m)
-let Take =    function [Number(n); List(l)] -> List(Seq.take (int n) l |> List.ofSeq) | m -> malformed "take"   <| List(m)
-let Drop =    function [Number(n); List(l)] -> List(Seq.skip (int n) l |> List.ofSeq) | m -> malformed "drop"   <| List(m)
-let IsEmpty = function [List(l)]            -> Number(if l.IsEmpty then 1. else 0.)   | m -> malformed "empty?" <| List(m)
+let Car =     function [List(h :: _)]       -> h                                      | m -> malformed "car"     <| List(m)
+let Cdr =     function [List(_ :: t)]       -> List(t)                                | m -> malformed "cdr"     <| List(m)
+let Cons =    function [h; List(t)]         -> (List(h :: t))                         | m -> malformed "cons"    <| List(m)
+let Get =     function [Number(n); List(l)] -> l.Item (int n)                         | m -> malformed "get"     <| List(m)
+let Rev =     function [List(l)]            -> List(List.rev l)                       | m -> malformed "reverse" <| List(m)
+let Len =     function [List(l)]            -> Number(double l.Length)                | m -> malformed "len"     <| List(m)
+let Append =  function [List(l1); List(l2)] -> List(List.append l1 l2)                | m -> malformed "append"  <| List(m)
+let IsEmpty = function [List(l)]            -> Number(if l.IsEmpty then 1. else 0.)   | m -> malformed "empty?"  <| List(m)
+
+let Take = function 
+    | [Number(n); List(l)] ->
+        let n = (int n)
+        if n >= 0 then
+            List(Seq.take n l |> List.ofSeq) 
+        else
+            List(Seq.skip ((List.length l) + n) l |> List.ofSeq)
+    | m -> malformed "take" <| List(m)
+
+let Drop = function
+    | [Number(n); List(l)] -> 
+        let n = (int n)
+        if n >= 0 then
+            List(Seq.skip n l |> List.ofSeq)
+        else
+            List(Seq.take ((List.length l) + n) l |> List.ofSeq)
+    | m -> malformed "drop" <| List(m)
 
 let private transpose lists =
     let rec transpose' acc lists rev =
@@ -494,6 +510,30 @@ let ForEach = function
         for e in l do f [e] |> ignore
         Dummy("for-each")
     | m -> malformed "for-each" <| List(m)
+
+let OrMap = function
+    | Function(f) :: lsts ->
+        let ls = List.map (function List(l) -> l | m -> failwith "bad ormap arg") lsts
+        let transposed = transpose ls
+        let rec ormap = function
+            | h :: t -> 
+                let r = f h
+                if ValueToBool r then r else ormap t
+            | [] -> Number(0.)
+        ormap transposed
+    | m -> malformed "ormap" <| List(m)
+
+let AndMap = function
+    | Function(f) :: lsts ->
+        let ls = List.map (function List(l) -> l | m -> failwith "bad andmap arg") lsts
+        let transposed = transpose ls
+        let rec andmap = function
+            | h :: t -> 
+                let r = f h
+                if ValueToBool r then andmap t else Number(0.)
+            | [] -> Number(1.)
+        andmap transposed
+    | m -> malformed "andmap" <| List(m)
 
 ///Sorts using natural ordering. Only works for primitive types (numbers, strings)
 let Sort = function
@@ -971,6 +1011,8 @@ let CreateEnvironments() =
     AddDefaultBinding "flatten" (Function(Flatten))
     AddDefaultBinding "sqrt" (Function(Sqrt))
     AddDefaultBinding "transpose" (Function(Transpose))
+    AddDefaultBinding "andmap" (Function(AndMap))
+    AddDefaultBinding "ormap" (Function(OrMap))
 
     environment := [Seq.map (fun (_, x) -> x) !tempEnv |> Seq.toArray |> ref]
     compileEnvironment := [List.map (fun (x, _) -> x) !tempEnv]
