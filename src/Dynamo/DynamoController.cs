@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -69,8 +70,8 @@ namespace Dynamo
             set { testing = value; }
         }
 
-        List<dynModelBase> clipBoard = new List<dynModelBase>();
-        public List<dynModelBase> ClipBoard
+        ObservableCollection<dynModelBase> clipBoard = new ObservableCollection<dynModelBase>();
+        public ObservableCollection<dynModelBase> ClipBoard
         {
             get { return clipBoard; }
             set { clipBoard = value; }
