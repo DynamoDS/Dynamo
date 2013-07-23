@@ -19,6 +19,7 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
@@ -329,11 +330,9 @@ namespace Dynamo.ViewModels
         void Controller_RequestNodeSelect(object sender, EventArgs e)
         {
             dynModelBase n = (e as ModelEventArgs).Model;
-            //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(SelectCommand, n));
-            //DynamoCommands.ProcessCommandQueue();
 
-            dynSettings.Controller.DynamoViewModel.AddToSelection(n);
-            
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(n);
         }
 
         #endregion
