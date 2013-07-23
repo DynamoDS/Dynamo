@@ -43,12 +43,6 @@ namespace Dynamo.Views
             DataContextChanged += new DependencyPropertyChangedEventHandler(dynWorkspaceView_DataContextChanged);
 
             this.Loaded += new RoutedEventHandler(dynWorkspaceView_Loaded);
-            this.LayoutUpdated += new EventHandler(dynWorkspaceView_LayoutUpdated);
-        }
-
-        void dynWorkspaceView_LayoutUpdated(object sender, EventArgs e)
-        {
-            //Debug.WriteLine("Workspace layout updated.");
         }
 
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
