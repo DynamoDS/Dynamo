@@ -15,19 +15,15 @@
 using System;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Data;
 using System.Xml;
-using System.Web;
-
 using Autodesk.Revit.DB;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
-using Dynamo.Revit;
-using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Controls;
 using Dynamo.Measure;
@@ -81,13 +77,16 @@ namespace Dynamo.Nodes
 
     [NodeName("Surface Domain")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
-    [NodeDescription("An element which measures the domain of a surface in U and V.")]
-    public class dynSurfaceDomain : dynNodeWithOneOutput
+    [NodeDescription("Measure the domain of a surface in U and V.")]
+    public class dynSurfaceDomain : dynNodeWithMultipleOutputs
     {
         public dynSurfaceDomain()
         {
             InPortData.Add(new PortData("f", "The surface whose domain you wish to calculate (Reference).", typeof(Value.Container)));//Ref to a face of a form
-            OutPortData.Add(new PortData("d", "The min, max, and dimensions of the surface domain. (List)", typeof(Value.List)));
+            OutPortData.Add(new PortData("min", "The minimum of the domain's bounding box.", typeof(Value.List)));
+            OutPortData.Add(new PortData("max", "The maximum of the domain's bounding box.", typeof(Value.List)));
+            OutPortData.Add(new PortData("u span", "The U dimension of the domain.", typeof(Value.List)));
+            OutPortData.Add(new PortData("v span", "The V dimension of the domain.", typeof(Value.List)));
 
             RegisterAllPorts();
         }
@@ -101,7 +100,7 @@ namespace Dynamo.Nodes
 
             Autodesk.Revit.DB.Face f;
 
-            Reference faceRef = arg0 as Reference;
+            var faceRef = arg0 as Reference;
             if (faceRef != null)
                 f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             else
@@ -124,6 +123,55 @@ namespace Dynamo.Nodes
             result = FSharpList<Value>.Cons(
                            Value.NewContainer(bbox.Min),
                            result);
+            
+            //Fin
+            return Value.NewList(result);
+        }
+    }
+
+    [NodeName("Curve Domain")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Measure the domain of a curve.")]
+    public class dynCurveDomain : dynNodeWithMultipleOutputs
+    {
+        public dynCurveDomain()
+        {
+            InPortData.Add(new PortData("curve", "The curve whose domain you wish to calculate.", typeof(Value.Container)));
+            
+            OutPortData.Add(new PortData("start", "The domain start.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("end", "The domain end.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("length", "The domain length.", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            FSharpList<Value> result = FSharpList<Value>.Empty;
+            BoundingBoxUV bbox = null;
+
+            var curveRef = ((Value.Container)args[0]).Item as Reference;
+
+            Curve curve = curveRef == null
+                              ? (Curve) ((Value.Container)args[0]).Item
+                              : (Curve)
+                                dynRevitSettings.Doc.Document.GetElement(curveRef.ElementId)
+                                                .GetGeometryObjectFromReference(curveRef);
+
+            var start = curve.get_EndParameter(0);
+            var end = curve.get_EndParameter(1);
+            var length = Math.Abs(end-start);
+
+            result = FSharpList<Value>.Cons(
+                           Value.NewNumber(length),
+                           result);
+            result = FSharpList<Value>.Cons(
+                           Value.NewNumber(end),
+                           result);
+            result = FSharpList<Value>.Cons(
+                           Value.NewNumber(start),
+                           result);
+
             
             //Fin
             return Value.NewList(result);
