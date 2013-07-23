@@ -620,7 +620,7 @@ namespace Dynamo.Tests
             var vm = dynSettings.Controller.DynamoViewModel;
 
             var data = new Dictionary<string, object>();
-            data.Add("name", "Slice List");
+            data.Add("name", "Partition List");
             //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, data));
             //DynamoCommands.ProcessCommandQueue();
             vm.CreateNode(data);
