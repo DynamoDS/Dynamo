@@ -211,6 +211,7 @@ namespace Dynamo.Applications
         private UIDocument m_doc;
         private UIApplication m_revit;
         private DynamoController dynamoController;
+        private static bool isRunning = false;
 
         public static double? dynamoViewX = null;
         public static double? dynamoViewY = null;
@@ -220,11 +221,19 @@ namespace Dynamo.Applications
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-            if (dynamoView != null)
+            //When a user double-clicks the Dynamo icon, we need to make
+            //sure that we don't create another instance of Dynamo.
+            if (isRunning)
             {
-                dynamoView.Focus();
+                Debug.WriteLine("Dynamo is already running.");
+                if (dynamoView != null)
+                {
+                    dynamoView.Focus();
+                }
                 return Result.Succeeded;
             }
+
+            isRunning = true;
 
             DynamoLogger.Instance.StartLogging();
 
@@ -293,6 +302,7 @@ namespace Dynamo.Applications
             }
             catch (Exception ex)
             {
+                isRunning = false;
                 MessageBox.Show(ex.ToString());
 
                 DynamoLogger.Instance.Log(ex.Message);
@@ -383,7 +393,7 @@ namespace Dynamo.Applications
         private void dynamoView_Closed(object sender, EventArgs e)
         {
             dynamoView = null;
-            //app.Shutdown();
+            isRunning = false;
         }
     }
 
