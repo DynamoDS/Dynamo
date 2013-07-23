@@ -6,6 +6,8 @@ using Dynamo;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 
+using Dynamo.FSchemeInterop;
+
 namespace DynamoPython
 {
     internal static class Converters
@@ -28,15 +30,30 @@ namespace DynamoPython
             else if (data is double)
                 return FScheme.Value.NewNumber(data);
             else if (data is IEnumerable<dynamic>)
+                //return FScheme.Value.NewList(Utils.SequenceToFSharpList(data));
             {
                 FSharpList<FScheme.Value> result = FSharpList<FScheme.Value>.Empty;
 
-                data.reverse();
+                //data.reverse(); // this breaks under certain circumstances
+
+                List<dynamic> reversal_list = new List<dynamic>();
 
                 foreach (var x in data)
                 {
+                    reversal_list.Add(x);
+                }
+
+                for (int i = reversal_list.Count - 1; i >= 0; --i)
+                {
+                    var x = reversal_list[i];
+
                     result = FSharpList<FScheme.Value>.Cons(convertToValue(x), result);
                 }
+
+                //foreach (var x in data)
+                //{
+                //    result = FSharpList<FScheme.Value>.Cons(convertToValue(x), result);
+                //}
 
                 return FScheme.Value.NewList(result);
             }
