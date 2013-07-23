@@ -443,13 +443,13 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Number Sequence")]
+    [NodeName("Number Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Creates a sequence of numbers")]
-    [NodeSearchTags("range")]
-    public class dynBuildSeq : dynBuiltinFunction
+    [NodeDescription("Creates a sequence of numbers in the specified range.")]
+    [AlsoKnownAs("Dynamo.Nodes.dynBuildSeq")]
+    public class dynNumberRange : dynBuiltinFunction
     {
-        public dynBuildSeq()
+        public dynNumberRange()
             : base("build-list")
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(Value.Number)));
@@ -460,6 +460,42 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Longest;
+        }
+    }
+
+    [NodeName("Number Sequence")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Creates a sequence of numbers.")]
+    public class dynNumberSeq : dynNodeWithOneOutput
+    {
+        public dynNumberSeq()
+        {
+            InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(Value.Number)));
+            InPortData.Add(new PortData("amount", "Amount of numbers in the sequence", typeof(Value.Number)));
+            InPortData.Add(new PortData("step", "Space between numbers", typeof(Value.Number)));
+            OutPortData.Add(new PortData("seq", "New sequence", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var start = (int)((Value.Number)args[0]).Item;
+            var amount = (int)((Value.Number)args[1]).Item;
+            var step = (int)((Value.Number)args[2]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(MakeSequence(start, amount, step)));
+        }
+
+        private IEnumerable<Value> MakeSequence(int start, int amount, int step)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                yield return Value.NewNumber(start);
+                start += step;
+            }
         }
     }
 
@@ -748,6 +784,44 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Shift List Indeces")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Shifts the indeces of a list by a given amount.")]
+    public class dynShiftList : dynNodeWithOneOutput
+    {
+        public dynShiftList()
+        {
+            InPortData.Add(
+                new PortData("amt", "Amount to shift the list indeces by.", typeof(Value.Number)));
+            InPortData.Add(new PortData("list", "List to shift indeces of.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "Shifted list", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var amt = (int)((Value.Number)args[0]).Item;
+            var list = ((Value.List)args[1]).Item;
+
+            if (amt == 0)
+                return Value.NewList(list);
+
+            if (amt < 0)
+            {
+                return Value.NewList(
+                    Utils.SequenceToFSharpList(
+                        list.Skip(-amt).Concat(list.Take(-amt))));
+            }
+
+            var len = list.Length;
+            return Value.NewList(
+                Utils.SequenceToFSharpList(
+                    list.Skip(len - amt).Concat(list.Take(len - amt))));
+        }
+    }
+
+
     [NodeName("Get From List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Gets an element from a list at a specified index.")]
@@ -757,12 +831,62 @@ namespace Dynamo.Nodes
             : base("get")
         {
             InPortData.Add(new PortData("index", "Index of the element to extract", typeof(object)));
-            InPortData.Add(new PortData("list", "The list to extract elements from", typeof(Value.List)));
+            InPortData.Add(new PortData("list", "The list to extract the element from", typeof(Value.List)));
             OutPortData.Add(new PortData("element", "Extracted element", typeof(object)));
 
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Longest;
+        }
+    }
+
+    [NodeName("Remove From List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Removes an element from a list at a specified index.")]
+    public class dynRemoveFromList : dynNodeWithOneOutput
+    {
+        public dynRemoveFromList()
+        {
+            InPortData.Add(new PortData("index", "Index of the element to remove", typeof(object)));
+            InPortData.Add(new PortData("list", "The list to remove the element from", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "List with element removed", typeof(object)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var idx = (int)((Value.Number)args[0]).Item;
+            var lst = ((Value.List)args[1]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => i != idx)));
+        }
+    }
+
+    [NodeName("Remove Every Nth")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Removes every nth element from a list.")]
+    public class dynRemoveEveryNth : dynNodeWithOneOutput
+    {
+        public dynRemoveEveryNth()
+        {
+            InPortData.Add(new PortData("n", "All indeces that are a multiple of this number will be removed.", typeof(object)));
+            InPortData.Add(new PortData("list", "The list to remove elements from.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "List with elements removed.", typeof(object)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var n = (int)((Value.Number)args[0]).Item;
+            var lst = ((Value.List)args[1]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => i % n != 0)));
         }
     }
 
