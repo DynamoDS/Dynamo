@@ -539,12 +539,12 @@
 
             <Button Name="RunButton" Width="100" Content="Run" 
                     Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
-                    Command="{Binding Source=RunExpressionCommand}"
+                    Command="{Binding Source={x:Static Member=commands2:DynamoCommands.RunExpressionCommand}}"
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
             <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
-                      Command="{Binding Source=CancelRunCommand}" Margin="5"/>
+                      Command="{Binding Source={x:Static Member=commands2:DynamoCommands.CancelRunCommand}}" Margin="5"/>
             
             <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"
