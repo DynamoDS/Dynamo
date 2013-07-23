@@ -33,16 +33,16 @@ namespace Dynamo
         public static void Start()
         {
             LibG.start_asm_library();
-            //LibG.start_viewer();
-            //LibG.start_window_link();
+            LibG.start_viewer();
+            LibG.start_window_link();
         }
 
         public static void End()
         {
             HasShutdown = true;
 
-            //LibG.end_window_link();
-            //LibG.end_viewer();
+            LibG.end_window_link();
+            LibG.end_viewer();
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             if (assemblies.Any(x => x.FullName.Contains("RevitAPI")) && assemblies.Any(x => x.FullName.Contains("RevitAPIUI")))

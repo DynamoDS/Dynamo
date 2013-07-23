@@ -82,7 +82,7 @@ namespace Dynamo
 
         #region Python Nodes Revit Hooks
         private delegate void LogDelegate(string msg);
-        private delegate void SaveElementDelegate(Autodesk.Revit.DB.Element e);
+        private delegate void SaveElementDelegate(Element e);
 
         void AddPythonBindings()
         {
@@ -106,22 +106,23 @@ namespace Dynamo
                 if (ironPythonAssembly == null)
                     throw new Exception();
 
-                var PythonBindings = ironPythonAssembly.GetType("DynamoPython.PythonBindings");
+                var pythonBindings = ironPythonAssembly.GetType("DynamoPython.PythonBindings");
 
-                var pyBindingsProperty = PythonBindings.GetProperty("Bindings");
+                var pyBindingsProperty = pythonBindings.GetProperty("Bindings");
                 var pyBindings = pyBindingsProperty.GetValue(null, null);
 
-                var Binding = ironPythonAssembly.GetType("DynamoPython.Binding");
+                var binding = ironPythonAssembly.GetType("DynamoPython.Binding");
 
-                Func<string, object, object> CreateBinding = delegate(string name, object boundObject)
-                {
-                    return Activator.CreateInstance(Binding, new object[] { name, boundObject });
-                };
+                Func<string, object, object> createBinding =
+                    (name, boundObject) =>
+                        Activator.CreateInstance(binding, new[] { name, boundObject });
 
-                Action<string, object> addToBindings = delegate(string name, object boundObject)
-                {
-                    pyBindings.GetType().InvokeMember("Add", BindingFlags.InvokeMethod, null, pyBindings, new object[] { CreateBinding(name, boundObject) });
-                };
+                Action<string, object> addToBindings =
+                    (name, boundObject) =>
+                        pyBindings.GetType()
+                                  .InvokeMember(
+                                      "Add", BindingFlags.InvokeMethod, null, pyBindings,
+                                      new[] { createBinding(name, boundObject) });
 
                 addToBindings("DynLog", new LogDelegate(dynSettings.Controller.DynamoViewModel.Log)); //Logging
 
@@ -134,16 +135,16 @@ namespace Dynamo
                           {
                               dynRevitSettings.Controller.InitTransaction();
                           }
-                          return new Autodesk.Revit.DB.SubTransaction(dynRevitSettings.Doc.Document);
+                          return new SubTransaction(dynRevitSettings.Doc.Document);
                       }));
 
                 addToBindings("__revit__", dynRevitSettings.Doc.Application);
                 addToBindings("__doc__", dynRevitSettings.Doc.Application.ActiveUIDocument.Document);
 
-                var PythonEngine = ironPythonAssembly.GetType("DynamoPython.PythonEngine");
-                var evaluatorField = PythonEngine.GetField("Evaluator");
+                var pythonEngine = ironPythonAssembly.GetType("DynamoPython.PythonEngine");
+                var evaluatorField = pythonEngine.GetField("Evaluator");
 
-                oldPyEval = (dynamic)evaluatorField.GetValue(null);
+                oldPyEval = evaluatorField.GetValue(null);
 
                 //var x = PythonEngine.GetMembers();
                 //foreach (var y in x)
@@ -161,7 +162,7 @@ namespace Dynamo
                     null,
                     d);
 
-                var drawingField = PythonEngine.GetField("Drawing");
+                var drawingField = pythonEngine.GetField("Drawing");
                 var drawDelegateType = ironPythonAssembly.GetType("DynamoPython.PythonEngine+DrawDelegate");
                 Delegate draw = Delegate.CreateDelegate(
                     drawDelegateType,
@@ -205,7 +206,7 @@ namespace Dynamo
                 {
                     dynRevitTransactionNode.DrawXYZ(rd, drawable);
                 }
-                else if(drawable is GeometryObject)
+                else if (drawable is GeometryObject)
                 {
                     dynRevitTransactionNode.DrawGeometryObject(rd, drawable);
                 }
