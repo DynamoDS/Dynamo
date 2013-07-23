@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -149,7 +150,7 @@ namespace Dynamo.Tests
             var node1 = NodeFromCurrentSpace(vm, "51ed7fed-99fa-46c3-a03c-2c076f2d0538");
             Assert.NotNull(node1);
             Assert.IsAssignableFrom(typeof(dynDoubleInput), node1);
-            Assert.AreEqual(2.0, ((dynDoubleInput)node1).Value);
+            Assert.AreEqual((2.0).ToString(CultureInfo.InvariantCulture), ((dynDoubleInput)node1).Value);
             
             // run the expression
             //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
