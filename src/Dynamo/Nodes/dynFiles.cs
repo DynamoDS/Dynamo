@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.Windows.Interop;
-using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Dynamo.Nodes
 {
@@ -271,9 +270,7 @@ namespace Dynamo.Nodes
 
             try
             {
-                StreamWriter writer = new StreamWriter(new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write));
-                writer.Write(text);
-                writer.Close();
+                File.WriteAllText(path, text);
             }
             catch (Exception e)
             {

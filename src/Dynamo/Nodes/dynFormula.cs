@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Formula")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
-    [NodeDescription("Design and compute mathematical expressions.")]
+    [NodeDescription("Design and compute mathematical expressions. Uses NCalc Syntax: http://ncalc.codeplex.com.")]
     [NodeSearchTags("Equation", "Arithmetic")]
     [IsInteractive(true)]
     public class dynFormula : dynMathBase
@@ -95,7 +95,7 @@ namespace Dynamo.Nodes
             "abs", "acos", "asin", "atan", "ceiling", "cos",
             "exp", "floor", "ieeeremainder", "log", "log10",
             "max", "min", "pow", "round", "sign", "sin", "sqrt",
-            "tan", "truncate", "in", "if"
+            "tan", "truncate", "in", "if", "pi", "π"
         };
 
         private void processFormula()
@@ -103,7 +103,7 @@ namespace Dynamo.Nodes
             Expression e;
             try
             {
-                e = new Expression(Formula, EvaluateOptions.IgnoreCase);
+                e = new Expression(Formula.ToLower(), EvaluateOptions.IgnoreCase);
             }
             catch (Exception ex)
             {
@@ -165,7 +165,9 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var e = new Expression(Formula, EvaluateOptions.IgnoreCase);
+            var e = new Expression(Formula.ToLower(), EvaluateOptions.IgnoreCase);
+
+            e.Parameters["pi"] = 3.14159265358979;
 
             var functionLookup = new Dictionary<string, Value>();
 

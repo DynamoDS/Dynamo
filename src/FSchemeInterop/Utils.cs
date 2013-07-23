@@ -69,7 +69,7 @@ namespace Dynamo.FSchemeInterop
         {
             if (!value.IsNumber)
                 return false;
-            convertedValue = ((FScheme.Value.Number)value).Item;
+            convertedValue = (value as Value.Number).Item;
             return true;
         }
 
