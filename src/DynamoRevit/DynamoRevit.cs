@@ -72,6 +72,8 @@ namespace Dynamo.Applications
         private static ResourceManager res;
         public static ExecutionEnvironment env;
 
+        private static Application app;
+
         public Result OnStartup(UIControlledApplication application)
         {
             try
@@ -150,7 +152,53 @@ namespace Dynamo.Applications
         {
             UpdaterRegistry.UnregisterUpdater(updater.GetUpdaterId());
 
+            if(app!=null)
+                app.Shutdown();
+
             return Result.Succeeded;
+        }
+
+        public static void CreateDummyApplication()
+        {
+            if (Application.Current == null)
+            {
+                // create the Application object
+                app = new Application();
+                app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+                var convertersUri = new Uri("/DynamoCore;component/UI/Themes/DynamoConverters.xaml", UriKind.Relative);
+                var colorsUri = new Uri("/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml", UriKind.Relative);
+                var modernUri = new Uri("/DynamoCore;component/UI/Themes/DynamoModern.xaml", UriKind.Relative);
+                var textUri = new Uri("/DynamoCore;component/UI/Themes/DynamoText.xaml", UriKind.Relative);
+
+                //http://msdn.microsoft.com/en-us/library/aa970069(v=vs.85).aspx
+
+                var converters = new ResourceDictionary
+                {
+                    Source = convertersUri
+                };
+                app.Resources.MergedDictionaries.Add(converters);
+
+                var colors = new ResourceDictionary
+                {
+                    Source = colorsUri
+                };
+                app.Resources.MergedDictionaries.Add(colors);
+
+                var modern = new ResourceDictionary
+                {
+                    Source = modernUri
+                };
+                app.Resources.MergedDictionaries.Add(modern);
+
+                var text = new ResourceDictionary
+                {
+                    Source = textUri
+                };
+                app.Resources.MergedDictionaries.Add(text);
+            }
+
+
         }
     }
 
@@ -198,6 +246,8 @@ namespace Dynamo.Applications
                 dynRevitSettings.Doc = m_doc;
                 dynRevitSettings.DefaultLevel = defaultLevel;
 
+                DynamoRevitApp.CreateDummyApplication();
+
                 IdlePromise.ExecuteOnIdle(delegate
                     {
                         //get window handle
@@ -215,33 +265,6 @@ namespace Dynamo.Applications
                             context = "Vasari 2014";
 
                         dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
-
-                        var app = new Application();
-
-                        var converters = new ResourceDictionary
-                        {
-                            Source = new Uri("/DynamoCore;component/UI/Themes/DynamoConverters.xaml", UriKind.Relative)
-                        };
-                        app.Resources.MergedDictionaries.Add(converters);
-
-                        var colors = new ResourceDictionary
-                        {
-                            Source =
-                                new Uri("/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml", UriKind.Relative)
-                        };
-                        app.Resources.MergedDictionaries.Add(colors);
-
-                        var modern = new ResourceDictionary
-                        {
-                            Source = new Uri("/DynamoCore;component/UI/Themes/DynamoModern.xaml", UriKind.Relative)
-                        };
-                        app.Resources.MergedDictionaries.Add(modern);
-
-                        var text = new ResourceDictionary
-                        {
-                            Source = new Uri("/DynamoCore;component/UI/Themes/DynamoText.xaml", UriKind.Relative)
-                        };
-                        app.Resources.MergedDictionaries.Add(text);
 
                         var ui = new DynamoView {DataContext = dynamoController.DynamoViewModel};
                         dynamoController.UIDispatcher = ui.Dispatcher;
@@ -261,9 +284,11 @@ namespace Dynamo.Applications
                         dynamoView.Height = dynamoViewHeight ?? 800.0;
 
                         dynamoView.Show();
+                        
                         dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException; 
                         dynamoView.Closing += dynamoView_Closing;
                         dynamoView.Closed += dynamoView_Closed;
+
                     });
             }
             catch (Exception ex)
@@ -358,6 +383,7 @@ namespace Dynamo.Applications
         private void dynamoView_Closed(object sender, EventArgs e)
         {
             dynamoView = null;
+            //app.Shutdown();
         }
     }
 
