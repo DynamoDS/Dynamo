@@ -16,6 +16,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism;
 using NUnit.Framework;
 
 namespace Dynamo.ViewModels

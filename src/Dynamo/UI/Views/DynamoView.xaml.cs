@@ -111,7 +111,13 @@ namespace Dynamo.Controls
 
             _vm.RequestUserSaveWorkflow += new WorkspaceSaveEventHandler(_vm_RequestUserSaveWorkflow);
 
-            
+            dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
+        }
+
+        void ClipBoard_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            DynamoCommands.CopyCommand.RaiseCanExecuteChanged();
+            DynamoCommands.PasteCommand.RaiseCanExecuteChanged();
         }
 
         void _vm_RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
