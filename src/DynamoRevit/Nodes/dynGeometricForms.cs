@@ -546,12 +546,18 @@ namespace Dynamo.Nodes
                 index++;
             }
 
+            List<ElementId> removeIds = new List<ElementId>();
             foreach (ElementId oldId in this.Elements)
             {
                 if (!refIds.Contains(oldId))
                 {
-                    this.Elements.Remove(oldId);
+                    removeIds.Add(oldId);
                 }
+            }
+
+            foreach (ElementId removeId in removeIds)
+            {
+                    this.Elements.Remove(removeId);
             }
             foreach (ElementId newId in refIds)
             {
