@@ -386,9 +386,13 @@ namespace Dynamo.Nodes
         {
             double parameter = ((Value.Number)args[0]).Item;
 
-            Curve thisCurve = ((Value.Container)args[1]).Item as Curve;
-            Edge thisEdge = (thisCurve != null) ? null : (((Value.Container)args[1]).Item as Edge);
-            if (thisCurve == null && thisEdge == null && (((Value.Container)args[1]).Item is Reference))
+            Curve thisCurve = null;
+            Edge thisEdge = null;
+            if (((Value.Container)args[1]).Item is Curve)
+                thisCurve = ((Value.Container)args[1]).Item as Curve;
+            else if (((Value.Container)args[1]).Item is Edge)
+                thisEdge = ((Value.Container)args[1]).Item as Edge;
+            else if (((Value.Container)args[1]).Item is Reference)
             {
                 Reference r = (Reference)((Value.Container)args[1]).Item;
                 if (r != null)
@@ -401,8 +405,23 @@ namespace Dynamo.Nodes
                         if (thisEdge == null)
                             thisCurve = geob as Curve;
                     }
+                    else
+                        throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
                 }
             }
+            else if (((Value.Container)args[1]).Item is CurveElement)
+            {
+                CurveElement cElem = ((Value.Container)args[1]).Item as CurveElement;
+                if (cElem != null)
+                {
+                    thisCurve = cElem.GeometryCurve;
+                }
+                else
+                    throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
+
+            }
+            else
+                throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
 
             XYZ result = (thisCurve != null) ? (!curveIsReallyUnbound(thisCurve) ? thisCurve.Evaluate(parameter, true) : thisCurve.Evaluate(parameter, false))
                 :  

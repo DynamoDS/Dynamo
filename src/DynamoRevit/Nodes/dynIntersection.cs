@@ -35,7 +35,91 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var crv = (Curve)((Value.Container)args[0]).Item;
-            var face = (Autodesk.Revit.DB.Face)((Value.Container)args[1]).Item;
+            Face face = null;
+            Solid tempSolid = null;
+
+            if (((Value.Container)args[1]).Item is Face)
+                face = (Autodesk.Revit.DB.Face)((Value.Container)args[1]).Item;
+            else if (((Value.Container)args[1]).Item is Plane)
+            {
+                Plane thisPlane = ((Value.Container)args[1]).Item as Plane;
+                // tesselate curve and find uv envelope in projection to the plane
+                IList<XYZ> tessCurve = crv.Tessellate();
+                var curvePointEnum = tessCurve.GetEnumerator();
+                XYZ corner1 = new XYZ();
+                XYZ corner2 = new XYZ();
+                bool cornersSet = false;
+                for (; curvePointEnum.MoveNext(); )
+                {
+                    if (!cornersSet)
+                    {
+                        corner1 = curvePointEnum.Current;
+                        corner2 = curvePointEnum.Current;
+                        cornersSet = true;
+                    }
+                    else
+                    {
+                        for (int coord = 0; coord < 3; coord++)
+                        {
+                            if (!cornersSet)
+                            {
+                                corner1 = curvePointEnum.Current;
+                                corner2 = curvePointEnum.Current;
+                            }
+                            else if (corner1[coord] > curvePointEnum.Current[coord])
+                                corner1 = new XYZ(coord == 0 ? curvePointEnum.Current[coord] : corner1[coord],
+                                              coord == 1 ? curvePointEnum.Current[coord] : corner1[coord],
+                                              coord == 2 ? curvePointEnum.Current[coord] : corner1[coord]);
+                            else if (corner2[coord] < curvePointEnum.Current[coord])
+                                corner1 = new XYZ(coord == 0 ? curvePointEnum.Current[coord] : corner2[coord],
+                                              coord == 1 ? curvePointEnum.Current[coord] : corner2[coord],
+                                              coord == 2 ? curvePointEnum.Current[coord] : corner2[coord]);
+                        }
+                    }
+                }
+               
+                double dist1 = thisPlane.Origin.DistanceTo(corner1);
+                double dist2 = thisPlane.Origin.DistanceTo(corner2);
+                double sizeRect = 2.0 * (dist1 + dist2) + 100.0;
+ 
+                CurveLoop cLoop = new CurveLoop();
+                for (int index = 0; index < 2; index++)
+                {
+                    double coord0  = (index % 2 == 0) ? -1.0 : 1.0;
+                    double coord1  = (index / 2 == 0) ? -1.0 : 1.0;
+                    XYZ pnt0 =  thisPlane.Origin + coord0 * thisPlane.XVec + coord1 * thisPlane.YVec;
+
+                    double coord3 = ((index < 2) ? 1.0 : -1.0;
+                    double coord4= (index == 0 || index == 3) ? -1.0 : 1.0;
+                    XYZ pnt1 = thisPlane.Origin + coord3 * thisPlane.XVec + coord4 * thisPlane.YVec;
+                    Line cLine = dynRevitSettings.Revit.Application.Create.NewLineBound(pnt0, pnt1);
+                    cLoop.Append(cLine);
+                }
+                List<CurveLoop> listCLoops = new List<CurveLoop> ();
+                listCLoops.Add(cLoop);
+
+                tempSolid = GeometryCreationUtilities.CreateExtrusionGeometry(listCLoops, thisPlane.Normal, 100.0);
+
+                //find right face
+
+                FaceArray facesOfExtrusion = tempSolid.Faces;
+                for (int indexFace = 0; indexFace < facesOfExtrusion.Size; indexFace++)
+                {
+                    Face faceAtIndex = facesOfExtrusion.get_Item(indexFace);
+                    if (faceAtIndex is PlanarFace)
+                    {
+                        PlanarFace pFace = faceAtIndex as PlanarFace;
+                        if (Math.Abs(thisPlane.Normal.DotProduct(pFace.Normal)) < 0.99)
+                            continue;
+                        if (Math.Abs(thisPlane.Normal.DotProduct(thisPlane.Origin - pFace.Origin)) > 0.1)
+                            continue;
+                        face = faceAtIndex;
+                        break;
+                    }
+                }
+                if (face == null)
+                    throw new Exception("Curve Face Intersection could not process supplied Plane.");
+            }
 
             IntersectionResultArray xsects = new IntersectionResultArray();
             SetComparisonResult result = face.Intersect(crv, out xsects);

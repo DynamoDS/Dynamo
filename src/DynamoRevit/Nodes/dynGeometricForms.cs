@@ -419,9 +419,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Planar Ref Curve Chain")]
+    [NodeName("Ref Curve Chain")]
     [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
-    [NodeDescription("Creates planar chain of reference curves ")]
+    [NodeDescription("Creates continuous chain of reference curves ")]
     public class dynPlanarRefCurveChain : dynRevitTransactionNodeWithOneOutput
     {
         public dynPlanarRefCurveChain()
@@ -447,8 +447,8 @@ namespace Dynamo.Nodes
 
             ModelCurveArray myModelCurves = new ModelCurveArray();
       
-            Plane thisPlane = null;
-            Line oneLine = null;
+            //Plane thisPlane = null;
+            //Line oneLine = null;
 
             List<ElementId> refIds = new List<ElementId>();
             XYZ loopStart = new XYZ();
@@ -483,6 +483,7 @@ namespace Dynamo.Nodes
                             throw new Exception("Gap between curves in chain of reference curves.");
                     }                 
                 }
+                /* not needed check
                 if (refCurve.GeometryCurve is Line)
                 {
                     Line thisLine = refCurve.GeometryCurve as Line;
@@ -540,6 +541,7 @@ namespace Dynamo.Nodes
                             throw new Exception(" Planar Ref Curve Chain fails: not planar");
                     }
                 }
+                */
 
                 refIds.Add(refCurve.Id);
                 myModelCurves.Append(refCurve);
