@@ -14,6 +14,7 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
 
 namespace Dynamo
@@ -35,12 +36,20 @@ namespace Dynamo
 
     public delegate void ImageSaveEventHandler(object sender, ImageSaveEventArgs e);
 
-    public class DynamoController
+    public class DynamoController:NotificationObject
     {
         #region properties
 
-        
-
+        private bool uiLocked = true;
+        public bool IsUILocked
+        {
+            get { return uiLocked; }
+            set
+            {
+                uiLocked = value;
+                RaisePropertyChanged("IsUILocked");
+            }
+        }
         private Dictionary<Guid, RenderDescription> _renderDescriptions = new Dictionary<Guid, RenderDescription>();
         public Dictionary<Guid, RenderDescription> RenderDescriptions
         {
@@ -191,7 +200,6 @@ namespace Dynamo
             dynSettings.Controller = this;
 
             this.Context = context;
-
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -586,6 +594,19 @@ namespace Dynamo
         }
 
         internal bool CanReportABug(object parameter)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Clear the UI log.
+        /// </summary>
+        public void ClearLog(object parameter)
+        {
+            DynamoLogger.Instance.ClearLog();
+        }
+
+        internal bool CanClearLog(object parameter)
         {
             return true;
         }

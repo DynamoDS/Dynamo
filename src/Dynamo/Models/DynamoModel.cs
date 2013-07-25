@@ -228,7 +228,7 @@ namespace Dynamo.Models
         {
             string xmlPath = parameters as string;
 
-            dynSettings.Controller.DynamoViewModel.IsUILocked = true;
+            dynSettings.Controller.IsUILocked = true;
 
             if (!OpenDefinition(xmlPath))
             {
@@ -241,7 +241,7 @@ namespace Dynamo.Models
                 }
             }
 
-            dynSettings.Controller.DynamoViewModel.IsUILocked = false;
+            dynSettings.Controller.IsUILocked = false;
 
             //clear the clipboard to avoid copying between dyns
             dynSettings.Controller.ClipBoard.Clear();
@@ -273,7 +273,7 @@ namespace Dynamo.Models
             }
 
             UnlockLoadPath = null;
-            dynSettings.Controller.DynamoViewModel.IsUILocked = false;
+            dynSettings.Controller.IsUILocked = false;
             HomeSpace.OnDisplayed();
 
         }
@@ -1836,7 +1836,143 @@ namespace Dynamo.Models
         {
             return true;
         }
-    
+
+        public void Clear(object parameter)
+        {
+            dynSettings.Controller.IsUILocked = true;
+
+            CleanWorkbench();
+
+            //don't save the file path
+            CurrentSpace.FilePath = "";
+            CurrentSpace.HasUnsavedChanges = false;
+
+            //clear the renderables
+            dynSettings.Controller.RenderDescriptions.Clear();
+            dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
+
+            dynSettings.Controller.IsUILocked = false;
+        }
+
+        internal bool CanClear(object parameter)
+        {
+            return true;
+        }
+
+        public void Home(object parameter)
+        {
+            ViewHomeWorkspace();
+        }
+
+        internal bool CanGoHome(object parameter)
+        {
+            return CurrentSpace != HomeSpace;
+        }
+
+        public void LayoutAll(object parameter)
+        {
+            dynSettings.Controller.IsUILocked = true;
+
+            CleanWorkbench();
+
+            double x = 0;
+            double y = 0;
+            double maxWidth = 0;    //track max width of current column
+            double colGutter = 40;     //the space between columns
+            double rowGutter = 40;
+            int colCount = 0;
+
+            Hashtable typeHash = new Hashtable();
+
+            foreach (KeyValuePair<string, TypeLoadData> kvp in dynSettings.Controller.BuiltInTypesByNickname)
+            {
+                Type t = kvp.Value.Type;
+
+                object[] attribs = t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+
+                if (t.Namespace == "Dynamo.Nodes" &&
+                    !t.IsAbstract &&
+                    attribs.Length > 0 &&
+                    t.IsSubclassOf(typeof(dynNodeModel)))
+                {
+                    NodeCategoryAttribute elCatAttrib = attribs[0] as NodeCategoryAttribute;
+
+                    List<Type> catTypes = null;
+
+                    if (typeHash.ContainsKey(elCatAttrib.ElementCategory))
+                    {
+                        catTypes = typeHash[elCatAttrib.ElementCategory] as List<Type>;
+                    }
+                    else
+                    {
+                        catTypes = new List<Type>();
+                        typeHash.Add(elCatAttrib.ElementCategory, catTypes);
+                    }
+
+                    catTypes.Add(t);
+                }
+            }
+
+            foreach (DictionaryEntry de in typeHash)
+            {
+                List<Type> catTypes = de.Value as List<Type>;
+
+                //add the name of the category here
+                //AddNote(de.Key.ToString(), x, y, ViewModel.CurrentSpace);
+                Dictionary<string, object> paramDict = new Dictionary<string, object>();
+                paramDict.Add("x", x);
+                paramDict.Add("y", y);
+                paramDict.Add("text", de.Key.ToString());
+                paramDict.Add("workspace", CurrentSpace);
+
+                if (CanAddNote(paramDict))
+                    AddNote(paramDict);
+
+                y += 60;
+
+                foreach (Type t in catTypes)
+                {
+                    object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+
+                    NodeNameAttribute elNameAttrib = attribs[0] as NodeNameAttribute;
+                    dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(
+                           t, elNameAttrib.Name, Guid.NewGuid(), x, y,
+                           CurrentSpace
+                        );
+
+                    if (el == null) continue;
+
+                    el.DisableReporting();
+
+                    maxWidth = Math.Max(el.Width, maxWidth);
+
+                    colCount++;
+
+                    y += el.Height + rowGutter;
+
+                    if (colCount > 20)
+                    {
+                        y = 60;
+                        colCount = 0;
+                        x += maxWidth + colGutter;
+                        maxWidth = 0;
+                    }
+                }
+
+                y = 0;
+                colCount = 0;
+                x += maxWidth + colGutter;
+                maxWidth = 0;
+
+            }
+
+            dynSettings.Controller.IsUILocked = false;
+        }
+
+        internal bool CanLayoutAll(object parameter)
+        {
+            return true;
+        }
     }
 
     public class DynamoModelUpdateArgs : EventArgs

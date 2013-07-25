@@ -38,12 +38,12 @@ namespace Dynamo.Search.SearchElements
         /// hits enter in the SearchView.  Navigates to the selected workspace </summary>
         public override void Execute()
         {
-            //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
+            var model = dynSettings.Controller.DynamoModel;
 
             var name = this.Name;
             if (name == "Home")
             {
-                dynSettings.Controller.DynamoViewModel.Home(null);
+                model.Home(null);
             }
             else
             {

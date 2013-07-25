@@ -457,13 +457,9 @@ namespace Dynamo.Controls
                 dynSettings.Controller.DynamoViewModel.QueueLoad(path);
             else
             {
-                //if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
-                //    dynSettings.Controller.DynamoViewModel.ViewHomeWorkspace();
-                
-                if(_vm.CanGoHome(null))
-                    _vm.GoHomeCommand.Execute(null);
+                if(dynSettings.Controller.DynamoModel.CanGoHome(null))
+                    dynSettings.Controller.DynamoModel.Home(null);
 
-                //dynSettings.Controller.DynamoModel.OpenWorkspace(path);
                 _vm.OpenCommand.Execute(path);
             }
         }

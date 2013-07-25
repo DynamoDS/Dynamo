@@ -8,11 +8,9 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using Microsoft.Practices.Prism;
 using NUnit.Framework;
-using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using Value = Dynamo.FScheme.Value;
 
 namespace DynamoRevitTests
@@ -116,113 +114,127 @@ namespace DynamoRevitTests
         [Test]
         public void CanOpenReferencePointTest()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string testPath = Path.Combine(_testPath, "ReferencePointTest.dyn");
-            DynamoCommands.OpenCommand.Execute(testPath);
+            model.Open(testPath);
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
-
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void CreatePointSequenceSample()
         {
+            var model = dynSettings.Controller.DynamoModel;
+
             string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point_sequence.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.OpenCommand.Execute(testPath);
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void CreatePointEndSample()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point - end.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             //test running the expression
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
 
             //test copying and pasting the workflow
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.AddRange(dynSettings.Controller.DynamoModel.Nodes);
-            DynamoCommands.RunCommand(DynamoCommands.CopyCommand, null);
-            DynamoCommands.RunCommand(DynamoCommands.PasteCommand, null);
+            model.Copy(null);
+            model.Paste(null);
         }
 
         [Test]
         public void CreatePointSample()
         {
+            var model = dynSettings.Controller.DynamoModel;
+
             string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.OpenCommand.Execute(testPath);
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void RefGridSlidersSample()
         {
+            var model = dynSettings.Controller.DynamoModel;
+
             string samplePath = Path.Combine(_samplesPath, @".\02 Ref Grid Sliders\ref grid sliders.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.OpenCommand.Execute(testPath);
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void RefGridSlidersEndSample()
         {
+            var model = dynSettings.Controller.DynamoModel;
+
             string samplePath = Path.Combine(_samplesPath, @".\02 Ref Grid Sliders\ref grid sliders - end.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.OpenCommand.Execute(testPath);
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void DivideSelectedCurveEndSample()
         {
+            var model = dynSettings.Controller.DynamoModel;
+
             ModelCurve mc1;
             CreateOneModelCurve(out mc1);
 
             string samplePath = Path.Combine(_samplesPath, @".\03 Divide Selected Curve\divide selected curve - end.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.OpenCommand.Execute(testPath);
+            model.Open(testPath);
             var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection);
             Assert.AreEqual(1, selectionNodes.Count());
 
             ((dynCurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
 
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void DivideSelectedCurveSample()
         {
+            var model = dynSettings.Controller.DynamoModel;
+
             ModelCurve mc1;
             CreateOneModelCurve(out mc1);
 
             string samplePath = Path.Combine(_samplesPath, @".\03 Divide Selected Curve\divide selected curve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.OpenCommand.Execute(testPath);
+            model.Open(testPath);
             var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection);
             Assert.AreEqual(1, selectionNodes.Count());
 
             ((dynCurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
 
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void FormFromCurveSelectionListSample()
         {
+            var model = dynSettings.Controller.DynamoModel;
+
             ModelCurve mc1;
             ModelCurve mc2;
             CreateTwoModelCurves(out mc1, out mc2);
@@ -230,7 +242,7 @@ namespace DynamoRevitTests
             string samplePath = Path.Combine(_samplesPath, @".\04 Form From Curve Selection\form from curve selection - list.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.OpenCommand.Execute(testPath);
+            model.Open(testPath);
 
             //get the two selection nodes in the sample
             var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection);
@@ -239,12 +251,14 @@ namespace DynamoRevitTests
             ((dynCurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
             ((dynCurvesBySelection)selectionNodes.ElementAt(1)).SelectedElement = mc2;
 
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void FormFromCurveSelectionSample()
         {
+            var model = dynSettings.Controller.DynamoModel;
+
             ModelCurve mc1;
             ModelCurve mc2;
             CreateTwoModelCurves(out mc1, out mc2);
@@ -252,20 +266,20 @@ namespace DynamoRevitTests
             string samplePath = Path.Combine(_samplesPath, @".\04 Form From Curve Selection\form from curve selection.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.OpenCommand.Execute(testPath);
+            model.Open(testPath);
 
             //populate the selection nodes in the sample
             var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection);
             ((dynCurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
             ((dynCurvesBySelection)selectionNodes.ElementAt(1)).SelectedElement = mc2;
 
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void GraphFunctionAndConnectPointsSample()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function and connect points.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -278,30 +292,26 @@ namespace DynamoRevitTests
             dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath1);
             dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath2);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void ScalableGraphFunctionSample()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\scalable graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            //string customDefPath = Path.Combine(_defsPath, "Cf(dx).dyf");
-            //Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
-            //Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath));
-
-            DynamoCommands.OpenCommand.Execute(testPath);
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void GraphFunctionSample()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -310,53 +320,53 @@ namespace DynamoRevitTests
             Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
             dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath);
 
-            DynamoCommands.OpenCommand.Execute(testPath);
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void InstParamSample()
         {
+            var model = dynSettings.Controller.DynamoModel;
+
             string modelPath = Path.GetFullPath(Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param.rvt"));
             SwapCurrentModel(modelPath);
-
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.OpenCommand.Execute(testPath);
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void InstParam2MassesSample()
         {
+            var model = dynSettings.Controller.DynamoModel;
+
             string modelPath = Path.GetFullPath(Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param mass families.rvt"));
             SwapCurrentModel(modelPath);
-
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param 2 masses.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.OpenCommand.Execute(testPath);
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void InstParam2MassesDrivingEachOtherSample()
         {
+            var model = dynSettings.Controller.DynamoModel;
+
             string modelPath = Path.GetFullPath(Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param mass families.rvt"));
             SwapCurrentModel(modelPath);
-
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param 2 masses driving each other.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.OpenCommand.Execute(testPath);
-            DynamoCommands.RunExpressionCommand.Execute(true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
@@ -370,7 +380,7 @@ namespace DynamoRevitTests
         [Test]
         public void ConnectTwoPointArraysWithoutPython()
         {
-            //DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            //var model = dynSettings.Controller.DynamoModel;
 
             //string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\connect two point arrays without python.dyn");
             //string testPath = Path.GetFullPath(samplePath);
@@ -383,7 +393,7 @@ namespace DynamoRevitTests
         [Test]
         public void ConnectTwoPointArrays()
         {
-            //DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            //var model = dynSettings.Controller.DynamoModel;
 
             //string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\connect two point arrays.dyn");
             //string testPath = Path.GetFullPath(samplePath);
@@ -396,7 +406,7 @@ namespace DynamoRevitTests
         [Test]
         public void CreateSineWaveFromSelectedCurve()
         {
-            //DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            //var model = dynSettings.Controller.DynamoModel;
 
             //string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\create sine wave from selected curve.dyn");
             //string testPath = Path.GetFullPath(samplePath);
@@ -438,7 +448,7 @@ namespace DynamoRevitTests
         //[Test]
         //public void CreateSineWaveFromSelectedPoints()
         //{
-        //    DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+        //    var model = dynSettings.Controller.DynamoModel;
 
         //    string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\create sine wave from selected points.dyn");
         //    string testPath = Path.GetFullPath(samplePath);
@@ -476,13 +486,13 @@ namespace DynamoRevitTests
         [Test]
         public void FamilyTypeSelectorNode()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @"SelectFamily.dyn");
             string testPath = Path.GetFullPath(samplePath);
             
             //open the test file
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
+            model.Open(testPath);
 
             //first assert that we have only one node
             var nodeCount = dynSettings.Controller.DynamoModel.Nodes.Count;
@@ -516,13 +526,13 @@ namespace DynamoRevitTests
         [Test]
         public void ModelCurveNode()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\ModelCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
 
             FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(CurveElement));
@@ -539,7 +549,7 @@ namespace DynamoRevitTests
             var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynBasicInteractive<double>);
             dynBasicInteractive<double> node = doubleNodes.First() as dynBasicInteractive<double>;
             node.Value = node.Value + .1;
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
             Assert.AreEqual(1, fec.ToElements().Count);
 
             Assert.AreEqual(id.IntegerValue, fec.ToElements().First().Id.IntegerValue);
@@ -548,13 +558,13 @@ namespace DynamoRevitTests
         [Test]
         public void ReferenceCurveNode()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\ReferenceCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
 
             FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(CurveElement));
@@ -572,7 +582,7 @@ namespace DynamoRevitTests
             var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynBasicInteractive<double>);
             dynBasicInteractive<double> node = doubleNodes.First() as dynBasicInteractive<double>;
             node.Value = node.Value + .1;
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
             Assert.AreEqual(1, fec.ToElements().Count);
 
             Assert.AreEqual(id.IntegerValue, fec.ToElements().First().Id.IntegerValue);
@@ -581,13 +591,13 @@ namespace DynamoRevitTests
         [Test]
         public void LoftNode()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Loft.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
 
             FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(GenericForm));
@@ -601,12 +611,12 @@ namespace DynamoRevitTests
         [Test]
         public void CurveByPointsNode()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\CurveByPoints.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
+            model.Open(testPath);
 
             //cerate some points and wire them
             //to the selections
@@ -633,7 +643,7 @@ namespace DynamoRevitTests
             ((dynPointBySelection)ptSelectNodes.ElementAt(2)).SelectedElement = p3;
             ((dynPointBySelection)ptSelectNodes.ElementAt(3)).SelectedElement = p4;
 
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
 
             FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(CurveElement));
@@ -648,7 +658,7 @@ namespace DynamoRevitTests
 
             ((dynBasicInteractive<bool>)boolNode).Value = false;
 
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
             Assert.AreEqual(fec.ToElements().Count(), 1);
 
             mc = (CurveByPoints)fec.ToElements().ElementAt(0);
@@ -658,13 +668,12 @@ namespace DynamoRevitTests
         [Test]
         public void XYZFromReferencePointNode()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\XYZFromReferencePoint.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-            //dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
+            model.Open(testPath);
             ReferencePoint rp;
             using(_trans = new Transaction(dynRevitSettings.Doc.Document))
             {
@@ -690,14 +699,14 @@ namespace DynamoRevitTests
         {
             //this sample creates a geometric line
             //then creates a curve by points from that line
-   
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\CurveByPointsByLine.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
 
             FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(ReferencePoint));
@@ -710,7 +719,8 @@ namespace DynamoRevitTests
             var node = dynSettings.Controller.DynamoModel.Nodes.OfType<dynDoubleInput>().First();
             node.Value = "12.0";
 
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
+
             fec = null;
             fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(ReferencePoint));
@@ -720,13 +730,13 @@ namespace DynamoRevitTests
         [Test]
         public void BlendSolid()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\BlendSolid.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
 
             var blendNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateBlendGeometry).First();
             dynSolidBase nodeAsSolidBase = (dynSolidBase)blendNode;
@@ -741,13 +751,13 @@ namespace DynamoRevitTests
         [Test]
         public void RevolveSolid()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\RevolveSolid.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
 
             var revolveNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateRevolvedGeometry).First();
             dynSolidBase nodeAsSolidBase = (dynSolidBase)revolveNode;
@@ -762,13 +772,13 @@ namespace DynamoRevitTests
         [Test]
         public void SweepToMakeSolid()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\SweepToMakeSolid.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
 
             var sweepNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateSweptGeometry).First();
             dynSolidBase nodeAsSolidBase = (dynSolidBase)sweepNode;
@@ -786,13 +796,13 @@ namespace DynamoRevitTests
             if (!dynRevitSettings.Revit.Application.VersionNumber.Contains("2013") &&
                              dynRevitSettings.Revit.Application.VersionName.Contains("Vasari"))
             {
-                 DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+                 var model = dynSettings.Controller.DynamoModel;
 
                  string samplePath = Path.Combine(_testPath, @".\SolidBySkeleton.dyn");
                  string testPath = Path.GetFullPath(samplePath);
 
-                 DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-                 DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+                 model.Open(testPath);
+                 dynSettings.Controller.RunExpression(true);
 
                  var skeletonNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynSkinCurveLoops).First();
                  dynSolidBase nodeAsSolidBase = (dynSolidBase)skeletonNode;
@@ -808,13 +818,13 @@ namespace DynamoRevitTests
         [Test]
         public void ClosedCurveTest()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\ClosedCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
 
             var extrudeNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateExtrusionGeometry).First();
             dynSolidBase nodeAsSolidBase = (dynSolidBase)extrudeNode;
@@ -829,7 +839,7 @@ namespace DynamoRevitTests
         [Test]
         public void AdaptiveComponentsNode()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string path = Path.Combine(_testPath, @".\AdaptiveComponents\AdaptiveComponentSample.rfa");
             string modelPath = Path.GetFullPath(path);
@@ -838,14 +848,14 @@ namespace DynamoRevitTests
             string samplePath = Path.Combine(_testPath, @".\AdaptiveComponents\AdaptiveComponents.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
+            model.Open(testPath);
 
             //the .dyn has the slider set at 5. let's make sure that
             //if you set the slider to something else before running, that it get the correct number
             var slider = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynDoubleSliderInput).First();
             ((dynBasicInteractive<double>)slider).Value = 1;
 
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
 
             //get all the family instances in the document
             var acs = GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
@@ -854,7 +864,7 @@ namespace DynamoRevitTests
             //change the number slider
             ((dynBasicInteractive<double>)slider).Value = 3;
 
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
             acs = GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
             Assert.AreEqual(3, acs.Count());
 
@@ -863,13 +873,13 @@ namespace DynamoRevitTests
         [Test]
         public void SwitchDocuments()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             //open the workflow and run the expression
             string testPath = Path.Combine(_testPath, "ReferencePointTest.dyn");
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
+            model.Open(testPath);
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
 
             //verify we have a reference point
             FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
@@ -891,7 +901,7 @@ namespace DynamoRevitTests
             node.Value = node.Value + .1;
 
             //run the expression again
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
             fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(1, fec.ToElements().Count());
@@ -907,19 +917,19 @@ namespace DynamoRevitTests
         [Test]
         public void CanChangeLacingAndHaveElementsUpdate()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\LacingTest.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
+            model.Open(testPath);
 
             var xyzNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynXYZ).First();
             Assert.IsNotNull(xyzNode);
 
             //test the first lacing
             xyzNode.ArgumentLacing = LacingStrategy.First;
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
 
             FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(ReferencePoint));
@@ -927,7 +937,7 @@ namespace DynamoRevitTests
 
             //test the shortest lacing
             xyzNode.ArgumentLacing = LacingStrategy.First;
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
             fec = null;
             fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(ReferencePoint));
@@ -935,7 +945,7 @@ namespace DynamoRevitTests
 
             //test the longest lacing
             xyzNode.ArgumentLacing = LacingStrategy.Longest;
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
             fec = null;
             fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(ReferencePoint));
@@ -943,7 +953,7 @@ namespace DynamoRevitTests
 
             //test the cross product lacing
             xyzNode.ArgumentLacing = LacingStrategy.CrossProduct;
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            dynSettings.Controller.RunExpression(true);
             fec = null;
             fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(ReferencePoint));
@@ -953,7 +963,7 @@ namespace DynamoRevitTests
         [Test]
         public void DividedSurface()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\DividedSurfaceTest.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -962,8 +972,8 @@ namespace DynamoRevitTests
 
             SwapCurrentModel(shellPath);
 
-            DynamoCommands.RunCommand(DynamoCommands.OpenCommand, testPath);
-            DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand, true);
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
 
             FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof (DividedSurface));
@@ -978,7 +988,7 @@ namespace DynamoRevitTests
             //can we change the number of divisions
             var numNode = dynSettings.Controller.DynamoModel.Nodes.OfType<dynDoubleInput>().First();
             numNode.Value = "10";
-            vm.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
 
             //did it create a divided surface?
             Assert.AreEqual(10, ds.USpacingRule.Number);
@@ -987,7 +997,7 @@ namespace DynamoRevitTests
             //does it throw an error when we try to set a negative number of divisions
             numNode.Value = "-5";
             Assert.Throws(typeof(AssertionException),
-                          () => vm.RunExpression(true));
+                          () => dynSettings.Controller.RunExpression(true));
         }
 
         /// <summary>
@@ -1024,12 +1034,16 @@ namespace DynamoRevitTests
 
         private static void OpenAllSamplesInDirectory(DirectoryInfo di)
         {
+            var model = dynSettings.Controller.DynamoModel;
+
             foreach (FileInfo file in di.GetFiles())
             {
                 if(file.Extension != ".dyn")
                     continue;
-                DynamoCommands.OpenCommand.Execute(file.FullName);
-                DynamoCommands.RunExpressionCommand.Execute(true);
+                
+                model.Open(file.FullName); 
+                dynSettings.Controller.RunExpression(true);
+
             }
 
             foreach (DirectoryInfo dir in di.GetDirectories())
