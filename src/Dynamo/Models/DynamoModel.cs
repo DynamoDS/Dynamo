@@ -224,6 +224,10 @@ namespace Dynamo.Models
             return true;
         }
 
+        /// <summary>
+        /// Open a definition or workspace.
+        /// </summary>
+        /// <param name="parameters">The path the the file.</param>
         public void Open(object parameters)
         {
             string xmlPath = parameters as string;
@@ -254,7 +258,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        public void PostUIActivation(object parameter)
+        internal void PostUIActivation(object parameter)
         {
             DynamoLoader.LoadCustomNodes(dynSettings.Controller.CustomNodeLoader, 
                 dynSettings.Controller.SearchViewModel);
@@ -798,6 +802,11 @@ namespace Dynamo.Models
             CurrentSpace.Notes.Clear();
         }
 
+        /// <summary>
+        /// Open a workspace from a path.
+        /// </summary>
+        /// <param name="xmlPath">The path to the workspace.</param>
+        /// <returns></returns>
         public bool OpenWorkspace(string xmlPath)
         {
             DynamoLogger.Instance.Log("Opening home workspace " + xmlPath + "...");
@@ -1210,6 +1219,10 @@ namespace Dynamo.Models
 
         }
 
+        /// <summary>
+        /// Write a message to the log.
+        /// </summary>
+        /// <param name="parameters">The message.</param>
         public void WriteToLog(object parameters)
         {
             if (parameters == null) return;
@@ -1227,6 +1240,11 @@ namespace Dynamo.Models
             return false;
         }
 
+        /// <summary>
+        /// Add a note to the workspace.
+        /// </summary>
+        /// <param name="parameters">A dictionary containing placement data for the note</param>
+        /// <example>{"x":1234.0,"y":1234.0, "guid":1234-1234-...,"text":"the note's text","workspace":workspace </example>
         public void AddNote(object parameters)
         {
 
@@ -1270,6 +1288,10 @@ namespace Dynamo.Models
             return true;
         }
 
+        /// <summary>
+        /// Copy selected ISelectable objects to the clipboard.
+        /// </summary>
+        /// <param name="parameters"></param>
         public void Copy(object parameters)
         {
             dynSettings.Controller.ClipBoard.Clear();
@@ -1311,6 +1333,10 @@ namespace Dynamo.Models
             return true;
         }
 
+        /// <summary>
+        /// Paste ISelectable objects from the clipboard to the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
         public void Paste(object parameters)
         {
             //make a lookup table to store the guids of the
@@ -1468,6 +1494,10 @@ namespace Dynamo.Models
             return true;
         }
 
+        /// <summary>
+        /// Present the new function dialogue and create a custom function.
+        /// </summary>
+        /// <param name="parameter"></param>
         public void ShowNewFunctionDialogAndMakeFunction(object parameter)
         {
             //trigger the event to request the display
@@ -1489,6 +1519,10 @@ namespace Dynamo.Models
             return true;
         }
 
+        /// <summary>
+        /// Create a node.
+        /// </summary>
+        /// <param name="parameters">A dictionary containing data about the node.</param>
         public void CreateNode(object parameters)
         {
             var data = parameters as Dictionary<string, object>;
@@ -1500,14 +1534,12 @@ namespace Dynamo.Models
             dynNodeModel node = CreateNode(data["name"].ToString());
             if (node == null)
             {
-                //DynamoCommands.WriteToLogCmd.Execute("Failed to create the node");
                 dynSettings.Controller.DynamoModel.WriteToLog("Failed to create the node");
                 return;
             }
 
             if ((node is dynSymbol || node is dynOutput) && CurrentSpace is HomeWorkspace)
             {
-                //DynamoCommands.WriteToLogCmd.Execute("Cannot place dynSymbol or dynOutput in HomeWorkspace");
                 dynSettings.Controller.DynamoModel.WriteToLog("Cannot place dynSymbol or dynOutput in HomeWorkspace");
                 return;
             }
@@ -1616,6 +1648,10 @@ namespace Dynamo.Models
             return result;
         }
 
+        /// <summary>
+        /// Create a connector.
+        /// </summary>
+        /// <param name="parameters">A dictionary containing data about the connection.</param>
         public void CreateConnection(object parameters)
         {
             try
@@ -1712,6 +1748,10 @@ namespace Dynamo.Models
             return true;
         }
 
+        /// <summary>
+        /// Save the current workspace.
+        /// </summary>
+        /// <param name="parameters">The file path.</param>
         public void SaveAs(object parameters)
         {
             if (parameters == null)
@@ -1730,13 +1770,17 @@ namespace Dynamo.Models
             return true;
         }
 
+        /// <summary>
+        /// Delete ISelectable objects.
+        /// </summary>
+        /// <param name="parameters">The objects to delete.</param>
         public void Delete(object parameters)
         {
             //if you get an object in the parameters, just delete that object
             if (parameters != null)
             {
-                dynNoteModel note = parameters as dynNoteModel;
-                dynNodeModel node = parameters as dynNodeModel;
+                var note = parameters as dynNoteModel;
+                var node = parameters as dynNodeModel;
 
                 if (node != null)
                 {
@@ -1751,8 +1795,8 @@ namespace Dynamo.Models
             {
                 for (int i = DynamoSelection.Instance.Selection.Count - 1; i >= 0; i--)
                 {
-                    dynNoteModel note = DynamoSelection.Instance.Selection[i] as dynNoteModel;
-                    dynNodeModel node = DynamoSelection.Instance.Selection[i] as dynNodeModel;
+                    var note = DynamoSelection.Instance.Selection[i] as dynNoteModel;
+                    var node = DynamoSelection.Instance.Selection[i] as dynNodeModel;
 
                     if (node != null)
                     {
@@ -1771,6 +1815,10 @@ namespace Dynamo.Models
             return DynamoSelection.Instance.Selection.Count > 0;
         }
 
+        /// <summary>
+        /// Delete a note.
+        /// </summary>
+        /// <param name="note">The note to delete.</param>
         public void DeleteNote(dynNoteModel note)
         {
             DynamoSelection.Instance.Selection.Remove(note);
@@ -1853,6 +1901,10 @@ namespace Dynamo.Models
             return true;
         }
 
+        /// <summary>
+        /// Clear the workspace. Removes all nodes, notes, and connectors from the current workspace.
+        /// </summary>
+        /// <param name="parameter"></param>
         public void Clear(object parameter)
         {
             dynSettings.Controller.IsUILocked = true;
@@ -1875,6 +1927,10 @@ namespace Dynamo.Models
             return true;
         }
 
+        /// <summary>
+        /// View the home workspace.
+        /// </summary>
+        /// <param name="parameter"></param>
         public void Home(object parameter)
         {
             ViewHomeWorkspace();
@@ -1885,6 +1941,10 @@ namespace Dynamo.Models
             return CurrentSpace != HomeSpace;
         }
 
+        /// <summary>
+        /// Layout all available nodes in columns by category.
+        /// </summary>
+        /// <param name="parameter"></param>
         public void LayoutAll(object parameter)
         {
             dynSettings.Controller.IsUILocked = true;
