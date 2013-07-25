@@ -480,4 +480,64 @@ namespace Dynamo.Nodes
             return Value.NewContainer(result);
         }
     }
+
+    [NodeName("Ref Point By Length")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeDescription("Creates an ref point element on curve located by length from the start or end of the curve.")]
+    [NodeSearchTags("ref", "pt", "curve")]
+    public class dynPointOnCurveByLength : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynPointOnCurveByLength()
+        {
+            InPortData.Add(new PortData("curve", "Model Curve", typeof(Value.Container)));
+            InPortData.Add(new PortData("len", "measured length or percent of overall length", typeof(Value.Number)));
+            InPortData.Add(new PortData("normalized?", "if true len is the percent of overall curve length, else the actual length", typeof(Value.Container)));
+            InPortData.Add(new PortData("beginning?", "if true measured from Beginnig, else from End", typeof(Value.Container)));
+            OutPortData.Add(new PortData("pt", "PointOnCurve", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var inputItem = ((Value.Container)args[0]).Item;
+            Reference r = (inputItem is Reference) ?
+                                (Reference)inputItem : ((CurveElement)inputItem).GeometryCurve.Reference;
+
+            double len = ((Value.Number)args[1]).Item;
+
+            bool isNormalized = ((Value.Number)args[2]).Item == 1;
+            bool isBeginning = ((Value.Number)args[3]).Item == 1;
+
+            PointLocationOnCurve plc = new PointLocationOnCurve(isNormalized ? PointOnCurveMeasurementType.NormalizedSegmentLength : PointOnCurveMeasurementType.SegmentLength,
+                                                            len,
+                                                    isBeginning ? PointOnCurveMeasureFrom.Beginning : PointOnCurveMeasureFrom.End);
+
+            PointElementReference edgePoint = this.UIDocument.Application.Application.Create.NewPointOnEdge(r, plc);
+
+            ReferencePoint p;
+
+            if (this.Elements.Any())
+            {
+                Element e;
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(ReferencePoint), out e))
+                {
+                    p = e as ReferencePoint;
+                    p.SetPointElementReference(edgePoint);
+                }
+                else
+                {
+                    p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint);
+                    this.Elements[0] = p.Id;
+                }
+            }
+            else
+            {
+                p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint);
+                this.Elements.Add(p.Id);
+            }
+
+            return Value.NewContainer(p);
+        }
+    }
 }
