@@ -37,12 +37,13 @@ namespace Dynamo.Nodes
             var crv = (Curve)((Value.Container)args[0]).Item;
             Face face = null;
             Solid tempSolid = null;
+            Plane thisPlane = null;
 
             if (((Value.Container)args[1]).Item is Face)
                 face = (Autodesk.Revit.DB.Face)((Value.Container)args[1]).Item;
             else if (((Value.Container)args[1]).Item is Plane)
             {
-                Plane thisPlane = ((Value.Container)args[1]).Item as Plane;
+                thisPlane = ((Value.Container)args[1]).Item as Plane;
                 // tesselate curve and find uv envelope in projection to the plane
                 IList<XYZ> tessCurve = crv.Tessellate();
                 var curvePointEnum = tessCurve.GetEnumerator();
@@ -137,7 +138,15 @@ namespace Dynamo.Nodes
                     }
                     xsect = FSharpList<Value>.Cons(Value.NewContainer(ir.EdgeObject), xsect);
                     xsect = FSharpList<Value>.Cons(Value.NewNumber(ir.Parameter), xsect);
-                    xsect = FSharpList<Value>.Cons(Value.NewContainer(ir.UVPoint), xsect);
+                    if (thisPlane != null)
+                    {
+                        UV planeUV = new UV(thisPlane.XVec.DotProduct(ir.XYZPoint - thisPlane.Origin),  
+                                             thisPlane.YVec.DotProduct(ir.XYZPoint - thisPlane.Origin));
+                        xsect = FSharpList<Value>.Cons(Value.NewContainer(planeUV), xsect);
+                    }
+                    else
+                       xsect = FSharpList<Value>.Cons(Value.NewContainer(ir.UVPoint), xsect);
+
                     xsect = FSharpList<Value>.Cons(Value.NewContainer(ir.XYZPoint), xsect);
                     xsect_results = FSharpList<Value>.Cons(Value.NewList(xsect), xsect_results);
                 }
