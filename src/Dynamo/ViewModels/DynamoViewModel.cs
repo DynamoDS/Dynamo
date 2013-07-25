@@ -109,7 +109,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
         public DelegateCommand SelectAllCommand { get; set; }
-        public DelegateCommand CleanupCommand { get; set; }
         public DelegateCommand SaveImageCommand { get; set; }
         public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
@@ -384,13 +383,11 @@ namespace Dynamo.ViewModels
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
-            CleanupCommand = new DelegateCommand(Cleanup, CanCleanup);
             RefactorCustomNodeCommand = new DelegateCommand(_model.RefactorCustomNode, _model.CanRefactorCustomNode);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
             CopyCommand = new DelegateCommand(_model.Copy, _model.CanCopy);
             PasteCommand = new DelegateCommand(_model.Paste, _model.CanPaste);
-            //move to controllerer view model
             ShowPackageManagerCommand = new DelegateCommand(Controller.ShowPackageManager, Controller.CanShowPackageManager);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             CancelRunCommand = new DelegateCommand(Controller.CancelRun, Controller.CanCancelRun);
@@ -854,9 +851,13 @@ namespace Dynamo.ViewModels
             }
             if (!AskUserToSaveWorkspacesOrCancel(allowCancelBool))
                 return;
-            Cleanup(null);
+
             exitInvoked = true;
+
+            //request the UI to close its window
             OnRequestClose(this, EventArgs.Empty);
+
+            DynamoLogger.Instance.FinishLogging();
         }
 
         internal bool CanExit(object allowCancel)
@@ -895,16 +896,6 @@ namespace Dynamo.ViewModels
                 if (!args.Success)
                     return false;
             }
-            return true;
-        }
-
-        public void Cleanup(object parameter)
-        {
-            DynamoLogger.Instance.FinishLogging();
-        }
-
-        internal bool CanCleanup(object parameter)
-        {
             return true;
         }
 

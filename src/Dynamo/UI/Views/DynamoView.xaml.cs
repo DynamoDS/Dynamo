@@ -314,7 +314,7 @@ namespace Dynamo.Controls
 
         private void WindowClosed(object sender, EventArgs e)
         {
-            _vm.CleanupCommand.Execute(null);
+
         }
 
         private void OverlayCanvas_OnMouseMove(object sender, MouseEventArgs e)

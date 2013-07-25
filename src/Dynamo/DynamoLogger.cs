@@ -137,17 +137,6 @@ namespace Dynamo
             Instance.Log(FScheme.printExpression("\t", expression), LogLevel.Console);
         }
 
-        //public void Log(string message)
-        //{
-        //    _sw.WriteLine(message);
-        //    LogText = _sw.ToString();
-
-        //    if (CanWriteToLog(null))
-        //    {
-        //        WriteToLog(message);
-        //    }
-        //}
-
         public void ClearLog()
         {
             ConsoleWriter.Clear();

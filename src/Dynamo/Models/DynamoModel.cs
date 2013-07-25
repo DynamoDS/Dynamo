@@ -151,6 +151,9 @@ namespace Dynamo.Models
 
         public static bool RunInDebug { get; set; }
 
+        /// <summary>
+        /// All nodes in all workspaces. 
+        /// </summary>
         public IEnumerable<dynNodeModel> AllNodes
         {
             get
@@ -164,6 +167,9 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// An event triggered when the workspace is being cleaned.
+        /// </summary>
         public event CleanupHandler CleaningUp;
 
         public virtual void OnCleanup(EventArgs e)
@@ -172,6 +178,10 @@ namespace Dynamo.Models
                 CleaningUp(this, e);
         }
 
+        /// <summary>
+        /// Present the open dialogue and open the workspace that is selected.
+        /// </summary>
+        /// <param name="parameter"></param>
         public void ShowOpenDialogAndOpenResult(object parameter)
         {
             var vm = dynSettings.Controller.DynamoViewModel;
