@@ -470,6 +470,7 @@ namespace Dynamo.PackageManager
 
             try
             {
+
                 var newpkg = Package == null;
 
                 Package = Package ?? new Package("", this.Name, this.FullVersion);
@@ -495,8 +496,6 @@ namespace Dynamo.PackageManager
 
                 this.Uploading = true;
                 this.UploadHandle = handle;
-
-
 
             }
             catch (Exception e)

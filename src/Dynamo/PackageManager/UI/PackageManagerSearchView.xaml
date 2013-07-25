@@ -81,7 +81,7 @@ Source="..\..\Images\search_24.png" Opacity="1">
                                     </LinearGradientBrush>
                                 </Border.Background>
                                 
-                                 <StackPanel Width ="423" Name="SearchEle">
+                                 <StackPanel Width ="443" Name="SearchEle">
 
                                     <TextBlock FontSize="13" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="AliceBlue" Margin="10,10,0,3"/>
                                     <TextBlock FontSize="11" Name="description" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Description}" Foreground="Gray"  Margin="10,5,5,3" />
@@ -122,8 +122,8 @@ Source="..\..\Images\search_24.png" Opacity="1">
                                             <ListBox.ItemTemplate >
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Path=version}" MinWidth="90" Foreground="Gray" />
-                                                        <Button Name="DownloadVersionButton" Margin="1, 0, 1, 0" ToolTip="Download This Version" Content="Download" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                        <TextBlock Text="{Binding Path=Item1.version}" MinWidth="90" Foreground="Gray" />
+                                                        <Button Name="DownloadVersionButton" Margin="1, 0, 1, 0" ToolTip="Download This Version" Content="Download" Command="{Binding Path=Item2}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
@@ -198,10 +198,8 @@ Source="..\..\Images\search_24.png" Opacity="1">
                                         <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" MaxWidth="200" Foreground="AliceBlue" Padding="10,5,0,10"/>
 
                                         <TextBlock FontSize="11" Name="downloadState" Text="{Binding Path=DownloadState, Converter={StaticResource PackageDownloadStateToStringConverter}}" Foreground="Azure" HorizontalAlignment="Right" Padding="10, 5, 10, 0"/>
-                                        <TextBlock FontSize="10" Name="keywords" Text="{Binding Path=VersionName}" HorizontalAlignment="Right" Foreground="Gray"  Padding="10, 20, 10, 0"/>
+                                        <TextBlock FontSize="10" Name="version" Text="{Binding Path=VersionName}" HorizontalAlignment="Left" Foreground="White"  Padding="10, 20, 10, 0"/>
                                         <TextBlock FontSize="10" Name="error" Text="{Binding Path=ErrorString}" HorizontalAlignment="Left" Foreground="White"  Padding="10, 25, 10, 0"/>
-
-                                        <Line X1="0" X2="441" Stroke="DimGray" Y1="0" Y2="0" />
 
                                     </Grid>
 

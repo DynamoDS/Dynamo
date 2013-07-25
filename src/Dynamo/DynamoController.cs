@@ -179,7 +179,7 @@ namespace Dynamo
             CustomNodeLoader = new CustomNodeLoader(pluginsPath);
             
             SearchViewModel = new SearchViewModel();
-            PackageManagerClient = new PackageManagerClient(this);
+            PackageManagerClient = new PackageManagerClient();
             dynSettings.PackageManagerClient = PackageManagerClient;
             PublishPackageViewModel = new PublishPackageViewModel(PackageManagerClient);
 
