@@ -130,6 +130,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand PublishSelectedNodeCmd { get; set; }
         public DelegateCommand ShowLoginCmd { get; set; }
         public DelegateCommand LoginCmd { get; set; }
+        public DelegateCommand PanCommand { get; set; }
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -400,6 +401,7 @@ namespace Dynamo.ViewModels
             ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             SelectNeighborsCommand = new DelegateCommand(SelectNeighbors, CanSelectNeighbors);
             ClearLogCommand = new DelegateCommand(dynSettings.Controller.ClearLog, dynSettings.Controller.CanClearLog);
+            PanCommand = new DelegateCommand(Pan, CanPan);
 
             var pm_pub_vm = dynSettings.Controller.PackageManagerPublishViewModel;
             SubmitCommand = new DelegateCommand(pm_pub_vm.OnSubmit, pm_pub_vm.CanSubmit);
@@ -1029,6 +1031,38 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanGoToSourceCode(object parameter)
+        {
+            return true;
+        }
+
+        public void Pan(object parameter)
+        {
+            var panType = parameter.ToString();
+            double pan = 10;
+            var pt = new Point(_model.CurrentSpace.X, _model.CurrentSpace.Y);
+
+            switch (panType)
+            {
+                case "Left":
+                    pt.X += pan;
+                    break;
+                case "Right":
+                    pt.X -= pan;
+                    break;
+                case "Up":
+                    pt.Y += pan;
+                    break;
+                case "Down":
+                    pt.Y -= pan;
+                    break;
+            }
+            _model.CurrentSpace.X = pt.X;
+            _model.CurrentSpace.Y = pt.Y;
+
+            CurrentSpaceViewModel.OnCurrentOffsetChanged(this, new PointEventArgs(pt));
+        }
+
+        internal bool CanPan(object parameter)
         {
             return true;
         }

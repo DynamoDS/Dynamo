@@ -104,6 +104,19 @@
                 Modifiers="Control+Shift"
                     Command="{Binding Path=DataContext.LayoutAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         
+        <KeyBinding Key="Left"
+                    CommandParameter="Left"
+                    Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="Right"
+                    CommandParameter="Right"
+                    Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="Up"
+                    CommandParameter="Up"
+                    Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="Down"
+                    CommandParameter="Down"
+                    Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        
     </Window.InputBindings>
 
     <Grid Name="mainGrid" FocusManager.IsFocusScope="True">
