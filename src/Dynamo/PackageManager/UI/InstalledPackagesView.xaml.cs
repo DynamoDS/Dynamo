@@ -21,6 +21,10 @@ namespace Dynamo.PackageManager.UI
     {
         public InstalledPackagesView()
         {
+
+            this.Owner = dynSettings.Bench;
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             this.DataContext = dynSettings.PackageLoader;
             InitializeComponent();
 

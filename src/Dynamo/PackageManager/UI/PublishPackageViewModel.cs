@@ -29,18 +29,24 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager
 {
+    public delegate void PublishSuccessHandler(PublishPackageViewModel sender);
+
     /// <summary>
     /// The ViewModel for Package publishing </summary>
     public class PublishPackageViewModel : NotificationObject
     {
+
         #region Properties
 
+        /// <summary>
+        /// A event called when publishing was a success
+        /// </summary>
+        public event PublishSuccessHandler PublishSuccess;
 
         /// <summary>
         /// This dialog is in one of two states.  Uploading or the user is filling out the dialog
         /// </summary>
         private bool _uploading = false;
-
         public bool Uploading
         {
             get { return _uploading; }
@@ -61,7 +67,6 @@ namespace Dynamo.PackageManager
         /// A handle for the package upload so the user can know the state of the upload.
         /// </summary>
         private PackageUploadHandle _uploadHandle = null;
-
         public PackageUploadHandle UploadHandle
         {
             get { return _uploadHandle; }
@@ -88,7 +93,6 @@ namespace Dynamo.PackageManager
         /// <value>
         /// Specifies whether we're negotiating uploading a new version </value>
         private bool _isNewVersion = false;
-
         public bool IsNewVersion
         {
             get { return _isNewVersion; }
@@ -107,7 +111,6 @@ namespace Dynamo.PackageManager
         /// <value>
         /// The set of dependencies  </value>
         private List<PackageItemRootViewModel> _packageContents = null;
-
         public List<PackageItemRootViewModel> PackageContents
         {
             get
@@ -124,7 +127,6 @@ namespace Dynamo.PackageManager
         /// <value>
         /// Tells whether the publish UI is visible</value>
         private ObservableCollection<string> _additionalFiles = new ObservableCollection<string>();
-
         public ObservableCollection<string> AdditionalFiles
         {
             get { return _additionalFiles; }
@@ -143,7 +145,6 @@ namespace Dynamo.PackageManager
         /// <value>
         /// The name of the node to be uploaded </value>
         private string _name = "";
-
         public string Name
         {
             get { return _name; }
@@ -174,7 +175,6 @@ namespace Dynamo.PackageManager
         /// The state of the current upload 
         /// </value>
         private PackageUploadHandle.State _uploadState = PackageUploadHandle.State.Ready;
-
         public PackageUploadHandle.State UploadState
         {
             get { return _uploadState; }
@@ -193,7 +193,6 @@ namespace Dynamo.PackageManager
         /// <value>
         /// The name of the node to be uploaded </value>
         private string _group = "";
-
         public string Group
         {
             get { return _group; }
@@ -212,7 +211,6 @@ namespace Dynamo.PackageManager
         /// <value>
         /// The description to be uploaded </value>
         private string _Description = "";
-
         public string Description
         {
             get { return _Description; }
@@ -233,7 +231,6 @@ namespace Dynamo.PackageManager
         /// <value>
         /// A string of space-delimited keywords</value>
         private string _Keywords = "";
-
         public string Keywords
         {
             get { return _Keywords; }
@@ -273,7 +270,6 @@ namespace Dynamo.PackageManager
         /// <value>
         /// The second element of the version</value>
         private string _MinorVersion = "";
-
         public string MinorVersion
         {
             get { return _MinorVersion; }
@@ -297,7 +293,6 @@ namespace Dynamo.PackageManager
         /// <value>
         /// The third element of the version</value>
         private string _BuildVersion = "";
-
         public string BuildVersion
         {
             get { return _BuildVersion; }
@@ -321,7 +316,6 @@ namespace Dynamo.PackageManager
         /// <value>
         /// The first element of the version</value>
         private string _MajorVersion = "";
-
         public string MajorVersion
         {
             get { return _MajorVersion; }
@@ -416,7 +410,8 @@ namespace Dynamo.PackageManager
             var vm = new PublishPackageViewModel(dynSettings.PackageManagerClient)
                 {
                     Group = l.Group,
-                    Description = l.Description
+                    Description = l.Description,
+                    Keywords = String.Join(" ", l.Keywords )
                 };
 
             vm.FunctionDefinitions =
@@ -439,22 +434,31 @@ namespace Dynamo.PackageManager
             return vm;
 
         }        
+
+        public void OnPublishSuccess()
+        {
+            if (this.PublishSuccess != null)
+                this.PublishSuccess(this);
+        }
         
         private void UploadHandleOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (propertyChangedEventArgs.PropertyName == "UploadState")
             {
-                if (((PackageUploadHandle) sender).UploadState == PackageUploadHandle.State.Error)
+                this.UploadState = ((PackageUploadHandle)sender).UploadState;
+
+                if (((PackageUploadHandle)sender).UploadState == PackageUploadHandle.State.Uploaded)
                 {
-                    this.ErrorString = ((PackageUploadHandle) sender).ErrorString;
+                   this.OnPublishSuccess();
                 }
-                this.UploadState = ((PackageUploadHandle) sender).UploadState;
+                
             }
             else if (propertyChangedEventArgs.PropertyName == "ErrorString")
             {
+                this.UploadState = PackageUploadHandle.State.Error;
                 this.ErrorString = ((PackageUploadHandle) sender).ErrorString;
                 this.Uploading = false;
-            }
+            } 
         }
 
         /// <summary>
@@ -650,7 +654,7 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
-            this.ErrorString = "";
+            if ( this.UploadState != PackageUploadHandle.State.Error ) this.ErrorString = "";
 
             if (this.Uploading) return false;
 

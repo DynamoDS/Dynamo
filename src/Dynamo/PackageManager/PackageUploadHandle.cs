@@ -52,8 +52,8 @@ namespace Dynamo.PackageManager
 
         public void Error(string errorString)
         {
-            this.UploadState = State.Error;
             this.ErrorString = errorString;
+            this.UploadState = State.Error;
         }
 
         public void Done(PackageHeader ph)

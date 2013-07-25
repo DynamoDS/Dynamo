@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -20,6 +21,10 @@ namespace Dynamo.PackageManager.UI
     {
         public PackageManagerDownloadView()
         {
+
+            this.Owner = dynSettings.Bench;
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             InitializeComponent();
         }
 
