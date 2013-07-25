@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Windows.Input;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 using Dynamo.Utilities;
 
 namespace Dynamo.UI.Commands
@@ -15,10 +18,6 @@ namespace Dynamo.UI.Commands
         private readonly Action<object> _execute;
 
         public event EventHandler CanExecuteChanged;
-        //{
-        //    add { CommandManager.RequerySuggested += value; } 
-        //    remove { CommandManager.RequerySuggested -= value; }
-        //}
 
         public DelegateCommand(Action<object> execute)
             : this(execute, null)
@@ -62,7 +61,15 @@ namespace Dynamo.UI.Commands
 
             var msg = new StringBuilder();
 
-            var paramStr = parameter == null ? "null" : parameter.ToString();
+            string paramStr = "";
+
+            if (parameter == null)
+                paramStr = "null";
+            else if (parameter.GetType() == typeof(Dictionary<object, object>))
+                paramStr = JsonConvert.SerializeObject(parameter).ToString();
+            else
+                paramStr = parameter.ToString();
+            
             msg.AppendFormat("COMMAND: Name={0}, Parameter={1}", _execute.Method.Name, paramStr);
 
             DynamoLogger.Instance.Log(msg.ToString(), LogLevel.File);
