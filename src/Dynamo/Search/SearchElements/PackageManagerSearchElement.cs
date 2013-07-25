@@ -55,15 +55,7 @@ namespace Dynamo.Search.SearchElements
         {
             var version = _versionToDownload ?? this.Header.versions.Last();
 
-            string message = "";
-            if (dynSettings.PackageLoader.LocalPackages.Any(pkg => this.Name == pkg.Name))
-            {
-                message = "Dynamo has already installed " + this.Name + ".  Dynamo will attempt to uninstall this package and all its dependencies before installing.";
-                if ( MessageBox.Show(message, "Cannot Download Package", MessageBoxButton.OKCancel, MessageBoxImage.Error) == MessageBoxResult.Cancel)
-                    return;
-            }
-
-            message = "Are you sure you want to install " + this.Name +" "+ version.version + "?";
+            string message = "Are you sure you want to install " + this.Name +" "+ version.version + "?";
 
             var result = MessageBox.Show(message, "Package Download Confirmation",
                             MessageBoxButton.OKCancel, MessageBoxImage.Question);
@@ -89,11 +81,34 @@ namespace Dynamo.Search.SearchElements
                     return;
                 }
 
-                // form header version pairs and download all packages
-                headers.Zip(version.full_dependency_ids, (header, v) => new Tuple<PackageHeader, string>(header, v))
+                var localPkgs = dynSettings.PackageLoader.LocalPackages;
+
+                // if a package is already installed we need to uninstall it
+                foreach ( var localPkg in headers.Select(x => localPkgs.FirstOrDefault(v => v.Name == x.name)) )
+                {
+                    if (localPkg == null) continue;
+                    string msg;
+
+                    // if the package is in use, we will not be able to uninstall it.  
+                    if (!localPkg.UninstallCommand.CanExecute())
+                    {
+                        msg = "Dynamo needs to uninstall " + this.Name + " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
+                        MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
+                                        MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
+                    msg = "Dynamo has already installed " + this.Name + ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
+                    if ( MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                        return;
+                }
+
+                // form header version pairs and download and install all packages
+                headers.Zip(version.full_dependency_versions, (header, v) => new Tuple<PackageHeader, string>(header, v))
                         .Select( x=> new PackageDownloadHandle(x.Item1, x.Item2))
                         .ToList()
-                        .ForEach(dynSettings.Controller.PackageManagerClient.DownloadAndInstall);
+                        .ForEach(x=>x.Start());
 
             }
 

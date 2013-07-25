@@ -73,39 +73,6 @@ namespace Dynamo.PackageManager
             IsLoggedIn = false;
         }
 
-        ///// <summary>
-        /////     Asynchronously pull the package headers from the server and update search
-        ///// </summary>
-        //public void RefreshAvailable()
-        //{
-        //    ThreadStart start = () =>
-        //        {
-        //            HeaderCollectionDownload req = HeaderCollectionDownload.ByEngine("dynamo");
-
-        //            try
-        //            {
-        //                ResponseWithContentBody<List<PackageUploadRequestBody>> response =
-        //                    Client.ExecuteAndDeserializeWithContent<List<PackageUploadRequestBody>>(req);
-        //                if (response.success)
-        //                {
-        //                    dynSettings.Bench.Dispatcher.BeginInvoke((Action)(() =>
-        //                        {
-        //                            foreach (PackageUploadRequestBody header in response.content)
-        //                            {
-        //                                dynSettings.Controller.SearchViewModel.Add(header);
-        //                            }
-        //                        }));
-        //                }
-        //            }
-        //            catch
-        //            {
-        //                dynSettings.Bench.Dispatcher.BeginInvoke(
-        //                    (Action)(() => dynSettings.Controller.DynamoViewModel.Log("Failed to refresh available nodes from server.")));
-        //            }
-        //        };
-        //    new Thread(start).Start();
-        //}
-
         public void OnAuthenticationRequested()
         {
             if (AuthenticationRequested != null)
