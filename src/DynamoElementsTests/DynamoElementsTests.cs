@@ -172,19 +172,12 @@ namespace Dynamo.Tests
             // select all of them one by one
             for (int i = 0; i < numNodes; i++)
             {
-                //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
-                //                                                                     null));
                 Assert.DoesNotThrow(() => model.AddToSelection(null));
 
-                //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand, 5));
                 Assert.DoesNotThrow(() => model.AddToSelection(5));
 
-                //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
-                //                                                                     "noodle"));
                 Assert.DoesNotThrow(() => model.AddToSelection("noodle"));
 
-                //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCommand,
-                //                                                                     new StringBuilder()));
                 Assert.DoesNotThrow(() => model.AddToSelection(new StringBuilder()));
             }
         }
