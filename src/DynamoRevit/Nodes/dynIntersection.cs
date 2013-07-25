@@ -61,17 +61,12 @@ namespace Dynamo.Nodes
                     {
                         for (int coord = 0; coord < 3; coord++)
                         {
-                            if (!cornersSet)
-                            {
-                                corner1 = curvePointEnum.Current;
-                                corner2 = curvePointEnum.Current;
-                            }
-                            else if (corner1[coord] > curvePointEnum.Current[coord])
-                                corner1 = new XYZ(coord == 0 ? curvePointEnum.Current[coord] : corner1[coord],
+                           if (corner1[coord] > curvePointEnum.Current[coord])
+                              corner1 = new XYZ(coord == 0 ? curvePointEnum.Current[coord] : corner1[coord],
                                               coord == 1 ? curvePointEnum.Current[coord] : corner1[coord],
                                               coord == 2 ? curvePointEnum.Current[coord] : corner1[coord]);
-                            else if (corner2[coord] < curvePointEnum.Current[coord])
-                                corner1 = new XYZ(coord == 0 ? curvePointEnum.Current[coord] : corner2[coord],
+                            if (corner2[coord] < curvePointEnum.Current[coord])
+                               corner2 = new XYZ(coord == 0 ? curvePointEnum.Current[coord] : corner2[coord],
                                               coord == 1 ? curvePointEnum.Current[coord] : corner2[coord],
                                               coord == 2 ? curvePointEnum.Current[coord] : corner2[coord]);
                         }
@@ -82,15 +77,16 @@ namespace Dynamo.Nodes
                 double dist2 = thisPlane.Origin.DistanceTo(corner2);
                 double sizeRect = 2.0 * (dist1 + dist2) + 100.0;
  
+
                 CurveLoop cLoop = new CurveLoop();
-                for (int index = 0; index < 2; index++)
+                for (int index = 0; index < 4; index++)
                 {
-                    double coord0  = (index % 2 == 0) ? -1.0 : 1.0;
-                    double coord1  = (index / 2 == 0) ? -1.0 : 1.0;
+                    double coord0 = (index == 0 || index == 3) ? -sizeRect : sizeRect;
+                    double coord1 = (index < 2) ? -sizeRect : sizeRect;
                     XYZ pnt0 =  thisPlane.Origin + coord0 * thisPlane.XVec + coord1 * thisPlane.YVec;
 
-                    double coord3 = ((index < 2) ? 1.0 : -1.0;
-                    double coord4= (index == 0 || index == 3) ? -1.0 : 1.0;
+                    double coord3 = (index < 2) ? sizeRect : -sizeRect;
+                    double coord4 = (index == 0 || index == 3) ? -sizeRect : sizeRect;
                     XYZ pnt1 = thisPlane.Origin + coord3 * thisPlane.XVec + coord4 * thisPlane.YVec;
                     Line cLine = dynRevitSettings.Revit.Application.Create.NewLineBound(pnt0, pnt1);
                     cLoop.Append(cLine);
