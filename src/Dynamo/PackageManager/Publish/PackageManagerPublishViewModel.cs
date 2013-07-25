@@ -19,6 +19,7 @@ using System.Windows;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
+using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
@@ -247,6 +248,7 @@ namespace Dynamo.PackageManager
             //this.SubmitCommand = new DelegateCommand<object>(this.OnSubmit, this.CanSubmit);
             this.Clear();
             this.Visible = false;
+            
         }
 
         /// <summary>
@@ -308,7 +310,7 @@ namespace Dynamo.PackageManager
                 //DynamoCommands.ShowLoginCmd.Execute();
                 dynSettings.Controller.PackageManagerLoginViewModel.ShowLogin(null);
 
-                dynSettings.Controller.DynamoViewModel.Log("Must login first to publish a node.");
+                DynamoLogger.Instance.Log("Must login first to publish a node.");
                 return;
             }
 
@@ -343,7 +345,7 @@ namespace Dynamo.PackageManager
             }
             else
             {
-                dynSettings.Controller.DynamoViewModel.Log("Failed to obtain function definition from node.");
+                DynamoLogger.Instance.Log("Failed to obtain function definition from node.");
                 return;
             }
 

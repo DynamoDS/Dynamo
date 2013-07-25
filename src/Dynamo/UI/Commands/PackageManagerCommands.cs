@@ -57,7 +57,7 @@ namespace Dynamo.UI.Commands
     //        if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false)
     //        {
     //            DynamoCommands.ShowLoginCmd.Execute(null);
-    //            dynSettings.Controller.DynamoViewModel.Log("Must login first to publish a node.");
+    //            DynamoLogger.Instance.Log("Must login first to publish a node.");
     //            return;
     //        }
 
@@ -92,7 +92,7 @@ namespace Dynamo.UI.Commands
     //        }
     //        else
     //        {
-    //            dynSettings.Controller.DynamoViewModel.Log("Failed to obtain function definition from node.");
+    //            DynamoLogger.Instance.Log("Failed to obtain function definition from node.");
     //            return;
     //        }
             
@@ -246,100 +246,4 @@ namespace Dynamo.UI.Commands
     //    }
     //}
     
-    public static partial class DynamoCommands
-    {
-        private static PackageManagerPublishViewModel _vm_pm_publish =
-            dynSettings.Controller.PackageManagerPublishViewModel;
-
-        private static PackageManagerClient _pm_client =
-            dynSettings.Controller.PackageManagerClient;
-
-        private static PackageManagerLoginViewModel _vm_pm_login =
-            dynSettings.Controller.PackageManagerLoginViewModel;
-
-        /// <summary>
-        /// SubmitCommand property </summary>
-        /// <value>
-        /// A command which, when executed, submits the current package</value>
-        private static DelegateCommand _submitCommand;
-        public static DelegateCommand SubmitCommand
-        {
-            get
-            {
-                if(_submitCommand == null)
-                    _submitCommand = new DelegateCommand(_vm_pm_publish.OnSubmit, _vm_pm_publish.CanSubmit);
-                return _submitCommand;
-            }
-        }
-
-        private static DelegateCommand _showNodePublishInfoCmd;
-        public static DelegateCommand ShowNodeNodePublishInfoCmd
-        {
-            get
-            {
-                if (_showNodePublishInfoCmd == null)
-                    _showNodePublishInfoCmd =
-                        new DelegateCommand(_vm_pm_publish.ShowNodePublishInfo, _vm_pm_publish.CanShowNodePublishInfo);
-                return _showNodePublishInfoCmd;
-            }
-        }
-
-        private static DelegateCommand _publishCurrentWorkspaceCmd;
-        public static DelegateCommand PublishCurrentWorkspaceCmd
-        {
-            get
-            {
-                if (_publishCurrentWorkspaceCmd == null)
-                    _publishCurrentWorkspaceCmd =
-                        new DelegateCommand(_vm_pm_publish.PublishCurrentWorkspace, _vm_pm_publish.CanPublishCurrentWorkspace);
-                return _publishCurrentWorkspaceCmd;
-            }
-        }
-
-        private static DelegateCommand _publishSelectedNodeCmd;
-        public static DelegateCommand PublishSelectedNodeCmd
-        {
-            get
-            {
-                if (_publishSelectedNodeCmd == null)
-                    _publishSelectedNodeCmd =
-                        new DelegateCommand(_vm_pm_publish.PublishSelectedNode, _vm_pm_publish.CanPublishSelectedNode);
-                return _publishSelectedNodeCmd;
-            }
-        }
-
-        private static DelegateCommand _refreshRemotePackagesCmd;
-        public static DelegateCommand RefreshRemotePackagesCmd
-        {
-            get
-            {
-                if (_refreshRemotePackagesCmd == null)
-                    _refreshRemotePackagesCmd = new DelegateCommand(_pm_client.RefreshRemotePackages, _pm_client.CanRefreshRemotePackages);
-                return _refreshRemotePackagesCmd;
-            }
-        }
-
-        private static DelegateCommand _showLoginCmd;
-        public static DelegateCommand ShowLoginCmd
-        {
-            get
-            {
-                if (_showLoginCmd == null)
-                    _showLoginCmd = new DelegateCommand(_vm_pm_login.ShowLogin, _vm_pm_login.CanShowLogin);
-                return _showLoginCmd;
-            }
-        }
-
-        private static DelegateCommand _loginCmd;
-        public static DelegateCommand LoginCmd
-        {
-            get
-            {
-                if (_loginCmd == null)
-                    _loginCmd = new DelegateCommand(_vm_pm_login.Login, _vm_pm_login.CanLogin);
-                return _loginCmd;
-            }
-        }
-
-    }
 }

@@ -2492,7 +2492,7 @@ namespace Dynamo.Nodes
         {
             var result = args[0];
 
-            Controller.DynamoViewModel.Log(FScheme.print(result));
+            DynamoLogger.Instance.Log(FScheme.print(result));
 
             if (Controller.DynamoViewModel.RunInDebug)
             {

@@ -78,7 +78,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log(string.Format("Could not create view: {0}", viewName));
+                        DynamoLogger.Instance.Log(string.Format("Could not create view: {0}", viewName));
                     }
                 }
                 else

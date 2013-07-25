@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 
@@ -120,7 +121,7 @@ namespace Dynamo.Nodes
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
-                DynamoCommands.DeleteCommand.Execute(this.ViewModel.Model);
+                dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(this.ViewModel.Model);
         }
 
         private void Note_MouseDown(object sender, MouseButtonEventArgs e)

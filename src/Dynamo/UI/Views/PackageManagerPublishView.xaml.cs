@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Dynamo.UI.Commands;
+using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager
 {
@@ -34,16 +35,16 @@ namespace Dynamo.PackageManager
             switch (e.PropertyName)
             {
                 case "Keywords":
-                    DynamoCommands.SubmitCommand.RaiseCanExecuteChanged();
+                    dynSettings.Controller.DynamoViewModel.SubmitCommand.RaiseCanExecuteChanged();
                     break;
                 case "Description":
-                    DynamoCommands.SubmitCommand.RaiseCanExecuteChanged();
+                    dynSettings.Controller.DynamoViewModel.SubmitCommand.RaiseCanExecuteChanged();
                     break;
                 case "MinorVersion":
-                    DynamoCommands.SubmitCommand.RaiseCanExecuteChanged();
+                    dynSettings.Controller.DynamoViewModel.SubmitCommand.RaiseCanExecuteChanged();
                     break;
                 case "MajorVersion":
-                    DynamoCommands.SubmitCommand.RaiseCanExecuteChanged();
+                    dynSettings.Controller.DynamoViewModel.SubmitCommand.RaiseCanExecuteChanged();
                     break;
             }
         }

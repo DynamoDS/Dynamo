@@ -23,7 +23,7 @@ namespace Dynamo.UI.Commands.Regions
         {
             if ((parameters as PackageManagerRegion).Loaded == true)
             {
-                UI.Commands.DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
+                dynSettings.Controller.PackageManagerClient.RefreshRemotePackages(null);
             }
             else
             {

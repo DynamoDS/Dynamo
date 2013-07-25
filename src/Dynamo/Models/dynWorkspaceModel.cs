@@ -330,7 +330,7 @@ namespace Dynamo.Models
         /// <returns>Whether the operation was successful</returns>
         public static bool SaveWorkspace(string xmlPath, dynWorkspaceModel workSpace)
         {
-            dynSettings.Controller.DynamoViewModel.Log("Saving " + xmlPath + "...");
+            DynamoLogger.Instance.Log("Saving " + xmlPath + "...");
             try
             {
                 var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace is HomeWorkspace);

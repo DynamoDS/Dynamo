@@ -25,7 +25,7 @@ namespace Dynamo.Utilities
             //First, prompt the user to enter a name
             //string newNodeName ="", newNodeCategory ="";
             var args = new FunctionNamePromptEventArgs();
-            dynSettings.Controller.DynamoViewModel.OnRequestsFunctionNamePrompt(null, args);
+            dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(null, args);
 
             //if (!dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory))
             if(!args.Success)
@@ -464,7 +464,7 @@ namespace Dynamo.Utilities
             dynSettings.Controller.CustomNodeLoader.SetNodePath(newNodeDefinition.FunctionId, path);
             dynSettings.Controller.SearchViewModel.Add(args.Name, args.Category, newNodeDefinition.FunctionId);
 
-            dynSettings.Controller.DynamoViewModel.CreateNode(new Dictionary<string, object>()
+            dynSettings.Controller.DynamoModel.CreateNode(new Dictionary<string, object>()
                 {
                     {"name", collapsedNode.Definition.FunctionId.ToString() },
                     {"x", avgX },

@@ -72,11 +72,11 @@ namespace Dynamo.Controls
         {
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
-            _vm.RequestLayoutUpdate += vm_RequestLayoutUpdate;
-            DynamoCommands.PostUiActivationCommand.Execute(null);
+            _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
+            _vm.PostUiActivationCommand.Execute(null);
 
             _timer.Stop();
-            dynSettings.Controller.DynamoViewModel.Log(String.Format("{0} elapsed for loading Dynamo main window.",
+            DynamoLogger.Instance.Log(String.Format("{0} elapsed for loading Dynamo main window.",
                                                                      _timer.Elapsed));
             LoadSamplesMenu();
 
@@ -99,7 +99,7 @@ namespace Dynamo.Controls
             //mainGrid.Children.Add(pmPublishView);
 
             //FUNCTION NAME PROMPT
-            _vm.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
+            _vm.Model.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
 
             _vm.RequestClose += new EventHandler(_vm_RequestClose);
             _vm.RequestSaveImage += new ImageSaveEventHandler(_vm_RequestSaveImage);
@@ -116,8 +116,8 @@ namespace Dynamo.Controls
 
         void ClipBoard_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            DynamoCommands.CopyCommand.RaiseCanExecuteChanged();
-            DynamoCommands.PasteCommand.RaiseCanExecuteChanged();
+            _vm.CopyCommand.RaiseCanExecuteChanged();
+            _vm.PasteCommand.RaiseCanExecuteChanged();
         }
 
         void _vm_RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
@@ -160,8 +160,8 @@ namespace Dynamo.Controls
 
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            DynamoCommands.CopyCommand.RaiseCanExecuteChanged();
-            DynamoCommands.PasteCommand.RaiseCanExecuteChanged();
+            _vm.CopyCommand.RaiseCanExecuteChanged();
+            _vm.PasteCommand.RaiseCanExecuteChanged();
         }
 
         void Controller_RequestsCrashPrompt(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
@@ -308,11 +308,13 @@ namespace Dynamo.Controls
             var res = _vm.AskUserToSaveWorkspacesOrCancel();
             if (!res)
                 e.Cancel = true;
+
+
         }
 
         private void WindowClosed(object sender, EventArgs e)
         {
-            DynamoCommands.CleanupCommand.Execute(null);
+            _vm.CleanupCommand.Execute(null);
         }
 
         private void OverlayCanvas_OnMouseMove(object sender, MouseEventArgs e)
@@ -447,7 +449,7 @@ namespace Dynamo.Controls
         /// <summary>
         ///     Callback for opening a sample.
         /// </summary>
-        private static void OpenSample_Click(object sender, RoutedEventArgs e)
+        private void OpenSample_Click(object sender, RoutedEventArgs e)
         {
             var path = (string)((MenuItem)sender).Tag;
 
@@ -455,10 +457,14 @@ namespace Dynamo.Controls
                 dynSettings.Controller.DynamoViewModel.QueueLoad(path);
             else
             {
-                if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
-                    dynSettings.Controller.DynamoViewModel.ViewHomeWorkspace();
+                //if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
+                //    dynSettings.Controller.DynamoViewModel.ViewHomeWorkspace();
+                
+                if(_vm.CanGoHome(null))
+                    _vm.GoHomeCommand.Execute(null);
 
-                dynSettings.Controller.DynamoViewModel.OpenWorkspace(path);
+                //dynSettings.Controller.DynamoModel.OpenWorkspace(path);
+                _vm.OpenCommand.Execute(path);
             }
         }
     }

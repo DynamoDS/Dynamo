@@ -5,9 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ns="clr-namespace:Dynamo.PackageManager"
              mc:Ignorable="d" 
-             d:DesignWidth="350" Visibility="{Binding Path=Visible, Converter={StaticResource BooleanToVisibilityConverter}}">
+             d:DesignWidth="350"
+             Visibility="Hidden">
 
-  <Grid Background="Black">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid Background="Black">
 
     <StackPanel Name="BrowserContainer" Orientation="Vertical">
 
@@ -19,15 +29,5 @@
 
     </StackPanel>
 
-  </Grid>
-
-    <UserControl.Resources>
-      <ResourceDictionary>
-        <ResourceDictionary.MergedDictionaries>
-          <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-      </ResourceDictionary>
-    </UserControl.Resources>
-      
+  </Grid>      
 </UserControl>

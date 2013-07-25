@@ -146,9 +146,9 @@ namespace Dynamo.PackageManager
                     catch
                     {
                         //dynSettings.Bench.Dispatcher.BeginInvoke(
-                        //    (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to refresh available nodes from server.")));
+                        //    (Action) (() => DynamoLogger.Instance.Log("Failed to refresh available nodes from server.")));
 
-                        dynSettings.Controller.DispatchOnUIThread(() => dynSettings.Controller.DynamoViewModel.Log("Failed to refresh available nodes from server."));
+                        dynSettings.Controller.DispatchOnUIThread(() => DynamoLogger.Instance.Log("Failed to refresh available nodes from server."));
                     }
                 };
             new Thread(start).Start();
@@ -229,14 +229,14 @@ namespace Dynamo.PackageManager
                             Client.ExecuteAndDeserializeWithContent<PackageHeader>(packageUpload);
                         //dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
                         //    {
-                        //        dynSettings.Controller.DynamoViewModel.Log("Message form server: " + ret.message);
+                        //        DynamoLogger.Instance.Log("Message form server: " + ret.message);
                         //        LoadedPackageHeaders.Add(funDef, ret.content);
                         //        SavePackageHeader(ret.content);
                         //    }));
 
                         dynSettings.Controller.DispatchOnUIThread((() =>
                         {
-                            dynSettings.Controller.DynamoViewModel.Log("Message form server: " + ret.message);
+                            DynamoLogger.Instance.Log("Message form server: " + ret.message);
                             LoadedPackageHeaders.Add(funDef, ret.content);
                             SavePackageHeader(ret.content);
                         }));
@@ -244,8 +244,8 @@ namespace Dynamo.PackageManager
                     catch
                     {
                         //dynSettings.Bench.Dispatcher.BeginInvoke(
-                        //    (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
-                        dynSettings.Controller.DispatchOnUIThread((() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
+                        //    (Action) (() => DynamoLogger.Instance.Log("Failed to publish package.")));
+                        dynSettings.Controller.DispatchOnUIThread((() => DynamoLogger.Instance.Log("Failed to publish package.")));
                     }
                 };
             new Thread(start).Start();
@@ -265,22 +265,22 @@ namespace Dynamo.PackageManager
                             Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgVersUpload);
                         //dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
                         //    {
-                        //        dynSettings.Controller.DynamoViewModel.Log(ret.message);
+                        //        DynamoLogger.Instance.Log(ret.message);
                         //        SavePackageHeader(ret.content);
                         //    }));
 
                         dynSettings.Controller.DispatchOnUIThread((() =>
                         {
-                            dynSettings.Controller.DynamoViewModel.Log(ret.message);
+                            DynamoLogger.Instance.Log(ret.message);
                             SavePackageHeader(ret.content);
                         }));
                     }
                     catch
                     {
                         //dynSettings.Bench.Dispatcher.BeginInvoke(
-                        //    (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
+                        //    (Action) (() => DynamoLogger.Instance.Log("Failed to publish package.")));
 
-                        dynSettings.Controller.DispatchOnUIThread((() => dynSettings.Controller.DynamoViewModel.Log("Failed to publish package.")));
+                        dynSettings.Controller.DispatchOnUIThread((() => DynamoLogger.Instance.Log("Failed to publish package.")));
                     }
                 };
             new Thread(start).Start();
@@ -311,9 +311,9 @@ namespace Dynamo.PackageManager
             {
                 //dynSettings.Bench.Dispatcher.BeginInvoke(
                 //    (Action)
-                //    (() => dynSettings.Controller.DynamoViewModel.Log(
+                //    (() => DynamoLogger.Instance.Log(
                 //        "Failed to write package header information, won't be under source control.")));
-                dynSettings.Controller.DispatchOnUIThread((() => dynSettings.Controller.DynamoViewModel.Log(
+                dynSettings.Controller.DispatchOnUIThread((() => DynamoLogger.Instance.Log(
                         "Failed to write package header information, won't be under source control.")));
             }
         }
@@ -363,17 +363,10 @@ namespace Dynamo.PackageManager
 
                         SavePackageHeader(p.content);
 
-                        //dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
-                        //    {
-                        //        Controller.DynamoViewModel.OpenDefinition(path);
-                        //        dynSettings.Controller.DynamoViewModel.Log("Successfully imported package " + p.content.name);
-                        //        callback(funcDefGuid);
-                        //    }));
-
                         dynSettings.Controller.DispatchOnUIThread((() =>
                             {
-                                Controller.DynamoViewModel.OpenDefinition(path);
-                                dynSettings.Controller.DynamoViewModel.Log("Successfully imported package " +
+                                Controller.DynamoModel.OpenDefinition(path);
+                                DynamoLogger.Instance.Log("Successfully imported package " +
                                                                            p.content.name);
                                 callback(funcDefGuid);
                             }));
@@ -381,9 +374,9 @@ namespace Dynamo.PackageManager
                     catch
                     {
                         //dynSettings.Bench.Dispatcher.BeginInvoke(
-                        //    (Action) (() => dynSettings.Controller.DynamoViewModel.Log("Failed to load package " + p.content.name)));
+                        //    (Action) (() => DynamoLogger.Instance.Log("Failed to load package " + p.content.name)));
 
-                        dynSettings.Controller.DispatchOnUIThread((() => dynSettings.Controller.DynamoViewModel.Log("Failed to load package " + p.content.name)));
+                        dynSettings.Controller.DispatchOnUIThread((() => DynamoLogger.Instance.Log("Failed to load package " + p.content.name)));
                     }
                 };
             new Thread(start).Start();
@@ -428,7 +421,7 @@ namespace Dynamo.PackageManager
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log("Failed to login. Are you connected to the internet?");
+                        DynamoLogger.Instance.Log("Failed to login. Are you connected to the internet?");
                     }
                 };
             new Thread(start).Start();
@@ -491,14 +484,14 @@ namespace Dynamo.PackageManager
                     proxyResponse.Content = File.ReadAllText(files[0]);
                     var jsonDes = new JsonDeserializer();
                     var packageHeader = jsonDes.Deserialize<PackageHeader>(proxyResponse);
-                    dynSettings.Controller.DynamoViewModel.Log("Loading package control information for " + name + " from packages");
+                    DynamoLogger.Instance.Log("Loading package control information for " + name + " from packages");
                     LoadedPackageHeaders.Add(funcDef, packageHeader);
                 }
             }
             catch (Exception ex)
             {
-                dynSettings.Controller.DynamoViewModel.Log("Failed to open the package header information.");
-                dynSettings.Controller.DynamoViewModel.Log(ex);
+                DynamoLogger.Instance.Log("Failed to open the package header information.");
+                DynamoLogger.Instance.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
             }
         } 

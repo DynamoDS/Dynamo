@@ -154,7 +154,7 @@ namespace Dynamo
                 //Catch unhandled exception
                 if (ex.Message.Length > 0)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
+                    DynamoLogger.Instance.Log(ex);
                 }
 
                 OnRunCancelled(true);
@@ -214,7 +214,7 @@ namespace Dynamo
                 //    //                                foreach (dynNodeModel node in topElements)
                 //    //                                {
                 //    //                                    string exp = node.PrintExpression();
-                //    //                                    dynSettings.Controller.DynamoViewModel.Log("> " + exp);
+                //    //                                    DynamoLogger.Instance.Log("> " + exp);
                 //    //                                }
                 //    //                            }
                 //    //                            ));
@@ -234,7 +234,7 @@ namespace Dynamo
 //// NOPE
 //                        //dynSettings.Bench.Dispatcher.Invoke(new Action(
 //                        //                            () =>
-//                        //                            dynSettings.Controller.DynamoViewModel.Log(FScheme.print(expr))
+//                        //                            DynamoLogger.Instance.Log(FScheme.print(expr))
 //                        //                            ));
 //                    }
 //                }
@@ -258,7 +258,7 @@ namespace Dynamo
                 //    if (ex.Message.Length > 0)
                 //    {
                 //        dynSettings.Bench.Dispatcher.Invoke(new Action(
-                //                                    delegate { dynSettings.Controller.DynamoViewModel.Log(ex); }
+                //                                    delegate { DynamoLogger.Instance.Log(ex); }
                 //                                    ));
                 //    }
                 //}

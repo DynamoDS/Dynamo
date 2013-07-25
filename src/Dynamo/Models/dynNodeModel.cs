@@ -768,18 +768,12 @@ namespace Dynamo.Models
                 {
 
                     Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
+                    DynamoLogger.Instance.Log(ex);
 
-                    //if (DynamoCommands.WriteToLogCmd.CanExecute(null))
-                    //{
-                    //    DynamoCommands.WriteToLogCmd.Execute(ex.Message);
-                    //    DynamoCommands.WriteToLogCmd.Execute(ex.StackTrace);
-                    //}
-
-                    if (dynSettings.Controller.DynamoViewModel.CanWriteToLog(null))
+                    if (dynSettings.Controller.DynamoModel.CanWriteToLog(null))
                     {
-                        dynSettings.Controller.DynamoViewModel.WriteToLog(ex.Message);
-                        dynSettings.Controller.DynamoViewModel.WriteToLog(ex.StackTrace);
+                        dynSettings.Controller.DynamoModel.WriteToLog(ex.Message);
+                        dynSettings.Controller.DynamoModel.WriteToLog(ex.StackTrace);
                     }
 
                     //Controller.DynamoViewModel.ShowElement(this); // not good if multiple nodes are in error state
@@ -1654,7 +1648,7 @@ namespace Dynamo.Models
                 var symbol = Guid.Parse((entry as dynFunction).Symbol);
                 if (!dynSettings.Controller.CustomNodeLoader.Contains(symbol))
                 {
-                    dynSettings.Controller.DynamoViewModel.Log("WARNING -- No implementation found for node: " + symbol);
+                    DynamoLogger.Instance.Log("WARNING -- No implementation found for node: " + symbol);
                     entry.Error("Could not find .dyf definition file for this node.");
                     return false;
                 }

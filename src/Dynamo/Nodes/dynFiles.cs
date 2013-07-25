@@ -163,7 +163,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                dynSettings.Controller.DynamoViewModel.Log(e);
+                DynamoLogger.Instance.Log(e);
                 return Value.NewNumber(0);
             }
 
@@ -203,7 +203,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                dynSettings.Controller.DynamoViewModel.Log(e);
+                DynamoLogger.Instance.Log(e);
                 return Value.NewNumber(0);
             }
 

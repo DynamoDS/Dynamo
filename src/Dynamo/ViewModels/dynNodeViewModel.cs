@@ -453,8 +453,7 @@ namespace Dynamo.ViewModels
 
         private void DeleteNodeAndItsConnectors(object parameter)
         {
-            //dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(this.nodeLogic);
-            dynSettings.Controller.DynamoViewModel.Delete(nodeLogic);
+            dynSettings.Controller.DynamoModel.Delete(nodeLogic);
         }
 
         void SetLacingType(object param)

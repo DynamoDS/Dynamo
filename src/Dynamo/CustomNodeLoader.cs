@@ -135,7 +135,7 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         public bool TypesFromFolderAreInUse(string path, ref HashSet<Tuple<string, string>> whereTypesAreLoaded)
         {
-            whereTypesAreLoaded.UnionWith(dynSettings.Controller.DynamoViewModel.AllNodes.Where((n) => n is dynFunction)
+            whereTypesAreLoaded.UnionWith(dynSettings.Controller.DynamoModel.AllNodes.Where((n) => n is dynFunction)
                                            .Cast<dynFunction>()
                                            .Where((func) => this.nodePaths[func.Definition.FunctionId].StartsWith(path))
                                            .Select((func) => new Tuple<string, string>(func.Name, func.WorkSpace.Name)));
@@ -612,7 +612,7 @@ namespace Dynamo.Utilities
                 #endregion
 
                 //DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
-                dynSettings.Controller.DynamoViewModel.WriteToLog("Loading node definition for \"" + funName + "\" from: " + xmlPath);
+                dynSettings.Controller.DynamoModel.WriteToLog("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
                 var ws = new FuncWorkspace(
                     funName, category.Length > 0
@@ -706,7 +706,7 @@ namespace Dynamo.Utilities
                                 {
                                     if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
                                     {
-                                        controller.DynamoViewModel.Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key, typeName));
+                                        DynamoLogger.Instance.Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key, typeName));
                                         t = kvp.Value.Type;
                                     }
                                 }
@@ -715,8 +715,8 @@ namespace Dynamo.Utilities
 
                         if (t == null)
                         {
-                            controller.DynamoViewModel.Log("Could not load node of type: " + typeName);
-                            controller.DynamoViewModel.Log("Loading will continue but nodes might be missing from your workflow.");
+                            DynamoLogger.Instance.Log("Could not load node of type: " + typeName);
+                            DynamoLogger.Instance.Log("Loading will continue but nodes might be missing from your workflow.");
 
                             //return false;
                             badNodes.Add(guid);
@@ -726,7 +726,7 @@ namespace Dynamo.Utilities
                     else
                         t = tData.Type;
 
-                    dynNodeModel el = dynSettings.Controller.DynamoViewModel.CreateNodeInstance(t, nickname, guid);
+                    dynNodeModel el = dynSettings.Controller.DynamoModel.CreateNodeInstance(t, nickname, guid);
 
                     if (lacingAttrib != null)
                     {
@@ -840,7 +840,7 @@ namespace Dynamo.Utilities
                     catch
                     {
                         //DynamoCommands.WriteToLogCmd.Execute(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
-                        dynSettings.Controller.DynamoViewModel.WriteToLog(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
+                        dynSettings.Controller.DynamoModel.WriteToLog(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
                     }
                 }
 
@@ -869,7 +869,7 @@ namespace Dynamo.Utilities
                         paramDict.Add("text", text);
                         paramDict.Add("workspace", ws);
                         //dynSettings.Controller.DynamoViewModel.AddNoteCommand.Execute(paramDict);
-                        dynSettings.Controller.DynamoViewModel.AddNote(paramDict);
+                        dynSettings.Controller.DynamoModel.AddNote(paramDict);
                     }
                 }
 
@@ -890,11 +890,8 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                //DynamoCommands.WriteToLogCmd.Execute("There was an error opening the workbench.");
-                //DynamoCommands.WriteToLogCmd.Execute(ex);
-
-                dynSettings.Controller.DynamoViewModel.WriteToLog("There was an error opening the workbench.");
-                dynSettings.Controller.DynamoViewModel.WriteToLog(ex);
+                dynSettings.Controller.DynamoModel.WriteToLog("There was an error opening the workbench.");
+                dynSettings.Controller.DynamoModel.WriteToLog(ex);
 
                 if (controller.Testing)
                     Assert.Fail(ex.Message);
