@@ -492,7 +492,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("curve", "Model Curve", typeof(Value.Container)));
             InPortData.Add(new PortData("len", "measured length or percent of overall length", typeof(Value.Number)));
             InPortData.Add(new PortData("normalized?", "if true len is the percent of overall curve length, else the actual length", typeof(Value.Container)));
-            InPortData.Add(new PortData("beginning?", "if true measured from Beginnig, else from End", typeof(Value.Container)));
+            InPortData.Add(new PortData("beginning?", "if true measured from Beginning, else from End", typeof(Value.Container)));
             OutPortData.Add(new PortData("pt", "PointOnCurve", typeof(Value.Container)));
 
             RegisterAllPorts();
