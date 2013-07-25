@@ -44,8 +44,8 @@ namespace Dynamo.UI.Commands
 
         public void Execute(object parameter)
         {
-            _execute(parameter);
             OnExecute(parameter);
+            _execute(parameter);
         }
 
         public void RaiseCanExecuteChanged()
