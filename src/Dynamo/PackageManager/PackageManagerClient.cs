@@ -311,6 +311,7 @@ namespace Dynamo.PackageManager
 
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
         {
+
             var pkgDownload = new PackageDownload(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName);
             Downloads.Add( packageDownloadHandle );
 

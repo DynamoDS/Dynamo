@@ -528,7 +528,9 @@ namespace Dynamo
             var def =
                 dynSettings.Controller.CustomNodeLoader
                            .GetLoadedDefinitions()
-                           .First(x => x.Workspace == this);
+                           .FirstOrDefault(x => x.Workspace == this);
+
+            if (def == null) return;
 
             def.RequiresRecalc = true;
 
