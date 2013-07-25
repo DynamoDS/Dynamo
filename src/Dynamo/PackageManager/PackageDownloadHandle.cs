@@ -52,7 +52,7 @@ namespace Dynamo.PackageManager
         {
             this.Header = header;
             this.DownloadPath = "";
-           // this.VersionName = version;
+            this.VersionName = version;
         }
 
         public void Start()
