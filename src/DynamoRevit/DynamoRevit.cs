@@ -72,8 +72,6 @@ namespace Dynamo.Applications
         private static ResourceManager res;
         public static ExecutionEnvironment env;
 
-        private static Application app;
-
         public Result OnStartup(UIControlledApplication application)
         {
             try
@@ -138,6 +136,7 @@ namespace Dynamo.Applications
                 UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
 
                 env = new ExecutionEnvironment();
+                //EnsureApplicationResources();
 
                 return Result.Succeeded;
             }
@@ -152,54 +151,57 @@ namespace Dynamo.Applications
         {
             UpdaterRegistry.UnregisterUpdater(updater.GetUpdaterId());
 
-            if(app!=null)
-                app.Shutdown();
+            //if(Application.Current != null)
+            //    Application.Current.Shutdown();
 
             return Result.Succeeded;
         }
 
-        public static void CreateDummyApplication()
-        {
-            if (Application.Current == null)
-            {
-                // create the Application object
-                app = new Application();
-                app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        //public static void EnsureApplicationResources()
+        //{
+        //    //http://drwpf.com/blog/2007/10/05/managing-application-resources-when-wpf-is-hosted/
 
-                var convertersUri = new Uri("/DynamoCore;component/UI/Themes/DynamoConverters.xaml", UriKind.Relative);
-                var colorsUri = new Uri("/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml", UriKind.Relative);
-                var modernUri = new Uri("/DynamoCore;component/UI/Themes/DynamoModern.xaml", UriKind.Relative);
-                var textUri = new Uri("/DynamoCore;component/UI/Themes/DynamoText.xaml", UriKind.Relative);
+        //    if (Application.Current == null)
+        //    {
+        //        // create the Application object
+        //        new Application();
+        //        Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        //        Application.ResourceAssembly = typeof (DynamoView).Assembly;
 
-                //http://msdn.microsoft.com/en-us/library/aa970069(v=vs.85).aspx
+        //        var convertersUri = new Uri("/DynamoCore;component/UI/Themes/DynamoConverters.xaml", UriKind.Relative);
+        //        var colorsUri = new Uri("/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml", UriKind.Relative);
+        //        var modernUri = new Uri("/DynamoCore;component/UI/Themes/DynamoModern.xaml", UriKind.Relative);
+        //        var textUri = new Uri("/DynamoCore;component/UI/Themes/DynamoText.xaml", UriKind.Relative);
 
-                var converters = new ResourceDictionary
-                {
-                    Source = convertersUri
-                };
-                app.Resources.MergedDictionaries.Add(converters);
+        //        //http://msdn.microsoft.com/en-us/library/aa970069(v=vs.85).aspx
 
-                var colors = new ResourceDictionary
-                {
-                    Source = colorsUri
-                };
-                app.Resources.MergedDictionaries.Add(colors);
+        //        var converters = new ResourceDictionary
+        //        {
+        //            Source = convertersUri
+        //        };
+        //        Application.Current.Resources.MergedDictionaries.Add(converters);
 
-                var modern = new ResourceDictionary
-                {
-                    Source = modernUri
-                };
-                app.Resources.MergedDictionaries.Add(modern);
+        //        var colors = new ResourceDictionary
+        //        {
+        //            Source = colorsUri
+        //        };
+        //        Application.Current.Resources.MergedDictionaries.Add(colors);
 
-                var text = new ResourceDictionary
-                {
-                    Source = textUri
-                };
-                app.Resources.MergedDictionaries.Add(text);
-            }
+        //        var modern = new ResourceDictionary
+        //        {
+        //            Source = modernUri
+        //        };
+        //        Application.Current.Resources.MergedDictionaries.Add(modern);
+
+        //        var text = new ResourceDictionary
+        //        {
+        //            Source = textUri
+        //        };
+        //        Application.Current.Resources.MergedDictionaries.Add(text);
+        //    }
 
 
-        }
+        //}
     }
 
 
@@ -255,8 +257,6 @@ namespace Dynamo.Applications
                 dynRevitSettings.Doc = m_doc;
                 dynRevitSettings.DefaultLevel = defaultLevel;
 
-                DynamoRevitApp.CreateDummyApplication();
-
                 IdlePromise.ExecuteOnIdle(delegate
                     {
                         //get window handle
@@ -274,16 +274,16 @@ namespace Dynamo.Applications
                             context = "Vasari 2014";
 
                         dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
+                        
 
-                        var ui = new DynamoView {DataContext = dynamoController.DynamoViewModel};
-                        dynamoController.UIDispatcher = ui.Dispatcher;
-                        dynamoView = ui;
+                        dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
+                        dynamoController.UIDispatcher = dynamoView.Dispatcher;
 
                         //set window handle and show dynamo
                         new WindowInteropHelper(dynamoView).Owner = mwHandle;
 
                         handledCrash = false;
-                        
+
                         dynamoView.WindowStartupLocation = WindowStartupLocation.Manual;
 
                         Rectangle bounds = Screen.PrimaryScreen.Bounds;
@@ -293,7 +293,7 @@ namespace Dynamo.Applications
                         dynamoView.Height = dynamoViewHeight ?? 800.0;
 
                         dynamoView.Show();
-                        
+
                         dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException; 
                         dynamoView.Closing += dynamoView_Closing;
                         dynamoView.Closed += dynamoView_Closed;
@@ -355,8 +355,8 @@ namespace Dynamo.Applications
 
             try
             {
-                DynamoCommands.ExitCommand.Execute(false); // don't allow cancellation
-                DynamoCommands.ReportABugCommand.Execute(null);
+                dynSettings.Controller.DynamoViewModel.Exit(false); // don't allow cancellation
+                dynSettings.Controller.ReportABug(null);
             }
             catch
             {

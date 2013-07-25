@@ -7,7 +7,7 @@
              xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements"
              xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:clr="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             Visibility="{Binding Path=Visible, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}" 
+             Visibility="Visible" 
              d:DesignWidth="300" 
              d:DesignHeight="300"  
              x:Name="SearchControl" 

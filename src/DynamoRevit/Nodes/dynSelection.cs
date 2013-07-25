@@ -234,7 +234,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log(
+                        DynamoLogger.Instance.Log(
                             "Unable to find element with ID: " + id);
                     }
                     SelectedElement = saved;
@@ -266,7 +266,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                dynSettings.Controller.DynamoViewModel.Log(e);
+                DynamoLogger.Instance.Log(e);
             }
         }
     }
@@ -298,7 +298,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                dynSettings.Controller.DynamoViewModel.Log(e);
+                DynamoLogger.Instance.Log(e);
             }
         }
     }
@@ -506,7 +506,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log(
+                        DynamoLogger.Instance.Log(
                             "Unable to find element with ID: " + id);
                     }
                     if (SelectedElements == null)
@@ -545,7 +545,7 @@ namespace Dynamo.Nodes
         //    }
         //    catch (Exception e)
         //    {
-        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //        DynamoLogger.Instance.Log(e);
         //    }
         //}
 
@@ -673,7 +673,7 @@ namespace Dynamo.Nodes
         //    }
         //    catch (Exception e)
         //    {
-        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //        DynamoLogger.Instance.Log(e);
         //    }
             
         //}
@@ -711,7 +711,7 @@ namespace Dynamo.Nodes
         //    }
         //    catch (Exception e)
         //    {
-        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //        DynamoLogger.Instance.Log(e);
         //    }
         //}
 
@@ -925,7 +925,7 @@ namespace Dynamo.Nodes
         //    }
         //    catch (Exception e)
         //    {
-        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //        DynamoLogger.Instance.Log(e);
         //    }
         //}
 
@@ -959,7 +959,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log(
+                        DynamoLogger.Instance.Log(
                             "Unable to find element with ID: " + id);
                     }
 
@@ -1063,7 +1063,7 @@ namespace Dynamo.Nodes
         //    }
         //    catch (Exception e)
         //    {
-        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //        DynamoLogger.Instance.Log(e);
         //    }
             
         //}

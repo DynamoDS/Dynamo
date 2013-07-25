@@ -66,7 +66,7 @@ namespace Dynamo.Search.SearchElements
                 //);
 
                 dynSettings.Controller.PackageManagerClient.Download(this.Id, "", (finalGuid) =>
-                    dynSettings.Controller.DynamoViewModel.CreateNode(new Dictionary<string, object>()
+                    dynSettings.Controller.DynamoModel.CreateNode(new Dictionary<string, object>()
                         {
                             { "name", guid.ToString() },
                             { "transformFromOuterCanvasCoordinates", true },
@@ -85,7 +85,7 @@ namespace Dynamo.Search.SearchElements
                 //    });
 
                 // get the node from here
-                dynSettings.Controller.DynamoViewModel.CreateNode(new Dictionary<string, object>()
+                dynSettings.Controller.DynamoModel.CreateNode(new Dictionary<string, object>()
                     {
                         {"name", this.Guid.ToString() },
                         {"transformFromOuterCanvasCoordinates", true},

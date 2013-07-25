@@ -77,7 +77,7 @@ namespace Dynamo.Views
             sw.Start();
             DrawGrid();
             sw.Stop();
-            dynSettings.Controller.DynamoViewModel.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
+            DynamoLogger.Instance.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)

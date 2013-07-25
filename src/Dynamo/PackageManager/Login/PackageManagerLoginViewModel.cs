@@ -15,6 +15,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 

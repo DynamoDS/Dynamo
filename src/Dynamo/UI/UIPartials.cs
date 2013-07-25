@@ -985,7 +985,7 @@ namespace Dynamo.Nodes
                 }
                 catch (Exception e)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log(e.ToString());
+                    DynamoLogger.Instance.Log(e.ToString());
                 }
 
 

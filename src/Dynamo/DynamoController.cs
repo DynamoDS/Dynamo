@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -32,9 +33,13 @@ namespace Dynamo
         public const string VASARI_2014 = "Vasari 2014";
     }
 
+    public delegate void ImageSaveEventHandler(object sender, ImageSaveEventArgs e);
+
     public class DynamoController
     {
         #region properties
+
+        
 
         private Dictionary<Guid, RenderDescription> _renderDescriptions = new Dictionary<Guid, RenderDescription>();
         public Dictionary<Guid, RenderDescription> RenderDescriptions
@@ -94,6 +99,26 @@ namespace Dynamo
         {
             get { return context; }
             set { context = value; }
+        }
+
+        private bool _isShowingConnectors = true;
+        public bool IsShowingConnectors
+        {
+            get { return _isShowingConnectors; }
+            set
+            {
+                _isShowingConnectors = value;
+            }
+        }
+
+        private ConnectorType _connectorType;
+        public ConnectorType ConnectorType
+        {
+            get { return _connectorType; }
+            set
+            {
+                _connectorType = value;
+            }
         }
 
         #endregion
@@ -167,10 +192,6 @@ namespace Dynamo
 
             this.Context = context;
 
-            //create the view model to which the main window will bind
-            //the DynamoModel is created therein
-
-            this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(viewModelType,new object[]{this});
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -183,21 +204,25 @@ namespace Dynamo
             PackageManagerLoginViewModel = new PackageManagerLoginViewModel(PackageManagerClient);
             PackageManagerPublishViewModel = new PackageManagerPublishViewModel(PackageManagerClient);
 
+            
+            //create the view model to which the main window will bind
+            //the DynamoModel is created therein
+            DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(viewModelType,new object[]{this});
             FSchemeEnvironment = env;
 
             DynamoViewModel.Model.CurrentSpace.X = 0;
             DynamoViewModel.Model.CurrentSpace.Y = 0;
 
-            dynSettings.Controller.DynamoViewModel.Log(String.Format(
+            DynamoLogger.Instance.Log(String.Format(
                 "Dynamo -- Build {0}",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
             DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);
 
             //run tests
-            if (FScheme.RunTests(dynSettings.Controller.DynamoViewModel.Log))
+            if (FScheme.RunTests(DynamoLogger.Instance.Log))
             {
-                dynSettings.Controller.DynamoViewModel.Log("All Tests Passed. Core library loaded OK.");
+                DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
             }
 
             NodeSubmittedForRendering += new EventHandler(Controller_NodeSubmittedForRendering);
@@ -320,7 +345,7 @@ namespace Dynamo
                 //Catch unhandled exception
                 if (ex.Message.Length > 0)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
+                    DynamoLogger.Instance.Log(ex);
                 }
 
                 OnRunCancelled(true);
@@ -380,7 +405,7 @@ namespace Dynamo
                     foreach (dynNodeModel node in topElements)
                     {
                         string exp = node.PrintExpression();
-                        dynSettings.Controller.DynamoViewModel.Log("> " + exp);
+                        DynamoLogger.Instance.Log("> " + exp);
                     }
                 }
             }
@@ -397,7 +422,7 @@ namespace Dynamo
                     //Print some more stuff if we're in debug mode
                     if (DynamoViewModel.RunInDebug && expr != null)
                     {
-                        dynSettings.Controller.DynamoViewModel.Log(FScheme.print(expr));
+                        DynamoLogger.Instance.Log(FScheme.print(expr));
                     }
                 }
             }
@@ -420,10 +445,10 @@ namespace Dynamo
                     if (ex.Message.Length > 0)
                     {
                         //dynSettings.Bench.Dispatcher.Invoke(new Action(
-                        //                            delegate { dynSettings.Controller.DynamoViewModel.Log(ex); }
+                        //                            delegate { DynamoLogger.Instance.Log(ex); }
                         //                            ));
 
-                        dynSettings.Controller.DispatchOnUIThread(() => dynSettings.Controller.DynamoViewModel.Log(ex));
+                        dynSettings.Controller.DispatchOnUIThread(() => DynamoLogger.Instance.Log(ex));
                     }
                 }
 
@@ -504,6 +529,66 @@ namespace Dynamo
         {
             OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
         }
+
+        public void CancelRun(object parameter)
+        {
+            RunCancelled = true;
+        }
+
+        internal bool CanCancelRun(object parameter)
+        {
+            return true;
+        }
+
+        public void RunExpression(object parameters)
+        {
+            RunExpression(Convert.ToBoolean(parameters));
+        }
+
+        internal bool CanRunExpression(object parameters)
+        {
+            if (dynSettings.Controller == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public void ShowPackageManager(object parameter)
+        {
+            //dynSettings.Bench.PackageManagerLoginStateContainer.Visibility = Visibility.Visible;
+            //dynSettings.Bench.PackageManagerMenu.Visibility = Visibility.Visible;
+        }
+
+        internal bool CanShowPackageManager(object parameter)
+        {
+            return true;
+        }
+
+        public void DisplayFunction(object parameters)
+        {
+            CustomNodeLoader.GetFunctionDefinition((Guid)parameters);
+        }
+
+        internal bool CanDisplayFunction(object parameters)
+        {
+            var id = dynSettings.CustomNodes.FirstOrDefault(x => x.Value == (Guid)parameters).Value;
+
+            if (id != null)
+                return true;
+
+            return false;
+        }
+
+        public void ReportABug(object parameter)
+        {
+            Process.Start("https://github.com/ikeough/Dynamo/issues?state=open");
+        }
+
+        internal bool CanReportABug(object parameter)
+        {
+            return true;
+        }
     }
 
     public class CancelEvaluationException : Exception
@@ -516,6 +601,5 @@ namespace Dynamo
             Force = force;
         }
     }
-
 
 }

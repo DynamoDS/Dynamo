@@ -138,7 +138,7 @@ namespace Dynamo.Nodes
                                 dynRevitSettings.Controller.EndTransaction();
                                 dynRevitSettings.Controller.InIdleThread = false;
 
-                                dynSettings.Controller.DynamoViewModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
+                                dynSettings.Controller.DynamoModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
                                 
                                 node.ValidateConnections();
                             }

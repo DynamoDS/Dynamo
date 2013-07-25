@@ -148,7 +148,7 @@ namespace Dynamo.Search.SearchElements
         public NodeSearchElement(FunctionDefinition funcDef)
         {
             //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
-            this.Node = dynSettings.Controller.DynamoViewModel.CreateNode(funcDef.FunctionId.ToString());
+            this.Node = dynSettings.Controller.DynamoModel.CreateNode(funcDef.FunctionId.ToString());
             this._name = funcDef.Workspace.Name;
             this.Weight = 1.1;
             this.Keywords = "";
@@ -197,10 +197,8 @@ namespace Dynamo.Search.SearchElements
                     {"transformFromOuterCanvasCoordinates", true},
                     {"guid", guid}
                 };
-            //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.CreateNodeCommand, nodeParams));
-            //dynSettings.Controller.ProcessCommandQueue();
 
-            dynSettings.Controller.DynamoViewModel.CreateNode(nodeParams);
+            dynSettings.Controller.DynamoModel.CreateNode(nodeParams);
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);

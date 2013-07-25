@@ -21,30 +21,30 @@ namespace DynamoSandbox
 
                 var app = new Application();
 
-                var converters = new ResourceDictionary
-                    {
-                        Source = new Uri("/DynamoCore;component/UI/Themes/DynamoConverters.xaml", UriKind.Relative)
-                    };
-                app.Resources.MergedDictionaries.Add(converters);
+                //var converters = new ResourceDictionary
+                //    {
+                //        Source = new Uri("/DynamoCore;component/UI/Themes/DynamoConverters.xaml", UriKind.Relative)
+                //    };
+                //app.Resources.MergedDictionaries.Add(converters);
 
-                var colors = new ResourceDictionary
-                    {
-                        Source =
-                            new Uri("/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml", UriKind.Relative)
-                    };
-                app.Resources.MergedDictionaries.Add(colors);
+                //var colors = new ResourceDictionary
+                //    {
+                //        Source =
+                //            new Uri("/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml", UriKind.Relative)
+                //    };
+                //app.Resources.MergedDictionaries.Add(colors);
 
-                var modern = new ResourceDictionary
-                    {
-                        Source = new Uri("/DynamoCore;component/UI/Themes/DynamoModern.xaml", UriKind.Relative)
-                    };
-                app.Resources.MergedDictionaries.Add(modern);
+                //var modern = new ResourceDictionary
+                //    {
+                //        Source = new Uri("/DynamoCore;component/UI/Themes/DynamoModern.xaml", UriKind.Relative)
+                //    };
+                //app.Resources.MergedDictionaries.Add(modern);
 
-                var text = new ResourceDictionary
-                    {
-                        Source = new Uri("/DynamoCore;component/UI/Themes/DynamoText.xaml", UriKind.Relative)
-                    };
-                app.Resources.MergedDictionaries.Add(text);
+                //var text = new ResourceDictionary
+                //    {
+                //        Source = new Uri("/DynamoCore;component/UI/Themes/DynamoText.xaml", UriKind.Relative)
+                //    };
+                //app.Resources.MergedDictionaries.Add(text);
 
                 //create the view
                 var ui = new DynamoView();
