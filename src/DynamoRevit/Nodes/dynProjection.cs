@@ -94,7 +94,34 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var xyz = (XYZ)((Value.Container)args[0]).Item;
-            var face = (Autodesk.Revit.DB.Face)((Value.Container)args[1]).Item;
+
+            var inputArg = ((Value.Container)args[1]).Item;
+  
+            var face = inputArg is Face ? (Autodesk.Revit.DB.Face)inputArg : null;
+            if (face == null && !(inputArg is Plane))
+                throw new Exception(" Project Point On Face needs Face or Plane as argument no. 1");
+            if (face == null)
+            {
+                Plane pln = (Plane)inputArg;
+                if (pln != null)
+                {
+                    UV uvP = new UV(pln.XVec.DotProduct(xyz - pln.Origin), pln.YVec.DotProduct(xyz - pln.Origin));
+                    XYZ ptP = pln.Origin + uvP[0] * pln.XVec + uvP[1] * pln.YVec;
+                    double dP = xyz.DistanceTo(ptP);
+                    Edge eP = null;
+                    double etP = 0.0;
+                    var resultsP = FSharpList<Value>.Empty;
+                    resultsP = FSharpList<Value>.Cons(Value.NewNumber(etP), resultsP);
+                    resultsP = FSharpList<Value>.Cons(Value.NewContainer(eP), resultsP);
+                    resultsP = FSharpList<Value>.Cons(Value.NewNumber(dP), resultsP);
+                    resultsP = FSharpList<Value>.Cons(Value.NewContainer(uvP), resultsP);
+                    resultsP = FSharpList<Value>.Cons(Value.NewContainer(ptP), resultsP);
+
+                    pts.Add(ptP);
+
+                    return Value.NewList(resultsP);
+                }
+            }
 
             IntersectionResult ir = face.Project(xyz);
             XYZ pt = ir.XYZPoint;
