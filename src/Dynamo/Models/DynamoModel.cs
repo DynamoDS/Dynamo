@@ -1438,9 +1438,17 @@ namespace Dynamo.Models
             return true;
         }
 
+        /// <summary>
+        /// Add an ISelectable object to the selection.
+        /// </summary>
+        /// <param name="parameters">The object to add to the selection.</param>
         public void AddToSelection(object parameters)
         {
             var node = parameters as dynNodeModel;
+            
+            //don't add if the object is null
+            if (node == null)
+                return;
 
             if (!node.IsSelected)
             {
@@ -1451,7 +1459,7 @@ namespace Dynamo.Models
 
         internal bool CanAddToSelection(object parameters)
         {
-            dynNodeModel node = parameters as dynNodeModel;
+            var node = parameters as dynNodeModel;
             if (node == null)
             {
                 return false;
@@ -1706,11 +1714,19 @@ namespace Dynamo.Models
 
         public void SaveAs(object parameters)
         {
-            SaveAs(parameters.ToString());
+            if (parameters == null)
+                return;
+
+            var fi = new FileInfo(parameters.ToString());
+            
+            SaveAs(fi.FullName);
         }
 
         internal bool CanSaveAs(object parameters)
         {
+            if (parameters == null)
+                return false;
+
             return true;
         }
 

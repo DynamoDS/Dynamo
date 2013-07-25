@@ -346,8 +346,6 @@ namespace Dynamo.ViewModels
             
             //create the model
             _model = new DynamoModel();
-            _model.AddHomeWorkspace();
-            _model.CurrentSpace = _model.HomeSpace;
             dynSettings.Controller.DynamoModel = _model;
 
             //register for property change notifications 
@@ -355,6 +353,9 @@ namespace Dynamo.ViewModels
             _model.PropertyChanged += _model_PropertyChanged;
             dynSettings.Controller.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Controller_PropertyChanged);
             _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
+
+            _model.AddHomeWorkspace();
+            _model.CurrentSpace = _model.HomeSpace;
 
             Controller = controller;
 
