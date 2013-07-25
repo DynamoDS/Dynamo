@@ -15,27 +15,21 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Security.Authentication;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Windows;
-using System.Xml;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
-using RestSharp;
-using RestSharp.Deserializers;
-using RestSharp.Serializers;
 
 namespace Dynamo.PackageManager
 {
+
+    public delegate void AuthenticationRequestHandler(PackageManagerClient sender);
+
     /// <summary>
     ///     A thin wrapper on the Greg rest client for performing IO with
     ///     the Package Manager
@@ -50,13 +44,7 @@ namespace Dynamo.PackageManager
 
         #region Properties
 
-        /// <summary>
-        ///     Controller property
-        /// </summary>
-        /// <value>
-        ///     Reference to the main DynamoController
-        /// </value>
-        private readonly DynamoController Controller;
+        public event AuthenticationRequestHandler AuthenticationRequested;
 
         /// <summary>
         ///     Client property
@@ -74,38 +62,14 @@ namespace Dynamo.PackageManager
         /// </value>
         public bool IsLoggedIn { get; internal set; }
 
-        /// <summary>
-        ///     Worker property
-        /// </summary>
-        /// <value>
-        ///     Helps to do asynchronous calls to the server
-        /// </value>
-        public BackgroundWorker Worker { get; internal set; }
-
-        /// <summary>
-        ///     LoadedPackageHeaders property
-        /// </summary>
-        /// <value>
-        ///     Tells which package headers are currently loaded
-        /// </value>
-        public Dictionary<FunctionDefinition, PackageUploadRequestBody> LoadedPackageHeaders { get; internal set; }
-
         #endregion
 
         /// <summary>
         ///     The class constructor.
         /// </summary>
-        /// <param name="controller"> Reference to to the DynamoController object for the app </param>
-        public PackageManagerClient(DynamoController controller)
+        public PackageManagerClient()
         {
-            Controller = controller;
-
-            //IAuthProvider provider = new RevitOxygenProvider(Autodesk.Revit.AdWebServicesBase.GetInstance());
-
-            LoadedPackageHeaders = new Dictionary<FunctionDefinition, PackageUploadRequestBody>();
-            Client = new Client(null, "http://54.225.215.247");
-
-            Worker = new BackgroundWorker();
+            Client = new Client(null, "http://54.225.215.247"); // must initialize header later
             IsLoggedIn = false;
         }
 
@@ -142,6 +106,12 @@ namespace Dynamo.PackageManager
         //    new Thread(start).Start();
         //}
 
+        public void OnAuthenticationRequested()
+        {
+            if (AuthenticationRequested != null)
+                AuthenticationRequested(this);
+        }
+
         internal List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
         {
             try
@@ -176,6 +146,7 @@ namespace Dynamo.PackageManager
 
         public PackageUploadHandle Publish( Package l, List<string> files, bool isNewVersion )
         {
+            OnAuthenticationRequested();
 
             int maxRetries = 5;
             int count = 0;
@@ -263,36 +234,6 @@ namespace Dynamo.PackageManager
 
         }
 
-        /// <summary>
-        ///     Serialize and save a PackageHeader to the "Packages" directory
-        /// </summary>
-        /// <param name="pkgHeader"> The PackageHeader object </param>
-        public void SavePackageHeader(PackageHeader pkgHeader)
-        {
-            try
-            {
-                var m2 = new JsonSerializer();
-                string s = m2.Serialize(pkgHeader);
-
-                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string pluginsPath = Path.Combine(directory, "packages");
-
-                if (!Directory.Exists(pluginsPath))
-                    Directory.CreateDirectory(pluginsPath);
-
-                // now save it
-                string path = Path.Combine(pluginsPath, pkgHeader.name + ".json");
-                File.WriteAllText(path, s);
-            }
-            catch
-            {
-                dynSettings.Bench.Dispatcher.BeginInvoke(
-                    (Action)
-                    (() => dynSettings.Controller.DynamoViewModel.Log(
-                        "Failed to write package header information, won't be under source control.")));
-            }
-        }
-
         ObservableCollection<PackageDownloadHandle> _downloads = new ObservableCollection<PackageDownloadHandle>();
         public ObservableCollection<PackageDownloadHandle> Downloads
         {
@@ -341,6 +282,7 @@ namespace Dynamo.PackageManager
                                     downloadPkg.Load();
                                     dynSettings.PackageLoader.LocalPackages.Add(downloadPkg);
                                     packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+
                                 }
                             }
                             catch (Exception e)
@@ -357,7 +299,54 @@ namespace Dynamo.PackageManager
             };
             new Thread(start).Start();
         }
+        
+        public class PackageManagerResult
+        {
+            public PackageManagerResult(string error, bool success)
+            {
+                Error = error;
+                Success = success;
+            }
 
+            public static PackageManagerResult Succeeded()
+            {
+                return new PackageManagerResult("", true);
+            }
+
+            public static PackageManagerResult Failed(string error)
+            {
+                return new PackageManagerResult(error, false);
+            }
+
+            public string Error { get; set; }
+            public bool Success { get; set; }
+        }
+
+        /// <summary>
+        ///     Synchronously download a package header
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="header"></param>
+        /// <returns></returns>
+        public PackageManagerResult DownloadPackageHeader(string id, out PackageHeader header)
+        {
+            var pkgDownload = new HeaderDownload(id);
+            
+            try
+            {
+                var response = Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgDownload);
+                if (!response.success) throw new Exception(response.message);
+                header = response.content;
+            }
+            catch (Exception e)
+            {
+                var a = PackageManagerResult.Failed(e.Message);
+                header = null;
+                return a;
+            }
+
+            return new PackageManagerResult("", true);
+        }
 
         internal void GoToWebsite()
         {

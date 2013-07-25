@@ -7,6 +7,7 @@ using System.Reflection;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 using Dynamo.Revit;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -27,7 +28,8 @@ namespace Dynamo
             
             dynRevitSettings.Controller = this;
 
-            RegisterSingleSignOn();
+            dynSettings.PackageManagerClient.AuthenticationRequested += RegisterSingleSignOn;
+
             AddPythonBindings();
             AddWatchNodeHandler();
 
@@ -40,10 +42,10 @@ namespace Dynamo
                 new Action(FindNodesFromSelection);
         }
 
-        void RegisterSingleSignOn()
+        void RegisterSingleSignOn(PackageManagerClient client)
         {
             var ads = Autodesk.Revit.AdWebServicesBase.GetInstance();
-            dynSettings.PackageManagerClient.Client.Provider = new Greg.RevitOxygenProvider(ads);
+            client.Client.Provider = new Greg.RevitOxygenProvider(ads);
         }
 
         void FindNodesFromSelection()

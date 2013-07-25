@@ -21,6 +21,7 @@ using Dynamo.Commands;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Greg.Responses;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -52,42 +53,76 @@ namespace Dynamo.Search.SearchElements
         /// or gets the local node if already downloaded. </summary>
         public override void Execute()
         {
+            var version = _versionToDownload ?? this.Header.versions.Last();
+
             string message = "";
             if (dynSettings.PackageLoader.LocalPackages.Any(pkg => this.Name == pkg.Name))
             {
-                message = "Dynamo has already installed " + this.Name + ".  Please uninstall the existing package before downloading.";
-                MessageBox.Show(message, "Cannot Download Package", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                message = "Dynamo has already installed " + this.Name + ".  Dynamo will attempt to uninstall this package and all its dependencies before installing.";
+                if ( MessageBox.Show(message, "Cannot Download Package", MessageBoxButton.OKCancel, MessageBoxImage.Error) == MessageBoxResult.Cancel)
+                    return;
             }
 
-            message = "Are you sure you want to install " + this.Name +"?";
+            message = "Are you sure you want to install " + this.Name +" "+ version.version + "?";
 
             var result = MessageBox.Show(message, "Package Download Confirmation",
                             MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.OK)
             {
-                var dl = new PackageDownloadHandle(this.Header, this.LatestVersion); // download the most recent version
+                // get all of the headers
+                var headers = version.full_dependency_ids.Select((id) =>
+                    {
+                        PackageHeader pkgHeader;
+                        var res = dynSettings.Controller.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
+                        
+                        if (!res.Success)
+                            MessageBox.Show("Failed to download package with id: " + id + ".  Please try again and report the package if you continue to have problems.", "Package Download Error",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
 
-                dynSettings.Controller.PackageManagerClient.DownloadAndInstall(dl);
+                        return pkgHeader;
+                    }).ToList();
+
+                // if any header download fails, abort
+                if (headers.Any(x => x == null))
+                {
+                    return;
+                }
+
+                // form header version pairs and download all packages
+                headers.Zip(version.full_dependency_ids, (header, v) => new Tuple<PackageHeader, string>(header, v))
+                        .Select( x=> new PackageDownloadHandle(x.Item1, x.Item2))
+                        .ToList()
+                        .ForEach(dynSettings.Controller.PackageManagerClient.DownloadAndInstall);
+
             }
 
         }
 
         #region Properties 
-            
-            public List<PackageVersion> Versions { get { return this.Header.versions; } }
 
+            public bool _showingFull;
+            public bool ShowingFull { get { return _showingFull; } set { _showingFull = value; RaisePropertyChanged("ShowingFull"); } }
+            private PackageVersion _versionToDownload = null;
+
+            public List<Tuple<PackageVersion, DelegateCommand>> Versions
+            {
+                get
+                {
+                    return
+                        Header.versions.Select(
+                            x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
+                                {
+                                    this._versionToDownload = x;
+                                    this.Execute();
+                                }, () => true))).ToList();
+                } 
+            }
             public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
-
             public int Votes { get { return this.Header.votes; } }
-
             public int Downloads { get { return this.Header.downloads; } }
-
-            public string EngineVersion { get { return this.Header.engine_version; } }
-
+            public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
             public int UsedBy { get { return this.Header.used_by.Count; } } 
-
             public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
             
             /// <summary>
@@ -133,9 +168,11 @@ namespace Dynamo.Search.SearchElements
             /// A string that uniquely defines the Package on the server  </value>
             public string Id { get { return Header._id; } }
 
+            public override string Keywords { get; set; }
+
         #endregion
         
-            public override string Keywords { get; set; }
+
     }
 
 }
