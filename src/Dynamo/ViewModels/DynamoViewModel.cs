@@ -77,7 +77,6 @@ namespace Dynamo.ViewModels
         protected bool canRunDynamically = true;
         protected bool debug = false;
         protected bool dynamicRun = false;
-        private bool uiLocked = true;
         
         private bool fullscreenWatchShowing = false;
         private bool canNavigateBackground = false;
@@ -263,12 +262,7 @@ namespace Dynamo.ViewModels
 
         public bool IsUILocked
         {
-            get { return uiLocked; }
-            set
-            {
-                uiLocked = value;
-                RaisePropertyChanged("IsUILocked");
-            }
+            get { return dynSettings.Controller.IsUILocked; }
         }
         
         public bool FullscreenWatchShowing
@@ -349,17 +343,18 @@ namespace Dynamo.ViewModels
         public DynamoViewModel(DynamoController controller)
         {
             ConnectorType = ConnectorType.BEZIER;
-
-            //MVVM: Instantiate the model
+            
+            //create the model
             _model = new DynamoModel();
-            _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
-
-            _model.PropertyChanged += _model_PropertyChanged;
-
-            dynSettings.Controller.DynamoModel = _model;
-
             _model.AddHomeWorkspace();
             _model.CurrentSpace = _model.HomeSpace;
+            dynSettings.Controller.DynamoModel = _model;
+
+            //register for property change notifications 
+            //on the model and the controller
+            _model.PropertyChanged += _model_PropertyChanged;
+            dynSettings.Controller.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Controller_PropertyChanged);
+            _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
 
             Controller = controller;
 
@@ -368,18 +363,18 @@ namespace Dynamo.ViewModels
             WriteToLogCmd = new DelegateCommand(_model.WriteToLog, _model.CanWriteToLog);
             PostUiActivationCommand = new DelegateCommand(_model.PostUIActivation, _model.CanDoPostUIActivation);
             AddNoteCommand = new DelegateCommand(_model.AddNote, _model.CanAddNote);
-            LayoutAllCommand = new DelegateCommand(LayoutAll, CanLayoutAll);
+            LayoutAllCommand = new DelegateCommand(_model.LayoutAll, _model.CanLayoutAll);
             AddToSelectionCommand = new DelegateCommand(_model.AddToSelection, _model.CanAddToSelection);
             ShowNewFunctionDialogCommand = new DelegateCommand(_model.ShowNewFunctionDialogAndMakeFunction, _model.CanShowNewFunctionDialogCommand);
             CreateNodeCommand = new DelegateCommand(_model.CreateNode, _model.CanCreateNode);
             CreateConnectionCommand = new DelegateCommand(_model.CreateConnection, _model.CanCreateConnection);
-            ClearCommand = new DelegateCommand(Clear, CanClear);
+            ClearCommand = new DelegateCommand(_model.Clear, _model.CanClear);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
             SaveCommand = new DelegateCommand(_model.Save, _model.CanSave);
             SaveAsCommand = new DelegateCommand(_model.SaveAs, _model.CanSaveAs);
-            HomeCommand = new DelegateCommand(Home, CanGoHome);
+            HomeCommand = new DelegateCommand(_model.Home, _model.CanGoHome);
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
             GoToWorkspaceCommand = new DelegateCommand(GoToWorkspace, CanGoToWorkspace);
             DeleteCommand = new DelegateCommand(_model.Delete, _model.CanDelete);
@@ -406,7 +401,7 @@ namespace Dynamo.ViewModels
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
             ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             SelectNeighborsCommand = new DelegateCommand(SelectNeighbors, CanSelectNeighbors);
-            ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
+            ClearLogCommand = new DelegateCommand(dynSettings.Controller.ClearLog, dynSettings.Controller.CanClearLog);
 
             var pm_pub_vm = dynSettings.Controller.PackageManagerPublishViewModel;
             SubmitCommand = new DelegateCommand(pm_pub_vm.OnSubmit, pm_pub_vm.CanSubmit);
@@ -425,8 +420,17 @@ namespace Dynamo.ViewModels
             var pm_client = dynSettings.Controller.PackageManagerClient;
             RefreshRemotePackagesCmd = new DelegateCommand(pm_client.RefreshRemotePackages, pm_client.CanRefreshRemotePackages);
 
-
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
+        }
+
+        void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "IsUILocked":
+                    RaisePropertyChanged("IsUILocked");
+                    break;
+            }
         }
 
         void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -827,11 +831,11 @@ namespace Dynamo.ViewModels
         {
             // if the workspace is unsaved, prompt to save
             // otherwise overwrite the home workspace with new workspace
-            if (!this.Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
+            if (!Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
             {
-                this.Model.CurrentSpace = this.Model.HomeSpace;
+                Model.CurrentSpace = this.Model.HomeSpace;
                
-                Clear(null);
+                _model.Clear(null);
             }
         }
 
@@ -893,149 +897,12 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void Home(object parameter)
-        {
-            _model.ViewHomeWorkspace();
-        }
-
-        internal bool CanGoHome(object parameter)
-        {
-            return CurrentSpace != _model.HomeSpace;
-        }
-
         public void Cleanup(object parameter)
         {
             DynamoLogger.Instance.FinishLogging();
         }
 
         internal bool CanCleanup(object parameter)
-        {
-            return true;
-        }
-
-        public void LayoutAll(object parameter)
-        {
-            IsUILocked = true;
-
-            _model.CleanWorkbench();
-
-            double x = 0;
-            double y = 0;
-            double maxWidth = 0;    //track max width of current column
-            double colGutter = 40;     //the space between columns
-            double rowGutter = 40;
-            int colCount = 0;
-
-            Hashtable typeHash = new Hashtable();
-
-            foreach (KeyValuePair<string, TypeLoadData> kvp in dynSettings.Controller.BuiltInTypesByNickname)
-            {
-                Type t = kvp.Value.Type;
-
-                object[] attribs = t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
-
-                if (t.Namespace == "Dynamo.Nodes" &&
-                    !t.IsAbstract &&
-                    attribs.Length > 0 &&
-                    t.IsSubclassOf(typeof(dynNodeModel)))
-                {
-                    NodeCategoryAttribute elCatAttrib = attribs[0] as NodeCategoryAttribute;
-
-                    List<Type> catTypes = null;
-
-                    if (typeHash.ContainsKey(elCatAttrib.ElementCategory))
-                    {
-                        catTypes = typeHash[elCatAttrib.ElementCategory] as List<Type>;
-                    }
-                    else
-                    {
-                        catTypes = new List<Type>();
-                        typeHash.Add(elCatAttrib.ElementCategory, catTypes);
-                    }
-
-                    catTypes.Add(t);
-                }
-            }
-
-            foreach (DictionaryEntry de in typeHash)
-            {
-                List<Type> catTypes = de.Value as List<Type>;
-
-                //add the name of the category here
-                //AddNote(de.Key.ToString(), x, y, ViewModel.CurrentSpace);
-                Dictionary<string, object> paramDict = new Dictionary<string, object>();
-                paramDict.Add("x", x);
-                paramDict.Add("y", y);
-                paramDict.Add("text", de.Key.ToString());
-                paramDict.Add("workspace", CurrentSpace);
-
-                if (_model.CanAddNote(paramDict))
-                    _model.AddNote(paramDict);
-
-                y += 60;
-
-                foreach (Type t in catTypes)
-                {
-                    object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
-
-                    NodeNameAttribute elNameAttrib = attribs[0] as NodeNameAttribute;
-                    dynNodeModel el = _model.CreateInstanceAndAddNodeToWorkspace(
-                           t, elNameAttrib.Name, Guid.NewGuid(), x, y,
-                           CurrentSpace
-                        );
-
-                    if (el == null) continue;
-
-                    el.DisableReporting();
-
-                    maxWidth = Math.Max(el.Width, maxWidth);
-
-                    colCount++;
-
-                    y += el.Height + rowGutter;
-
-                    if (colCount > 20)
-                    {
-                        y = 60;
-                        colCount = 0;
-                        x += maxWidth + colGutter;
-                        maxWidth = 0;
-                    }
-                }
-
-                y = 0;
-                colCount = 0;
-                x += maxWidth + colGutter;
-                maxWidth = 0;
-
-            }
-
-            IsUILocked = false;
-        }
-
-        internal bool CanLayoutAll(object parameter)
-        {
-            return true;
-        }
-
-        public void Clear(object parameter)
-        {
-            IsUILocked = true;
-
-            _model.CleanWorkbench();
-
-            //don't save the file path
-            CurrentSpace.FilePath = "";
-            CurrentSpace.HasUnsavedChanges = false;
-
-            //clear the renderables
-            dynSettings.Controller.RenderDescriptions.Clear();
-            dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
-
-            IsUILocked = false;
-        }
-
-        internal bool CanClear(object parameter)
         {
             return true;
         }
@@ -1170,19 +1037,6 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanGoToSourceCode(object parameter)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// Clear the UI log.
-        /// </summary>
-        public void ClearLog(object parameter)
-        {
-            DynamoLogger.Instance.ClearLog();
-        }
-
-        internal bool CanClearLog(object parameter)
         {
             return true;
         }
