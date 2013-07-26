@@ -125,10 +125,11 @@
                         HorizontalContentAlignment="Right" Visibility ="Collapsed" FontSize="14"
                         FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
 
-
             <Canvas.ContextMenu>
                 <ContextMenu>
-                    <MenuItem  Header="_Align Selection"  Name="Align">
+
+                    <MenuItem  Header="_Edit Properties..."  Name="EditProperties" Click="WorkspacePropertyEditClick" Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"  />
+                    <MenuItem  Header="_Align Nodes"  Name="Align">
                         <MenuItem  Header="_X Average"  Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalCenter"/>
                         <MenuItem  Header="_Left" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalLeft"/>
                         <MenuItem  Header="_Right" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalRight"/>

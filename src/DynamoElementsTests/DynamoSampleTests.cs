@@ -211,8 +211,8 @@ namespace Dynamo.Tests
             var vm = controller.DynamoViewModel;
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\combine\");
 
-            Assert.IsTrue(controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "combine2.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "Sequence2.dyf")) != null);
+            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "combine2.dyf")) != null);
+            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Sequence2.dyf")) != null);
 
             string openPath = Path.Combine(examplePath, "combine-with-three.dyn");
             controller.RunCommand(vm.OpenCommand, openPath);
@@ -239,8 +239,8 @@ namespace Dynamo.Tests
 
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\reduce_and_recursion\");
 
-            Assert.IsTrue(controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "MyReduce.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "Sum Numbers.dyf")) != null);
+            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "MyReduce.dyf")) != null);
+            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Sum Numbers.dyf")) != null);
 
             string openPath = Path.Combine(examplePath, "reduce-example.dyn");
             controller.RunCommand(vm.OpenCommand, openPath);
@@ -266,7 +266,7 @@ namespace Dynamo.Tests
             var vm = controller.DynamoViewModel;
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\filter\");
 
-            Assert.IsTrue(controller.CustomNodeLoader.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf")) != null);
+            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf")) != null);
 
             string openPath = Path.Combine(examplePath, "filter-example.dyn");
             controller.RunCommand(vm.OpenCommand, openPath);

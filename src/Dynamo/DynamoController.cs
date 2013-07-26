@@ -56,7 +56,7 @@ namespace Dynamo
         private bool isProcessingCommandQueue = false;
         private bool testing = false;
 
-        public CustomNodeLoader CustomNodeLoader { get; internal set; }
+        public CustomNodeManager CustomNodeManager { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
         public PublishPackageViewModel PublishPackageViewModel { get; internal set; }
         public PackageManagerClient PackageManagerClient { get; internal set; }
@@ -176,7 +176,7 @@ namespace Dynamo
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
 
-            CustomNodeLoader = new CustomNodeLoader(pluginsPath);
+            CustomNodeManager = new CustomNodeManager(pluginsPath);
             
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient();

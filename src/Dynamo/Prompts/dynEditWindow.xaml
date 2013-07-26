@@ -12,8 +12,6 @@
             </LinearGradientBrush>
         </StackPanel.Background>
 
-        <TextBlock Name ="Indicator" Foreground="WhiteSmoke" HorizontalAlignment="Left" Margin="15,10,10,5" FontSize="10" Text="INPUT"/>
-        
         <TextBox 
                 Margin="10"
                 x:FieldModifier="public" 

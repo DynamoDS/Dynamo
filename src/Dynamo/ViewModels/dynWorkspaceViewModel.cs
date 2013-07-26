@@ -24,6 +24,7 @@ namespace Dynamo
     public delegate void NoteEventHandler(object sender, EventArgs e);
     public delegate void ViewEventHandler(object sender, EventArgs e);
     public delegate void ZoomEventHandler(object sender, EventArgs e);
+    public delegate void WorkspacePropertyEditHandler(dynWorkspaceModel workspace );
 
     public class dynWorkspaceViewModel: dynViewModelBase
     {
@@ -39,6 +40,7 @@ namespace Dynamo
         public event NodeEventHandler RequestCenterViewOnElement;
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
+        public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
 
         private bool _watchEscapeIsDown = false;
 
@@ -92,6 +94,13 @@ namespace Dynamo
         {
             if (RequestAddViewToOuterCanvas != null)
                 RequestAddViewToOuterCanvas(this, e);
+        }
+
+        public virtual void OnWorkspacePropertyEditRequested()
+        {
+            // extend this for all workspaces
+            if (WorkspacePropertyEditRequested != null)
+                WorkspacePropertyEditRequested(this.Model);
         }
 
         ObservableCollection<dynConnectorViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
@@ -811,6 +820,11 @@ namespace Dynamo
         internal void CollapseNodes(IEnumerable<dynNodeModel> selectedNodes)
         {
             NodeCollapser.Collapse(selectedNodes, dynSettings.Controller.DynamoViewModel.CurrentSpace);
+        }
+
+        internal void Loaded()
+        {
+            RaisePropertyChanged("IsHomeSpace");
         }
     }
 

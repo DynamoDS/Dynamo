@@ -275,8 +275,8 @@ namespace DynamoRevitTests
             Assert.IsTrue(File.Exists(customDefPath1), "Cannot find specified custom definition to load for testing.");
             Assert.IsTrue(File.Exists(customDefPath2), "Cannot find specified custom definition to load for testing.");
 
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath1) != null);
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath2) != null);
+            Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath1) != null);
+            Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath2) != null);
 
             dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
             dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
@@ -292,7 +292,7 @@ namespace DynamoRevitTests
 
             string customDefPath = Path.Combine(_defsPath, "Cf(dx).dyf");
             Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath) != null);
+            Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath) != null);
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
@@ -308,7 +308,7 @@ namespace DynamoRevitTests
 
             string customDefPath = Path.Combine(_defsPath, "GraphFunction.dyf");
             Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
-            Assert.IsTrue(dynSettings.Controller.CustomNodeLoader.AddFileToPath(customDefPath) != null);
+            Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath) != null);
 
             dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);

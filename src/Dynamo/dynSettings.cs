@@ -42,7 +42,7 @@ namespace Dynamo.Utilities
         public static ObservableDictionary<string, Guid> CustomNodes {
             get
             {
-                return dynSettings.Controller.CustomNodeLoader.NodeNames;
+                return dynSettings.Controller.CustomNodeManager.NodeNames;
             }
         }
 
@@ -52,7 +52,7 @@ namespace Dynamo.Utilities
 
         public static PackageLoader PackageLoader { get; internal set; }
 
-        public static CustomNodeLoader CustomNodeLoader { get { return Controller.CustomNodeLoader; } }
+        public static CustomNodeManager CustomNodeManager { get { return Controller.CustomNodeManager; } }
 
         public static DynamoController Controller { get; internal set; }
 

@@ -331,7 +331,7 @@ namespace Dynamo.Utilities
         public static IEnumerable<CustomNodeInfo> LoadCustomNodes()
         {
 
-            var customNodeLoader = dynSettings.CustomNodeLoader;
+            var customNodeLoader = dynSettings.CustomNodeManager;
             var searchViewModel = dynSettings.Controller.SearchViewModel;
 
             var loadedNodes = customNodeLoader.UpdateSearchPath();
@@ -358,7 +358,7 @@ namespace Dynamo.Utilities
             if (!Directory.Exists(path))
                 return new List<CustomNodeInfo>();
 
-            var customNodeLoader = dynSettings.CustomNodeLoader;
+            var customNodeLoader = dynSettings.CustomNodeManager;
             var searchViewModel = dynSettings.Controller.SearchViewModel;
 
             var loadedNodes = customNodeLoader.LoadNodesFromDirectory(path).ToList();
