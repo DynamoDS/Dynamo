@@ -3243,7 +3243,7 @@ namespace Dynamo.Nodes
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
 
-            tb.Text = "0.0";
+            //tb.Text = "0.0";
         }
 
         public override double Value
@@ -4049,14 +4049,14 @@ namespace Dynamo.Nodes
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double radians = System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
-            return radians;
+            double degrees = System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
+            return degrees;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double degrees = System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
-            return degrees;
+            double radians = System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
+            return radians;
         }
     }
 
