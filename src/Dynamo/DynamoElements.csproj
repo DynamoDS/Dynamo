@@ -178,7 +178,7 @@ limitations under the License.
     <Compile Include="ViewModels\dynPortViewModel.cs" />
     <Compile Include="ViewModels\dynViewModelBase.cs" />
     <Compile Include="ViewModels\dynWorkspaceViewModel.cs" />
-    <Compile Include="CustomNodeLoader.cs" />
+    <Compile Include="CustomNodeManager.cs" />
     <Compile Include="DynamoLoader.cs" />
     <Compile Include="NodeCollapser.cs" />
     <Compile Include="Search\SearchElements\CommandElement.cs" />

@@ -415,7 +415,7 @@ namespace Dynamo.PackageManager
                 };
 
             vm.FunctionDefinitions =
-                l.LoadedCustomNodes.Select(x => dynSettings.CustomNodeLoader.GetFunctionDefinition(x.Guid)).ToList();
+                l.LoadedCustomNodes.Select(x => dynSettings.CustomNodeManager.GetFunctionDefinition(x.Guid)).ToList();
 
             if (l.VersionName != null)
             {

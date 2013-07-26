@@ -27,13 +27,13 @@ namespace Dynamo.Utilities
             var selectedNodeSet = new HashSet<dynNodeModel>(selectedNodes);
 
             //First, prompt the user to enter a name
-            string newNodeName ="", newNodeCategory ="";
-            if (!dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory))
+            string newNodeName = "", newNodeCategory = "", newNodeDescription = "A collapsed node";
+            if (!dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory, ref newNodeDescription))
             {
                 return;
             }
 
-            var newNodeWorkspace = new FuncWorkspace(newNodeName, newNodeCategory, 0, 0);
+            var newNodeWorkspace = new FuncWorkspace(newNodeName, newNodeCategory, newNodeDescription, 0, 0);
             var newNodeDefinition = new FunctionDefinition(Guid.NewGuid())
             {
                 Workspace = newNodeWorkspace
@@ -455,9 +455,9 @@ namespace Dynamo.Utilities
 
             // save and load the definition from file
             var customNodeInfo = new CustomNodeInfo(newNodeDefinition.FunctionId, newNodeName, newNodeCategory, "", "");
-            dynSettings.Controller.CustomNodeLoader.SetNodeInfo(customNodeInfo);
+            dynSettings.Controller.CustomNodeManager.SetNodeInfo(customNodeInfo);
             var path = dynSettings.Controller.DynamoViewModel.SaveFunctionOnly(newNodeDefinition);
-            dynSettings.Controller.CustomNodeLoader.SetNodePath(newNodeDefinition.FunctionId, path);
+            dynSettings.Controller.CustomNodeManager.SetNodePath(newNodeDefinition.FunctionId, path);
             dynSettings.Controller.SearchViewModel.Add(newNodeName, newNodeCategory, "No description provided", newNodeDefinition.FunctionId);
 
             dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()

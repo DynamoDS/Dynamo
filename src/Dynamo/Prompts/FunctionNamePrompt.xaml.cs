@@ -24,7 +24,7 @@ namespace Dynamo.Nodes
    /// </summary>
    public partial class FunctionNamePrompt : Window
    {
-      public FunctionNamePrompt(IEnumerable<string> categories, string error)
+      public FunctionNamePrompt(IEnumerable<string> categories)
       {
          InitializeComponent();
          this.Owner = dynSettings.Bench;
@@ -41,6 +41,33 @@ namespace Dynamo.Nodes
          }
       }
 
+      public FunctionNamePrompt(string name, string currentCategory, IEnumerable<string> categories, string description)
+      {
+          InitializeComponent();
+
+          this.Owner = dynSettings.Bench;
+          this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+          // set the current name
+          this.nameBox.Focus();
+          this.nameBox.Text = name;
+
+          // set the description
+          this.DescriptionInput.Text = description;
+
+          // sort the categories
+          var sortedCats = categories.ToList();
+          sortedCats.Sort();
+
+          foreach (var item in sortedCats)
+          {
+              this.categoryBox.Items.Add(item);
+          }
+
+          // set the current category
+          this.categoryBox.Text = currentCategory;
+      }
+
       void OK_Click(object sender, RoutedEventArgs e)
       {
          this.DialogResult = true;
@@ -54,6 +81,11 @@ namespace Dynamo.Nodes
       public string Text
       {
          get { return this.nameBox.Text; }
+      }
+
+      public string Description
+      {
+          get { return this.DescriptionInput.Text; }
       }
 
       public string Category

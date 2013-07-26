@@ -187,7 +187,7 @@ namespace Dynamo.PackageManager
 
             try
             {
-                LoadedCustomNodes.ToList().ForEach(x => dynSettings.CustomNodeLoader.Remove(x.Guid));
+                LoadedCustomNodes.ToList().ForEach(x => dynSettings.CustomNodeManager.Remove(x.Guid));
                 dynSettings.PackageLoader.LocalPackages.Remove(this);
                 Directory.Delete(this.RootDirectory, true);
             }
@@ -208,7 +208,7 @@ namespace Dynamo.PackageManager
         private void RefreshCustomNodesFromDirectory()
         {
             this.LoadedCustomNodes.Clear();
-            dynSettings.CustomNodeLoader
+            dynSettings.CustomNodeManager
                         .GetInfosFromFolder(this.CustomNodeDirectory)
                         .ToList()
                         .ForEach(x => this.LoadedCustomNodes.Add(x));

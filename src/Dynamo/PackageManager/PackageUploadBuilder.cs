@@ -92,14 +92,14 @@ namespace Dynamo.PackageManager
         {
             filePaths
                 .Where(x => x.EndsWith(".dyf"))
-                .Select( path => dynSettings.CustomNodeLoader.GuidFromPath(path))
-                .Select( guid => dynSettings.CustomNodeLoader.GetFunctionDefinition(guid) )
+                .Select( path => dynSettings.CustomNodeManager.GuidFromPath(path))
+                .Select( guid => dynSettings.CustomNodeManager.GetFunctionDefinition(guid) )
                 .ToList()
                 .ForEach( func =>
                     {
                         var newPath = Path.Combine(dyfRoot, Path.GetFileName(func.Workspace.FilePath));
                         func.Workspace.FilePath = newPath;
-                        dynSettings.CustomNodeLoader.SetNodePath(func.FunctionId, newPath);
+                        dynSettings.CustomNodeManager.SetNodePath(func.FunctionId, newPath);
                     });
         }
 

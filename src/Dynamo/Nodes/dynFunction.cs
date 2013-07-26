@@ -59,12 +59,32 @@ namespace Dynamo
 
             }
 
+            public new string Name 
+            {
+                get { return this.Definition.Workspace.Name; }
+                set
+                {
+                    this.Definition.Workspace.Name = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+
+            public new string Description
+            {
+                get { return this.Definition.Workspace.Description; }
+                set
+                {
+                    this.Definition.Workspace.Description = value;
+                    this.RaisePropertyChanged("Description");
+                }
+            }
+
             public new string Category
             {
                 get
                 {
-                    if (dynSettings.Controller.CustomNodeLoader.NodeCategories.ContainsKey(this.Definition.FunctionId))
-                        return dynSettings.Controller.CustomNodeLoader.NodeCategories[this.Definition.FunctionId];
+                    if (dynSettings.Controller.CustomNodeManager.NodeCategories.ContainsKey(this.Definition.FunctionId))
+                        return dynSettings.Controller.CustomNodeManager.NodeCategories[this.Definition.FunctionId];
                     else
                     {
                         return BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
@@ -72,14 +92,15 @@ namespace Dynamo
                 }
             }
 
-            public new string Name 
-            {
-                get { return this.Definition.Workspace.Name; }
-            }
-
             public override void SetupCustomUIElements(dynNodeView nodeUI)
             {
                 nodeUI.MouseDoubleClick += new System.Windows.Input.MouseButtonEventHandler(ui_MouseDoubleClick);
+
+                //var editItem = new MenuItem();
+                //editItem.Header = "Edit Properties...";
+                //editItem.Click += EditCustomNodePropertiesClick;
+                //nodeUI.MainContextMenu.Items.Add(editItem);
+
             }
 
             void ui_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -202,6 +223,10 @@ namespace Dynamo
                 outEl.SetAttribute("value", NickName);
                 dynEl.AppendChild(outEl);
 
+                outEl = xmlDoc.CreateElement("Description");
+                outEl.SetAttribute("value", Description);
+                dynEl.AppendChild(outEl);
+
                 outEl = xmlDoc.CreateElement("Inputs");
                 foreach (var input in InPortData.Select(x => x.NickName))
                 {
@@ -241,7 +266,7 @@ namespace Dynamo
                         Guid.TryParse(Symbol, out funcId);
 
                         // if the dyf does not exist on the search path...
-                        if (!dynSettings.Controller.CustomNodeLoader.Contains(funcId))
+                        if (!dynSettings.Controller.CustomNodeManager.Contains(funcId))
                         {
                             var proxyDef = new FunctionDefinition(funcId);
                             proxyDef.Workspace = new FuncWorkspace(NickName, BuiltinNodeCategories.SCRIPTING_CUSTOMNODES);
@@ -258,8 +283,8 @@ namespace Dynamo
                             DynamoLogger.Instance.Log(user_msg);
 
                             // tell custom node loader, but don't provide path, forcing user to resave explicitly
-                            dynSettings.Controller.CustomNodeLoader.SetFunctionDefinition(funcId, proxyDef);
-                            Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funcId);
+                            dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
+                            Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
                             ArgumentLacing = LacingStrategy.Disabled;
                             return;
                         }
@@ -340,7 +365,7 @@ namespace Dynamo
                     Symbol = funId.ToString();
                 }
 
-                Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
+                Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
             }
 
             public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)

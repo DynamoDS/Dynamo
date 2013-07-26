@@ -832,17 +832,6 @@ namespace Dynamo.Search
 
         }
 
-
-        /// <summary>
-        ///     Rename a workspace that is currently part of the SearchDictionary
-        /// </summary>
-        /// <param name="def">The FunctionDefinition whose name must change</param>
-        /// <param name="newName">The new name to assign to the workspace</param>
-        public void Refactor(FunctionDefinition def, string oldName, string newName)
-        {
-            SearchDictionary.Remove((ele) => (ele).Name == oldName);
-        }
-
         public void Remove(string nodeName)
         {
             // get the node, return if not found
@@ -854,12 +843,12 @@ namespace Dynamo.Search
 
             // remove from search dictionary
             SearchDictionary.Remove((ele) => (ele).Name == nodeName);
+            SearchDictionary.Remove((ele) => (ele).Name.EndsWith("." + nodeName) );
 
             // remove from browser leaves
             _browserLeaves.Where(x => x.Name == nodeName).ToList().ForEach(x => _browserLeaves.Remove(x));
 
-            // get the category, if it doesn't exist, then remove it
-
+            // get the category if it doesn't exist, then remove it
             foreach (var node in nodes)
             {
                 var categoryName = ((SearchElementBase)node).FullCategoryName;
@@ -870,6 +859,7 @@ namespace Dynamo.Search
                     return;
                 }
 
+                // first level category
                 var pcategory = NodeCategories[parentCategoryName];
                 pcategory.NumElements--;
 
@@ -878,6 +868,7 @@ namespace Dynamo.Search
                     this.RemoveCategory(pcategory.Name);
                 }
 
+                // immediate category
                 var category = NodeCategories[categoryName];
                 category.NumElements--;
 
@@ -889,5 +880,17 @@ namespace Dynamo.Search
             
 
         }
+
+        public void Add(CustomNodeInfo nodeInfo)
+        {
+            this.Add(nodeInfo.Name, nodeInfo.Category, nodeInfo.Description, nodeInfo.Guid);
+        }
+
+        internal void Refactor(CustomNodeInfo nodeInfo)
+        {
+            this.Remove(nodeInfo.Name);
+            this.Add(nodeInfo);
+        }
+
     }
 }
