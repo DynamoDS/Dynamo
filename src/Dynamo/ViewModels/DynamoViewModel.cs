@@ -913,8 +913,6 @@ namespace Dynamo.ViewModels
 
         public void ShowSaveImageDialogAndSaveResult(object parameter)
         {
-            var vm = dynSettings.Controller.DynamoViewModel;
-
             FileDialog _fileDialog = null;
 
             if (_fileDialog == null)
@@ -930,9 +928,9 @@ namespace Dynamo.ViewModels
             }
 
             // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(vm.Model.CurrentSpace.FilePath))
+            if (!string.IsNullOrEmpty(_model.CurrentSpace.FilePath))
             {
-                var fi = new FileInfo(vm.Model.CurrentSpace.FilePath);
+                var fi = new FileInfo(_model.CurrentSpace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
 
@@ -1037,6 +1035,7 @@ namespace Dynamo.ViewModels
 
         public void Pan(object parameter)
         {
+            Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", _model.CurrentSpace.X, _model.CurrentSpace.Y, _model.CurrentSpace.Zoom));
             var panType = parameter.ToString();
             double pan = 10;
             var pt = new Point(_model.CurrentSpace.X, _model.CurrentSpace.Y);

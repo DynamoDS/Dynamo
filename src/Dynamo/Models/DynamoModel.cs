@@ -988,7 +988,7 @@ namespace Dynamo.Models
 
                     el.DisableReporting();
 
-                    if (dynSettings.Controller.DynamoViewModel.ViewingHomespace)
+                    if (CurrentSpace == HomeSpace)
                         el.SaveResult = true;
                 }
 
@@ -1131,7 +1131,7 @@ namespace Dynamo.Models
 
             if (display)
             {
-                if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
+                if (CurrentSpace != HomeSpace)
                 {
                     var def = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace);
                     if (def != null)
@@ -1555,7 +1555,7 @@ namespace Dynamo.Models
             }
 
             CurrentSpace.Nodes.Add(node);
-            node.WorkSpace = dynSettings.Controller.DynamoViewModel.CurrentSpace;
+            node.WorkSpace = CurrentSpace;
 
             //if we've received a value in the dictionary
             //try to set the value on the node
