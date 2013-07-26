@@ -360,7 +360,7 @@ namespace Dynamo.PackageManager
         {
             //this._client = dynSettings.Controller.PackageManagerClient;
 
-            if (dynSettings.Controller.DynamoViewModel.ViewingHomespace)
+            if (dynSettings.Controller.DynamoModel.CurrentSpace == dynSettings.Controller.DynamoModel.HomeSpace)
             {
                 //MessageBox.Show("You can't publish your the home workspace.", "Workspace Error", MessageBoxButton.OK, MessageBoxImage.Question);
                 OnRequestsShowMessage(this, new ShowMessageEventArgs("You can't publish your the home workspace.", "Workspace Error"));
@@ -368,7 +368,7 @@ namespace Dynamo.PackageManager
             }
 
             var currentFunDef =
-                dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(dynSettings.Controller.DynamoViewModel.CurrentSpace);
+                dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(dynSettings.Controller.DynamoModel.CurrentSpace);
 
             if (currentFunDef != null)
             {

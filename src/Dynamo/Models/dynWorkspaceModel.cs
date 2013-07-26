@@ -528,22 +528,7 @@ namespace Dynamo.Models
 
         public override void OnDisplayed()
         {
-            //DynamoView bench = dynSettings.Bench;
 
-
-            //if (bench.addMenuItemsDictNew.ContainsKey("Variable"))
-            //    return;
-
-            //var variable = WorkspaceHelpers.hiddenNodes["Variable"];
-            //var output = WorkspaceHelpers.hiddenNodes["Output"];
-            //WorkspaceHelpers.hiddenNodes.Remove("Variable");
-            //WorkspaceHelpers.hiddenNodes.Remove("Output");
-            //variable.Visibility = Visibility.Visible;
-            //variable.Visibility = Visibility.Visible;
-            //bench.addMenuItemsDictNew["Variable"] = variable;
-            //bench.addMenuItemsDictNew["Output"] = output;
-
-            //dynSettings.Controller.UpdateSearch(bench.SearchBox.Text.Trim());
         }
     }
 

@@ -12,7 +12,7 @@ namespace Dynamo.Nodes
     [NodeName("My Node")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING_CUSTOMNODES)]
     [NodeDescription("A description for your node which will appear in the tooltip.")]
-    public class CustomNode : dynRevitTransactionNodeWithOneOutput
+    public class CustomNode : dynNodeWithOneOutput
     {
         public CustomNode()
         {
