@@ -22,7 +22,6 @@ using System.Windows.Media;
 using System.Linq;
 using System.Xml;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.Revit;
@@ -302,7 +301,7 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class dynMultipleElementSelectionBase : dynNodeWithOneOutput
     {
-        private TextBox _tb;
+        private TextBlock _tb;
         private Button _selectButton;
 
         protected string _selectButtonContent;
@@ -342,14 +341,15 @@ namespace Dynamo.Nodes
             };
             _selectButton.Click += selectButton_Click;
 
-            _tb = new TextBox
+            _tb = new TextBlock
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
-                BorderThickness = new Thickness(0),
-                IsReadOnly = true,
-                IsReadOnlyCaretVisible = false
+                TextWrapping = TextWrapping.Wrap,
+                TextTrimming = TextTrimming.WordEllipsis,
+                MaxWidth = 200,
+                MaxHeight = 100
             };
 
             if (SelectedElements == null || !SelectedElements.Any() || !SelectionText.Any() || !SelectButtonContent.Any())
@@ -375,7 +375,7 @@ namespace Dynamo.Nodes
             {
                 Mode = BindingMode.TwoWay,
             };
-            _tb.SetBinding(TextBox.TextProperty, selectTextBinding);
+            _tb.SetBinding(TextBlock.TextProperty, selectTextBinding);
 
             var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
             {
