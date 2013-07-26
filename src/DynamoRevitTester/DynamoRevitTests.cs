@@ -516,7 +516,7 @@ namespace DynamoRevitTests
         [Test]
         public void ModelCurveNode()
         {
-            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            var vm = dynSettings.Controller.DynamoViewModel;
 
             string samplePath = Path.Combine(_testPath, @".\ModelCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -524,7 +524,7 @@ namespace DynamoRevitTests
             dynSettings.Controller.RunCommand(vm.OpenCommand, testPath);
             dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
 
-            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(CurveElement));
 
             //verify one model curve created
@@ -536,8 +536,11 @@ namespace DynamoRevitTests
 
             //update any number node and verify 
             //that the element gets updated not recreated
-            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynBasicInteractive<double>);
-            dynBasicInteractive<double> node = doubleNodes.First() as dynBasicInteractive<double>;
+            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynDoubleInput);
+            var node = doubleNodes.First() as dynDoubleInput;
+
+            Assert.IsNotNull(node);
+
             node.Value = node.Value + .1;
             dynSettings.Controller.RunCommand(vm.RunExpressionCommand, true);
             Assert.AreEqual(1, fec.ToElements().Count);
