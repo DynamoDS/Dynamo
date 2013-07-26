@@ -3024,7 +3024,7 @@ namespace Dynamo.Nodes
                         StringSplitOptions.RemoveEmptyEntries);
 
                     if (rangeIdentifiers.Length > 3)
-                        throw new Exception("Bad range syntax: not of format \"start..[step..]end\"");
+                        throw new Exception("Bad range syntax: not of format \"start..end[..(increment|#count)]\"");
 
                     if (rangeIdentifiers.Length == 0)
                         throw new Exception("No identifiers found.");
@@ -3033,12 +3033,30 @@ namespace Dynamo.Nodes
 
                     if (rangeIdentifiers.Length > 1)
                     {
-                        IDoubleInputToken secondToken = ParseToken(rangeIdentifiers[1], idSet, identifiers);
+                        if (rangeIdentifiers[1].StartsWith("#"))
+                        {
+                            var countToken = rangeIdentifiers[1].Substring(1);
 
-                        if (rangeIdentifiers.Length > 2)
-                            return new Sequence(startToken, secondToken, ParseToken(rangeIdentifiers[2], idSet, identifiers));
+                            IDoubleInputToken endToken = ParseToken(countToken, idSet, identifiers);
 
-                        return new Sequence(startToken, new DoubleToken(1), secondToken) as IDoubleSequence;
+                            if (rangeIdentifiers.Length > 2)
+                            {
+                                return new Sequence(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken);
+                            }
+
+                            return new Sequence(startToken, new DoubleToken(1), endToken) as IDoubleSequence;
+                        }
+                        else
+                        {
+                            IDoubleInputToken endToken = ParseToken(rangeIdentifiers[1], idSet, identifiers);
+
+                            if (rangeIdentifiers.Length > 2)
+                            {
+                                return new Range(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken);
+                            }
+                            return new Range(startToken, new DoubleToken(1), endToken) as IDoubleSequence;
+                        }
+
                     }
 
                     return new OneNumber(startToken) as IDoubleSequence;
@@ -3106,11 +3124,65 @@ namespace Dynamo.Nodes
         {
             private readonly IDoubleInputToken _start;
             private readonly IDoubleInputToken _step;
+            private readonly IDoubleInputToken _count;
+
+            private Value _result;
+
+            public Sequence(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken count)
+            {
+                _start = start;
+                _step = step;
+                _count = count;
+
+                if (_start is DoubleToken && _step is DoubleToken && _count is DoubleToken)
+                {
+                    _result = GetValue(new Dictionary<string, double>());
+                }
+            }
+
+            public Value GetValue(Dictionary<string, double> idLookup)
+            {
+                if (_result == null)
+                {
+                    var step = _step.GetValue(idLookup);
+
+                    if (step == 0)
+                        throw new Exception("Can't have 0 step.");
+
+                    var start = _start.GetValue(idLookup);
+                    var count = (int)_count.GetValue(idLookup);
+
+                    if (count < 0)
+                    {
+                        count *= -1;
+                        start += step*(count-1);
+                        step *= -1;
+                    }
+
+                    return FScheme.Value.NewList(Utils.SequenceToFSharpList(CreateSequence(start, step, count)));
+                }
+                return _result;
+            }
+
+            private static IEnumerable<Value> CreateSequence(double start, double step, int count)
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    yield return FScheme.Value.NewNumber(start);
+                    start += step;
+                }
+            }
+        }
+
+        private class Range : IDoubleSequence
+        {
+            private readonly IDoubleInputToken _start;
+            private readonly IDoubleInputToken _step;
             private readonly IDoubleInputToken _end;
 
             private Value _result;
 
-            public Sequence(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end)
+            public Range(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end)
             {
                 _start = start;
                 _step = step;
@@ -3145,12 +3217,12 @@ namespace Dynamo.Nodes
                     var countingUp = start < end;
 
                     return FScheme.Value.NewList(Utils.SequenceToFSharpList(
-                        countingUp ? CreateSequence(start, step, end) : CreateSequence(end, step, start).Reverse()));
+                        countingUp ? CreateRange(start, step, end) : CreateRange(end, step, start).Reverse()));
                 }
                 return _result;
             }
 
-            private static IEnumerable<Value> CreateSequence(double start, double step, double end)
+            private static IEnumerable<Value> CreateRange(double start, double step, double end)
             {
                 for (var i = start; i <= end; i += step)
                     yield return FScheme.Value.NewNumber(i);
