@@ -3021,7 +3021,7 @@ namespace Dynamo.Nodes
                 {
                     var rangeIdentifiers = x.Split(
                         dynSublists.RangeSeparatorTokens,
-                        StringSplitOptions.RemoveEmptyEntries);
+                        StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
 
                     if (rangeIdentifiers.Length > 3)
                         throw new Exception("Bad range syntax: not of format \"start..end[..(increment|#count)]\"");
