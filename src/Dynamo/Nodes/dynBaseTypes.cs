@@ -2931,8 +2931,9 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            var tb = new dynTextBox
+            var tb = new dynStringTextBox
             {
+                AcceptsReturn = true,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,
                 IsNumeric = true,
@@ -3015,7 +3016,7 @@ namespace Dynamo.Nodes
         private List<IDoubleSequence> ParseValue(List<string> identifiers)
         {
             var idSet = new HashSet<string>(identifiers);
-            return Value.Replace(" ", "").Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(
+            return Value.Replace(" ", "").Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries).Select(
                 delegate(string x)
                 {
                     var rangeIdentifiers = x.Split(
