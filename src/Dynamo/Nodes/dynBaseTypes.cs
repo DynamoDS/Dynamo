@@ -2130,18 +2130,16 @@ namespace Dynamo.Nodes
 
         private static Random random = new Random();
 
-        public override bool RequiresRecalc
+        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            get
+            Dictionary<int, INode> result;
+            if (!preBuilt.TryGetValue(this, out result))
             {
-                return true;
+                result = new Dictionary<int, INode>();
+                result[outPort] = new NumberNode(random.NextDouble());
+                preBuilt[this] = result;
             }
-            set { }
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            return Value.NewNumber(random.NextDouble());
+            return result[outPort];
         }
     }
 
