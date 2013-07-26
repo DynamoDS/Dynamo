@@ -1094,7 +1094,7 @@ namespace Dynamo.Nodes
             return Value.NewList(result);
         }
     }
-    [NodeName("Equal Distanced XYZs  On Curve")]
+    [NodeName("Equal Distanced XYZs On Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a list of equal distanced XYZs along a curve.")]
     public class dynEqualDistXYZAlongCurve : dynXYZBase
