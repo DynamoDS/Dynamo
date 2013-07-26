@@ -409,9 +409,19 @@ namespace Dynamo.Applications
                 if (fixture == null)
                     throw new Exception("Could not find DynamoRevitTests fixture.");
 
-                foreach (TestMethod t in fixture.Tests)
+                foreach (var t in fixture.Tests)
                 {
-                    Results.Results.Add(new DynamoRevitTest(t));
+                    if (t is ParameterizedMethodSuite)
+                    {
+                        var paramSuite = t as ParameterizedMethodSuite;
+                        foreach (var tInner in paramSuite.Tests)
+                        {
+                            if (tInner is TestMethod)
+                                Results.Results.Add(new DynamoRevitTest(tInner as TestMethod));
+                        }
+                    }
+                    else if (t is TestMethod)
+                        Results.Results.Add(new DynamoRevitTest(t as TestMethod));
                 }
 
                 resultsView.ShowDialog();
