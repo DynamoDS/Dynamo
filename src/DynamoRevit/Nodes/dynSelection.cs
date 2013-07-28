@@ -1171,7 +1171,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Select a XYZ location on model face or edge of the element.")]
     public class dynXYZBySelection : dynReferenceSelectionBase, IDrawable
     {
-        //private Reference _refXyz;
+        private Reference old_refXyz;
         private double _param0;
         private double _param1;
         private bool _init;
@@ -1183,6 +1183,7 @@ namespace Dynamo.Nodes
         {
             _selectionMessage = "Select a XYZ location on face or edge of the element.";
             _selectionAction = dynRevitSettings.SelectionHelper.RequestReferenceXYZSelection;
+            old_refXyz = null;
         }
 
         //protected override void OnSelectClick()
@@ -1205,7 +1206,8 @@ namespace Dynamo.Nodes
 
             GeometryObject thisObject = SelectedElement.GetGeometryObjectFromReference(_reference);
             Autodesk.Revit.DB.Transform thisTrf = null;
-
+            if (_init && (old_refXyz == null || !_reference.Equals(old_refXyz)))
+                _init = false;
 
             {
                 GeometryObject geomObj =
@@ -1352,6 +1354,7 @@ namespace Dynamo.Nodes
             else
                 throw new Exception("could not evaluate point on face or edge of the element");
 
+            old_refXyz = _reference;
             return Value.NewContainer(thisXYZ);
         }
 
@@ -1402,6 +1405,7 @@ namespace Dynamo.Nodes
                         _reference.ElementId);
                 _param0 = Convert.ToDouble(elNode.Attributes["refXYZparam0"].Value);
                 _param1 = Convert.ToDouble(elNode.Attributes["refXYZparam1"].Value);
+                old_refXyz = _reference;
                 _init = true;
             }
             catch { }
