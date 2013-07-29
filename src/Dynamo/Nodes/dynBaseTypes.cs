@@ -3106,11 +3106,12 @@ namespace Dynamo.Nodes
                         if (rangeIdentifiers[1].StartsWith("#"))
                         {
                             var countToken = rangeIdentifiers[1].Substring(1);
-
                             IDoubleInputToken endToken = ParseToken(countToken, idSet, identifiers);
 
                             if (rangeIdentifiers.Length > 2)
                             {
+                                if (rangeIdentifiers[2].StartsWith("#") || rangeIdentifiers[2].StartsWith("~"))
+                                    throw new Exception("Cannot use range or approx. identifier on increment field when one has already been used to specify a count.");
                                 return new Sequence(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken);
                             }
 
@@ -3122,6 +3123,22 @@ namespace Dynamo.Nodes
 
                             if (rangeIdentifiers.Length > 2)
                             {
+                                if (rangeIdentifiers[2].StartsWith("#"))
+                                {
+                                    var count = rangeIdentifiers[2].Substring(1);
+                                    IDoubleInputToken countToken = ParseToken(count, idSet, identifiers);
+
+                                    return new CountRange(startToken, countToken, endToken);
+                                }
+
+                                if (rangeIdentifiers[2].StartsWith("~"))
+                                {
+                                    var approx = rangeIdentifiers[2].Substring(1);
+                                    IDoubleInputToken approxToken = ParseToken(approx, idSet, identifiers);
+
+                                    return new ApproxRange(startToken, approxToken, endToken);
+                                }
+
                                 return new Range(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken);
                             }
                             return new Range(startToken, new DoubleToken(1), endToken) as IDoubleSequence;
@@ -3276,26 +3293,65 @@ namespace Dynamo.Nodes
                     var start = _start.GetValue(idLookup);
                     var end = _end.GetValue(idLookup);
 
-                    if (step < 0)
-                    {
-                        step *= -1;
-                        var tmp = end;
-                        end = start;
-                        start = tmp;
-                    }
-
-                    var countingUp = start < end;
-
-                    return FScheme.Value.NewList(Utils.SequenceToFSharpList(
-                        countingUp ? CreateRange(start, step, end) : CreateRange(end, step, start).Reverse()));
+                    return Process(start, step, end);
                 }
                 return _result;
+            }
+
+            protected virtual Value Process(double start, double step, double end)
+            {
+                if (step < 0)
+                {
+                    step *= -1;
+                    var tmp = end;
+                    end = start;
+                    start = tmp;
+                }
+
+                var countingUp = start < end;
+
+                return FScheme.Value.NewList(Utils.SequenceToFSharpList(
+                    countingUp ? CreateRange(start, step, end) : CreateRange(end, step, start).Reverse()));
             }
 
             private static IEnumerable<Value> CreateRange(double start, double step, double end)
             {
                 for (var i = start; i <= end; i += step)
                     yield return FScheme.Value.NewNumber(i);
+            }
+        }
+
+        private class CountRange : Range
+        {
+            public CountRange(IDoubleInputToken startToken, IDoubleInputToken countToken, IDoubleInputToken endToken)
+                : base(startToken, countToken, endToken)
+            { }
+
+            protected override Value Process(double start, double count, double end)
+            {
+                var c = (int)count;
+
+                var neg = c < 0;
+
+                c = Math.Abs(c) - 1;
+
+                if (neg)
+                    c *= -1;
+
+                return base.Process(start, Math.Abs(start - end) / c, end);
+            }
+        }
+
+        private class ApproxRange : Range
+        {
+            public ApproxRange(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end) 
+                : base(start, step, end)
+            { }
+
+            protected override Value Process(double start, double approx, double end)
+            {
+                //TODO: Implement
+                return base.Process(start, approx, end);
             }
         }
 
