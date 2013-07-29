@@ -605,11 +605,13 @@ namespace Dynamo.Nodes
 
                         if (partial)
                         {
-                            firstNode = new AnonymousFunctionNode(connections.Select(x => x.Item1), new AnonymousFunctionNode(partialSymList, firstNode));
+                            var outerNode = new AnonymousFunctionNode(connections.Select(x => x.Item1), new AnonymousFunctionNode(partialSymList, firstNode));
                             foreach (var connection in connections)
                             {
-                                firstNode.ConnectInput(connection.Item1, connection.Item2);
+                                firstNode.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
+                                outerNode.ConnectInput(connection.Item1, connection.Item2);
                             }
+                            firstNode = outerNode;
                         }
 
                         nodes[data.Index] = firstNode;
@@ -622,11 +624,13 @@ namespace Dynamo.Nodes
             {
                 if (partial)
                 {
-                    node = new AnonymousFunctionNode(connections.Select(x => x.Item1), new AnonymousFunctionNode(partialSymList, node));
+                    var outerNode = new AnonymousFunctionNode(connections.Select(x => x.Item1), new AnonymousFunctionNode(partialSymList, node));
                     foreach (var connection in connections)
                     {
-                        node.ConnectInput(connection.Item1, connection.Item2);
+                        node.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
+                        outerNode.ConnectInput(connection.Item1, connection.Item2);
                     }
+                    node = outerNode;
                 }
                 else
                 {
