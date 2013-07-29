@@ -885,8 +885,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("element", "Extracted element", typeof(object)));
 
             RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
         }
     }
 
@@ -902,8 +900,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("list", "List with element removed", typeof(object)));
 
             RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -927,8 +923,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("list", "List with elements removed.", typeof(object)));
 
             RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -1060,12 +1054,10 @@ namespace Dynamo.Nodes
         public dynSlice()
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
-            InPortData.Add(new PortData("n", "The 'width' of the array.", typeof(Value.List)));
-            OutPortData.Add(new PortData("list", "A list of lists representing rows in your array.", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The length of each new sub list.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "A list of lists of length n.", typeof(Value.List)));
 
             RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -1122,12 +1114,10 @@ namespace Dynamo.Nodes
         public dynDiagonalRightList()
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
-            InPortData.Add(new PortData("n", "The width of the array.", typeof(Value.List)));
-            OutPortData.Add(new PortData("list", "A list of lists representing diagonals in your array.", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The width of the new sub lists.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "A list of lists representing diagonals.", typeof(Value.List)));
 
             RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -1141,15 +1131,13 @@ namespace Dynamo.Nodes
             //if we have less elements in the
             //incoming list than the slice size,
             //just return the list
-            if (lst.Count<Value>() < n)
+            if (lst.Count() < n)
             {
                 return Value.NewList(lst);
             }
 
             var finalList = new List<Value>();
             var currList = new List<Value>();
-
-            int count = 0;
 
             var startIndices = new List<int>();
             
@@ -1191,7 +1179,7 @@ namespace Dynamo.Nodes
                 finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
             }
 
-            return Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
+            return Value.NewList(Utils.MakeFSharpList(finalList.ToArray()));
 
         }
     }
@@ -1204,8 +1192,8 @@ namespace Dynamo.Nodes
         public dynDiagonalLeftList()
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
-            InPortData.Add(new PortData("n", "The width of the array.", typeof(Value.List)));
-            OutPortData.Add(new PortData("list", "A list of lists representing diagonals in your array.", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The width of the new sublists.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "A list of lists representing diagonals.", typeof(Value.List)));
 
             RegisterAllPorts();
 
@@ -1223,7 +1211,7 @@ namespace Dynamo.Nodes
             //if we have less elements in the
             //incoming list than the slice size,
             //just return the list
-            if (lst.Count<Value>() < n)
+            if (lst.Count() < n)
             {
                 return Value.NewList(lst);
             }
@@ -1231,12 +1219,10 @@ namespace Dynamo.Nodes
             var finalList = new List<Value>();
             var currList = new List<Value>();
 
-            int count = 0;
-
             var startIndices = new List<int>();
 
             //get indices along 'top' of array
-            for (int i = 0; i < (int)n; i++)
+            for (int i = 0; i < n; i++)
             {
                 startIndices.Add(i);
             }
@@ -1255,7 +1241,7 @@ namespace Dynamo.Nodes
                 {
                     var currentRow = (int)Math.Ceiling((index + 1) / (double)n);
                     currList.Add(lst.ElementAt(index));
-                    index += (int)n - 1;
+                    index += n - 1;
 
                     //ensure we are skipping a row to get the next index
                     var nextRow = (int)Math.Ceiling((index + 1) / (double)n);
@@ -1319,8 +1305,8 @@ namespace Dynamo.Nodes
 
             tb.OnChangeCommitted += processTextForNewInputs;
 
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = VerticalAlignment.Top;
 
             nodeUI.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
