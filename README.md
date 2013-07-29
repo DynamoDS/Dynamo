@@ -36,6 +36,10 @@ Fixes
 - Reference Point by Normal and Distance
 - Fixes for Get Paramter node
 - fixed case sensativity issue with Forumla node
+- fixed crash with Create node from selection functionality
+- fixes for Drop and Take nodes
+- Angle node now saves properly
+- Removed lacing for Get and Remove from List nodes
 
 
 New
@@ -48,12 +52,15 @@ New
 - New Tutorials on https://github.com/ikeough/Dynamo/wiki/Learning-Dynamo
 - Open Maipulate and save Excel files
 - Save View node
-- e Node and Formula node recognizes Pi
+- e Node 
+- Formula node recognizes Pi
 - Number node now supports sequences and ranges
 - True for All and True For Any nodes
 - Tooltips for Custom Node inputs 
 - Apply Function to List node
-- 
+- Remove from List, Remove Every Nth, Shift List Indeces nodes
+- Project Point on Face works for Planes now
+- Equal Distance XYZs on Curve node
 
 ###0.5.2###
 
