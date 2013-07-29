@@ -533,7 +533,7 @@ namespace Dynamo.Nodes
                 return result[outPort];
 
             //Fetch the names of input ports.
-            var portNames = InPortData.Zip(Enumerable.Range(0, InPortData.Count), (x, i) => x.NickName + i);
+            var portNames = InPortData.Zip(Enumerable.Range(0, InPortData.Count), (x, i) => x.NickName + i).ToList();
 
             //Compile the procedure for this node.
             InputNode node = Compile(portNames);
@@ -541,6 +541,7 @@ namespace Dynamo.Nodes
             //Is this a partial application?
             var partial = false;
 
+            var connections = new List<Tuple<string, INode>>();
             var partialSymList = new List<string>();
 
             //For each index in InPortData
@@ -559,7 +560,7 @@ namespace Dynamo.Nodes
                     //Debug.WriteLine(string.Format("Connecting input {0}", data.Name));
 
                     //Compile input and connect it
-                    node.ConnectInput(data.Name, input.Item2.Build(preBuilt, input.Item1));
+                    connections.Add(Tuple.Create(data.Name, input.Item2.Build(preBuilt, input.Item1)));
                 }
                 else //othwise, remember that this is a partial application
                 {
@@ -586,26 +587,32 @@ namespace Dynamo.Nodes
                             InputNode restNode;
                             if (diff > 1)
                             {
-                                restNode = new ExternalFunctionNode(FScheme.Drop, new List<string>() { "amt", "list" });
+                                restNode = new ExternalFunctionNode(FScheme.Drop, new[] { "amt", "list" });
                                 restNode.ConnectInput("amt", new NumberNode(diff));
                                 restNode.ConnectInput("list", prev);
                             }
                             else
                             {
-                                restNode = new ExternalFunctionNode(FScheme.Cdr, new List<string>() { "list" });
+                                restNode = new ExternalFunctionNode(FScheme.Cdr, new[] { "list" });
                                 restNode.ConnectInput("list", prev);
                             }
                             prev = restNode;
                             prevIndex = data.Index;
                         }
 
-                        var firstNode = new ExternalFunctionNode(FScheme.Car, new List<string>() { "list" });
+                        var firstNode = new ExternalFunctionNode(FScheme.Car, new[] { "list" }) as InputNode;
                         firstNode.ConnectInput("list", prev);
 
                         if (partial)
-                            nodes[data.Index] = new AnonymousFunctionNode(partialSymList, firstNode);
-                        else
-                            nodes[data.Index] = firstNode;
+                        {
+                            firstNode = new AnonymousFunctionNode(connections.Select(x => x.Item1), new AnonymousFunctionNode(partialSymList, firstNode));
+                            foreach (var connection in connections)
+                            {
+                                firstNode.ConnectInput(connection.Item1, connection.Item2);
+                            }
+                        }
+
+                        nodes[data.Index] = firstNode;
                     }
                     else
                         nodes[data.Index] = new NumberNode(0);
@@ -615,13 +622,20 @@ namespace Dynamo.Nodes
             {
                 if (partial)
                 {
-                    nodes[outPort] = new AnonymousFunctionNode(partialSymList, node);
+                    node = new AnonymousFunctionNode(connections.Select(x => x.Item1), new AnonymousFunctionNode(partialSymList, node));
+                    foreach (var connection in connections)
+                    {
+                        node.ConnectInput(connection.Item1, connection.Item2);
+                    }
                 }
                 else
                 {
-                    nodes[outPort] = node;
+                    foreach (var connection in connections)
+                    {
+                        node.ConnectInput(connection.Item1, connection.Item2);
+                    }
                 }
-                
+                nodes[outPort] = node;
             }
 
             //If this is a partial application, then remember not to re-eval.
