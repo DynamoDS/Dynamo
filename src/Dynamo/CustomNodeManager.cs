@@ -314,15 +314,22 @@ namespace Dynamo.Utilities
         /// <param name="path">The path for the node.</param>
         public void SetNodeInfo(CustomNodeInfo info)
         {
-
-            if (this.NodeNames.ContainsKey(info.Name))
-            {
-                this.NodeNames.Remove(info.Name);
-            }
-            this.NodeNames.Add(info.Name, info.Guid);
+            this.SetNodeName(info.Guid, info.Name);
             this.SetNodeCategory(info.Guid, info.Category);
             this.SetNodeDescription(info.Guid, info.Description);
             this.SetNodePath(info.Guid, info.Path);
+        }
+
+        /// <summary>
+        ///     Sets the category for a custom node
+        /// </summary>
+        /// <param name="guid">The unique id for the node.</param>
+        /// <param name="category">The name for the node</param>
+        public void SetNodeName(Guid id, string name)
+        {
+            // remove if the guid already has a name assigned
+            this.NodeNames.Where(x => x.Value == id).ToList().ForEach(x=>this.NodeNames.Remove(x));
+            this.NodeNames.Add(name, id);
         }
 
         /// <summary>
@@ -1176,7 +1183,6 @@ namespace Dynamo.Utilities
             return new CustomNodeInfo(x, name, cat, des, path);
 
         }
-
 
         /// <summary>
         /// Refactor a custom node

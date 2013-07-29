@@ -128,7 +128,7 @@
             <Canvas.ContextMenu>
                 <ContextMenu>
 
-                    <MenuItem  Header="_Edit Properties..."  Name="EditProperties" Click="WorkspacePropertyEditClick" Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"  />
+                    <MenuItem  Header="_Custom Node Properties..."  Name="EditProperties" Click="WorkspacePropertyEditClick" Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"  />
                     <MenuItem  Header="_Align Nodes"  Name="Align">
                         <MenuItem  Header="_X Average"  Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalCenter"/>
                         <MenuItem  Header="_Left" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalLeft"/>
