@@ -31,7 +31,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview")]
-    public class dynWatch3D : dynNodeWithOneOutput
+    public class dynWatch3D : dynNodeWithMultipleOutputs
     {
         WatchView _watchView;
 
@@ -52,6 +52,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("", "Incoming geometry objects.", typeof(object)));
             OutPortData.Add(new PortData("", "Watch contents, passed through", typeof(object)));
+            OutPortData.Add(new PortData("meshes", "Helix3d Meshes", typeof(object)));
 
             RegisterAllPorts();
 
@@ -229,6 +230,7 @@ namespace Dynamo.Nodes
         MeshVisual3D MakeMeshVisual3D(Mesh3D mesh)
         {
             MeshVisual3D vismesh = new MeshVisual3D { Content = new GeometryModel3D { Geometry = mesh.ToMeshGeometry3D(), Material = Materials.White } };
+            
             return vismesh;
         }
 
@@ -238,7 +240,12 @@ namespace Dynamo.Nodes
 
             _requiresRedraw = true;
 
-            return input;
+            var meshesValue = Value.NewContainer(Meshes);
+            var results = FSharpList<Value>.Empty;
+            results = FSharpList<Value>.Cons(Value.NewContainer(Meshes), results);//helix mesh3d mesh
+            results = FSharpList<Value>.Cons(Value.NewContainer(input), results);//confusing that this list iss reversed
+
+            return Value.NewList(results);
         }
     }
 }
