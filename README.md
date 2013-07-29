@@ -24,6 +24,37 @@ The current version will run on top of Revit 2013, Revit 2014, Project Vasari Be
 
 ## Releases ##
 
+###0.5.3###
+
+July 2013
+
+Fixes
+- XYZ Array on Curve returns a point on the end
+- Conditional node improvements
+- Copy Paste notes now works
+- Loft node fixes (now takes non-planar curves)
+- Reference Point by Normal and Distance
+- Fixes for Get Paramter node
+- fixed case sensativity issue with Forumla node
+
+
+New
+- Select Elements nodes (box select any collection of Revit Elements)
+- More list nodes
+- Search Bar is more expandable
+- Double Click edit for all editable nodes
+- Node Renaming (edit the visible name in a node instance)
+- Axonometric View Creation
+- New Tutorials on https://github.com/ikeough/Dynamo/wiki/Learning-Dynamo
+- Open Maipulate and save Excel files
+- Save View node
+- e Node and Formula node recognizes Pi
+- Number node now supports sequences and ranges
+- True for All and True For Any nodes
+- Tooltips for Custom Node inputs 
+- Apply Function to List node
+- 
+
 ###0.5.2###
 
 July 2013
