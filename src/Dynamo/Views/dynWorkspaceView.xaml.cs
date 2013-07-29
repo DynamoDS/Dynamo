@@ -60,6 +60,7 @@ namespace Dynamo.Views
             vm.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             vm.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
             vm.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+            vm.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             vm.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
         }
 
