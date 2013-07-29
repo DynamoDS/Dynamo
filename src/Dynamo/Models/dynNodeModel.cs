@@ -546,7 +546,7 @@ namespace Dynamo.Nodes
 
             //For each index in InPortData
             //for (int i = 0; i < InPortData.Count; i++)
-            foreach (var data in Enumerable.Range(0, InPortData.Count).Zip(portNames, (data, name) => new { Index=data, Name=name }))
+            foreach (var data in Enumerable.Range(0, InPortData.Count).Zip(portNames, (data, name) => new { Index = data, Name = name }))
             {
                 //Fetch the corresponding port
                 //var port = InPorts[i];
@@ -574,6 +574,21 @@ namespace Dynamo.Nodes
 
             if (OutPortData.Count > 1)
             {
+                if (partial)
+                {
+                    foreach (var connection in connections)
+                    {
+                        node.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
+                    }
+                }
+                else
+                {
+                    foreach (var connection in connections)
+                    {
+                        node.ConnectInput(connection.Item1, connection.Item2);
+                    }
+                }
+
                 InputNode prev = node;
                 int prevIndex = 0;
 
@@ -605,11 +620,16 @@ namespace Dynamo.Nodes
 
                         if (partial)
                         {
-                            var outerNode = new AnonymousFunctionNode(connections.Select(x => x.Item1), new AnonymousFunctionNode(partialSymList, firstNode));
-                            foreach (var connection in connections)
+                            var outerNode = new AnonymousFunctionNode(partialSymList, firstNode);
+                            if (connections.Any())
                             {
-                                firstNode.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
-                                outerNode.ConnectInput(connection.Item1, connection.Item2);
+                                outerNode = new AnonymousFunctionNode(
+                                    connections.Select(x => x.Item1),
+                                    outerNode);
+                                foreach (var connection in connections)
+                                {
+                                    outerNode.ConnectInput(connection.Item1, connection.Item2);
+                                }
                             }
                             firstNode = outerNode;
                         }
@@ -624,11 +644,17 @@ namespace Dynamo.Nodes
             {
                 if (partial)
                 {
-                    var outerNode = new AnonymousFunctionNode(connections.Select(x => x.Item1), new AnonymousFunctionNode(partialSymList, node));
-                    foreach (var connection in connections)
+                    var outerNode = new AnonymousFunctionNode(partialSymList, node);
+                    if (connections.Any())
                     {
-                        node.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
-                        outerNode.ConnectInput(connection.Item1, connection.Item2);
+                        outerNode = new AnonymousFunctionNode(
+                            connections.Select(x => x.Item1),
+                            outerNode);
+                        foreach (var connection in connections)
+                        {
+                            node.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
+                            outerNode.ConnectInput(connection.Item1, connection.Item2);
+                        }
                     }
                     node = outerNode;
                 }
@@ -648,7 +674,7 @@ namespace Dynamo.Nodes
                 OldValue = Value.NewFunction(null); // cache an old value for display to the user
                 RequiresRecalc = false;
             }
-            
+
             preBuilt[this] = nodes;
 
             //And we're done
