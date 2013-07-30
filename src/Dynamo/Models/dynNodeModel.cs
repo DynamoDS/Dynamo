@@ -997,11 +997,11 @@ namespace Dynamo.Nodes
             return Outputs.ContainsKey(portData) && Outputs[portData].Any();
         }
 
-        internal void DisconnectOutput(int portData, int inPortData)
+        internal void DisconnectOutput(int portData, int inPortData, dynNodeModel nodeModel)
         {
             HashSet<Tuple<int, dynNodeModel>> output;
             if (Outputs.TryGetValue(portData, out output))
-                output.RemoveWhere(x => x.Item1 == inPortData);
+                output.RemoveWhere(x => x.Item2 == nodeModel && x.Item1 == inPortData);
             CheckPortsForRecalc();
         }
 
@@ -1116,7 +1116,8 @@ namespace Dynamo.Nodes
                 DisconnectInput(data);
                 startPort.Owner.DisconnectOutput(
                     startPort.Owner.OutPorts.IndexOf(startPort),
-                    data);
+                    data,
+                    this);
             }
         }
 
