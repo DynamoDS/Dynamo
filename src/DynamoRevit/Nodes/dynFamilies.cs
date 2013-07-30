@@ -16,6 +16,7 @@ using System;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Controls;
 using System.Xml;
@@ -74,7 +75,7 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Select Family Instance Parameter")]
+    [NodeName("Get Parameter")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a parameter as a string.")]
     [NodeSearchTags("fam")]
@@ -125,19 +126,21 @@ namespace Dynamo.Nodes
                     if (p.IsReadOnly || p.StorageType == StorageType.None)
                         continue;
                     Items.Add(
-                            new DynamoDropDownItem(p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")", p));
+                            new DynamoDropDownItem(string.Format("{0}(Type)({1})", p.Definition.Name, getStorageTypeString(p.StorageType)), p));
                 }
 
-                var fd = doc.EditFamily(fs.Family);
-                var ps = fd.FamilyManager.Parameters;
+                //this was causing duplication of parameters
+                //in the drop-down. 
+                //var fd = doc.EditFamily(fs.Family);
+                //var ps = fd.FamilyManager.Parameters;
 
-                foreach (dynamic p in ps)
-                {
-                    if (p.IsReadOnly || p.StorageType == StorageType.None)
-                        continue;
-                    Items.Add(
-                            new DynamoDropDownItem(p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")", p));
-                }
+                //foreach (dynamic p in ps)
+                //{
+                //    if (p.IsReadOnly || p.StorageType == StorageType.None)
+                //        continue;
+                //    Items.Add(
+                //            new DynamoDropDownItem(p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")", p));
+                //}
 
             }
             else if (element is FamilyInstance)
@@ -149,30 +152,43 @@ namespace Dynamo.Nodes
                     if (p.IsReadOnly || p.StorageType == StorageType.None)
                         continue;
                     Items.Add(
-                            new DynamoDropDownItem(p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")", p));
+                            new DynamoDropDownItem(string.Format("{0}({1})", p.Definition.Name, getStorageTypeString(p.StorageType)), p));
                 }
+
+                var fs = fi.Symbol;
+
+                foreach (dynamic p in fs.Parameters)
+                {
+                    if (p.IsReadOnly || p.StorageType == StorageType.None)
+                        continue;
+                    Items.Add(
+                            new DynamoDropDownItem(string.Format("{0}(Type)({1})", p.Definition.Name, getStorageTypeString(p.StorageType)), p));
+                }
+
+
             }
             else
             {
-                this.storedId = null;
+                storedId = null;
             }
 
-            this.Items = this.Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             element = (Element)((Value.Container)args[0]).Item;
 
-            if (element.GetType() != typeof(FamilyInstance))
+            if (element == null)
             {
-                throw new Exception("The input is not a Family Instance.");
+                throw new Exception("The input is not a family instance or symbol.");
             }
 
-            if (!element.Id.Equals(this.storedId))
+            //only update the collection on evaluate
+            //if the item coming in is different
+            if (element != null && !element.Id.Equals(this.storedId))
             {
                 this.storedId = element.Id;
-
                 PopulateItems();
             }
 
@@ -187,11 +203,11 @@ namespace Dynamo.Nodes
             if (this.storedId != null)
             {
                 XmlElement outEl = xmlDoc.CreateElement("familyid");
-                outEl.SetAttribute("value", this.storedId.IntegerValue.ToString());
+                outEl.SetAttribute("value", this.storedId.IntegerValue.ToString(CultureInfo.InvariantCulture));
                 dynEl.AppendChild(outEl);
 
                 XmlElement param = xmlDoc.CreateElement("index");
-                param.SetAttribute("value", SelectedIndex.ToString());
+                param.SetAttribute("value", SelectedIndex.ToString(CultureInfo.InvariantCulture));
                 dynEl.AppendChild(param);
             }
 
@@ -237,7 +253,7 @@ namespace Dynamo.Nodes
             {
                 PopulateItems();
                 SelectedIndex = index;
-            }  
+            }
         }
     }
 

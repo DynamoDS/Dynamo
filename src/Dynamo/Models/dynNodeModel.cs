@@ -544,7 +544,7 @@ namespace Dynamo.Nodes
                 return result[outPort];
 
             //Fetch the names of input ports.
-            var portNames = InPortData.Zip(Enumerable.Range(0, InPortData.Count), (x, i) => x.NickName + i);
+            var portNames = InPortData.Zip(Enumerable.Range(0, InPortData.Count), (x, i) => x.NickName + i).ToList();
 
             //Compile the procedure for this node.
             InputNode node = Compile(portNames);
@@ -552,11 +552,12 @@ namespace Dynamo.Nodes
             //Is this a partial application?
             var partial = false;
 
+            var connections = new List<Tuple<string, INode>>();
             var partialSymList = new List<string>();
 
             //For each index in InPortData
             //for (int i = 0; i < InPortData.Count; i++)
-            foreach (var data in Enumerable.Range(0, InPortData.Count).Zip(portNames, (data, name) => new { Index=data, Name=name }))
+            foreach (var data in Enumerable.Range(0, InPortData.Count).Zip(portNames, (data, name) => new { Index = data, Name = name }))
             {
                 //Fetch the corresponding port
                 //var port = InPorts[i];
@@ -570,7 +571,7 @@ namespace Dynamo.Nodes
                     //Debug.WriteLine(string.Format("Connecting input {0}", data.Name));
 
                     //Compile input and connect it
-                    node.ConnectInput(data.Name, input.Item2.Build(preBuilt, input.Item1));
+                    connections.Add(Tuple.Create(data.Name, input.Item2.Build(preBuilt, input.Item1)));
                 }
                 else //othwise, remember that this is a partial application
                 {
@@ -584,6 +585,21 @@ namespace Dynamo.Nodes
 
             if (OutPortData.Count > 1)
             {
+                if (partial)
+                {
+                    foreach (var connection in connections)
+                    {
+                        node.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
+                    }
+                }
+                else
+                {
+                    foreach (var connection in connections)
+                    {
+                        node.ConnectInput(connection.Item1, connection.Item2);
+                    }
+                }
+
                 InputNode prev = node;
                 int prevIndex = 0;
 
@@ -597,26 +613,39 @@ namespace Dynamo.Nodes
                             InputNode restNode;
                             if (diff > 1)
                             {
-                                restNode = new ExternalFunctionNode(FScheme.Drop, new List<string>() { "amt", "list" });
+                                restNode = new ExternalFunctionNode(FScheme.Drop, new[] { "amt", "list" });
                                 restNode.ConnectInput("amt", new NumberNode(diff));
                                 restNode.ConnectInput("list", prev);
                             }
                             else
                             {
-                                restNode = new ExternalFunctionNode(FScheme.Cdr, new List<string>() { "list" });
+                                restNode = new ExternalFunctionNode(FScheme.Cdr, new[] { "list" });
                                 restNode.ConnectInput("list", prev);
                             }
                             prev = restNode;
                             prevIndex = data.Index;
                         }
 
-                        var firstNode = new ExternalFunctionNode(FScheme.Car, new List<string>() { "list" });
+                        var firstNode = new ExternalFunctionNode(FScheme.Car, new[] { "list" }) as InputNode;
                         firstNode.ConnectInput("list", prev);
 
                         if (partial)
-                            nodes[data.Index] = new AnonymousFunctionNode(partialSymList, firstNode);
-                        else
-                            nodes[data.Index] = firstNode;
+                        {
+                            var outerNode = new AnonymousFunctionNode(partialSymList, firstNode);
+                            if (connections.Any())
+                            {
+                                outerNode = new AnonymousFunctionNode(
+                                    connections.Select(x => x.Item1),
+                                    outerNode);
+                                foreach (var connection in connections)
+                                {
+                                    outerNode.ConnectInput(connection.Item1, connection.Item2);
+                                }
+                            }
+                            firstNode = outerNode;
+                        }
+
+                        nodes[data.Index] = firstNode;
                     }
                     else
                         nodes[data.Index] = new NumberNode(0);
@@ -626,13 +655,28 @@ namespace Dynamo.Nodes
             {
                 if (partial)
                 {
-                    nodes[outPort] = new AnonymousFunctionNode(partialSymList, node);
+                    var outerNode = new AnonymousFunctionNode(partialSymList, node);
+                    if (connections.Any())
+                    {
+                        outerNode = new AnonymousFunctionNode(
+                            connections.Select(x => x.Item1),
+                            outerNode);
+                        foreach (var connection in connections)
+                        {
+                            node.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
+                            outerNode.ConnectInput(connection.Item1, connection.Item2);
+                        }
+                    }
+                    node = outerNode;
                 }
                 else
                 {
-                    nodes[outPort] = node;
+                    foreach (var connection in connections)
+                    {
+                        node.ConnectInput(connection.Item1, connection.Item2);
+                    }
                 }
-                
+                nodes[outPort] = node;
             }
 
             //If this is a partial application, then remember not to re-eval.
@@ -641,7 +685,7 @@ namespace Dynamo.Nodes
                 OldValue = Value.NewFunction(null); // cache an old value for display to the user
                 RequiresRecalc = false;
             }
-            
+
             preBuilt[this] = nodes;
 
             //And we're done
@@ -964,11 +1008,11 @@ namespace Dynamo.Nodes
             return Outputs.ContainsKey(portData) && Outputs[portData].Any();
         }
 
-        internal void DisconnectOutput(int portData, int inPortData)
+        internal void DisconnectOutput(int portData, int inPortData, dynNodeModel nodeModel)
         {
             HashSet<Tuple<int, dynNodeModel>> output;
             if (Outputs.TryGetValue(portData, out output))
-                output.RemoveWhere(x => x.Item1 == inPortData);
+                output.RemoveWhere(x => x.Item2 == nodeModel && x.Item1 == inPortData);
             CheckPortsForRecalc();
         }
 
@@ -1083,7 +1127,8 @@ namespace Dynamo.Nodes
                 DisconnectInput(data);
                 startPort.Owner.DisconnectOutput(
                     startPort.Owner.OutPorts.IndexOf(startPort),
-                    data);
+                    data,
+                    this);
             }
         }
 

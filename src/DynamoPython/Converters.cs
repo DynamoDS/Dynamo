@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Dynamo;
+using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
+
+using Dynamo.FSchemeInterop;
 
 namespace DynamoPython
 {
@@ -31,15 +34,30 @@ namespace DynamoPython
             {
                 FSharpList<FScheme.Value> result = FSharpList<FScheme.Value>.Empty;
 
-                data.reverse();
+                //data.reverse(); // this breaks under certain circumstances
+
+                List<dynamic> reversal_list = new List<dynamic>();
 
                 foreach (var x in data)
                 {
+                    reversal_list.Add(x);
+                }
+
+                for (int i = reversal_list.Count - 1; i >= 0; --i)
+                {
+                    var x = reversal_list[i];
+
                     result = FSharpList<FScheme.Value>.Cons(convertToValue(x), result);
                 }
 
+                //foreach (var x in data)
+                //{
+                //    result = FSharpList<FScheme.Value>.Cons(convertToValue(x), result);
+                //}
+
                 return FScheme.Value.NewList(result);
             }
+
             //else if (data is PythonFunction)
             //{
             //   return FuncContainer.MakeFunction(

@@ -19,6 +19,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Linq;
 using Dynamo.Connectors;
+using Dynamo.FSchemeInterop;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -59,7 +60,7 @@ namespace Dynamo.Nodes
             handler = new FileSystemEventHandler(watcher_FileChanged);
 
             InPortData.Add(new PortData("path", "Path to the file", typeof(Value.String)));
-            OutPortData.Add(new PortData("contents", "File contents", typeof(Value.String)));
+            
 
             //NodeUI.RegisterInputsAndOutput();
         }
@@ -78,7 +79,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Read File")]
+    [NodeName("Read Text File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Reads data from a file.")]
     public class dynFileReader : dynNodeWithOneOutput
@@ -145,6 +146,8 @@ namespace Dynamo.Nodes
         }
     }
 
+   
+
     [NodeName("Read Image File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Reads data from an image file.")]
@@ -157,6 +160,7 @@ namespace Dynamo.Nodes
 
             InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
             InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
+            OutPortData.Add(new PortData("contents", "File contents", typeof(Value.String)));
             RegisterAllPorts();
         }
 
@@ -266,9 +270,7 @@ namespace Dynamo.Nodes
 
             try
             {
-                StreamWriter writer = new StreamWriter(new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write));
-                writer.Write(text);
-                writer.Close();
+                File.WriteAllText(path, text);
             }
             catch (Exception e)
             {
@@ -312,6 +314,50 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
+                dynSettings.Controller.DynamoViewModel.Log(e);
+                return Value.NewNumber(0);
+            }
+
+            return Value.NewNumber(1);
+        }
+    }
+
+
+    [NodeName("Write Image File")]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeDescription("Writes the given image to an image file. Creates the file if it doesn't exist.")]
+    public class dynImageFileWriter : dynNodeWithOneOutput
+    {
+        public dynImageFileWriter()
+        {
+            InPortData.Add(new PortData("path", "Path to the file", typeof(Value.String)));
+            InPortData.Add(new PortData("filename", "name of the file", typeof(Value.String)));
+            InPortData.Add(new PortData("image", "Image to be written", typeof(Value.Container)));
+            OutPortData.Add(new PortData("success?", "Whether or not the operation was successful.", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            string path = ((Value.String)args[0]).Item;
+            string name = ((Value.String)args[1]).Item;
+            System.Drawing.Image image = (System.Drawing.Image)((Value.Container)args[2]).Item;
+            string pathName = path + "\\" + name + ".png";
+
+            try
+            {
+                //if (image != null)
+                //{
+                    image.Save(pathName);
+                    dynSettings.Controller.DynamoViewModel.Log("Saved Image File " + pathName);
+                //}
+
+
+            }
+            catch (Exception e)
+            {
+                dynSettings.Controller.DynamoViewModel.Log("Error Saving Image File " + pathName);
                 dynSettings.Controller.DynamoViewModel.Log(e);
                 return Value.NewNumber(0);
             }

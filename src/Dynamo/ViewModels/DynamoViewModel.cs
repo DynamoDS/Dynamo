@@ -78,6 +78,7 @@ namespace Dynamo.Controls
         public DelegateCommand GoToSourceCodeCommand { get; set; }
         public DelegateCommand<object> ExitCommand { get; set; }
         public DelegateCommand CleanupCommand { get; set; }
+        public DelegateCommand SelectAllCommand { get; set; }
         public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
         public DelegateCommand ShowSaveDialogIfNeededAndSaveResultCommand { get; set; }
@@ -376,6 +377,7 @@ namespace Dynamo.Controls
             ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveCommand = new DelegateCommand(Save, CanSave);
+            SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
             OpenCommand = new DelegateCommand<object>(Open, CanOpen);
             AlignSelectedCommand = new DelegateCommand<string>(AlignSelected, CanAlignSelected);
             SaveAsCommand = new DelegateCommand<object>(SaveAs, CanSaveAs);
@@ -455,6 +457,16 @@ namespace Dynamo.Controls
         private bool CanAlignSelected(string param)
         {
             return true;
+        }
+
+        private void SelectAll()
+        {
+            this.CurrentSpaceViewModel.SelectAllCommand.Execute();
+        }
+
+        private bool CanSelectAll()
+        {
+            return this.CurrentSpaceViewModel.SelectAllCommand.CanExecute();
         }
 
         private bool CanSave()
@@ -858,8 +870,8 @@ namespace Dynamo.Controls
 
         public void Cleanup()
         {
+            this.Model.OnCleanup(null);
             DynamoLogger.Instance.FinishLogging();
-            
         }
 
         private bool CanCleanup()
@@ -877,6 +889,7 @@ namespace Dynamo.Controls
             if (!AskUserToSaveWorkspacesOrCancel(allowCancelBool))
                 return;
             this.Cleanup();
+            
             exitInvoked = true;
             dynSettings.Bench.Close();
         }

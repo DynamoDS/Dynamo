@@ -69,7 +69,7 @@ namespace Dynamo.FSchemeInterop
         {
             if (!value.IsNumber)
                 return false;
-            convertedValue = ((FScheme.Value.Number)value).Item;
+            convertedValue = (value as Value.Number).Item;
             return true;
         }
 
@@ -171,6 +171,25 @@ namespace Dynamo.FSchemeInterop
 
                 if (vals[0].IsList)
                     return true;
+            }
+
+            return false;
+        }
+        public static bool IsListOfListsOfLists(FScheme.Value value)
+        {
+            if (value.IsList)
+            {
+                FSharpList<Value> vals = ((Value.List)value).Item;
+
+                if (!vals.Any())
+                    return false;
+
+                if (vals[0].IsList)
+                {
+                    FSharpList<Value> vals2 = ((Value.List)vals[0]).Item;
+                    if (vals2.Any() && vals2[0].IsList)
+                        return true;
+                }
             }
 
             return false;

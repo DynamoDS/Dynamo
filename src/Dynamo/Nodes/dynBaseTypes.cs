@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -131,32 +132,20 @@ namespace Dynamo.Nodes
 
     public abstract class dynBuiltinFunction : dynNodeWithOneOutput
     {
-        public string Symbol { get; protected internal set; }
+        public Func<FSharpList<Value>, Value> Func { get; protected internal set; }
 
-        internal dynBuiltinFunction(string symbol)
-        {
-            Symbol = symbol;
-        }
+        internal dynBuiltinFunction(FSharpFunc<FSharpList<Value>, Value> builtIn) 
+            : this(builtIn.Invoke)
+        { }
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
+        internal dynBuiltinFunction(Func<FSharpList<Value>, Value> builtIn)
         {
-            if (SaveResult)
-            {
-                return base.Compile(portNames);
-            }
-            else
-                return new FunctionNode(Symbol, portNames);
+            Func = builtIn;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-
-            var val = ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
-                .Item.Invoke(args);
-
-            var symbol = ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol)).Item;
-
-            return val;
+           return Func(args);
         }
     }
 
@@ -206,8 +195,10 @@ namespace Dynamo.Nodes
             subButton.Click += delegate { RemoveInput(); RegisterAllPorts(); };
         }
 
-        protected abstract string getInputRootName();
-        protected virtual int getNewInputIndex()
+        protected abstract string GetInputRootName();
+        protected abstract string GetTooltipRootName();
+
+        protected virtual int GetInputNameIndex()
         {
             return InPortData.Count;
         }
@@ -236,7 +227,8 @@ namespace Dynamo.Nodes
 
         protected internal virtual void AddInput()
         {
-            InPortData.Add(new PortData(getInputRootName() + getNewInputIndex(), "", typeof(object)));
+            var idx = GetInputNameIndex();
+            InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx, typeof(object)));
         }
 
         public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
@@ -330,7 +322,7 @@ namespace Dynamo.Nodes
     public class dynReverse : dynBuiltinFunction
     {
         public dynReverse()
-            : base("reverse")
+            : base(FScheme.Rev)
         {
             InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("rev", "Reversed list", typeof(Value.List)));
@@ -346,7 +338,7 @@ namespace Dynamo.Nodes
     {
         public dynNewList()
         {
-            InPortData.Add(new PortData("index0", "First item", typeof(object)));
+            InPortData.Add(new PortData("index0", "Item Index #0", typeof(object)));
             OutPortData.Add(new PortData("list", "A list", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -354,9 +346,14 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        protected override string getInputRootName()
+        protected override string GetInputRootName()
         {
             return "index";
+        }
+
+        protected override string GetTooltipRootName()
+        {
+            return "Item Index #";
         }
 
         protected internal override void RemoveInput()
@@ -386,7 +383,7 @@ namespace Dynamo.Nodes
     public class dynSortWith : dynBuiltinFunction
     {
         public dynSortWith()
-            : base("sort-with")
+            : base(FScheme.SortWith)
         {
             InPortData.Add(new PortData("c(x, y)", "Comparitor", typeof(object)));
             InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
@@ -402,7 +399,7 @@ namespace Dynamo.Nodes
     public class dynSortBy : dynBuiltinFunction
     {
         public dynSortBy()
-            : base("sort-by")
+            : base(FScheme.SortBy)
         {
             InPortData.Add(new PortData("c(x)", "Key Mapper", typeof(object)));
             InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
@@ -418,7 +415,7 @@ namespace Dynamo.Nodes
     public class dynSort : dynBuiltinFunction
     {
         public dynSort()
-            : base("sort")
+            : base(FScheme.Sort)
         {
             InPortData.Add(new PortData("list", "List of numbers or strings to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
@@ -434,7 +431,7 @@ namespace Dynamo.Nodes
     public class dynFold : dynBuiltinFunction
     {
         public dynFold()
-            : base("foldl")
+            : base(FScheme.FoldL)
         {
             InPortData.Add(new PortData("f(x, a)", "Reductor Funtion", typeof(object)));
             InPortData.Add(new PortData("a", "Seed", typeof(object)));
@@ -451,7 +448,7 @@ namespace Dynamo.Nodes
     public class dynFilter : dynBuiltinFunction
     {
         public dynFilter()
-            : base("filter")
+            : base(FScheme.Filter)
         {
             InPortData.Add(new PortData("p(x)", "Predicate", typeof(object)));
             InPortData.Add(new PortData("seq", "Sequence to filter", typeof(Value.List)));
@@ -484,14 +481,14 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Number Sequence")]
+    [NodeName("Number Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Creates a sequence of numbers")]
-    [NodeSearchTags("range")]
-    public class dynBuildSeq : dynBuiltinFunction
+    [NodeDescription("Creates a sequence of numbers in the specified range.")]
+    [AlsoKnownAs("Dynamo.Nodes.dynBuildSeq")]
+    public class dynNumberRange : dynBuiltinFunction
     {
-        public dynBuildSeq()
-            : base("build-list")
+        public dynNumberRange()
+            : base(FScheme.BuildSeq)
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(Value.Number)));
             InPortData.Add(new PortData("end", "Number to end the sequence at", typeof(Value.Number)));
@@ -504,6 +501,42 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Number Sequence")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Creates a sequence of numbers.")]
+    public class dynNumberSeq : dynNodeWithOneOutput
+    {
+        public dynNumberSeq()
+        {
+            InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(Value.Number)));
+            InPortData.Add(new PortData("amount", "Amount of numbers in the sequence", typeof(Value.Number)));
+            InPortData.Add(new PortData("step", "Space between numbers", typeof(Value.Number)));
+            OutPortData.Add(new PortData("seq", "New sequence", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var start = (int)((Value.Number)args[0]).Item;
+            var amount = (int)((Value.Number)args[1]).Item;
+            var step = (int)((Value.Number)args[2]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(MakeSequence(start, amount, step)));
+        }
+
+        private IEnumerable<Value> MakeSequence(int start, int amount, int step)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                yield return Value.NewNumber(start);
+                start += step;
+            }
+        }
+    }
+
     [NodeName("Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Applies a combinator to each element in two sequences")]
@@ -513,17 +546,22 @@ namespace Dynamo.Nodes
         public dynCombine()
         {
             InPortData.Add(new PortData("comb", "Combinator", typeof(object)));
-            InPortData.Add(new PortData("list1", "First list", typeof(Value.List)));
-            InPortData.Add(new PortData("list2", "Second list", typeof(Value.List)));
+            InPortData.Add(new PortData("list1", "List #1", typeof(Value.List)));
+            InPortData.Add(new PortData("list2", "List #2", typeof(Value.List)));
             OutPortData.Add(new PortData("combined", "Combined lists", typeof(Value.List)));
 
             RegisterAllPorts();
-            this.ArgumentLacing = LacingStrategy.Disabled;
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        protected override string getInputRootName()
+        protected override string GetInputRootName()
         {
             return "list";
+        }
+
+        protected override string GetTooltipRootName()
+        {
+            return "List #";
         }
 
         protected internal override void RemoveInput()
@@ -561,27 +599,16 @@ namespace Dynamo.Nodes
             {
                 for (; inputs > 2; inputs--)
                 {
-                    InPortData.Add(new PortData(getInputRootName() + getNewInputIndex(), "", typeof(object)));
+                    InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
                 }
 
                 RegisterAllPorts();
             }
         }
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
-        {
-            if (SaveResult)
-            {
-                return base.Compile(portNames);
-            }
-            else
-                return new FunctionNode("map", portNames);
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("map"))
-                .Item.Invoke(args);
+            return FScheme.Map(args);
         }
     }
 
@@ -594,16 +621,21 @@ namespace Dynamo.Nodes
         public dynCartProd()
         {
             InPortData.Add(new PortData("comb", "Combinator", typeof(object)));
-            InPortData.Add(new PortData("list1", "First list", typeof(Value.List)));
-            InPortData.Add(new PortData("list2", "Second list", typeof(Value.List)));
+            InPortData.Add(new PortData("list1", "List #1", typeof(Value.List)));
+            InPortData.Add(new PortData("list2", "List #2", typeof(Value.List)));
             OutPortData.Add(new PortData("combined", "Combined lists", typeof(Value.List)));
 
             RegisterAllPorts();
         }
 
-        protected override string getInputRootName()
+        protected override string GetInputRootName()
         {
             return "list";
+        }
+
+        protected override string GetTooltipRootName()
+        {
+            return "List #";
         }
 
         protected internal override void RemoveInput()
@@ -636,27 +668,16 @@ namespace Dynamo.Nodes
             {
                 for (; inputs > 2; inputs--)
                 {
-                    InPortData.Add(new PortData(getInputRootName() + getNewInputIndex(), "", typeof(object)));
+                    InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
                 }
 
                 RegisterAllPorts();
             }
         }
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
-        {
-            if (SaveResult)
-            {
-                return base.Compile(portNames);
-            }
-            else
-                return new FunctionNode("cartesian-product", portNames);
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("cartesian-product"))
-                .Item.Invoke(args);
+            return FScheme.CartProd(args);
         }
     }
 
@@ -666,7 +687,7 @@ namespace Dynamo.Nodes
     public class dynMap : dynBuiltinFunction
     {
         public dynMap()
-            : base("map")
+            : base(FScheme.Map)
         {
             InPortData.Add(new PortData("f(x)", "The procedure used to map elements", typeof(object)));
             InPortData.Add(new PortData("seq", "The sequence to map over.", typeof(Value.List)));
@@ -676,16 +697,48 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Split Pair")]
+    [NodeName("True For All")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Tests to see if all elements in a sequence satisfy the given predicate.")]
+    public class dynAndMap : dynBuiltinFunction
+    {
+        public dynAndMap()
+            : base(FScheme.AndMap)
+        {
+            InPortData.Add(new PortData("p(x)", "The predicate used to test elements", typeof(object)));
+            InPortData.Add(new PortData("seq", "The sequence to test.", typeof(Value.List)));
+            OutPortData.Add(new PortData("all?", "Whether or not all elements satisfy the given predicate.", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+    }
+
+    [NodeName("True For Any")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Tests to see if any elements in a sequence satisfy the given predicate.")]
+    public class dynOrMap : dynBuiltinFunction
+    {
+        public dynOrMap()
+            : base(FScheme.OrMap)
+        {
+            InPortData.Add(new PortData("p(x)", "The predicate used to test elements", typeof(object)));
+            InPortData.Add(new PortData("seq", "The sequence to test.", typeof(Value.List)));
+            OutPortData.Add(new PortData("any?", "Whether or not any elements satisfy the given predicate.", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+    }
+
+    [NodeName("Split List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Deconstructs a list pair.")]
     public class dynDeCons : dynNodeModel
     {
         public dynDeCons()
         {
-            InPortData.Add(new PortData("list", "", typeof(Value.List)));
-            OutPortData.Add(new PortData("first", "", typeof(object)));
-            OutPortData.Add(new PortData("rest", "", typeof(Value.List)));
+            InPortData.Add(new PortData("list", "A non-empty list", typeof(Value.List)));
+            OutPortData.Add(new PortData("first", "Head of the list", typeof(object)));
+            OutPortData.Add(new PortData("rest", "Tail of the list", typeof(Value.List)));
 
             RegisterAllPorts();
         }
@@ -699,17 +752,17 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Make Pair")]
+    [NodeName("Add to List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Constructs a list pair.")]
+    [NodeDescription("Adds an element to the beginning of a list.")]
     public class dynList : dynBuiltinFunction
     {
         public dynList()
-            : base("cons")
+            : base(FScheme.Cons)
         {
-            InPortData.Add(new PortData("first", "The new Head of the list", typeof(object)));
-            InPortData.Add(new PortData("rest", "The new Tail of the list", typeof(object)));
-            OutPortData.Add(new PortData("list", "Result List", typeof(Value.List)));
+            InPortData.Add(new PortData("item", "The Head of the new list", typeof(object)));
+            InPortData.Add(new PortData("list", "The Tail of the new list", typeof(object)));
+            OutPortData.Add(new PortData("list", "New list", typeof(Value.List)));
 
             RegisterAllPorts();
         }
@@ -721,7 +774,7 @@ namespace Dynamo.Nodes
     public class dynTakeList : dynBuiltinFunction
     {
         public dynTakeList()
-            : base("take")
+            : base(FScheme.Take)
         {
             InPortData.Add(new PortData("amt", "Amount of elements to extract", typeof(object)));
             InPortData.Add(new PortData("list", "The list to extract elements from", typeof(Value.List)));
@@ -737,7 +790,7 @@ namespace Dynamo.Nodes
     public class dynDropList : dynBuiltinFunction
     {
         public dynDropList()
-            : base("drop")
+            : base(FScheme.Drop)
         {
             InPortData.Add(new PortData("amt", "Amount of elements to drop", typeof(object)));
             InPortData.Add(new PortData("list", "The list to drop elements from", typeof(Value.List)));
@@ -747,21 +800,126 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Shift List Indeces")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Shifts the indeces of a list by a given amount.")]
+    public class dynShiftList : dynNodeWithOneOutput
+    {
+        public dynShiftList()
+        {
+            InPortData.Add(
+                new PortData("amt", "Amount to shift the list indeces by.", typeof(Value.Number)));
+            InPortData.Add(new PortData("list", "List to shift indeces of.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "Shifted list", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var amt = (int)((Value.Number)args[0]).Item;
+            var list = ((Value.List)args[1]).Item;
+
+            if (amt == 0)
+                return Value.NewList(list);
+
+            if (amt < 0)
+            {
+                return Value.NewList(
+                    Utils.SequenceToFSharpList(
+                        list.Skip(-amt).Concat(list.Take(-amt))));
+            }
+
+            var len = list.Length;
+            return Value.NewList(
+                Utils.SequenceToFSharpList(
+                    list.Skip(len - amt).Concat(list.Take(len - amt))));
+        }
+    }
+
+
     [NodeName("Get From List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Gets an element from a list at a specified index.")]
     public class dynGetFromList : dynBuiltinFunction
     {
         public dynGetFromList()
-            : base("get")
+            : base(FScheme.Get)
         {
             InPortData.Add(new PortData("index", "Index of the element to extract", typeof(object)));
-            InPortData.Add(new PortData("list", "The list to extract elements from", typeof(Value.List)));
+            InPortData.Add(new PortData("list", "The list to extract the element from", typeof(Value.List)));
             OutPortData.Add(new PortData("element", "Extracted element", typeof(object)));
 
             RegisterAllPorts();
+        }
+    }
 
-            ArgumentLacing = LacingStrategy.Longest;
+    [NodeName("Remove From List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Removes an element from a list at a specified index.")]
+    public class dynRemoveFromList : dynNodeWithOneOutput
+    {
+        public dynRemoveFromList()
+        {
+            InPortData.Add(new PortData("index", "Index of the element to remove", typeof(object)));
+            InPortData.Add(new PortData("list", "The list to remove the element from", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "List with element removed", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var idx = (int)((Value.Number)args[0]).Item;
+            var lst = ((Value.List)args[1]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => i != idx)));
+        }
+    }
+
+    [NodeName("Drop Every Nth")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Removes every nth element from a list.")]
+    public class dynRemoveEveryNth : dynNodeWithOneOutput
+    {
+        public dynRemoveEveryNth()
+        {
+            InPortData.Add(new PortData("n", "All indeces that are a multiple of this number will be removed.", typeof(object)));
+            InPortData.Add(new PortData("list", "The list to remove elements from.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "List with elements removed.", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var n = (int)((Value.Number)args[0]).Item;
+            var lst = ((Value.List)args[1]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => (i + 1) % n != 0)));
+        }
+    }
+
+    [NodeName("Take Every Nth")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Extracts every nth element from a list.")]
+    public class dynTakeEveryNth : dynNodeWithOneOutput
+    {
+        public dynTakeEveryNth()
+        {
+            InPortData.Add(new PortData("n", "All indeces that are a multiple of this number will be extracted.", typeof(object)));
+            InPortData.Add(new PortData("list", "The list to extract elements from.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "Extracted elements.", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var n = (int)((Value.Number)args[0]).Item;
+            var lst = ((Value.List)args[1]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => (i + 1) % n == 0)));
         }
     }
 
@@ -787,11 +945,6 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            return Value.NewList(FSharpList<Value>.Empty);
-        }
-
         protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
@@ -811,7 +964,7 @@ namespace Dynamo.Nodes
     public class dynIsEmpty : dynBuiltinFunction
     {
         public dynIsEmpty()
-            : base("empty?")
+            : base(FScheme.IsEmpty)
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
             OutPortData.Add(new PortData("empty?", "Is the given list empty?", typeof(bool)));
@@ -827,7 +980,7 @@ namespace Dynamo.Nodes
     public class dynLength : dynBuiltinFunction
     {
         public dynLength()
-            : base("len")
+            : base(FScheme.Len)
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
             OutPortData.Add(new PortData("length", "Length of the list", typeof(object)));
@@ -836,13 +989,13 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Append to List")]
+    [NodeName("Concatenate Lists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Appends two list")]
+    [NodeDescription("Concatenates two lists.")]
     public class dynAppend : dynBuiltinFunction
     {
         public dynAppend()
-            : base("append")
+            : base(FScheme.Append)
         {
             InPortData.Add(new PortData("listA", "First list", typeof(Value.List)));
             InPortData.Add(new PortData("listB", "Second list", typeof(Value.List)));
@@ -852,13 +1005,13 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("First in List")]
+    [NodeName("First of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Gets the first element of a list")]
+    [NodeDescription("Gets the Head of a list")]
     public class dynFirst : dynBuiltinFunction
     {
         public dynFirst()
-            : base("first")
+            : base(FScheme.Car)
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
             OutPortData.Add(new PortData("first", "First element in the list", typeof(object)));
@@ -867,22 +1020,22 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("List Rest")]
+    [NodeName("Rest of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Gets the list with the first element removed.")]
+    [NodeDescription("Gets the Tail of a list (list with the first element removed).")]
     public class dynRest : dynBuiltinFunction
     {
         public dynRest()
-            : base("rest")
+            : base(FScheme.Cdr)
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
-            OutPortData.Add(new PortData("rest", "List without the first element.", typeof(Value.List)));
+            OutPortData.Add(new PortData("rest", "Tail of the list.", typeof(Value.List)));
 
             RegisterAllPorts();
         }
     }
 
-    [NodeName("Slice List")]
+    [NodeName("Partition List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Create a lists of lists with each sub-list containing n elements.")]
     public class dynSlice : dynNodeWithOneOutput
@@ -890,18 +1043,18 @@ namespace Dynamo.Nodes
         public dynSlice()
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
-            InPortData.Add(new PortData("n", "The 'width' of the array.", typeof(Value.List)));
-            OutPortData.Add(new PortData("list", "A list of lists representing rows in your array.", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The length of each new sub list.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "A list of lists of length n.", typeof(Value.List)));
 
             RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             if(!args[0].IsList)
                 throw new Exception("A list is required to slice.");
+            if(args.Length != 2)
+                throw new Exception("A number is required to specify the sublist length.");
 
             FSharpList<Value> lst = ((Value.List)args[0]).Item;
             var n = (int)Math.Round(((Value.Number)args[1]).Item);
@@ -909,14 +1062,13 @@ namespace Dynamo.Nodes
             //if we have less elements in ther 
             //incoming list than the slice size,
             //just return the list
-            if (lst.Count<Value>() < n)
+            if (lst.Count() < n)
             {
                 return Value.NewList(lst);
             }
 
-
-            List<Value> finalList = new List<Value>();
-            List<Value> currList = new List<Value>();
+            var finalList = new List<Value>();
+            var currList = new List<Value>();
             int count = 0;
 
             foreach (Value v in lst)
@@ -933,12 +1085,12 @@ namespace Dynamo.Nodes
                 }
             }
 
-            if (currList.Count<Value>() > 0)
+            if (currList.Any())
             {
                 finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
             }
 
-            return Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
+            return Value.NewList(Utils.MakeFSharpList(finalList.ToArray()));
 
         }
     }
@@ -951,12 +1103,10 @@ namespace Dynamo.Nodes
         public dynDiagonalRightList()
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
-            InPortData.Add(new PortData("n", "The width of the array.", typeof(Value.List)));
-            OutPortData.Add(new PortData("list", "A list of lists representing diagonals in your array.", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The width of the new sub lists.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "A list of lists representing diagonals.", typeof(Value.List)));
 
             RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -970,15 +1120,13 @@ namespace Dynamo.Nodes
             //if we have less elements in the
             //incoming list than the slice size,
             //just return the list
-            if (lst.Count<Value>() < n)
+            if (lst.Count() < n)
             {
                 return Value.NewList(lst);
             }
 
             var finalList = new List<Value>();
             var currList = new List<Value>();
-
-            int count = 0;
 
             var startIndices = new List<int>();
             
@@ -991,7 +1139,7 @@ namespace Dynamo.Nodes
             startIndices.Reverse();
 
             //get indices along 'top' of array
-            for (int i = 0; i < n - 1; i++)
+            for (int i = 0; i < n; i++)
             {
                 startIndices.Add(i);
             }
@@ -1020,7 +1168,7 @@ namespace Dynamo.Nodes
                 finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
             }
 
-            return Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
+            return Value.NewList(Utils.MakeFSharpList(finalList.ToArray()));
 
         }
     }
@@ -1033,8 +1181,8 @@ namespace Dynamo.Nodes
         public dynDiagonalLeftList()
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
-            InPortData.Add(new PortData("n", "The width of the array.", typeof(Value.List)));
-            OutPortData.Add(new PortData("list", "A list of lists representing diagonals in your array.", typeof(Value.List)));
+            InPortData.Add(new PortData("n", "The width of the new sublists.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "A list of lists representing diagonals.", typeof(Value.List)));
 
             RegisterAllPorts();
 
@@ -1052,7 +1200,7 @@ namespace Dynamo.Nodes
             //if we have less elements in the
             //incoming list than the slice size,
             //just return the list
-            if (lst.Count<Value>() < n)
+            if (lst.Count() < n)
             {
                 return Value.NewList(lst);
             }
@@ -1060,12 +1208,10 @@ namespace Dynamo.Nodes
             var finalList = new List<Value>();
             var currList = new List<Value>();
 
-            int count = 0;
-
             var startIndices = new List<int>();
 
             //get indices along 'top' of array
-            for (int i = 1; i < (int)n; i++)
+            for (int i = 0; i < n; i++)
             {
                 startIndices.Add(i);
             }
@@ -1084,7 +1230,7 @@ namespace Dynamo.Nodes
                 {
                     var currentRow = (int)Math.Ceiling((index + 1) / (double)n);
                     currList.Add(lst.ElementAt(index));
-                    index += (int)n - 1;
+                    index += n - 1;
 
                     //ensure we are skipping a row to get the next index
                     var nextRow = (int)Math.Ceiling((index + 1) / (double)n);
@@ -1110,7 +1256,8 @@ namespace Dynamo.Nodes
     [NodeDescription("Swaps rows and columns in a list of lists.")]
     public class dynTranspose : dynBuiltinFunction
     {
-        public dynTranspose() : base("transpose")
+        public dynTranspose() 
+            : base(FScheme.Transpose)
         {
             InPortData.Add(new PortData("lists", "The list of lists to transpose.", typeof(Value.List)));
             OutPortData.Add(new PortData("", "Transposed list of lists.", typeof(Value.List)));
@@ -1148,8 +1295,8 @@ namespace Dynamo.Nodes
 
             tb.OnChangeCommitted += processTextForNewInputs;
 
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = VerticalAlignment.Top;
 
             nodeUI.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
@@ -1206,8 +1353,8 @@ namespace Dynamo.Nodes
             RegisterInputs();
         }
 
-        static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|{(?<id>\w(?:[^}\\]|(?:\\}))*)}");
-        static readonly string[] RangeSeparatorTokens = new[] { "..", "-", ":" };
+        internal static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|\[(?<id>\w(?:[^}\\]|(?:\\}))*)\]");
+        internal static readonly string[] RangeSeparatorTokens = { "..", ":", };
 
         private static List<Tuple<int, int, int>> processText(string text, int maxVal, Func<string, int> idFoundCallback)
         {
@@ -1470,14 +1617,13 @@ namespace Dynamo.Nodes
 
     public abstract class dynComparison : dynBuiltinFunction
     {
-        protected dynComparison(string op) : this(op, op) { }
-
-        protected dynComparison(string op, string name)
+        protected dynComparison(FSharpFunc<FSharpList<Value>, Value> op, string name)
             : base(op)
         {
             InPortData.Add(new PortData("x", "operand", typeof(Value.Number)));
             InPortData.Add(new PortData("y", "operand", typeof(Value.Number)));
             OutPortData.Add(new PortData("x" + name + "y", "comp", typeof(Value.Number)));
+
             RegisterAllPorts();
         }
 
@@ -1489,7 +1635,7 @@ namespace Dynamo.Nodes
     [NodeSearchTags("less", "than", "<")]
     public class dynLessThan : dynComparison
     {
-        public dynLessThan() : base("<") { }
+        public dynLessThan() : base(FScheme.LT, "<") { }
     }
 
     [NodeName("Less Than Or Equal")]
@@ -1498,7 +1644,7 @@ namespace Dynamo.Nodes
     [NodeSearchTags("<=")]
     public class dynLessThanEquals : dynComparison
     {
-        public dynLessThanEquals() : base("<=", "≤") { }
+        public dynLessThanEquals() : base(FScheme.LTE, "≤") { }
     }
 
     [NodeName("Greater Than")]
@@ -1507,7 +1653,7 @@ namespace Dynamo.Nodes
     [NodeSearchTags(">")]
     public class dynGreaterThan : dynComparison
     {
-        public dynGreaterThan() : base(">") { }
+        public dynGreaterThan() : base(FScheme.GT, ">") { }
     }
 
     [NodeName("Greater Than Or Equal")]
@@ -1516,7 +1662,7 @@ namespace Dynamo.Nodes
     [NodeSearchTags(">=", "Greater Than Or Equal")]
     public class dynGreaterThanEquals : dynComparison
     {
-        public dynGreaterThanEquals() : base(">=", "≥") { }
+        public dynGreaterThanEquals() : base(FScheme.GTE, "≥") { }
     }
 
     [NodeName("Equal")]
@@ -1524,23 +1670,21 @@ namespace Dynamo.Nodes
     [NodeDescription("Compares two numbers.")]
     public class dynEqual : dynComparison
     {
-        public dynEqual() : base("=") { }
+        public dynEqual() : base(FScheme.EQ, "=") { }
     }
 
     [NodeName("And")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
     [NodeDescription("Boolean AND.")]
-    public class dynAnd : dynBuiltinFunction
+    public class dynAnd : dynNodeWithOneOutput
     {
         public dynAnd()
-            : base("and")
         {
             InPortData.Add(new PortData("a", "operand", typeof(Value.Number)));
             InPortData.Add(new PortData("b", "operand", typeof(Value.Number)));
             OutPortData.Add(new PortData("a∧b", "result", typeof(Value.Number)));
             RegisterAllPorts();
         }
-
 
         protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
@@ -1601,10 +1745,9 @@ namespace Dynamo.Nodes
     [NodeName("Or")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
     [NodeDescription("Boolean OR.")]
-    public class dynOr : dynBuiltinFunction
+    public class dynOr : dynNodeWithOneOutput
     {
         public dynOr()
-            : base("or")
         {
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             InPortData.Add(new PortData("b", "operand", typeof(bool)));
@@ -1680,7 +1823,7 @@ namespace Dynamo.Nodes
     public class dynXor : dynBuiltinFunction
     {
         public dynXor()
-            : base("xor")
+            : base(FScheme.Xor)
         {
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             InPortData.Add(new PortData("b", "operand", typeof(bool)));
@@ -1695,7 +1838,7 @@ namespace Dynamo.Nodes
     public class dynNot : dynBuiltinFunction
     {
         public dynNot()
-            : base("not")
+            : base(FScheme.Not)
         {
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             OutPortData.Add(new PortData("!a", "result", typeof(bool)));
@@ -1974,6 +2117,41 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("e")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("e (base of natural logarithm) constant")]
+    [NodeSearchTags("statistics", "natural", "logarithm")]
+    [IsInteractive(false)]
+    public class dynEConstant : dynNodeModel
+    {
+        public dynEConstant()
+        {
+            OutPortData.Add(new PortData("2.71828...", "e", typeof(Value.Number)));
+            RegisterAllPorts();
+        }
+
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return false;
+            }
+            set { }
+        }
+
+        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        {
+            Dictionary<int, INode> result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new Dictionary<int, INode>();
+                result[outPort] = new NumberNode(Math.E);
+                preBuilt[this] = result;
+            }
+            return result[outPort];
+        }
+    }
+
     [NodeName("Pi")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Pi constant")]
@@ -2159,7 +2337,7 @@ namespace Dynamo.Nodes
     //TODO: Setup proper IsDirty smart execution management
     [NodeName("Perform All")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("Executes Values in a sequence")]
+    [NodeDescription("Evaluates all inputs in order, and returns result of the last input.")]
     [NodeSearchTags("begin")]
     public class dynBegin : dynVariableInput
     {
@@ -2178,12 +2356,17 @@ namespace Dynamo.Nodes
                 base.RemoveInput();
         }
 
-        protected override string getInputRootName()
+        protected override string GetInputRootName()
         {
             return "expr";
         }
 
-        protected override int getNewInputIndex()
+        protected override string GetTooltipRootName()
+        {
+            return "Expression #";
+        }
+
+        protected override int GetInputNameIndex()
         {
             return InPortData.Count + 1;
         }
@@ -2227,38 +2410,60 @@ namespace Dynamo.Nodes
         }
     }
 
-    //TODO: Setup proper IsDirty smart execution management
-    [NodeName("Apply")]
+    [NodeName("Apply Function to List")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("Applies arguments to a function")]
-    public class dynApply1 : dynVariableInput
+    [NodeDescription("Applies a function to a list of arguments.")]
+    public class dynApplyList : dynNodeWithOneOutput
     {
-        public dynApply1()
+        public dynApplyList()
         {
-            InPortData.Add(new PortData("func", "Procedure", typeof(object)));
-            OutPortData.Add(new PortData("result", "Result", typeof(object)));
+            InPortData.Add(new PortData("func", "Function", typeof(Value.Function)));
+            InPortData.Add(new PortData("args", "List of arguments to apply function to.", typeof(Value.List)));
+
+            OutPortData.Add(new PortData("result", "Result of function application.", typeof(object)));
 
             RegisterAllPorts();
         }
 
-        protected override string getInputRootName()
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var f = ((Value.Function)args[0]).Item;
+            var fArgs = ((Value.List)args[1]).Item;
+
+            return f.Invoke(fArgs);
+        }
+    }
+
+    //TODO: Setup proper IsDirty smart execution management
+    [NodeName("Apply Function")]
+    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
+    [NodeDescription("Applies a function to arguments.")]
+    public class dynApply1 : dynVariableInput
+    {
+        public dynApply1()
+        {
+            InPortData.Add(new PortData("func", "Function", typeof(object)));
+            OutPortData.Add(new PortData("result", "Result of function application.", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        protected override string GetInputRootName()
         {
             return "arg";
         }
 
-        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        protected override string GetTooltipRootName()
         {
-            if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
-            {
-                Error("All inputs must be connected.");
-                throw new Exception("Apply Node requires all inputs to be connected.");
-            }
-            return base.Build(preBuilt, outPort);
+            return "Argument #";
         }
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return new ApplierNode(portNames);
+            var f = ((Value.Function)args[0]).Item;
+            var fArgs = args.Tail;
+
+            return f.Invoke(fArgs);
         }
 
         protected internal override void RemoveInput()
@@ -2293,6 +2498,73 @@ namespace Dynamo.Nodes
                 }
             }
             RegisterAllPorts();
+        }
+    }
+
+    [NodeName("Average")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Averages a list of numbers.")]
+    [NodeSearchTags("avg")]
+    public class dynAverage : dynMathBase 
+    {
+        public dynAverage()
+        {
+            InPortData.Add(new PortData("numbers", "The list of numbers to average.", typeof(Value.List)));
+            OutPortData.Add(new PortData("avg", "average", typeof(Value.Number)));
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+                throw new Exception("A list of numbers is required to average.");
+
+            var vals = ((Value.List)args[0]).Item.Select(
+               x => ((Value.Number)x).Item
+            );
+        
+            var average = vals.Average();
+
+            return Value.NewNumber(average);
+        }
+    }
+
+    /// <summary>
+    /// keeps a simple moving average to smooth out noisy values over time. 
+    /// https://en.wikipedia.org/wiki/Moving_average
+    /// 
+    /// </summary>
+    [NodeName("Smooth")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Smooths a list of numbers using a running average.")]
+    [NodeSearchTags("running average", "moving average", "sma")]
+    public class dynSmooth: dynMathBase
+    {
+        Queue<Value.Number> values = new Queue<Value.Number>();
+        int maxNumValues = 10;
+
+        public dynSmooth()
+        {
+            InPortData.Add(new PortData("val", "The current value.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("avg", "uses a simple moving average to smooth out values that fluctuate over time", typeof(Value.Number)));
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsNumber)
+                throw new Exception("A number is required to smooth.");
+
+            if (values.Count() < maxNumValues)
+                values.Enqueue((Value.Number)args[0]); // add current values to queue until it fills up
+            else
+                values.Dequeue();//throw out the first value once we are up to the full queue amount
+
+            var average = values.Average(num => num.Item);
+            
+            return Value.NewNumber(average);
         }
     }
 
@@ -2468,7 +2740,7 @@ namespace Dynamo.Nodes
 
         public void Commit()
         {
-            var expr = GetBindingExpression(TextBox.TextProperty);
+            var expr = GetBindingExpression(TextProperty);
             if (expr != null)
                 expr.UpdateSource();
 
@@ -2486,7 +2758,7 @@ namespace Dynamo.Nodes
             get { return base.Text; }
             set
             {
-                //base.Text = value;
+                base.Text = value;
                 Commit();
             }
         }
@@ -2633,7 +2905,7 @@ namespace Dynamo.Nodes
         public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
-            outEl.SetAttribute("value", ((double)Value).ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             dynEl.AppendChild(outEl);
         }
     }
@@ -2686,68 +2958,447 @@ namespace Dynamo.Nodes
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Creates a number.")]
-    public class dynDoubleInput : dynDouble
+    public class dynDoubleInput : dynNodeWithOneOutput
     {
-
         public dynDoubleInput()
         {
+            OutPortData.Add(new PortData("", "", typeof(Value.Number)));
+
             RegisterAllPorts();
         }
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            var tb = new dynTextBox();
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            var tb = new dynStringTextBox
+            {
+                AcceptsReturn = true,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Top,
+                IsNumeric = true,
+                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+            };
+
             nodeUI.inputGrid.Children.Add(tb);
-            System.Windows.Controls.Grid.SetColumn(tb, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 0);
-            tb.IsNumeric = true;
-            tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay(),
+                Converter = new DoubleInputDisplay(),
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
 
-            tb.Text = "0.0";
+            tb.Text = Value ?? "0.0";
         }
 
-        public override double Value
+
+        private List<IDoubleSequence> _parsed;
+        private string _value;
+
+        public string Value
         {
-            get
-            {
-                return base.Value;
-            }
+            get { return _value; }
             set
             {
-                if (base.Value == value)
+                if (_value != null && _value.Equals(value)) 
                     return;
 
-                base.Value = value;
-                //RaisePropertyChanged("Value");
+                _value = value;
+
+                var idList = new List<string>();
+
+                try
+                {
+                    _parsed = ParseValue(idList);
+
+                    InPortData.Clear();
+
+                    foreach (var id in idList)
+                    {
+                        InPortData.Add(new PortData(id, "variable", typeof (Value.Number)));
+                    }
+
+                    RegisterInputs();
+
+                    ArgumentLacing = InPortData.Any() ? LacingStrategy.Longest : LacingStrategy.Disabled;
+                }
+                catch (Exception e)
+                {
+                    Error(e.Message);
+                }
+
+                RequiresRecalc = value != null;
+                RaisePropertyChanged("Value");
             }
         }
 
-        protected override double DeserializeValue(string val)
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            try
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            outEl.SetAttribute("value", Value);
+            dynEl.AppendChild(outEl);
+        }
+
+        public override void LoadNode(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes.Cast<XmlNode>().Where(subNode => subNode.Name.Equals(typeof(double).FullName)))
             {
-                return Convert.ToDouble(val, CultureInfo.InvariantCulture);
-            }
-            catch
-            {
-                return 0;
+                Value = subNode.Attributes[0].Value;
             }
         }
 
+        private List<IDoubleSequence> ParseValue(List<string> identifiers)
+        {
+            var idSet = new HashSet<string>(identifiers);
+            return Value.Replace(" ", "").Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries).Select(
+                delegate(string x)
+                {
+                    var rangeIdentifiers = x.Split(
+                        dynSublists.RangeSeparatorTokens,
+                        StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
+
+                    if (rangeIdentifiers.Length > 3)
+                        throw new Exception("Bad range syntax: not of format \"start..end[..(increment|#count)]\"");
+
+                    if (rangeIdentifiers.Length == 0)
+                        throw new Exception("No identifiers found.");
+
+                    IDoubleInputToken startToken = ParseToken(rangeIdentifiers[0], idSet, identifiers);
+
+                    if (rangeIdentifiers.Length > 1)
+                    {
+                        if (rangeIdentifiers[1].StartsWith("#"))
+                        {
+                            var countToken = rangeIdentifiers[1].Substring(1);
+                            IDoubleInputToken endToken = ParseToken(countToken, idSet, identifiers);
+
+                            if (rangeIdentifiers.Length > 2)
+                            {
+                                if (rangeIdentifiers[2].StartsWith("#") || rangeIdentifiers[2].StartsWith("~"))
+                                    throw new Exception("Cannot use range or approx. identifier on increment field when one has already been used to specify a count.");
+                                return new Sequence(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken);
+                            }
+
+                            return new Sequence(startToken, new DoubleToken(1), endToken) as IDoubleSequence;
+                        }
+                        else
+                        {
+                            IDoubleInputToken endToken = ParseToken(rangeIdentifiers[1], idSet, identifiers);
+
+                            if (rangeIdentifiers.Length > 2)
+                            {
+                                if (rangeIdentifiers[2].StartsWith("#"))
+                                {
+                                    var count = rangeIdentifiers[2].Substring(1);
+                                    IDoubleInputToken countToken = ParseToken(count, idSet, identifiers);
+
+                                    return new CountRange(startToken, countToken, endToken);
+                                }
+
+                                if (rangeIdentifiers[2].StartsWith("~"))
+                                {
+                                    var approx = rangeIdentifiers[2].Substring(1);
+                                    IDoubleInputToken approxToken = ParseToken(approx, idSet, identifiers);
+
+                                    return new ApproxRange(startToken, approxToken, endToken);
+                                }
+
+                                return new Range(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken);
+                            }
+                            return new Range(startToken, new DoubleToken(1), endToken) as IDoubleSequence;
+                        }
+
+                    }
+
+                    return new OneNumber(startToken) as IDoubleSequence;
+                }).ToList();
+        }
+
+        private static IDoubleInputToken ParseToken(string id, HashSet<string> identifiers, List<string> list)
+        {
+            double dbl;
+            if (double.TryParse(id, out dbl))
+                return new DoubleToken(dbl);
+
+            var match = dynSublists.IdentifierPattern.Match(id);
+            if (match.Success)
+            {
+                var tokenId = match.Groups["id"].Value;
+                if (!identifiers.Contains(tokenId))
+                {
+                    identifiers.Add(tokenId);
+                    list.Add(tokenId);
+                }
+                return new IdentifierToken(tokenId);
+            }
+
+            throw new Exception("Bad identifier syntax: \"" + id + "\"");
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var paramDict = InPortData.Select(x => x.NickName)
+                .Zip(args, Tuple.Create)
+                .ToDictionary(x => x.Item1, x => ((Value.Number)x.Item2).Item);
+
+            return _parsed.Count == 1
+                ? _parsed[0].GetValue(paramDict)
+                : FScheme.Value.NewList(Utils.SequenceToFSharpList(_parsed.Select(x => x.GetValue(paramDict))));
+        }
+
+        interface IDoubleSequence
+        {
+            Value GetValue(Dictionary<string, double> idLookup);
+        }
+
+        private class OneNumber : IDoubleSequence
+        {
+            private readonly IDoubleInputToken _token;
+
+            private readonly Value _result;
+
+            public OneNumber(IDoubleInputToken t)
+            {
+                _token = t;
+
+                if (_token is DoubleToken)
+                    _result = GetValue(new Dictionary<string, double>());
+            }
+
+            public Value GetValue(Dictionary<string, double> idLookup)
+            {
+                return _result ?? (FScheme.Value.NewNumber(_token.GetValue(idLookup)));
+            }
+        }
+
+        private class Sequence : IDoubleSequence
+        {
+            private readonly IDoubleInputToken _start;
+            private readonly IDoubleInputToken _step;
+            private readonly IDoubleInputToken _count;
+
+            private readonly Value _result;
+
+            public Sequence(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken count)
+            {
+                _start = start;
+                _step = step;
+                _count = count;
+
+                if (_start is DoubleToken && _step is DoubleToken && _count is DoubleToken)
+                {
+                    _result = GetValue(new Dictionary<string, double>());
+                }
+            }
+
+            public Value GetValue(Dictionary<string, double> idLookup)
+            {
+                if (_result == null)
+                {
+                    var step = _step.GetValue(idLookup);
+
+                    if (step == 0)
+                        throw new Exception("Can't have 0 step.");
+
+                    var start = _start.GetValue(idLookup);
+                    var count = (int)_count.GetValue(idLookup);
+
+                    if (count < 0)
+                    {
+                        count *= -1;
+                        start += step*(count-1);
+                        step *= -1;
+                    }
+
+                    return FScheme.Value.NewList(Utils.SequenceToFSharpList(CreateSequence(start, step, count)));
+                }
+                return _result;
+            }
+
+            private static IEnumerable<Value> CreateSequence(double start, double step, int count)
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    yield return FScheme.Value.NewNumber(start);
+                    start += step;
+                }
+            }
+        }
+
+        private class Range : IDoubleSequence
+        {
+            private readonly IDoubleInputToken _start;
+            private readonly IDoubleInputToken _step;
+            private readonly IDoubleInputToken _end;
+
+            private readonly Value _result;
+
+            public Range(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end)
+            {
+                _start = start;
+                _step = step;
+                _end = end;
+
+                if (_start is DoubleToken && _step is DoubleToken && _end is DoubleToken)
+                {
+                    _result = GetValue(new Dictionary<string, double>());
+                }
+            }
+
+            public Value GetValue(Dictionary<string, double> idLookup)
+            {
+                if (_result == null)
+                {
+                    var step = _step.GetValue(idLookup);
+
+                    if (step == 0)
+                        throw new Exception("Can't have 0 step.");
+
+                    var start = _start.GetValue(idLookup);
+                    var end = _end.GetValue(idLookup);
+
+                    return Process(start, step, end);
+                }
+                return _result;
+            }
+
+            protected virtual Value Process(double start, double step, double end)
+            {
+                if (step < 0)
+                {
+                    step *= -1;
+                    var tmp = end;
+                    end = start;
+                    start = tmp;
+                }
+
+                var countingUp = start < end;
+
+                return FScheme.Value.NewList(Utils.SequenceToFSharpList(
+                    countingUp ? CreateRange(start, step, end) : CreateRange(end, step, start).Reverse()));
+            }
+
+            private static IEnumerable<Value> CreateRange(double start, double step, double end)
+            {
+                for (var i = start; i <= end; i += step)
+                    yield return FScheme.Value.NewNumber(i);
+            }
+        }
+
+        private class CountRange : Range
+        {
+            public CountRange(IDoubleInputToken startToken, IDoubleInputToken countToken, IDoubleInputToken endToken)
+                : base(startToken, countToken, endToken)
+            { }
+
+            protected override Value Process(double start, double count, double end)
+            {
+                var c = (int)count;
+
+                var neg = c < 0;
+
+                c = Math.Abs(c) - 1;
+
+                if (neg)
+                    c *= -1;
+
+                return base.Process(start, Math.Abs(start - end) / c, end);
+            }
+        }
+
+        private class ApproxRange : Range
+        {
+            public ApproxRange(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end) 
+                : base(start, step, end)
+            { }
+
+            protected override Value Process(double start, double approx, double end)
+            {
+                var neg = approx < 0;
+
+                var a = Math.Abs(approx);
+
+                var dist = end - start;
+                var stepnum = 1;
+                if (dist != 0)
+                {
+                    var ceil = (int)Math.Ceiling(dist/a);
+                    var floor = (int)Math.Floor(dist/a);
+
+                    if (ceil != 0 && floor != 0)
+                    {
+                        var ceilApprox = Math.Abs(dist/ceil - a);
+                        var floorApprox = Math.Abs(dist/floor - a);
+                        stepnum = ceilApprox < floorApprox ? ceil : floor;
+                    }
+                }
+
+                if (neg)
+                    stepnum *= -1;
+
+                return base.Process(start, Math.Abs(dist) / stepnum, end);
+            }
+        }
+
+        interface IDoubleInputToken
+        {
+            double GetValue(Dictionary<string, double> idLookup);
+        }
+
+        private struct IdentifierToken : IDoubleInputToken
+        {
+            private readonly string _id;
+
+            public IdentifierToken(string id)
+            {
+                _id = id;
+            }
+
+            public double GetValue(Dictionary<string, double> idLookup)
+            {
+                return idLookup[_id];
+            }
+        }
+
+        private struct DoubleToken : IDoubleInputToken
+        {
+            private readonly double _d;
+
+            public DoubleToken(double d)
+            {
+                _d = d;
+            }
+
+            public double GetValue(Dictionary<string, double> idLookup)
+            {
+                return _d;
+            }
+        }
+
+        private class DoubleInputDisplay : DoubleDisplay
+        {
+            public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                double dbl;
+                if (double.TryParse(value as string, out dbl))
+                {
+                    return base.Convert(dbl, targetType, parameter, culture);
+                }
+                return value ?? "";
+            }
+
+            public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return value;
+            }
+        }
     }
 
     [NodeName("Angle(deg.)")]
@@ -2783,7 +3434,7 @@ namespace Dynamo.Nodes
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
 
-            tb.Text = "0.0";
+            //tb.Text = "0.0";
         }
 
         public override double Value
@@ -2841,11 +3492,11 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a slider control to the input grid of the control
-            tb_slider = new System.Windows.Controls.Slider();
+            tb_slider = new Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             
-            tb_slider.Width = 100;
+            tb_slider.MinWidth = 150;
 
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.None;
 
@@ -2855,33 +3506,36 @@ namespace Dynamo.Nodes
             };
 
             mintb = new dynTextBox();
-            mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             mintb.Width = double.NaN;
 
             mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             // input value textbox
             valtb = new dynTextBox();
-            valtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            valtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             valtb.Width = double.NaN;
             valtb.Margin = new Thickness(0,0,10,0);
 
             maxtb = new dynTextBox();
-            maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             maxtb.Width = double.NaN;
-            //maxtb.IsNumeric = true;
 
             maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
-            var wp = new WrapPanel();
-            wp.Children.Add(valtb);
-            wp.Children.Add(mintb);
-            wp.Children.Add(tb_slider);
-            wp.Children.Add(maxtb);
-            nodeUI.inputGrid.Children.Add(wp);
+            var sliderGrid = new Grid();
+            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition{Width = new GridLength(1, GridUnitType.Auto)});
+            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition{Width = new GridLength(1, GridUnitType.Auto)});
+            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+
+            sliderGrid.Children.Add(valtb);
+            sliderGrid.Children.Add(mintb);
+            sliderGrid.Children.Add(tb_slider);
+            sliderGrid.Children.Add(maxtb);
+
+            Grid.SetColumn(valtb, 0);
+            Grid.SetColumn(mintb, 1);
+            Grid.SetColumn(tb_slider, 2);
+            Grid.SetColumn(maxtb, 3);
+            nodeUI.inputGrid.Children.Add(sliderGrid);
 
             maxtb.DataContext = this;
             tb_slider.DataContext = this;
@@ -3074,20 +3728,10 @@ namespace Dynamo.Nodes
             rbFalse.Content = "0";
             rbFalse.Padding = new Thickness(5,0,0,0);
 
-            RowDefinition rd = new RowDefinition();
-            ColumnDefinition cd1 = new ColumnDefinition();
-            ColumnDefinition cd2 = new ColumnDefinition();
-            nodeUI.inputGrid.ColumnDefinitions.Add(cd1);
-            nodeUI.inputGrid.ColumnDefinitions.Add(cd2);
-            nodeUI.inputGrid.RowDefinitions.Add(rd);
-
-            nodeUI.inputGrid.Children.Add(rbTrue);
-            nodeUI.inputGrid.Children.Add(rbFalse);
-
-            System.Windows.Controls.Grid.SetColumn(rbTrue, 0);
-            System.Windows.Controls.Grid.SetRow(rbTrue, 0);
-            System.Windows.Controls.Grid.SetColumn(rbFalse, 1);
-            System.Windows.Controls.Grid.SetRow(rbFalse, 0);
+            var wp = new WrapPanel {HorizontalAlignment = HorizontalAlignment.Center};
+            wp.Children.Add(rbTrue);
+            wp.Children.Add(rbFalse);
+            nodeUI.inputGrid.Children.Add(wp);
 
             //rbFalse.IsChecked = true;
             rbTrue.Checked += new System.Windows.RoutedEventHandler(rbTrue_Checked);
@@ -3250,6 +3894,18 @@ namespace Dynamo.Nodes
                 Value = openDialog.SelectedPath;
             }
         }
+
+        protected override string DeserializeValue(string val)
+        {
+            if (Directory.Exists(val))
+            {
+                return val;
+            }
+            else
+            {
+                return "";
+            }
+        }
     }
 
     [NodeName("File Path")]
@@ -3354,19 +4010,24 @@ namespace Dynamo.Nodes
     {
         public dynConcatStrings()
         {
-            InPortData.Add(new PortData("s1", "First string", typeof(Value.String)));
-            InPortData.Add(new PortData("s2", "Second string", typeof(Value.String)));
+            InPortData.Add(new PortData("s1", "String #1", typeof(Value.String)));
+            InPortData.Add(new PortData("s2", "String #2", typeof(Value.String)));
             OutPortData.Add(new PortData("combined", "Combined lists", typeof(Value.String)));
 
             RegisterAllPorts();
         }
 
-        protected override string getInputRootName()
+        protected override string GetInputRootName()
         {
             return "s";
         }
 
-        protected override int getNewInputIndex()
+        protected override string GetTooltipRootName()
+        {
+            return "String #";
+        }
+
+        protected override int GetInputNameIndex()
         {
             return InPortData.Count + 1;
         }
@@ -3414,7 +4075,7 @@ namespace Dynamo.Nodes
     public class dynString2Num : dynBuiltinFunction
     {
         public dynString2Num()
-            : base("string->num")
+            : base(FScheme.StringToNum)
         {
             InPortData.Add(new PortData("s", "A string", typeof(Value.String)));
             OutPortData.Add(new PortData("n", "A number", typeof(Value.Number)));
@@ -3429,7 +4090,7 @@ namespace Dynamo.Nodes
     public class dynNum2String : dynBuiltinFunction
     {
         public dynNum2String()
-            : base("num->string")
+            : base(FScheme.NumToString)
         {
             InPortData.Add(new PortData("n", "A number", typeof(Value.Number)));
             OutPortData.Add(new PortData("s", "A string", typeof(Value.String)));
@@ -3565,23 +4226,23 @@ namespace Dynamo.Nodes
     [ValueConversion(typeof(double), typeof(String))]
     public class DoubleDisplay : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
             string val = ((double) value).ToString("0.000",CultureInfo.CurrentCulture);
-            Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
+            Debug.WriteLine("Converting {0} -> {1}", value, val);
             return value == null ? "" : val;
 
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //target -> source
             //return value.ToString();
 
             double val = 0.0;
             double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
-            Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
+            Debug.WriteLine("Converting {0} -> {1}", value, val);
             return val;
         }
     }
@@ -3591,14 +4252,14 @@ namespace Dynamo.Nodes
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double radians = System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
-            return radians;
+            double degrees = System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
+            return degrees;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double degrees = System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
-            return degrees;
+            double radians = System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
+            return radians;
         }
     }
 

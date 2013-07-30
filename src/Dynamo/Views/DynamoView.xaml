@@ -48,6 +48,9 @@
         <KeyBinding Key="C"
                                 Modifiers="Control"
                                 Command="{Binding Path=DataContext.CopyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="A"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.SelectAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="D"
                                 Modifiers="Control"
                                 Command="{Binding Path=DataContext.CurrentSpaceViewModel.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
@@ -105,7 +108,7 @@
         </Grid.RowDefinitions>
         
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MaxWidth="300"/>
+            <ColumnDefinition Width="Auto" MaxWidth="600"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -167,6 +170,8 @@
                 <Separator/>
                 <MenuItem Focusable="False" Header="_Create Note" Command="{Binding Path=AddNoteCommand}"  Name="noteMenuItem" InputGestureText="Ctrl+W" />
                 <MenuItem Focusable="False" Header="_Create Node From Selection" Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
+                <MenuItem Focusable="False" Header="_Select All" Command="{Binding Path=SelectAllCommand}"  Name="selectAll" InputGestureText="Ctrl+A"/>
+                <!--<MenuItem Focusable="False" Header="_Select Neighbors" Command="{Binding Path=ExpandSelectionCommand}"  Name="expandSelect" InputGestureText="Tab"/>-->
                 <MenuItem  Header="_Align Selection"  Name="Align">
                     <MenuItem  Header="_X Average"  Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalCenter"/>
                     <MenuItem  Header="_Left" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalLeft"/>
@@ -511,7 +516,7 @@
                     IsTabStop="False" FontFamily="Consolas" TextChanged="TextBoxBase_OnTextChanged" />
         </ScrollViewer>
 
-        <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
+        <Grid Height="Auto" Width="Auto" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black"/>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 

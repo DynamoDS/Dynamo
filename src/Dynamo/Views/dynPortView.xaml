@@ -22,11 +22,13 @@
 
     <Grid Name="mainGrid" Margin="0,0,0,2" Width="{Binding Path=PortName, Converter={StaticResource PortNameToWidthConverter}}">
         <Grid Name="portGrid">
+            
             <Grid.ToolTip>
                 <ToolTip Name="toolTip1">
-                    <TextBlock Name="toolTipText" FontFamily="Courier New" FontSize="11" Text="{Binding Path=ToolTipContent}"/>
+                    <TextBlock Name="toolTipText" FontSize="11" Text="{Binding Path=ToolTipContent}"/>
                 </ToolTip>
             </Grid.ToolTip>
+            
             <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                     Name="portRect" IsHitTestVisible="True"> 
                 <Canvas.Style>

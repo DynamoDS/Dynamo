@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Web;
 using Dynamo.Controls;
+using Dynamo.FSchemeInterop;
 using Dynamo.Nodes;
 using Microsoft.FSharp.Collections;
 using NUnit.Framework;
@@ -554,7 +556,7 @@ namespace Dynamo.Tests
 
             //change the value of the list
             var numNode = (dynDoubleInput) controller.DynamoModel.Nodes.Last(x => x is dynDoubleInput);
-            numNode.Value = 3;
+            numNode.Value = "3";
             controller.RunCommand(vm.RunExpressionCommand);
             Thread.Sleep(300);
 
@@ -562,9 +564,112 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, listWatchVal.Length);
 
             //test the negative case to make sure it throws an error
-            numNode.Value = -1;
+            numNode.Value = "-1";
             Assert.Throws<NUnit.Framework.AssertionException>(() => controller.RunCommand(vm.RunExpressionCommand));
 
+        }
+
+        [Test]
+        public void SliceList()
+        {
+            var data = new Dictionary<string, object>();
+            data.Add("name", "Slice List");
+            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.CreateNodeCommand, data));
+            controller.ProcessCommandQueue();
+
+            //Create a List
+            //For a list of 0..20, this will have 21 elements
+            //Slicing by 5 should return 6 lists, the last containing one element
+            var list = Utils.MakeFSharpList(Enumerable.Range(0, 21).Select(x => FScheme.Value.NewNumber(x)).ToArray());
+
+            var sliceNode = (dynSlice)controller.DynamoModel.Nodes.First(x => x is dynSlice);
+            var args = FSharpList<FScheme.Value>.Empty;
+            args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
+            args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
+            var res = sliceNode.Evaluate(args);
+
+            //confirm we have a list
+            Assert.IsTrue(res.IsList);
+
+            //confirm the correct number of sublists
+            Assert.AreEqual(5, ((FScheme.Value.List)res).Item.Count());
+
+            //test if you pass in an empty list
+            //should return just one list - the original
+            args = FSharpList<FScheme.Value>.Empty;
+            args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
+            args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(FSharpList<FScheme.Value>.Empty), args);
+            res = sliceNode.Evaluate(args);
+            Assert.AreEqual(0, ((FScheme.Value.List)res).Item.Count());
+
+            //test if you pass in a list wwith less elements than the
+            //slice, you should just get back the same list
+            list = Utils.MakeFSharpList(Enumerable.Range(0, 1).Select(x => FScheme.Value.NewNumber(x)).ToArray());
+            args = FSharpList<FScheme.Value>.Empty;
+            args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
+            args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
+            res = sliceNode.Evaluate(args);
+            Assert.AreEqual(1, ((FScheme.Value.List)res).Item.Count());
+        }
+
+        [Test]
+        public void Diagonals()
+        {
+            //0   1   2   3   4
+            //5   6   7   8   9
+            //10  11  12  13  14
+            //15  16  17  18  19
+          
+            //diagonal left
+            //should yield the following sublists
+            //0
+            //1,5
+            //2,6,10
+            //3,7,11,15
+            //4,8,12,16
+            //9,13,17
+            //14,18
+            //19
+
+            var list = Utils.MakeFSharpList(Enumerable.Range(0, 20).Select(x => FScheme.Value.NewNumber(x)).ToArray());
+
+            var data = new Dictionary<string, object> {{"name", "Diagonal Left List"}};
+            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.CreateNodeCommand, data));
+            controller.ProcessCommandQueue();
+
+            var leftNode = (dynDiagonalLeftList)controller.DynamoModel.Nodes.First(x => x is dynDiagonalLeftList);
+            var args = FSharpList<FScheme.Value>.Empty;
+            args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
+            args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
+            var res = leftNode.Evaluate(args);
+
+            Assert.AreEqual(8, ((FScheme.Value.List)res).Item.Count());
+
+            controller.CommandQueue.Enqueue(Tuple.Create<object,object>(controller.DynamoViewModel.ClearCommand, null));
+
+            //diagonal right
+            //diagonal left
+            //should yield the following sublists
+            //15
+            //10,16
+            //5,11,17
+            //0,6,12,18
+            //1,7,13,19
+            //2,8,14
+            //3,9
+            //4
+
+            data = new Dictionary<string, object> {{"name", "Diagonal Right List"}};
+            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.CreateNodeCommand, data));
+            controller.ProcessCommandQueue();
+
+            var rightNode = (dynDiagonalRightList)controller.DynamoModel.Nodes.First(x => x is dynDiagonalRightList);
+            args = FSharpList<FScheme.Value>.Empty;
+            args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
+            args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
+            res = rightNode.Evaluate(args);
+
+            Assert.AreEqual(8, ((FScheme.Value.List)res).Item.Count());
         }
 
     }

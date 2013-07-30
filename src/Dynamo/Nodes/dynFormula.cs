@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Formula")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
-    [NodeDescription("Design and compute mathematical expressions.")]
+    [NodeDescription("Design and compute mathematical expressions. Uses NCalc Syntax: http://ncalc.codeplex.com.")]
     [NodeSearchTags("Equation", "Arithmetic")]
     [IsInteractive(true)]
     public class dynFormula : dynMathBase
@@ -91,11 +91,15 @@ namespace Dynamo.Nodes
             Formula = elNode.Attributes["formula"].Value ?? "";
         }
 
-        private static HashSet<string> RESERVED_NAMES = new HashSet<string>() { 
+        private static HashSet<string> RESERVED_FUNC_NAMES = new HashSet<string> { 
             "abs", "acos", "asin", "atan", "ceiling", "cos",
             "exp", "floor", "ieeeremainder", "log", "log10",
             "max", "min", "pow", "round", "sign", "sin", "sqrt",
             "tan", "truncate", "in", "if"
+        };
+
+        private static HashSet<string> RESERVED_PARAM_NAMES = new HashSet<string> {
+            "pi", "π"
         };
 
         private void processFormula()
@@ -103,7 +107,7 @@ namespace Dynamo.Nodes
             Expression e;
             try
             {
-                e = new Expression(Formula, EvaluateOptions.IgnoreCase);
+                e = new Expression(Formula.ToLower(), EvaluateOptions.IgnoreCase);
             }
             catch (Exception ex)
             {
@@ -122,7 +126,7 @@ namespace Dynamo.Nodes
 
             e.EvaluateFunction += delegate(string name, FunctionArgs args)
             {
-                if (!paramSet.Contains(name) && !RESERVED_NAMES.Contains(name))
+                if (!paramSet.Contains(name) && !RESERVED_FUNC_NAMES.Contains(name))
                 {
                     paramSet.Add(name);
                     parameters.Add(Tuple.Create(name, typeof(Value.Function)));
@@ -138,7 +142,7 @@ namespace Dynamo.Nodes
 
             e.EvaluateParameter += delegate(string name, ParameterArgs args)
             {
-                if (!paramSet.Contains(name))
+                if (!paramSet.Contains(name) && !RESERVED_PARAM_NAMES.Contains(name))
                 {
                     paramSet.Add(name);
                     parameters.Add(Tuple.Create(name, typeof(Value.Number)));
@@ -165,7 +169,9 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var e = new Expression(Formula, EvaluateOptions.IgnoreCase);
+            var e = new Expression(Formula.ToLower(), EvaluateOptions.IgnoreCase);
+
+            e.Parameters["pi"] = 3.14159265358979;
 
             var functionLookup = new Dictionary<string, Value>();
 

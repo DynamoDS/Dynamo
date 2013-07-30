@@ -176,33 +176,25 @@ namespace Dynamo.Connectors
 
     public class PortData
     {
-        string nickName;
-        string toolTip;
-        Type portType;
+        public string NickName { get; internal set; }
+        public string ToolTipString { get; internal set; }
+        public Type PortType { get; set; }
+        public FScheme.Value DefaultValue { get; set; }
 
-        public string NickName
-        {
-            get { return nickName; }
-            internal set { nickName = value; }
-        }
-
-        public string ToolTipString
-        {
-            get { return toolTip; }
-            internal set { toolTip = value; }
-        }
-
-        public Type PortType
-        {
-            get { return portType; }
-            set { portType = value; }
-        }
-
-        public PortData(string nickName, string tip, Type portType)
+        public PortData(string nickName, string tip, Type portType, FScheme.Value defaultValue=null)
         {
             NickName = nickName;
             ToolTipString = tip;
             PortType = portType;
+            DefaultValue = defaultValue;
+        }
+
+        public bool HasDefaultValue 
+        {
+            get
+            {
+                return DefaultValue != null;
+            }
         }
     }
 }
