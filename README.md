@@ -44,23 +44,25 @@ Fixes
 
 New
 - Select Elements nodes (box select any collection of Revit Elements)
-- More list nodes
 - Search Bar is more expandable
 - Double Click edit for all editable nodes
 - Node Renaming (edit the visible name in a node instance)
 - Axonometric View Creation
 - New Tutorials on https://github.com/ikeough/Dynamo/wiki/Learning-Dynamo
-- Open Maipulate and save Excel files
+- Open Maipulate and Save Excel files
 - Save View node
 - e Node 
 - Formula node recognizes Pi
-- Number node now supports sequences and ranges
+- Number node now supports sequences and range inputs
 - True for All and True For Any nodes
 - Tooltips for Custom Node inputs 
 - Apply Function to List node
 - Remove from List, Remove Every Nth, Shift List Indeces nodes
 - Project Point on Face works for Planes now
 - Equal Distance XYZs on Curve node
+- Get Active View Node
+- Smooth Node (running average for a numberical output)
+- 
 
 ###0.5.2###
 
