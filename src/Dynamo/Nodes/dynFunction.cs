@@ -364,6 +364,12 @@ namespace Dynamo
                 else
                     base.Evaluate(args, outPuts);
             }
+
+            public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+            {
+                return ((FScheme.Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
+                    .Item.Invoke(args);
+            }
         }
 
         [NodeName("Output")]
