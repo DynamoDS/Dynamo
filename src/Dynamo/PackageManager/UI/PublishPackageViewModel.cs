@@ -411,7 +411,7 @@ namespace Dynamo.PackageManager
                 {
                     Group = l.Group,
                     Description = l.Description,
-                    Keywords = String.Join(" ", l.Keywords )
+                    Keywords = l.Keywords != null ? String.Join(" ", l.Keywords ) : ""
                 };
 
             vm.FunctionDefinitions =

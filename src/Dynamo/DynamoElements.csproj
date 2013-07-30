@@ -196,7 +196,7 @@ limitations under the License.
     <Compile Include="Search\SearchCommands.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
-    <Compile Include="Search\SearchElements\PackageManagerSearchElement.cs" />
+    <Compile Include="PackageManager\UI\PackageManagerSearchElement.cs" />
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Search\SearchElements\WorkspaceSearchElement.cs" />
     <Compile Include="Views\SearchView.xaml.cs">

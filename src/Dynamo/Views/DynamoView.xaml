@@ -207,7 +207,7 @@
 
                 <MenuItem Focusable="False" Header="_Package Manager" Name="PackageManagerMenu" IsEnabled="True" >
                     <!--<MenuItem Focusable="False" Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />-->
-                    <MenuItem Focusable="False" Header="_Publish Selected Node..." Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
+                    <MenuItem Focusable="False" Header="_Publish Selected Node..." Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodesCmd}}"  Name="publishSelected" />
                     <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
                     <MenuItem Focusable="False" Header="_Search For A Package..." Command="{Binding Path=ShowPackageManagerSearchCommand}"  Name="showPMSearch" />
                     <MenuItem Focusable="False" Header="_Manage Installed Packages..." Command="{Binding Path=ShowInstalledPackagesCommand}"  Name="showPMInstalled" />

@@ -40,7 +40,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Indicates whether we should look for login information
         /// </summary>
-        public static bool DEBUG_MODE = true;
+        public static bool DEBUG_MODE = false;
 
         #region Properties
 
@@ -69,7 +69,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public PackageManagerClient()
         {
-            Client = new Client(null, "http://54.225.215.247"); // must initialize header later
+            Client = new Client(null, "http://54.225.121.251"); // initialize authenticator later
             IsLoggedIn = false;
         }
 
