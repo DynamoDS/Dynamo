@@ -827,7 +827,7 @@ namespace Dynamo.Nodes
     {
         public ForceDrawNode()
         {
-            InPortData.Add(new PortData("Objects", "List of Objects to draw.", typeof(Value.List)));
+            InPortData.Add(new PortData("Objects", "List of Objects to draw.", typeof(Value.Container)));
             OutPortData.Add(new PortData("Objects", "List of same Objects", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -835,19 +835,26 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var input = (args[0] as Value.List).Item;
+            var input = ((Value.Container)args[0]).Item;
 
-            foreach (Value v in input)
-            {
-                GraphicItem item = ((Value.Container)v).Item as GraphicItem;
+            GraphicItem item = input as GraphicItem;
 
-                if (item == null)
-                    continue;
-
+            if (item != null)
                 _graphicItems.Add(item);
-            }
 
             return args[0];
+
+            //foreach (Value v in input)
+            //{
+            //    GraphicItem item = ((Value.Container)v).Item as GraphicItem;
+
+            //    if (item == null)
+            //        continue;
+
+            //    _graphicItems.Add(item);
+            //}
+
+            //return args[0];
         }
     }
 
