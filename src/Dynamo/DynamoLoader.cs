@@ -168,15 +168,23 @@ namespace Dynamo.Utilities
                         //if available, to discern whether we should load this type
                         if (!controller.Context.Equals(Context.NONE))
                         {
+
                             object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
                             if (platformExclusionAttribs.Length > 0)
                             {
                                 string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
-                                if (exclusions.Contains(controller.Context))
-                                    //if the attribute's values contain the context stored on the controller
-                                    //then skip loading this type.
+                                int iExclusion = exclusions.Length - 1;
+                                for (; iExclusion > -1; iExclusion--)
+                                {
+                                    if (exclusions[iExclusion].Contains(controller.Context))
+                                        //if the attribute's values contain the context stored on the controller
+                                        //then skip loading this type.
+                                        break;
+                                }
+                                if (iExclusion > -1)
                                     continue;
                             }
+
                         }
 
                         string typeName;

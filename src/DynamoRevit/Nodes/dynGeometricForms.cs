@@ -22,16 +22,37 @@ namespace Dynamo.Nodes
         public dynLoftForm()
         {
             InPortData.Add(new PortData("solid/void", "Indicates if the Form is Solid or Void. Use True for solid and false for void.", typeof(Value.Number)));
-            InPortData.Add(new PortData("list", "A list of curves. The profile set of the newly created loft. Each profile should consist of only one curve loop. The input profile must be in one plane.", typeof(Value.List)));
+            InPortData.Add(new PortData("list", "A list of profiles for the Loft Form. The recommended way is to use list of Planar Ref Curve Chains, list of lists and list of curves are supported for legacy graphs.", typeof(Value.List)));
             InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(Value.Container)));
 
             OutPortData.Add(new PortData("form", "Loft Form", typeof(object)));
 
             RegisterAllPorts();
+            if (formId == null)
+                formId = ElementId.InvalidElementId;
         }
 
         Dictionary<ElementId, ElementId> sformCurveToReferenceCurveMap;
         ElementId formId;
+        bool preferSurfaceForOneLoop;
+
+        public override bool acceptsListOfLists(FScheme.Value value)
+        {
+            if (Utils.IsListOfListsOfLists(value))
+                return false;
+
+            FSharpList<Value> vals = ((Value.List)value).Item;
+            if (!vals.Any() || !(vals[0] is Value.List))
+                return true;
+            FSharpList<Value> firstListInList = ((Value.List)vals[0]).Item;
+            if (!firstListInList.Any() || !(firstListInList[0] is Value.Container))
+                return true;
+            var var1 = ((Value.Container)firstListInList[0]).Item;
+            if (var1 is ModelCurveArray)
+                return false;
+
+            return true;
+        }
 
         bool matchOrAddFormCurveToReferenceCurveMap(Form formElement, ReferenceArrayArray refArrArr, bool doMatch)
         {
@@ -80,7 +101,9 @@ namespace Dynamo.Nodes
                     ElementId oldRefId = oldRef.ElementId;
                     ElementId newRefId = newRef.ElementId;
 
-                    if (doMatch && sformCurveToReferenceCurveMap[newRefId] != oldRefId)
+                    if (doMatch && (!sformCurveToReferenceCurveMap.ContainsKey(newRefId) ||
+                                    sformCurveToReferenceCurveMap[newRefId] != oldRefId)
+                       )
                     {
                         return false;
                     }
@@ -102,57 +125,82 @@ namespace Dynamo.Nodes
             bool isSurface = ((Value.Number)args[2]).Item == 1;
 
             //Build up our list of list of references for the form by...
-            IEnumerable<IEnumerable<Reference>> refArrays = ((Value.List)args[1]).Item.Select(
-                //...first selecting everything in the topmost list...
-               delegate(Value x)
-               {
-                   //If the element in the topmost list is a sub-list...
-                   if (x.IsList)
-                   {
-                       //...then we return a new IEnumerable of References by converting the sub list.
-                       return (x as Value.List).Item.Select(
-                          delegate(Value y)
-                          {
-                              //Since we're in a sub-list, we can assume it's a container.
-                              var item = ((Value.Container)y).Item;
-                              if (item is CurveElement)
-                                  return (item as CurveElement).GeometryCurve.Reference;
-                              else
-                                  return (Reference)item;
-                          }
-                       );
-                   }
-                   //If the element is not a sub-list, then just assume it's a container.
-                   else
-                   {
-                       var obj = ((Value.Container)x).Item;
-                       Reference r;
-                       if (obj is CurveElement)
-                       {
-                           r = (obj as CurveElement).GeometryCurve.Reference;
-                       }
-                       else
-                       {
-                           r = (Reference)obj;
-                       }
-                       //We return a list here since it's expecting an IEnumerable<Reference>. In reality,
-                       //just passing the element by itself instead of a sub-list is a shortcut for having
-                       //a list with one element, so this is just performing that for the user.
-                       return new List<Reference>() { r };
-                   }
-               }
-            );
-
+            var curvesListList = (Value.List)args[1];
             //Now we add all of those references into ReferenceArrays
             ReferenceArrayArray refArrArr = new ReferenceArrayArray();
-            foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
-            {
-                var refArr = new ReferenceArray();
-                foreach (Reference r in refs)
-                    refArr.Append(r);
-                refArrArr.Append(refArr);
-            }
 
+            FSharpList<Value> vals = ((Value.List)curvesListList).Item;
+
+            if (vals.Any() && (vals[0] is Value.Container) && ((Value.Container)vals[0]).Item is ModelCurveArray)  
+            {
+                //Build a sequence that unwraps the input list from it's Value form.
+                IEnumerable<ModelCurveArray> modelCurveArrays = ((Value.List)args[1]).Item.Select(
+                   x => (ModelCurveArray)((Value.Container)x).Item
+                );
+
+                foreach (var modelCurveArray in modelCurveArrays)
+                {
+                    var refArr = new ReferenceArray();
+                    foreach (ModelCurve modelCurve in modelCurveArray)
+                    {
+                        refArr.Append(modelCurve.GeometryCurve.Reference);
+                    }
+                    refArrArr.Append(refArr);
+                }
+            }
+            else
+            {
+                IEnumerable<IEnumerable<Reference>> refArrays = (curvesListList).Item.Select(
+                    //...first selecting everything in the topmost list...
+                   delegate(Value x)
+                   {
+                       //If the element in the topmost list is a sub-list...
+                       if (x.IsList)
+                       {
+                           //...then we return a new IEnumerable of References by converting the sub list.
+                           return (x as Value.List).Item.Select(
+                              delegate(Value y)
+                              {
+                                  //Since we're in a sub-list, we can assume it's a container.
+                                  var item = ((Value.Container)y).Item;
+                                  if (item is CurveElement)
+                                      return (item as CurveElement).GeometryCurve.Reference;
+                                  else
+                                      return (Reference)item;
+                              }
+                           );
+                       }
+                       //If the element is not a sub-list, then just assume it's a container.
+                       else
+                       {
+                           var obj = ((Value.Container)x).Item;
+                           Reference r;
+                           if (obj is CurveElement)
+                           {
+                               r = (obj as CurveElement).GeometryCurve.Reference;
+                           }
+                           else
+                           {
+                               r = (Reference)obj;
+                           }
+                           //We return a list here since it's expecting an IEnumerable<Reference>. In reality,
+                           //just passing the element by itself instead of a sub-list is a shortcut for having
+                           //a list with one element, so this is just performing that for the user.
+                           return new List<Reference>() { r };
+                       }
+                   }
+                );
+
+                //Now we add all of those references into ReferenceArrays
+
+                foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
+                {
+                    var refArr = new ReferenceArray();
+                    foreach (Reference r in refs)
+                        refArr.Append(r);
+                    refArrArr.Append(refArr);
+                }
+            }
             //If we already have a form stored...
             if (this.Elements.Any())
             {
@@ -162,14 +210,17 @@ namespace Dynamo.Nodes
                     e is Form)
                 {
                     Form oldF = (Form)e;
-                    if (matchOrAddFormCurveToReferenceCurveMap(oldF,  refArrArr, true))
+                    if (oldF.IsSolid == isSolid  &&
+                        preferSurfaceForOneLoop == isSurface 
+                        && matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
                     {
                             return Value.NewContainer(oldF);
                     }
                 }
 
                 //Dissolve it, we will re-make it later.
-                FormUtils.DissolveForms(this.UIDocument.Document, this.Elements.Take(1).ToList());
+                if (FormUtils.CanBeDissolved(this.UIDocument.Document, this.Elements.Take(1).ToList()))
+                   FormUtils.DissolveForms(this.UIDocument.Document, this.Elements.Take(1).ToList());
                 //And register the form for deletion. Since we've already deleted it here manually, we can 
                 //pass "true" as the second argument.
                 this.DeleteElement(this.Elements[0], true);
@@ -182,13 +233,16 @@ namespace Dynamo.Nodes
                     e is Form)
                 {
                     Form oldF = (Form)e;
-                    if (matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
+                    if (oldF.IsSolid == isSolid  &&
+                        preferSurfaceForOneLoop == isSurface 
+                        && matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
                     {
                         return Value.NewContainer(oldF);
                     }
                 }
             }
 
+            preferSurfaceForOneLoop = isSurface;
 
             //We use the ReferenceArrayArray to make the form, and we store it for later runs.
 
@@ -223,15 +277,20 @@ namespace Dynamo.Nodes
         public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("FormId", formId.ToString());
+            dynEl.SetAttribute("PreferSurfaceForOneLoop", preferSurfaceForOneLoop.ToString());
+
             String mapAsString = "";
 
-            var enumMap = sformCurveToReferenceCurveMap.GetEnumerator();
-            for (; enumMap.MoveNext(); )
+            if (sformCurveToReferenceCurveMap != null)
             {
-                ElementId keyId = enumMap.Current.Key;
-                ElementId valueId = enumMap.Current.Value;
+                var enumMap = sformCurveToReferenceCurveMap.GetEnumerator();
+                for (; enumMap.MoveNext(); )
+                {
+                    ElementId keyId = enumMap.Current.Key;
+                    ElementId valueId = enumMap.Current.Value;
 
-                mapAsString = mapAsString + keyId.ToString() + "=" + valueId.ToString() + ";";
+                    mapAsString = mapAsString + keyId.ToString() + "=" + valueId.ToString() + ";";
+                }
             }
             dynEl.SetAttribute("FormCurveToReferenceCurveMap", mapAsString);
         }
@@ -241,23 +300,31 @@ namespace Dynamo.Nodes
             try
             {
                 formId = new ElementId(Convert.ToInt32(elNode.Attributes["FormId"].Value));
+                var thisIsSurface = elNode.Attributes["PreferSurfaceForOneLoop"];
+                if (thisIsSurface != null)
+                   preferSurfaceForOneLoop = Convert.ToBoolean(thisIsSurface.Value);
+                else //used to be able to make only surface, so init to more likely value
+                   preferSurfaceForOneLoop = true;
 
                 string mapAsString = elNode.Attributes["FormCurveToReferenceCurveMap"].Value;
                 sformCurveToReferenceCurveMap = new Dictionary<ElementId,ElementId>();
-
-                string[] curMap = mapAsString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                int mapSize = curMap.Length;
-                for (int iMap = 0; iMap < mapSize; iMap++)
+                if (mapAsString != "")
                 {
-                    string[] thisMap = curMap[iMap].Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (thisMap.Length != 2)
+
+                    string[] curMap = mapAsString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                    int mapSize = curMap.Length;
+                    for (int iMap = 0; iMap < mapSize; iMap++)
                     {
-                        sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
-                        break;
+                        string[] thisMap = curMap[iMap].Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (thisMap.Length != 2)
+                        {
+                            sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
+                            break;
+                        }
+                        ElementId keyId = new ElementId(Convert.ToInt32(thisMap[0]));
+                        ElementId valueId = new ElementId(Convert.ToInt32(thisMap[1]));
+                        sformCurveToReferenceCurveMap[keyId] = valueId;
                     }
-                    ElementId keyId = new ElementId(Convert.ToInt32(thisMap[0]));
-                    ElementId valueId = new ElementId(Convert.ToInt32(thisMap[1]));
-                    sformCurveToReferenceCurveMap[keyId] = valueId;
                 }
             }
             catch 
@@ -349,6 +416,159 @@ namespace Dynamo.Nodes
                 throw new Exception("This method is not available before 2014 release.");
 
             return Value.NewContainer(ffe);
+        }
+    }
+
+    [NodeName("Ref Curve Chain")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
+    [NodeDescription("Creates continuous chain of reference curves ")]
+    public class dynPlanarRefCurveChain : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynPlanarRefCurveChain()
+        {
+            InPortData.Add(new PortData("list", "A list of ref curves to make one planar chain", typeof(Value.List)));
+
+            OutPortData.Add(new PortData("Chain", "Chain of ref. curves ready to be one profile for nodes like Loft Form", typeof(ModelCurveArray)));
+
+            RegisterAllPorts();
+        }
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var doc = dynRevitSettings.Doc;
+            var refCurveList = ((Value.List)args[0]).Item.Select(
+               x => ( ((Value.Container)x).Item is ModelCurve ?
+                   ((ModelCurve)((Value.Container)x).Item)
+                   : (ModelCurve)(
+                                      doc.Document.GetElement( 
+                                             ((Reference) ((Value.Container)x).Item).ElementId)
+                                                             )
+                                 )
+                   ).ToList();
+
+            ModelCurveArray myModelCurves = new ModelCurveArray();
+      
+            //Plane thisPlane = null;
+            //Line oneLine = null;
+
+            List<ElementId> refIds = new List<ElementId>();
+            XYZ loopStart = new XYZ();
+            XYZ otherEnd = new XYZ();
+            int index = 0;
+            double tolerance = 0.000000001;
+            foreach( var refCurve in refCurveList)
+            {
+                if (index == 0)
+                {
+                    loopStart = refCurve.GeometryCurve.Evaluate(0.0, true);
+                    otherEnd = refCurve.GeometryCurve.Evaluate(1.0, true);
+                }
+                else //if (index > 0)
+                {
+                    XYZ startXYZ = refCurve.GeometryCurve.Evaluate(0.0, true);
+                    XYZ endXYZ = refCurve.GeometryCurve.Evaluate(1.0, true);
+                    if (index == 1)
+                    {
+                        if (startXYZ.DistanceTo(otherEnd) > tolerance && endXYZ.DistanceTo(otherEnd) > tolerance &&
+                            (startXYZ.DistanceTo(loopStart) > tolerance || endXYZ.DistanceTo(loopStart) > tolerance))
+                        {
+                            XYZ temp = loopStart;
+                            loopStart = otherEnd;
+                            otherEnd = temp;
+                        }
+                        if (startXYZ.DistanceTo(otherEnd) > tolerance && endXYZ.DistanceTo(otherEnd) < tolerance)
+                            otherEnd = startXYZ;
+                        else if (startXYZ.DistanceTo(otherEnd) <tolerance && endXYZ.DistanceTo(otherEnd) >tolerance)
+                            otherEnd = endXYZ;
+                        else
+                            throw new Exception("Gap between curves in chain of reference curves.");
+                    }                 
+                }
+                /* not needed check
+                if (refCurve.GeometryCurve is Line)
+                {
+                    Line thisLine = refCurve.GeometryCurve as Line;
+                    if (thisPlane != null)
+                    {
+                        if (Math.Abs(thisPlane.Normal.DotProduct(thisLine.Direction)) > tolerance)
+                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                        if (Math.Abs(thisPlane.Normal.DotProduct(thisLine.Origin - thisPlane.Origin)) > tolerance)
+                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                    }
+                    else if (oneLine == null)
+                        oneLine = thisLine;
+                    else
+                    {
+                        if (Math.Abs(oneLine.Direction.DotProduct(thisLine.Direction)) > 1.0 - tolerance)
+                        {
+                            double projAdjust = oneLine.Direction.DotProduct(oneLine.Origin - thisLine.Origin);
+                            XYZ adjustedOrigin = thisLine.Origin + projAdjust * oneLine.Direction;
+                            if (adjustedOrigin.DistanceTo(oneLine.Origin) > tolerance)
+                                throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                        }
+                        else
+                        {
+                            XYZ norm = oneLine.Direction.CrossProduct(thisLine.Direction);
+                            norm = norm.Normalize();
+                            thisPlane = new Plane(norm, oneLine.Origin);
+                            if (Math.Abs(thisPlane.Normal.DotProduct(thisLine.Origin - thisPlane.Origin)) > tolerance)
+                                throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                        }
+
+                    }
+                }
+                else
+                {
+                    CurveLoop curveLoop = new CurveLoop();
+                    curveLoop.Append(refCurve.GeometryCurve);
+                    if (!curveLoop.HasPlane())
+                        throw new Exception(" Planar Ref Curve Chain fails: curve is not planar.");
+                    Plane curvePlane = curveLoop.GetPlane();
+                    if (thisPlane == null && oneLine == null)
+                        thisPlane = curveLoop.GetPlane();
+                    else if (thisPlane != null)
+                    {
+                        if (Math.Abs(thisPlane.Normal.DotProduct(curvePlane.Normal)) < 1.0 - tolerance)
+                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                        if (Math.Abs(thisPlane.Normal.DotProduct(curvePlane.Origin - thisPlane.Origin)) > tolerance)
+                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                    }
+                    else if (oneLine != null)
+                    {
+                        thisPlane = curvePlane;
+                        if (Math.Abs(thisPlane.Normal.DotProduct(oneLine.Direction)) > tolerance)
+                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                        if (Math.Abs(thisPlane.Normal.DotProduct(oneLine.Origin - thisPlane.Origin)) > tolerance)
+                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
+                    }
+                }
+                */
+
+                refIds.Add(refCurve.Id);
+                myModelCurves.Append(refCurve);
+                index++;
+            }
+
+            List<ElementId> removeIds = new List<ElementId>();
+            foreach (ElementId oldId in this.Elements)
+            {
+                if (!refIds.Contains(oldId))
+                {
+                    removeIds.Add(oldId);
+                }
+            }
+
+            foreach (ElementId removeId in removeIds)
+            {
+                    this.Elements.Remove(removeId);
+            }
+            foreach (ElementId newId in refIds)
+            {
+                if (!this.Elements.Contains(newId))
+                    this.Elements.Add(newId);
+            }
+            //if (!curveLoop.HasPlane())
+            //    throw new Exception(" Planar Ref Curve Chain fails: not planar");
+            return Value.NewContainer(myModelCurves);
         }
     }
 }

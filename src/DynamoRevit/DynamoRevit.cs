@@ -163,6 +163,7 @@ namespace Dynamo.Applications
         private UIDocument m_doc;
         private UIApplication m_revit;
         private DynamoController dynamoController;
+        private static bool isRunning = false;
 
         public static double? dynamoViewX = null;
         public static double? dynamoViewY = null;
@@ -172,11 +173,19 @@ namespace Dynamo.Applications
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-            if (dynamoView != null)
+            //When a user double-clicks the Dynamo icon, we need to make
+            //sure that we don't create another instance of Dynamo.
+            if (isRunning)
             {
-                dynamoView.Focus();
+                Debug.WriteLine("Dynamo is already running.");
+                if (dynamoView != null)
+                {
+                    dynamoView.Focus();
+                }
                 return Result.Succeeded;
             }
+
+            isRunning = true;
 
             DynamoLogger.Instance.StartLogging();
 
@@ -208,10 +217,15 @@ namespace Dynamo.Applications
                         Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
                         string context = r.Replace(m_revit.Application.VersionName, "");
 
+                        //they changed the application version name conventions for vasari
+                        //it no longer has a version year so we can't compare it to other versions
+                        //TODO:come up with a more stable way to test for Vasari beta 3
+                        if (context == "Vasari")
+                            context = "Vasari 2014";
+
                         dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
 
-                        dynSettings.Bench = new DynamoView();
-                        dynSettings.Bench.DataContext = dynamoController.DynamoViewModel;
+                        dynSettings.Bench = new DynamoView {DataContext = dynamoController.DynamoViewModel};
                         dynamoController.UIDispatcher = dynSettings.Bench.Dispatcher;
                         dynamoView = dynSettings.Bench;
 
@@ -236,6 +250,7 @@ namespace Dynamo.Applications
             }
             catch (Exception ex)
             {
+                isRunning = false;
                 MessageBox.Show(ex.ToString());
 
                 DynamoLogger.Instance.Log(ex.Message);
@@ -324,6 +339,7 @@ namespace Dynamo.Applications
         private void dynamoView_Closed(object sender, EventArgs e)
         {
             dynamoView = null;
+            isRunning = false;
         }
     }
 
@@ -393,9 +409,19 @@ namespace Dynamo.Applications
                 if (fixture == null)
                     throw new Exception("Could not find DynamoRevitTests fixture.");
 
-                foreach (TestMethod t in fixture.Tests)
+                foreach (var t in fixture.Tests)
                 {
-                    Results.Results.Add(new DynamoRevitTest(t));
+                    if (t is ParameterizedMethodSuite)
+                    {
+                        var paramSuite = t as ParameterizedMethodSuite;
+                        foreach (var tInner in paramSuite.Tests)
+                        {
+                            if (tInner is TestMethod)
+                                Results.Results.Add(new DynamoRevitTest(tInner as TestMethod));
+                        }
+                    }
+                    else if (t is TestMethod)
+                        Results.Results.Add(new DynamoRevitTest(t as TestMethod));
                 }
 
                 resultsView.ShowDialog();
