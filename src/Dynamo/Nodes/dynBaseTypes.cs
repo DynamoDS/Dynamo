@@ -989,9 +989,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Append to List")]
+    [NodeName("Concatenate Lists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Appends two list")]
+    [NodeDescription("Concatenates two lists.")]
     public class dynAppend : dynBuiltinFunction
     {
         public dynAppend()
