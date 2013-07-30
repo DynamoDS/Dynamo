@@ -323,6 +323,50 @@ namespace Dynamo.Nodes
     }
 
 
+    [NodeName("Write Image File")]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeDescription("Writes the given image to an image file. Creates the file if it doesn't exist.")]
+    public class dynImageFileWriter : dynNodeWithOneOutput
+    {
+        public dynImageFileWriter()
+        {
+            InPortData.Add(new PortData("path", "Path to the file", typeof(Value.String)));
+            InPortData.Add(new PortData("filename", "name of the file", typeof(Value.String)));
+            InPortData.Add(new PortData("image", "Image to be written", typeof(Value.Container)));
+            OutPortData.Add(new PortData("success?", "Whether or not the operation was successful.", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            string path = ((Value.String)args[0]).Item;
+            string name = ((Value.String)args[1]).Item;
+            System.Drawing.Image image = (System.Drawing.Image)((Value.Container)args[2]).Item;
+            string pathName = path + "\\" + name + ".png";
+
+            try
+            {
+                //if (image != null)
+                //{
+                    image.Save(pathName);
+                    dynSettings.Controller.DynamoViewModel.Log("Saved Image File " + pathName);
+                //}
+
+
+            }
+            catch (Exception e)
+            {
+                dynSettings.Controller.DynamoViewModel.Log("Error Saving Image File " + pathName);
+                dynSettings.Controller.DynamoViewModel.Log(e);
+                return Value.NewNumber(0);
+            }
+
+            return Value.NewNumber(1);
+        }
+    }
+
+
     #region File Watcher
 
     [NodeName("Watch File")]

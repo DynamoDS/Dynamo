@@ -22,7 +22,6 @@ using System.Windows.Media;
 using System.Linq;
 using System.Xml;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.Revit;
@@ -302,7 +301,7 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class dynMultipleElementSelectionBase : dynNodeWithOneOutput
     {
-        private TextBox _tb;
+        private TextBlock _tb;
         private Button _selectButton;
 
         protected string _selectButtonContent;
@@ -342,14 +341,15 @@ namespace Dynamo.Nodes
             };
             _selectButton.Click += selectButton_Click;
 
-            _tb = new TextBox
+            _tb = new TextBlock
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
-                BorderThickness = new Thickness(0),
-                IsReadOnly = true,
-                IsReadOnlyCaretVisible = false
+                TextWrapping = TextWrapping.Wrap,
+                TextTrimming = TextTrimming.WordEllipsis,
+                MaxWidth = 200,
+                MaxHeight = 100
             };
 
             if (SelectedElements == null || !SelectedElements.Any() || !SelectionText.Any() || !SelectButtonContent.Any())
@@ -375,7 +375,7 @@ namespace Dynamo.Nodes
             {
                 Mode = BindingMode.TwoWay,
             };
-            _tb.SetBinding(TextBox.TextProperty, selectTextBinding);
+            _tb.SetBinding(TextBlock.TextProperty, selectTextBinding);
 
             var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
             {
@@ -1171,7 +1171,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Select a XYZ location on model face or edge of the element.")]
     public class dynXYZBySelection : dynReferenceSelectionBase, IDrawable
     {
-        //private Reference _refXyz;
+        private Reference old_refXyz;
         private double _param0;
         private double _param1;
         private bool _init;
@@ -1183,6 +1183,7 @@ namespace Dynamo.Nodes
         {
             _selectionMessage = "Select a XYZ location on face or edge of the element.";
             _selectionAction = dynRevitSettings.SelectionHelper.RequestReferenceXYZSelection;
+            old_refXyz = null;
         }
 
         //protected override void OnSelectClick()
@@ -1205,7 +1206,8 @@ namespace Dynamo.Nodes
 
             GeometryObject thisObject = SelectedElement.GetGeometryObjectFromReference(_reference);
             Autodesk.Revit.DB.Transform thisTrf = null;
-
+            if (_init && (old_refXyz == null || !_reference.Equals(old_refXyz)))
+                _init = false;
 
             {
                 GeometryObject geomObj =
@@ -1352,6 +1354,7 @@ namespace Dynamo.Nodes
             else
                 throw new Exception("could not evaluate point on face or edge of the element");
 
+            old_refXyz = _reference;
             return Value.NewContainer(thisXYZ);
         }
 
@@ -1402,6 +1405,7 @@ namespace Dynamo.Nodes
                         _reference.ElementId);
                 _param0 = Convert.ToDouble(elNode.Attributes["refXYZparam0"].Value);
                 _param1 = Convert.ToDouble(elNode.Attributes["refXYZparam1"].Value);
+                old_refXyz = _reference;
                 _init = true;
             }
             catch { }

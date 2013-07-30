@@ -1,13 +1,13 @@
-<dynWorkspace X="22.0000000000001" Y="92.5635555555554">
+<dynWorkspace X="22.0000000000001" Y="92.5635555555554" zoom="1">
   <dynElements>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="c84b1288-03cc-4854-b67d-0ef60370eb87" nickname="Number" x="0" y="159.8" lacing="First">
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="c84b1288-03cc-4854-b67d-0ef60370eb87" nickname="Number" x="0" y="159.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="21" />
     </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="8a1eb9bb-c993-4f73-8aec-6cf3b4dc12db" nickname="Select Curve" x="0" y="0" lacing="First" />
-    <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="9d6f5510-20ee-46bb-8413-3375e89d3ee2" nickname="Ref Point" x="479.39532426313" y="81.9013410949634" lacing="First">
+    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="8a1eb9bb-c993-4f73-8aec-6cf3b4dc12db" nickname="Select Curve" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="9d6f5510-20ee-46bb-8413-3375e89d3ee2" nickname="Ref Point" x="479.39532426313" y="81.9013410949634" isVisible="true" isUpstreamVisible="true" lacing="Longest">
       <Run />
     </Dynamo.Nodes.dynReferencePointByXYZ>
-    <Dynamo.Nodes.dynXYZArrayAlongCurve type="Dynamo.Nodes.dynXYZArrayAlongCurve" guid="3f900284-fb66-4984-91a4-1ce3b13cf60c" nickname="XYZ Array On Curve" x="252.873904178636" y="75.0189383935596" lacing="First" />
+    <Dynamo.Nodes.dynXYZArrayAlongCurve type="Dynamo.Nodes.dynXYZArrayAlongCurve" guid="3f900284-fb66-4984-91a4-1ce3b13cf60c" nickname="XYZ Array On Curve" x="252.873904178636" y="75.0189383935596" isVisible="true" isUpstreamVisible="true" lacing="First" />
   </dynElements>
   <dynConnectors>
     <Dynamo.Connectors.dynConnectorModel start="c84b1288-03cc-4854-b67d-0ef60370eb87" start_index="0" end="3f900284-fb66-4984-91a4-1ce3b13cf60c" end_index="1" portType="0" />

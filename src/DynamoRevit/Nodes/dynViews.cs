@@ -20,6 +20,12 @@ using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Windows.Data;
+using System.ComponentModel;
+using System.Globalization;
 
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
@@ -269,7 +275,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Section View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
-    [NodeDescription("Creates a drafting view.")]
+    [NodeDescription("Creates a section view.")]
     public class dynSectionView : dynRevitTransactionNodeWithOneOutput
     {
         public dynSectionView()
@@ -316,4 +322,235 @@ namespace Dynamo.Nodes
             return view;
         }
     }
+
+
+    [NodeName("Get Active View")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
+    [NodeDescription("Gets the active Revit view.")]
+    public class dynActiveRevitView : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynActiveRevitView()
+        {
+            OutPortData.Add(new PortData("v", "The active revit view.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+
+            return Value.NewContainer(dynRevitSettings.Doc.Document.ActiveView);
+        }
+
+    }
+
+    [NodeName("Save Image from View")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
+    [NodeDescription("Saves an image from a Revit view.")]
+    public class dynSaveImageFromRevitView : dynRevitTransactionNodeWithOneOutput
+    {
+        public dynSaveImageFromRevitView()
+        {
+            InPortData.Add(new PortData("view", "The view to export.", typeof(Value.Container)));
+            InPortData.Add(new PortData("path", "The path to export to.", typeof(Value.String)));
+            OutPortData.Add(new PortData("image", "An image from the revit view.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            View view = (View)((Value.Container)args[0]).Item;
+            string path = ((Value.String)args[1]).Item;
+
+            string name = view.ViewName;
+            string pathName = path + "\\" + name;
+            System.Drawing.Image image;
+
+
+            ImageExportOptions options = new ImageExportOptions();
+            options.ExportRange = ExportRange.VisibleRegionOfCurrentView;
+            options.FilePath = pathName;
+            options.HLRandWFViewsFileType = ImageFileType.PNG; //hack - make sure to change the read image below if other file types are supported
+            options.ImageResolution = ImageResolution.DPI_72; 
+            options.ZoomType = ZoomFitType.Zoom;
+            options.ShadowViewsFileType = ImageFileType.PNG;
+ 
+
+            try
+            {
+                dynRevitSettings.Doc.Document.ExportImage(options);//revit only has a method to save image to disk.
+                //hack - make sure to change the read image below if other file types are supported
+                image = Image.FromFile(pathName + ".png");//read the saved image so we can pass it downstream
+
+
+            }
+            catch (Exception e)
+            {
+                dynSettings.Controller.DynamoViewModel.Log(e);
+                return Value.NewContainer(0);
+            }
+
+            return Value.NewContainer(image);
+        }
+
+    }
+
+    
+    [NodeName("Watch Image")]
+    [NodeDescription("Previews an image")]
+    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
+    public class dynWatchImage : dynNodeWithOneOutput
+    {
+
+        ResultImageUI resultImageUI = new ResultImageUI();
+
+        System.Windows.Controls.Image image1 = null;
+        public dynWatchImage()
+        {
+            InPortData.Add(new PortData("image", "image", typeof(object)));
+            OutPortData.Add(new PortData("", "Success?", typeof(bool)));
+
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        {
+            image1 = new System.Windows.Controls.Image();
+            image1.Width = 320;
+            image1.Height = 240;
+            //image1.Margin = new Thickness(5);
+            image1.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            image1.Name = "image1";
+            image1.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            //image1.DataContext = resultImageUI;
+
+            var bindingVal = new System.Windows.Data.Binding("ResultImage")
+            {
+                Mode = BindingMode.OneWay,
+                Converter = new ImageConverter(),
+                NotifyOnValidationError = false,
+                Source = resultImageUI,
+                //Path = ResultImageUI,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            };
+            image1.SetBinding(System.Windows.Controls.Image.SourceProperty, bindingVal);
+
+            NodeUI.inputGrid.Children.Add(image1);
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+
+            resultImageUI.ResultImage = (Image)((Value.Container)args[0]).Item;
+
+            //DispatchOnUIThread(delegate
+            //{
+
+            //   image1.Source = resultImage;
+            //});
+
+            return Value.NewNumber(1);
+        }
+
+        /// <summary>
+        /// One-way converter from System.Drawing.Image to System.Windows.Media.ImageSource
+        /// from http://www.stevecooper.org/index.php/2010/08/06/databinding-a-system-drawing-image-into-a-wpf-system-windows-image/
+        /// </summary>
+        [ValueConversion(typeof(System.Drawing.Image), typeof(System.Windows.Media.ImageSource))]
+        public class ImageConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType,
+                object parameter, CultureInfo culture)
+            {
+                // empty images are empty...
+                if (value == null) { return null; }
+
+                try
+                {
+                    var image = (System.Drawing.Image)value;
+                    System.Drawing.Image readImage = null;
+                    // Winforms Image we want to get the WPF Image from...
+                    var bitmap = new System.Windows.Media.Imaging.BitmapImage();
+                    bitmap.BeginInit();
+                    MemoryStream memoryStream = new MemoryStream();
+                    // Save to a memory stream...
+                    //image.Save("C:\\falconOut\\Falcon.bmp");
+
+                    image.Save(memoryStream, ImageFormat.Bmp);
+                    // Rewind the stream...
+                    //memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
+                    bitmap.StreamSource = memoryStream;
+                    bitmap.EndInit();
+                    return bitmap;
+                }
+                catch (Exception ex)
+                {
+                    dynSettings.Controller.DynamoViewModel.Log(ex.Message);
+                    dynSettings.Controller.DynamoViewModel.Log(ex.StackTrace);
+                    return null;
+                }
+            }
+
+            public object ConvertBack(object value, Type targetType,
+                object parameter, CultureInfo culture)
+            {
+                return null;
+            }
+        }
+
+        public class ResultImageUI : INotifyPropertyChanged
+        {
+            private Image resultImage;
+
+            public Image ResultImage
+            {
+                get
+                {
+                    return resultImage;
+                }
+
+                set
+                {
+                    resultImage = value;
+                    Notify("ResultImage");
+                }
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            protected void OnPropertyChanged(PropertyChangedEventArgs e)
+            {
+                PropertyChangedEventHandler handler = PropertyChanged;
+                if (handler != null)
+                    handler(this, e);
+            }
+
+            protected void OnPropertyChanged(string propertyName)
+            {
+                OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+            }
+
+            protected void Notify(string propertyName)
+            {
+
+                if (this.PropertyChanged != null)
+                {
+                    try
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch (Exception ex)
+                    {
+                        dynSettings.Controller.DynamoViewModel.Log(ex.Message);
+                        dynSettings.Controller.DynamoViewModel.Log(ex.StackTrace);
+                    }
+                }
+            }
+
+        }
+      
+    }
+     
 }
