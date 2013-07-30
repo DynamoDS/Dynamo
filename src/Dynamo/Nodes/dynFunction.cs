@@ -69,7 +69,7 @@ namespace Dynamo
                 }
             }
 
-            public new string Description
+            public override string Description
             {
                 get { return this.Definition.Workspace.Description; }
                 set

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using Dynamo.Commands;
+using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.Search.SearchElements;
 

@@ -58,7 +58,7 @@ Source="..\..\Images\search_24.png" Opacity="1">
                                 <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
                             </Style.Resources>
 
-                            <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
+                            <!--<EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>-->
 
                         </Style>
 
@@ -70,67 +70,90 @@ Source="..\..\Images\search_24.png" Opacity="1">
 
                             <Border Name="ItemBG" BorderBrush="#666" BorderThickness="0,1,0,0">
 
-                                <Border.ToolTip>
-                                    <TextBlock>Double click to download</TextBlock>
-                                </Border.ToolTip>
-                                
                                 <Border.Background>
                                     <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                                        <GradientStop Color="#353535" Offset="0.0" />
-                                        <GradientStop Color="#353535" Offset="1.0" />
+                                        <GradientStop Color="#333" Offset="0.0" />
+                                        <GradientStop Color="#333" Offset="1.0" />
                                     </LinearGradientBrush>
                                 </Border.Background>
+
                                 
                                  <StackPanel Width ="443" Name="SearchEle">
 
-                                    <TextBlock FontSize="13" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="AliceBlue" Margin="10,10,0,3"/>
-                                    <TextBlock FontSize="11" Name="description" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Description}" Foreground="Gray"  Margin="10,5,5,3" />
+                                    <StackPanel Orientation="Horizontal" Margin="10">
 
-                                    <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
-                                        <TextBlock FontSize="11" FontWeight="Bold" Text="Downloads: " Foreground="Gray" />
-                                        <TextBlock FontSize="11" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Downloads}" Foreground="Gray"  />
-                                    </StackPanel>
+                                        <Border Width="265" BorderThickness ="0,0,1,0" BorderBrush="#222" >
+                                            <StackPanel>
+                                                <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="AliceBlue" Margin="5,10,5,5"/>
+                                                <TextBlock FontSize="11" Margin="3" Foreground="#777" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="80"/>
+                                            </StackPanel>
+                                        </Border>
+                                    
+                                         <Border>
+                                            <StackPanel Width="170" >
 
-                                    <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
-                                        <TextBlock FontSize="11" FontWeight="Bold" Text="Votes: " Foreground="Gray"  />
-                                        <TextBlock FontSize="11" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Votes}" Foreground="Gray"  />
-                                    </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
 
-                                    <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
-                                        <TextBlock FontSize="11" FontWeight="Bold" Text="Keywords: " Foreground="Gray"  Padding="0,0,5,0"/>
-                                        <TextBlock FontSize="11" Text="{Binding Path=Keywords}" Foreground="Gray" />
-                                    </StackPanel>
-
-                                    <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
-                                        <TextBlock FontSize="11" FontWeight="Bold" Text="Maintainers: " Foreground="Gray"  Padding="0,0,5,0"/>
-                                        <TextBlock FontSize="11" Text="{Binding Path=Maintainers}" Foreground="Gray" />
-                                    </StackPanel>
-
-                                    <StackPanel Orientation="Horizontal" Margin="10,10,0,10">
-                                        <TextBlock FontSize="11" FontWeight="Bold" Text="Versions: " Foreground="Gray"  Padding="0,0,5,0"/>
-                                        <ListBox Name="Versions" ItemsSource="{Binding Path=Versions}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
-
-                                            <ListBox.ItemContainerStyle>
-                                                <Style TargetType="ListBoxItem">
-                                                    <Style.Resources>
-                                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
-                                                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
-                                                    </Style.Resources>
-                                                </Style>
-                                            </ListBox.ItemContainerStyle>
-
-                                            <ListBox.ItemTemplate >
-                                                <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Path=Item1.version}" MinWidth="90" Foreground="Gray" />
-                                                        <Button Name="DownloadVersionButton" Margin="1, 0, 1, 0" ToolTip="Download This Version" Content="Download" Command="{Binding Path=Item2}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                    <StackPanel Orientation="Horizontal" Margin="10,5,5,5" MinWidth="80">
+                                                        <TextBlock FontSize="10" FontWeight="Bold" Text="Downloads: " Foreground="Gray" />
+                                                        <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Downloads}" Foreground="Gray"  />
                                                     </StackPanel>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
 
-                                        </ListBox>
+                                                    <StackPanel Orientation="Horizontal" Margin="5,5,5,5" >
+                                                        <TextBlock FontSize="10" FontWeight="Bold" Text="Votes: " Foreground="Gray"  />
+                                                        <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Votes}" Foreground="Gray"  />
+                                                    </StackPanel>
+
+                                                </StackPanel>
+                                                
+                                                <StackPanel Orientation="Horizontal" Margin="5,0,5,5">
+                                                    <Button Name="LatestButton" Width="90" ToolTip="Download latest version" HorizontalAlignment="Right" Content="⇓ Install" Command="{Binding Path=DownloadLatest}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                    <Button Name="ExpandButton" Width="60" ToolTip="See more package versions, maintainers, and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpanded}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                </StackPanel>
+
+                                            </StackPanel>
+                                         </Border>
                                     </StackPanel>
-                                     
+
+                                    <StackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
+
+                                        <StackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                            <TextBlock FontSize="11" FontWeight="Bold" Text="Keywords: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
+                                            <TextBlock FontSize="11" Text="{Binding Path=Keywords}" Foreground="WhiteSmoke" />
+                                        </StackPanel>
+                                        
+                                        <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
+                                            <TextBlock FontSize="11" FontWeight="Bold" Text="Maintainers: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
+                                            <TextBlock FontSize="11" Text="{Binding Path=Maintainers}" Foreground="WhiteSmoke" />
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="10,10,0,10">
+                                            <TextBlock FontSize="11" FontWeight="Bold" Text="Versions: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
+                                            <ListBox Name="Versions" ItemsSource="{Binding Path=Versions}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+
+                                                <ListBox.ItemContainerStyle>
+                                                    <Style TargetType="ListBoxItem">
+                                                        <Style.Resources>
+                                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                        </Style.Resources>
+                                                    </Style>
+                                                </ListBox.ItemContainerStyle>
+
+                                                <ListBox.ItemTemplate >
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
+                                                            <Button Name="DownloadVersionButton"  ToolTip="Install This Version" Content="⇓ Install" Command="{Binding Path=Item2}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                            <TextBlock Text="{Binding Path=Item1.created}" MinWidth="120" Margin="24,5,5,5"  Foreground="DarkGray" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+
+                                            </ListBox>
+                                        </StackPanel>
+                                    </StackPanel>
+
 
                                 </StackPanel>
                                     

@@ -9,6 +9,7 @@ using System.Windows.Input;
 using Dynamo.Commands;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
+using Dynamo.PackageManager;
 using Dynamo.Search.Regions;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;

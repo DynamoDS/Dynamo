@@ -375,19 +375,21 @@ namespace Dynamo.Nodes
         }
 
         public string _description = null;
-        public string Description
+        public virtual string Description
         {
             get { 
-                _description = _description ?? GetDescriptionString();
+                _description = _description ?? GetDescriptionStringFromAttributes();
                 return _description;
             }
+            set { _description = value;
+                  RaisePropertyChanged("Description");}
         }
 
         /// <summary>
         ///     Get the description from type information
         /// </summary>
         /// <returns>The value or "No description provided"</returns>
-        public string GetDescriptionString()
+        public string GetDescriptionStringFromAttributes()
         {
             var t = GetType();
             object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);

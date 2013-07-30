@@ -40,32 +40,29 @@ namespace Dynamo.Commands
         public void Execute(object funcDef)
         {
 
-            if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false && !PackageManagerClient.DEBUG_MODE)
+            if (funcDef is List<FunctionDefinition>)
             {
-                dynSettings.Controller.DynamoViewModel.Log("Must login first to publish a node.");
-                return;
-            }
+                var fs = funcDef as List<FunctionDefinition>;
 
-            if (funcDef is FunctionDefinition)
-            {
-                var f = funcDef as FunctionDefinition;
-
-                var pkg = dynSettings.PackageLoader.GetOwnerPackage(f);
-
-                if (dynSettings.PackageLoader.GetOwnerPackage(f) != null)
+                foreach (var f in fs)
                 {
-                    var m = MessageBox.Show("This node is part of the dynamo package called \"" + pkg.Name + "\" - do you want to submit a new version of this package?  \n\nIf you're submitting this package for the first time, use the Manage Installed Packages.. dialog to submit the package.", "Package Control", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (m == MessageBoxResult.Yes)
-                    {
-                        pkg.PublishNewPackageVersionCommand.Execute();
-                    }
+                    var pkg = dynSettings.PackageLoader.GetOwnerPackage(f);
 
-                    return;
+                    if (dynSettings.PackageLoader.GetOwnerPackage(f) != null)
+                    {
+                        var m = MessageBox.Show("The node is part of the dynamo package called \"" + pkg.Name + 
+                            "\" - do you want to submit a new version of this package?  \n\nIf not, this node will be moved to the new package you are creating.", 
+                            "Package Warning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (m == MessageBoxResult.Yes)
+                        {
+                            pkg.PublishNewPackageVersionCommand.Execute();
+                            return;
+                        }
+                    }
                 }
 
                 dynSettings.Controller.PublishPackageViewModel = new PublishPackageViewModel(dynSettings.Controller.PackageManagerClient);
-                dynSettings.Controller.PublishPackageViewModel.FunctionDefinitions =
-                    new List<FunctionDefinition> {f};
+                dynSettings.Controller.PublishPackageViewModel.FunctionDefinitions = fs;
 
             }
             else
@@ -90,7 +87,7 @@ namespace Dynamo.Commands
         }
     }
 
-    public class PublishSelectedNodeCommand : ICommand
+    public class PublishSelectedNodesCommand : ICommand
     {
         private PackageManagerClient _client;
 
@@ -98,24 +95,25 @@ namespace Dynamo.Commands
         {
             this._client = dynSettings.Controller.PackageManagerClient;
 
-            var nodeList = DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel && ((dynNodeModel)x) is dynFunction )
-                                        .Select(x => ( ((dynNodeModel)x) as dynFunction ).Definition.FunctionId ).ToList();
+            var nodeList = DynamoSelection.Instance.Selection
+                                .Where(x => x is dynFunction)
+                                .Cast<dynFunction>()
+                                .Select(x => x.Definition.FunctionId )
+                                .ToList();
 
-            if (nodeList.Count != 1)
+            if (!nodeList.Any())
             {
-                MessageBox.Show("You must select a single user-defined node.  You selected " + nodeList.Count + " nodes." , "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                MessageBox.Show("You must select at least one custom node.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
                 return;
             }
 
-            if ( dynSettings.Controller.CustomNodeManager.Contains( nodeList[0] ) )
-            {
-                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute( dynSettings.Controller.CustomNodeManager.GetFunctionDefinition( nodeList[0]) );
-            }
-            else
-            {
-                MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
-            }
+            var defs = nodeList.Select(dynSettings.CustomNodeManager.GetFunctionDefinition).ToList();
 
+            if (defs.Any(x=> x == null))
+                MessageBox.Show("There was a problem getting the node from the workspace.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+
+            DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(defs);
+            
         }
 
         public event EventHandler CanExecuteChanged
@@ -142,7 +140,7 @@ namespace Dynamo.Commands
             
             if ( dynSettings.Controller.DynamoViewModel.ViewingHomespace )
             {
-                MessageBox.Show("You can't publish your the home workspace.", "Workspace Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                MessageBox.Show("You can only publish Custom Node workspaces.", "Workspace Error", MessageBoxButton.OK, MessageBoxImage.Question);
                 return;
             }
 
@@ -151,7 +149,7 @@ namespace Dynamo.Commands
 
             if ( currentFunDef != null )
             {
-                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(currentFunDef);
+                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(new List<FunctionDefinition> {currentFunDef});
             }
             else
             {
@@ -197,14 +195,14 @@ namespace Dynamo.Commands
             }
         }
 
-        private static PublishSelectedNodeCommand publishSelectedNodeCmd;
-        public static PublishSelectedNodeCommand PublishSelectedNodeCmd
+        private static PublishSelectedNodesCommand _publishSelectedNodesCmd;
+        public static PublishSelectedNodesCommand PublishSelectedNodesCmd
         {
             get
             {
-                if (publishSelectedNodeCmd == null)
-                    publishSelectedNodeCmd = new PublishSelectedNodeCommand();
-                return publishSelectedNodeCmd;
+                if (_publishSelectedNodesCmd == null)
+                    _publishSelectedNodesCmd = new PublishSelectedNodesCommand();
+                return _publishSelectedNodesCmd;
             }
         }
 
