@@ -3347,13 +3347,11 @@ namespace Dynamo.Nodes
                     var ceil = (int)Math.Ceiling(dist/a);
                     var floor = (int)Math.Floor(dist/a);
 
-                    if (ceil == 0 || floor == 0)
-                        stepnum = 2;
-                    else
+                    if (ceil != 0 && floor != 0)
                     {
                         var ceilApprox = Math.Abs(dist/ceil - a);
                         var floorApprox = Math.Abs(dist/floor - a);
-                        stepnum = ceilApprox < floorApprox ? ceil - 1 : floor - 1;
+                        stepnum = ceilApprox < floorApprox ? ceil : floor;
                     }
                 }
 
