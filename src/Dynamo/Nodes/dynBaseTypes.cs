@@ -2507,9 +2507,6 @@ namespace Dynamo.Nodes
     [NodeSearchTags("avg")]
     public class dynAverage : dynMathBase 
     {
-
-        List<Value.Number> values = new List<Value.Number>();
-
         public dynAverage()
         {
             InPortData.Add(new PortData("numbers", "The list of numbers to average.", typeof(Value.List)));
@@ -2522,16 +2519,14 @@ namespace Dynamo.Nodes
             if (!args[0].IsList)
                 throw new Exception("A list of numbers is required to average.");
 
-            IEnumerable<double> vals = ((Value.List)args[0]).Item.Select(
-               x => (double)((Value.Number)x).Item
+            var vals = ((Value.List)args[0]).Item.Select(
+               x => ((Value.Number)x).Item
             );
         
-
             var average = vals.Average();
 
             return Value.NewNumber(average);
         }
-
     }
 
     /// <summary>
@@ -2545,44 +2540,32 @@ namespace Dynamo.Nodes
     [NodeSearchTags("running average", "moving average", "sma")]
     public class dynSmooth: dynMathBase
     {
-
         Queue<Value.Number> values = new Queue<Value.Number>();
         int maxNumValues = 10;
-        int currentNumValues = 0;
-
 
         public dynSmooth()
         {
             InPortData.Add(new PortData("val", "The current value.", typeof(Value.Container)));
             OutPortData.Add(new PortData("avg", "uses a simple moving average to smooth out values that fluctuate over time", typeof(Value.Number)));
             RegisterAllPorts();
+
             ArgumentLacing = LacingStrategy.Longest;
         }
-
-
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             if (!args[0].IsNumber)
                 throw new Exception("A number is required to smooth.");
 
-
             if (values.Count() < maxNumValues)
-            {
                 values.Enqueue((Value.Number)args[0]); // add current values to queue until it fills up
-            }
             else
-            {
                 values.Dequeue();//throw out the first value once we are up to the full queue amount
-            }
-            
 
             var average = values.Average(num => num.Item);
             
-
             return Value.NewNumber(average);
         }
-
     }
 
     //TODO: Setup proper IsDirty smart execution management
@@ -3042,6 +3025,8 @@ namespace Dynamo.Nodes
                     }
 
                     RegisterInputs();
+
+                    ArgumentLacing = InPortData.Any() ? LacingStrategy.Longest : LacingStrategy.Disabled;
                 }
                 catch (Exception e)
                 {
