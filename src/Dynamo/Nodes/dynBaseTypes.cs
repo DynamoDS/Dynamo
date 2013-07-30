@@ -3336,8 +3336,31 @@ namespace Dynamo.Nodes
 
             protected override Value Process(double start, double approx, double end)
             {
-                //TODO: Implement
-                return base.Process(start, approx, end);
+                var neg = approx < 0;
+
+                var a = Math.Abs(approx);
+
+                var dist = end - start;
+                var stepnum = 1;
+                if (dist != 0)
+                {
+                    var ceil = (int)Math.Ceiling(dist/a);
+                    var floor = (int)Math.Floor(dist/a);
+
+                    if (ceil == 0 || floor == 0)
+                        stepnum = 2;
+                    else
+                    {
+                        var ceilApprox = Math.Abs(dist/ceil - a);
+                        var floorApprox = Math.Abs(dist/floor - a);
+                        stepnum = ceilApprox < floorApprox ? ceil - 1 : floor - 1;
+                    }
+                }
+
+                if (neg)
+                    stepnum *= -1;
+
+                return base.Process(start, Math.Abs(dist) / stepnum, end);
             }
         }
 
@@ -4069,7 +4092,7 @@ namespace Dynamo.Nodes
     public class dynString2Num : dynBuiltinFunction
     {
         public dynString2Num()
-            : base("string->num")
+            : base(FScheme.StringToNum)
         {
             InPortData.Add(new PortData("s", "A string", typeof(Value.String)));
             OutPortData.Add(new PortData("n", "A number", typeof(Value.Number)));
@@ -4084,7 +4107,7 @@ namespace Dynamo.Nodes
     public class dynNum2String : dynBuiltinFunction
     {
         public dynNum2String()
-            : base("num->string")
+            : base(FScheme.NumToString)
         {
             InPortData.Add(new PortData("n", "A number", typeof(Value.Number)));
             OutPortData.Add(new PortData("s", "A string", typeof(Value.String)));
