@@ -896,7 +896,7 @@ namespace Dynamo.Nodes
             var n = (int)((Value.Number)args[0]).Item;
             var lst = ((Value.List)args[1]).Item;
 
-            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => i % n != 0)));
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => (i + 1) % n != 0)));
         }
     }
 
@@ -919,7 +919,7 @@ namespace Dynamo.Nodes
             var n = (int)((Value.Number)args[0]).Item;
             var lst = ((Value.List)args[1]).Item;
 
-            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => i % n == 0)));
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => (i + 1) % n == 0)));
         }
     }
 
