@@ -911,7 +911,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Remove Every Nth")]
+    [NodeName("Drop Every Nth")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Removes every nth element from a list.")]
     public class dynRemoveEveryNth : dynNodeWithOneOutput
@@ -931,6 +931,29 @@ namespace Dynamo.Nodes
             var lst = ((Value.List)args[1]).Item;
 
             return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => i % n != 0)));
+        }
+    }
+
+    [NodeName("Take Every Nth")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Extracts every nth element from a list.")]
+    public class dynTakeEveryNth : dynNodeWithOneOutput
+    {
+        public dynTakeEveryNth()
+        {
+            InPortData.Add(new PortData("n", "All indeces that are a multiple of this number will be extracted.", typeof(object)));
+            InPortData.Add(new PortData("list", "The list to extract elements from.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "Extracted elements.", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var n = (int)((Value.Number)args[0]).Item;
+            var lst = ((Value.List)args[1]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => i % n == 0)));
         }
     }
 
