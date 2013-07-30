@@ -132,32 +132,20 @@ namespace Dynamo.Nodes
 
     public abstract class dynBuiltinFunction : dynNodeWithOneOutput
     {
-        public string Symbol { get; protected internal set; }
+        public Func<FSharpList<Value>, Value> Func { get; protected internal set; }
 
-        internal dynBuiltinFunction(string symbol)
-        {
-            Symbol = symbol;
-        }
+        internal dynBuiltinFunction(FSharpFunc<FSharpList<Value>, Value> builtIn) 
+            : this(builtIn.Invoke)
+        { }
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
+        internal dynBuiltinFunction(Func<FSharpList<Value>, Value> builtIn)
         {
-            if (SaveResult)
-            {
-                return base.Compile(portNames);
-            }
-            else
-                return new FunctionNode(Symbol, portNames);
+            Func = builtIn;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-
-            var val = ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
-                .Item.Invoke(args);
-
-            var symbol = ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol)).Item;
-
-            return val;
+           return Func(args);
         }
     }
 
@@ -334,7 +322,7 @@ namespace Dynamo.Nodes
     public class dynReverse : dynBuiltinFunction
     {
         public dynReverse()
-            : base("reverse")
+            : base(FScheme.Rev)
         {
             InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("rev", "Reversed list", typeof(Value.List)));
@@ -395,7 +383,7 @@ namespace Dynamo.Nodes
     public class dynSortWith : dynBuiltinFunction
     {
         public dynSortWith()
-            : base("sort-with")
+            : base(FScheme.SortWith)
         {
             InPortData.Add(new PortData("c(x, y)", "Comparitor", typeof(object)));
             InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
@@ -411,7 +399,7 @@ namespace Dynamo.Nodes
     public class dynSortBy : dynBuiltinFunction
     {
         public dynSortBy()
-            : base("sort-by")
+            : base(FScheme.SortBy)
         {
             InPortData.Add(new PortData("c(x)", "Key Mapper", typeof(object)));
             InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
@@ -427,7 +415,7 @@ namespace Dynamo.Nodes
     public class dynSort : dynBuiltinFunction
     {
         public dynSort()
-            : base("sort")
+            : base(FScheme.Sort)
         {
             InPortData.Add(new PortData("list", "List of numbers or strings to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
@@ -443,7 +431,7 @@ namespace Dynamo.Nodes
     public class dynFold : dynBuiltinFunction
     {
         public dynFold()
-            : base("foldl")
+            : base(FScheme.FoldL)
         {
             InPortData.Add(new PortData("f(x, a)", "Reductor Funtion", typeof(object)));
             InPortData.Add(new PortData("a", "Seed", typeof(object)));
@@ -460,7 +448,7 @@ namespace Dynamo.Nodes
     public class dynFilter : dynBuiltinFunction
     {
         public dynFilter()
-            : base("filter")
+            : base(FScheme.Filter)
         {
             InPortData.Add(new PortData("p(x)", "Predicate", typeof(object)));
             InPortData.Add(new PortData("seq", "Sequence to filter", typeof(Value.List)));
@@ -500,7 +488,7 @@ namespace Dynamo.Nodes
     public class dynNumberRange : dynBuiltinFunction
     {
         public dynNumberRange()
-            : base("build-list")
+            : base(FScheme.BuildSeq)
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(Value.Number)));
             InPortData.Add(new PortData("end", "Number to end the sequence at", typeof(Value.Number)));
@@ -618,20 +606,9 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
-        {
-            if (SaveResult)
-            {
-                return base.Compile(portNames);
-            }
-            else
-                return new FunctionNode("map", portNames);
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("map"))
-                .Item.Invoke(args);
+            return FScheme.Map(args);
         }
     }
 
@@ -698,20 +675,9 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
-        {
-            if (SaveResult)
-            {
-                return base.Compile(portNames);
-            }
-            else
-                return new FunctionNode("cartesian-product", portNames);
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("cartesian-product"))
-                .Item.Invoke(args);
+            return FScheme.CartProd(args);
         }
     }
 
@@ -721,7 +687,7 @@ namespace Dynamo.Nodes
     public class dynMap : dynBuiltinFunction
     {
         public dynMap()
-            : base("map")
+            : base(FScheme.Map)
         {
             InPortData.Add(new PortData("f(x)", "The procedure used to map elements", typeof(object)));
             InPortData.Add(new PortData("seq", "The sequence to map over.", typeof(Value.List)));
@@ -737,7 +703,7 @@ namespace Dynamo.Nodes
     public class dynAndMap : dynBuiltinFunction
     {
         public dynAndMap()
-            : base("andmap")
+            : base(FScheme.AndMap)
         {
             InPortData.Add(new PortData("p(x)", "The predicate used to test elements", typeof(object)));
             InPortData.Add(new PortData("seq", "The sequence to test.", typeof(Value.List)));
@@ -753,7 +719,7 @@ namespace Dynamo.Nodes
     public class dynOrMap : dynBuiltinFunction
     {
         public dynOrMap()
-            : base("ormap")
+            : base(FScheme.OrMap)
         {
             InPortData.Add(new PortData("p(x)", "The predicate used to test elements", typeof(object)));
             InPortData.Add(new PortData("seq", "The sequence to test.", typeof(Value.List)));
@@ -788,15 +754,15 @@ namespace Dynamo.Nodes
 
     [NodeName("Add to List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("ADds an element to the beginning of a list.")]
+    [NodeDescription("Adds an element to the beginning of a list.")]
     public class dynList : dynBuiltinFunction
     {
         public dynList()
-            : base("cons")
+            : base(FScheme.Cons)
         {
-            InPortData.Add(new PortData("item", "The new Head of the list", typeof(object)));
-            InPortData.Add(new PortData("list", "The new Tail of the list", typeof(object)));
-            OutPortData.Add(new PortData("list", "Result List", typeof(Value.List)));
+            InPortData.Add(new PortData("item", "The Head of the new list", typeof(object)));
+            InPortData.Add(new PortData("list", "The Tail of the new list", typeof(object)));
+            OutPortData.Add(new PortData("list", "New list", typeof(Value.List)));
 
             RegisterAllPorts();
         }
@@ -808,7 +774,7 @@ namespace Dynamo.Nodes
     public class dynTakeList : dynBuiltinFunction
     {
         public dynTakeList()
-            : base("take")
+            : base(FScheme.Take)
         {
             InPortData.Add(new PortData("amt", "Amount of elements to extract", typeof(object)));
             InPortData.Add(new PortData("list", "The list to extract elements from", typeof(Value.List)));
@@ -824,7 +790,7 @@ namespace Dynamo.Nodes
     public class dynDropList : dynBuiltinFunction
     {
         public dynDropList()
-            : base("drop")
+            : base(FScheme.Drop)
         {
             InPortData.Add(new PortData("amt", "Amount of elements to drop", typeof(object)));
             InPortData.Add(new PortData("list", "The list to drop elements from", typeof(Value.List)));
@@ -878,7 +844,7 @@ namespace Dynamo.Nodes
     public class dynGetFromList : dynBuiltinFunction
     {
         public dynGetFromList()
-            : base("get")
+            : base(FScheme.Get)
         {
             InPortData.Add(new PortData("index", "Index of the element to extract", typeof(object)));
             InPortData.Add(new PortData("list", "The list to extract the element from", typeof(Value.List)));
@@ -998,7 +964,7 @@ namespace Dynamo.Nodes
     public class dynIsEmpty : dynBuiltinFunction
     {
         public dynIsEmpty()
-            : base("empty?")
+            : base(FScheme.IsEmpty)
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
             OutPortData.Add(new PortData("empty?", "Is the given list empty?", typeof(bool)));
@@ -1014,7 +980,7 @@ namespace Dynamo.Nodes
     public class dynLength : dynBuiltinFunction
     {
         public dynLength()
-            : base("len")
+            : base(FScheme.Len)
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
             OutPortData.Add(new PortData("length", "Length of the list", typeof(object)));
@@ -1029,7 +995,7 @@ namespace Dynamo.Nodes
     public class dynAppend : dynBuiltinFunction
     {
         public dynAppend()
-            : base("append")
+            : base(FScheme.Append)
         {
             InPortData.Add(new PortData("listA", "First list", typeof(Value.List)));
             InPortData.Add(new PortData("listB", "Second list", typeof(Value.List)));
@@ -1045,7 +1011,7 @@ namespace Dynamo.Nodes
     public class dynFirst : dynBuiltinFunction
     {
         public dynFirst()
-            : base("first")
+            : base(FScheme.Car)
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
             OutPortData.Add(new PortData("first", "First element in the list", typeof(object)));
@@ -1060,7 +1026,7 @@ namespace Dynamo.Nodes
     public class dynRest : dynBuiltinFunction
     {
         public dynRest()
-            : base("rest")
+            : base(FScheme.Cdr)
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
             OutPortData.Add(new PortData("rest", "Tail of the list.", typeof(Value.List)));
@@ -1290,7 +1256,8 @@ namespace Dynamo.Nodes
     [NodeDescription("Swaps rows and columns in a list of lists.")]
     public class dynTranspose : dynBuiltinFunction
     {
-        public dynTranspose() : base("transpose")
+        public dynTranspose() 
+            : base(FScheme.Transpose)
         {
             InPortData.Add(new PortData("lists", "The list of lists to transpose.", typeof(Value.List)));
             OutPortData.Add(new PortData("", "Transposed list of lists.", typeof(Value.List)));
@@ -1650,14 +1617,13 @@ namespace Dynamo.Nodes
 
     public abstract class dynComparison : dynBuiltinFunction
     {
-        protected dynComparison(string op) : this(op, op) { }
-
-        protected dynComparison(string op, string name)
+        protected dynComparison(FSharpFunc<FSharpList<Value>, Value> op, string name)
             : base(op)
         {
             InPortData.Add(new PortData("x", "operand", typeof(Value.Number)));
             InPortData.Add(new PortData("y", "operand", typeof(Value.Number)));
             OutPortData.Add(new PortData("x" + name + "y", "comp", typeof(Value.Number)));
+
             RegisterAllPorts();
         }
 
@@ -1669,7 +1635,7 @@ namespace Dynamo.Nodes
     [NodeSearchTags("less", "than", "<")]
     public class dynLessThan : dynComparison
     {
-        public dynLessThan() : base("<") { }
+        public dynLessThan() : base(FScheme.LT, "<") { }
     }
 
     [NodeName("Less Than Or Equal")]
@@ -1678,7 +1644,7 @@ namespace Dynamo.Nodes
     [NodeSearchTags("<=")]
     public class dynLessThanEquals : dynComparison
     {
-        public dynLessThanEquals() : base("<=", "≤") { }
+        public dynLessThanEquals() : base(FScheme.LTE, "≤") { }
     }
 
     [NodeName("Greater Than")]
@@ -1687,7 +1653,7 @@ namespace Dynamo.Nodes
     [NodeSearchTags(">")]
     public class dynGreaterThan : dynComparison
     {
-        public dynGreaterThan() : base(">") { }
+        public dynGreaterThan() : base(FScheme.GT, ">") { }
     }
 
     [NodeName("Greater Than Or Equal")]
@@ -1696,7 +1662,7 @@ namespace Dynamo.Nodes
     [NodeSearchTags(">=", "Greater Than Or Equal")]
     public class dynGreaterThanEquals : dynComparison
     {
-        public dynGreaterThanEquals() : base(">=", "≥") { }
+        public dynGreaterThanEquals() : base(FScheme.GTE, "≥") { }
     }
 
     [NodeName("Equal")]
@@ -1704,23 +1670,21 @@ namespace Dynamo.Nodes
     [NodeDescription("Compares two numbers.")]
     public class dynEqual : dynComparison
     {
-        public dynEqual() : base("=") { }
+        public dynEqual() : base(FScheme.EQ, "=") { }
     }
 
     [NodeName("And")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
     [NodeDescription("Boolean AND.")]
-    public class dynAnd : dynBuiltinFunction
+    public class dynAnd : dynNodeWithOneOutput
     {
         public dynAnd()
-            : base("and")
         {
             InPortData.Add(new PortData("a", "operand", typeof(Value.Number)));
             InPortData.Add(new PortData("b", "operand", typeof(Value.Number)));
             OutPortData.Add(new PortData("a∧b", "result", typeof(Value.Number)));
             RegisterAllPorts();
         }
-
 
         protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
@@ -1781,10 +1745,9 @@ namespace Dynamo.Nodes
     [NodeName("Or")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
     [NodeDescription("Boolean OR.")]
-    public class dynOr : dynBuiltinFunction
+    public class dynOr : dynNodeWithOneOutput
     {
         public dynOr()
-            : base("or")
         {
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             InPortData.Add(new PortData("b", "operand", typeof(bool)));
@@ -1860,7 +1823,7 @@ namespace Dynamo.Nodes
     public class dynXor : dynBuiltinFunction
     {
         public dynXor()
-            : base("xor")
+            : base(FScheme.Xor)
         {
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             InPortData.Add(new PortData("b", "operand", typeof(bool)));
@@ -1875,7 +1838,7 @@ namespace Dynamo.Nodes
     public class dynNot : dynBuiltinFunction
     {
         public dynNot()
-            : base("not")
+            : base(FScheme.Not)
         {
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             OutPortData.Add(new PortData("!a", "result", typeof(bool)));
@@ -3214,7 +3177,7 @@ namespace Dynamo.Nodes
         {
             private readonly IDoubleInputToken _token;
 
-            private Value _result;
+            private readonly Value _result;
 
             public OneNumber(IDoubleInputToken t)
             {
@@ -3236,7 +3199,7 @@ namespace Dynamo.Nodes
             private readonly IDoubleInputToken _step;
             private readonly IDoubleInputToken _count;
 
-            private Value _result;
+            private readonly Value _result;
 
             public Sequence(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken count)
             {
@@ -3290,7 +3253,7 @@ namespace Dynamo.Nodes
             private readonly IDoubleInputToken _step;
             private readonly IDoubleInputToken _end;
 
-            private Value _result;
+            private readonly Value _result;
 
             public Range(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end)
             {
