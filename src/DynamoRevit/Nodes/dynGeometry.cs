@@ -2594,6 +2594,29 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        public static bool noSkinSolidMethod()
+        {
+            
+            Type SolidType = typeof(Autodesk.Revit.DB.Solid);
+
+            MethodInfo[] solidTypeMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodCreate = "skinCurveLoopsIntoSolid";
+            bool methodFound = false;
+
+            foreach (MethodInfo m in solidTypeMethods)
+            {
+                if (m.Name == nameOfMethodCreate)
+                {
+                    methodFound = true;
+
+                    break;
+                }
+            }
+
+            return !methodFound;
+        }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
             var listInCurveLoops = ((Value.List)args[0]).Item.Select(

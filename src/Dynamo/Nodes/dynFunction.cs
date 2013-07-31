@@ -23,6 +23,7 @@ using System.Xml;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop.Node;
+using Dynamo.PackageManager.UI;
 using Dynamo.Utilities;
 using System.Windows.Media.Effects;
 using Dynamo.Nodes;
@@ -57,26 +58,50 @@ namespace Dynamo
 
             }
 
+            public new string Name 
+            {
+                get { return this.Definition.Workspace.Name; }
+                set
+                {
+                    this.Definition.Workspace.Name = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+
+            public override string Description
+            {
+                get { return this.Definition.Workspace.Description; }
+                set
+                {
+                    this.Definition.Workspace.Description = value;
+                    this.RaisePropertyChanged("Description");
+                }
+            }
             public string Symbol { get; protected internal set; }
 
             public new string Category
             {
                 get
                 {
-                    return dynSettings.Controller.CustomNodeLoader.NodeCategories.ContainsKey(Definition.FunctionId) 
-                        ? dynSettings.Controller.CustomNodeLoader.NodeCategories[Definition.FunctionId] 
-                        : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
-                }
-            }
 
-            public new string Name 
-            {
-                get { return Definition.Workspace.Name; }
+                    if (dynSettings.Controller.CustomNodeManager.NodeCategories.ContainsKey(this.Definition.FunctionId))
+                        return dynSettings.Controller.CustomNodeManager.NodeCategories[this.Definition.FunctionId];
+                    else
+                    {
+                        return BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+                    }
+                }
             }
 
             public override void SetupCustomUIElements(dynNodeView nodeUI)
             {
-                nodeUI.MouseDoubleClick += ui_MouseDoubleClick;
+                nodeUI.MouseDoubleClick += new System.Windows.Input.MouseButtonEventHandler(ui_MouseDoubleClick);
+
+                //var editItem = new MenuItem();
+                //editItem.Header = "Edit Properties...";
+                //editItem.Click += EditCustomNodePropertiesClick;
+                //nodeUI.MainContextMenu.Items.Add(editItem);
+
             }
 
             void ui_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -204,6 +229,10 @@ namespace Dynamo
                 outEl.SetAttribute("value", NickName);
                 dynEl.AppendChild(outEl);
 
+                outEl = xmlDoc.CreateElement("Description");
+                outEl.SetAttribute("value", Description);
+                dynEl.AppendChild(outEl);
+
                 outEl = xmlDoc.CreateElement("Inputs");
                 foreach (var input in InPortData.Select(x => x.NickName))
                 {
@@ -243,8 +272,9 @@ namespace Dynamo
                         Guid.TryParse(Symbol, out funcId);
 
                         // if the dyf does not exist on the search path...
-                        if (!dynSettings.Controller.CustomNodeLoader.Contains(funcId))
+                        if (!dynSettings.Controller.CustomNodeManager.Contains(funcId))
                         {
+                            
                             var proxyDef = new FunctionDefinition(funcId)
                             {
                                 Workspace =
@@ -266,8 +296,8 @@ namespace Dynamo
                             DynamoLogger.Instance.Log(user_msg);
 
                             // tell custom node loader, but don't provide path, forcing user to resave explicitly
-                            dynSettings.Controller.CustomNodeLoader.SetFunctionDefinition(funcId, proxyDef);
-                            Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funcId);
+                            dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
+                            Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
                             ArgumentLacing = LacingStrategy.Disabled;
                             return;
                         }
@@ -348,7 +378,7 @@ namespace Dynamo
                     Symbol = funId.ToString();
                 }
 
-                Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
+                Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
             }
 
             public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
@@ -611,6 +641,9 @@ namespace Dynamo
         public List<Tuple<int, dynNodeModel>> InPortMappings { get; internal set; }
         public bool RequiresRecalc { get; internal set; }
 
+        /// <summary>
+        /// A list of all dependencies with no duplicates
+        /// </summary>
         public IEnumerable<FunctionDefinition> Dependencies
         {
             get
@@ -619,12 +652,20 @@ namespace Dynamo
             }
         }
 
+        /// <summary>
+        /// A list of all direct dependencies without duplicates
+        /// </summary>
+        public IEnumerable<FunctionDefinition> DirectDependencies
+        {
+            get
+            {
+                return findDirectDependencies();
+            }
+        }
+
         private IEnumerable<FunctionDefinition> findAllDependencies(HashSet<FunctionDefinition> dependencySet)
         {
-            var query = Workspace.Nodes
-                .OfType<dynFunction>()
-                .Select(node => node.Definition)
-                .Where(def => !dependencySet.Contains(def));
+            var query = this.DirectDependencies.Where(def => !dependencySet.Contains(def));
 
             foreach (var definition in query)
             {
@@ -634,5 +675,20 @@ namespace Dynamo
                     yield return def;
             }
         }
+
+        private IEnumerable<FunctionDefinition> findDirectDependencies()
+        {
+            var query = Workspace.Nodes
+                                 .Where(node => node is dynFunction)
+                                 .Select(node => (node as dynFunction).Definition)
+                                 .Where((def) => def != this)
+                                 .Distinct();
+
+            foreach (var definition in query)
+            {
+                yield return definition;
+            }
+        }
+
     }
 }

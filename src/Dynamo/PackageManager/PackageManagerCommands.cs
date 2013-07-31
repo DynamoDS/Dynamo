@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -25,29 +26,6 @@ using System.Windows.Controls;
 
 namespace Dynamo.Commands
 {
-    public class LoginCommand : ICommand
-    {
-        public LoginCommand()
-        {
-
-        }
-
-        public void Execute(object parameters)
-        {
-            
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
-    }
 
     public class ShowNodePublishInfoCommand : ICommand
     {
@@ -62,48 +40,39 @@ namespace Dynamo.Commands
         public void Execute(object funcDef)
         {
 
-            if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false)
+            if (funcDef is List<FunctionDefinition>)
             {
-                DynamoCommands.ShowLoginCmd.Execute(null);
-                dynSettings.Controller.DynamoViewModel.Log("Must login first to publish a node.");
-                return;
-            }
+                var fs = funcDef as List<FunctionDefinition>;
 
-            if (!init)
-            {
-                _view = new PackageManagerPublishView(dynSettings.Controller.PackageManagerPublishViewModel);
-
-                //MVVM: we now have an event called on the current workspace view model to 
-                //add the view to its outer canvas
-                //dynSettings.Bench.outerCanvas.Children.Add(_view);
-                //Canvas.SetBottom(_view, 0);
-                //Canvas.SetRight(_view, 0);
-
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(_view));
-
-                init = true;
-            }
-            
-            if (funcDef is FunctionDefinition)
-            {
-                var f = funcDef as FunctionDefinition;
-
-                dynSettings.Controller.PackageManagerPublishViewModel.FunctionDefinition =
-                    f;
-
-                // we're submitting a new version
-                if ( dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders.ContainsKey(f) )
+                foreach (var f in fs)
                 {
-                    dynSettings.Controller.PackageManagerPublishViewModel.PackageHeader =
-                        dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders[f];
+                    var pkg = dynSettings.PackageLoader.GetOwnerPackage(f);
+
+                    if (dynSettings.PackageLoader.GetOwnerPackage(f) != null)
+                    {
+                        var m = MessageBox.Show("The node is part of the dynamo package called \"" + pkg.Name + 
+                            "\" - do you want to submit a new version of this package?  \n\nIf not, this node will be moved to the new package you are creating.", 
+                            "Package Warning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (m == MessageBoxResult.Yes)
+                        {
+                            pkg.PublishNewPackageVersionCommand.Execute();
+                            return;
+                        }
+                    }
                 }
+
+                dynSettings.Controller.PublishPackageViewModel = new PublishPackageViewModel(dynSettings.Controller.PackageManagerClient);
+                dynSettings.Controller.PublishPackageViewModel.FunctionDefinitions = fs;
+
             }
             else
             {
                 dynSettings.Controller.DynamoViewModel.Log("Failed to obtain function definition from node.");
                 return;
             }
-            
+
+            _view = new PackageManagerPublishView(dynSettings.Controller.PublishPackageViewModel);
+
         }
 
         public event EventHandler CanExecuteChanged
@@ -118,61 +87,7 @@ namespace Dynamo.Commands
         }
     }
 
-    public class ShowLoginCommand : ICommand
-    {
-        private bool _init;
-
-        public void Execute(object parameters)
-        {
-            if (!_init)
-            {
-                var loginView = new PackageManagerLoginView(dynSettings.Controller.PackageManagerLoginViewModel);
-
-                //MVVM: event on current workspace model view now adds views to canvas
-                //dynSettings.Bench.outerCanvas.Children.Add(loginView);
-                //Canvas.SetBottom(loginView, 0);
-                //Canvas.SetRight(loginView, 0);
-
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(loginView));
-
-                _init = true;
-            }
-
-            dynSettings.Controller.PackageManagerLoginViewModel.Visible = Visibility.Visible;
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
-    }
-
-    public class RefreshRemotePackagesCommand : ICommand
-    {
-        public void Execute(object parameters)
-        {
-            dynSettings.Controller.PackageManagerClient.RefreshAvailable();
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
-    }
-
-    public class PublishSelectedNodeCommand : ICommand
+    public class PublishSelectedNodesCommand : ICommand
     {
         private PackageManagerClient _client;
 
@@ -180,24 +95,25 @@ namespace Dynamo.Commands
         {
             this._client = dynSettings.Controller.PackageManagerClient;
 
-            var nodeList = DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel && ((dynNodeModel)x) is dynFunction )
-                                        .Select(x => ( ((dynNodeModel)x) as dynFunction ).Definition.FunctionId ).ToList();
+            var nodeList = DynamoSelection.Instance.Selection
+                                .Where(x => x is dynFunction)
+                                .Cast<dynFunction>()
+                                .Select(x => x.Definition.FunctionId )
+                                .ToList();
 
-            if (nodeList.Count != 1)
+            if (!nodeList.Any())
             {
-                MessageBox.Show("You must select a single user-defined node.  You selected " + nodeList.Count + " nodes." , "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                MessageBox.Show("You must select at least one custom node.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
                 return;
             }
 
-            if ( dynSettings.Controller.CustomNodeLoader.Contains( nodeList[0] ) )
-            {
-                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute( dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition( nodeList[0]) );
-            }
-            else
-            {
-                MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
-            }
+            var defs = nodeList.Select(dynSettings.CustomNodeManager.GetFunctionDefinition).ToList();
 
+            if (defs.Any(x=> x == null))
+                MessageBox.Show("There was a problem getting the node from the workspace.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+
+            DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(defs);
+            
         }
 
         public event EventHandler CanExecuteChanged
@@ -224,16 +140,16 @@ namespace Dynamo.Commands
             
             if ( dynSettings.Controller.DynamoViewModel.ViewingHomespace )
             {
-                MessageBox.Show("You can't publish your the home workspace.", "Workspace Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                MessageBox.Show("You can only publish Custom Node workspaces.", "Workspace Error", MessageBoxButton.OK, MessageBoxImage.Question);
                 return;
             }
 
             var currentFunDef =
-                dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(dynSettings.Controller.DynamoViewModel.CurrentSpace);
+                dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(dynSettings.Controller.DynamoViewModel.CurrentSpace);
 
             if ( currentFunDef != null )
             {
-                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(currentFunDef);
+                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(new List<FunctionDefinition> {currentFunDef});
             }
             else
             {
@@ -253,7 +169,7 @@ namespace Dynamo.Commands
             return true;
         }
     }
-    
+
     public static partial class DynamoCommands
     {
 
@@ -279,48 +195,16 @@ namespace Dynamo.Commands
             }
         }
 
-        private static PublishSelectedNodeCommand publishSelectedNodeCmd;
-        public static PublishSelectedNodeCommand PublishSelectedNodeCmd
+        private static PublishSelectedNodesCommand _publishSelectedNodesCmd;
+        public static PublishSelectedNodesCommand PublishSelectedNodesCmd
         {
             get
             {
-                if (publishSelectedNodeCmd == null)
-                    publishSelectedNodeCmd = new PublishSelectedNodeCommand();
-                return publishSelectedNodeCmd;
+                if (_publishSelectedNodesCmd == null)
+                    _publishSelectedNodesCmd = new PublishSelectedNodesCommand();
+                return _publishSelectedNodesCmd;
             }
         }
 
-        private static RefreshRemotePackagesCommand refreshRemotePackagesCmd;
-        public static RefreshRemotePackagesCommand RefreshRemotePackagesCmd
-        {
-            get
-            {
-                if (refreshRemotePackagesCmd == null)
-                    refreshRemotePackagesCmd = new RefreshRemotePackagesCommand();
-                return refreshRemotePackagesCmd;
-            }
-        }
-
-        private static ShowLoginCommand showLoginCmd;
-        public static ShowLoginCommand ShowLoginCmd
-        {
-            get
-            {
-                if (showLoginCmd == null)
-                    showLoginCmd = new ShowLoginCommand();
-                return showLoginCmd;
-            }
-        }
-
-        private static LoginCommand loginCmd;
-        public static LoginCommand LoginCmd
-        {
-            get
-            {
-                if (loginCmd == null)
-                    loginCmd = new LoginCommand();
-                return loginCmd;
-            }
-        }
     }
 }

@@ -197,6 +197,11 @@ namespace Dynamo.Search
             return _tagDictionary[tag];
         }
 
+        public bool Contains(V a)
+        {
+            return this._symbolDictionary.Keys.Any(x => x.Equals(a));
+        }
+
         /// <summary>
         ///     Filter the elements in the SearchDictionary, based on whether there is a string
         ///     in the tag matching the query

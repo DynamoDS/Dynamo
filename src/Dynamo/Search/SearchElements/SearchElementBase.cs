@@ -74,5 +74,6 @@ namespace Dynamo.Search.SearchElements
         {
             return this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
         }
+
     }
 }
