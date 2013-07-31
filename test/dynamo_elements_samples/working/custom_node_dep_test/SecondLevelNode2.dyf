@@ -1,0 +1,24 @@
+<dynWorkspace X="0" Y="0" Name="SecondLevelNode2" Category="Analyze.Display" ID="a4ed776b-cd49-49ac-905b-18c3ad8831d6">
+  <dynElements>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="3c4bbfe4-9344-4677-911d-945388594652" nickname="ThirdLevelCustomNodeB1" x="296.59941528067" y="178.423794786326" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="23862f9c-5281-44a3-8afd-eae92f97cc73" />
+      <Name value="ThirdLevelCustomNodeB1" />
+      <Inputs />
+      <Outputs />
+    </Dynamo.Nodes.dynFunction>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="73a010d4-8f2a-445d-93a9-514f42ec9c7c" nickname="ThirdLevelCustomNodeB2" x="495.04910987711" y="183.293137832365" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd694d48-3427-401f-913e-40ac567e0721" />
+      <Name value="ThirdLevelCustomNodeB2" />
+      <Inputs />
+      <Outputs />
+    </Dynamo.Nodes.dynFunction>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="405967cf-9f38-4a47-8c69-ed1f7f1b79a1" nickname="ThirdLevelCustomNodeB3" x="671.801084541157" y="195.769448565361" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="78b1ea03-8d37-4c3e-bf74-f054bf1294d7" />
+      <Name value="ThirdLevelCustomNodeB3" />
+      <Inputs />
+      <Outputs />
+    </Dynamo.Nodes.dynFunction>
+  </dynElements>
+  <dynConnectors />
+  <dynNotes />
+</dynWorkspace>

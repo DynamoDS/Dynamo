@@ -14,9 +14,11 @@ namespace Dynamo.Utilities
             CollectionChanged += TrulyObservableCollection_CollectionChanged;
         }
 
-        public TrulyObservableCollection(IEnumerable<T> enumerable) 
+        public TrulyObservableCollection(IEnumerable<T> enumerable)
             : base(enumerable)
-        { } 
+        {
+            //CollectionChanged += TrulyObservableCollection_CollectionChanged;
+        } 
 
         void TrulyObservableCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
