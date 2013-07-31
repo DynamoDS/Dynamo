@@ -1011,7 +1011,9 @@ namespace Dynamo.Nodes
 
         private static string formatSelectionText(IEnumerable<Element> elements)
         {
-            return String.Join(" ", elements.Select(x => x.Id.ToString()));
+            return elements.Any() 
+                ? String.Join(" ", elements.Select(x => x.Id.ToString())) 
+                : "Nothing Selected";
         }
 
         public override string SelectionText
@@ -1019,7 +1021,7 @@ namespace Dynamo.Nodes
             get
             {
                 return _selectionText = (SelectedElements != null && SelectedElements.Count > 0)
-                                            ? "Element IDs:" + formatSelectionText(SelectedElements)
+                                            ? "Element IDs:" + formatSelectionText(SelectedElements.Where(x => x != null))
                                             : "Nothing Selected";
             }
             set
