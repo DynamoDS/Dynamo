@@ -28,6 +28,9 @@ namespace Dynamo
             
             dynRevitSettings.Controller = this;
 
+            //AppDomain currentDomain = AppDomain.CurrentDomain;
+            //currentDomain.AssemblyResolve += ResolveSSONETHandler;
+
             dynSettings.PackageManagerClient.AuthenticationRequested += RegisterSingleSignOn;
 
             AddPythonBindings();
@@ -46,6 +49,44 @@ namespace Dynamo
         {
             var ads = Autodesk.Revit.AdWebServicesBase.GetInstance();
             client.Client.Provider = new Greg.RevitOxygenProvider(ads);
+        }
+
+        /// <summary>
+        /// This module is dependent on the IntfSPD assembly, which will not be in the 
+        /// executing directory
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args">Contains the name of the assembly</param>
+        /// <returns></returns>
+        private Assembly ResolveSSONETHandler(object sender, ResolveEventArgs args)
+        {
+            //Retrieve the list of referenced assemblies in an array of AssemblyName.
+            Assembly MyAssembly, objExecutingAssemblies;
+            string strTempAssmbPath = "";
+
+            if (args.Name.Substring(0, args.Name.IndexOf(",")).ToLower() == "SSONET.dll".ToLower())
+            {
+                if (this.Context == "Revit 2013")
+                {
+                    strTempAssmbPath = @"C:\Program Files\Autodesk\Revit Architecture 2013\Program\SSONET.dll";
+                }
+                else if (this.Context == "Revit 2014")
+                {
+                    strTempAssmbPath = @"C:\Program Files\Autodesk\Revit Architecture 2014\Program\SSONET.dll";
+                }
+                else if (this.Context == "Vasari 2014") {
+                    strTempAssmbPath = @"C:\Program Files\Autodesk\Vasari Beta 3\Program\SSONET.dll";
+                }
+            } else
+            {
+                
+            }
+
+            //Load the assembly from the specified path. 					
+            MyAssembly = Assembly.LoadFrom(strTempAssmbPath);
+
+            //Return the loaded assembly.
+            return MyAssembly;	
         }
 
         void FindNodesFromSelection()
