@@ -44,6 +44,13 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
 
+            if (port != null)
+            {
+                if (port.IsOpen)
+                    port.Close();
+            }
+            port = null;
+
             if (port == null)
             {
                 port = new SerialPort();
