@@ -178,8 +178,26 @@ namespace Dynamo.Utilities
                                 }
                                 if (iExclusion > -1)
                                     continue;
-                            }
 
+                                //utility was late for Vasari release, but could be available with after-post RevitAPI.dll
+                                if (t.Name.Equals("dynSkinCurveLoops"))
+                                {
+                                    MethodInfo[] specialTypeStaticMethods = t.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+                                    String nameOfMethodCreate = "noSkinSolidMethod";
+                                    bool exclude = true;
+                                    foreach (MethodInfo m in specialTypeStaticMethods)
+                                    {
+                                        if (m.Name == nameOfMethodCreate)
+                                        {
+                                            object[] argsM = new object[0];
+                                            exclude = (bool)m.Invoke(null, argsM);
+                                            break;
+                                        }
+                                    }
+                                    if (exclude)
+                                        continue;
+                                }
+                            }
                         }
 
                         string typeName;
