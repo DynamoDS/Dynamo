@@ -128,15 +128,13 @@ namespace Dynamo.Search.SearchElements
             this._description = description;
         }
 
-
-
         /// <summary>
         ///     The class constructor - use this constructor when for
         ///     custom nodes
         /// </summary>
         /// <param name="name">The name of the custom node</param>
         /// <param name="guid">The unique id for the custom node</param>
-        public NodeSearchElement(string name, Guid guid)
+        public NodeSearchElement(string name, string description, Guid guid)
         {
             ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = null;
@@ -145,7 +143,7 @@ namespace Dynamo.Search.SearchElements
             this.Keywords = "";
             this._type = "Custom Node";
             this.Guid = guid;
-            this._description = "";
+            this._description = description;
         }
 
         /// <summary>
@@ -216,6 +214,8 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+
+        public string FullCategoryName { get; set; }
     }
 
 }

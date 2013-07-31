@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
@@ -160,8 +161,12 @@ namespace Dynamo.Nodes
             }
         }
 
+        private bool _overrideNameWithNickName = false;
+        public bool OverrideNameWithNickName { get { return _overrideNameWithNickName; } set { this._overrideNameWithNickName = value; RaisePropertyChanged("OverrideNameWithNickName"); } }
+
         public string NickName
         {
+            //get { return OverrideNameWithNickName ? _nickName : this.Name; }
             get { return _nickName; }
             set
             {
@@ -227,6 +232,8 @@ namespace Dynamo.Nodes
                 return "";
             }
         }
+
+
 
         /// <summary>
         ///     Category property
@@ -368,19 +375,21 @@ namespace Dynamo.Nodes
         }
 
         public string _description = null;
-        public string Description
+        public virtual string Description
         {
             get { 
-                _description = _description ?? GetDescriptionString();
+                _description = _description ?? GetDescriptionStringFromAttributes();
                 return _description;
             }
+            set { _description = value;
+                  RaisePropertyChanged("Description");}
         }
 
         /// <summary>
         ///     Get the description from type information
         /// </summary>
         /// <returns>The value or "No description provided"</returns>
-        public string GetDescriptionString()
+        public string GetDescriptionStringFromAttributes()
         {
             var t = GetType();
             object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
@@ -409,6 +418,8 @@ namespace Dynamo.Nodes
 
             IsVisible = true;
             IsUpstreamVisible = true;
+
+            this.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args) { if(args.PropertyName == "OverrideName") this.RaisePropertyChanged("NickName"); };
 
             //Fetch the element name from the custom attribute.
             var nameArray = GetType().GetCustomAttributes(typeof(NodeNameAttribute), true);
@@ -1695,14 +1706,14 @@ namespace Dynamo.Nodes
             if (entry is dynFunction)
             {
                 var symbol = Guid.Parse((entry as dynFunction).Symbol);
-                if (!dynSettings.Controller.CustomNodeLoader.Contains(symbol))
+                if (!dynSettings.Controller.CustomNodeManager.Contains(symbol))
                 {
                     dynSettings.Controller.DynamoViewModel.Log("WARNING -- No implementation found for node: " + symbol);
                     entry.Error("Could not find .dyf definition file for this node.");
                     return false;
                 }
 
-                result = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(symbol)
+                result = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(symbol)
                     .Workspace.GetTopMostNodes().Any(ContinueTraversalUntilAny);
             }
             resultDict[entry] = result;

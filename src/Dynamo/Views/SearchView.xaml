@@ -145,6 +145,7 @@ Source="..\Images\search_24.png" Opacity="1" Grid.Column="0">
 
                                     <Border Name="ContainerLight" BorderThickness="3,0,0,0" BorderBrush="#222">
                                         <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" >
+
                                             <Grid Background="Transparent">
 
                                                 <Grid.ColumnDefinitions>
@@ -161,8 +162,10 @@ Source="..\Images\search_24.png" Opacity="1" Grid.Column="0">
                                                 <ToggleButton Margin="5,10,5,0" Grid.Row="0" VerticalAlignment="Top" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
                                                 <Rectangle Margin="5,10,5,0" Grid.Row="0" Width="7" Height="7" x:Name="whiteRect" VerticalAlignment="Top" Fill="#FFFFFF" HorizontalAlignment="Center" Visibility="Collapsed" />
 
+
                                                 <Border Margin="5,7,5,5" Grid.Column="1" Grid.ColumnSpan="2" Name="C" VerticalAlignment="Center" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
                                                     <ContentPresenter Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ContentSource="Header"/>
+
                                                 </Border>
 
                                                 <ItemsPresenter Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"  x:Name="ItemsHost" />
@@ -233,7 +236,6 @@ Source="..\Images\search_24.png" Opacity="1" Grid.Column="0">
             <!--CATEGORIES-->
 
             <TreeView ItemsSource="{Binding Path=BrowserRootCategories}" Style="{StaticResource SearchTreeView}" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="1" >
-
                 <TreeView.Resources>
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
@@ -243,6 +245,7 @@ Source="..\Images\search_24.png" Opacity="1" Grid.Column="0">
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
+
 
                         <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
 

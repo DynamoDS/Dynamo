@@ -27,13 +27,13 @@ namespace Dynamo.Utilities
             var selectedNodeSet = new HashSet<dynNodeModel>(selectedNodes);
 
             //First, prompt the user to enter a name
-            string newNodeName ="", newNodeCategory ="";
-            if (!dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory))
+            string newNodeName = "", newNodeCategory = "", newNodeDescription = "A collapsed node";
+            if (!dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory, ref newNodeDescription))
             {
                 return;
             }
 
-            var newNodeWorkspace = new FuncWorkspace(newNodeName, newNodeCategory, 0, 0)
+            var newNodeWorkspace = new FuncWorkspace(newNodeName, newNodeCategory, newNodeDescription, 0, 0)
             {
                 WatchChanges = false
             };
@@ -455,14 +455,14 @@ namespace Dynamo.Utilities
 
             //set the name on the node
             collapsedNode.NickName = newNodeName;
-
             currentWorkspace.Nodes.Remove(collapsedNode);
 
             // save and load the definition from file
-            dynSettings.Controller.CustomNodeLoader.SetNodeInfo(newNodeName, newNodeCategory, newNodeDefinition.FunctionId, "");
+            var customNodeInfo = new CustomNodeInfo(newNodeDefinition.FunctionId, newNodeName, newNodeCategory, "", "");
+            dynSettings.Controller.CustomNodeManager.SetNodeInfo(customNodeInfo);
             var path = dynSettings.Controller.DynamoViewModel.SaveFunctionOnly(newNodeDefinition);
-            dynSettings.Controller.CustomNodeLoader.SetNodePath(newNodeDefinition.FunctionId, path);
-            dynSettings.Controller.SearchViewModel.Add(newNodeName, newNodeCategory, newNodeDefinition.FunctionId);
+            dynSettings.Controller.CustomNodeManager.SetNodePath(newNodeDefinition.FunctionId, path);
+            dynSettings.Controller.SearchViewModel.Add(newNodeName, newNodeCategory, "No description provided", newNodeDefinition.FunctionId);
 
             dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
                 {
