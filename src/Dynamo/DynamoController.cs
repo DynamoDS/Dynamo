@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
 using System.Windows.Threading;
-
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
@@ -169,7 +168,6 @@ namespace Dynamo
 
             //create the view model to which the main window will bind
             //the DynamoModel is created therein
-
             this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(viewModelType,new object[]{this});
 
             // custom node loader
