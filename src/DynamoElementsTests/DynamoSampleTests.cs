@@ -86,6 +86,8 @@ namespace Dynamo.Tests
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
+
+                
             }
         }
 
