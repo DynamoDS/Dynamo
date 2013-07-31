@@ -274,6 +274,7 @@ namespace Dynamo
                         // if the dyf does not exist on the search path...
                         if (!dynSettings.Controller.CustomNodeManager.Contains(funcId))
                         {
+                            
                             var proxyDef = new FunctionDefinition(funcId)
                             {
                                 Workspace =

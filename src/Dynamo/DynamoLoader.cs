@@ -88,12 +88,12 @@ namespace Dynamo.Utilities
                 if (LoadedAssemblyNames.Contains(fn))
                     continue;
 
-                LoadedAssemblyNames.Add( fn );
+                LoadedAssemblyNames.Add(fn);
 
                 if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
                 {
                     LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
-                }   
+                }
                 else
                 {
                     try
@@ -114,6 +114,7 @@ namespace Dynamo.Utilities
 
         }
 
+
         /// <summary>
         ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
         ///     out what nodes to load from other libraries (.dlls).
@@ -125,12 +126,6 @@ namespace Dynamo.Utilities
             return t.Namespace == "Dynamo.Nodes" &&
                    !t.IsAbstract &&
                    t.IsSubclassOf(typeof(dynNodeModel));
-        }
-
-        public static void UnloadTypesFromAssembly(string assemblyPath)
-        {
-
-            //AssemblyPathToTypesLoaded.
         }
 
         /// <summary>
@@ -369,7 +364,7 @@ namespace Dynamo.Utilities
             var customNodeLoader = dynSettings.CustomNodeManager;
             var searchViewModel = dynSettings.Controller.SearchViewModel;
 
-            var loadedNodes = customNodeLoader.LoadNodesFromDirectory(path).ToList();
+            var loadedNodes = customNodeLoader.ScanNodeHeadersInDirectory(path).ToList();
             customNodeLoader.AddDirectoryToSearchPath(path);
 
             // add nodes to search
@@ -390,6 +385,12 @@ namespace Dynamo.Utilities
         internal static void AddBinarySearchPath(string p)
         {
             SearchPaths.Add(p);
+        }
+
+        internal static void ClearCachedAssemblies()
+        {
+            LoadedAssemblyNames = new HashSet<string>();
+            AssemblyPathToTypesLoaded = new Dictionary<string, List<Type>>();
         }
     }
 }
