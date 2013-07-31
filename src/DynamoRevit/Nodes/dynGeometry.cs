@@ -1489,7 +1489,7 @@ namespace Dynamo.Nodes
 
         public dynElementGeometryObjects()
         {
-            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.List)));
+            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.Container)));
             OutPortData.Add(new PortData("Geometry objects of the element", "List", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -1551,7 +1551,7 @@ namespace Dynamo.Nodes
 
         public dynElementSolid()
         {
-            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.List)));
+            InPortData.Add(new PortData("element", "element to create geometrical reference to", typeof(Value.Container)));
             OutPortData.Add(new PortData("solid", "solid in the element's geometry objects", typeof(object)));
 
             RegisterAllPorts();
