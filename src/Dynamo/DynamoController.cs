@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
 using System.Windows.Threading;
-
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
@@ -56,10 +55,9 @@ namespace Dynamo
         private bool isProcessingCommandQueue = false;
         private bool testing = false;
 
-        public CustomNodeLoader CustomNodeLoader { get; internal set; }
+        public CustomNodeManager CustomNodeManager { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
-        public PackageManagerLoginViewModel PackageManagerLoginViewModel { get; internal set; }
-        public PackageManagerPublishViewModel PackageManagerPublishViewModel { get; internal set; }
+        public PublishPackageViewModel PublishPackageViewModel { get; internal set; }
         public PackageManagerClient PackageManagerClient { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
@@ -170,19 +168,23 @@ namespace Dynamo
 
             //create the view model to which the main window will bind
             //the DynamoModel is created therein
-
             this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(viewModelType,new object[]{this});
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
 
-            CustomNodeLoader = new CustomNodeLoader(pluginsPath);
-
+            CustomNodeManager = new CustomNodeManager(pluginsPath);
+            
             SearchViewModel = new SearchViewModel();
-            PackageManagerClient = new PackageManagerClient(this);
-            PackageManagerLoginViewModel = new PackageManagerLoginViewModel(PackageManagerClient);
-            PackageManagerPublishViewModel = new PackageManagerPublishViewModel(PackageManagerClient);
+            PackageManagerClient = new PackageManagerClient();
+            dynSettings.PackageManagerClient = PackageManagerClient;
+            PublishPackageViewModel = new PublishPackageViewModel(PackageManagerClient);
+
+            dynSettings.PackageLoader = new PackageLoader();
+
+            dynSettings.PackageLoader.DoCachedPackageUninstalls();
+            dynSettings.PackageLoader.LoadPackages();
 
             FSchemeEnvironment = env;
 
@@ -193,7 +195,8 @@ namespace Dynamo
                 "Dynamo -- Build {0}",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
-            DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);
+            DynamoLoader.ClearCachedAssemblies();
+            DynamoLoader.LoadBuiltinTypes();
 
             //run tests
             if (FScheme.RunTests(dynSettings.Controller.DynamoViewModel.Log))

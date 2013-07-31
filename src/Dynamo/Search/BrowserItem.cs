@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -162,6 +163,12 @@ namespace Dynamo.Nodes.Search
 
             public void Execute(object parameters)
             {
+                if (item is PackageManagerSearchElement)
+                {
+                    item.IsExpanded = !item.IsExpanded;
+                    return;
+                }
+
                 if (item is SearchElementBase)
                 {
                     ((SearchElementBase) item).Execute();

@@ -105,6 +105,8 @@ namespace Dynamo.Nodes.Search
             this.OldParent = null;
         }
 
+
+        public string FullCategoryName { get; set; }
     }
 }
 

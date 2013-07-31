@@ -69,7 +69,8 @@ namespace Dynamo.Connectors
         {
             dynSettings.ReturnFocusToSearch();
 
-            ViewModel.ConnectCommand.Execute();
+            if (ViewModel != null)
+                ViewModel.ConnectCommand.Execute();
     
             //set the handled flag so that the element doesn't get dragged
             e.Handled = true;
