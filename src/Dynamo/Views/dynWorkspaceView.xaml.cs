@@ -100,6 +100,11 @@ namespace Dynamo.Views
             }
         }
 
+        public void WorkspacePublishClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            
+        }
+
         void selectionCanvas_Loaded(object sender, RoutedEventArgs e)
         {
             Stopwatch sw = new Stopwatch();

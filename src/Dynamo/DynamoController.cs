@@ -197,6 +197,7 @@ namespace Dynamo
                 "Dynamo -- Build {0}",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
+            DynamoLoader.ClearCachedAssemblies();
             DynamoLoader.LoadBuiltinTypes();
 
             //run tests

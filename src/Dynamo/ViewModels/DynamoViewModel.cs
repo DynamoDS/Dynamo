@@ -1813,9 +1813,8 @@ namespace Dynamo.Controls
                     if (!ViewingHomespace)
                         ViewHomeWorkspace();
 
-                    Controller.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(xmlPath));
-                    Controller.CustomNodeManager.UpdateSearchPath();
-
+                    var loaded = DynamoLoader.LoadCustomNodes(Path.GetDirectoryName(xmlPath));
+                    //var loaded = Controller.CustomNodeManager.ScanNodeHeadersInDirectory(Path.GetDirectoryName(xmlPath));
                     return OpenWorkspace(xmlPath);
                 }
                 else if (Controller.CustomNodeManager.Contains(funName))

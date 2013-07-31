@@ -260,7 +260,8 @@ namespace Dynamo.Utilities
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
         public IEnumerable<CustomNodeInfo> UpdateSearchPath()
         {
-            return SearchPath.Select(LoadNodesFromDirectory).SelectMany(x => x);
+            var nodes = SearchPath.Select(ScanNodeHeadersInDirectory);
+            return nodes.SelectMany(x => x);
         }
 
         /// <summary>
@@ -268,11 +269,11 @@ namespace Dynamo.Utilities
         ///     Does not instantiate the nodes.
         /// </summary>
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public IEnumerable<CustomNodeInfo> LoadNodesFromDirectory(string dir)
+        public IEnumerable<CustomNodeInfo> ScanNodeHeadersInDirectory(string dir)
         {
             return Directory.EnumerateFiles(dir, "*.dyf")
                             .Select(AddFileToPath)
-                            .Where(nodeInfo => nodeInfo != null);
+                            .Where(nodeInfo => nodeInfo != null).ToList();
         }
 
         /// <summary>
