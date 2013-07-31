@@ -1021,7 +1021,7 @@ namespace Dynamo.Nodes
             get
             {
                 return _selectionText = (SelectedElements != null && SelectedElements.Count > 0)
-                                            ? "Element IDs:" + formatSelectionText(SelectedElements.Where(x => x != null))
+                                            ? "Element IDs:" + formatSelectionText(SelectedElements.Where(x => x != null && x.Id != null))
                                             : "Nothing Selected";
             }
             set
