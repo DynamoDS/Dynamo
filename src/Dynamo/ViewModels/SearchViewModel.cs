@@ -807,6 +807,15 @@ namespace Dynamo.Search
 
             var searchEle = new NodeSearchElement(name, description, tags);
 
+            attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
+            bool searchable = true;
+            if (attribs.Length > 0)
+            {
+                searchable = (attribs[0] as NodeSearchableAttribute).IsSearchable;
+            }
+
+            searchEle.SetSearchable(searchable);
+
             // if it's a revit search element, keep track of it
             if ( cat.Equals(BuiltinNodeCategories.REVIT_API) )
             {

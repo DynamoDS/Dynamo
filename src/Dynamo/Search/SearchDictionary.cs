@@ -249,6 +249,11 @@ namespace Dynamo.Search
                         double weight = matchCloseness;
                         // search elements have a weight associated with them
                         var @base = ele as SearchElementBase;
+
+                        // ignore elements which should not be search for
+                        if (@base.Searchable == false)
+                            continue;
+
                         if (@base != null)
                             weight *= @base.Weight;
 
