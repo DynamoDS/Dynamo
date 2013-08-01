@@ -1614,6 +1614,21 @@ namespace Dynamo.Nodes
     }
 
     [AttributeUsage(AttributeTargets.All)]
+    public class NodeSearchableAttribute : System.Attribute
+    {
+        public bool IsSearchable
+        {
+            get;
+            set;
+        }
+
+        public NodeSearchableAttribute(bool isSearchable)
+        {
+            IsSearchable = isSearchable;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
     public class NodeTypeIdAttribute : System.Attribute
     {
         public string Id

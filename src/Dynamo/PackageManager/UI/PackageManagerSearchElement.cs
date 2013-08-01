@@ -170,6 +170,8 @@ namespace Dynamo.PackageManager
             /// Higher = closer to the top of search results </value>
             public override double Weight { get; set; }
 
+            public override bool Searchable { get { return true; } }
+
             /// <summary>
             /// Guid property </summary>
             /// <value>

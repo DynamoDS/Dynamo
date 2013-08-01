@@ -90,6 +90,8 @@ namespace Dynamo.Search.SearchElements
             /// Number defining the relative importance of the element in search.  Higher the better </value>
             public override double Weight { get; set; }
 
+            public override bool Searchable { get { return true; } }
+
             /// <summary>
             /// Keywords property </summary>
             /// <value>
