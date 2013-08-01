@@ -62,7 +62,6 @@ New
 - Equal Distance XYZs on Curve node
 - Get Active View Node
 - Smooth Node (running average for a numberical output)
-- 
 
 ###0.5.2###
 
