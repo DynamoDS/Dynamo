@@ -3125,7 +3125,7 @@ namespace Dynamo.Nodes
         private static IDoubleInputToken ParseToken(string id, HashSet<string> identifiers, List<string> list)
         {
             double dbl;
-            if (double.TryParse(id, out dbl))
+            if (double.TryParse(id, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
                 return new DoubleToken(dbl);
 
             var match = dynSublists.IdentifierPattern.Match(id);
@@ -4241,7 +4241,7 @@ namespace Dynamo.Nodes
             //target -> source
             //return value.ToString();
 
-            double val = 0.0;
+            double val;
             double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
             Debug.WriteLine("Converting {0} -> {1}", value, val);
             return val;
