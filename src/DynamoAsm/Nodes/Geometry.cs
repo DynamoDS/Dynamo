@@ -187,7 +187,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point 2D")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a point in the XY plane.")]
@@ -225,7 +225,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a point in 3D space.")]
@@ -259,7 +259,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point X")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the X value of a Point.")]
@@ -284,7 +284,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point Y")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the Y value of a Point.")]
@@ -309,7 +309,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point Z")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the Z value of a Point.")]
@@ -334,7 +334,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Vector X")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the X value of a Vector.")]
@@ -359,7 +359,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Vector Y")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the Y value of a Vector.")]
@@ -384,7 +384,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Vector Z")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the Z value of a Vector.")]
@@ -409,7 +409,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Vector")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a Vector representing a direction.")]
@@ -450,7 +450,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("CoordinateSystem")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a CoordinateSystem.")]
@@ -482,7 +482,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Line")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a Line between two Points.")]
@@ -512,7 +512,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Circle")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a Circle at a Point with radius")]
@@ -546,7 +546,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Sweep As Surface")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Sweep a Crve along a path producing a Surface")]
@@ -577,7 +577,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Sweep As Solid")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Sweep a Crve along a path producing a Solid")]
@@ -608,7 +608,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Length")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Get the length of a Curve.")]
@@ -633,7 +633,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Area")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Get the area of a Surface.")]
@@ -658,7 +658,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Translate")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Translate Object.")]
@@ -700,7 +700,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("BSplineCurve")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a B-Spline Curve through input points.")]
@@ -735,7 +735,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Closed BSplineCurve")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a B-Spline Curve through input points.")]
@@ -770,7 +770,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Polygon")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a Polygon from a set of points.")]
@@ -805,7 +805,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Loft")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Loft Curves to create a surface")]
@@ -840,7 +840,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Draw")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Draws Geometry created in a Python or external script")]
@@ -869,7 +869,7 @@ namespace Dynamo.Nodes
     }
 
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Patch")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Patch Curves to create a Surface")]
@@ -904,7 +904,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Extrude Curve")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extrude a curve in a direction.")]
@@ -938,7 +938,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Cuboid")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Cuboid is like a cube, or a shoebox.")]
@@ -973,7 +973,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Plane")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Plane, an infinite 2D expanse in 3D space.")]
@@ -1004,7 +1004,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point At Parameter")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Point at parameter along Curve.")]
@@ -1035,7 +1035,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point At Distance")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Point at distance along Curve.")]
@@ -1066,7 +1066,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Normal At Parameter")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Normal at Parameter along Curve.")]
@@ -1095,7 +1095,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point At UV Parameter")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Point at Parameter on Surface.")]
@@ -1129,7 +1129,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Normal At UV Parameter")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Normal at Parameter on Surface.")]
@@ -1160,7 +1160,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Thicken Surface")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Thicken / Extrude a Surface by an amount.")]
@@ -1194,7 +1194,7 @@ namespace Dynamo.Nodes
 
 
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Intersect")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Intersect two pieces of Geometry.")]
@@ -1252,7 +1252,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Trim")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Trim Geometry with a tool Geometry.")]
@@ -1299,7 +1299,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Import SAT")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Import SAT Geometry from file.")]
@@ -1351,7 +1351,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Export To SAT")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Export Geometry to a SAT file.")]
