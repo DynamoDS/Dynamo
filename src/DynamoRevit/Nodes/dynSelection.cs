@@ -1203,8 +1203,23 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             if (_reference.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_SURFACE &&
-                _reference.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR)
-                throw new Exception("Could not use face or edge which is not part of the model");
+                _reference.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR )
+            {
+                ElementId refElementId = _reference.ElementId;
+                Element refElement = dynRevitSettings.Doc.Document.GetElement(refElementId);
+                if (refElement is ReferencePoint)
+                {
+                    ReferencePoint rp = refElement as ReferencePoint;
+                    XYZ rpXYZ = rp.Position;
+                    return Value.NewContainer(rpXYZ);
+                }
+                GeometryObject thisObjectPoint = SelectedElement.GetGeometryObjectFromReference(_reference);
+                if (!(thisObjectPoint is Autodesk.Revit.DB.Point))
+                    throw new Exception("Could not use face or edge which is not part of the model");
+                var thisPoint = thisObjectPoint as Autodesk.Revit.DB.Point;
+                XYZ pointXYZ = thisPoint.Coord;
+                return Value.NewContainer(pointXYZ);
+            }
 
             GeometryObject thisObject = SelectedElement.GetGeometryObjectFromReference(_reference);
             Autodesk.Revit.DB.Transform thisTrf = null;

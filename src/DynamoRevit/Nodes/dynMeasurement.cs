@@ -254,8 +254,9 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Length")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Enter a length in project units.")]
+    [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
     public class dynLengthInput : dynNodeWithOneOutput
     {
         private DynamoLength<Foot> _measure;
