@@ -651,7 +651,8 @@ namespace Dynamo.Models
                 if (canLoad)
                     SaveFunction(def, false);
 
-                dynSettings.Controller.PackageManagerClient.LoadPackageHeader(def, funName);
+                //TODO: UI Refactor - This method seems to be no longer available. Confirm pacakage headers are being loaded.
+                //dynSettings.Controller.PackageManagerClient.LoadPackageHeader(def, funName);
 
                 nodeWorkspaceWasLoaded(def, children, parents);
 
@@ -1865,10 +1866,13 @@ namespace Dynamo.Models
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         public void RefactorCustomNode(object parameter)
         {
-
             //Bench.workspaceLabel.Content = Bench.editNameBox.Text;
             var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(CurrentSpace);
-            dynSettings.Controller.SearchViewModel.Refactor(def, editName, (CurrentSpace).Name);
+
+            //TODO: UI Refactor - Is this the right data for refactor?
+            var info = new CustomNodeInfo(def.FunctionId, editName, CurrentSpace.Category, CurrentSpace.Description, CurrentSpace.FilePath);
+            //dynSettings.Controller.SearchViewModel.Refactor(def, editName, (CurrentSpace).Name);
+            dynSettings.Controller.SearchViewModel.Refactor(info);
 
             //Update existing function nodes
             foreach (dynNodeModel el in AllNodes)

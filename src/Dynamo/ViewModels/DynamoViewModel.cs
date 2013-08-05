@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -7,19 +6,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting;
 using System.Windows;
 using System.Windows.Forms;
-using System.Xml;
-using System.Globalization;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism;
-using NUnit.Framework;
 using Dynamo.PackageManager.UI;
 
 namespace Dynamo.ViewModels
@@ -127,13 +121,13 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
         public DelegateCommand SelectNeighborsCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
-        public DelegateCommand RefreshRemotePackagesCmd { get; set; }
+        //public DelegateCommand RefreshRemotePackagesCmd { get; set; }
         public DelegateCommand SubmitCommand { get; set; }
-        public DelegateCommand ShowNodeNodePublishInfoCmd { get; set; }
-        public DelegateCommand PublishCurrentWorkspaceCmd { get; set; }
-        public DelegateCommand PublishSelectedNodeCmd { get; set; }
-        public DelegateCommand ShowLoginCmd { get; set; }
-        public DelegateCommand LoginCmd { get; set; }
+        //public DelegateCommand ShowNodeNodePublishInfoCmd { get; set; }
+        //public DelegateCommand PublishCurrentWorkspaceCmd { get; set; }
+        //public DelegateCommand PublishSelectedNodeCmd { get; set; }
+        //public DelegateCommand ShowLoginCmd { get; set; }
+        //public DelegateCommand LoginCmd { get; set; }
         public DelegateCommand PanCommand { get; set; }
 
         /// <summary>
@@ -411,6 +405,8 @@ namespace Dynamo.ViewModels
             ClearLogCommand = new DelegateCommand(dynSettings.Controller.ClearLog, dynSettings.Controller.CanClearLog);
             PanCommand = new DelegateCommand(Pan, CanPan);
 
+            //TODO: UI Refactor - All the package manager commands have been removed from here. Confirm that these commands live somewhere else now.
+            /*
             var pm_pub_vm = dynSettings.Controller.PackageManagerPublishViewModel;
             SubmitCommand = new DelegateCommand(pm_pub_vm.OnSubmit, pm_pub_vm.CanSubmit);
             ShowNodeNodePublishInfoCmd =
@@ -427,6 +423,7 @@ namespace Dynamo.ViewModels
 
             var pm_client = dynSettings.Controller.PackageManagerClient;
             RefreshRemotePackagesCmd = new DelegateCommand(pm_client.RefreshRemotePackages, pm_client.CanRefreshRemotePackages);
+            */
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
         }
