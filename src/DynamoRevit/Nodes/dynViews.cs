@@ -388,7 +388,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                dynSettings.Controller.DynamoViewModel.Log(e);
+                DynamoLogger.Instance.Log(e);
                 return Value.NewContainer(0);
             }
 
@@ -488,8 +488,8 @@ namespace Dynamo.Nodes
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log(ex.Message);
-                    dynSettings.Controller.DynamoViewModel.Log(ex.StackTrace);
+                    DynamoLogger.Instance.Log(ex.Message);
+                    DynamoLogger.Instance.Log(ex.StackTrace);
                     return null;
                 }
             }
@@ -544,8 +544,8 @@ namespace Dynamo.Nodes
                     }
                     catch (Exception ex)
                     {
-                        dynSettings.Controller.DynamoViewModel.Log(ex.Message);
-                        dynSettings.Controller.DynamoViewModel.Log(ex.StackTrace);
+                        DynamoLogger.Instance.Log(ex.Message);
+                        DynamoLogger.Instance.Log(ex.StackTrace);
                     }
                 }
             }
