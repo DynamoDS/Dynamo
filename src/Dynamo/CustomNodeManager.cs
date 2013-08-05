@@ -887,7 +887,7 @@ namespace Dynamo.Utilities
                     //    // if it's not a recurisve node and it's not yet loaded, load it
                     //    if (funcDefGuid != funId && !this.loadedNodes.ContainsKey(funId))
                     //    {
-                    //        dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
+                    //        dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
                     //        fun.Definition = this.loadedNodes[funId];
                     //    }  
                     //    else if ( this.loadedNodes.ContainsKey(funId ))

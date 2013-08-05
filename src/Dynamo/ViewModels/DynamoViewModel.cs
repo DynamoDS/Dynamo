@@ -682,7 +682,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    foreach (FunctionDefinition funcDef in Controller.CustomNodeLoader.GetLoadedDefinitions())
+                    foreach (FunctionDefinition funcDef in Controller.CustomNodeManager.GetLoadedDefinitions())
                     {
                         if (funcDef.Workspace.Nodes.Contains(e))
                         {
@@ -731,9 +731,9 @@ namespace Dynamo.ViewModels
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = fi.Name;
             }
-            else if (vm.Model.CurrentSpace is FuncWorkspace && dynSettings.Controller.CustomNodeLoader.SearchPath.Any())
+            else if (vm.Model.CurrentSpace is FuncWorkspace && dynSettings.Controller.CustomNodeManager.SearchPath.Any())
             {
-                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath[0];
+                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeManager.SearchPath[0];
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -811,9 +811,9 @@ namespace Dynamo.ViewModels
 
         public void GoToWorkspace(object parameter)
         {
-            if (parameter is Guid && dynSettings.Controller.CustomNodeLoader.Contains((Guid)parameter))
+            if (parameter is Guid && dynSettings.Controller.CustomNodeManager.Contains((Guid)parameter))
             {
-                ViewCustomNodeWorkspace(dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameter));
+                ViewCustomNodeWorkspace(dynSettings.Controller.CustomNodeManager.GetFunctionDefinition((Guid)parameter));
             }
         }
 

@@ -272,7 +272,7 @@ namespace Dynamo.Controls
                 e.Name = dialog.Text;
                 e.Category = dialog.Category;
 
-                if (dynSettings.Controller.CustomNodeLoader.Contains(e.Name))
+                if (dynSettings.Controller.CustomNodeManager.Contains(e.Name))
                 {
                     error = "A custom node with the given name already exists.";
                     MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,

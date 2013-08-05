@@ -224,7 +224,7 @@ namespace Dynamo.Utilities
                         }
                         else
                         {
-                            dynSettings.Controller.DynamoViewModel.Log("Duplicate type encountered: " + typeName);
+                            DynamoLogger.Instance.Log("Duplicate type encountered: " + typeName);
                         }
 
                         if (!controller.BuiltInTypesByName.ContainsKey(t.FullName))
@@ -233,33 +233,33 @@ namespace Dynamo.Utilities
                         }
                         else
                         {
-                            dynSettings.Controller.DynamoViewModel.Log("Duplicate type encountered: " + typeName);
+                            DynamoLogger.Instance.Log("Duplicate type encountered: " + typeName);
                         }
 
                     }
                     catch (Exception e)
                     {
-                        dynSettings.Controller.DynamoViewModel.Log("Failed to load type from " + assembly.FullName);
-                        dynSettings.Controller.DynamoViewModel.Log("The type was " + t.FullName);
-                        dynSettings.Controller.DynamoViewModel.Log(e);
+                        DynamoLogger.Instance.Log("Failed to load type from " + assembly.FullName);
+                        DynamoLogger.Instance.Log("The type was " + t.FullName);
+                        DynamoLogger.Instance.Log(e);
                     }
 
                 }
             }
             catch (Exception e)
             {
-                dynSettings.Controller.DynamoViewModel.Log("Could not load types.");
-                dynSettings.Controller.DynamoViewModel.Log(e);
+                DynamoLogger.Instance.Log("Could not load types.");
+                DynamoLogger.Instance.Log(e);
                 if (e is ReflectionTypeLoadException)
                 {
                     var typeLoadException = e as ReflectionTypeLoadException;
                     Exception[] loaderExceptions = typeLoadException.LoaderExceptions;
-                    dynSettings.Controller.DynamoViewModel.Log("Dll Load Exception: " + loaderExceptions[0]);
-                    dynSettings.Controller.DynamoViewModel.Log(loaderExceptions[0].ToString());
+                    DynamoLogger.Instance.Log("Dll Load Exception: " + loaderExceptions[0]);
+                    DynamoLogger.Instance.Log(loaderExceptions[0].ToString());
                     if (loaderExceptions.Count() > 1)
                     {
-                        dynSettings.Controller.DynamoViewModel.Log("Dll Load Exception: " + loaderExceptions[1]);
-                        dynSettings.Controller.DynamoViewModel.Log(loaderExceptions[1].ToString());
+                        DynamoLogger.Instance.Log("Dll Load Exception: " + loaderExceptions[1]);
+                        DynamoLogger.Instance.Log(loaderExceptions[1].ToString());
                     }
                 }
             }

@@ -560,7 +560,7 @@ namespace Dynamo.Models
             base.Modified();
 
             //add a check if any loaded defs match this workspace
-            if (dynSettings.Controller.CustomNodeLoader.GetLoadedDefinitions().All(x => x.Workspace != this))
+            if (dynSettings.Controller.CustomNodeManager.GetLoadedDefinitions().All(x => x.Workspace != this))
                 return;
 
             var def =

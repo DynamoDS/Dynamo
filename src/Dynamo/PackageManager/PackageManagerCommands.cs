@@ -67,7 +67,7 @@ namespace Dynamo.Commands
             }
             else
             {
-                dynSettings.Controller.DynamoViewModel.Log("Failed to obtain function definition from node.");
+                DynamoLogger.Instance.Log("Failed to obtain function definition from node.");
                 return;
             }
 
