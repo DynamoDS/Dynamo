@@ -170,11 +170,11 @@ namespace Dynamo.Controls
             prompt.ShowDialog();
         }
 
-        void PackageManagerClient_RequestSetLoginState(object sender, LoginStateEventArgs e)
-        {
-            PackageManagerLoginState.Text = e.Text;
-            PackageManagerLoginButton.IsEnabled = e.Enabled;
-        }
+        //void PackageManagerClient_RequestSetLoginState(object sender, LoginStateEventArgs e)
+        //{
+        //    PackageManagerLoginState.Text = e.Text;
+        //    PackageManagerLoginButton.IsEnabled = e.Enabled;
+        //}
 
         void _vm_RequestSaveImage(object sender, ImageSaveEventArgs e)
         {
