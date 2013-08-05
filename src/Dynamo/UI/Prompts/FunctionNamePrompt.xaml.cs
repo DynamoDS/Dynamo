@@ -47,7 +47,8 @@ namespace Dynamo.Nodes
       {
           InitializeComponent();
 
-          this.Owner = dynSettings.Bench;
+          //this.Owner = dynSettings.Bench;
+          this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
           this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
           // set the current name

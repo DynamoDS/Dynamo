@@ -33,7 +33,7 @@ namespace Dynamo.Utilities
                 return;
             }
 
-            var newNodeWorkspace = new FuncWorkspace(args.Name, args.Category, 0, 0)
+            var newNodeWorkspace = new FuncWorkspace(args.Name, args.Category, args.Description, 0, 0)
             {
                 WatchChanges = false
             };

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Input;
-using Dynamo.Commands;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
-using Dynamo.Search.SearchElements;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Commands
 {
@@ -19,7 +15,7 @@ namespace Dynamo.Commands
             get
             {
                 if (packageManagerRegion == null)
-                    packageManagerRegion = new Dynamo.Search.Regions.PackageManagerRegion();
+                    packageManagerRegion = new Dynamo.Search.Regions.PackageManagerRegion(SearchViewModel.PackageManagerRegionExecute, SearchViewModel.PackageManagerRegionCanExecute);
                 return packageManagerRegion;
             }
         }
@@ -31,31 +27,34 @@ namespace Dynamo.Search.Regions
 {
     public class PackageManagerRegion : RegionBase
     {
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
+        public PackageManagerRegion(Action<object> executeMethod, System.Predicate<object> canExecuteMethod) 
+            : base(executeMethod, canExecuteMethod) { }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
+        //public bool CanExecute(object parameter)
+        //{
+        //    return true;
+        //}
 
-        public void Execute(object parameter)
-        {
-            if (Loaded)
-            {
-                //DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
-            }
-            else
-            {
-                dynSettings.Controller.SearchViewModel.SearchDictionary.Remove((value) => value is PackageManagerSearchElement);
-                dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync(dynSettings.Controller.SearchViewModel.SearchText);
-            }
+        //public event EventHandler CanExecuteChanged
+        //{
+        //    add { CommandManager.RequerySuggested += value; }
+        //    remove { CommandManager.RequerySuggested -= value; }
+        //}
 
-            dynSettings.ReturnFocusToSearch();
+        //public void Execute(object parameter)
+        //{
+        //    if (Loaded)
+        //    {
+        //        //DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
+        //    }
+        //    else
+        //    {
+        //        dynSettings.Controller.SearchViewModel.SearchDictionary.Remove((value) => value is PackageManagerSearchElement);
+        //        dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync(dynSettings.Controller.SearchViewModel.SearchText);
+        //    }
+
+        //    dynSettings.ReturnFocusToSearch();
             
-        }
+        //}
     }
 }

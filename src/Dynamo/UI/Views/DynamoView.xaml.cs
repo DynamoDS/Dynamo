@@ -104,7 +104,7 @@ namespace Dynamo.Controls
             _vm.RequestClose += new EventHandler(_vm_RequestClose);
             _vm.RequestSaveImage += new ImageSaveEventHandler(_vm_RequestSaveImage);
 
-            dynSettings.Controller.PackageManagerClient.RequestSetLoginState += new LoginStateEventHandler(PackageManagerClient_RequestSetLoginState);
+            //dynSettings.Controller.PackageManagerClient.RequestSetLoginState += new LoginStateEventHandler(PackageManagerClient_RequestSetLoginState);
             dynSettings.Controller.RequestsCrashPrompt += new DynamoController.CrashPromptHandler(Controller_RequestsCrashPrompt);
 
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);

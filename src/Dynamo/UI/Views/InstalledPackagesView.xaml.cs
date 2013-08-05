@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Dynamo.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
@@ -22,7 +23,8 @@ namespace Dynamo.PackageManager.UI
         public InstalledPackagesView()
         {
 
-            this.Owner = dynSettings.Bench;
+            //this.Owner = dynSettings.Bench;
+            this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             this.DataContext = dynSettings.PackageLoader;

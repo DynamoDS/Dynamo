@@ -1200,7 +1200,7 @@ namespace Dynamo.Models
 
                     IEnumerable<string> inputNames = new List<string>();
                     IEnumerable<string> outputNames = new List<string>();
-                    dynSettings.Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), CustomNodeLoader.CompileFunction(definition, ref inputNames, ref outputNames));
+                    dynSettings.Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), CustomNodeManager.CompileFunction(definition, ref inputNames, ref outputNames));
 
                     //Update existing function nodes which point to this function to match its changes
                     foreach (dynNodeModel el in AllNodes)
