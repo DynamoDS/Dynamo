@@ -171,7 +171,7 @@ namespace Dynamo.PackageManager
             var guids = LoadedCustomNodes.Select(x => x.Guid);
 
             // check if any of the custom nodes is in a workspace
-            var customNodeInUse =  dynSettings.Controller.DynamoViewModel.AllNodes.Where(x => x is dynFunction)
+            var customNodeInUse =  dynSettings.Controller.DynamoModel.AllNodes.Where(x => x is dynFunction)
                                    .Cast<dynFunction>()
                                    .Any(x => guids.Contains(x.Definition.FunctionId));
 

@@ -267,6 +267,25 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        public static void PackageManagerRegionExecute(object parameters)
+        {
+            //if (Loaded)
+            //{
+            //    //DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
+            //}
+            //else
+            //{
+                dynSettings.Controller.SearchViewModel.SearchDictionary.Remove((value) => value is PackageManagerSearchElement);
+                dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync(dynSettings.Controller.SearchViewModel.SearchText);
+            //}
+
+            dynSettings.ReturnFocusToSearch();
+        }
+
+        internal static bool PackageManagerRegionCanExecute(object parameters)
+        {
+            return true;
+        }
 
         public BrowserRootElement AddRootCategory(string name)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager
@@ -16,7 +17,8 @@ namespace Dynamo.PackageManager
             this.DataContext = packageViewModel;
             packageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
 
-            this.Owner = dynSettings.Bench;
+            //this.Owner = dynSettings.Bench;
+            this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             InitializeComponent();

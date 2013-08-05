@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
@@ -13,7 +14,8 @@ namespace Dynamo.PackageManager.UI
         public PackageManagerSearchView(PackageManagerSearchViewModel pm)
         {
 
-            this.Owner = dynSettings.Bench;
+            //this.Owner = dynSettings.Bench;
+            this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             this.DataContext = pm;
