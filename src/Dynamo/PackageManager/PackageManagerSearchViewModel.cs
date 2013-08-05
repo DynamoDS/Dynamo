@@ -36,7 +36,8 @@ namespace Dynamo.PackageManager
             {
                 _SearchText = value;
                 RaisePropertyChanged("SearchText");
-                DynamoCommands.Search.Execute(null);
+                //DynamoCommands.Search.Execute(null);
+                dynSettings.Controller.SearchViewModel.Search(null);
             }
         }
 

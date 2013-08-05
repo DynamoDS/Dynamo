@@ -1191,10 +1191,12 @@ namespace Dynamo.Models
 
                     if (addToSearch)
                     {
-                        dynSettings.Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId);
+                        dynSettings.Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category,functionWorkspace.Description, definition.FunctionId);
                     }
 
-                    dynSettings.Controller.CustomNodeManager.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId, path);
+                    var info = new CustomNodeInfo(definition.FunctionId, functionWorkspace.Name, functionWorkspace.Category, functionWorkspace.Description, path);
+                    //dynSettings.Controller.CustomNodeManager.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId, path);
+                    dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
 
                     #region Compile Function and update all nodes
 

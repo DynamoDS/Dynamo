@@ -82,9 +82,18 @@ namespace Dynamo.Views
             var newCategory = workspace.Category.Substring(0);
             var newDescription = workspace.Description.Substring(0);
 
+            var args = new FunctionNamePromptEventArgs
+                {
+                    Name = newName,
+                    Description = newDescription,
+                    Category = newCategory
+                };
+
+            dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, new FunctionNamePromptEventArgs());
             // show the dialog
-            if (dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newName, ref newCategory,
-                                                                                ref newDescription, true))
+            //if (dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newName, ref newCategory,
+            //                                                                    ref newDescription, true))
+            if(args.Success)
             {
 
                 if (workspace is FuncWorkspace)
