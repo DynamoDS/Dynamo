@@ -6,15 +6,105 @@ using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using Dynamo.Connectors;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using System.Web;
-using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
+using Dynamo.PackageManager;
 
 namespace Dynamo.Controls
 {
+    public class PackageUploadStateToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is PackageUploadHandle.State)
+            {
+                var st = (PackageUploadHandle.State)value;
+
+                if (st == PackageUploadHandle.State.Compressing)
+                {
+                    return "Compressing";
+                }
+                else if (st == PackageUploadHandle.State.Copying)
+                {
+                    return "Copying";
+                }
+                else if (st == PackageUploadHandle.State.Error)
+                {
+                    return "Error";
+                }
+                else if (st == PackageUploadHandle.State.Ready)
+                {
+                    return "Ready";
+                }
+                else if (st == PackageUploadHandle.State.Uploaded)
+                {
+                    return "Uploaded";
+                }
+                else if (st == PackageUploadHandle.State.Uploading)
+                {
+                    return "Uploading";
+                }
+
+            }
+
+            return "Unknown";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class PackageDownloadStateToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is PackageDownloadHandle.State )
+            {
+                var st = ( PackageDownloadHandle.State ) value;
+
+                if (st == PackageDownloadHandle.State.Downloaded)
+                {
+                    return "Downloaded";
+                }
+                else if (st == PackageDownloadHandle.State.Downloading)
+                {
+                    return "Downloading";
+                }
+                else if (st == PackageDownloadHandle.State.Error)
+                {
+                    return "Error";
+                }
+                else if (st == PackageDownloadHandle.State.Installed)
+                {
+                    return "Installed";
+                }
+                else if (st == PackageDownloadHandle.State.Installing)
+                {
+                    return "Installing";
+                }
+                else  if (st == PackageDownloadHandle.State.Uninitialized)
+                {
+                    return "Starting";
+                }
+
+            }
+
+            return "Unknown";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class NonEmptyStringToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -633,6 +723,21 @@ namespace Dynamo.Controls
         }
     }
 
+    public class BoolToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+                return Visibility.Visible;
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class InverseBoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -647,6 +752,22 @@ namespace Dynamo.Controls
             throw new NotSupportedException();
         }
     }
+
+    public class InverseBooleanToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+                return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
 
     public class LacingToVisibilityConverter : IValueConverter
     {
@@ -804,14 +925,14 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double radians = System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
-            return radians;
+            double degrees = System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
+            return degrees;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double degrees = System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
-            return degrees;
+            double radians = System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
+            return radians;
         }
     }
 

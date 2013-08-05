@@ -3,51 +3,40 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Set value..." MinHeight="160" MaxHeight="240" Width="400">
 
-    <Grid>
+    <StackPanel>
 
-        <Grid.Background>
+        <StackPanel.Background>
             <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
                 <GradientStop Color="#444" Offset="0.0" />
                 <GradientStop Color="#222" Offset="1.0" />
             </LinearGradientBrush>
-        </Grid.Background>
-        
-        <Border Margin="10,10,10,60" >
-            
-           <Border.Style>
-                
-                <Style TargetType="Border">
+        </StackPanel.Background>
 
-                    <Setter Property="Background" Value="#222" />
-                    
-                </Style>
-                
-            </Border.Style>
+        <TextBox 
+                Margin="10"
+                x:FieldModifier="public" 
+                Style="{DynamicResource ResourceKey=SDarkTextBox}"
+                HorizontalAlignment="Stretch" 
+                Name="editText" 
+                Padding="10"
+                FontSize="20"
+                MinLines="2"
+                CaretBrush="White"
+                VerticalAlignment="Stretch" 
+                BorderThickness="0"
+                AcceptsReturn="True"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto"
+                Height="80"
+                TextWrapping="Wrap"
+                AcceptsTab="True"/>
 
-            <TextBox x:FieldModifier="public"
-                 HorizontalAlignment="Stretch" 
-                 Name="editText" 
-                 Padding="10"
-                 Background="Transparent"
-                 Foreground="AliceBlue"
-                 FontSize="20"
-                 MinLines="1"
-                 CaretBrush="White"
-                 VerticalAlignment="Stretch" 
-                 BorderThickness="0"
-                 AcceptsReturn="True"
-                 HorizontalScrollBarVisibility="Disabled"
-                 VerticalScrollBarVisibility="Auto"
-                 TextWrapping="Wrap"
-                 AcceptsTab="True"/>
-            
-        </Border>
+        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
+            <!--<Button Content="Cancel" Style="{DynamicResource ResourceKey=STextButton}"  Margin="10" Name="button1" VerticalAlignment="Bottom" Click="button1_Click" />-->
+            <Button Content="OK" Style="{DynamicResource ResourceKey=STextButton}" Margin="10" Name="button2" VerticalAlignment="Bottom" Width="75" Click="button2_Click" />
+        </StackPanel>
 
-         <!--This UI is always using a binding, so the cancel button does nothing :( -->
-        <!--<Button Content="Cancel" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="10,10,10,10" Name="button1" VerticalAlignment="Bottom" Click="button1_Click" />-->
-        <Button Content="OK" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="10" Name="button2" VerticalAlignment="Bottom" Width="75" Click="button2_Click" />
-        
-    </Grid>
+    </StackPanel>
 
     <Window.Resources>        
         <ResourceDictionary>

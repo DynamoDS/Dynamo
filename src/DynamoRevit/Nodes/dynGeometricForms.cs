@@ -363,7 +363,8 @@ namespace Dynamo.Nodes
             {
                 //And register the form for deletion. Since we've already deleted it here manually, we can 
                 //pass "true" as the second argument.
-                this.DeleteElement(this.Elements[0], true);
+                deleteId = this.Elements[0];
+                this.DeleteElement(this.Elements[0], false);
             }
 
             //Surface argument

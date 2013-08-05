@@ -51,6 +51,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("", "Incoming geometry objects.", typeof(object)));
             OutPortData.Add(new PortData("", "Watch contents, passed through", typeof(object)));
+            //OutPortData.Add(new PortData("meshes", "Helix3d Meshes", typeof(object)));
 
             RegisterAllPorts();
 
@@ -237,8 +238,30 @@ namespace Dynamo.Nodes
 
         void mi_Click(object sender, RoutedEventArgs e)
         {
+<<<<<<< HEAD:src/DynamoWatch3D/dynWatch3D.cs
             _watchView.watch_view.ZoomExtents();
         }
 
+=======
+            MeshVisual3D vismesh = new MeshVisual3D { Content = new GeometryModel3D { Geometry = mesh.ToMeshGeometry3D(), Material = Materials.White } };
+            
+            return vismesh;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var input = args[0];
+
+            _requiresRedraw = true;
+
+            //var meshesValue = Value.NewContainer(Meshes);
+            //var results = FSharpList<Value>.Empty;
+            //results = FSharpList<Value>.Cons(Value.NewContainer(Meshes), results);//helix mesh3d mesh
+            //results = FSharpList<Value>.Cons(Value.NewContainer(input), results);//confusing that this list is reversed
+
+            //return Value.NewList(results);
+            return args[0]; //watch should be a 'pass through' node
+        }
+>>>>>>> master:src/Dynamo/Nodes/Watch/dynWatch3D.cs
     }
 }

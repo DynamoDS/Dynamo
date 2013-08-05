@@ -197,6 +197,11 @@ namespace Dynamo.Search
             return _tagDictionary[tag];
         }
 
+        public bool Contains(V a)
+        {
+            return this._symbolDictionary.Keys.Any(x => x.Equals(a));
+        }
+
         /// <summary>
         ///     Filter the elements in the SearchDictionary, based on whether there is a string
         ///     in the tag matching the query
@@ -244,6 +249,11 @@ namespace Dynamo.Search
                         double weight = matchCloseness;
                         // search elements have a weight associated with them
                         var @base = ele as SearchElementBase;
+
+                        // ignore elements which should not be search for
+                        if (@base.Searchable == false)
+                            continue;
+
                         if (@base != null)
                             weight *= @base.Weight;
 

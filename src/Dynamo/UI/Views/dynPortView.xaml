@@ -8,6 +8,7 @@
     MouseEnter="DynPort_OnMouseEnter"
     MouseLeave="DynPort_OnMouseLeave"
     Background="{x:Null}" LayoutUpdated="DynPortView_OnLayoutUpdated">
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

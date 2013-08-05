@@ -15,11 +15,32 @@ using NUnit.Framework;
 namespace Dynamo.Utilities
 {
     /// <summary>
+    /// A struct to keep track of custom nodes.
+    /// </summary>
+    public class CustomNodeInfo
+    {
+        public CustomNodeInfo(Guid guid, string name, string category, string description, string path)
+        {
+            this.Guid = guid;
+            this.Name = name;
+            this.Category = category;
+            this.Description = description;
+            this.Path = path;
+        }
+
+        public Guid Guid { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
+        public string Description { get; set; }
+        public string Path { get; set; }
+    }
+
+    /// <summary>
     ///     Manages instantiation of custom nodes.  All custom nodes known to Dynamo should be stored
     ///     with this type.  This object implements late initialization of custom nodes by providing a 
     ///     single interface to initialize custom nodes.  
     /// </summary>
-    public class CustomNodeLoader
+    public class CustomNodeManager
     {
 
         #region Fields and properties
@@ -46,6 +67,15 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
+        /// NodeDescriptions property </summary>
+        /// <value>Maps function ids to descriptions. </value>
+        public ObservableDictionary<Guid, string> NodeDescriptions
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// SearchPath property </summary>
         /// <value>This is a list of directories where this object will 
         /// search for dyf files.</value>
@@ -57,13 +87,25 @@ namespace Dynamo.Utilities
         ///     Class Constructor
         /// </summary>
         /// <param name="searchPath">The path to search for definitions</param>
-        public CustomNodeLoader(string searchPath)
+        public CustomNodeManager(string searchPath)
         {
             SearchPath = new ObservableCollection<string>();
             SearchPath.Add(searchPath);
 
             NodeNames = new ObservableDictionary<string, Guid>();
             NodeCategories = new ObservableDictionary<Guid, string>();
+            NodeDescriptions = new ObservableDictionary<Guid, string>();
+
+        }
+        /// <summary> 
+        /// Get a function id from a guid assuming that the file is already loaded.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public Guid GuidFromPath(string path)
+        {
+            var pair = this.nodePaths.FirstOrDefault(x => x.Value == path);
+            return pair.Key;
         }
 
         /// <summary>
@@ -102,29 +144,33 @@ namespace Dynamo.Utilities
             this.loadedNodes[id] = def;
         }
 
+
         /// <summary>
         ///     Import a dyf file for eventual initialization
         /// </summary>
         /// <returns>False if we failed to get data from the path, otherwise true</returns>
-        public bool AddFileToPath(string file)
+        public CustomNodeInfo AddFileToPath(string file)
         {
             Guid guid;
             string name;
             string category;
-            if (!GetHeaderFromPath(file, out guid, out name, out category))
+            string description;
+            if (!GetHeaderFromPath(file, out guid, out name, out category, out description))
             {
-                return false;
+                return null;
             }
 
             // the node has already been loaded
             // from somewhere else
             if (Contains(guid))
             {
-                return false;
+                return GetNodeInfo(guid);
             }
 
-            this.SetNodeInfo(name, category, guid, file);
-            return true;
+            var info = new CustomNodeInfo(guid, name, category, description, file);
+            this.SetNodeInfo(info);
+
+            return info;
         }
 
         /// <summary>
@@ -143,10 +189,14 @@ namespace Dynamo.Utilities
             return whereTypesAreLoaded.Any();
         }
 
-        public List<Guid> GetIdsFromFolder(string dir)
+        public List<CustomNodeInfo> GetInfosFromFolder(string dir)
         {
-            return (from ele in nodePaths let guid = ele.Key let nodePath = ele.Value where nodePath.StartsWith(dir) select guid).ToList();
-        }
+            return Directory.EnumerateFiles(dir, "*.dyf")
+                     .Select( AddFileToPath )
+                     .Where(x => x != null)
+                     .ToList();
+
+        } 
 
         /// <summary>
         ///     Removes the custom nodes loaded from a particular folder.
@@ -156,7 +206,7 @@ namespace Dynamo.Utilities
         public bool RemoveTypesLoadedFromFolder(string path)
         {
 
-            var guidsToRemove = GetIdsFromFolder(path);
+            var guidsToRemove = GetInfosFromFolder(path).Select(x => x.Guid);
             guidsToRemove.ToList().ForEach(this.Remove);
 
             return guidsToRemove.Any();
@@ -184,21 +234,20 @@ namespace Dynamo.Utilities
         /// <param name="guid"></param>
         public void Remove(Guid guid)
         {
-
-            if (loadedNodes.ContainsKey(guid)) { }
-            loadedNodes.Remove(guid);
+            if (loadedNodes.ContainsKey(guid)) 
+                loadedNodes.Remove(guid);
             if (nodePaths.ContainsKey(guid))
                 nodePaths.Remove(guid);
             if (NodeCategories.ContainsKey(guid))
                 NodeCategories.Remove(guid);
             var nodeName = NodeNames.Where((x) => x.Value == guid).ToList();
             nodeName.ForEach((pair) =>
-            {
-                NodeNames.Remove(pair.Key);
-                dynSettings.Controller.SearchViewModel.Remove(pair.Key);
-            });
+             {
+                    NodeNames.Remove(pair.Key);
+                    dynSettings.Controller.SearchViewModel.Remove(pair.Key);
+             });
+            dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
             dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
-
         }
 
         /// <summary>
@@ -206,17 +255,22 @@ namespace Dynamo.Utilities
         ///     Does not instantiate the nodes.
         /// </summary>
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public bool UpdateSearchPath()
+        public IEnumerable<CustomNodeInfo> UpdateSearchPath()
         {
-            foreach (string dir in SearchPath)
-            {
-                foreach (string file in Directory.EnumerateFiles(dir, "*.dyf"))
-                {
-                    this.AddFileToPath(file);
-                }
-            }
+            var nodes = SearchPath.Select(ScanNodeHeadersInDirectory);
+            return nodes.SelectMany(x => x);
+        }
 
-            return true;
+        /// <summary>
+        ///     Enumerates all of the files in the search path and get's their guids.
+        ///     Does not instantiate the nodes.
+        /// </summary>
+        /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
+        public IEnumerable<CustomNodeInfo> ScanNodeHeadersInDirectory(string dir)
+        {
+            return Directory.EnumerateFiles(dir, "*.dyf")
+                            .Select(AddFileToPath)
+                            .Where(nodeInfo => nodeInfo != null).ToList();
         }
 
         /// <summary>
@@ -256,15 +310,24 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="guid">The unique id for the node.</param>
         /// <param name="path">The path for the node.</param>
-        public void SetNodeInfo(string name, string category, Guid id, string path)
+        public void SetNodeInfo(CustomNodeInfo info)
         {
-            if (this.NodeNames.ContainsKey(name))
-            {
-                this.NodeNames.Remove(name);
-            }
+            this.SetNodeName(info.Guid, info.Name);
+            this.SetNodeCategory(info.Guid, info.Category);
+            this.SetNodeDescription(info.Guid, info.Description);
+            this.SetNodePath(info.Guid, info.Path);
+        }
+
+        /// <summary>
+        ///     Sets the category for a custom node
+        /// </summary>
+        /// <param name="guid">The unique id for the node.</param>
+        /// <param name="category">The name for the node</param>
+        public void SetNodeName(Guid id, string name)
+        {
+            // remove if the guid already has a name assigned
+            this.NodeNames.Where(x => x.Value == id).ToList().ForEach(x=>this.NodeNames.Remove(x));
             this.NodeNames.Add(name, id);
-            this.SetNodeCategory(id, category);
-            this.SetNodePath(id, path);
         }
 
         /// <summary>
@@ -281,6 +344,23 @@ namespace Dynamo.Utilities
             else
             {
                 this.NodeCategories.Add(id, category);
+            }
+        }
+
+        /// <summary>
+        ///     Sets the description for a custom node
+        /// </summary>
+        /// <param name="guid">The unique id for the node.</param>
+        /// <param name="category">The description for the node</param>
+        public void SetNodeDescription(Guid id, string description)
+        {
+            if (this.NodeDescriptions.ContainsKey(id))
+            {
+                this.NodeDescriptions[id] = description;
+            }
+            else
+            {
+                this.NodeDescriptions.Add(id, description);
             }
         }
 
@@ -476,9 +556,28 @@ namespace Dynamo.Utilities
         ///     Get a guid from a specific path, internally this first calls GetDefinitionFromPath
         /// </summary>
         /// <param name="path">The path from which to get the guid</param>
+        /// <returns>The custom node info object - null if we failed</returns>
+        public static CustomNodeInfo GetHeaderFromPath(string path)
+        {
+            string name, category, description;
+            Guid id;
+            if (CustomNodeManager.GetHeaderFromPath(path, out id, out name, out category, out description))
+            {
+                return new CustomNodeInfo(id, name, category, description, path);
+            }
+            else
+            {
+                return null;
+            }
+            
+        }
+        /// <summary>
+        ///     Get a guid from a specific path, internally this first calls GetDefinitionFromPath
+        /// </summary>
+        /// <param name="path">The path from which to get the guid</param>
         /// <param name="guid">A reference to the guid (OUT) Guid.Empty if function returns false. </param>
         /// <returns>Whether we successfully obtained the guid or not.  </returns>
-        public static bool GetHeaderFromPath(string path, out Guid guid, out string name, out string category)
+        public static bool GetHeaderFromPath(string path, out Guid guid, out string name, out string category, out string description)
         {
 
             try
@@ -486,6 +585,7 @@ namespace Dynamo.Utilities
                 var funName = "";
                 var id = "";
                 var cat = "";
+                var des = "";
 
                 #region Get xml document and parse
 
@@ -507,6 +607,10 @@ namespace Dynamo.Utilities
                         {
                             cat = att.Value;
                         }
+                        else if (att.Name.Equals("Description"))
+                        {
+                            des = att.Value;
+                        }
                     }
                 }
 
@@ -522,11 +626,11 @@ namespace Dynamo.Utilities
                 else
                 {
                     guid = Guid.Parse(id);
-
                 }
 
                 name = funName;
                 category = cat;
+                description = des;
                 return true;
 
             }
@@ -537,6 +641,7 @@ namespace Dynamo.Utilities
                 category = "";
                 guid = Guid.Empty;
                 name = "";
+                description = "";
                 return false;
             }
 
@@ -576,6 +681,8 @@ namespace Dynamo.Utilities
                 string category = "";
                 double cx = 0;
                 double cy = 0;
+                string description = "";
+
                 double zoom = 1.0;
                 string id = "";
 
@@ -594,6 +701,8 @@ namespace Dynamo.Utilities
                             funName = att.Value;
                         else if (att.Name.Equals("Category"))
                             category = att.Value;
+                        else if (att.Name.Equals("Description"))
+                            description = att.Value;
                         else if (att.Name.Equals("ID"))
                         {
                             id = att.Value;
@@ -617,10 +726,12 @@ namespace Dynamo.Utilities
                 var ws = new FuncWorkspace(
                     funName, category.Length > 0
                     ? category
-                    : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES, cx, cy)
+                    : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES, description, cx, cy)
                 {
                     WatchChanges = false
                 };
+
+                ws.Zoom = zoom;
 
                 def = new FunctionDefinition(Guid.Parse(id))
                 {
@@ -880,8 +991,6 @@ namespace Dynamo.Utilities
 
                 ws.FilePath = xmlPath;
 
-                controller.PackageManagerClient.LoadPackageHeader(def, funName);
-
                 var expression = CompileFunction(def);
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), expression);
 
@@ -1060,6 +1169,57 @@ namespace Dynamo.Utilities
         {
             if (!Directory.Exists(p) || SearchPath.Contains(p)) return false;
             SearchPath.Add(p);
+            return true;
+        }
+
+        internal CustomNodeInfo GetNodeInfo(Guid x)
+        {
+            var path = GetNodePath(x);
+            if (path == null)
+            {
+                return null;
+            }
+            var des = NodeDescriptions[x];
+            var cat = NodeCategories[x];
+            var name = this.NodeNames.FirstOrDefault(pair => pair.Value == x).Key;
+            return new CustomNodeInfo(x, name, cat, des, path);
+
+        }
+
+        /// <summary>
+        /// Refactor a custom node
+        /// </summary>
+        /// <returns> Returns false if it fails.</returns>
+        internal bool Refactor(Guid guid, string newName, string newCategory, string newDescription)
+        {
+            var nodeInfo = GetNodeInfo(guid);
+
+            if (nodeInfo == null) return false;
+
+            // rename the existing nodes - should be replaced with a proper binding
+            dynSettings.Controller.DynamoViewModel.AllNodes
+                       .Where(x => x is dynFunction)
+                       .Cast<dynFunction>()
+                       .Where(x => x.Definition.FunctionId == guid)
+                       .Where(x => x.Name == nodeInfo.Name)
+                       .ToList()
+                       .ForEach(x =>
+                           {
+                               x.Name = newName;
+                               x.NickName = newName;
+                           });
+
+            dynSettings.Controller.SearchViewModel.Remove(nodeInfo.Name);
+
+            nodeInfo.Name = newName;
+            nodeInfo.Category = newCategory;
+            nodeInfo.Description = newDescription;
+
+            this.SetNodeInfo(nodeInfo);
+
+            dynSettings.Controller.SearchViewModel.Add(nodeInfo);
+            dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
+
             return true;
         }
     }

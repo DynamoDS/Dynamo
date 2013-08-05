@@ -3,6 +3,7 @@ using System.Drawing;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Point = System.Windows.Point;
+using Brush = System.Windows.Media.Brush;
 
 namespace Dynamo.ViewModels
 {

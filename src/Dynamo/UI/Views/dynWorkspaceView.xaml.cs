@@ -63,12 +63,57 @@ namespace Dynamo.Views
         /// <param name="e"></param>
         void dynWorkspaceView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            ViewModel.Loaded();
             ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
             ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
             ViewModel.StopDragging += new EventHandler(vm_StopDragging);
             ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
             ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+            ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
+            ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
+        }
+
+        private void VmOnWorkspacePropertyEditRequested(dynWorkspaceModel workspace)
+        {
+
+            // copy these strings
+            var newName = workspace.Name.Substring(0);
+            var newCategory = workspace.Category.Substring(0);
+            var newDescription = workspace.Description.Substring(0);
+
+            // show the dialog
+            if (dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newName, ref newCategory,
+                                                                                ref newDescription, true))
+            {
+
+                if (workspace is FuncWorkspace)
+                {
+                    var id = dynSettings.CustomNodeManager.GetGuidFromName(workspace.Name);
+                    dynSettings.CustomNodeManager.Refactor(id, newName, newCategory, newDescription);
+                }
+
+                workspace.Name = newName;
+                workspace.Description = newDescription;
+                workspace.Category = newCategory;
+                // workspace.Author = "";
+
+            }
+        }
+
+        public void WorkspacePropertyEditClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            var vm = DataContext as dynWorkspaceViewModel;
+            if (vm != null)
+            {
+                vm.OnWorkspacePropertyEditRequested();
+            }
+        }
+
+        public void WorkspacePublishClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            
+
         }
 
         void selectionCanvas_Loaded(object sender, RoutedEventArgs e)

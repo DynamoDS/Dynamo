@@ -95,10 +95,9 @@
                                 Modifiers="Control+Shift"
                                 Command="{Binding Path=DataContext.ClearCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
-        <KeyBinding Key="R"
+        <!--<KeyBinding Key="R"
                 Modifiers="Control"
-                    Command="{Binding Path=DataContext.ShowPackageManagerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-
+                    Command="{Binding Path=DataContext.ShowPackageManagerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>-->
 
         <KeyBinding Key="L"
                 Modifiers="Control+Shift"
@@ -233,13 +232,13 @@
                               Command="{Binding SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
                 </MenuItem>
 
-                <MenuItem Focusable="False" Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >
+                <!--<MenuItem Focusable="False" Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >
                     <MenuItem Focusable="False" Header="_Login" Command="{Binding ShowLoginCmd}"  Name="showLogin" />
                     <MenuItem Focusable="False" Header="_Refresh Remote Packages" Command="{Binding RefreshRemotePackagesCmd}"  Name="refreshRemote" />
                     <MenuItem Focusable="False" Header="_Publish Selected Node" Command="{Binding PublishSelectedNodeCmd}"  Name="publishSelected" />
 
                     <MenuItem Focusable="False" Header="_Publish Current Workspace " Command="{Binding PublishCurrentWorkspaceCmd}"  Name="publishCurrent" />
-                </MenuItem>
+                </MenuItem>-->
 
                 <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem"
                           IsChecked="{Binding Path=IsShowingConnectors}" 
@@ -264,6 +263,13 @@
                         <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path=DataContext.GoToWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
                     </DataTemplate>
                 </MenuItem.ItemTemplate>
+            </MenuItem>
+
+            <MenuItem Focusable="False" Header="_Packages" Name="PackageManagerMenu" IsEnabled="True" >
+                <MenuItem Focusable="False" Header="_Browse Online for Packages..." Command="{Binding Path=ShowPackageManagerSearchCommand}"  Name="showPMSearch" />
+                <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=ShowInstalledPackagesCommand}"  Name="showPMInstalled" />
+                <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodesCmd}}"  Name="publishSelected" />
+                <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
             </MenuItem>
 
             <MenuItem Header="Help" Focusable="False">
@@ -572,10 +578,10 @@
             
         </WrapPanel>
         
-        <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" Visibility ="Hidden" HorizontalAlignment="Right">
+        <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" HorizontalAlignment="Right">
 
-            <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
-            <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding ShowLoginCmd}" >Log in</Button>
+            <!--<TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
+            <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>-->
             
         </DockPanel>
 

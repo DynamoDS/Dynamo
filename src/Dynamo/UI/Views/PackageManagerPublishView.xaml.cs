@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
-using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager
@@ -8,45 +8,24 @@ namespace Dynamo.PackageManager
     /// <summary>
     /// Interaction logic for PackageManagerPublishView.xaml
     /// </summary>
-    public partial class PackageManagerPublishView : UserControl
+    public partial class PackageManagerPublishView : Window
     {
-        private PackageManagerPublishViewModel viewModel;
-
-        public PackageManagerPublishView()
+        public PackageManagerPublishView(PublishPackageViewModel packageViewModel)
         {
+            
+            this.DataContext = packageViewModel;
+            packageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
+
+            this.Owner = dynSettings.Bench;
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             InitializeComponent();
-            this.Loaded += new System.Windows.RoutedEventHandler(PackageManagerPublishView_Loaded);
+
         }
 
-        void PackageManagerPublishView_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)
         {
-            viewModel = (PackageManagerPublishViewModel)DataContext;
-            viewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(viewModel_PropertyChanged);
-            viewModel.RequestsShowMessage += new ShowMessageEventHandler(viewModel_RequestsShowMessage);
-        }
-
-        void viewModel_RequestsShowMessage(object sender, ShowMessageEventArgs e)
-        {
-            MessageBox.Show(e.Message, e.Title, MessageBoxButton.OK, MessageBoxImage.Question);
-        }
-
-        void viewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "Keywords":
-                    dynSettings.Controller.DynamoViewModel.SubmitCommand.RaiseCanExecuteChanged();
-                    break;
-                case "Description":
-                    dynSettings.Controller.DynamoViewModel.SubmitCommand.RaiseCanExecuteChanged();
-                    break;
-                case "MinorVersion":
-                    dynSettings.Controller.DynamoViewModel.SubmitCommand.RaiseCanExecuteChanged();
-                    break;
-                case "MajorVersion":
-                    dynSettings.Controller.DynamoViewModel.SubmitCommand.RaiseCanExecuteChanged();
-                    break;
-            }
+            this.Dispatcher.BeginInvoke((Action) (Close));
         }
     }
 

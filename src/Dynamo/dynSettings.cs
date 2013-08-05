@@ -30,13 +30,17 @@ namespace Dynamo.Utilities
         public static ObservableDictionary<string, Guid> CustomNodes {
             get
             {
-                return dynSettings.Controller.CustomNodeLoader.NodeNames;
+                return dynSettings.Controller.CustomNodeManager.NodeNames;
             }
         }
 
         //public static Dynamo.Controls.DragCanvas Workbench { get; internal set; }
 
         //public static DynamoView Bench { get; set; }
+
+        public static PackageLoader PackageLoader { get; internal set; }
+
+        public static CustomNodeManager CustomNodeManager { get { return Controller.CustomNodeManager; } }
 
         public static DynamoController Controller { get; internal set; }
 
