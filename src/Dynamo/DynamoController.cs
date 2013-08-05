@@ -580,7 +580,7 @@ namespace Dynamo
 
         public void DisplayFunction(object parameters)
         {
-            CustomNodeLoader.GetFunctionDefinition((Guid)parameters);
+            CustomNodeManager.GetFunctionDefinition((Guid)parameters);
         }
 
         internal bool CanDisplayFunction(object parameters)

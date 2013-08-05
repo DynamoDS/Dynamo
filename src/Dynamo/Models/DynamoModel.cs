@@ -27,12 +27,14 @@ namespace Dynamo.Models
     {
         public string Name { get; set; }
         public string Category { get; set; }
+        public string Description { get; set; }
         public bool Success { get; set; }
 
         public FunctionNamePromptEventArgs()
         {
             Name = "";
             Category = "";
+            Description = "";
         }
     }
 
@@ -270,8 +272,10 @@ namespace Dynamo.Models
 
         internal void PostUIActivation(object parameter)
         {
-            DynamoLoader.LoadCustomNodes(dynSettings.Controller.CustomNodeManager, 
-                dynSettings.Controller.SearchViewModel);
+            //DynamoLoader.LoadCustomNodes(dynSettings.Controller.CustomNodeManager, 
+            //    dynSettings.Controller.SearchViewModel);
+
+            DynamoLoader.LoadCustomNodes();
 
             DynamoLogger.Instance.Log("Welcome to Dynamo!");
 
@@ -378,12 +382,14 @@ namespace Dynamo.Models
 
                 DynamoLogger.Instance.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
+                //we're using a default description here
                 FunctionDefinition def = NewFunction(
                     Guid.Parse(id),
                     funName,
                     category.Length > 0
                         ? category
                         : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES,
+                    "",
                     false, cx, cy
                     );
 
@@ -1103,13 +1109,14 @@ namespace Dynamo.Models
         internal FunctionDefinition NewFunction(Guid id,
                                         string name,
                                         string category,
+                                        string description,
                                         bool display,
                                         double workspaceOffsetX = 0,
                                         double workspaceOffsetY = 0)
         {
             //Add an entry to the funcdict
             var workSpace = new FuncWorkspace(
-                name, category, workspaceOffsetX, workspaceOffsetY)
+                name, category, description, workspaceOffsetX, workspaceOffsetY)
             {
                 WatchChanges = true
             };
@@ -1127,7 +1134,7 @@ namespace Dynamo.Models
             dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(functionDefinition.FunctionId, functionDefinition);
 
             // add the element to search
-            dynSettings.Controller.SearchViewModel.Add(name, category, id);
+            dynSettings.Controller.SearchViewModel.Add(name, category, description, id);
 
             if (display)
             {
@@ -1520,7 +1527,7 @@ namespace Dynamo.Models
             if (args.Success)
             {
                 //NewFunction(Guid.NewGuid(), name, category, true);
-                NewFunction(Guid.NewGuid(), args.Name, args.Category, true);
+                NewFunction(Guid.NewGuid(), args.Name, args.Category, args.Description, true);
             }
         }
 

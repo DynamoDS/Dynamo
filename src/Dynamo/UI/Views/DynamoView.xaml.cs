@@ -86,16 +86,16 @@ namespace Dynamo.Controls
             dynSettings.Controller.SearchViewModel.Visible = true;
 
             //PACKAGE MANAGER
-            var pmLoginView = new PackageManagerLoginView
-                {
-                    DataContext = dynSettings.Controller.PackageManagerLoginViewModel
-                };
+            //var pmLoginView = new PackageManagerLoginView
+            //    {
+            //        DataContext = dynSettings.Controller.PackageManagerLoginViewModel
+            //    };
             //mainGrid.Children.Add(pmLoginView);
 
-            var pmPublishView = new PackageManagerPublishView
-                {
-                    DataContext = dynSettings.Controller.PackageManagerPublishViewModel
-                };
+            //var pmPublishView = new PackageManagerPublishView
+            //    {
+            //        DataContext = dynSettings.Controller.PackageManagerPublishViewModel
+            //    };
             //mainGrid.Children.Add(pmPublishView);
 
             //FUNCTION NAME PROMPT
@@ -259,9 +259,12 @@ namespace Dynamo.Controls
 
             do
             {
-                var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
-                dialog.nameBox.Text = e.Name;
-                dialog.categoryBox.Text = e.Category;
+                //var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
+                var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories)
+                    {
+                        nameBox = {Text = e.Name},
+                        categoryBox = {Text = e.Category}
+                    };
 
                 if (dialog.ShowDialog() != true)
                 {
@@ -271,6 +274,7 @@ namespace Dynamo.Controls
 
                 e.Name = dialog.Text;
                 e.Category = dialog.Category;
+                e.Description = dialog.Description;
 
                 if (dynSettings.Controller.CustomNodeManager.Contains(e.Name))
                 {

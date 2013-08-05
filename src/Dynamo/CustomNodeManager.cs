@@ -1197,7 +1197,7 @@ namespace Dynamo.Utilities
             if (nodeInfo == null) return false;
 
             // rename the existing nodes - should be replaced with a proper binding
-            dynSettings.Controller.DynamoViewModel.AllNodes
+            dynSettings.Controller.DynamoModel.AllNodes
                        .Where(x => x is dynFunction)
                        .Cast<dynFunction>()
                        .Where(x => x.Definition.FunctionId == guid)

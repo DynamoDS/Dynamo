@@ -93,8 +93,10 @@ namespace Dynamo.Search.SearchElements
         /// hits enter in the SearchView.</summary>
         public override void Execute()
         {
-            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(this.Command, null));
-            dynSettings.Controller.ProcessCommandQueue();
+            //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(this.Command, null));
+            //dynSettings.Controller.ProcessCommandQueue();
+
+            this.Command.Execute(null);
         }
 
     }
