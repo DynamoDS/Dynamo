@@ -236,7 +236,7 @@ namespace Dynamo.Nodes
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
 
-            tb.Text = "0.0";
+            //tb.Text = "0.0";
         }
 
     }
@@ -618,7 +618,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public partial class dynFunction : dynBuiltinFunction
+    public partial class dynFunction : dynNodeWithOneOutput
     {
         public override void SetupCustomUIElements(object ui)
         {

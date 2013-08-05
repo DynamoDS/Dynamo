@@ -45,6 +45,8 @@ namespace Dynamo.Search.SearchElements
         /// Number defining the relative importance of the element in search.  Higher weight means closer to the top. </value>
         public override double Weight { get { return this.Element.Weight; } set { this.Element.Weight = value; } }
 
+        public override bool Searchable { get { return true; } }
+
         /// <summary>
         /// Keywords property </summary>
         /// <value>

@@ -20,6 +20,11 @@ namespace Dynamo.Search.SearchElements
     /// A base class for elements found in search </summary>
     public abstract class SearchElementBase : BrowserInternalElement
     {
+        /// <summary>
+        /// Searchable property </summary>
+        /// <value>
+        /// A bool indicating if the object will appear in searches </value>
+        public abstract bool Searchable { get; }
 
         /// <summary>
         /// Type property </summary>
@@ -74,5 +79,6 @@ namespace Dynamo.Search.SearchElements
         {
             return this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
         }
+
     }
 }

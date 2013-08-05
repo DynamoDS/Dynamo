@@ -1490,7 +1490,7 @@ namespace Dynamo.Nodes
 
         public dynElementGeometryObjects()
         {
-            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.List)));
+            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.Container)));
             OutPortData.Add(new PortData("Geometry objects of the element", "List", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -1552,7 +1552,7 @@ namespace Dynamo.Nodes
 
         public dynElementSolid()
         {
-            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.List)));
+            InPortData.Add(new PortData("element", "element to create geometrical reference to", typeof(Value.Container)));
             OutPortData.Add(new PortData("solid", "solid in the element's geometry objects", typeof(object)));
 
             RegisterAllPorts();
@@ -2595,6 +2595,29 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("Result", "Computed Solid", typeof(object)));
 
             RegisterAllPorts();
+        }
+
+        public static bool noSkinSolidMethod()
+        {
+            
+            Type SolidType = typeof(Autodesk.Revit.DB.Solid);
+
+            MethodInfo[] solidTypeMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodCreate = "skinCurveLoopsIntoSolid";
+            bool methodFound = false;
+
+            foreach (MethodInfo m in solidTypeMethods)
+            {
+                if (m.Name == nameOfMethodCreate)
+                {
+                    methodFound = true;
+
+                    break;
+                }
+            }
+
+            return !methodFound;
         }
 
         public override Value Evaluate(FSharpList<Value> args)

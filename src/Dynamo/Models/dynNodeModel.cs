@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
@@ -155,8 +156,12 @@ namespace Dynamo.Models
             }
         }
 
+        private bool _overrideNameWithNickName = false;
+        public bool OverrideNameWithNickName { get { return _overrideNameWithNickName; } set { this._overrideNameWithNickName = value; RaisePropertyChanged("OverrideNameWithNickName"); } }
+
         public string NickName
         {
+            //get { return OverrideNameWithNickName ? _nickName : this.Name; }
             get { return _nickName; }
             set
             {
@@ -222,6 +227,8 @@ namespace Dynamo.Models
                 return "";
             }
         }
+
+
 
         /// <summary>
         ///     Category property
@@ -363,19 +370,21 @@ namespace Dynamo.Models
         }
 
         public string _description = null;
-        public string Description
+        public virtual string Description
         {
             get { 
-                _description = _description ?? GetDescriptionString();
+                _description = _description ?? GetDescriptionStringFromAttributes();
                 return _description;
             }
+            set { _description = value;
+                  RaisePropertyChanged("Description");}
         }
 
         /// <summary>
         ///     Get the description from type information
         /// </summary>
         /// <returns>The value or "No description provided"</returns>
-        public string GetDescriptionString()
+        public string GetDescriptionStringFromAttributes()
         {
             var t = GetType();
             object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
@@ -404,6 +413,8 @@ namespace Dynamo.Models
 
             IsVisible = true;
             IsUpstreamVisible = true;
+
+            this.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args) { if(args.PropertyName == "OverrideName") this.RaisePropertyChanged("NickName"); };
 
             //Fetch the element name from the custom attribute.
             var nameArray = GetType().GetCustomAttributes(typeof(NodeNameAttribute), true);
@@ -528,7 +539,7 @@ namespace Dynamo.Models
                 return result[outPort];
 
             //Fetch the names of input ports.
-            var portNames = InPortData.Zip(Enumerable.Range(0, InPortData.Count), (x, i) => x.NickName + i);
+            var portNames = InPortData.Zip(Enumerable.Range(0, InPortData.Count), (x, i) => x.NickName + i).ToList();
 
             //Compile the procedure for this node.
             InputNode node = Compile(portNames);
@@ -536,11 +547,12 @@ namespace Dynamo.Models
             //Is this a partial application?
             var partial = false;
 
+            var connections = new List<Tuple<string, INode>>();
             var partialSymList = new List<string>();
 
             //For each index in InPortData
             //for (int i = 0; i < InPortData.Count; i++)
-            foreach (var data in Enumerable.Range(0, InPortData.Count).Zip(portNames, (data, name) => new { Index=data, Name=name }))
+            foreach (var data in Enumerable.Range(0, InPortData.Count).Zip(portNames, (data, name) => new { Index = data, Name = name }))
             {
                 //Fetch the corresponding port
                 //var port = InPorts[i];
@@ -554,7 +566,7 @@ namespace Dynamo.Models
                     //Debug.WriteLine(string.Format("Connecting input {0}", data.Name));
 
                     //Compile input and connect it
-                    node.ConnectInput(data.Name, input.Item2.Build(preBuilt, input.Item1));
+                    connections.Add(Tuple.Create(data.Name, input.Item2.Build(preBuilt, input.Item1)));
                 }
                 else //othwise, remember that this is a partial application
                 {
@@ -568,6 +580,21 @@ namespace Dynamo.Models
 
             if (OutPortData.Count > 1)
             {
+                if (partial)
+                {
+                    foreach (var connection in connections)
+                    {
+                        node.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
+                    }
+                }
+                else
+                {
+                    foreach (var connection in connections)
+                    {
+                        node.ConnectInput(connection.Item1, connection.Item2);
+                    }
+                }
+
                 InputNode prev = node;
                 int prevIndex = 0;
 
@@ -581,26 +608,39 @@ namespace Dynamo.Models
                             InputNode restNode;
                             if (diff > 1)
                             {
-                                restNode = new ExternalFunctionNode(FScheme.Drop, new List<string>() { "amt", "list" });
+                                restNode = new ExternalFunctionNode(FScheme.Drop, new[] { "amt", "list" });
                                 restNode.ConnectInput("amt", new NumberNode(diff));
                                 restNode.ConnectInput("list", prev);
                             }
                             else
                             {
-                                restNode = new ExternalFunctionNode(FScheme.Cdr, new List<string>() { "list" });
+                                restNode = new ExternalFunctionNode(FScheme.Cdr, new[] { "list" });
                                 restNode.ConnectInput("list", prev);
                             }
                             prev = restNode;
                             prevIndex = data.Index;
                         }
 
-                        var firstNode = new ExternalFunctionNode(FScheme.Car, new List<string>() { "list" });
+                        var firstNode = new ExternalFunctionNode(FScheme.Car, new[] { "list" }) as InputNode;
                         firstNode.ConnectInput("list", prev);
 
                         if (partial)
-                            nodes[data.Index] = new AnonymousFunctionNode(partialSymList, firstNode);
-                        else
-                            nodes[data.Index] = firstNode;
+                        {
+                            var outerNode = new AnonymousFunctionNode(partialSymList, firstNode);
+                            if (connections.Any())
+                            {
+                                outerNode = new AnonymousFunctionNode(
+                                    connections.Select(x => x.Item1),
+                                    outerNode);
+                                foreach (var connection in connections)
+                                {
+                                    outerNode.ConnectInput(connection.Item1, connection.Item2);
+                                }
+                            }
+                            firstNode = outerNode;
+                        }
+
+                        nodes[data.Index] = firstNode;
                     }
                     else
                         nodes[data.Index] = new NumberNode(0);
@@ -610,13 +650,28 @@ namespace Dynamo.Models
             {
                 if (partial)
                 {
-                    nodes[outPort] = new AnonymousFunctionNode(partialSymList, node);
+                    var outerNode = new AnonymousFunctionNode(partialSymList, node);
+                    if (connections.Any())
+                    {
+                        outerNode = new AnonymousFunctionNode(
+                            connections.Select(x => x.Item1),
+                            outerNode);
+                        foreach (var connection in connections)
+                        {
+                            node.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
+                            outerNode.ConnectInput(connection.Item1, connection.Item2);
+                        }
+                    }
+                    node = outerNode;
                 }
                 else
                 {
-                    nodes[outPort] = node;
+                    foreach (var connection in connections)
+                    {
+                        node.ConnectInput(connection.Item1, connection.Item2);
+                    }
                 }
-                
+                nodes[outPort] = node;
             }
 
             //If this is a partial application, then remember not to re-eval.
@@ -625,7 +680,7 @@ namespace Dynamo.Models
                 OldValue = FScheme.Value.NewFunction(null); // cache an old value for display to the user
                 RequiresRecalc = false;
             }
-            
+
             preBuilt[this] = nodes;
 
             //And we're done
@@ -949,11 +1004,11 @@ namespace Dynamo.Models
             return Outputs.ContainsKey(portData) && Outputs[portData].Any();
         }
 
-        internal void DisconnectOutput(int portData, int inPortData)
+        internal void DisconnectOutput(int portData, int inPortData, dynNodeModel nodeModel)
         {
             HashSet<Tuple<int, dynNodeModel>> output;
             if (Outputs.TryGetValue(portData, out output))
-                output.RemoveWhere(x => x.Item1 == inPortData);
+                output.RemoveWhere(x => x.Item2 == nodeModel && x.Item1 == inPortData);
             CheckPortsForRecalc();
         }
 
@@ -1068,7 +1123,8 @@ namespace Dynamo.Models
                 DisconnectInput(data);
                 startPort.Owner.DisconnectOutput(
                     startPort.Owner.OutPorts.IndexOf(startPort),
-                    data);
+                    data,
+                    this);
             }
         }
 
@@ -1554,6 +1610,21 @@ namespace Dynamo.Models
     }
 
     [AttributeUsage(AttributeTargets.All)]
+    public class NodeSearchableAttribute : System.Attribute
+    {
+        public bool IsSearchable
+        {
+            get;
+            set;
+        }
+
+        public NodeSearchableAttribute(bool isSearchable)
+        {
+            IsSearchable = isSearchable;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
     public class NodeTypeIdAttribute : System.Attribute
     {
         public string Id
@@ -1646,14 +1717,14 @@ namespace Dynamo.Models
             if (entry is dynFunction)
             {
                 var symbol = Guid.Parse((entry as dynFunction).Symbol);
-                if (!dynSettings.Controller.CustomNodeLoader.Contains(symbol))
+                if (!dynSettings.Controller.CustomNodeManager.Contains(symbol))
                 {
                     DynamoLogger.Instance.Log("WARNING -- No implementation found for node: " + symbol);
                     entry.Error("Could not find .dyf definition file for this node.");
                     return false;
                 }
 
-                result = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(symbol)
+                result = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(symbol)
                     .Workspace.GetTopMostNodes().Any(ContinueTraversalUntilAny);
             }
             resultDict[entry] = result;

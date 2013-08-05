@@ -455,14 +455,14 @@ namespace Dynamo.Utilities
 
             //set the name on the node
             collapsedNode.NickName = args.Name;
-
             currentWorkspace.Nodes.Remove(collapsedNode);
 
             // save and load the definition from file
-            dynSettings.Controller.CustomNodeLoader.SetNodeInfo(args.Name, args.Category, newNodeDefinition.FunctionId, "");
+            var customNodeInfo = new CustomNodeInfo(newNodeDefinition.FunctionId, args.Name, args.Category, "", "");
+            dynSettings.Controller.CustomNodeManager.SetNodeInfo(customNodeInfo);
             var path = dynSettings.Controller.DynamoViewModel.SaveFunctionOnly(newNodeDefinition);
-            dynSettings.Controller.CustomNodeLoader.SetNodePath(newNodeDefinition.FunctionId, path);
-            dynSettings.Controller.SearchViewModel.Add(args.Name, args.Category, newNodeDefinition.FunctionId);
+            dynSettings.Controller.CustomNodeManager.SetNodePath(newNodeDefinition.FunctionId, path);
+            dynSettings.Controller.SearchViewModel.Add(args.Name, args.Category, "No description provided", newNodeDefinition.FunctionId);
 
             dynSettings.Controller.DynamoModel.CreateNode(new Dictionary<string, object>()
                 {

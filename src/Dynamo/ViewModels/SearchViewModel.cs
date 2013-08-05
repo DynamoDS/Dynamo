@@ -8,6 +8,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
+using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg.Responses;
@@ -390,6 +391,7 @@ namespace Dynamo.ViewModels
 
         }
 
+
         /// <summary>
         ///     Add a category, given a delimited name
         /// </summary>
@@ -459,7 +461,7 @@ namespace Dynamo.ViewModels
         ///     Asynchronously performs a search and updates the observable SearchResults property.
         /// </summary>
         /// <param name="query"> The search query </param>
-        internal void SearchAndUpdateResults(string query)
+        public void SearchAndUpdateResults(string query)
         {
             if (Visible != true)
                 return;
@@ -552,7 +554,7 @@ namespace Dynamo.ViewModels
         ///     Synchronously performs a search using the current SearchText
         /// </summary>
         /// <param name="query"> The search query </param>
-        internal void SearchAndUpdateResultsSync()
+        public void SearchAndUpdateResultsSync()
         {
             SearchAndUpdateResultsSync(SearchText);
         }
@@ -562,7 +564,7 @@ namespace Dynamo.ViewModels
         ///     on the current thread.
         /// </summary>
         /// <param name="query"> The search query </param>
-        internal void SearchAndUpdateResultsSync(string query)
+        public void SearchAndUpdateResultsSync(string query)
         {
             if (Visible != true)
                 return;
@@ -722,13 +724,17 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="workspace">A dynWorkspace to add</param>
         /// <param name="name">The name to use</param>
-        public void Add(string name, string category, Guid functionId)
+        public void Add(string name, string category, string description, Guid functionId)
         {
             if (name == "Home")
                 return;
 
             // create the node in search
-            var nodeEle = new NodeSearchElement(name, functionId);
+            var nodeEle = new NodeSearchElement(name, description, functionId);
+
+            if (SearchDictionary.Contains(nodeEle))
+                return;
+
             SearchDictionary.Add(nodeEle, nodeEle.Name);
             SearchDictionary.Add(nodeEle, category + "." + nodeEle.Name);
 
@@ -753,6 +759,8 @@ namespace Dynamo.ViewModels
 
             var cat = this.AddCategory(category);
             cat.AddChild(item);
+
+            item.FullCategoryName = category;
 
             var searchEleItem = item as SearchElementBase;
             if (searchEleItem != null)
@@ -797,6 +805,15 @@ namespace Dynamo.ViewModels
 
             var searchEle = new NodeSearchElement(name, description, tags);
 
+            attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
+            bool searchable = true;
+            if (attribs.Length > 0)
+            {
+                searchable = (attribs[0] as NodeSearchableAttribute).IsSearchable;
+            }
+
+            searchEle.SetSearchable(searchable);
+
             // if it's a revit search element, keep track of it
             if ( cat.Equals(BuiltinNodeCategories.REVIT_API) )
             {
@@ -823,20 +840,64 @@ namespace Dynamo.ViewModels
 
         }
 
-
-        /// <summary>
-        ///     Rename a workspace that is currently part of the SearchDictionary
-        /// </summary>
-        /// <param name="def">The FunctionDefinition whose name must change</param>
-        /// <param name="newName">The new name to assign to the workspace</param>
-        public void Refactor(FunctionDefinition def, string oldName, string newName)
+        public void Remove(string nodeName)
         {
-            SearchDictionary.Remove((ele) => (ele).Name == oldName);
+            // get the node, return if not found
+            var nodes = _browserLeaves.Where(x => x.Name == nodeName);
+            if (!nodes.Any())
+            {
+                return;
+            }
+
+            // remove from search dictionary
+            SearchDictionary.Remove((ele) => (ele).Name == nodeName);
+            SearchDictionary.Remove((ele) => (ele).Name.EndsWith("." + nodeName) );
+
+            // remove from browser leaves
+            _browserLeaves.Where(x => x.Name == nodeName).ToList().ForEach(x => _browserLeaves.Remove(x));
+
+            // get the category if it doesn't exist, then remove it
+            foreach (var node in nodes)
+            {
+                var categoryName = ((SearchElementBase)node).FullCategoryName;
+                var parentCategoryName = ((BrowserInternalElement)node).Parent.Name;
+
+                if (!NodeCategories.ContainsKey(categoryName))
+                {
+                    return;
+                }
+
+                // first level category
+                var pcategory = NodeCategories[parentCategoryName];
+                pcategory.NumElements--;
+
+                if (pcategory.NumElements == 0)
+                {
+                    this.RemoveCategory(pcategory.Name);
+                }
+
+                // immediate category
+                var category = NodeCategories[categoryName];
+                category.NumElements--;
+
+                if (category.NumElements == 0)
+                {
+                    this.RemoveCategory(category.Name);
+                }
+            }
+            
+
         }
 
-        internal void Remove(string p)
+        public void Add(CustomNodeInfo nodeInfo)
         {
-            throw new NotImplementedException();
+            this.Add(nodeInfo.Name, nodeInfo.Category, nodeInfo.Description, nodeInfo.Guid);
+        }
+
+        internal void Refactor(CustomNodeInfo nodeInfo)
+        {
+            this.Remove(nodeInfo.Name);
+            this.Add(nodeInfo);
         }
 
         public void Search(object parameter)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -25,11 +26,21 @@ namespace Dynamo.Models
         private double _y;
         private double _zoom = 1.0;
 
+        private string _category = "";
+        public string Category
+        {
+            get { return _category; }
+            set
+            {
+                _category = value;
+                RaisePropertyChanged("Category");
+            }
+        }
+
         /// <summary>
         ///     The date of the last save.
         /// </summary>
         private DateTime _lastSaved;
-
         public DateTime LastSaved
         {
             get { return _lastSaved; }
@@ -37,6 +48,34 @@ namespace Dynamo.Models
             {
                 _lastSaved = value;
                 RaisePropertyChanged("LastSaved");
+            }
+        }
+
+        /// <summary>
+        ///     A description of the workspace
+        /// </summary>
+        private string _author = "None provided";
+        public string Author
+        {
+            get { return _author; }
+            set
+            {
+                _author = value;
+                RaisePropertyChanged("Author");
+            }
+        }
+
+        /// <summary>
+        ///     A description of the workspace
+        /// </summary>
+        private string _description = "";
+        public string Description
+        {
+            get { return _description; }
+            set
+            {
+                _description = value;
+                RaisePropertyChanged("Description");
             }
         }
 
@@ -214,6 +253,7 @@ namespace Dynamo.Models
             LastSaved = DateTime.Now;
 
             WorkspaceSaved += OnWorkspaceSaved;
+
         }
 
         public bool WatchChanges
@@ -222,6 +262,7 @@ namespace Dynamo.Models
             {
                 if (value)
                 {
+                    
                     Nodes.CollectionChanged += MarkUnsavedAndModified;
                     Notes.CollectionChanged += MarkUnsaved;
                     Connectors.CollectionChanged += MarkUnsavedAndModified;
@@ -370,14 +411,14 @@ namespace Dynamo.Models
                 root.SetAttribute("X", workSpace.X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", workSpace.Y.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("zoom", workSpace.Zoom.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Description", workSpace.Description);
+                root.SetAttribute("Category", workSpace.Category);
+                root.SetAttribute("Name", workSpace.Name);
 
                 if (!savingHomespace) //If we are not saving the home space
                 {
-                    root.SetAttribute("Name", workSpace.Name);
-                    root.SetAttribute("Category", ((FuncWorkspace) workSpace).Category);
-
                     var guid =
-                        dynSettings.Controller.CustomNodeLoader.GetGuidFromName(workSpace.Name);
+                        dynSettings.Controller.CustomNodeManager.GetGuidFromName(workSpace.Name);
 
                     //friends don't let friends save an empty GUID
                     if (guid == Guid.Empty)
@@ -460,6 +501,9 @@ namespace Dynamo.Models
         }
 
         #endregion
+
+
+
     }
 
     internal static class WorkspaceHelpers
@@ -470,33 +514,43 @@ namespace Dynamo.Models
 
     public class FuncWorkspace : dynWorkspaceModel
     {
-        public String Category { get; set; }
+
 
         #region Contructors
 
         public FuncWorkspace()
-            : this("", "", new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
+            : this("", "", "", new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
         {
         }
 
         public FuncWorkspace(String name, String category)
-            : this(name, category, new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
+            : this(name, category, "",new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
         {
         }
 
-        public FuncWorkspace(String name, String category, double x, double y)
-            : this(name, category, new List<dynNodeModel>(), new List<dynConnectorModel>(), x, y)
+        public FuncWorkspace(String name, String category, string description, double x, double y)
+            : this(name, category, description, new List<dynNodeModel>(), new List<dynConnectorModel>(), x, y)
         {
         }
 
         public FuncWorkspace(
-            String name, String category, IEnumerable<dynNodeModel> e, IEnumerable<dynConnectorModel> c, double x,
-            double y)
+            String name, String category, string description, IEnumerable<dynNodeModel> e, IEnumerable<dynConnectorModel> c, double x, double y)
             : base(name, e, c, x, y)
         {
             WatchChanges = true; 
-            HasUnsavedChanges = true;
+            HasUnsavedChanges = false;
             Category = category;
+            Description = description;
+
+            PropertyChanged += OnPropertyChanged;
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Name" || args.PropertyName == "Category" || args.PropertyName == "Description")
+            {
+                this.HasUnsavedChanges = true;
+            }
         }
 
         #endregion
@@ -510,15 +564,17 @@ namespace Dynamo.Models
                 return;
 
             var def =
-                dynSettings.Controller.CustomNodeLoader
+                dynSettings.Controller.CustomNodeManager
                            .GetLoadedDefinitions()
-                           .First(x => x.Workspace == this);
+                           .FirstOrDefault(x => x.Workspace == this);
+
+            if (def == null) return;
 
             def.RequiresRecalc = true;
 
             try
             {
-                var expression = CustomNodeLoader.CompileFunction(def);
+                var expression = CustomNodeManager.CompileFunction(def);
 
                 dynSettings.Controller.FSchemeEnvironment.DefineSymbol(
                     def.FunctionId.ToString(), expression);

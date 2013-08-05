@@ -20,6 +20,7 @@ using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism;
 using NUnit.Framework;
+using Dynamo.PackageManager.UI;
 
 namespace Dynamo.ViewModels
 {
@@ -95,6 +96,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand CreateConnectionCommand { get; set; }
         public DelegateCommand ClearCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
+        public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
+        public DelegateCommand ShowInstalledPackagesCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
         public DelegateCommand ShowSaveDialogIfNeededAndSaveResultCommand { get; set; }
@@ -106,6 +109,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand AlignSelectedCommand { get; set; }
         public DelegateCommand RefactorCustomNodeCommand { get; set; }
+        public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
         public DelegateCommand SelectAllCommand { get; set; }
@@ -398,6 +402,10 @@ namespace Dynamo.ViewModels
             ReportABugCommand = new DelegateCommand(Controller.ReportABug, Controller.CanReportABug);
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
+
+            ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
+            ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
+
             ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             SelectNeighborsCommand = new DelegateCommand(SelectNeighbors, CanSelectNeighbors);
             ClearLogCommand = new DelegateCommand(dynSettings.Controller.ClearLog, dynSettings.Controller.CanClearLog);
@@ -552,6 +560,29 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanUpstreamVisibilityBeToggled(object parameters)
+        {
+            return true;
+        }
+
+        private void ShowPackageManagerSearch()
+        {
+            var pms = new PackageManagerSearchViewModel(Controller.PackageManagerClient);
+            var window = new PackageManagerSearchView(pms);
+            window.Show();
+        }
+
+        private bool CanShowPackageManagerSearch()
+        {
+            return true;
+        }
+
+        private void ShowInstalledPackages()
+        {
+            var window = new InstalledPackagesView();
+            window.Show();
+        }
+
+        private bool CanShowInstalledPackages()
         {
             return true;
         }

@@ -72,18 +72,18 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Project Point On Face")]
+    [NodeName("Project Point On Face/Plane")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
-    [NodeDescription("Project a point onto a face.")]
+    [NodeDescription("Project a point onto a face or plane.")]
     public class dynProjectPointOnFace : dynRevitTransactionNode, IDrawable, IClearable
     {
         public dynProjectPointOnFace()
         {
             InPortData.Add(new PortData("xyz", "The point to be projected.", typeof(Value.Container)));
-            InPortData.Add(new PortData("face", "The face on which to project the point.", typeof(Value.Container)));
+            InPortData.Add(new PortData("face/plane", "The face or plane on which to project the point.", typeof(Value.Container)));
 
             OutPortData.Add(new PortData("xyz", "The nearest point to the projected point on the face.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("uv", "The UV coordinates of the nearest point on the face..", typeof(Value.Number)));
+            OutPortData.Add(new PortData("uv", "The UV coordinates of the nearest point on the face.", typeof(Value.Number)));
             OutPortData.Add(new PortData("d", "The distance from the point to the face", typeof(Value.Number)));
             OutPortData.Add(new PortData("edge", "The edge if projected point is near an edge.", typeof(Value.Container)));
             OutPortData.Add(new PortData("edge t", "The parameter of the nearest point on the edge.", typeof(Value.Number)));

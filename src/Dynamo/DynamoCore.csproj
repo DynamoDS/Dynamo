@@ -58,12 +58,17 @@ limitations under the License.
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Greg">
+    <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit.Wpf, Version=2012.4.24.1, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\greg\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
@@ -74,6 +79,7 @@ limitations under the License.
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\extern\Newtonsoft.json\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -93,6 +99,7 @@ limitations under the License.
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -105,12 +112,17 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
     <Compile Include="UI\Commands\Commands.cs" />
     <Compile Include="DynamoCompletionData.cs" />
     <Compile Include="DynamoLogger.cs" />
     <Compile Include="DynamoRunner.cs" />
     <Compile Include="DynamoSelection.cs" />
+    <Compile Include="PackageManager\Package.cs" />
+    <Compile Include="PackageManager\PackageUploadBuilder.cs" />
+    <Compile Include="PackageManager\PackageUploadHandle.cs" />
+    <Compile Include="SettingsManager.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Models\dynModelBase.cs" />
@@ -119,7 +131,6 @@ limitations under the License.
     <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\WatchViewModel.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
-    <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="UI\Commands\ConnectorCommands.cs" />
     <Compile Include="UI\Commands\NodeCommands.cs" />
     <Compile Include="UI\Commands\NodeSearchElementCommands.cs" />
@@ -134,6 +145,26 @@ limitations under the License.
     </Compile>
     <Compile Include="UI\MouseClickManager.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PackageManager\PackageDownloadHandle.cs" />
+    <Compile Include="PackageManager\PackageLoader.cs" />
+    <Compile Include="PackageManager\PackageManagerSearchViewModel.cs" />
+    <Compile Include="UI\Views\InstalledPackagesView.xaml.cs">
+      <DependentUpon>InstalledPackagesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\PackageItemInternalViewModel.cs" />
+    <Compile Include="ViewModels\PackageItemViewModel.cs" />
+    <Compile Include="ViewModels\PackageItemLeafViewModel.cs" />
+    <Compile Include="ViewModels\PackageItemRootViewModel.cs" />
+    <Compile Include="UI\Views\PackageManagerDownloadView.xaml.cs">
+      <DependentUpon>PackageManagerDownloadView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\PackageManagerPublishView.xaml.cs">
+      <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\PublishPackageViewModel.cs" />
+    <Compile Include="UI\Views\PackageManagerSearchView.xaml.cs">
+      <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Prompts\CrashPrompt.xaml.cs" />
     <Compile Include="UI\Prompts\dynEditWindow.xaml.cs">
@@ -175,14 +206,6 @@ limitations under the License.
       <DependentUpon>dynWorkspaceView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Views\PackageManagerLoginView.xaml.cs">
-      <DependentUpon>PackageManagerLoginView.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UI\Views\PackageManagerPublishView.xaml.cs">
-      <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="UI\Views\SearchView.xaml.cs">
       <DependentUpon>SearchView.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -215,7 +238,7 @@ limitations under the License.
     <Compile Include="ViewModels\dynPortViewModel.cs" />
     <Compile Include="ViewModels\dynViewModelBase.cs" />
     <Compile Include="ViewModels\dynWorkspaceViewModel.cs" />
-    <Compile Include="CustomNodeLoader.cs" />
+    <Compile Include="CustomNodeManager.cs" />
     <Compile Include="DynamoLoader.cs" />
     <Compile Include="NodeCollapser.cs" />
     <Compile Include="Search\SearchElements\CommandElement.cs" />
@@ -224,16 +247,15 @@ limitations under the License.
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="Interfaces\dynIDrawable.cs" />
     <Compile Include="UI\Commands\PackageManagerCommands.cs" />
-    <Compile Include="PackageManager\Login\PackageManagerLoginViewModel.cs" />
-    <Compile Include="PackageManager\PackageManagerClient.cs" />
-    <Compile Include="PackageManager\Publish\PackageManagerPublishViewModel.cs" />
-    <Compile Include="UI\Commands\Regions\PackageManagerRegion.cs" />
     <Compile Include="UI\Commands\Regions\RegionBase.cs" />
     <Compile Include="UI\Commands\Regions\RevitAPIRegion.cs" />
     <Compile Include="UI\Commands\SearchCommands.cs" />
+    <Compile Include="PackageManager\PackageManagerCommands.cs" />
+    <Compile Include="UI\Commands\Regions\PackageManagerRegion.cs" />
+    <Compile Include="Search\SearchCommands.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
-    <Compile Include="Search\SearchElements\PackageManagerSearchElement.cs" />
+    <Compile Include="PackageManager\UI\PackageManagerSearchElement.cs" />
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Search\SearchElements\WorkspaceSearchElement.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
@@ -315,6 +337,20 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\Prompts\CrashPrompt.xaml">
+    </Page>
+    <Page Include="UI\Views\InstalledPackagesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\PackageManagerDownloadView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\PackageManagerPublishView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Views\PackageManagerSearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -355,8 +391,6 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\dynNodeView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\dynNoteView.xaml">
       <SubType>Designer</SubType>
@@ -367,14 +401,6 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\dynWorkspaceView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Views\PackageManagerLoginView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Views\PackageManagerPublishView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
