@@ -63,12 +63,8 @@ namespace Dynamo.Connectors
         {
             dynSettings.ReturnFocusToSearch();
 
-<<<<<<< HEAD:src/Dynamo/UI/Views/dynPortView.xaml.cs
-            ViewModel.ConnectCommand.Execute(null);
-=======
             if (ViewModel != null)
-                ViewModel.ConnectCommand.Execute();
->>>>>>> master:src/Dynamo/Views/dynPortView.xaml.cs
+                ViewModel.ConnectCommand.Execute(null);
     
             //set the handled flag so that the element doesn't get dragged
             e.Handled = true;

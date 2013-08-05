@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using Dynamo.Utilities;
 using System.Windows;
 using System.Diagnostics;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Utilities
 {
@@ -341,9 +342,9 @@ namespace Dynamo.Utilities
             else
             {
                 if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
-                    dynSettings.Controller.DynamoViewModel.ViewHomeWorkspace();
+                    dynSettings.Controller.DynamoModel.ViewHomeWorkspace();
 
-                dynSettings.Controller.DynamoViewModel.OpenWorkspace(path);
+                dynSettings.Controller.DynamoModel.OpenWorkspace(path);
             }
         }
 

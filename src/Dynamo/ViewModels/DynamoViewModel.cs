@@ -564,25 +564,25 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void ShowPackageManagerSearch()
+        private void ShowPackageManagerSearch(object parameters)
         {
             var pms = new PackageManagerSearchViewModel(Controller.PackageManagerClient);
             var window = new PackageManagerSearchView(pms);
             window.Show();
         }
 
-        private bool CanShowPackageManagerSearch()
+        private bool CanShowPackageManagerSearch(object parameters)
         {
             return true;
         }
 
-        private void ShowInstalledPackages()
+        private void ShowInstalledPackages(object parameters)
         {
             var window = new InstalledPackagesView();
             window.Show();
         }
 
-        private bool CanShowInstalledPackages()
+        private bool CanShowInstalledPackages(object parameters)
         {
             return true;
         }
