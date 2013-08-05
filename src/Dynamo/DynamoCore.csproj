@@ -252,7 +252,6 @@ limitations under the License.
     <Compile Include="UI\Commands\SearchCommands.cs" />
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
     <Compile Include="UI\Commands\Regions\PackageManagerRegion.cs" />
-    <Compile Include="Search\SearchCommands.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="PackageManager\UI\PackageManagerSearchElement.cs" />

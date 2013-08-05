@@ -912,8 +912,8 @@ namespace Dynamo.ViewModels
 
         internal void HideSearch(object parameter)
         {
-            dynSettings.Controller.PackageManagerPublishViewModel.Visible = false;
-            dynSettings.Controller.PackageManagerLoginViewModel.Visible = false;
+            //dynSettings.Controller.PackageManagerPublishViewModel.Visible = false;
+            //dynSettings.Controller.PackageManagerLoginViewModel.Visible = false;
             dynSettings.Controller.SearchViewModel.Visible = false;
         }
 
