@@ -40,7 +40,6 @@ namespace DynamoPython
             {
                 string current_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 header = header + "import sys\npath = r'C:\\Autodesk\\Dynamo\\Core'" + "\nexec_path = r'" + current_dir + "'\nsys.path.append(path)\nsys.path.append(exec_path)\nimport clr\nclr.AddReference('LibGNet')\nfrom Autodesk.LibG import *\n";
-                
             }
 
             code = header + code;
