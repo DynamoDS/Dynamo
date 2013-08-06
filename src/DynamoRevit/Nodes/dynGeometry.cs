@@ -202,9 +202,9 @@ namespace Dynamo.Nodes
     {
         public dynXYZ()
         {
-            InPortData.Add(new PortData("X", "X", typeof(Value.Number)));
-            InPortData.Add(new PortData("Y", "Y", typeof(Value.Number)));
-            InPortData.Add(new PortData("Z", "Z", typeof(Value.Number)));
+            InPortData.Add(new PortData("X", "X", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("Y", "Y", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("Z", "Z", typeof(Value.Number), Value.NewNumber(0)));
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
