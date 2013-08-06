@@ -404,7 +404,7 @@ namespace Dynamo.Nodes
         public dynSortBy()
             : base(FScheme.SortBy)
         {
-            InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(object)));
+            InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(object), Value.NewFunction(Utils.ConvertToFSchemeFunc(FScheme.Identity))));
             InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
 
@@ -451,7 +451,7 @@ namespace Dynamo.Nodes
         public dynListMax()
             : base(FScheme.Max)
         {
-            InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(Value.Function)));
+            InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(Value.Function), Value.NewFunction(Utils.ConvertToFSchemeFunc(FScheme.Identity))));
             InPortData.Add(new PortData("list", "List to get the maximum value of.", typeof(Value.List)));
             OutPortData.Add(new PortData("max", "Maximum value.", typeof(object)));
 
@@ -2350,6 +2350,73 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Average")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Averages a list of numbers.")]
+    [NodeSearchTags("avg")]
+    public class dynAverage : dynMathBase
+    {
+        public dynAverage()
+        {
+            InPortData.Add(new PortData("numbers", "The list of numbers to average.", typeof(Value.List)));
+            OutPortData.Add(new PortData("avg", "average", typeof(Value.Number)));
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+                throw new Exception("A list of numbers is required to average.");
+
+            var vals = ((Value.List)args[0]).Item.Select(
+               x => ((Value.Number)x).Item
+            );
+
+            var average = vals.Average();
+
+            return Value.NewNumber(average);
+        }
+    }
+
+    /// <summary>
+    /// keeps a simple moving average to smooth out noisy values over time. 
+    /// https://en.wikipedia.org/wiki/Moving_average
+    /// 
+    /// </summary>
+    [NodeName("Smooth")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Smooths a list of numbers using a running average.")]
+    [NodeSearchTags("running average", "moving average", "sma")]
+    public class dynSmooth : dynMathBase
+    {
+        Queue<Value.Number> values = new Queue<Value.Number>();
+        int maxNumValues = 10;
+
+        public dynSmooth()
+        {
+            InPortData.Add(new PortData("val", "The current value.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("avg", "uses a simple moving average to smooth out values that fluctuate over time", typeof(Value.Number)));
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsNumber)
+                throw new Exception("A number is required to smooth.");
+
+            if (values.Count() < maxNumValues)
+                values.Enqueue((Value.Number)args[0]); // add current values to queue until it fills up
+            else
+                values.Dequeue();//throw out the first value once we are up to the full queue amount
+
+            var average = values.Average(num => num.Item);
+
+            return Value.NewNumber(average);
+        }
+    }
+
     #endregion
 
     #region Control Flow
@@ -2521,73 +2588,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Average")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
-    [NodeDescription("Averages a list of numbers.")]
-    [NodeSearchTags("avg")]
-    public class dynAverage : dynMathBase 
-    {
-        public dynAverage()
-        {
-            InPortData.Add(new PortData("numbers", "The list of numbers to average.", typeof(Value.List)));
-            OutPortData.Add(new PortData("avg", "average", typeof(Value.Number)));
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            if (!args[0].IsList)
-                throw new Exception("A list of numbers is required to average.");
-
-            var vals = ((Value.List)args[0]).Item.Select(
-               x => ((Value.Number)x).Item
-            );
-        
-            var average = vals.Average();
-
-            return Value.NewNumber(average);
-        }
-    }
-
-    /// <summary>
-    /// keeps a simple moving average to smooth out noisy values over time. 
-    /// https://en.wikipedia.org/wiki/Moving_average
-    /// 
-    /// </summary>
-    [NodeName("Smooth")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
-    [NodeDescription("Smooths a list of numbers using a running average.")]
-    [NodeSearchTags("running average", "moving average", "sma")]
-    public class dynSmooth: dynMathBase
-    {
-        Queue<Value.Number> values = new Queue<Value.Number>();
-        int maxNumValues = 10;
-
-        public dynSmooth()
-        {
-            InPortData.Add(new PortData("val", "The current value.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("avg", "uses a simple moving average to smooth out values that fluctuate over time", typeof(Value.Number)));
-            RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            if (!args[0].IsNumber)
-                throw new Exception("A number is required to smooth.");
-
-            if (values.Count() < maxNumValues)
-                values.Enqueue((Value.Number)args[0]); // add current values to queue until it fills up
-            else
-                values.Dequeue();//throw out the first value once we are up to the full queue amount
-
-            var average = values.Average(num => num.Item);
-            
-            return Value.NewNumber(average);
-        }
-    }
-
     //TODO: Setup proper IsDirty smart execution management
     [NodeName("If")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
@@ -2597,18 +2597,24 @@ namespace Dynamo.Nodes
         public dynConditional()
         {
             InPortData.Add(new PortData("test", "Test block", typeof(bool)));
-            InPortData.Add(new PortData("true", "True block", typeof(object)));
-            InPortData.Add(new PortData("false", "False block", typeof(object)));
+            InPortData.Add(new PortData("true", "True block", typeof(object), Value.NewDummy("Empty true")));
+            InPortData.Add(new PortData("false", "False block", typeof(object), Value.NewDummy("Empty false")));
             OutPortData.Add(new PortData("result", "Result", typeof(object)));
+
             RegisterAllPorts();
+
+            foreach (var port in InPorts.Skip(1))
+            {
+                port.DefaultValueEnabled = false;
+            }
         }
 
         protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
+            if (!HasInput(0))
             {
-                Error("All inputs must be connected.");
-                throw new Exception("If Node requires all inputs to be connected.");
+                Error("Test input must be connected.");
+                throw new Exception("If Node requires test input to be connected.");
             }
             return base.Build(preBuilt, outPort);
         }
@@ -4173,7 +4179,7 @@ namespace Dynamo.Nodes
         public dynJoinStrings()
         {
             InPortData.Add(new PortData("strs", "List of strings to join.", typeof(Value.List)));
-            InPortData.Add(new PortData("del", "Delimier", typeof(Value.String)));
+            InPortData.Add(new PortData("del", "Delimier", typeof(Value.String), Value.NewString("")));
             OutPortData.Add(new PortData("str", "Joined string", typeof(Value.String)));
 
             RegisterAllPorts();
@@ -4368,6 +4374,7 @@ namespace Dynamo.Nodes
             Item = item;
         }
     }
+
     /// <summary>
     /// Base class for all nodes using a drop down
     /// </summary>
