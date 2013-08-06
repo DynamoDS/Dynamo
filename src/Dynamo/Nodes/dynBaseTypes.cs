@@ -175,9 +175,11 @@ namespace Dynamo.Nodes
             subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             subButton.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             
-            WrapPanel wp = new WrapPanel();
-            wp.VerticalAlignment = VerticalAlignment.Top;
-            wp.HorizontalAlignment = HorizontalAlignment.Center;
+            var wp = new WrapPanel
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
             wp.Children.Add(addButton);
             wp.Children.Add(subButton);
 
@@ -1676,7 +1678,7 @@ namespace Dynamo.Nodes
 
     [NodeName("And")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
-    [NodeDescription("Boolean AND.")]
+    [NodeDescription("Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false.")]
     public class dynAnd : dynNodeWithOneOutput
     {
         public dynAnd()
@@ -1690,62 +1692,54 @@ namespace Dynamo.Nodes
         protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
-            if (!preBuilt.TryGetValue(this, out result))
+            if (preBuilt.TryGetValue(this, out result)) 
+                return result[outPort];
+
+            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
-                if (Enumerable.Range(0, InPortData.Count).All(HasInput))
-                {
-                    var ifNode = new ConditionalNode();
-                    ifNode.ConnectInput("test", Inputs[0].Item2.Build(preBuilt, Inputs[0].Item1));
-                    ifNode.ConnectInput("true", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
-                    ifNode.ConnectInput("false", new NumberNode(0));
-                    result = new Dictionary<int, INode>();
-                    result[outPort] = ifNode;
-                }
-                else
-                {
-                    var ifNode = new ConditionalNode();
-                    ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
-                    ifNode.ConnectInput("true", new SymbolNode(InPortData[1].NickName));
-                    ifNode.ConnectInput("false", new NumberNode(0));
-
-                    var node = new AnonymousFunctionNode(
-                        InPortData.Select(x => x.NickName),
-                        ifNode);
-
-                    //For each index in InPortData
-                    //for (int i = 0; i < InPortData.Count; i++)
-                    foreach (var data in Enumerable.Range(0, InPortData.Count))
-                    {
-                        //Fetch the corresponding port
-                        //var port = InPorts[i];
-
-                        //If this port has connectors...
-                        //if (port.Connectors.Any())
-                        if (HasInput(data))
-                        {
-                            //Compile input and connect it
-                            node.ConnectInput(
-                               InPortData[data].NickName,
-                               Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
-                            );
-                        }
-                    }
-
-                    RequiresRecalc = false;
-                    OnEvaluate();
-
-                    result = new Dictionary<int, INode>();
-                    result[outPort] = node;
-                }
-                preBuilt[this] = result;
+                var ifNode = new ConditionalNode();
+                ifNode.ConnectInput("test", Inputs[0].Item2.Build(preBuilt, Inputs[0].Item1));
+                ifNode.ConnectInput("true", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
+                ifNode.ConnectInput("false", new NumberNode(0));
+                result = new Dictionary<int, INode>();
+                result[outPort] = ifNode;
             }
+            else
+            {
+                var ifNode = new ConditionalNode();
+                ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
+                ifNode.ConnectInput("true", new SymbolNode(InPortData[1].NickName));
+                ifNode.ConnectInput("false", new NumberNode(0));
+
+                var node = new AnonymousFunctionNode(
+                    InPortData.Select(x => x.NickName),
+                    ifNode);
+
+                //For each index in InPortData
+                //for (int i = 0; i < InPortData.Count; i++)
+                foreach (var data in Enumerable.Range(0, InPortData.Count).Where(HasInput))
+                {
+                    //Compile input and connect it
+                    node.ConnectInput(
+                        InPortData[data].NickName,
+                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
+                        );
+                }
+
+                RequiresRecalc = false;
+                OnEvaluate();
+
+                result = new Dictionary<int, INode>();
+                result[outPort] = node;
+            }
+            preBuilt[this] = result;
             return result[outPort];
         }
     }
 
     [NodeName("Or")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
-    [NodeDescription("Boolean OR.")]
+    [NodeDescription("Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false.")]
     public class dynOr : dynNodeWithOneOutput
     {
         public dynOr()
@@ -1764,63 +1758,55 @@ namespace Dynamo.Nodes
         protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
-            if (!preBuilt.TryGetValue(this, out result))
+            if (preBuilt.TryGetValue(this, out result)) 
+                return result[outPort];
+
+            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
-                if (Enumerable.Range(0, InPortData.Count).All(HasInput))
-                {
-                    var ifNode = new ConditionalNode();
-                    ifNode.ConnectInput("test", Inputs[0].Item2.Build(preBuilt, Inputs[0].Item1));
-                    ifNode.ConnectInput("true", new NumberNode(1));
-                    ifNode.ConnectInput("false", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
+                var ifNode = new ConditionalNode();
+                ifNode.ConnectInput("test", Inputs[0].Item2.Build(preBuilt, Inputs[0].Item1));
+                ifNode.ConnectInput("true", new NumberNode(1));
+                ifNode.ConnectInput("false", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
 
-                    result = new Dictionary<int, INode>();
-                    result[outPort] = ifNode;
-                }
-                else
-                {
-                    var ifNode = new ConditionalNode();
-                    ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
-                    ifNode.ConnectInput("true", new NumberNode(1));
-                    ifNode.ConnectInput("false", new SymbolNode(InPortData[1].NickName));
-
-                    var node = new AnonymousFunctionNode(
-                        InPortData.Select(x => x.NickName),
-                        ifNode);
-
-                    //For each index in InPortData
-                    //for (int i = 0; i < InPortData.Count; i++)
-                    foreach (var data in Enumerable.Range(0, InPortData.Count))
-                    {
-                        //Fetch the corresponding port
-                        //var port = InPorts[i];
-
-                        //If this port has connectors...
-                        //if (port.Connectors.Any())
-                        if (HasInput(data))
-                        {
-                            //Compile input and connect it
-                            node.ConnectInput(
-                               InPortData[data].NickName,
-                               Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
-                            );
-                        }
-                    }
-
-                    RequiresRecalc = false;
-                    OnEvaluate();
-
-                    result = new Dictionary<int, INode>();
-                    result[outPort] = node;
-                }
-                preBuilt[this] = result;
+                result = new Dictionary<int, INode>();
+                result[outPort] = ifNode;
             }
+            else
+            {
+                var ifNode = new ConditionalNode();
+                ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
+                ifNode.ConnectInput("true", new NumberNode(1));
+                ifNode.ConnectInput("false", new SymbolNode(InPortData[1].NickName));
+
+                var node = new AnonymousFunctionNode(
+                    InPortData.Select(x => x.NickName),
+                    ifNode);
+
+                //For each index in InPortData
+                //for (int i = 0; i < InPortData.Count; i++)
+                foreach (var data in Enumerable.Range(0, InPortData.Count).Where(HasInput))
+                {
+                    //Compile input and connect it
+                    node.ConnectInput(
+                        InPortData[data].NickName,
+                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
+                        );
+                }
+
+                RequiresRecalc = false;
+                OnEvaluate();
+
+                result = new Dictionary<int, INode>();
+                result[outPort] = node;
+            }
+            preBuilt[this] = result;
             return result[outPort];
         }
     }
 
     [NodeName("Xor")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
-    [NodeDescription("Boolean XOR.")]
+    [NodeDescription("Boolean XOR: Returns true if one input is true and the other is false. If both inputs are the same, returns false.")]
     public class dynXor : dynBuiltinFunction
     {
         public dynXor()
@@ -1835,7 +1821,8 @@ namespace Dynamo.Nodes
 
     [NodeName("Not")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
-    [NodeDescription("Boolean NOT.")]
+    [NodeDescription("Boolean NOT: Inverts a boolean value. (True -> False, False -> True)")]
+    [NodeSearchTags("invert")]
     public class dynNot : dynBuiltinFunction
     {
         public dynNot()
