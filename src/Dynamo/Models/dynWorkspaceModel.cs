@@ -454,7 +454,7 @@ namespace Dynamo
                     dynEl.SetAttribute("isUpstreamVisible", el.IsUpstreamVisible.ToString().ToLower());
                     dynEl.SetAttribute("lacing", el.ArgumentLacing.ToString());
 
-                    el.SaveNode(xmlDoc, dynEl, SaveContext.File);
+                    el.Save(xmlDoc, dynEl, SaveContext.File);
                 }
 
                 //write only the output connectors

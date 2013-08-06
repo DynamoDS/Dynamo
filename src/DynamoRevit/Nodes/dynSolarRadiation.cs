@@ -289,7 +289,7 @@ namespace Dynamo.Nodes
                 throw new Exception("SANITY CHECK FAILED");
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (this.PickedSunAndShadowSettings != null)
@@ -300,7 +300,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {

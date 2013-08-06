@@ -1978,12 +1978,12 @@ namespace Dynamo.Nodes
 
         public enum BooleanOperationOptions {Union, Intersect, Difference};
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("index", this.combo.SelectedIndex.ToString());
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {
