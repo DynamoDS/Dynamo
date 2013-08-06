@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.IO;
 using Dynamo;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -37,7 +38,9 @@ namespace DynamoPython
 
             if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
             {
-                header = header + "import sys\npath = 'C:\\Autodesk\\Dynamo\\Core'\nsys.path.append(path)\nimport clr\nclr.AddReference('LibGNet')\nfrom Autodesk.LibG import *\n";
+                string current_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                header = header + "import sys\npath = r'C:\\Autodesk\\Dynamo\\Core'" + "\nexec_path = r'" + current_dir + "'\nsys.path.append(path)\nsys.path.append(exec_path)\nimport clr\nclr.AddReference('LibGNet')\nfrom Autodesk.LibG import *\n";
+                
             }
 
             code = header + code;
