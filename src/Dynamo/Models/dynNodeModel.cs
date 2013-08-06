@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.Xml;
 using Dynamo.Selection;
 using Microsoft.FSharp.Collections;
 
@@ -476,10 +478,24 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="xmlDoc">The XmlDocument representing the whole workspace containing this Element.</param>
         /// <param name="dynEl">The XmlElement representing this Element.</param>
-        /// <param name="context"></param>
-        public virtual void SaveNode(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl, SaveContext context)
+        /// <param name="context">Why is this being called?</param>
+        protected virtual void SaveNode(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl, SaveContext context)
         {
 
+        }
+
+        public void Save(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl, SaveContext context)
+        {
+            SaveNode(xmlDoc, dynEl, context);
+
+            //write port information
+            foreach (var port in inPorts.Select((port, index) => new { port, index }).Where(x => x.port.UsingDefaultValue))
+            {
+                var portInfo = xmlDoc.CreateElement("PortInfo");
+                portInfo.SetAttribute("index", port.index.ToString(CultureInfo.InvariantCulture));
+                portInfo.SetAttribute("default", true.ToString());
+                dynEl.AppendChild(portInfo);
+            }
         }
 
         /// <summary>
@@ -487,9 +503,34 @@ namespace Dynamo.Nodes
         /// SaveNode() in order to write the data when saved.
         /// </summary>
         /// <param name="elNode">The XmlNode representing this Element.</param>
-        public virtual void LoadNode(System.Xml.XmlNode elNode)
+        protected virtual void LoadNode(System.Xml.XmlNode elNode)
         {
 
+        }
+
+        public void Load(System.Xml.XmlNode elNode)
+        {
+            LoadNode(elNode);
+
+            var portInfoProcessed = new HashSet<int>();
+
+            //read port information
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name == "PortInfo")
+                {
+                    var index = int.Parse(subNode.Attributes["index"].Value);
+                    portInfoProcessed.Add(index);
+                    var def = bool.Parse(subNode.Attributes["default"].Value);
+                    inPorts[index].UsingDefaultValue = def;
+                }
+            }
+            
+            //set defaults
+            foreach (var port in inPorts.Select((x, i) => new { x, i }).Where(x => !portInfoProcessed.Contains(x.i)))
+            {
+                port.x.UsingDefaultValue = false;
+            }
         }
 
         /// <summary>

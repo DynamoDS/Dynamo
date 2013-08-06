@@ -198,7 +198,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(((Parameter)Items[SelectedIndex].Item).Definition);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             if (this.storedId != null)
             {
@@ -213,7 +213,7 @@ namespace Dynamo.Nodes
 
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             var doc = dynRevitSettings.Doc.Document;
 

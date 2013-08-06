@@ -217,7 +217,7 @@ namespace Dynamo
                 }
             }
 
-            public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+            protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("ID");
@@ -252,7 +252,7 @@ namespace Dynamo
                 dynEl.AppendChild(outEl);
             }
 
-            public override void LoadNode(XmlNode elNode)
+            protected override void LoadNode(XmlNode elNode)
             {
                 foreach (XmlNode subNode in elNode.ChildNodes)
                 {
@@ -471,7 +471,7 @@ namespace Dynamo
                 }
             }
 
-            public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+            protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("Symbol");
@@ -479,7 +479,7 @@ namespace Dynamo
                 dynEl.AppendChild(outEl);
             }
 
-            public override void LoadNode(XmlNode elNode)
+            protected override void LoadNode(XmlNode elNode)
             {
                 foreach (XmlNode subNode in elNode.ChildNodes)
                 {
@@ -575,7 +575,7 @@ namespace Dynamo
                 return result[outPort];
             }
 
-            public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+            protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("Symbol");
@@ -583,7 +583,7 @@ namespace Dynamo
                 dynEl.AppendChild(outEl);
             }
 
-            public override void LoadNode(XmlNode elNode)
+            protected override void LoadNode(XmlNode elNode)
             {
                 foreach (XmlNode subNode in elNode.ChildNodes)
                 {
