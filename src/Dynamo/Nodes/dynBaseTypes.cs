@@ -398,13 +398,13 @@ namespace Dynamo.Nodes
 
     [NodeName("Sort-By")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Returns a sorted list, using the given key mapper.")]
+    [NodeDescription("Returns a sorted list, using the given key mapper. The key mapper must return either all numbers or all strings.")]
     public class dynSortBy : dynBuiltinFunction
     {
         public dynSortBy()
             : base(FScheme.SortBy)
         {
-            InPortData.Add(new PortData("c(x)", "Key Mapper", typeof(object)));
+            InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(object)));
             InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
 
@@ -422,6 +422,38 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("list", "List of numbers or strings to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+    }
+
+    [NodeName("List Minimum")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Returns the minimum value of a list, using the given key mapper. The key mapper must return either all numbers or all strings.")]
+    public class dynListMin : dynBuiltinFunction
+    {
+        public dynListMin() 
+            : base(FScheme.Min)
+        {
+            InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(Value.Function), Value.NewFunction(Utils.ConvertToFSchemeFunc(FScheme.Identity))));
+            InPortData.Add(new PortData("list", "List to get the minimum value of.", typeof(Value.List)));
+            OutPortData.Add(new PortData("min", "Minimum value.", typeof(object)));
+
+            RegisterAllPorts();
+        }
+    }
+
+    [NodeName("List Maximum")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Returns the maximum value of a list, using the given key mapper. The key mapper must return either all numbers or all strings.")]
+    public class dynListMax : dynBuiltinFunction
+    {
+        public dynListMax()
+            : base(FScheme.Max)
+        {
+            InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(Value.Function)));
+            InPortData.Add(new PortData("list", "List to get the maximum value of.", typeof(Value.List)));
+            OutPortData.Add(new PortData("max", "Maximum value.", typeof(object)));
 
             RegisterAllPorts();
         }
