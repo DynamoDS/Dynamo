@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 //using Autodesk.Revit.DB;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Dynamo.Connectors;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -40,7 +41,18 @@ namespace Dynamo.Nodes
     public class dynWatch: dynNodeWithOneOutput
     {
         public WatchTree watchTree;
-        public WatchTreeBranch watchTreeBranch;
+        //private WatchTreeBranch watchTreeBranch;
+
+        private WatchNode _root;
+        public WatchNode Root
+        {
+            get { return _root; }
+            set 
+            { 
+                _root = value;
+                RaisePropertyChanged("Root");
+            }
+        }
 
         private class WatchHandlers
         {
@@ -65,6 +77,20 @@ namespace Dynamo.Nodes
         }
 
         static WatchHandlers handlerManager = new WatchHandlers();
+
+        public event EventHandler RequestBindingUnhook;
+        protected virtual void OnRequestBindingUnhook(EventArgs e)
+        {
+            if (RequestBindingUnhook != null)
+                RequestBindingUnhook(this, e);
+        }
+
+        public event EventHandler RequestBindingRehook;
+        protected virtual void OnRequestBindingRehook(EventArgs e)
+        {
+            if (RequestBindingRehook != null)
+                RequestBindingRehook(this, e);
+        }
 
         public static void AddWatchHandler(WatchHandler h)
         {
@@ -95,18 +121,35 @@ namespace Dynamo.Nodes
         {
             watchTree = new WatchTree();
 
-            //nodeUI.inputGrid.Children.Add(watchTree);
             nodeUI.grid.Children.Add(watchTree);
             watchTree.SetValue(Grid.RowProperty,2);
             watchTree.SetValue(Grid.ColumnSpanProperty,3);
             watchTree.Margin = new Thickness(5,0,5,5);
-            watchTreeBranch = watchTree.FindResource("Tree") as WatchTreeBranch;
+
+            Root = new WatchNode();
+            watchTree.DataContext = Root;
+
+            this.RequestBindingUnhook += new EventHandler(delegate
+                {
+                    BindingOperations.ClearAllBindings(watchTree.treeView1);
+                });
+
+            this.RequestBindingRehook += new EventHandler(delegate
+                {
+                    var sourceBinding = new Binding("Children")
+                    {
+                        Mode = BindingMode.TwoWay,
+                        Source = Root,
+                    };
+                    watchTree.treeView1.SetBinding(TreeView.ItemsSourceProperty, sourceBinding);
+                });
+            
         }
+
 
         void p_PortDisconnected(object sender, EventArgs e)
         {
-            if(watchTreeBranch != null)
-                watchTreeBranch.Clear();
+            Root.Children.Clear();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -119,13 +162,19 @@ namespace Dynamo.Nodes
             DispatchOnUIThread(
                 delegate
                 {
-                    watchTreeBranch.Clear();
+                    //unhook the binding
+                    OnRequestBindingUnhook(EventArgs.Empty);
+
+                    Root.Children.Clear();
 
                     foreach (Value e in args)
                     {
-                        watchTreeBranch.Add(Process(e, ref content, prefix, count));
+                        Root.Children.Add(Process(e, ref content, prefix, count));
                         count++;
                     }
+
+                    //rehook the binding
+                    OnRequestBindingRehook(EventArgs.Empty);
                 }
             );
 
