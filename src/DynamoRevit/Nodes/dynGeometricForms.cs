@@ -274,7 +274,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(f);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("FormId", formId.ToString());
             dynEl.SetAttribute("PreferSurfaceForOneLoop", preferSurfaceForOneLoop.ToString());
@@ -295,7 +295,7 @@ namespace Dynamo.Nodes
             dynEl.SetAttribute("FormCurveToReferenceCurveMap", mapAsString);
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {
