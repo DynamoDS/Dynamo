@@ -65,6 +65,18 @@ namespace Dynamo.Connectors
             get { return _node.State; }    
         }
 
+        public bool DefaultValueEnabled
+        {
+            get { return _port.DefaultValueEnabled; }
+            set { _port.DefaultValueEnabled = value; }
+        }
+
+        public bool UsingDefaultValue
+        {
+            get { return _port.UsingDefaultValue; }
+            set { _port.UsingDefaultValue = value; }
+        }
+
         public DelegateCommand ConnectCommand { get; set; }
         public DelegateCommand HighlightCommand { get; set; }
         public DelegateCommand UnHighlightCommand { get; set; }
@@ -73,8 +85,8 @@ namespace Dynamo.Connectors
         {
             _node = node;
             _port = port;
-            _port.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(_port_PropertyChanged);
-            _node.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(_node_PropertyChanged);
+            _port.PropertyChanged += _port_PropertyChanged;
+            _node.PropertyChanged += _node_PropertyChanged;
             ConnectCommand = new DelegateCommand(Connect, CanConnect);
             HighlightCommand = new DelegateCommand(Highlight, CanHighlight);
             UnHighlightCommand = new DelegateCommand(UnHighlight, CanUnHighlight);
@@ -114,6 +126,12 @@ namespace Dynamo.Connectors
                     break;
                 case "Center":
                     RaisePropertyChanged("Center");
+                    break;
+                case "DefaultValueEnabled":
+                    RaisePropertyChanged("DefaultValueEnabled");
+                    break;
+                case "UsingDefaultValue":
+                    RaisePropertyChanged("UsingDefaultValue");
                     break;
             }
             

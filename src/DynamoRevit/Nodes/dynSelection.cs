@@ -204,7 +204,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(SelectedElement);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElement != null)
@@ -215,7 +215,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -472,7 +472,7 @@ namespace Dynamo.Nodes
             return Value.NewList(Utils.SequenceToFSharpList(els));
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElements != null)
@@ -486,7 +486,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -783,14 +783,14 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawFace(RenderDescription, face);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             if(_reference != null)
                 dynEl.SetAttribute(
                     "faceRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -872,14 +872,14 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawGeometryElement(RenderDescription, edge);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             if(_reference != null)
                 dynEl.SetAttribute(
                     "edgeRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -938,7 +938,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -1402,7 +1402,7 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawXYZ(RenderDescription, thisXYZ);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             if(_reference != null)
                 dynEl.SetAttribute(
@@ -1411,7 +1411,7 @@ namespace Dynamo.Nodes
                 dynEl.SetAttribute("refXYZparam1", _param1.ToString(CultureInfo.InvariantCulture));
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {
