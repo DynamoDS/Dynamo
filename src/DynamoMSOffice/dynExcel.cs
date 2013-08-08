@@ -3,33 +3,50 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.Office.Interop.Excel;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Dynamo.Nodes
 {
 
     public class ExcelInterop {
-    
+
         private static Microsoft.Office.Interop.Excel.Application _excelApp;
         public static Microsoft.Office.Interop.Excel.Application ExcelApp
         {
-            get 
+            get
             {
-                _excelApp = _excelApp ?? RegisterAndGetApp();
+                _excelApp = RegisterAndGetApp();
                 return _excelApp;
             }
         }
 
-        private static Application RegisterAndGetApp()
+        public static Application RegisterAndGetApp()
         {
-            var app = new Application();
+            Application excel = null;
+
+            try
+            {
+                excel = (Excel.Application)Marshal.GetActiveObject("Excel.Application");
+            }
+            catch (COMException)
+            {
+            }
+            if (excel == null) excel = new Microsoft.Office.Interop.Excel.Application();
+            if (excel == null)
+            {
+                throw new Exception("Excel could not be opened.");
+            }
+
             dynSettings.Controller.DynamoModel.CleaningUp += DynamoModelOnCleaningUp;
-            return app;
+
+            excel.Visible = true;
+
+            return excel;
         }
 
         private static void DynamoModelOnCleaningUp(object sender, EventArgs eventArgs)
@@ -142,7 +159,7 @@ namespace Dynamo.Nodes
             var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)((FScheme.Value.Container)args[0]).Item;
 
             Microsoft.Office.Interop.Excel.Range range = worksheet.UsedRange;
-
+            
             int rows = range.Rows.Count;
             int cols = range.Columns.Count;
 
@@ -200,7 +217,7 @@ namespace Dynamo.Nodes
             {
                 data = ((FScheme.Value.Number)args[3]).Item;
             }
-            else 
+            else
             {
                 throw new Exception("Can only write numbers or strings to an Excel Cell");
             }
