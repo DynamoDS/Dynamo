@@ -14,8 +14,13 @@
 
 using System;
 using System.Drawing;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Dynamo.Connectors;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using Color = System.Drawing.Color;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
@@ -150,6 +155,117 @@ namespace Dynamo.Nodes
             var c = (Color)((Value.Container)args[0]).Item;
 
             return Value.NewNumber(c.GetHue());
+        }
+    }
+
+    public class ColorRangeEventArgs : EventArgs
+    {
+        Color Start { get; set; }
+        Color End { get; set; }
+        public ColorRangeEventArgs(Color start, Color end)
+        {
+            Start = start;
+            End = end;
+        }
+    }
+
+    [NodeName("Color Range")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
+    [NodeDescription("Get a color given a color range.")]
+    class dynColorRange : dynNodeWithOneOutput
+    {
+        private Color _start;
+        private Color _end;
+
+        public event EventHandler RequestChangeColorRange;
+        protected virtual void OnRequestChangeColorRange(object sender, EventArgs e)
+        {
+            if (RequestChangeColorRange != null)
+                RequestChangeColorRange(sender, e);
+        }
+
+        public dynColorRange()
+        {
+            InPortData.Add(new PortData("start", "The start color.", typeof(Value.Container)));
+            InPortData.Add(new PortData("end", "The end color.", typeof(Value.Container)));
+            InPortData.Add(new PortData("value", "The value between 0 and 1 of the selected color.", typeof(Value.Number)));
+
+            OutPortData.Add(new PortData("color", "The selected color.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+
+            _start = Color.Blue;
+            _end = Color.Red;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            _start = (Color)((Value.Container)args[0]).Item;
+            _end = (Color)((Value.Container)args[1]).Item;
+            var value = ((Value.Number)args[2]).Item;
+
+            if (value > 1.0 || value < 0.0)
+                throw new Exception("Please enter a value between 0.0 and 1.0");
+
+            OnRequestChangeColorRange(this, EventArgs.Empty);
+
+            var selRed = (int)(_start.R + (_end.R - _start.R)*value);
+            var selGreen = (int)(_start.G + (_end.G - _start.G)*value);
+            var selBlue = (int)(_start.B + (_end.B - _start.B)*value);
+
+            var returnColor = Color.FromArgb(selRed, selGreen, selBlue);
+            return Value.NewContainer(returnColor);
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        {
+            base.SetupCustomUIElements(nodeUI);
+            nodeUI.Width = 200;
+            
+            var drawPlane = new System.Windows.Controls.Image
+                {
+                    Stretch = Stretch.Fill,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    Height = 100
+                };
+
+            nodeUI.inputGrid.Children.Add(drawPlane);
+
+            this.RequestChangeColorRange += new EventHandler(delegate
+                {
+                    DispatchOnUIThread(delegate
+                        {
+                            WriteableBitmap bmp = CompleteColorScale(_start, _end);
+                            drawPlane.Source = bmp; 
+                        });
+                });
+        }
+
+        //http://gaggerostechnicalnotes.blogspot.com/2012/01/wpf-colors-scale.html
+        private WriteableBitmap CompleteColorScale(Color start, Color end)
+        {
+            //var drawPlane = new System.Windows.Controls.Image();
+
+            int Size = 64;
+
+            int width = 1;
+            int height = Size;
+
+            var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr32, null);
+            var pixels = new uint[width * height];
+
+            for (int i = 0; i < Size; i++)
+            {
+                var newRed = start.R + ((end.R - start.R)/Size)*i;
+                var newGreen = start.G + ((end.G - start.G) / Size) * i;
+                var newBlue = start.B + ((end.B - start.B) / Size) * i;
+
+                pixels[i] = (uint)((newBlue << 16) + (newGreen << 8) + (newRed << 0));
+
+            }
+            bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * 4, 0);
+
+            return bitmap;
         }
     }
 }
