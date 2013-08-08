@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 
@@ -329,17 +330,39 @@ namespace Dynamo.Nodes
             var face1 = (Face)((Value.Container)args[0]).Item;
             var face2 = (Face)((Value.Container)args[1]).Item;
 
-            Curve resultCurve;
-            var result =  face1.Intersect(face2, out resultCurve);
-            
-            if(resultCurve != null)
-                curves.Add(resultCurve);
+            Type faceType = typeof(Autodesk.Revit.DB.Face);
+            MethodInfo[] faceMethods = faceType.GetMethods(BindingFlags.Instance | BindingFlags.Public);
+            string nameOfMethodIntersect = "Intersect";
 
+            Curve resultCurve = null;
             var results = FSharpList<Value>.Empty;
 
-            results = FSharpList<Value>.Cons(Value.NewContainer(resultCurve), results);
-            results = FSharpList<Value>.Cons(Value.NewString(result.ToString()), results);
+            foreach (MethodInfo mi in faceMethods)
+            {
+                //find a method that matches the name
+                if (mi.Name == nameOfMethodIntersect)
+                {
+                    //find the method which matches the signature
+                    ParameterInfo[] pi = mi.GetParameters();
+                    if (pi.Length == 2 && 
+                        pi[0].ParameterType == typeof(Face) && 
+                        pi[1].ParameterType == typeof(Curve).MakeByRefType())
+                    {
+                        object[] methodArgs = new object[2];
+                        methodArgs[0] = face2;
+                        methodArgs[1] = resultCurve;
 
+                        //var result = face1.Intersect(face2, out resultCurve);
+                        var result = (FaceIntersectionFaceResult)mi.Invoke(face1, methodArgs);
+                        if (methodArgs[1] != null)
+                            curves.Add((Curve)methodArgs[1]);
+
+                        results = FSharpList<Value>.Cons(Value.NewContainer(methodArgs[1]), results);
+                        results = FSharpList<Value>.Cons(Value.NewString(result.ToString()), results);
+                    }
+                }
+            }
+            
             return Value.NewList(results);
         }
 
