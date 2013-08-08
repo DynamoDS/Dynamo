@@ -631,6 +631,8 @@ let Flatten = function
         flatten' [] l2d
     | m -> malformed "flatten" <| List(m)
 
+let Range (start : double) (step : double) (stop : double) = { start .. step .. stop }
+
 ///Build List
 let BuildSeq = function
     | [Number(start); Number(stop); Number(step)] -> [start .. step .. stop] |> List.map Number |> List

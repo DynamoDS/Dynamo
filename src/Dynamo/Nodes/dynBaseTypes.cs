@@ -555,14 +555,14 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var start = (int)((Value.Number)args[0]).Item;
+            var start = ((Value.Number)args[0]).Item;
             var amount = (int)((Value.Number)args[1]).Item;
-            var step = (int)((Value.Number)args[2]).Item;
+            var step = ((Value.Number)args[2]).Item;
 
             return Value.NewList(Utils.SequenceToFSharpList(MakeSequence(start, amount, step)));
         }
 
-        private IEnumerable<Value> MakeSequence(int start, int amount, int step)
+        private IEnumerable<Value> MakeSequence(double start, int amount, double step)
         {
             for (int i = 0; i < amount; i++)
             {
@@ -3307,14 +3307,9 @@ namespace Dynamo.Nodes
 
                 var countingUp = start < end;
 
-                return FScheme.Value.NewList(Utils.SequenceToFSharpList(
-                    countingUp ? CreateRange(start, step, end) : CreateRange(end, step, start).Reverse()));
-            }
+                var range = countingUp ? FScheme.Range(start, step, end) : FScheme.Range(end, step, start).Reverse();
 
-            private static IEnumerable<Value> CreateRange(double start, double step, double end)
-            {
-                for (var i = start; i <= end; i += step)
-                    yield return FScheme.Value.NewNumber(i);
+                return FScheme.Value.NewList(Utils.SequenceToFSharpList(range.Select(FScheme.Value.NewNumber)));
             }
         }
 
