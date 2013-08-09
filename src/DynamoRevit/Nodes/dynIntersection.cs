@@ -353,7 +353,7 @@ namespace Dynamo.Nodes
                         methodArgs[1] = resultCurve;
 
                         //var result = face1.Intersect(face2, out resultCurve);
-                        var result = (FaceIntersectionFaceResult)mi.Invoke(face1, methodArgs);
+                        var result = mi.Invoke(face1, methodArgs);
                         if (methodArgs[1] != null)
                             curves.Add((Curve)methodArgs[1]);
 
@@ -397,4 +397,110 @@ namespace Dynamo.Nodes
         }
         #endregion
     }
+
+    //[NodeName("Face Level Intersection")]
+    //[NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
+    //[NodeDescription("Calculates the intersection of a face and a level.")]
+    //[DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
+    //public class dynFaceLevelIntersection : dynRevitTransactionNode, IDrawable, IClearable
+    //{
+    //    public dynFaceLevelIntersection()
+    //    {
+    //        InPortData.Add(new PortData("face", "The first face to intersect.", typeof(Value.Container)));
+    //        InPortData.Add(new PortData("level", "The level to intersect with the face.", typeof(Value.Container)));
+
+    //        OutPortData.Add(new PortData("result", "The intersection result.", typeof(Value.String)));
+    //        OutPortData.Add(new PortData("curve", "A single Curve representing the intersection.", typeof(Value.Container)));
+
+    //        RegisterAllPorts();
+    //    }
+
+    //    public override Value Evaluate(FSharpList<Value> args)
+    //    {
+    //        var face1 = (Face)((Value.Container)args[0]).Item;
+    //        var level = (Level)((Value.Container)args[1]).Item;
+
+    //        Type faceType = typeof(Autodesk.Revit.DB.Face);
+    //        MethodInfo[] faceMethods = faceType.GetMethods(BindingFlags.Instance | BindingFlags.Public);
+    //        string nameOfMethodIntersect = "Intersect";
+
+    //        Face face2 = null;
+
+    //        var geometryOptions = new Options();
+    //        geometryOptions.ComputeReferences = true;
+    //        geometryOptions.DetailLevel = ViewDetailLevel.Medium;
+    //        geometryOptions.IncludeNonVisibleObjects = true;
+    //        var geomElem = level.get_Geometry(geometryOptions);
+
+    //        foreach (Autodesk.Revit.DB.GeometryObject geomObj in geomElem)
+    //        {
+    //            face2 = geomObj as Face;
+    //        }
+    //        if(face2 == null)
+    //            throw new Exception("A surface could not be derived from the level.");
+
+    //        Curve resultCurve = null;
+    //        var results = FSharpList<Value>.Empty;
+
+    //        foreach (MethodInfo mi in faceMethods)
+    //        {
+    //            //find a method that matches the name
+    //            if (mi.Name == nameOfMethodIntersect)
+    //            {
+    //                //find the method which matches the signature
+    //                ParameterInfo[] pi = mi.GetParameters();
+    //                if (pi.Length == 2 &&
+    //                    pi[0].ParameterType == typeof(Face) &&
+    //                    pi[1].ParameterType == typeof(Curve).MakeByRefType())
+    //                {
+    //                    object[] methodArgs = new object[2];
+    //                    methodArgs[0] = face2;
+    //                    methodArgs[1] = resultCurve;
+
+    //                    //var result = face1.Intersect(face2, out resultCurve);
+    //                    var result = mi.Invoke(face1, methodArgs);
+    //                    if (methodArgs[1] != null)
+    //                        curves.Add((Curve)methodArgs[1]);
+
+    //                    results = FSharpList<Value>.Cons(Value.NewContainer(methodArgs[1]), results);
+    //                    results = FSharpList<Value>.Cons(Value.NewString(result.ToString()), results);
+    //                }
+    //            }
+    //        }
+
+    //        return Value.NewList(results);
+    //    }
+
+    //    #region IDrawable Interface
+    //    protected List<Curve> curves = new List<Curve>();
+    //    public RenderDescription RenderDescription { get; set; }
+    //    public void Draw()
+    //    {
+    //        if (this.RenderDescription == null)
+    //            this.RenderDescription = new RenderDescription();
+    //        else
+    //            this.RenderDescription.ClearAll();
+
+    //        foreach (Curve crv in curves)
+    //        {
+    //            //convert the tessellated curve to a render description
+    //            IList<XYZ> curvePts = crv.Tessellate();
+    //            for (int i = 1; i < curvePts.Count; i++)
+    //            {
+    //                var a = curvePts[i - 1];
+    //                var b = curvePts[i];
+
+    //                RenderDescription.lines.Add(new Point3D(a.X, a.Y, a.Z));
+    //                RenderDescription.lines.Add(new Point3D(b.X, b.Y, b.Z));
+    //            }
+    //        }
+    //    }
+
+    //    public void ClearReferences()
+    //    {
+    //        curves.Clear();
+    //    }
+    //    #endregion
+    //}
+
 }
