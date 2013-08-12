@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
@@ -35,7 +36,20 @@ namespace Dynamo.Nodes
     [NodeSearchTags("print", "output", "display")]
     public partial class dynWatch: dynNodeWithOneOutput
     {
-        public WatchTreeBranch watchTreeBranch;
+
+        public WatchTree watchTree;
+        //private WatchTreeBranch watchTreeBranch;
+
+        private WatchNode _root;
+        public WatchNode Root
+        {
+            get { return _root; }
+            set 
+            { 
+                _root = value;
+                RaisePropertyChanged("Root");
+            }
+        }
 
         private class WatchHandlers
         {
@@ -60,6 +74,20 @@ namespace Dynamo.Nodes
         }
 
         static WatchHandlers handlerManager = new WatchHandlers();
+
+        public event EventHandler RequestBindingUnhook;
+        protected virtual void OnRequestBindingUnhook(EventArgs e)
+        {
+            if (RequestBindingUnhook != null)
+                RequestBindingUnhook(this, e);
+        }
+
+        public event EventHandler RequestBindingRehook;
+        protected virtual void OnRequestBindingRehook(EventArgs e)
+        {
+            if (RequestBindingRehook != null)
+                RequestBindingRehook(this, e);
+        }
 
         public static void AddWatchHandler(WatchHandler h)
         {
@@ -88,8 +116,7 @@ namespace Dynamo.Nodes
 
         void p_PortDisconnected(object sender, EventArgs e)
         {
-            if(watchTreeBranch != null)
-                watchTreeBranch.Clear();
+            Root.Children.Clear();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -102,13 +129,19 @@ namespace Dynamo.Nodes
             DispatchOnUIThread(
                 delegate
                 {
-                    watchTreeBranch.Clear();
+                    //unhook the binding
+                    OnRequestBindingUnhook(EventArgs.Empty);
+
+                    Root.Children.Clear();
 
                     foreach (Value e in args)
                     {
-                        watchTreeBranch.Add(Process(e, ref content, prefix, count));
+                        Root.Children.Add(Process(e, ref content, prefix, count));
                         count++;
                     }
+
+                    //rehook the binding
+                    OnRequestBindingRehook(EventArgs.Empty);
                 }
             );
 

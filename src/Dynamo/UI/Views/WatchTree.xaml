@@ -47,21 +47,18 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <viewModels:WatchTreeBranch x:Key="Tree">
-            <!--<local:WatchNode NodeLabel="A" Link="Blah"/>
-            <local:WatchNode NodeLabel="B"/>
-            <local:WatchNode NodeLabel="C" Link="Blah Blah Blah"/>-->
-        </viewModels:WatchTreeBranch>
         <Style TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsExpanded" Value="{Binding IsNodeExpanded}">
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Grid DataContext="{StaticResource Tree}">
+    <Grid>
         <TreeView Name="treeView1"
-                  ItemsSource="{Binding}"
+                  ItemsSource="{Binding Children}"
                   Background="White" Opacity=".5" 
-                  BorderBrush="{x:Null}">
+                  BorderBrush="{x:Null}"
+                  VirtualizingStackPanel.IsVirtualizing="True"
+                  VirtualizingStackPanel.VirtualizationMode="Recycling">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" DataType="{x:Type viewModels:WatchNode}">
                     <StackPanel Orientation="Horizontal"

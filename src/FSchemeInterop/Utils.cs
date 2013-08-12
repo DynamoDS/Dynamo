@@ -139,10 +139,7 @@ namespace Dynamo.FSchemeInterop
         /// <returns></returns>
         public static FSharpList<T> SequenceToFSharpList<T>(IEnumerable<T> seq)
         {
-            FSharpList<T> result = FSharpList<T>.Empty;
-            foreach (T element in seq.Reverse<T>())
-                result = FSharpList<T>.Cons(element, result);
-            return result;
+            return ListModule.OfSeq(seq);
         }
 
         /// <summary>

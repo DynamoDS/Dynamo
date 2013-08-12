@@ -183,7 +183,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx, typeof(object)));
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             foreach (var inport in InPortData)
@@ -196,7 +196,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             int i = InPortData.Count;
             foreach (XmlNode subNode in elNode.ChildNodes)
@@ -347,13 +347,13 @@ namespace Dynamo.Nodes
 
     [NodeName("Sort-By")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Returns a sorted list, using the given key mapper.")]
+    [NodeDescription("Returns a sorted list, using the given key mapper. The key mapper must return either all numbers or all strings.")]
     public class dynSortBy : dynBuiltinFunction
     {
         public dynSortBy()
             : base(FScheme.SortBy)
         {
-            InPortData.Add(new PortData("c(x)", "Key Mapper", typeof(object)));
+            InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(object), Value.NewFunction(Utils.ConvertToFSchemeFunc(FScheme.Identity))));
             InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
 
@@ -371,6 +371,38 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("list", "List of numbers or strings to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+    }
+
+    [NodeName("List Minimum")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Returns the minimum value of a list, using the given key mapper. The key mapper must return either all numbers or all strings.")]
+    public class dynListMin : dynBuiltinFunction
+    {
+        public dynListMin() 
+            : base(FScheme.Min)
+        {
+            InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(Value.Function), Value.NewFunction(Utils.ConvertToFSchemeFunc(FScheme.Identity))));
+            InPortData.Add(new PortData("list", "List to get the minimum value of.", typeof(Value.List)));
+            OutPortData.Add(new PortData("min", "Minimum value.", typeof(object)));
+
+            RegisterAllPorts();
+        }
+    }
+
+    [NodeName("List Maximum")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Returns the maximum value of a list, using the given key mapper. The key mapper must return either all numbers or all strings.")]
+    public class dynListMax : dynBuiltinFunction
+    {
+        public dynListMax()
+            : base(FScheme.Max)
+        {
+            InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(Value.Function), Value.NewFunction(Utils.ConvertToFSchemeFunc(FScheme.Identity))));
+            InPortData.Add(new PortData("list", "List to get the maximum value of.", typeof(Value.List)));
+            OutPortData.Add(new PortData("max", "Maximum value.", typeof(object)));
 
             RegisterAllPorts();
         }
@@ -472,14 +504,14 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var start = (int)((Value.Number)args[0]).Item;
+            var start = ((Value.Number)args[0]).Item;
             var amount = (int)((Value.Number)args[1]).Item;
-            var step = (int)((Value.Number)args[2]).Item;
+            var step = ((Value.Number)args[2]).Item;
 
             return Value.NewList(Utils.SequenceToFSharpList(MakeSequence(start, amount, step)));
         }
 
-        private IEnumerable<Value> MakeSequence(int start, int amount, int step)
+        private IEnumerable<Value> MakeSequence(double start, int amount, double step)
         {
             for (int i = 0; i < amount; i++)
             {
@@ -536,12 +568,12 @@ namespace Dynamo.Nodes
             base.AddInput();
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             var inputAttr = elNode.Attributes["inputs"];
             int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
@@ -605,12 +637,12 @@ namespace Dynamo.Nodes
             base.AddInput();
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             var inputAttr = elNode.Attributes["inputs"];
             int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
@@ -1241,7 +1273,7 @@ namespace Dynamo.Nodes
             Value = "";
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             base.LoadNode(elNode);
             processTextForNewInputs();
@@ -1600,7 +1632,7 @@ namespace Dynamo.Nodes
 
     [NodeName("And")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
-    [NodeDescription("Boolean AND.")]
+    [NodeDescription("Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false.")]
     public class dynAnd : dynNodeWithOneOutput
     {
         public dynAnd()
@@ -1614,62 +1646,54 @@ namespace Dynamo.Nodes
         protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
-            if (!preBuilt.TryGetValue(this, out result))
+            if (preBuilt.TryGetValue(this, out result)) 
+                return result[outPort];
+
+            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
-                if (Enumerable.Range(0, InPortData.Count).All(HasInput))
-                {
-                    var ifNode = new ConditionalNode();
-                    ifNode.ConnectInput("test", Inputs[0].Item2.Build(preBuilt, Inputs[0].Item1));
-                    ifNode.ConnectInput("true", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
-                    ifNode.ConnectInput("false", new NumberNode(0));
-                    result = new Dictionary<int, INode>();
-                    result[outPort] = ifNode;
-                }
-                else
-                {
-                    var ifNode = new ConditionalNode();
-                    ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
-                    ifNode.ConnectInput("true", new SymbolNode(InPortData[1].NickName));
-                    ifNode.ConnectInput("false", new NumberNode(0));
-
-                    var node = new AnonymousFunctionNode(
-                        InPortData.Select(x => x.NickName),
-                        ifNode);
-
-                    //For each index in InPortData
-                    //for (int i = 0; i < InPortData.Count; i++)
-                    foreach (var data in Enumerable.Range(0, InPortData.Count))
-                    {
-                        //Fetch the corresponding port
-                        //var port = InPorts[i];
-
-                        //If this port has connectors...
-                        //if (port.Connectors.Any())
-                        if (HasInput(data))
-                        {
-                            //Compile input and connect it
-                            node.ConnectInput(
-                               InPortData[data].NickName,
-                               Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
-                            );
-                        }
-                    }
-
-                    RequiresRecalc = false;
-                    OnEvaluate();
-
-                    result = new Dictionary<int, INode>();
-                    result[outPort] = node;
-                }
-                preBuilt[this] = result;
+                var ifNode = new ConditionalNode();
+                ifNode.ConnectInput("test", Inputs[0].Item2.Build(preBuilt, Inputs[0].Item1));
+                ifNode.ConnectInput("true", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
+                ifNode.ConnectInput("false", new NumberNode(0));
+                result = new Dictionary<int, INode>();
+                result[outPort] = ifNode;
             }
+            else
+            {
+                var ifNode = new ConditionalNode();
+                ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
+                ifNode.ConnectInput("true", new SymbolNode(InPortData[1].NickName));
+                ifNode.ConnectInput("false", new NumberNode(0));
+
+                var node = new AnonymousFunctionNode(
+                    InPortData.Select(x => x.NickName),
+                    ifNode);
+
+                //For each index in InPortData
+                //for (int i = 0; i < InPortData.Count; i++)
+                foreach (var data in Enumerable.Range(0, InPortData.Count).Where(HasInput))
+                {
+                    //Compile input and connect it
+                    node.ConnectInput(
+                        InPortData[data].NickName,
+                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
+                        );
+                }
+
+                RequiresRecalc = false;
+                OnEvaluate();
+
+                result = new Dictionary<int, INode>();
+                result[outPort] = node;
+            }
+            preBuilt[this] = result;
             return result[outPort];
         }
     }
 
     [NodeName("Or")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
-    [NodeDescription("Boolean OR.")]
+    [NodeDescription("Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false.")]
     public class dynOr : dynNodeWithOneOutput
     {
         public dynOr()
@@ -1683,63 +1707,55 @@ namespace Dynamo.Nodes
         protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
-            if (!preBuilt.TryGetValue(this, out result))
+            if (preBuilt.TryGetValue(this, out result)) 
+                return result[outPort];
+
+            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
-                if (Enumerable.Range(0, InPortData.Count).All(HasInput))
-                {
-                    var ifNode = new ConditionalNode();
-                    ifNode.ConnectInput("test", Inputs[0].Item2.Build(preBuilt, Inputs[0].Item1));
-                    ifNode.ConnectInput("true", new NumberNode(1));
-                    ifNode.ConnectInput("false", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
+                var ifNode = new ConditionalNode();
+                ifNode.ConnectInput("test", Inputs[0].Item2.Build(preBuilt, Inputs[0].Item1));
+                ifNode.ConnectInput("true", new NumberNode(1));
+                ifNode.ConnectInput("false", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
 
-                    result = new Dictionary<int, INode>();
-                    result[outPort] = ifNode;
-                }
-                else
-                {
-                    var ifNode = new ConditionalNode();
-                    ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
-                    ifNode.ConnectInput("true", new NumberNode(1));
-                    ifNode.ConnectInput("false", new SymbolNode(InPortData[1].NickName));
-
-                    var node = new AnonymousFunctionNode(
-                        InPortData.Select(x => x.NickName),
-                        ifNode);
-
-                    //For each index in InPortData
-                    //for (int i = 0; i < InPortData.Count; i++)
-                    foreach (var data in Enumerable.Range(0, InPortData.Count))
-                    {
-                        //Fetch the corresponding port
-                        //var port = InPorts[i];
-
-                        //If this port has connectors...
-                        //if (port.Connectors.Any())
-                        if (HasInput(data))
-                        {
-                            //Compile input and connect it
-                            node.ConnectInput(
-                               InPortData[data].NickName,
-                               Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
-                            );
-                        }
-                    }
-
-                    RequiresRecalc = false;
-                    OnEvaluate();
-
-                    result = new Dictionary<int, INode>();
-                    result[outPort] = node;
-                }
-                preBuilt[this] = result;
+                result = new Dictionary<int, INode>();
+                result[outPort] = ifNode;
             }
+            else
+            {
+                var ifNode = new ConditionalNode();
+                ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
+                ifNode.ConnectInput("true", new NumberNode(1));
+                ifNode.ConnectInput("false", new SymbolNode(InPortData[1].NickName));
+
+                var node = new AnonymousFunctionNode(
+                    InPortData.Select(x => x.NickName),
+                    ifNode);
+
+                //For each index in InPortData
+                //for (int i = 0; i < InPortData.Count; i++)
+                foreach (var data in Enumerable.Range(0, InPortData.Count).Where(HasInput))
+                {
+                    //Compile input and connect it
+                    node.ConnectInput(
+                        InPortData[data].NickName,
+                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
+                        );
+                }
+
+                RequiresRecalc = false;
+                OnEvaluate();
+
+                result = new Dictionary<int, INode>();
+                result[outPort] = node;
+            }
+            preBuilt[this] = result;
             return result[outPort];
         }
     }
 
     [NodeName("Xor")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
-    [NodeDescription("Boolean XOR.")]
+    [NodeDescription("Boolean XOR: Returns true if one input is true and the other is false. If both inputs are the same, returns false.")]
     public class dynXor : dynBuiltinFunction
     {
         public dynXor()
@@ -1754,7 +1770,8 @@ namespace Dynamo.Nodes
 
     [NodeName("Not")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
-    [NodeDescription("Boolean NOT.")]
+    [NodeDescription("Boolean NOT: Inverts a boolean value. (True -> False, False -> True)")]
+    [NodeSearchTags("invert")]
     public class dynNot : dynBuiltinFunction
     {
         public dynNot()
@@ -2250,6 +2267,73 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Average")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Averages a list of numbers.")]
+    [NodeSearchTags("avg")]
+    public class dynAverage : dynMathBase
+    {
+        public dynAverage()
+        {
+            InPortData.Add(new PortData("numbers", "The list of numbers to average.", typeof(Value.List)));
+            OutPortData.Add(new PortData("avg", "average", typeof(Value.Number)));
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsList)
+                throw new Exception("A list of numbers is required to average.");
+
+            var vals = ((Value.List)args[0]).Item.Select(
+               x => ((Value.Number)x).Item
+            );
+
+            var average = vals.Average();
+
+            return Value.NewNumber(average);
+        }
+    }
+
+    /// <summary>
+    /// keeps a simple moving average to smooth out noisy values over time. 
+    /// https://en.wikipedia.org/wiki/Moving_average
+    /// 
+    /// </summary>
+    [NodeName("Smooth")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Smooths a list of numbers using a running average.")]
+    [NodeSearchTags("running average", "moving average", "sma")]
+    public class dynSmooth : dynMathBase
+    {
+        Queue<Value.Number> values = new Queue<Value.Number>();
+        int maxNumValues = 10;
+
+        public dynSmooth()
+        {
+            InPortData.Add(new PortData("val", "The current value.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("avg", "uses a simple moving average to smooth out values that fluctuate over time", typeof(Value.Number)));
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (!args[0].IsNumber)
+                throw new Exception("A number is required to smooth.");
+
+            if (values.Count() < maxNumValues)
+                values.Enqueue((Value.Number)args[0]); // add current values to queue until it fills up
+            else
+                values.Dequeue();//throw out the first value once we are up to the full queue amount
+
+            var average = values.Average(num => num.Item);
+
+            return Value.NewNumber(average);
+        }
+    }
+
     #endregion
 
     #region Control Flow
@@ -2392,7 +2476,7 @@ namespace Dynamo.Nodes
                 base.RemoveInput();
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             foreach (var inport in InPortData.Skip(1))
@@ -2405,7 +2489,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -2421,73 +2505,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Average")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
-    [NodeDescription("Averages a list of numbers.")]
-    [NodeSearchTags("avg")]
-    public class dynAverage : dynMathBase 
-    {
-        public dynAverage()
-        {
-            InPortData.Add(new PortData("numbers", "The list of numbers to average.", typeof(Value.List)));
-            OutPortData.Add(new PortData("avg", "average", typeof(Value.Number)));
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            if (!args[0].IsList)
-                throw new Exception("A list of numbers is required to average.");
-
-            var vals = ((Value.List)args[0]).Item.Select(
-               x => ((Value.Number)x).Item
-            );
-        
-            var average = vals.Average();
-
-            return Value.NewNumber(average);
-        }
-    }
-
-    /// <summary>
-    /// keeps a simple moving average to smooth out noisy values over time. 
-    /// https://en.wikipedia.org/wiki/Moving_average
-    /// 
-    /// </summary>
-    [NodeName("Smooth")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
-    [NodeDescription("Smooths a list of numbers using a running average.")]
-    [NodeSearchTags("running average", "moving average", "sma")]
-    public class dynSmooth: dynMathBase
-    {
-        Queue<Value.Number> values = new Queue<Value.Number>();
-        int maxNumValues = 10;
-
-        public dynSmooth()
-        {
-            InPortData.Add(new PortData("val", "The current value.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("avg", "uses a simple moving average to smooth out values that fluctuate over time", typeof(Value.Number)));
-            RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            if (!args[0].IsNumber)
-                throw new Exception("A number is required to smooth.");
-
-            if (values.Count() < maxNumValues)
-                values.Enqueue((Value.Number)args[0]); // add current values to queue until it fills up
-            else
-                values.Dequeue();//throw out the first value once we are up to the full queue amount
-
-            var average = values.Average(num => num.Item);
-            
-            return Value.NewNumber(average);
-        }
-    }
-
     //TODO: Setup proper IsDirty smart execution management
     [NodeName("If")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
@@ -2497,18 +2514,24 @@ namespace Dynamo.Nodes
         public dynConditional()
         {
             InPortData.Add(new PortData("test", "Test block", typeof(bool)));
-            InPortData.Add(new PortData("true", "True block", typeof(object)));
-            InPortData.Add(new PortData("false", "False block", typeof(object)));
+            InPortData.Add(new PortData("true", "True block", typeof(object), Value.NewDummy("Empty true")));
+            InPortData.Add(new PortData("false", "False block", typeof(object), Value.NewDummy("Empty false")));
             OutPortData.Add(new PortData("result", "Result", typeof(object)));
+
             RegisterAllPorts();
+
+            foreach (var port in InPorts.Skip(1))
+            {
+                port.DefaultValueEnabled = false;
+            }
         }
 
         protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
+            if (!HasInput(0))
             {
-                Error("All inputs must be connected.");
-                throw new Exception("If Node requires all inputs to be connected.");
+                Error("Test input must be connected.");
+                throw new Exception("If Node requires test input to be connected.");
             }
             return base.Build(preBuilt, outPort);
         }
@@ -2590,7 +2613,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", type.Name, type));
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(typeof(T).FullName);
@@ -2598,7 +2621,7 @@ namespace Dynamo.Nodes
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -2622,7 +2645,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewNumber(Value);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
@@ -2705,7 +2728,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
@@ -2713,7 +2736,7 @@ namespace Dynamo.Nodes
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes.Cast<XmlNode>().Where(subNode => subNode.Name.Equals(typeof(double).FullName)))
             {
@@ -2948,14 +2971,9 @@ namespace Dynamo.Nodes
 
                 var countingUp = start < end;
 
-                return FScheme.Value.NewList(Utils.SequenceToFSharpList(
-                    countingUp ? CreateRange(start, step, end) : CreateRange(end, step, start).Reverse()));
-            }
+                var range = countingUp ? FScheme.Range(start, step, end) : FScheme.Range(end, step, start).Reverse();
 
-            private static IEnumerable<Value> CreateRange(double start, double step, double end)
-            {
-                for (var i = start; i <= end; i += step)
-                    yield return FScheme.Value.NewNumber(i);
+                return FScheme.Value.NewList(Utils.SequenceToFSharpList(range.Select(FScheme.Value.NewNumber)));
             }
         }
 
@@ -3168,7 +3186,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
@@ -3177,7 +3195,7 @@ namespace Dynamo.Nodes
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -3265,14 +3283,14 @@ namespace Dynamo.Nodes
             return val;
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(string).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -3386,7 +3404,7 @@ namespace Dynamo.Nodes
                 base.RemoveInput();
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             foreach (var inport in InPortData.Skip(2))
@@ -3399,7 +3417,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -3429,6 +3447,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("n", "A number", typeof(Value.Number)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
     }
 
@@ -3442,7 +3462,10 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("n", "A number", typeof(Value.Number)));
             OutPortData.Add(new PortData("s", "A string", typeof(Value.String)));
+
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
     }
 
@@ -3501,7 +3524,7 @@ namespace Dynamo.Nodes
         public dynJoinStrings()
         {
             InPortData.Add(new PortData("strs", "List of strings to join.", typeof(Value.List)));
-            InPortData.Add(new PortData("del", "Delimier", typeof(Value.String)));
+            InPortData.Add(new PortData("del", "Delimier", typeof(Value.String), Value.NewString("")));
             OutPortData.Add(new PortData("str", "Joined string", typeof(Value.String)));
 
             RegisterAllPorts();
@@ -3589,6 +3612,7 @@ namespace Dynamo.Nodes
             Item = item;
         }
     }
+
     /// <summary>
     /// Base class for all nodes using a drop down
     /// </summary>
@@ -3623,12 +3647,12 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("index", SelectedIndex.ToString());
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {

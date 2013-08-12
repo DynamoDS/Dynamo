@@ -380,9 +380,10 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Curve From Curve Element")]
+    [NodeName("Geometry Curve From Model Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Takes in a model curve and extracts a geometry curve")]
+    [NodeSearchTags("Convert", "Extract", "Geometry", "Curve", "Model", "Reference")]
     public class dynCurveFromModelCurve : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurveFromModelCurve()

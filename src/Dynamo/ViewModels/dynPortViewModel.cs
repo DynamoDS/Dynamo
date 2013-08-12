@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Linq;
 using Dynamo.Models;
+using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
@@ -59,12 +60,25 @@ namespace Dynamo.ViewModels
             get { return _node.State; }    
         }
 
+        public bool DefaultValueEnabled
+        {
+            get { return _port.DefaultValueEnabled; }
+            set { _port.DefaultValueEnabled = value; }
+        }
+
+        public bool UsingDefaultValue
+        {
+            get { return _port.UsingDefaultValue; }
+            set { _port.UsingDefaultValue = value; }
+        }
+
         public dynPortViewModel(dynPortModel port, dynNodeModel node)
         {
             _node = node;
             _port = port;
-            _port.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(_port_PropertyChanged);
-            _node.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(_node_PropertyChanged);
+
+            _port.PropertyChanged += _port_PropertyChanged;
+            _node.PropertyChanged += _node_PropertyChanged;
         }
 
         void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -101,6 +115,12 @@ namespace Dynamo.ViewModels
                     break;
                 case "Center":
                     RaisePropertyChanged("Center");
+                    break;
+                case "DefaultValueEnabled":
+                    RaisePropertyChanged("DefaultValueEnabled");
+                    break;
+                case "UsingDefaultValue":
+                    RaisePropertyChanged("UsingDefaultValue");
                     break;
             }
             

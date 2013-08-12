@@ -504,7 +504,7 @@ namespace Dynamo.Models
                     }
 
                     el.DisableReporting();
-                    el.LoadNode(elNode);
+                    el.Load(elNode);
 
                     if (el is dynFunction)
                     {
@@ -973,7 +973,7 @@ namespace Dynamo.Models
 
                     dynNodeModel el = CreateNodeInstance(t, nickname, guid);
                     el.WorkSpace = CurrentSpace;
-                    el.LoadNode(elNode);
+                    el.Load(elNode);
 
                     CurrentSpace.Nodes.Add(el);
 
@@ -1389,7 +1389,7 @@ namespace Dynamo.Models
                 var xmlDoc = new XmlDocument();
                 var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
                 xmlDoc.AppendChild(dynEl);
-                node.SaveNode(xmlDoc, dynEl, SaveContext.Copy);
+                node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
                 nodeData.Add("data", dynEl);
 
@@ -1571,7 +1571,7 @@ namespace Dynamo.Models
             //try to set the value on the node
             if (data.ContainsKey("data"))
             {
-                node.LoadNode(data["data"] as XmlNode);
+                node.Load(data["data"] as XmlNode);
             }
 
             //override the guid so we can store

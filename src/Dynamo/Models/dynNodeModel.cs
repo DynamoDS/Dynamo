@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using Dynamo.Nodes;
+using System.Xml;
 using Dynamo.Selection;
 using Microsoft.FSharp.Collections;
 using Dynamo.Utilities;
@@ -471,10 +473,24 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="xmlDoc">The XmlDocument representing the whole workspace containing this Element.</param>
         /// <param name="dynEl">The XmlElement representing this Element.</param>
-        /// <param name="context"></param>
-        public virtual void SaveNode(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl, SaveContext context)
+        /// <param name="context">Why is this being called?</param>
+        protected virtual void SaveNode(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl, SaveContext context)
         {
 
+        }
+
+        public void Save(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl, SaveContext context)
+        {
+            SaveNode(xmlDoc, dynEl, context);
+
+            //write port information
+            foreach (var port in inPorts.Select((port, index) => new { port, index }).Where(x => x.port.UsingDefaultValue))
+            {
+                var portInfo = xmlDoc.CreateElement("PortInfo");
+                portInfo.SetAttribute("index", port.index.ToString(CultureInfo.InvariantCulture));
+                portInfo.SetAttribute("default", true.ToString());
+                dynEl.AppendChild(portInfo);
+            }
         }
 
         /// <summary>
@@ -482,9 +498,34 @@ namespace Dynamo.Models
         /// SaveNode() in order to write the data when saved.
         /// </summary>
         /// <param name="elNode">The XmlNode representing this Element.</param>
-        public virtual void LoadNode(System.Xml.XmlNode elNode)
+        protected virtual void LoadNode(System.Xml.XmlNode elNode)
         {
 
+        }
+
+        public void Load(System.Xml.XmlNode elNode)
+        {
+            LoadNode(elNode);
+
+            var portInfoProcessed = new HashSet<int>();
+
+            //read port information
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name == "PortInfo")
+                {
+                    var index = int.Parse(subNode.Attributes["index"].Value);
+                    portInfoProcessed.Add(index);
+                    var def = bool.Parse(subNode.Attributes["default"].Value);
+                    inPorts[index].UsingDefaultValue = def;
+                }
+            }
+            
+            //set defaults
+            foreach (var port in inPorts.Select((x, i) => new { x, i }).Where(x => !portInfoProcessed.Contains(x.i)))
+            {
+                port.x.UsingDefaultValue = false;
+            }
         }
 
         /// <summary>
@@ -568,6 +609,10 @@ namespace Dynamo.Models
                     //Compile input and connect it
                     connections.Add(Tuple.Create(data.Name, input.Item2.Build(preBuilt, input.Item1)));
                 }
+                else if (InPorts[data.Index].UsingDefaultValue)
+                {
+                    connections.Add(Tuple.Create(data.Name, new ValueNode(InPortData[data.Index].DefaultValue) as INode));
+                }
                 else //othwise, remember that this is a partial application
                 {
                     partial = true;
@@ -583,16 +628,12 @@ namespace Dynamo.Models
                 if (partial)
                 {
                     foreach (var connection in connections)
-                    {
                         node.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
-                    }
                 }
                 else
                 {
                     foreach (var connection in connections)
-                    {
                         node.ConnectInput(connection.Item1, connection.Item2);
-                    }
                 }
 
                 InputNode prev = node;
@@ -1030,10 +1071,10 @@ namespace Dynamo.Models
         /// Add a port to this node. If the port already exists, return that port.
         /// </summary>
         /// <param name="portType"></param>
-        /// <param name="name"></param>
+        /// <param name="data"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        public dynPortModel AddPort(PortType portType, string name, int index)
+        public dynPortModel AddPort(PortType portType, PortData data, int index)
         {
             dynPortModel p;
             switch (portType)
@@ -1046,18 +1087,33 @@ namespace Dynamo.Models
                         //update the name on the node
                         //e.x. when the node is being re-registered during a custom
                         //node save
-                        p.PortName = name;
+                        p.PortName = data.NickName;
+                        if (data.HasDefaultValue)
+                        {
+                            p.UsingDefaultValue = true;
+                            p.DefaultValueEnabled = true;
+                        }
 
                         return p;
                     }
 
-                    p = new dynPortModel(index, portType, this, name);
+                    p = new dynPortModel(index, portType, this, data.NickName)
+                    {
+                        UsingDefaultValue = data.HasDefaultValue,
+                        DefaultValueEnabled = data.HasDefaultValue
+                    };
+
+                    p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
+                    {
+                        if (args.PropertyName == "UsingDefaultValue")
+                            RequiresRecalc = true;
+                    };
 
                     InPorts.Add(p);
 
                     //register listeners on the port
-                    p.PortConnected += new PortConnectedHandler(p_PortConnected);
-                    p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
+                    p.PortConnected += p_PortConnected;
+                    p.PortDisconnected += p_PortDisconnected;
 
                     return p;
 
@@ -1067,7 +1123,10 @@ namespace Dynamo.Models
                         return outPorts[index];
                     }
 
-                    p = new dynPortModel(index, portType, this, name);
+                    p = new dynPortModel(index, portType, this, data.NickName)
+                    {
+                        UsingDefaultValue = false
+                    };
 
                     OutPorts.Add(p);
 
@@ -1076,9 +1135,9 @@ namespace Dynamo.Models
                     p.PortDisconnected += p_PortDisconnected;
 
                     return p;
-                default:
-                    return null;
             }
+
+            return null;
         }
 
         //TODO: call connect and disconnect for dynNode
@@ -1099,15 +1158,8 @@ namespace Dynamo.Models
                 var data = InPorts.IndexOf(port);
                 var startPort = port.Connectors[0].Start;
                 var outData = startPort.Owner.OutPorts.IndexOf(startPort);
-                ConnectInput(
-                    data,
-                    outData,
-                    startPort.Owner);
-                startPort.Owner.ConnectOutput(
-                    outData,
-                    data,
-                    this
-                );
+                ConnectInput(data, outData, startPort.Owner);
+                startPort.Owner.ConnectOutput(outData, data, this);
             }
         }
 
@@ -1151,7 +1203,7 @@ namespace Dynamo.Models
                 //add a port for each input
                 //distribute the ports along the 
                 //edges of the icon
-                var port = AddPort(PortType.INPUT, InPortData[count].NickName, count);
+                var port = AddPort(PortType.INPUT, pd, count);
 
                 //MVVM: AddPort now returns a port model. You can't set the data context here.
                 //port.DataContext = this;
@@ -1163,15 +1215,10 @@ namespace Dynamo.Models
             if (inPorts.Count > count)
             {
                 foreach (var inport in inPorts.Skip(count))
-                {
                     RemovePort(inport);
-                }
 
                 for (int i = inPorts.Count - 1; i >= count; i--)
-                {
                     inPorts.RemoveAt(i);
-                }
-                //InPorts.RemoveRange(count, inPorts.Count - count);
             }
         }
 
@@ -1188,7 +1235,7 @@ namespace Dynamo.Models
                 //add a port for each input
                 //distribute the ports along the 
                 //edges of the icon
-                var port = AddPort(PortType.OUTPUT, pd.NickName, count);
+                var port = AddPort(PortType.OUTPUT, pd, count);
 
 //MVVM : don't set the data context in the model
                 //port.DataContext = this;
@@ -1200,14 +1247,10 @@ namespace Dynamo.Models
             if (outPorts.Count > count)
             {
                 foreach (var outport in outPorts.Skip(count))
-                {
                     RemovePort(outport);
-                }
 
                 for (int i = outPorts.Count - 1; i >= count; i--)
-                {
                     outPorts.RemoveAt(i);
-                }
 
                 //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
@@ -1220,7 +1263,7 @@ namespace Dynamo.Models
 
         public IEnumerable<dynConnectorModel> AllConnectors()
         {
-            return inPorts.Concat(outPorts).SelectMany((port) => port.Connectors);
+            return inPorts.Concat(outPorts).SelectMany(port => port.Connectors);
         }
 
         /// <summary>
@@ -1242,20 +1285,14 @@ namespace Dynamo.Models
 
         public void SelectNeighbors()
         {
-            var outConnectors = this.outPorts.SelectMany(x => x.Connectors);
-            var inConnectors = this.inPorts.SelectMany(x => x.Connectors);
+            var outConnectors = outPorts.SelectMany(x => x.Connectors);
+            var inConnectors = inPorts.SelectMany(x => x.Connectors);
 
-            foreach (dynConnectorModel c in outConnectors)
-            {
-                if (!DynamoSelection.Instance.Selection.Contains(c.End.Owner))
-                    DynamoSelection.Instance.Selection.Add(c.End.Owner);
-            }
+            foreach (var c in outConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.End.Owner)))
+                DynamoSelection.Instance.Selection.Add(c.End.Owner);
 
-            foreach (dynConnectorModel c in inConnectors)
-            {
-                if (!DynamoSelection.Instance.Selection.Contains(c.Start.Owner))
-                    DynamoSelection.Instance.Selection.Add(c.Start.Owner);
-            }
+            foreach (var c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner)))
+                DynamoSelection.Instance.Selection.Add(c.Start.Owner);
         }
 
         //private Dictionary<UIElement, bool> enabledDict
