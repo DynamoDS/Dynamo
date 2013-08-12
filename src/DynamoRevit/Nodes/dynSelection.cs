@@ -559,9 +559,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Select Divided Surface")]
+    [NodeName("Select Divided Surface Families")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
-    [NodeDescription("Select a divided surface from the document.")]
+    [NodeDescription("Select a all families on a divided surface by picking the underlying form.")]
+    [NodeSearchTags("Curtain Panel", "Divided", "surface", "component", "family")]
     public class dynDividedSurfaceBySelection : dynElementSelectionBase
     {
         private Value _data;
@@ -569,7 +570,7 @@ namespace Dynamo.Nodes
         public dynDividedSurfaceBySelection()
             : base(
                 new PortData(
-                    "srf", "The divided surface family instance(s)", typeof (Value.Container)))
+                    "fi", "The divided surface family instances", typeof (Value.Container)))
         {
             _selectionMessage = "Select a divided surface.";
             _selectionAction = dynRevitSettings.SelectionHelper.RequestFormSelection;
