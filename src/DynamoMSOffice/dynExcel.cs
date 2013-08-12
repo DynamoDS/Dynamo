@@ -3,34 +3,51 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.Office.Interop.Excel;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Dynamo.Nodes
 {
 
     public class ExcelInterop {
-    
+
         private static Microsoft.Office.Interop.Excel.Application _excelApp;
         public static Microsoft.Office.Interop.Excel.Application ExcelApp
         {
-            get 
+            get
             {
-                _excelApp = _excelApp ?? RegisterAndGetApp();
+                _excelApp = RegisterAndGetApp();
                 return _excelApp;
             }
         }
 
-        private static Application RegisterAndGetApp()
+        public static Application RegisterAndGetApp()
         {
-            var app = new Application();
+            Application excel = null;
+
+            try
+            {
+                excel = (Excel.Application)Marshal.GetActiveObject("Excel.Application");
+            }
+            catch (COMException)
+            {
+            }
+            if (excel == null) excel = new Microsoft.Office.Interop.Excel.Application();
+            if (excel == null)
+            {
+                throw new Exception("Excel could not be opened.");
+            }
+
             dynSettings.Controller.DynamoModel.CleaningUp += DynamoModelOnCleaningUp;
-            return app;
+
+            excel.Visible = true;
+
+            return excel;
         }
 
         private static void DynamoModelOnCleaningUp(object sender, EventArgs eventArgs)
@@ -143,7 +160,7 @@ namespace Dynamo.Nodes
             var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)((FScheme.Value.Container)args[0]).Item;
 
             Microsoft.Office.Interop.Excel.Range range = worksheet.UsedRange;
-
+            
             int rows = range.Rows.Count;
             int cols = range.Columns.Count;
 
@@ -155,7 +172,12 @@ namespace Dynamo.Nodes
 
                 for (int c = 1; c <= cols; c++)
                 {
-                    row.Add(FScheme.Value.NewContainer(range.Cells[r, c].Value2));
+                    // try parsing the numbers as doubles
+                    // if that doesn't work, send out their string rep.
+                    double val;
+                    row.Add(double.TryParse(range.Cells[r, c].Value2.ToString(), out val)
+                                ? FScheme.Value.NewNumber(val)
+                                : FScheme.Value.NewString(range.Cells[r, c].Value2.ToString()));
                 }
 
                 rowData.Add(FScheme.Value.NewList(Utils.SequenceToFSharpList(row)));
@@ -174,10 +196,10 @@ namespace Dynamo.Nodes
 
         public dynWriteDataToExcelWorksheet()
         {
-            InPortData.Add(new PortData("worksheet", "The Excel Worksheet to write to", typeof(FScheme.Value.Container)));
-            InPortData.Add(new PortData("row", "Row index to insert data", typeof(FScheme.Value.Number)));
-            InPortData.Add(new PortData("col", "Column index to insert data", typeof(FScheme.Value.Number)));
-            InPortData.Add(new PortData("value", "Data to add", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("worksheet", "The Excel Worksheet to write to.", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("start row", "Row index to insert data.", typeof(FScheme.Value.Number)));
+            InPortData.Add(new PortData("start column", "Column index to insert data.", typeof(FScheme.Value.Number)));
+            InPortData.Add(new PortData("data", "A list of data to add.", typeof(FScheme.Value.List)));
 
             OutPortData.Add(new PortData("worksheet", "The modified excel worksheet", typeof(FScheme.Value.Container)));
 
@@ -187,24 +209,56 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)((FScheme.Value.Container)args[0]).Item;
-            var row = (int)Math.Round(((FScheme.Value.Number)args[1]).Item);
-            var col = (int)Math.Round(((FScheme.Value.Number)args[2]).Item);
-            object data;
+            var rowStart = (int)Math.Round(((FScheme.Value.Number)args[1]).Item);
+            var colStart = (int)Math.Round(((FScheme.Value.Number)args[2]).Item);
+            //object data;
 
-            if (args[3] is FScheme.Value.String)
+            if(!args[3].IsList)
+                throw new Exception("A list of data must be provided to set a range in Excel.");
+
+            // assume a list of lists
+            // get the dimension of the first object
+
+            var data = ((FScheme.Value.List) args[3]).Item;
+            var rowCount = data.Count();
+            var colCount = 0;
+
+            if (!data[0].IsList)
+                colCount = 1;
+            else
             {
-                data = ((FScheme.Value.String)args[3]).Item;
+                var firstList = ((FScheme.Value.List)data[0]).Item;
+                colCount = firstList.Count();
             }
-            else if (args[3] is FScheme.Value.Number)
+            
+            var rangeData = new object[rowCount,colCount];
+            for (int i = 0; i < rowCount; i++)
             {
-                data = ((FScheme.Value.Number)args[3]).Item;
-            }
-            else 
-            {
-                throw new Exception("Can only write numbers or strings to an Excel Cell");
+                var row = ((FScheme.Value.List)data[i]).Item;
+
+                for (int j = 0; j < colCount; j++)
+                {
+                    if (row[j] is FScheme.Value.String)
+                    {
+                        rangeData[i, j] = ((FScheme.Value.String)row[j]).Item;
+                    }
+                    else if (row[j] is FScheme.Value.Number)
+                    {
+                        rangeData[i, j] = ((FScheme.Value.Number) row[j]).Item;
+                    }
+                    else
+                    {
+                        // it's not a string or a number, we don't know what
+                        // to do with it.
+                        rangeData[i, j] = "";
+                    }
+                }
             }
 
-            worksheet.Cells[row, col] = data;
+            var range = worksheet.Range[worksheet.Cells[rowStart, colStart], worksheet.Cells[rowStart + rowCount-1, colStart + colCount-1]];
+
+            //worksheet.Cells[row, col] = data;
+            range.Value = rangeData;
 
             return FScheme.Value.NewContainer(worksheet);
         }

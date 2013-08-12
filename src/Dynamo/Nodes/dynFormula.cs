@@ -51,12 +51,12 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("formula", Formula);
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             Formula = elNode.Attributes["formula"].Value ?? "";
         }

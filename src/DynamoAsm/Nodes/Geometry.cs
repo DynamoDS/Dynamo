@@ -484,7 +484,7 @@ namespace Dynamo.Nodes
     }
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
-    [NodeName("Line")]
+    [NodeName("Line - LibG")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a Line between two Points.")]
     [NodeSearchable(false)]
@@ -514,7 +514,7 @@ namespace Dynamo.Nodes
     }
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
-    [NodeName("Circle")]
+    [NodeName("Circle - LibG")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a Circle at a Point with radius")]
     [NodeSearchTags("circle")]
@@ -610,7 +610,7 @@ namespace Dynamo.Nodes
     }
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
-    [NodeName("Length")]
+    [NodeName("Length - LibG")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Get the length of a Curve.")]
     [NodeSearchable(false)]
@@ -975,7 +975,7 @@ namespace Dynamo.Nodes
     }
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
-    [NodeName("Plane")]
+    [NodeName("Plane - LibG")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Plane, an infinite 2D expanse in 3D space.")]
     [NodeSearchable(false)]

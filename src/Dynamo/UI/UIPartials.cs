@@ -24,6 +24,7 @@ using DialogResult = System.Windows.Forms.DialogResult;
 using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using TextBox = System.Windows.Controls.TextBox;
+using TreeView = System.Windows.Controls.TreeView;
 
 namespace Dynamo.Nodes
 {
@@ -47,9 +48,11 @@ namespace Dynamo.Nodes
             subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             subButton.VerticalAlignment = System.Windows.VerticalAlignment.Top;
 
-            WrapPanel wp = new WrapPanel();
-            wp.VerticalAlignment = VerticalAlignment.Top;
-            wp.HorizontalAlignment = HorizontalAlignment.Center;
+            var wp = new WrapPanel
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
             wp.Children.Add(addButton);
             wp.Children.Add(subButton);
 
@@ -85,8 +88,8 @@ namespace Dynamo.Nodes
 
             tb.OnChangeCommitted += processTextForNewInputs;
 
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = VerticalAlignment.Top;
 
             nodeUI.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
@@ -720,14 +723,31 @@ namespace Dynamo.Nodes
         {
             var nodeUI = ui as dynNodeView;
 
-            var watchTree = new WatchTree();
+            watchTree = new WatchTree();
 
-            //nodeUI.inputGrid.Children.Add(watchTree);
             nodeUI.grid.Children.Add(watchTree);
             watchTree.SetValue(Grid.RowProperty, 2);
             watchTree.SetValue(Grid.ColumnSpanProperty, 3);
             watchTree.Margin = new Thickness(5, 0, 5, 5);
-            watchTreeBranch = watchTree.FindResource("Tree") as WatchTreeBranch;
+
+            Root = new WatchNode();
+            watchTree.DataContext = Root;
+
+            this.RequestBindingUnhook += new EventHandler(delegate
+            {
+                BindingOperations.ClearAllBindings(watchTree.treeView1);
+            });
+
+            this.RequestBindingRehook += new EventHandler(delegate
+            {
+                var sourceBinding = new Binding("Children")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Source = Root,
+                };
+                watchTree.treeView1.SetBinding(TreeView.ItemsSourceProperty, sourceBinding);
+            });
+
         }
 
     }

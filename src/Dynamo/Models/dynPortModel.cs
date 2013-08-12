@@ -40,6 +40,8 @@ namespace Dynamo.Models
         PortType portType;
         string name;
         ObservableCollection<dynConnectorModel> connectors = new ObservableCollection<dynConnectorModel>();
+        private bool _usingDefaultValue;
+        private bool _defaultValueEnabled;
 
         #endregion
 
@@ -130,6 +132,33 @@ namespace Dynamo.Models
                 RaisePropertyChanged("Center");
             }
         }
+
+        /// <summary>
+        /// Controls whether this port is set to use it's default value (true) or yield a closure (false).
+        /// </summary>
+        public bool UsingDefaultValue
+        {
+            get { return _usingDefaultValue; }
+            set
+            {
+                _usingDefaultValue = value; 
+                RaisePropertyChanged("UsingDefaultValue");
+            }
+        }
+
+        /// <summary>
+        /// Controls whether the Use Default Value option is available.
+        /// </summary>
+        public bool DefaultValueEnabled
+        {
+            get { return _defaultValueEnabled; }
+            set
+            {
+                _defaultValueEnabled = value;
+                RaisePropertyChanged("DefaultValueEnabled");
+            }
+        }
+
         #endregion
 
         public dynPortModel(int index, PortType portType, dynNodeModel owner, string name)
@@ -139,6 +168,8 @@ namespace Dynamo.Models
             PortType = portType;
             Owner = owner;
             PortName = name;
+            UsingDefaultValue = false;
+            DefaultValueEnabled = false;
         }
 
         public void Connect(dynConnectorModel connector)
