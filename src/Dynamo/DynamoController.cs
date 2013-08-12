@@ -166,6 +166,9 @@ namespace Dynamo
 
             this.Context = context;
 
+            //Start heartbeat reporting
+            Services.InstrumentationLogger.Start();
+
             //create the view model to which the main window will bind
             //the DynamoModel is created therein
             this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(viewModelType,new object[]{this});
