@@ -17,14 +17,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using System.Windows.Controls;
 
-namespace Dynamo.Commands
+namespace Dynamo.UI.Commands
 {
 
     public class ShowNodePublishInfoCommand : ICommand

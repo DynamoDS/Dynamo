@@ -148,8 +148,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "ThirdLevelCustomNodeA2.dyf")) != null);
 
             string openPath = Path.Combine(examplePath, "custom_node_dep_test.dyn");
-            controller.RunCommand(vm.OpenCommand, openPath);
-
+            controller.DynamoModel.Open(openPath);
             var rootNode = NodeFromCurrentSpace(vm, "333ed3ad-c786-4064-8203-e79ce7cb109f");
 
             Assert.NotNull(rootNode);
