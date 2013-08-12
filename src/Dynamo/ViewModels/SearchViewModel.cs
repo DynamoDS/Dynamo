@@ -585,8 +585,10 @@ namespace Dynamo.ViewModels
         /// <param name="query"> The search query </param>
         public void SearchAndUpdateResultsSync(string query)
         {
-            if (Visible != true)
-                return;
+            //TODO - UI Refactor - Test "CanRemoveElementCustomNod..." fails here because ui is not visible and returns
+            // before search terms is added. Do we really need to test for visible?
+            //if (Visible != true)
+            //    return;
 
             var result = Search(query);
 
