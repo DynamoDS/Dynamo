@@ -4,16 +4,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows;
-using System.Windows.Threading;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Greg.Requests;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
-using RestSharp;
 
 namespace Dynamo.PackageManager
 {
@@ -219,6 +216,7 @@ namespace Dynamo.PackageManager
             this.RefreshCustomNodesFromDirectory();
             var vm = PublishPackageViewModel.FromLocalPackage(this);
             vm.IsNewVersion = true;
+            //TODO: UI Refactor - Ensure this view is created by event
             var e = new PackageManagerPublishView(vm);
         }
 
@@ -232,6 +230,7 @@ namespace Dynamo.PackageManager
             this.RefreshCustomNodesFromDirectory();
             var vm = PublishPackageViewModel.FromLocalPackage(this);
             vm.IsNewVersion = false;
+            //TODO: UI Refactor - Ensure this view is created by event
             var e = new PackageManagerPublishView(vm);
         }
 
