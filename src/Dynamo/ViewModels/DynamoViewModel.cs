@@ -10,11 +10,9 @@ using System.Windows;
 using System.Windows.Forms;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Dynamo.PackageManager.UI;
 
 namespace Dynamo.ViewModels
 {
@@ -24,6 +22,24 @@ namespace Dynamo.ViewModels
     public class DynamoViewModel:dynViewModelBase
     {
         #region events
+
+        public event EventHandler RequestShowInstalledPackages;
+        public virtual void OnRequestShowInstalledPackages(Object sender, EventArgs e)
+        {
+            if (RequestShowInstalledPackages != null)
+            {
+                RequestShowInstalledPackages(this, e);
+            }
+        }
+
+        public event EventHandler RequestShowPacakageManagerSearch;
+        public virtual void OnRequestShowPacakageManagerSearch(Object sender, EventArgs e)
+        {
+            if (RequestShowPacakageManagerSearch != null)
+            {
+                RequestShowPacakageManagerSearch(this, e);
+            }
+        }
 
         public event ImageSaveEventHandler RequestSaveImage;
         public virtual void OnRequestSaveImage(Object sender, ImageSaveEventArgs e)
@@ -563,9 +579,11 @@ namespace Dynamo.ViewModels
 
         private void ShowPackageManagerSearch(object parameters)
         {
-            var pms = new PackageManagerSearchViewModel(Controller.PackageManagerClient);
-            var window = new PackageManagerSearchView(pms);
-            window.Show();
+            //var pms = new PackageManagerSearchViewModel(Controller.PackageManagerClient);
+            //var window = new PackageManagerSearchView(pms);
+            //window.Show();
+
+            OnRequestShowPacakageManagerSearch(this, EventArgs.Empty);
         }
 
         private bool CanShowPackageManagerSearch(object parameters)
@@ -575,8 +593,10 @@ namespace Dynamo.ViewModels
 
         private void ShowInstalledPackages(object parameters)
         {
-            var window = new InstalledPackagesView();
-            window.Show();
+            //var window = new InstalledPackagesView();
+            //window.Show();
+
+            OnRequestShowInstalledPackages(this, EventArgs.Empty);
         }
 
         private bool CanShowInstalledPackages(object parameters)
