@@ -27,6 +27,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;
+using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -103,6 +104,8 @@ namespace Dynamo.Controls
 
             _vm.RequestClose += new EventHandler(_vm_RequestClose);
             _vm.RequestSaveImage += new ImageSaveEventHandler(_vm_RequestSaveImage);
+            _vm.RequestShowInstalledPackages += new EventHandler(_vm_RequestShowInstalledPackages);
+            _vm.RequestShowPacakageManagerSearch += new EventHandler(_vm_RequestShowPacakageManagerSearch);
 
             //dynSettings.Controller.PackageManagerClient.RequestSetLoginState += new LoginStateEventHandler(PackageManagerClient_RequestSetLoginState);
             dynSettings.Controller.RequestsCrashPrompt += new DynamoController.CrashPromptHandler(Controller_RequestsCrashPrompt);
@@ -112,6 +115,19 @@ namespace Dynamo.Controls
             _vm.RequestUserSaveWorkflow += new WorkspaceSaveEventHandler(_vm_RequestUserSaveWorkflow);
 
             dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
+        }
+
+        void _vm_RequestShowPacakageManagerSearch(object sender, EventArgs e)
+        {
+            var pms = new PackageManagerSearchViewModel(dynSettings.Controller.PackageManagerClient);
+            var window = new PackageManagerSearchView(pms);
+            window.Show();
+        }
+
+        void _vm_RequestShowInstalledPackages(object sender, EventArgs e)
+        {
+            var window = new InstalledPackagesView();
+            window.Show();
         }
 
         void ClipBoard_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
