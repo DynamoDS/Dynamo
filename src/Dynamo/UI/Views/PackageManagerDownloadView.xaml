@@ -73,7 +73,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoElements;component/Themes/DynamoModern.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
