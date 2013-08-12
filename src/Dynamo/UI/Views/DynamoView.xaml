@@ -5,7 +5,7 @@
         xmlns:utilities="clr-namespace:Dynamo.Utilities"
         xmlns:sys="clr-namespace:System;assembly=mscorlib" 
         xmlns:models="clr-namespace:Dynamo.Models"
-        xmlns:controls="clr-namespace:Dynamo.Controls"
+        xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:commands="clr-namespace:Dynamo.UI.Commands"
         x:Name="_this"
         Height="768" Width="1024"
         Closing="WindowClosing" 
@@ -266,8 +266,8 @@
             </MenuItem>
 
             <MenuItem Focusable="False" Header="_Packages" Name="PackageManagerMenu" IsEnabled="True" >
-                <MenuItem Focusable="False" Header="_Browse Online for Packages..." Command="{Binding Path=ShowPackageManagerSearchCommand}"  Name="showPMSearch" />
-                <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=ShowInstalledPackagesCommand}"  Name="showPMInstalled" />
+                <MenuItem Focusable="False" Header="_Browse Online for Packages..." Command="{Binding Path=ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
+                <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMInstalled" />
                 <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodesCmd}}"  Name="publishSelected" />
                 <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
             </MenuItem>

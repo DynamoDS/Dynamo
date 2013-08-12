@@ -18,6 +18,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
+using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -415,8 +416,11 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+
+            var NodeUI = ui as dynNodeView;
+
             image1 = new System.Windows.Controls.Image();
             image1.Width = 320;
             image1.Height = 240;
