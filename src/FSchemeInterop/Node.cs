@@ -645,6 +645,17 @@ namespace Dynamo.FSchemeInterop.Node
             return Expression.NewBegin(Utils.SequenceToFSharpList(initialized));
         }
 
+        protected override Expression compileBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries, 
+            HashSet<string> initializedIds, 
+            HashSet<string> conditionalIds)
+        {
+            if (!Inputs.Any())
+                return GetBody(symbols, letEntries, initializedIds, conditionalIds);
+            return base.compileBody(symbols, letEntries, initializedIds, conditionalIds);
+        }
+
         public AnonymousFunctionNode(IEnumerable<string> inputList, INode entryPoint)
             : base(inputList)
         {
