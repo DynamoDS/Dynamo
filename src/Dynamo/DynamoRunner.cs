@@ -120,15 +120,12 @@ namespace Dynamo
             try
             {
                 var topNode = new BeginNode(new List<string>());
-                int i = 0;
                 var buildDict = new Dictionary<dynNodeModel, Dictionary<int, INode>>();
-                foreach (dynNodeModel topMost in topElements)
+                foreach (var topMost in topElements.Select((node, index) => new { node, index }))
                 {
-                    string inputName = i.ToString();
+                    string inputName = topMost.index.ToString();
                     topNode.AddInput(inputName);
-                    topNode.ConnectInput(inputName, topMost.BuildExpression(buildDict));
-
-                    i++;
+                    topNode.ConnectInput(inputName, topMost.node.BuildExpression(buildDict));
                 }
 
                 FScheme.Expression runningExpression = topNode.Compile();
@@ -188,9 +185,8 @@ namespace Dynamo
                     if (dynSettings.Bench != null)
                     {
                         //Run this method again from the main thread
-                        dynSettings.Bench.Dispatcher.BeginInvoke(new Action(
-                                                                     delegate { RunExpression(_showErrors); }
-                                                                     ));
+                        dynSettings.Bench.Dispatcher.BeginInvoke(
+                            new Action(() => RunExpression(_showErrors)));
                     }
                 }
                 else
@@ -200,10 +196,10 @@ namespace Dynamo
             }
         }
 
-        protected internal virtual void Run(bool RunInDebug, IEnumerable<dynNodeModel> topElements, FScheme.Expression runningExpression)
+        protected internal virtual void Run(bool runInDebug, IEnumerable<dynNodeModel> topElements, FScheme.Expression runningExpression)
         {
             //Print some stuff if we're in debug mode
-            if (RunInDebug)
+            if (runInDebug)
             {
 // NOPE
                 //if (dynSettings.Bench != null)
@@ -230,7 +226,7 @@ namespace Dynamo
                 if (dynSettings.Bench != null)
                 {
                     //Print some more stuff if we're in debug mode
-                    if (RunInDebug && expr != null)
+                    if (runInDebug && expr != null)
                     {
 // NOPE
                         //dynSettings.Bench.Dispatcher.Invoke(new Action(

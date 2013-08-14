@@ -332,7 +332,7 @@ namespace Dynamo
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
             //Get our entry points (elements with nothing connected to output)
-            IEnumerable<dynNodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes();
+            IEnumerable<dynNodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
 
             //Mark the topmost as dirty/clean
             foreach (dynNodeModel topMost in topElements)
@@ -420,9 +420,8 @@ namespace Dynamo
                     if (dynSettings.Bench != null)
                     {
                         //Run this method again from the main thread
-                        dynSettings.Bench.Dispatcher.BeginInvoke(new Action(
-                                                                     delegate { RunExpression(_showErrors); }
-                                                                     ));
+                        dynSettings.Bench.Dispatcher.BeginInvoke(
+                            new Action(() => RunExpression(_showErrors)));
                     }
                 }
                 else
@@ -439,11 +438,8 @@ namespace Dynamo
             {
                 if (dynSettings.Bench != null)
                 {
-                    foreach (dynNodeModel node in topElements)
-                    {
-                        string exp = node.PrintExpression();
+                    foreach (string exp in topElements.Select(node => node.PrintExpression()))
                         dynSettings.Controller.DynamoViewModel.Log("> " + exp);
-                    }
                 }
             }
 
@@ -481,9 +477,8 @@ namespace Dynamo
                     //Print unhandled exception
                     if (ex.Message.Length > 0)
                     {
-                        dynSettings.Bench.Dispatcher.Invoke(new Action(
-                                                    delegate { dynSettings.Controller.DynamoViewModel.Log(ex); }
-                                                    ));
+                        dynSettings.Bench.Dispatcher.Invoke(
+                            new Action(() => dynSettings.Controller.DynamoViewModel.Log(ex)));
                     }
                 }
 

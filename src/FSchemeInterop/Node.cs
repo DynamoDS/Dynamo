@@ -39,9 +39,10 @@ namespace Dynamo.FSchemeInterop.Node
         /// <returns></returns>
         public Expression Compile()
         {
-            Dictionary<INode, string> symbols;
-            Dictionary<INode, List<INode>> letEntries;
+            Dictionary<INode, string> symbols; // bindings
+            Dictionary<INode, List<INode>> letEntries; // scope entry for bindings
 
+            //Perform graph analysis to determine nodes which should be stored in let bindings.
             if (!GraphAnalysis.LetOptimizations(this, out symbols, out letEntries))
                 throw new Exception("Can't compile INode, graph is not a DAG.");
 
