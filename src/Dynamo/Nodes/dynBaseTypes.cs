@@ -647,14 +647,14 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Cartesian Product")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
-    [NodeSearchTags("cross")]
-    public class dynCartProd : dynVariableInput
+    public class dynLacerBase : dynVariableInput
     {
-        public dynCartProd()
+        private readonly Func<FSharpList<Value>, Value> _func;
+
+        public dynLacerBase(Func<FSharpList<Value>, Value> func)
         {
+            _func = func;
+
             InPortData.Add(new PortData("comb", "Combinator", typeof(object)));
             InPortData.Add(new PortData("list1", "List #1", typeof(Value.List)));
             InPortData.Add(new PortData("list2", "List #2", typeof(Value.List)));
@@ -712,8 +712,33 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return FScheme.CartProd(args);
+            return _func(args);
         }
+    }
+
+    [NodeName("Cartesian Product")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
+    [NodeSearchTags("cross")]
+    public class dynCartProd : dynLacerBase
+    {
+        public dynCartProd() : base(FScheme.CartProd) { }
+    }
+
+    [NodeName("Lace Shortest")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.")]
+    public class dynLaceShortest : dynLacerBase
+    {
+        public dynLaceShortest() : base(FScheme.LaceShortest) { }
+    }
+
+    [NodeName("Lace Longest")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.")]
+    public class dynLaceLongest : dynLacerBase
+    {
+        public dynLaceLongest() : base(FScheme.LaceLongest) { }
     }
 
     [NodeName("Map")]
