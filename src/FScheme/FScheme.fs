@@ -507,6 +507,26 @@ let CartProd = function
         List(List.map (function List(l) -> l | m -> failwith "bad cart prod arg") lists |> reduceLists |> Seq.map f |> Seq.toList)
     | m -> malformed "cartesian-product" <| List(m)
 
+let LaceShortest = function
+    | (Function(_) as f) :: lists ->
+        let lists' = List.map (function List(l) -> l | m -> malformed "lace-shortest" m) lists
+        let shortestLen = Seq.min <| Seq.map List.length lists'
+        Map <| f :: List.map (Seq.take shortestLen >> Seq.toList >> List) lists'
+    | m -> malformed "lace-shortest" <| List(m)
+
+let LaceLongest = function
+    | (Function(_) as f) :: lists ->
+        let lists' = List.map (function List(l) -> l | m -> malformed "lace-longest" m) lists
+        let longestLen = Seq.max <| Seq.map List.length lists'
+        Map <| f :: List.map 
+                        (fun l -> 
+                            let len = List.length l
+                            let last = List.nth l (len-1)
+                            let remainder = Seq.initInfinite (fun _ -> last) |> Seq.take (longestLen - len)
+                            Seq.append l remainder |> Seq.toList |> List)
+                        lists'
+    | m -> malformed "lace-longest" <| List(m)
+
 let ForEach = function
     | [Function(f); List(l)] ->
         for e in l do f [e] |> ignore
