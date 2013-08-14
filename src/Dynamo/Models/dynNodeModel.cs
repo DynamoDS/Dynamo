@@ -795,7 +795,7 @@ namespace Dynamo.Nodes
                 var result = evaluateNode(args);
 
                 // if it was a failure, the old value is null
-                if (result.IsString && (result as Value.String).Item == _failureString)
+                if (result.IsString && (result as Value.String).Item == FailureString)
                 {
                     OldValue = null;
                 }
@@ -816,11 +816,9 @@ namespace Dynamo.Nodes
         /// <returns>Some(Value) -> Result | None -> Run was cancelled</returns>
         private delegate FSharpOption<Value> innerEvaluationDelegate();
 
-        public Dictionary<PortData, Value> evaluationDict = new Dictionary<PortData, Value>();
-
         public Value GetValue(int outPortIndex)
         {
-            return evaluationDict.Values.ElementAt(outPortIndex);
+            return _evaluationDict.Values.ElementAt(outPortIndex);
         }
 
         protected internal virtual Value evaluateNode(FSharpList<Value> args)
@@ -832,7 +830,8 @@ namespace Dynamo.Nodes
                 savePortMappings();
             }
 
-            evaluationDict.Clear();
+            var evalDict = new Dictionary<PortData, Value>();
+            _evaluationDict = evalDict;
 
             object[] iaAttribs = GetType().GetCustomAttributes(typeof(IsInteractiveAttribute), false);
             bool isInteractive = iaAttribs.Length > 0 && ((IsInteractiveAttribute)iaAttribs[0]).IsInteractive;
@@ -847,13 +846,13 @@ namespace Dynamo.Nodes
                         throw new CancelEvaluationException(false);
                     
 
-                    __eval_internal(args, evaluationDict);
+                    __eval_internal(args, evalDict);
 
                     expr = OutPortData.Count == 1
-                        ? evaluationDict[OutPortData[0]]
+                        ? evalDict[OutPortData[0]]
                         : Value.NewList(
                             Utils.SequenceToFSharpList(
-                                evaluationDict.OrderBy(
+                                evalDict.OrderBy(
                                     pair => OutPortData.IndexOf(pair.Key))
                                 .Select(
                                     pair => pair.Value)));
@@ -906,11 +905,12 @@ namespace Dynamo.Nodes
                 if (result.Value != null)
                     return result.Value;
                 else
-                    return Value.NewString(_failureString);
+                    return Value.NewString(FailureString);
             }
         }
 
-        private string _failureString = "Node evaluation failed";
+        private const string FailureString = "Node evaluation failed";
+        private Dictionary<PortData, Value> _evaluationDict;
 
         protected virtual void OnRunCancelled()
         {

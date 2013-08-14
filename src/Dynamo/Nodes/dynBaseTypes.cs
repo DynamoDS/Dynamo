@@ -757,6 +757,28 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("For Each")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Performs a computation on each element of a list. Does not accumulate results.")]
+    public class dynForEach : dynBuiltinFunction
+    {
+        public dynForEach()
+            : base(FScheme.ForEach)
+        {
+            InPortData.Add(new PortData("f(x)", "The computation to perform on each element", typeof(object)));
+            InPortData.Add(new PortData("seq", "The list to of elements.", typeof(Value.List)));
+            OutPortData.Add(new PortData("", "", typeof(Value.Dummy)));
+
+            RegisterAllPorts();
+        }
+
+        public override bool RequiresRecalc
+        {
+            get { return true; }
+            set { }
+        }
+    }
+
     [NodeName("True For All")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Tests to see if all elements in a sequence satisfy the given predicate.")]
