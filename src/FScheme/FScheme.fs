@@ -699,8 +699,22 @@ let Sub1 = function
     | m -> malformed "sub1" <| List(m)
 
 let Identity = function
-   | [e] -> e
-   | m   -> malformed "identity" <| List(m)
+    | [e] -> e
+    | m   -> malformed "identity" <| List(m)
+
+let MakeFuture f = 
+    let p = async { return f [] }
+    let t = Async.StartAsTask p
+    t
+    
+let Redeem (t : Threading.Tasks.Task<'a>) =
+    t.Wait()
+    if t.IsFaulted then
+        raise t.Exception
+    else if t.IsCanceled then
+        failwith "Cannot redeem a cancelled future order."
+    else
+        t.Result
 
 
 type private CompilerFrame = string list
