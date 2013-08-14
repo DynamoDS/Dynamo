@@ -23,6 +23,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("receipt", "Receipt to this future evaluation.", typeof (object)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
@@ -45,6 +47,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("result", "Result of the future evaluation.", typeof (object)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
