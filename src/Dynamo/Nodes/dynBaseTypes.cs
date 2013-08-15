@@ -154,26 +154,21 @@ namespace Dynamo.Nodes
 
     public abstract class dynVariableInput : dynNodeWithOneOutput
     {
-        protected dynVariableInput()
-        {
-            
-        }
-
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             System.Windows.Controls.Button addButton = new dynNodeButton();
             addButton.Content = "+";
             addButton.Width = 20;
             //addButton.Height = 20;
-            addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            addButton.HorizontalAlignment = HorizontalAlignment.Center;
+            addButton.VerticalAlignment = VerticalAlignment.Center;
 
             System.Windows.Controls.Button subButton = new dynNodeButton();
             subButton.Content = "-";
             subButton.Width = 20;
             //subButton.Height = 20;
-            subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            subButton.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            subButton.HorizontalAlignment = HorizontalAlignment.Center;
+            subButton.VerticalAlignment = VerticalAlignment.Top;
             
             var wp = new WrapPanel
             {
@@ -206,12 +201,12 @@ namespace Dynamo.Nodes
             return InPortData.Count;
         }
 
-        private int lastEvaledAmt;
+        private int _lastEvaledAmt;
         public override bool RequiresRecalc
         {
             get
             {
-                return lastEvaledAmt != InPortData.Count || base.RequiresRecalc;
+                return _lastEvaledAmt != InPortData.Count || base.RequiresRecalc;
             }
             set
             {
@@ -268,7 +263,7 @@ namespace Dynamo.Nodes
 
         protected override void OnEvaluate()
         {
-            lastEvaledAmt = InPortData.Count;
+            _lastEvaledAmt = InPortData.Count;
         }
     }
 
