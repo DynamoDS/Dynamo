@@ -332,7 +332,7 @@ namespace Dynamo
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
             //Get our entry points (elements with nothing connected to output)
-            IEnumerable<dynNodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
+            List<dynNodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
 
             //Mark the topmost as dirty/clean
             foreach (dynNodeModel topMost in topElements)
@@ -431,7 +431,7 @@ namespace Dynamo
             }
         }
 
-        protected internal virtual void Run(IEnumerable<dynNodeModel> topElements, FScheme.Expression runningExpression)
+        protected internal virtual void Run(List<dynNodeModel> topElements, FScheme.Expression runningExpression)
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
