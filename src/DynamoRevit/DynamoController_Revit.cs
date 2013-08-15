@@ -21,12 +21,21 @@ namespace Dynamo
 
         dynamic _oldPyEval;
 
+        public PredicateTraverser CheckManualTransaction { get; private set; }
+        public PredicateTraverser CheckRequiresTransaction { get; private set; }
+
         public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context)
             : base(env, viewModelType, context)
         {
             Updater = updater;
             
             dynRevitSettings.Controller = this;
+
+            Predicate<dynNodeModel> requiresTransactionPredicate = node => node is dynRevitTransactionNode;
+            CheckRequiresTransaction = new PredicateTraverser(requiresTransactionPredicate);
+
+            Predicate<dynNodeModel> manualTransactionPredicate = node => node is dynTransaction;
+            CheckManualTransaction = new PredicateTraverser(manualTransactionPredicate);
 
             //AppDomain currentDomain = AppDomain.CurrentDomain;
             //currentDomain.AssemblyResolve += ResolveSSONETHandler;
@@ -345,12 +354,12 @@ namespace Dynamo
 
         private void CommitDeletions()
         {
-            var delDict = new Dictionary<DynElementUpdateDelegate, List<ElementId>>();
+            var delDict = new Dictionary<DynElementUpdateDelegate, HashSet<ElementId>>();
             foreach (var kvp in _transDelElements)
             {
                 if (!delDict.ContainsKey(kvp.Value))
                 {
-                    delDict[kvp.Value] = new List<ElementId>();
+                    delDict[kvp.Value] = new HashSet<ElementId>();
                 }
                 delDict[kvp.Value].Add(kvp.Key);
             }
@@ -359,12 +368,12 @@ namespace Dynamo
                 kvp.Key(kvp.Value);
         }
 
-        internal void RegisterDeleteHook(ElementId id, DynElementUpdateDelegate updateDelegate)
+        internal void RegisterDMUHooks(ElementId id, DynElementUpdateDelegate updateDelegate)
         {
-            DynElementUpdateDelegate del = delegate(List<ElementId> deleted)
+            DynElementUpdateDelegate del = delegate(HashSet<ElementId> deleted)
             {
-                var valid = new List<ElementId>();
-                var invalid = new List<ElementId>();
+                var valid = new HashSet<ElementId>();
+                var invalid = new HashSet<ElementId>();
                 foreach (var delId in deleted)
                 {
                     try
@@ -390,7 +399,7 @@ namespace Dynamo
                 }
             };
 
-            DynElementUpdateDelegate mod = delegate(List<ElementId> modded)
+            DynElementUpdateDelegate mod = delegate(HashSet<ElementId> modded)
             {
                 _transElements.RemoveAll(modded.Contains);
 
@@ -455,6 +464,20 @@ namespace Dynamo
             return _trans != null;
         }
 
+        private TransactionMode _transMode;
+        public TransactionMode TransMode
+        {
+            get { return _transMode; }
+            set
+            {
+                _transMode = value;
+                if (_transMode == TransactionMode.Debug)
+                {
+                    DynamoViewModel.RunInDebug = true;
+                }
+            }
+        }
+
         protected override void OnRunCancelled(bool error)
         {
             base.OnRunCancelled(error);
@@ -505,20 +528,20 @@ namespace Dynamo
             if (!DynamoViewModel.RunInDebug)
             {
                 //Do we need manual transaction control?
-                bool manualTrans = topElements.Any(model.CheckManualTransaction.TraverseUntilAny);
+                bool manualTrans = topElements.Any(CheckManualTransaction.TraverseUntilAny);
 
                 //Can we avoid running everything in the Revit Idle thread?
                 bool noIdleThread = manualTrans || 
-                    !topElements.Any(model.CheckRequiresTransaction.TraverseUntilAny);
+                    !topElements.Any(CheckRequiresTransaction.TraverseUntilAny);
 
                 //If we don't need to be in the idle thread...
                 if (noIdleThread || Testing)
                 {
                     DynamoLogger.Instance.Log("Running expression in evaluation thread...");
-                    model.TransMode = DynamoRevitViewModel.TransactionMode.Manual; //Manual transaction control
+                    TransMode = TransactionMode.Manual; //Manual transaction control
 
                     if (Testing)
-                        model.TransMode = DynamoRevitViewModel.TransactionMode.Automatic;
+                        TransMode = TransactionMode.Automatic;
 
                     InIdleThread = false; //Not in idle thread at the moment
                     base.Run(topElements, runningExpression); //Just run the Run Delegate
@@ -526,7 +549,7 @@ namespace Dynamo
                 else //otherwise...
                 {
                     DynamoLogger.Instance.Log("Running expression in Revit's Idle thread...");
-                    model.TransMode = DynamoRevitViewModel.TransactionMode.Automatic; //Automatic transaction control
+                    TransMode = TransactionMode.Automatic; //Automatic transaction control
 
                     Debug.WriteLine("Adding a run to the idle stack.");
                     InIdleThread = true; //Now in the idle thread.
@@ -538,7 +561,7 @@ namespace Dynamo
             }
             else //If we are in debug mode...
             {
-                model.TransMode = DynamoRevitViewModel.TransactionMode.Debug; //Debug transaction control
+                TransMode = TransactionMode.Debug; //Debug transaction control
                 InIdleThread = true; //Everything will be evaluated in the idle thread.
 
                 dynSettings.Controller.DynamoViewModel.Log("Running expression in debug.");
@@ -547,6 +570,13 @@ namespace Dynamo
                 base.Run(topElements, runningExpression);
             }
         }
+    }
+
+    public enum TransactionMode
+    {
+        Debug,
+        Manual,
+        Automatic
     }
 
     public class DynamoWarningPrinter : IFailuresPreprocessor

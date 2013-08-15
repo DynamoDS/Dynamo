@@ -19,14 +19,13 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Utility function to determine if an Element of the given ID exists in the document.
         /// </summary>
-        /// <param name="e">ID to check.</param>
         /// <returns>True if exists, false otherwise.</returns>
         public static bool TryGetElement(ElementId id, Type t, out Element e)
         {
             try
             {
                 e = dynRevitSettings.Doc.Document.GetElement(id);
-                if (e != null && t.IsAssignableFrom(e.GetType()))
+                if (e != null && t.IsInstanceOfType(e))
                 {
                     _testid = e.Id;
                     return true;
@@ -53,10 +52,7 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         public static IEnumerable<T> MakeEnumerable<T>(IEnumerable en)
         {
-            foreach (T item in en)
-            {
-                yield return item;
-            }
+            return en.Cast<T>();
         }
 
         /// <summary>

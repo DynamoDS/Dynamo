@@ -146,109 +146,6 @@ namespace Dynamo.Nodes
         }
     }
 
-   
-
-    [NodeName("Read Image File")]
-    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
-    [NodeDescription("Reads data from an image file.")]
-    public class dynImageFileReader : dynFileReaderBase
-    {
-        System.Windows.Controls.Image image1;
-
-        public dynImageFileReader()
-        {
-
-            InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
-            InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
-            OutPortData.Add(new PortData("contents", "File contents", typeof(Value.String)));
-            RegisterAllPorts();
-        }
-
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
-        {
-            image1 = new System.Windows.Controls.Image
-                {
-                    //Width = 320,
-                    //Height = 240,
-                    MaxWidth = 400,
-                    MaxHeight = 400,
-                    Margin = new Thickness(5),
-                    HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
-                    Name = "image1",
-                    VerticalAlignment = System.Windows.VerticalAlignment.Center
-                };
-
-            //nodeUI.inputGrid.Children.Add(image1);
-            nodeUI.grid.Children.Add(image1);
-            image1.SetValue(Grid.RowProperty, 2);
-            image1.SetValue(Grid.ColumnProperty, 0);
-            image1.SetValue(Grid.ColumnSpanProperty, 3);
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            storedPath = ((Value.String)args[0]).Item;
-            double xDiv = ((Value.Number)args[1]).Item;
-            double yDiv = ((Value.Number)args[2]).Item;
-
-            FSharpList<Value> result = FSharpList<Value>.Empty;
-            if (File.Exists(storedPath))
-            {
-
-                    try
-                    {
-                        using (Bitmap bmp = new Bitmap(storedPath))
-                        {
-
-                            //NodeUI.Dispatcher.Invoke(new Action(
-                            //    delegate
-                            //    {
-                            //        // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
-                            //        // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
-                            //        // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
-
-                            //        var hbitmap = bmp.GetHbitmap();
-                            //        var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
-                            //        image1.Source = imageSource;
-                            //    }
-                            //));
-
-                            //MVVM: now using node model's dispatch on ui thread method
-                            DispatchOnUIThread(delegate
-                            {
-                                // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
-                                // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
-                                // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
-
-                                var hbitmap = bmp.GetHbitmap();
-                                var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
-                                image1.Source = imageSource;
-                            });
-
-                            // Do some processing
-                            for (int y = 0; y < yDiv; y++)
-                            {
-                                for (int x = 0; x < xDiv; x++)
-                                {
-                                    Color pixelColor = bmp.GetPixel(x * (int)(bmp.Width / xDiv), y * (int)(bmp.Height / yDiv));
-                                    result = FSharpList<Value>.Cons(Value.NewContainer(pixelColor), result);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        dynSettings.Controller.DynamoViewModel.Log(e.ToString());
-                    }
-
-
-                return Value.NewList(result);
-            }
-            else
-                return Value.NewList(FSharpList<Value>.Empty);
-        }
-    }
-
     [NodeName("Write File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Writes the given string to the given file. Creates the file if it doesn't exist.")]
@@ -322,7 +219,6 @@ namespace Dynamo.Nodes
         }
     }
 
-
     [NodeName("Write Image File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Writes the given image to an image file. Creates the file if it doesn't exist.")]
@@ -366,6 +262,107 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Read Image File")]
+    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeDescription("Reads data from an image file.")]
+    public class dynImageFileReader : dynFileReaderBase
+    {
+        System.Windows.Controls.Image image1;
+
+        public dynImageFileReader()
+        {
+
+            InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
+            InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
+            OutPortData.Add(new PortData("contents", "File contents", typeof(Value.String)));
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        {
+            image1 = new System.Windows.Controls.Image
+            {
+                //Width = 320,
+                //Height = 240,
+                MaxWidth = 400,
+                MaxHeight = 400,
+                Margin = new Thickness(5),
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                Name = "image1",
+                VerticalAlignment = System.Windows.VerticalAlignment.Center
+            };
+
+            //nodeUI.inputGrid.Children.Add(image1);
+            nodeUI.grid.Children.Add(image1);
+            image1.SetValue(Grid.RowProperty, 2);
+            image1.SetValue(Grid.ColumnProperty, 0);
+            image1.SetValue(Grid.ColumnSpanProperty, 3);
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            storedPath = ((Value.String)args[0]).Item;
+            double xDiv = ((Value.Number)args[1]).Item;
+            double yDiv = ((Value.Number)args[2]).Item;
+
+            FSharpList<Value> result = FSharpList<Value>.Empty;
+            if (File.Exists(storedPath))
+            {
+
+                try
+                {
+                    using (Bitmap bmp = new Bitmap(storedPath))
+                    {
+
+                        //NodeUI.Dispatcher.Invoke(new Action(
+                        //    delegate
+                        //    {
+                        //        // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
+                        //        // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
+                        //        // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
+
+                        //        var hbitmap = bmp.GetHbitmap();
+                        //        var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
+                        //        image1.Source = imageSource;
+                        //    }
+                        //));
+
+                        //MVVM: now using node model's dispatch on ui thread method
+                        DispatchOnUIThread(delegate
+                        {
+                            // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
+                            // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
+                            // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
+
+                            var hbitmap = bmp.GetHbitmap();
+                            var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
+                            image1.Source = imageSource;
+                        });
+
+                        // Do some processing
+                        for (int y = 0; y < yDiv; y++)
+                        {
+                            for (int x = 0; x < xDiv; x++)
+                            {
+                                Color pixelColor = bmp.GetPixel(x * (int)(bmp.Width / xDiv), y * (int)(bmp.Height / yDiv));
+                                result = FSharpList<Value>.Cons(Value.NewContainer(pixelColor), result);
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    dynSettings.Controller.DynamoViewModel.Log(e.ToString());
+                }
+
+
+                return Value.NewList(result);
+            }
+            else
+                return Value.NewList(FSharpList<Value>.Empty);
+        }
+    }
+
 
     #region File Watcher
 
@@ -404,7 +401,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FileWatcher watcher = (FileWatcher)((Value.Container)args[0]).Item;
+            var watcher = (FileWatcher)((Value.Container)args[0]).Item;
 
             return Value.NewNumber(watcher.Changed ? 1 : 0);
         }
@@ -427,7 +424,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FileWatcher watcher = (FileWatcher)((Value.Container)args[0]).Item;
+            var watcher = (FileWatcher)((Value.Container)args[0]).Item;
             double timeout = ((Value.Number)args[1]).Item;
 
             timeout = timeout == 0 ? double.PositiveInfinity : timeout;
@@ -436,7 +433,7 @@ namespace Dynamo.Nodes
             while (!watcher.Changed)
             {
                 if (Controller.RunCancelled)
-                    throw new Dynamo.Controls.CancelEvaluationException(false);
+                    throw new Controls.CancelEvaluationException(false);
 
                 Thread.Sleep(10);
                 tick += 10;
@@ -466,7 +463,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FileWatcher watcher = (FileWatcher)((Value.Container)args[0]).Item;
+            var watcher = (FileWatcher)((Value.Container)args[0]).Item;
 
             watcher.Reset();
 
@@ -478,8 +475,8 @@ namespace Dynamo.Nodes
     {
         public bool Changed { get; private set; }
 
-        private FileSystemWatcher watcher;
-        private FileSystemEventHandler handler;
+        private readonly FileSystemWatcher _watcher;
+        private readonly FileSystemEventHandler _handler;
 
         public event FileSystemEventHandler FileChanged;
 
@@ -487,17 +484,15 @@ namespace Dynamo.Nodes
         {
             Changed = false;
 
-            watcher = new FileSystemWatcher(
-               Path.GetDirectoryName(filePath),
-               Path.GetFileName(filePath)
-            );
-            handler = new FileSystemEventHandler(watcher_Changed);
+            _watcher = new FileSystemWatcher(
+                Path.GetDirectoryName(filePath), Path.GetFileName(filePath))
+            {
+                NotifyFilter = NotifyFilters.LastWrite,
+                EnableRaisingEvents = true
+            };
 
-            watcher.Changed += handler;
-
-            watcher.NotifyFilter = NotifyFilters.LastWrite;
-
-            watcher.EnableRaisingEvents = true;
+            _handler = watcher_Changed;
+            _watcher.Changed += _handler;
         }
 
         void watcher_Changed(object sender, FileSystemEventArgs e)
@@ -516,8 +511,8 @@ namespace Dynamo.Nodes
 
         public void Dispose()
         {
-            watcher.Changed -= handler;
-            watcher.Dispose();
+            _watcher.Changed -= _handler;
+            _watcher.Dispose();
         }
 
         #endregion

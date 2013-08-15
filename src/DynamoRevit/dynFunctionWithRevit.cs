@@ -84,19 +84,19 @@ namespace Dynamo.Nodes
                             var runElements = new List<ElementId>();
                             runs.Add(runElements);
 
-                            foreach (XmlNode element in run.ChildNodes)
+                            var query = from XmlNode element in run.ChildNodes
+                                        where element.Name == "Element"
+                                        select element.InnerText;
+
+                            foreach (var eid in query) 
                             {
-                                if (element.Name == "Element")
+                                try
                                 {
-                                    var eid = element.InnerText;
-                                    try
-                                    {
-                                        runElements.Add(dynRevitSettings.Doc.Document.GetElement(eid).Id);
-                                    }
-                                    catch (NullReferenceException)
-                                    {
-                                        dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
-                                    }
+                                    runElements.Add(dynRevitSettings.Doc.Document.GetElement(eid).Id);
+                                }
+                                catch (NullReferenceException)
+                                {
+                                    dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
                                 }
                             }
                         }
@@ -123,14 +123,11 @@ namespace Dynamo.Nodes
                        dynSettings.Controller.DynamoViewModel.Log(
                           "Error deleting elements: "
                           + ex.GetType().Name
-                          + " -- " + ex.Message
-                       );
+                          + " -- " + ex.Message);
                    }
                    dynRevitSettings.Controller.EndTransaction();
                    WorkSpace.Modified();
-               },
-               true
-            );
+               });
         }
     }
 }

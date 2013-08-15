@@ -852,10 +852,8 @@ namespace Dynamo.Nodes
                         ? evalDict[OutPortData[0]]
                         : Value.NewList(
                             Utils.SequenceToFSharpList(
-                                evalDict.OrderBy(
-                                    pair => OutPortData.IndexOf(pair.Key))
-                                .Select(
-                                    pair => pair.Value)));
+                                evalDict.OrderBy(pair => OutPortData.IndexOf(pair.Key))
+                                    .Select(pair => pair.Value)));
 
                     ValidateConnections();
                 }
@@ -897,13 +895,8 @@ namespace Dynamo.Nodes
             {
                 throw new CancelEvaluationException(false);
             }
-            else
-            {
-                if (result.Value != null)
-                    return result.Value;
-                else
-                    return Value.NewString(FailureString);
-            }
+            
+            return result.Value ?? Value.NewString(FailureString);
         }
 
         private const string FailureString = "Node evaluation failed";
