@@ -14,8 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using Autodesk.Revit.DB.Events;
@@ -23,7 +21,7 @@ using Autodesk.Revit.ApplicationServices;
 
 namespace Dynamo
 {
-    public delegate void DynElementUpdateDelegate(List<ElementId> updated);
+    public delegate void DynElementUpdateDelegate(HashSet<ElementId> updated);
 
     public enum ChangeTypeEnum
     {
@@ -37,7 +35,7 @@ namespace Dynamo
         static AddInId m_appId;
         static UpdaterId m_updaterId;
 
-        Dictionary<ChangeTypeEnum, Dictionary<ElementId, DynElementUpdateDelegate>> updateDict
+        readonly Dictionary<ChangeTypeEnum, Dictionary<ElementId, DynElementUpdateDelegate>> _updateDict
            = new Dictionary<ChangeTypeEnum, Dictionary<ElementId, DynElementUpdateDelegate>>();
 
         // constructor takes the AddInId for the add-in associated with this updater
@@ -46,27 +44,25 @@ namespace Dynamo
             m_appId = id;
             m_updaterId = new UpdaterId(m_appId, new Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")); //[Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")]
 
-            this.updateDict[ChangeTypeEnum.Delete] = new Dictionary<ElementId, DynElementUpdateDelegate>();
-            this.updateDict[ChangeTypeEnum.Modify] = new Dictionary<ElementId, DynElementUpdateDelegate>();
-            this.updateDict[ChangeTypeEnum.Add] = new Dictionary<ElementId, DynElementUpdateDelegate>();
+            _updateDict[ChangeTypeEnum.Delete] = new Dictionary<ElementId, DynElementUpdateDelegate>();
+            _updateDict[ChangeTypeEnum.Modify] = new Dictionary<ElementId, DynElementUpdateDelegate>();
+            _updateDict[ChangeTypeEnum.Add] = new Dictionary<ElementId, DynElementUpdateDelegate>();
 
-            app.DocumentChanged
-               += new EventHandler<DocumentChangedEventArgs>(Application_DocumentChanged);
+            app.DocumentChanged += Application_DocumentChanged;
         }
 
         public void RollBack(IEnumerable<ElementId> deleted)
         {
-            this.processUpdates(new List<ElementId>(), deleted, new List<ElementId>());
+            processUpdates(new List<ElementId>(), deleted, new List<ElementId>());
         }
 
         private void processUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted, IEnumerable<ElementId> added)
         {
             //Document doc = data.GetDocument();
-            var bench = dynSettings.Bench; // MDJ HOOK
 
             #region Modified
-            var modDict = this.updateDict[ChangeTypeEnum.Modify];
-            var dict = new Dictionary<DynElementUpdateDelegate, List<ElementId>>();
+            var modDict = _updateDict[ChangeTypeEnum.Modify];
+            var dict = new Dictionary<DynElementUpdateDelegate, HashSet<ElementId>>();
             foreach (ElementId modifiedElementID in modified)
             {
                 try
@@ -76,7 +72,7 @@ namespace Dynamo
 
                     var k = modDict[modifiedElementID];
                     if (!dict.ContainsKey(k))
-                        dict[k] = new List<ElementId>();
+                        dict[k] = new HashSet<ElementId>();
                     dict[k].Add(modifiedElementID);
                 }
                 catch (Exception e)
@@ -87,13 +83,11 @@ namespace Dynamo
             }
 
             foreach (var pair in dict)
-            {
                 pair.Key(pair.Value);
-            }
             #endregion
 
             #region Added
-            modDict = this.updateDict[ChangeTypeEnum.Add];
+            modDict = _updateDict[ChangeTypeEnum.Add];
             dict.Clear();
             foreach (ElementId addedElementID in added)
             {
@@ -104,7 +98,7 @@ namespace Dynamo
 
                     var k = modDict[addedElementID];
                     if (!dict.ContainsKey(k))
-                        dict[k] = new List<ElementId>();
+                        dict[k] = new HashSet<ElementId>();
                     dict[k].Add(addedElementID);
                 }
                 catch (Exception e)
@@ -115,13 +109,11 @@ namespace Dynamo
             }
 
             foreach (var pair in dict)
-            {
                 pair.Key(pair.Value);
-            }
             #endregion
 
             #region Deleted
-            modDict = this.updateDict[ChangeTypeEnum.Delete];
+            modDict = _updateDict[ChangeTypeEnum.Delete];
             dict.Clear();
             foreach (ElementId deletedElementID in deleted)
             {
@@ -132,7 +124,7 @@ namespace Dynamo
 
                     var k = modDict[deletedElementID];
                     if (!dict.ContainsKey(k))
-                        dict[k] = new List<ElementId>();
+                        dict[k] = new HashSet<ElementId>();
                     dict[k].Add(deletedElementID);
                 }
                 catch (Exception e)
@@ -143,9 +135,7 @@ namespace Dynamo
             }
 
             foreach (var pair in dict)
-            {
                 pair.Key(pair.Value);
-            }
             #endregion
         }
 
@@ -153,11 +143,10 @@ namespace Dynamo
         {
             if (args.GetDocument().Equals(dynRevitSettings.Doc.Document))
             {
-                this.processUpdates(
+                processUpdates(
                    args.GetModifiedElementIds(),
                    args.GetDeletedElementIds(),
-                   args.GetAddedElementIds()
-                );
+                   args.GetAddedElementIds());
             }
         }
 
@@ -171,13 +160,13 @@ namespace Dynamo
         public void RegisterChangeHook(ElementId e, ChangeTypeEnum type, DynElementUpdateDelegate d)
         {
             Dictionary<ElementId, DynElementUpdateDelegate> dict;
-            if (!this.updateDict.ContainsKey(type))
+            if (!_updateDict.ContainsKey(type))
             {
                 dict = new Dictionary<ElementId, DynElementUpdateDelegate>();
-                this.updateDict[type] = dict;
+                _updateDict[type] = dict;
             }
             else
-                dict = this.updateDict[type];
+                dict = _updateDict[type];
 
             dict[e] = d;
         }
@@ -189,16 +178,15 @@ namespace Dynamo
         /// <param name="type">Type of change to unsubscribe from.</param>
         public void UnRegisterChangeHook(ElementId e, ChangeTypeEnum type)
         {
-            this.updateDict[type].Remove(e);
+            _updateDict[type].Remove(e);
         }
 
         public void Execute(UpdaterData data)
         {
-            this.processUpdates(
+            processUpdates(
                data.GetModifiedElementIds(),
                data.GetDeletedElementIds(),
-               data.GetAddedElementIds()
-            );
+               data.GetAddedElementIds());
         }
 
         public string GetAdditionalInformation()

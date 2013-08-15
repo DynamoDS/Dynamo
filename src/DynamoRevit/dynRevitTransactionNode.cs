@@ -124,7 +124,7 @@ namespace Dynamo.Revit
                             {
                                 var id = UIDocument.Document.GetElement(eid).Id;
                                 runElements.Add(id);
-                                dynRevitSettings.Controller.RegisterDeleteHook(id, del);
+                                dynRevitSettings.Controller.RegisterDMUHooks(id, del);
                             }
                             catch (NullReferenceException)
                             {
@@ -145,7 +145,7 @@ namespace Dynamo.Revit
 
             foreach (var id in elements.SelectMany(eList => eList)) 
             {
-                dynRevitSettings.Controller.RegisterDeleteHook(id, del);
+                dynRevitSettings.Controller.RegisterDMUHooks(id, del);
             }
         }
 
@@ -478,15 +478,11 @@ namespace Dynamo.Revit
         {
             var controller = dynRevitSettings.Controller;
 
-            bool debug = controller.DynamoViewModel.RunInDebug;
-
-            if (!debug)
+            if (controller.TransMode != TransactionMode.Debug)
             {
                 #region no debug
 
-                if ((controller.DynamoViewModel as DynamoRevitViewModel).TransMode == 
-                    DynamoRevitViewModel.TransactionMode.Manual && 
-                    !controller.IsTransactionActive())
+                if (controller.TransMode == TransactionMode.Manual && !controller.IsTransactionActive())
                 {
                     throw new Exception("A Revit transaction is required in order evaluate this element.");
                 }
@@ -538,8 +534,7 @@ namespace Dynamo.Revit
                            throw;
                        }
                    },
-                   false
-                );
+                   false);
 
                 #endregion
             }
@@ -549,7 +544,7 @@ namespace Dynamo.Revit
             var del = new DynElementUpdateDelegate(onDeleted);
 
             foreach (ElementId id in Elements)
-                controller.RegisterDeleteHook(id, del);
+                controller.RegisterDMUHooks(id, del);
 
             #endregion
         }
@@ -563,7 +558,7 @@ namespace Dynamo.Revit
         /// </summary>
         /// <param name="id">ID belonging to the element to be deleted.</param>
         /// <param name="hookOnly">Whether or not to only remove the regen hooks.</param>
-        protected void DeleteElement(ElementId id, bool hookOnly = false)
+        protected void DeleteElement(ElementId id, bool hookOnly=false)
         {
             if (!hookOnly)
                 UIDocument.Document.Delete(id);
@@ -620,7 +615,7 @@ namespace Dynamo.Revit
                });
         }
 
-        void onDeleted(List<ElementId> deleted)
+        void onDeleted(HashSet<ElementId> deleted)
         {
             int count = elements.Sum(els => els.RemoveAll(deleted.Contains));
 
@@ -628,7 +623,7 @@ namespace Dynamo.Revit
                 isDirty = count > 0;
         }
 
-        void onSuccessfulDelete(List<ElementId> deleted)
+        void onSuccessfulDelete(HashSet<ElementId> deleted)
         {
             foreach (var els in elements)
                 els.RemoveAll(deleted.Contains);
@@ -653,8 +648,7 @@ namespace Dynamo.Revit
             /// Registers the given element id with the DMU such that any change in the element will
             /// trigger a workspace modification event (dynamic running and saving).
             /// </summary>
-            /// <param name="id">ElementId of the element to watch.</param>
-            public static void RegisterEvalOnModified(this dynNodeModel node, ElementId id, Action modAction = null, Action delAction = null)
+            public static void RegisterEvalOnModified(this dynNodeModel node, ElementId id, Action modAction=null, Action delAction=null)
             {
                 var u = dynRevitSettings.Controller.Updater;
                 u.RegisterChangeHook(
@@ -673,7 +667,6 @@ namespace Dynamo.Revit
             /// Unregisters the given element id with the DMU. Should not be called unless it has already
             /// been registered with RegisterEvalOnModified
             /// </summary>
-            /// <param name="id">ElementId of the element to stop watching.</param>
             public static void UnregisterEvalOnModified(this dynNodeModel node, ElementId id)
             {
                 var u = dynRevitSettings.Controller.Updater;
@@ -687,7 +680,7 @@ namespace Dynamo.Revit
 
             static DynElementUpdateDelegate UnRegOnDelete(Action deleteAction)
             {
-                return delegate(List<ElementId> deleted)
+                return delegate(HashSet<ElementId> deleted)
                 {
                     foreach (var d in deleted)
                     {
@@ -702,7 +695,7 @@ namespace Dynamo.Revit
 
             static DynElementUpdateDelegate ReEvalOnModified(dynNodeModel node, Action modifiedAction)
             {
-                return delegate(List<ElementId> modified)
+                return delegate
                 {
                     if (!node.RequiresRecalc && !dynRevitSettings.Controller.Running)
                     {
