@@ -883,8 +883,6 @@ namespace Dynamo.Nodes
                         throw new Exception(ex.Message);
                 }
 
-                OnEvaluate();
-
                 RequiresRecalc = false;
 
                 return FSharpOption<Value>.Some(expr);
@@ -994,6 +992,7 @@ namespace Dynamo.Nodes
                 {
                     evalDict.Clear();
 
+                    OnEvaluate();
                     Evaluate(Utils.SequenceToFSharpList(argList), evalDict);
 
                     foreach (var data in OutPortData)
@@ -1007,6 +1006,7 @@ namespace Dynamo.Nodes
             }
             else
             {
+                OnEvaluate();
                 Evaluate(args, outPuts);
             }
 
