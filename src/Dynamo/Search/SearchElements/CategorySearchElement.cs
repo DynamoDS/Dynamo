@@ -34,6 +34,8 @@ namespace Dynamo.Search.SearchElements
             get { return _description; }
         }
 
+        public override bool Searchable { get { return true; } }
+
         /// <summary>
         /// Keywords property </summary>
         /// <value>

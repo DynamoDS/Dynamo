@@ -29,7 +29,7 @@ namespace Dynamo.Nodes
             return result;
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             base.SaveNode(xmlDoc, dynEl, context);
 
@@ -63,7 +63,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             base.LoadNode(elNode);
 

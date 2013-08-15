@@ -44,6 +44,13 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
 
+            if (port != null)
+            {
+                if (port.IsOpen)
+                    port.Close();
+            }
+            port = null;
+
             if (port == null)
             {
                 port = new SerialPort();
@@ -109,7 +116,7 @@ namespace Dynamo.Nodes
             port = null;
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
@@ -117,7 +124,7 @@ namespace Dynamo.Nodes
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {

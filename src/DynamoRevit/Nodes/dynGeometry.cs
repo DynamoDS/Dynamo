@@ -202,9 +202,9 @@ namespace Dynamo.Nodes
     {
         public dynXYZ()
         {
-            InPortData.Add(new PortData("X", "X", typeof(Value.Number)));
-            InPortData.Add(new PortData("Y", "Y", typeof(Value.Number)));
-            InPortData.Add(new PortData("Z", "Z", typeof(Value.Number)));
+            InPortData.Add(new PortData("X", "X", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("Y", "Y", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("Z", "Z", typeof(Value.Number), Value.NewNumber(0)));
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -1489,7 +1489,7 @@ namespace Dynamo.Nodes
 
         public dynElementGeometryObjects()
         {
-            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.List)));
+            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.Container)));
             OutPortData.Add(new PortData("Geometry objects of the element", "List", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -1505,7 +1505,10 @@ namespace Dynamo.Nodes
 
             var result = FSharpList<Value>.Empty;
 
-            GeometryObject geomObj = thisElement.get_Geometry(new Autodesk.Revit.DB.Options());
+            Autodesk.Revit.DB.Options geoOptionsOne = new Autodesk.Revit.DB.Options();
+            geoOptionsOne.ComputeReferences = true;
+
+            GeometryObject geomObj = thisElement.get_Geometry(geoOptionsOne);
             GeometryElement geomElement = geomObj as GeometryElement;
 
             if ((thisElement is GenericForm) && (geomElement.Count() < 1))
@@ -1513,9 +1516,10 @@ namespace Dynamo.Nodes
                 GenericForm gF = (GenericForm)thisElement;
                 if (!gF.Combinations.IsEmpty)
                 {
-                    Autodesk.Revit.DB.Options geoOptions = new Autodesk.Revit.DB.Options();
-                    geoOptions.IncludeNonVisibleObjects = true;
-                    geomObj = thisElement.get_Geometry(geoOptions);
+                    Autodesk.Revit.DB.Options geoOptionsTwo = new Autodesk.Revit.DB.Options();
+                    geoOptionsTwo.IncludeNonVisibleObjects = true;
+                    geoOptionsTwo.ComputeReferences = true;
+                    geomObj = thisElement.get_Geometry(geoOptionsTwo);
                     geomElement = geomObj as GeometryElement;
                 }
             }
@@ -1551,7 +1555,7 @@ namespace Dynamo.Nodes
 
         public dynElementSolid()
         {
-            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.List)));
+            InPortData.Add(new PortData("element", "element to create geometrical reference to", typeof(Value.Container)));
             OutPortData.Add(new PortData("solid", "solid in the element's geometry objects", typeof(object)));
 
             RegisterAllPorts();
@@ -1592,6 +1596,7 @@ namespace Dynamo.Nodes
                 for (int iTry = 0; iTry < nTry && (mySolid == null); iTry++)
                 {
                     Autodesk.Revit.DB.Options geoOptions = new Autodesk.Revit.DB.Options();
+                    geoOptions.ComputeReferences = true;
                     if (bNotVisibleOption && (iTry == 1))
                         geoOptions.IncludeNonVisibleObjects = true;
 
@@ -1978,12 +1983,12 @@ namespace Dynamo.Nodes
 
         public enum BooleanOperationOptions {Union, Intersect, Difference};
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("index", this.combo.SelectedIndex.ToString());
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -2592,6 +2597,29 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("Result", "Computed Solid", typeof(object)));
 
             RegisterAllPorts();
+        }
+
+        public static bool noSkinSolidMethod()
+        {
+            
+            Type SolidType = typeof(Autodesk.Revit.DB.Solid);
+
+            MethodInfo[] solidTypeMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodCreate = "skinCurveLoopsIntoSolid";
+            bool methodFound = false;
+
+            foreach (MethodInfo m in solidTypeMethods)
+            {
+                if (m.Name == nameOfMethodCreate)
+                {
+                    methodFound = true;
+
+                    break;
+                }
+            }
+
+            return !methodFound;
         }
 
         public override Value Evaluate(FSharpList<Value> args)

@@ -17,6 +17,7 @@ using System.Globalization;
 using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 
@@ -24,6 +25,7 @@ using Microsoft.Practices.Prism.Commands;
 
 using NUnit.Core;
 using NUnit.Framework;
+using Dynamo.PackageManager.UI;
 
 namespace Dynamo.Controls
 {
@@ -86,6 +88,8 @@ namespace Dynamo.Controls
         public DelegateCommand SaveCommand { get; set; }
         public DelegateCommand<object> SaveAsCommand { get; set; }
         public DelegateCommand ClearCommand { get; set; }
+        public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
+        public DelegateCommand ShowInstalledPackagesCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand LayoutAllCommand { get; set; }
         public DelegateCommand NewHomeWorkspaceCommand { get; set; }
@@ -108,7 +112,6 @@ namespace Dynamo.Controls
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
         public DelegateCommand<string> AlignSelectedCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
-        public DelegateCommand RefactorCustomNodeCommand { get; set; }
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
@@ -370,6 +373,8 @@ namespace Dynamo.Controls
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResultCommand);
+            ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
+            ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveCommand = new DelegateCommand(Save, CanSave);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
@@ -397,7 +402,6 @@ namespace Dynamo.Controls
             SelectNeighborsCommand = new DelegateCommand<object>(SelectNeighbors, CanSelectNeighbors);
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
-            RefactorCustomNodeCommand = new DelegateCommand(RefactorCustomNode, CanRefactorCustomNode);
             ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
@@ -671,9 +675,9 @@ namespace Dynamo.Controls
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = fi.Name;
             }
-            else if (_model.CurrentSpace is FuncWorkspace && dynSettings.Controller.CustomNodeLoader.SearchPath.Any())
+            else if (_model.CurrentSpace is FuncWorkspace && dynSettings.Controller.CustomNodeManager.SearchPath.Any())
             {
-                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeLoader.SearchPath[0];
+                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeManager.SearchPath[0];
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -687,15 +691,16 @@ namespace Dynamo.Controls
             return true;
         }
 
-        public bool ShowNewFunctionDialog(ref string name, ref string category)
+        public bool ShowNewFunctionDialog(ref string name, ref string category, ref string description, bool isRefactor = false)
         {
             string error = "";
 
             do
             {
-                var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
+                var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories);
                 dialog.nameBox.Text = name;
                 dialog.categoryBox.Text = category;
+                dialog.DescriptionInput.Text = description;
 
                 if (dialog.ShowDialog() != true)
                 {
@@ -704,8 +709,9 @@ namespace Dynamo.Controls
 
                 name = dialog.Text;
                 category = dialog.Category;
+                description = dialog.Description;
 
-                if (Controller.CustomNodeLoader.Contains(name))
+                if (Controller.CustomNodeManager.Contains(name) && !isRefactor)
                 {
                     error = "A custom node with the given name already exists.";
                     System.Windows.MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
@@ -736,10 +742,10 @@ namespace Dynamo.Controls
 
         private void ShowNewFunctionDialogAndMakeFunction()
         {
-            string name = "", category = "";
-            if (ShowNewFunctionDialog(ref name, ref category))
+            string name = "", category = "", description = "";
+            if (ShowNewFunctionDialog(ref name, ref category, ref description))
             {
-                NewFunction(Guid.NewGuid(), name, category, true);
+                NewFunction(Guid.NewGuid(), name, category, description, true);
             }
         }
 
@@ -1114,7 +1120,7 @@ namespace Dynamo.Controls
                 var xmlDoc = new XmlDocument();
                 var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
                 xmlDoc.AppendChild(dynEl);
-                node.SaveNode(xmlDoc, dynEl, SaveContext.Copy);
+                node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
                 nodeData.Add("data", dynEl);
 
@@ -1241,6 +1247,29 @@ namespace Dynamo.Controls
             return true;
         }
 
+        private void ShowPackageManagerSearch()
+        {
+            var pms = new PackageManagerSearchViewModel(Controller.PackageManagerClient);
+            var window = new PackageManagerSearchView(pms);
+            window.Show();
+        }
+
+        private bool CanShowPackageManagerSearch()
+        {
+            return true;
+        }
+
+        private void ShowInstalledPackages()
+        {
+            var window = new InstalledPackagesView();
+            window.Show();
+        }
+
+        private bool CanShowInstalledPackages()
+        {
+            return true;
+        }
+
         public void SaveImage(object parameters)
         {
             string imagePath = parameters as string;
@@ -1352,9 +1381,9 @@ namespace Dynamo.Controls
 
         private void GoToWorkspace(object parameter)
         {
-            if (parameter is Guid && dynSettings.Controller.CustomNodeLoader.Contains((Guid)parameter))
+            if (parameter is Guid && dynSettings.Controller.CustomNodeManager.Contains((Guid)parameter))
             {
-                ViewCustomNodeWorkspace( dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameter) );
+                ViewCustomNodeWorkspace( dynSettings.Controller.CustomNodeManager.GetFunctionDefinition((Guid)parameter) );
             }
         }
 
@@ -1365,7 +1394,7 @@ namespace Dynamo.Controls
 
         private void DisplayFunction(object parameters)
         {
-            Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameters);
+            Controller.CustomNodeManager.GetFunctionDefinition((Guid)parameters);
 
 
 
@@ -1431,7 +1460,7 @@ namespace Dynamo.Controls
             //try to set the value on the node
             if (data.ContainsKey("data"))
             {
-                node.LoadNode(data["data"] as XmlNode);
+                node.Load(data["data"] as XmlNode);
             }
 
             //override the guid so we can store
@@ -1467,7 +1496,7 @@ namespace Dynamo.Controls
 
             if (dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(name)
                     || dynSettings.Controller.BuiltInTypesByName.ContainsKey(name)
-                    || (Guid.TryParse(name, out guid) && dynSettings.Controller.CustomNodeLoader.Contains(guid)))
+                    || (Guid.TryParse(name, out guid) && dynSettings.Controller.CustomNodeManager.Contains(guid)))
             {
                 return true;
             }
@@ -1683,7 +1712,7 @@ namespace Dynamo.Controls
 
         private void PostUIActivation()
         {
-            DynamoLoader.LoadCustomNodes(dynSettings.Bench, Controller.CustomNodeLoader, Controller.SearchViewModel);
+            DynamoLoader.LoadCustomNodes();
 
             dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
 
@@ -1737,6 +1766,7 @@ namespace Dynamo.Controls
 
                 string funName = null;
                 string category = "";
+                string description = "";
                 double cx = DynamoView.CANVAS_OFFSET_X;
                 double cy = DynamoView.CANVAS_OFFSET_Y;
                 double zoom = 1.0;
@@ -1755,6 +1785,8 @@ namespace Dynamo.Controls
                             zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("Name"))
                             funName = att.Value;
+                        else if (att.Name.Equals("Description"))
+                            description = att.Value;
                         else if (att.Name.Equals("Category"))
                             category = att.Value;
                         else if (att.Name.Equals("ID"))
@@ -1775,18 +1807,17 @@ namespace Dynamo.Controls
                 #endregion
 
                 //If there is no function name, then we are opening a home definition
-                if (funName == null)
+                if (funName == null || funName == "Home")
                 {
                     //View the home workspace, then open the bench file
                     if (!ViewingHomespace)
                         ViewHomeWorkspace();
 
-                    Controller.CustomNodeLoader.AddDirectoryToSearchPath(Path.GetDirectoryName(xmlPath));
-                    Controller.CustomNodeLoader.UpdateSearchPath();
-
+                    var loaded = DynamoLoader.LoadCustomNodes(Path.GetDirectoryName(xmlPath));
+                    //var loaded = Controller.CustomNodeManager.ScanNodeHeadersInDirectory(Path.GetDirectoryName(xmlPath));
                     return OpenWorkspace(xmlPath);
                 }
-                else if (Controller.CustomNodeLoader.Contains(funName))
+                else if (Controller.CustomNodeManager.Contains(funName))
                 {
                     Log("ERROR: Could not load definition for \"" + funName +
                               "\", a node with this name already exists.");
@@ -1800,7 +1831,7 @@ namespace Dynamo.Controls
                     funName,
                     category.Length > 0
                         ? category
-                        : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES,
+                        : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES, description,
                     false, cx, cy
                     );
 
@@ -1915,7 +1946,7 @@ namespace Dynamo.Controls
                     }
 
                     el.DisableReporting();
-                    el.LoadNode(elNode);
+                    el.Load(elNode);
 
                     if (el is dynFunction)
                     {
@@ -1935,8 +1966,8 @@ namespace Dynamo.Controls
                             fun.Symbol = funId.ToString();
                         }
 
-                        if (dynSettings.Controller.CustomNodeLoader.IsInitialized(funId))
-                            fun.Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
+                        if (dynSettings.Controller.CustomNodeManager.IsInitialized(funId))
+                            fun.Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
                         else
                             dependencies.Push(funId);
                     }
@@ -2061,8 +2092,6 @@ namespace Dynamo.Controls
                 if (canLoad)
                     SaveFunction(def, false);
 
-                Controller.PackageManagerClient.LoadPackageHeader(def, funName);
-
                 nodeWorkspaceWasLoaded(def, children, parents);
 
                 //set the zoom and trigger events
@@ -2111,7 +2140,7 @@ namespace Dynamo.Controls
                 // if it's a custom node
                 if (workspace is FuncWorkspace)
                 {
-                    var def = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(workspace);
+                    var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(workspace);
                     def.Workspace.FilePath = path;
 
                     if (def != null)
@@ -2144,73 +2173,13 @@ namespace Dynamo.Controls
                 SaveAs(_model.CurrentSpace.FilePath);
         }
 
-        /// <summary>
-        ///     Update a custom node after refactoring.  Updates search and all instances of the node.
-        /// </summary>
-        /// <param name="selectedNodes"> The function definition for the user-defined node </param>
-        private void RefactorCustomNode()
-        {
-
-            //Bench.workspaceLabel.Content = Bench.editNameBox.Text;
-            var def = Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace);
-            Controller.SearchViewModel.Refactor(def, editName, (_model.CurrentSpace).Name);
-
-            //Update existing function nodes
-            foreach (dynNodeModel el in AllNodes)
-            {
-                if (el is dynFunction)
-                {
-                    var node = (dynFunction)el;
-
-                    if (node.Definition == null)
-                    {
-                        node.Definition = Controller.CustomNodeLoader.GetFunctionDefinition(Guid.Parse(node.Symbol));
-                    }
-
-                    if (!node.Definition.Workspace.Name.Equals(CurrentSpace.Name))
-                        continue;
-
-                    //Rename nickname only if it's still referring to the old name
-                    if (node.NickName.Equals(CurrentSpace.Name))
-                        node.NickName = editName;
-                }
-            }
-
-            Controller.FSchemeEnvironment.RemoveSymbol(CurrentSpace.Name);
-
-            //TODO: Delete old stored definition
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string pluginsPath = Path.Combine(directory, "definitions");
-
-            if (Directory.Exists(pluginsPath))
-            {
-                string oldpath = Path.Combine(pluginsPath, CurrentSpace.Name + ".dyf");
-                if (File.Exists(oldpath))
-                {
-                    string newpath = dynSettings.FormatFileName(
-                        Path.Combine(pluginsPath, editName + ".dyf")
-                        );
-
-                    File.Move(oldpath, newpath);
-                }
-            }
-
-            (_model.CurrentSpace).Name = editName;
-
-            SaveFunction(def);
-        }
-
-        private bool CanRefactorCustomNode()
-        {
-            return true;
-        }
 
         public IEnumerable<dynNodeModel> AllNodes
         {
             get
             {
                 return _model.Workspaces.Aggregate((IEnumerable<dynNodeModel>)new List<dynNodeModel>(), (a, x) => a.Concat(x.Nodes))
-                    .Concat(Controller.CustomNodeLoader.GetLoadedDefinitions().Aggregate(
+                    .Concat(Controller.CustomNodeManager.GetLoadedDefinitions().Aggregate(
                         (IEnumerable<dynNodeModel>)new List<dynNodeModel>(),
                         (a, x) => a.Concat(x.Workspace.Nodes)
                         )
@@ -2222,7 +2191,7 @@ namespace Dynamo.Controls
         ///     Save a function.  This includes writing to a file and compiling the 
         ///     function and saving it to the FSchemeEnvironment
         /// </summary>
-        /// <param name="definition">The definition to saveo</param>
+        /// <param name="definition">The definition to save</param>
         /// <param name="bool">Whether to write the function to file.</param>
         /// <returns>Whether the operation was successful</returns>
         public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = false, bool compileFunction = true)
@@ -2239,7 +2208,7 @@ namespace Dynamo.Controls
                 string path = "";
                 if (String.IsNullOrEmpty(definition.Workspace.FilePath))
                 {
-                    var pluginsPath = this.Controller.CustomNodeLoader.GetDefaultSearchPath();
+                    var pluginsPath = this.Controller.CustomNodeManager.GetDefaultSearchPath();
 
                     if (!Directory.Exists(pluginsPath))
                         Directory.CreateDirectory(pluginsPath);
@@ -2258,16 +2227,18 @@ namespace Dynamo.Controls
 
                     if (addToSearch)
                     {
-                        Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId);
+                        Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category, functionWorkspace.Description, definition.FunctionId);
                     }
 
-                    Controller.CustomNodeLoader.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId, path);
+                    var customNodeInfo = new CustomNodeInfo(definition.FunctionId, functionWorkspace.Name, functionWorkspace.Category,
+                                                            functionWorkspace.Description, path);
+                    Controller.CustomNodeManager.SetNodeInfo(customNodeInfo);
 
                     #region Compile Function and update all nodes
 
                     IEnumerable<string> inputNames = new List<string>();
                     IEnumerable<string> outputNames = new List<string>();
-                    dynSettings.Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), CustomNodeLoader.CompileFunction(definition, ref inputNames, ref outputNames));
+                    dynSettings.Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), CustomNodeManager.CompileFunction(definition, ref inputNames, ref outputNames));
 
                     //Update existing function nodes which point to this function to match its changes
                     foreach (dynNodeModel el in AllNodes)
@@ -2497,6 +2468,7 @@ namespace Dynamo.Controls
                 double cx = DynamoView.CANVAS_OFFSET_X;
                 double cy = DynamoView.CANVAS_OFFSET_Y;
                 double zoom = 1.0;
+                string description = "";
 
                 foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
                 {
@@ -2514,6 +2486,10 @@ namespace Dynamo.Controls
                         {
                             zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
+                        else if (att.Name.Equals("Description"))
+                        {
+                            description = att.Value;
+                        }
                     }
                 }
 
@@ -2522,6 +2498,8 @@ namespace Dynamo.Controls
                 _model.CurrentSpace.X = cx;
                 _model.CurrentSpace.Y = cy;
                 _model.CurrentSpace.Zoom = zoom;
+                _model.CurrentSpace.Description = description;
+
                 var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == _model.CurrentSpace);
                 vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 
@@ -2618,7 +2596,7 @@ namespace Dynamo.Controls
 
                     dynNodeModel el = CreateNodeInstance(t, nickname, guid);
                     el.WorkSpace = _model.CurrentSpace;
-                    el.LoadNode(elNode);
+                    el.Load(elNode);
 
                     _model.CurrentSpace.Nodes.Add(el);
 
@@ -2796,13 +2774,14 @@ namespace Dynamo.Controls
         internal FunctionDefinition NewFunction(Guid id,
                                                 string name,
                                                 string category,
+                                                string description,
                                                 bool display,
                                                 double workspaceOffsetX = DynamoView.CANVAS_OFFSET_X,
                                                 double workspaceOffsetY = DynamoView.CANVAS_OFFSET_Y)
         {
             //Add an entry to the funcdict
             var workSpace = new FuncWorkspace(
-                name, category, workspaceOffsetX, workspaceOffsetY)
+                name, category, description, workspaceOffsetX, workspaceOffsetY)
                 {
                     WatchChanges = true
                 };
@@ -2817,16 +2796,16 @@ namespace Dynamo.Controls
                 Workspace = workSpace
             };
 
-            Controller.CustomNodeLoader.AddFunctionDefinition(functionDefinition.FunctionId, functionDefinition);
+            Controller.CustomNodeManager.AddFunctionDefinition(functionDefinition.FunctionId, functionDefinition);
 
             // add the element to search
-            Controller.SearchViewModel.Add(name, category, id);
+            Controller.SearchViewModel.Add(name, category, description, id);
 
             if (display)
             {
                 if (!ViewingHomespace)
                 {
-                    var def = Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace);
+                    var def = Controller.CustomNodeManager.GetDefinitionFromWorkspace(CurrentSpace);
                     if (def != null)
                         SaveFunction(def);
                 }
@@ -2878,7 +2857,7 @@ namespace Dynamo.Controls
             {
                 dynFunction func;
 
-                if (Controller.CustomNodeLoader.GetNodeInstance(Controller, Guid.Parse(name), out func))
+                if (Controller.CustomNodeManager.GetNodeInstance(Controller, Guid.Parse(name), out func))
                 {
                     result = func;
                 }
@@ -2915,7 +2894,7 @@ namespace Dynamo.Controls
                 }
                 else
                 {
-                    foreach (FunctionDefinition funcDef in Controller.CustomNodeLoader.GetLoadedDefinitions())
+                    foreach (FunctionDefinition funcDef in Controller.CustomNodeManager.GetLoadedDefinitions())
                     {
                         if (funcDef.Workspace.Nodes.Contains(e))
                         {

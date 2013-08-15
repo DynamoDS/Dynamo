@@ -14,11 +14,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using Dynamo.Commands;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Greg.Responses;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -30,12 +33,11 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// The class constructor. </summary>
         /// <param name="header">The PackageHeader object describing the element</param>
-        public PackageManagerSearchElement(PackageHeader header)
+        public PackageManagerSearchElement(Greg.Responses.PackageHeader header)
         {
             this.Header = header;
-            this.Guid = PackageManagerClient.ExtractFunctionDefinitionGuid(header, 0);
             this.Weight = 1;
-            if (header.keywords.Count > 0)
+            if (header.keywords != null && header.keywords.Count > 0)
             {
                 this.Keywords = String.Join(" ", header.keywords);
             } 
@@ -51,40 +53,98 @@ namespace Dynamo.Search.SearchElements
         /// or gets the local node if already downloaded. </summary>
         public override void Execute()
         {
-            Guid guid = this.Guid;
+            var version = _versionToDownload ?? this.Header.versions.Last();
 
-            //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
+            string message = "Are you sure you want to install " + this.Name +" "+ version.version + "?";
 
-            if ( !dynSettings.Controller.CustomNodeLoader.Contains(guid) )
+            var result = MessageBox.Show(message, "Package Download Confirmation",
+                            MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.OK)
             {
-                // go get the node from online, place it in view asynchronously
-                dynSettings.Controller.PackageManagerClient.Download(this.Id, "", (finalGuid) => 
-                    dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
-                        {
-                            { "name", guid.ToString() },
-                            { "transformFromOuterCanvasCoordinates", true },
-                            { "guid", Guid.NewGuid() }
-                        })
-                );
-            }
-            else
-            {
-                // get the node from here
-                dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
+                // get all of the headers
+                var headers = version.full_dependency_ids.Select((id) =>
                     {
-                        {"name", this.Guid.ToString() },
-                        {"transformFromOuterCanvasCoordinates", true},
-                        {"guid", Guid.NewGuid() }
-                    });
+                        PackageHeader pkgHeader;
+                        var res = dynSettings.Controller.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
+                        
+                        if (!res.Success)
+                            MessageBox.Show("Failed to download package with id: " + id + ".  Please try again and report the package if you continue to have problems.", "Package Download Error",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+
+                        return pkgHeader;
+                    }).ToList();
+
+                // if any header download fails, abort
+                if (headers.Any(x => x == null))
+                {
+                    return;
+                }
+
+                var localPkgs = dynSettings.PackageLoader.LocalPackages;
+
+                // if a package is already installed we need to uninstall it
+                foreach ( var localPkg in headers.Select(x => localPkgs.FirstOrDefault(v => v.Name == x.name)) )
+                {
+                    if (localPkg == null) continue;
+                    string msg;
+
+                    // if the package is in use, we will not be able to uninstall it.  
+                    if (!localPkg.UninstallCommand.CanExecute())
+                    {
+                        msg = "Dynamo needs to uninstall " + this.Name + " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
+                        MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
+                                        MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
+                    msg = "Dynamo has already installed " + this.Name + ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
+                    if ( MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                        return;
+                }
+
+                // form header version pairs and download and install all packages
+                headers.Zip(version.full_dependency_versions, (header, v) => new Tuple<PackageHeader, string>(header, v))
+                        .Select( x=> new PackageDownloadHandle(x.Item1, x.Item2))
+                        .ToList()
+                        .ForEach(x=>x.Start());
+
             }
+
         }
 
         #region Properties 
+
+            public bool _showingFull;
+            public bool ShowingFull { get { return _showingFull; } set { _showingFull = value; RaisePropertyChanged("ShowingFull"); } }
+            private PackageVersion _versionToDownload = null;
+
+            public List<Tuple<PackageVersion, DelegateCommand>> Versions
+            {
+                get
+                {
+                    return
+                        Header.versions.Select(
+                            x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
+                                {
+                                    this._versionToDownload = x;
+                                    this.Execute();
+                                }, () => true))).ToList();
+                } 
+            }
+            public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
+            public int Votes { get { return this.Header.votes; } }
+            public int Downloads { get { return this.Header.downloads; } }
+            public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
+            public int UsedBy { get { return this.Header.used_by.Count; } } 
+            public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
+            
             /// <summary>
             /// Header property </summary>
             /// <value>
             /// The PackageHeader used to instantiate this object </value>
-            public PackageHeader Header { get; internal set; }
+            public Greg.Responses.PackageHeader Header { get; internal set; }
 
             /// <summary>
             /// Type property </summary>
@@ -102,7 +162,7 @@ namespace Dynamo.Search.SearchElements
             /// Description property </summary>
             /// <value>
             /// A string describing what the node does</value>
-            public override string Description { get { return Header.description; } }
+            public override string Description { get { return Header.description ?? ""; } }
 
             /// <summary>
             /// Weight property </summary>
@@ -123,9 +183,11 @@ namespace Dynamo.Search.SearchElements
             /// A string that uniquely defines the Package on the server  </value>
             public string Id { get { return Header._id; } }
 
+            public override string Keywords { get; set; }
+
         #endregion
         
-            public override string Keywords { get; set; }
+
     }
 
 }

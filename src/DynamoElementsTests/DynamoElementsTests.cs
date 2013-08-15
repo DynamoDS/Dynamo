@@ -185,9 +185,7 @@ namespace Dynamo.Tests
             sumData.Add("y", 100.0);
 
             sumData.Add("name", "Add");
-            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.CreateNodeCommand, sumData));
-
-            controller.ProcessCommandQueue();
+            controller.RunCommand(controller.DynamoViewModel.CreateNodeCommand, sumData);
 
             Assert.AreEqual(controller.DynamoModel.CurrentSpace.Nodes.Count, 1);
         }
@@ -326,10 +324,8 @@ namespace Dynamo.Tests
 
                 Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-                controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.AddToSelectionCommand,
-                                                                                     controller.DynamoViewModel.Model.Nodes[i]));
-                controller.ProcessCommandQueue();
-
+                controller.RunCommand(  controller.DynamoViewModel.AddToSelectionCommand,
+                                        controller.DynamoViewModel.Model.Nodes[i]);
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 

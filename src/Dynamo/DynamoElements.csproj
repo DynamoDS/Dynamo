@@ -58,12 +58,17 @@ limitations under the License.
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Greg">
+    <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit.Wpf, Version=2012.4.24.1, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\greg\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
@@ -71,6 +76,9 @@ limitations under the License.
     </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -90,6 +98,7 @@ limitations under the License.
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -108,12 +117,40 @@ limitations under the License.
     <Compile Include="DynamoLogger.cs" />
     <Compile Include="DynamoRunner.cs" />
     <Compile Include="DynamoSelection.cs" />
+    <Compile Include="Nodes\dynMultithreading.cs" />
+    <Compile Include="Services\Heartbeat.cs" />
+    <Compile Include="Services\Log.cs" />
+    <Compile Include="Services\Logger.cs" />
+    <Compile Include="PackageManager\Package.cs" />
+    <Compile Include="PackageManager\PackageUploadBuilder.cs" />
+    <Compile Include="PackageManager\PackageUploadHandle.cs" />
+    <Compile Include="SettingsManager.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Models\dynModelBase.cs" />
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
     <Compile Include="Nodes\Watch\Watch3DFullscreenViewModel.cs" />
+    <Compile Include="PackageManager\PackageDownloadHandle.cs" />
+    <Compile Include="PackageManager\PackageLoader.cs" />
+    <Compile Include="PackageManager\PackageManagerSearchViewModel.cs" />
+    <Compile Include="PackageManager\UI\InstalledPackagesView.xaml.cs">
+      <DependentUpon>InstalledPackagesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\UI\PackageItemInternalViewModel.cs" />
+    <Compile Include="PackageManager\UI\PackageItemViewModel.cs" />
+    <Compile Include="PackageManager\UI\PackageItemLeafViewModel.cs" />
+    <Compile Include="PackageManager\UI\PackageItemRootViewModel.cs" />
+    <Compile Include="PackageManager\UI\PackageManagerDownloadView.xaml.cs">
+      <DependentUpon>PackageManagerDownloadView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\UI\PackageManagerPublishView.xaml.cs">
+      <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\UI\PublishPackageViewModel.cs" />
+    <Compile Include="PackageManager\UI\PackageManagerSearchView.xaml.cs">
+      <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Nodes\Watch\WatchViewModel.cs" />
     <Compile Include="Prompts\CrashPrompt.xaml.cs">
       <DependentUpon>CrashPrompt.xaml</DependentUpon>
@@ -146,7 +183,7 @@ limitations under the License.
     <Compile Include="ViewModels\dynPortViewModel.cs" />
     <Compile Include="ViewModels\dynViewModelBase.cs" />
     <Compile Include="ViewModels\dynWorkspaceViewModel.cs" />
-    <Compile Include="CustomNodeLoader.cs" />
+    <Compile Include="CustomNodeManager.cs" />
     <Compile Include="DynamoLoader.cs" />
     <Compile Include="NodeCollapser.cs" />
     <Compile Include="Search\SearchElements\CommandElement.cs" />
@@ -157,22 +194,14 @@ limitations under the License.
     <Compile Include="Nodes\dynIDrawable.cs" />
     <Compile Include="Nodes\Watch\dynWatch3D.cs" />
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
-    <Compile Include="PackageManager\Login\PackageManagerLoginViewModel.cs" />
-    <Compile Include="PackageManager\Login\PackageManagerLoginView.xaml.cs">
-      <DependentUpon>PackageManagerLoginView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="PackageManager\PackageManagerClient.cs" />
-    <Compile Include="PackageManager\Publish\PackageManagerPublishViewModel.cs" />
-    <Compile Include="PackageManager\Publish\PackageManagerPublishView.xaml.cs">
-      <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Search\Regions\PackageManagerRegion.cs" />
     <Compile Include="Search\Regions\RegionBase.cs" />
     <Compile Include="Search\Regions\RevitAPIRegion.cs" />
     <Compile Include="Search\SearchCommands.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
-    <Compile Include="Search\SearchElements\PackageManagerSearchElement.cs" />
+    <Compile Include="PackageManager\UI\PackageManagerSearchElement.cs" />
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Search\SearchElements\WorkspaceSearchElement.cs" />
     <Compile Include="Views\SearchView.xaml.cs">
@@ -238,8 +267,6 @@ limitations under the License.
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="Class Diagrams\ClassDiagram1.cd" />
-    <None Include="Diagrams\ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -248,6 +275,22 @@ limitations under the License.
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="PackageManager\UI\InstalledPackagesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageManager\UI\PackageManagerDownloadView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageManager\UI\PackageManagerPublishView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PackageManager\UI\PackageManagerSearchView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Prompts\CrashPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -283,14 +326,6 @@ limitations under the License.
     <Page Include="Views\dynPortView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="PackageManager\Login\PackageManagerLoginView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="PackageManager\Publish\PackageManagerPublishView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SearchView.xaml">
       <SubType>Designer</SubType>

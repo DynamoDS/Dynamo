@@ -254,8 +254,9 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Length")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Enter a length in project units.")]
+    [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
     public class dynLengthInput : dynNodeWithOneOutput
     {
         private DynamoLength<Foot> _measure;
@@ -341,7 +342,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(Measure.Item.GetType().FullName);
@@ -349,7 +350,7 @@ namespace Dynamo.Nodes
             dynEl.AppendChild(outEl);
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {

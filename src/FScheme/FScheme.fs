@@ -183,6 +183,7 @@ type Expression =
     | Quasi of Syntax
     | Function_E of (Value list -> Value)
     | Container_E of obj
+    | Value_E of Value
 
 and Parameter =
     | Normal of string
@@ -306,6 +307,17 @@ let private stringToSyntax source =
 
 let private parse = stringToSyntax >> List.map (syntaxToExpression macroEnv)
 
+///Converts the given Value to a string.
+let rec print = function
+    | List(Dummy(_)::_) -> "" // don't print accumulated statement dummy values
+    | List(list)        -> "(" + String.Join(" ", List.map print list) + ")"
+    | String(s)         -> "\"" + s + "\""
+    | Symbol(s)         -> s
+    | Number(n)         -> n.ToString()
+    | Container(o)      -> sprintf "#<object:\"%s\">" <| o.ToString()
+    | Function(_)       -> "#<procedure>"
+    | Dummy(_)          -> "" // sometimes useful to emit value for debugging, but normally we ignore
+
 let rec printExpression indent syntax =
     let printLet name names exprs body =
         "(" + name +  " ("
@@ -333,17 +345,7 @@ let rec printExpression indent syntax =
              | Quasi(p)                   -> "(quasiquote " + printSyntax p + ")"
              | Function_E(_)              -> "#<procedure>"
              | Container_E(o)             -> sprintf "#<object:\"%s\">" <| o.ToString()
-
-///Converts the given Value to a string.
-let rec print = function
-    | List(Dummy(_)::_) -> "" // don't print accumulated statement dummy values
-    | List(list)        -> "(" + String.Join(" ", List.map print list) + ")"
-    | String(s)         -> "\"" + s + "\""
-    | Symbol(s)         -> s
-    | Number(n)         -> n.ToString()
-    | Container(o)      -> sprintf "#<object:\"%s\">" <| o.ToString()
-    | Function(_)       -> "#<procedure>"
-    | Dummy(_)          -> "" // sometimes useful to emit value for debugging, but normally we ignore
+             | Value_E(v)                 -> print v
 
 ///Prints a malformed statement error.
 let private malformed n e = sprintf "Malformed '%s': %s" n (print (List([e]))) |> failwith
@@ -505,6 +507,26 @@ let CartProd = function
         List(List.map (function List(l) -> l | m -> failwith "bad cart prod arg") lists |> reduceLists |> Seq.map f |> Seq.toList)
     | m -> malformed "cartesian-product" <| List(m)
 
+let LaceShortest = function
+    | (Function(_) as f) :: lists ->
+        let lists' = List.map (function List(l) -> l | m -> malformed "lace-shortest" m) lists
+        let shortestLen = Seq.min <| Seq.map List.length lists'
+        Map <| f :: List.map (Seq.take shortestLen >> Seq.toList >> List) lists'
+    | m -> malformed "lace-shortest" <| List(m)
+
+let LaceLongest = function
+    | (Function(_) as f) :: lists ->
+        let lists' = List.map (function List(l) -> l | m -> malformed "lace-longest" m) lists
+        let longestLen = Seq.max <| Seq.map List.length lists'
+        Map <| f :: List.map 
+                        (fun l -> 
+                            let len = List.length l
+                            let last = List.nth l (len-1)
+                            let remainder = Seq.initInfinite (fun _ -> last) |> Seq.take (longestLen - len)
+                            Seq.append l remainder |> Seq.toList |> List)
+                        lists'
+    | m -> malformed "lace-longest" <| List(m)
+
 let ForEach = function
     | [Function(f); List(l)] ->
         for e in l do f [e] |> ignore
@@ -534,6 +556,45 @@ let AndMap = function
             | [] -> Number(1.)
         andmap transposed
     | m -> malformed "andmap" <| List(m)
+
+let private key_sort_base name sortByN sortByS = function
+    | [Function(key); List(h :: t)] ->
+        let mapper x = key [x], x
+        let first = mapper h
+        match first with
+        | Number(n), x ->
+            let mapper' x =
+                match mapper x with
+                | Number(n), t -> n, t
+                | m            -> failwith (name + " key function must always return the same type")
+            (n, x) :: List.map mapper' t |> sortByN
+        | String(s), x ->
+            let mapper' x =
+                match mapper x with
+                | String(s), t -> s, t
+                | m            -> failwith (name + " key function must always return the same type")
+            (s, x) :: List.map mapper' t |> sortByS
+        | _ -> failwith ("key function for " + name + " must return strings or numbers")
+    | m -> malformed name <| List(m)
+
+///Sorts a list using a key mapping function.
+let SortBy = function
+    | [Function(key); List([]) as l] -> l
+    | args ->
+        let sortBy keyed =
+            List(List.sortBy (function key, _ -> key) keyed
+                 |> List.map (function _, value -> value))
+        key_sort_base "sort-by" sortBy sortBy args
+
+///Fetches the min of a list using a key mapping function.
+let Min = 
+    let minBy keyed = List.minBy (function key, _ -> key) keyed |> function _, value -> value
+    key_sort_base "min" minBy minBy
+
+///Fetches the max of a list using a key mapping function.
+let Max =
+    let maxBy keyed = List.maxBy (function key, _ -> key) keyed |> function _, value -> value
+    key_sort_base "max" maxBy maxBy
 
 ///Sorts using natural ordering. Only works for primitive types (numbers, strings)
 let Sort = function
@@ -566,29 +627,7 @@ let Sort = function
     //Otherwise, fail.
     | m -> malformed "sort" <| List(m)
 
-let SortBy = function
-    | [Function(key); List(h :: t)] ->
-        let mapper x = key [x], x
-        let first = mapper h
-        let sortBy keyed =
-            List(List.sortBy (function key, _ -> key) keyed
-                 |> List.map (function _, value -> value))
-        match first with
-        | Number(n), x ->
-            let mapper' x =
-                match mapper x with
-                | Number(n), t -> n, t
-                | m            -> failwith "sort-by key function must always return the same type"
-            (n, x) :: List.map mapper' t |> sortBy
-        | String(s), x ->
-            let mapper' x =
-                match mapper x with
-                | String(s), t -> s, t
-                | m            -> failwith "sort-by key function must always return the same type"
-            (s, x) :: List.map mapper' t |> sortBy
-        | _ -> failwith "key function for sort-by must return strings or numbers"
-    | m -> malformed "sort-by" <| List(m)
-
+///Sorts a list using a comparison function.
 let SortWith = function
     | [Function(comp); List(l)] ->
         let comp' x y =
@@ -611,6 +650,8 @@ let Flatten = function
             | m  -> malformed "flatten" <| List(m)
         flatten' [] l2d
     | m -> malformed "flatten" <| List(m)
+
+let Range (start : double) (step : double) (stop : double) = { start .. step .. stop }
 
 ///Build List
 let BuildSeq = function
@@ -658,8 +699,22 @@ let Sub1 = function
     | m -> malformed "sub1" <| List(m)
 
 let Identity = function
-   | [e] -> e
-   | m   -> malformed "identity" <| List(m)
+    | [e] -> e
+    | m   -> malformed "identity" <| List(m)
+
+let MakeFuture f = 
+    let p = async { return f [] }
+    let t = Async.StartAsTask p
+    t
+    
+let Redeem (t : Threading.Tasks.Task<'a>) =
+    t.Wait()
+    if t.IsFaulted then
+        raise t.Exception
+    else if t.IsCanceled then
+        failwith "Cannot redeem a cancelled future order."
+    else
+        t.Result
 
 
 type private CompilerFrame = string list
@@ -689,6 +744,7 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
     | String_E(s)    -> wrap <| String(s)
     | Function_E(f)  -> wrap <| Function(f)
     | Container_E(o) -> wrap <| Container(o)
+    | Value_E(v)     -> wrap v
 
     //Identifiers
     | Id(id) ->

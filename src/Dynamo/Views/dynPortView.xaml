@@ -9,6 +9,7 @@
     MouseEnter="DynPort_OnMouseEnter"
     MouseLeave="DynPort_OnMouseLeave"
     Background="{x:Null}" LayoutUpdated="DynPortView_OnLayoutUpdated">
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,7 +28,16 @@
                     <TextBlock Name="toolTipText" FontSize="11" Text="{Binding Path=ToolTipContent}"/>
                 </ToolTip>
             </Grid.ToolTip>
-            
+
+            <Grid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Use Default Value"
+                          IsCheckable="True"
+                          IsEnabled="{Binding Path=DefaultValueEnabled, Mode=TwoWay}"
+                          IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}" />
+                </ContextMenu>
+            </Grid.ContextMenu>
+
             <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                     Name="portRect" IsHitTestVisible="True"> 
                 <Canvas.Style>

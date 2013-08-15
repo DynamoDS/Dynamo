@@ -204,7 +204,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(SelectedElement);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElement != null)
@@ -215,7 +215,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -472,7 +472,7 @@ namespace Dynamo.Nodes
             return Value.NewList(Utils.SequenceToFSharpList(els));
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElements != null)
@@ -486,7 +486,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -559,9 +559,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Select Divided Surface")]
+    [NodeName("Select Divided Surface Families")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
-    [NodeDescription("Select a divided surface from the document.")]
+    [NodeDescription("Select a all families on a divided surface by picking the underlying form.")]
+    [NodeSearchTags("Curtain Panel", "Divided", "surface", "component", "family")]
     public class dynDividedSurfaceBySelection : dynElementSelectionBase
     {
         private Value _data;
@@ -569,7 +570,7 @@ namespace Dynamo.Nodes
         public dynDividedSurfaceBySelection()
             : base(
                 new PortData(
-                    "srf", "The divided surface family instance(s)", typeof (Value.Container)))
+                    "fi", "The divided surface family instances", typeof (Value.Container)))
         {
             _selectionMessage = "Select a divided surface.";
             _selectionAction = dynRevitSettings.SelectionHelper.RequestFormSelection;
@@ -783,14 +784,14 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawFace(RenderDescription, face);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             if(_reference != null)
                 dynEl.SetAttribute(
                     "faceRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -872,14 +873,14 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawGeometryElement(RenderDescription, edge);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             if(_reference != null)
                 dynEl.SetAttribute(
                     "edgeRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -938,7 +939,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -1011,7 +1012,9 @@ namespace Dynamo.Nodes
 
         private static string formatSelectionText(IEnumerable<Element> elements)
         {
-            return String.Join(" ", elements.Select(x => x.Id.ToString()));
+            return elements.Any() 
+                ? String.Join(" ", elements.Select(x => x.Id.ToString())) 
+                : "Nothing Selected";
         }
 
         public override string SelectionText
@@ -1019,7 +1022,7 @@ namespace Dynamo.Nodes
             get
             {
                 return _selectionText = (SelectedElements != null && SelectedElements.Count > 0)
-                                            ? "Element IDs:" + formatSelectionText(SelectedElements)
+                                            ? "Element IDs:" + formatSelectionText(SelectedElements.Where(x => x != null && x.Id != null))
                                             : "Nothing Selected";
             }
             set
@@ -1201,8 +1204,23 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             if (_reference.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_SURFACE &&
-                _reference.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR)
-                throw new Exception("Could not use face or edge which is not part of the model");
+                _reference.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR )
+            {
+                ElementId refElementId = _reference.ElementId;
+                Element refElement = dynRevitSettings.Doc.Document.GetElement(refElementId);
+                if (refElement is ReferencePoint)
+                {
+                    ReferencePoint rp = refElement as ReferencePoint;
+                    XYZ rpXYZ = rp.Position;
+                    return Value.NewContainer(rpXYZ);
+                }
+                GeometryObject thisObjectPoint = SelectedElement.GetGeometryObjectFromReference(_reference);
+                if (!(thisObjectPoint is Autodesk.Revit.DB.Point))
+                    throw new Exception("Could not use face or edge which is not part of the model");
+                var thisPoint = thisObjectPoint as Autodesk.Revit.DB.Point;
+                XYZ pointXYZ = thisPoint.Coord;
+                return Value.NewContainer(pointXYZ);
+            }
 
             GeometryObject thisObject = SelectedElement.GetGeometryObjectFromReference(_reference);
             Autodesk.Revit.DB.Transform thisTrf = null;
@@ -1385,7 +1403,7 @@ namespace Dynamo.Nodes
             dynRevitTransactionNode.DrawXYZ(RenderDescription, thisXYZ);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             if(_reference != null)
                 dynEl.SetAttribute(
@@ -1394,7 +1412,7 @@ namespace Dynamo.Nodes
                 dynEl.SetAttribute("refXYZparam1", _param1.ToString(CultureInfo.InvariantCulture));
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {

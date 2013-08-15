@@ -55,6 +55,8 @@ namespace Dynamo.Search.SearchElements
         private string _description;
         public override string Description { get { return _description; } }
 
+        public override bool Searchable { get { return true; } }
+
         /// <summary>
         /// Weight property </summary>
         /// <value>

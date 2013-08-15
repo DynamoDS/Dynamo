@@ -274,7 +274,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(f);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("FormId", formId.ToString());
             dynEl.SetAttribute("PreferSurfaceForOneLoop", preferSurfaceForOneLoop.ToString());
@@ -295,7 +295,7 @@ namespace Dynamo.Nodes
             dynEl.SetAttribute("FormCurveToReferenceCurveMap", mapAsString);
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -362,7 +362,8 @@ namespace Dynamo.Nodes
             {
                 //And register the form for deletion. Since we've already deleted it here manually, we can 
                 //pass "true" as the second argument.
-                this.DeleteElement(this.Elements[0], true);
+                deleteId = this.Elements[0];
+                this.DeleteElement(this.Elements[0], false);
             }
 
             //Surface argument
