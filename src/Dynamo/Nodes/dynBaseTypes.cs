@@ -1004,7 +1004,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("An empty list")]
     [IsInteractive(false)]
-    public class dynEmpty : dynNodeWithOneOutput
+    public class dynEmpty : dynNodeModel
     {
         public dynEmpty()
         {
@@ -1753,7 +1753,7 @@ namespace Dynamo.Nodes
     [NodeName("And")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
     [NodeDescription("Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false.")]
-    public class dynAnd : dynNodeWithOneOutput
+    public class dynAnd : dynNodeModel
     {
         public dynAnd()
         {
@@ -1814,7 +1814,7 @@ namespace Dynamo.Nodes
     [NodeName("Or")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
     [NodeDescription("Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false.")]
-    public class dynOr : dynNodeWithOneOutput
+    public class dynOr : dynNodeModel
     {
         public dynOr()
         {
@@ -2536,6 +2536,11 @@ namespace Dynamo.Nodes
                 preBuilt[this] = result;
             }
             return result[outPort];
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            throw new NotImplementedException();
         }
     }
 

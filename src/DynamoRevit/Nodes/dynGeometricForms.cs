@@ -36,7 +36,7 @@ namespace Dynamo.Nodes
         ElementId formId;
         bool preferSurfaceForOneLoop;
 
-        public override bool acceptsListOfLists(FScheme.Value value)
+        public override bool acceptsListOfLists(Value value)
         {
             if (Utils.IsListOfListsOfLists(value))
                 return false;

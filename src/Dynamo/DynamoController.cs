@@ -431,7 +431,7 @@ namespace Dynamo
             }
         }
 
-        protected internal virtual void Run(List<dynNodeModel> topElements, FScheme.Expression runningExpression)
+        protected virtual void Run(List<dynNodeModel> topElements, FScheme.Expression runningExpression)
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)

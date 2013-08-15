@@ -464,12 +464,14 @@ namespace Dynamo.Revit
             for (int i = elements.Count - 1; i >= runCount; i--)
             {
                 var elems = elements[i];
-                foreach (var e in elems)
-                {
-                    Element el = UIDocument.Document.GetElement(e);
-                    if(el!=null)
-                        UIDocument.Document.Delete(e);
-                }
+                var query = from e in elems
+                            let el = UIDocument.Document.GetElement(e)
+                            where el != null
+                            select e;
+
+                foreach (var e in query)
+                    UIDocument.Document.Delete(e);
+
                 elems.Clear();
             }
 
@@ -477,8 +479,7 @@ namespace Dynamo.Revit
             {
                 elements.RemoveRange(
                    runCount,
-                   elements.Count - runCount
-                );
+                   elements.Count - runCount);
             }
         }
 
@@ -501,16 +502,16 @@ namespace Dynamo.Revit
 
                 controller.InitTransaction();
 
-                Evaluate(args, outPuts);
+                base.__eval_internal(args, outPuts);
 
-                foreach (ElementId eid in deletedIds)
+                foreach (ElementId eid in _deletedIds)
                 {
                     controller.RegisterSuccessfulDeleteHook(
                        eid,
                        onSuccessfulDelete
                     );
                 }
-                deletedIds.Clear();
+                _deletedIds.Clear();
 
                 #endregion
             }
@@ -527,25 +528,25 @@ namespace Dynamo.Revit
 
                        try
                        {
-                           Evaluate(args, outPuts);
+                           base.__eval_internal(args, outPuts);
 
-                           foreach (ElementId eid in deletedIds)
+                           foreach (ElementId eid in _deletedIds)
                            {
                                controller.RegisterSuccessfulDeleteHook(
                                   eid,
                                   onSuccessfulDelete
                                );
                            }
-                           deletedIds.Clear();
+                           _deletedIds.Clear();
 
                            controller.EndTransaction();
 
                            ValidateConnections();
                        }
-                       catch (Exception ex)
+                       catch (Exception)
                        {
                            controller.CancelTransaction();
-                           throw ex;
+                           throw;
                        }
                    },
                    false
@@ -564,7 +565,7 @@ namespace Dynamo.Revit
             #endregion
         }
 
-        private List<ElementId> deletedIds = new List<ElementId>();
+        private readonly List<ElementId> _deletedIds = new List<ElementId>();
 
         /// <summary>
         /// Deletes an Element from the Document and removes all Dynamo regen hooks. If the second
@@ -577,7 +578,7 @@ namespace Dynamo.Revit
         {
             if (!hookOnly)
                 UIDocument.Document.Delete(id);
-            deletedIds.Add(id);
+            _deletedIds.Add(id);
         }
 
         /// <summary>
@@ -596,8 +597,8 @@ namespace Dynamo.Revit
                        runCount = 0;
 
                        var query = controller.DynamoViewModel.Model.HomeSpace.Nodes
-                           .Where(x => x is dynFunctionWithRevit)
-                           .Select(x => (x as dynFunctionWithRevit).ElementsContainer)
+                           .OfType<dynFunctionWithRevit>()
+                           .Select(x => x.ElementsContainer)
                            .Where(c => c.HasElements(GUID))
                            .SelectMany(c => c[GUID]);
 
@@ -627,9 +628,7 @@ namespace Dynamo.Revit
                    }
                    controller.EndTransaction();
                    WorkSpace.Modified();
-               },
-               true
-            );
+               });
         }
 
         void onDeleted(List<ElementId> deleted)
@@ -643,248 +642,18 @@ namespace Dynamo.Revit
         void onSuccessfulDelete(List<ElementId> deleted)
         {
             foreach (var els in elements)
-                els.RemoveAll(x => deleted.Contains(x));
+                els.RemoveAll(deleted.Contains);
         }
-
-        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
-        {
-            //if this element maintains a collcection of references
-            //then clear the collection
-            if (this is IClearable)
-                (this as IClearable).ClearReferences();
-
-            List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
-
-            //create a zip of the incoming args and the port data
-            //to be used for type comparison
-            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
-            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
-
-            //there are more than zero arguments
-            //and there is either an argument which does not match its expections 
-            //OR an argument which requires a list and gets a list of lists
-            //AND argument lacing is not disabled
-            if (args.Count() > 0 &&
-                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
-                listOfListComparison.Any(x=>x.Item1 ==true && x.Item2 == typeof(Value.List))) &&
-                this.ArgumentLacing != LacingStrategy.Disabled )
-            {
-                //if the argument is of the expected type, then
-                //leave it alone otherwise, wrap it in a list
-                int j = 0;
-                foreach (var arg in args)
-                {
-                    //incoming value is list and expecting single
-                    if (portComparison.ElementAt(j).Item1 == typeof(Value.List) &&
-                        portComparison.ElementAt(j).Item2 != typeof(Value.List))
-                    {
-                        //leave as list
-                        argSets.Add(((Value.List)arg).Item);
-                    }
-                    //incoming value is list and expecting list
-                    else
-                    {
-                        //check if we have a list of lists, if so, then don't wrap
-                        if (Utils.IsListOfLists(arg))
-                            //leave as list
-                            argSets.Add(((Value.List)arg).Item);
-                        else
-                            //wrap in list
-                            argSets.Add(Utils.MakeFSharpList(arg));
-                    }
-                    j++;
-                }
-
-                IEnumerable<IEnumerable<Value>> lacedArgs = null;
-                switch (this.ArgumentLacing)
-                {
-                    case LacingStrategy.First:
-                        lacedArgs = argSets.SingleSet();
-                        break;
-                    case LacingStrategy.Shortest:
-                        lacedArgs = argSets.ShortestSet();
-                        break;
-                    case LacingStrategy.Longest:
-                        lacedArgs = argSets.LongestSet();
-                        break;
-                    case LacingStrategy.CrossProduct:
-                        lacedArgs = argSets.CartesianProduct();
-                        break;
-                }
-
-                //setup a list to hold the results
-                //each output will have its own results collection
-                List<FSharpList<Value>> results = new List<FSharpList<FScheme.Value>>();
-                for(int i=0; i<OutPortData.Count(); i++)
-                {
-                    results.Add(FSharpList<Value>.Empty);
-                }
-                //FSharpList<Value> result = FSharpList<Value>.Empty;
-
-                //run the evaluate method for each set of 
-                //arguments in the la result. do these
-                //in reverse order so our cons comes out the right
-                //way around
-                for (int i = lacedArgs.Count() - 1; i >= 0; i--)
-                {
-                    var evalResult = Evaluate(Utils.MakeFSharpList(lacedArgs.ElementAt(i).ToArray()));
-
-                    //if the list does not have the same number of items
-                    //as the number of output ports, then throw a wobbly
-                    if (!evalResult.IsList)
-                        throw new Exception("Output value of the node is not a list.");
-
-                    for (int k = 0; k < OutPortData.Count(); k++)
-                    {
-                        FSharpList<Value> lst = ((Value.List)evalResult).Item;
-                        results[k] = FSharpList<Value>.Cons(lst[k], results[k]);
-                    }
-                    runCount++;
-                }
-
-                //the result of evaluation will be a list. we split that result
-                //and send the results to the outputs
-                for (int i = 0; i < OutPortData.Count(); i++)
-                {
-                    outPuts[OutPortData[i]] = Value.NewList(results[i]);      
-                }
-                
-            }
-            else
-            {
-                Value evalResult = Evaluate(args);
-
-                runCount++;
-
-                if (!evalResult.IsList)
-                        throw new Exception("Output value of the node is not a list.");
-
-                FSharpList<Value> lst = ((Value.List)evalResult).Item;
-
-                //the result of evaluation will be a list. we split that result
-                //and send the results to the outputs
-                for (int i = 0; i < OutPortData.Count(); i++)
-                {
-                    outPuts[OutPortData[i]] = lst[i];
-                }
-            }
-
-            ValidateConnections();
-        }
-
-        public virtual Value Evaluate(FSharpList<Value> args)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 
-    public class dynRevitTransactionNodeWithOneOutput : dynRevitTransactionNode
+    public abstract class dynRevitTransactionNodeWithOneOutput : dynRevitTransactionNode
     {
-        public virtual bool acceptsListOfLists(FScheme.Value value)
-        {
-            return false;
-        }
-
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            //THE OLD WAY
-            //outPuts[OutPortData[0]] = Evaluate(args);
-
-            //THE NEW WAY
-            //if this element maintains a collcection of references
-            //then clear the collection
-            if (this is IClearable)
-                (this as IClearable).ClearReferences();
-
-            List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
-
-            //create a zip of the incoming args and the port data
-            //to be used for type comparison
-            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
-            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
-
-            //there are more than zero arguments
-            //and there is either an argument which does not match its expections 
-            //OR an argument which requires a list and gets a list of lists
-            //AND argument lacing is not disabled
-            if (args.Count() > 0 &&
-                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
-                listOfListComparison.Any(x => x.Item1 == true && x.Item2 == typeof(Value.List))) &&
-                this.ArgumentLacing != LacingStrategy.Disabled)
-            {
-                //if the argument is of the expected type, then
-                //leave it alone otherwise, wrap it in a list
-                int j = 0;
-                foreach (var arg in args)
-                {
-                    var portAtThis = portComparison.ElementAt(j);
-
-                    //incoming value is list and expecting single
-                    if (portAtThis.Item1 == typeof(Value.List) &&
-                        portAtThis.Item2 != typeof(Value.List))
-                    {
-                        //leave as list
-                        argSets.Add(((Value.List)arg).Item);
-                    }
-                    //incoming value is list and expecting list
-                    else
-                    {
-                        //check if we have a list of lists, if so, then don't wrap
-                        if (Utils.IsListOfLists(arg) && !acceptsListOfLists(arg))
-                            //leave as list
-                            argSets.Add(((Value.List)arg).Item);
-                        else
-                            //wrap in list
-                            argSets.Add(Utils.MakeFSharpList(arg));
-                    }
-                    j++;
-                }
-
-                IEnumerable<IEnumerable<Value>> lacedArgs = null;
-                switch (this.ArgumentLacing)
-                {
-                    case LacingStrategy.First:
-                        lacedArgs = argSets.SingleSet();
-                        break;
-                    case LacingStrategy.Shortest:
-                        lacedArgs = argSets.ShortestSet();
-                        break;
-                    case LacingStrategy.Longest:
-                        lacedArgs = argSets.LongestSet();
-                        break;
-                    case LacingStrategy.CrossProduct:
-                        lacedArgs = argSets.CartesianProduct();
-                        break;
-                }
-
-                //setup an empty list to hold results
-                FSharpList<Value> result = FSharpList<Value>.Empty;
-
-                //run the evaluate method for each set of 
-                //arguments in the cartesian result. do these
-                //in reverse order so our cons comes out the right
-                //way around
-                for (int i = lacedArgs.Count() - 1; i >= 0; i--)
-                {
-                    var evalResult = Evaluate(Utils.MakeFSharpList(lacedArgs.ElementAt(i).ToArray()));
-                    result = FSharpList<Value>.Cons(evalResult, result);
-                    runCount++;
-                }
-
-                outPuts[OutPortData[0]] = Value.NewList(result);
-            }
-            else
-            {
-                outPuts[OutPortData[0]] = Evaluate(args);
-                runCount++;
-            }
+            outPuts[OutPortData[0]] = Evaluate(args);
         }
 
-        public virtual Value Evaluate(FSharpList<Value> args)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Value Evaluate(FSharpList<Value> args);
     }
 
     namespace SyncedNodeExtensions
