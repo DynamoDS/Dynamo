@@ -61,10 +61,10 @@ Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwrite
 Source: temp\Definitions\*.dyf; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 [UninstallDelete]
-Type: files; Name: "{userappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin"
-Type: files; Name: "{userappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin"
-Type: files; Name: "{userappdata}\Autodesk\Vasari\Addins\2013\Dynamo.addin"
-Type: files; Name: "{userappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin"
+Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin"
+Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin"
+Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2013\Dynamo.addin"
+Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin"
 
 [Run]
 Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
@@ -127,22 +127,22 @@ end;
 procedure CurPageChanged(CurPageID: Integer);
 begin
   if CurPageID = wpSelectComponents then
-    if not FileOrDirExists(ExpandConstant('{userappdata}\Autodesk\Revit\Addins\2013')) then
+    if not FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013')) then
     begin
       WizardForm.ComponentsList.Checked[1] := False;
       WizardForm.ComponentsList.ItemEnabled[1] := False;
     end;
-        if not FileOrDirExists(ExpandConstant('{userappdata}\Autodesk\Revit\Addins\2014')) then
+        if not FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014')) then
     begin
       WizardForm.ComponentsList.Checked[2] := False;
       WizardForm.ComponentsList.ItemEnabled[2] := False;
     end;
-        if not FileOrDirExists(ExpandConstant('{userappdata}\Autodesk\Vasari\Addins\2013')) then
+        if not FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2013')) then
     begin
       WizardForm.ComponentsList.Checked[3] := False;
       WizardForm.ComponentsList.ItemEnabled[3] := False;
     end;
-        if not FileOrDirExists(ExpandConstant('{userappdata}\Autodesk\Vasari\Addins\2014')) then
+        if not FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014')) then
     begin
       WizardForm.ComponentsList.Checked[4] := False;
       WizardForm.ComponentsList.ItemEnabled[4] := False;
@@ -188,22 +188,22 @@ begin
 	
     if (WizardForm.ComponentsList.Checked[1]) then
     begin
-      SaveStringToFile(ExpandConstant('{userappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin'), AddInFileContents, False);
     end;
   
     if (WizardForm.ComponentsList.Checked[2]) then
     begin
-      SaveStringToFile(ExpandConstant('{userappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin'), AddInFileContents, False);
     end;
 
     if (WizardForm.ComponentsList.Checked[3]) then
     begin
-      SaveStringToFile(ExpandConstant('{userappdata}\Autodesk\Vasari\Addins\2013\Dynamo.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2013\Dynamo.addin'), AddInFileContents, False);
     end;
 
     if (WizardForm.ComponentsList.Checked[4]) then
     begin
-      SaveStringToFile(ExpandConstant('{userappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin'), AddInFileContents, False);
     end;
 
   end;
