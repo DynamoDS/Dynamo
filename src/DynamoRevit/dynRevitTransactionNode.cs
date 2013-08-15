@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 using System.Xml;
 
@@ -14,21 +13,17 @@ using Microsoft.FSharp.Collections;
 using Dynamo.Utilities;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Connectors;
-using Dynamo.FSchemeInterop;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 
 using HelixToolkit.Wpf;
 
-
-
-
 namespace Dynamo.Revit
 {
     public abstract partial class dynRevitTransactionNode : dynNodeModel, IDrawable
     {
-        protected object drawableObject = null;
-        protected Func<object, RenderDescription> drawMethod = null;
+        protected object DrawableObject = null;
+        protected Func<object, RenderDescription> DrawMethod = null;
 
         //private Type base_type = null;
 
@@ -55,21 +50,17 @@ namespace Dynamo.Revit
         {
             get
             {
-                while (elements.Count <= runCount)
+                while (elements.Count <= _runCount)
                     elements.Add(new List<ElementId>());
-                return elements[runCount];
-            }
-            private set
-            {
-                elements[runCount] = value;
+                return elements[_runCount];
             }
         }
 
-        public List<ElementId> AllElements
+        public IEnumerable<ElementId> AllElements
         {
             get
             {
-                return elements.SelectMany(x=>x.Select(y=>y)).ToList();
+                return elements.SelectMany(x => x);
             }
         }
 
@@ -152,10 +143,9 @@ namespace Dynamo.Revit
         {
             var del = new DynElementUpdateDelegate(onDeleted);
 
-            foreach (var eList in elements)
+            foreach (var id in elements.SelectMany(eList => eList)) 
             {
-                foreach (var id in eList)
-                    dynRevitSettings.Controller.RegisterDeleteHook(id, del);
+                dynRevitSettings.Controller.RegisterDeleteHook(id, del);
             }
         }
 
@@ -186,7 +176,7 @@ namespace Dynamo.Revit
 
         public static void DrawReferencePoint(RenderDescription description, object obj)
         {
-            ReferencePoint point = obj as ReferencePoint;
+            var point = obj as ReferencePoint;
 
             if (point == null)
                 return;
@@ -198,7 +188,7 @@ namespace Dynamo.Revit
 
         public static void DrawXYZ(RenderDescription description, object obj)
         {
-            XYZ point = obj as XYZ;
+            var point = obj as XYZ;
             if (point == null)
                 return;
 
@@ -207,7 +197,7 @@ namespace Dynamo.Revit
 
         public static void DrawCurve(RenderDescription description, object obj)
         {
-            Autodesk.Revit.DB.Curve curve = obj as Autodesk.Revit.DB.Curve;
+            var curve = obj as Curve;
 
             if (curve == null)
                 return;
@@ -229,7 +219,7 @@ namespace Dynamo.Revit
 
         public static void DrawCurveElement(RenderDescription description, object obj)
         {
-            Autodesk.Revit.DB.CurveElement elem = obj as Autodesk.Revit.DB.CurveElement;
+            var elem = obj as CurveElement;
 
             if (elem == null)
                 return;
@@ -239,7 +229,7 @@ namespace Dynamo.Revit
 
         public static void DrawSolid(RenderDescription description, object obj)
         {
-            Autodesk.Revit.DB.Solid solid = obj as Autodesk.Revit.DB.Solid;
+            var solid = obj as Solid;
 
             if (solid == null)
                 return;
@@ -255,17 +245,17 @@ namespace Dynamo.Revit
             }
         }
 
-        public static Point3D RevitPointToWindowsPoint(Autodesk.Revit.DB.XYZ xyz)
+        public static Point3D RevitPointToWindowsPoint(XYZ xyz)
         {
             return new Point3D(xyz.X, xyz.Y, xyz.Z);
         }
 
         // must return an array to make mesh double sided
-        public static Mesh3D[] RevitMeshToHelixMesh(Autodesk.Revit.DB.Mesh rmesh)
+        public static Mesh3D[] RevitMeshToHelixMesh(Mesh rmesh)
         {
-            List<int> indices_front = new List<int>();
-            List<int> indices_back = new List<int>();
-            List<Point3D> vertices = new List<Point3D>();
+            var indicesFront = new List<int>();
+            var indicesBack = new List<int>();
+            var vertices = new List<Point3D>();
 
             for (int i = 0; i < rmesh.NumTriangles; ++i)
             {
@@ -273,46 +263,48 @@ namespace Dynamo.Revit
 
                 for (int k = 0; k < 3; ++k)
                 {
-                    Point3D new_point = RevitPointToWindowsPoint(tri.get_Vertex(k));
+                    Point3D newPoint = RevitPointToWindowsPoint(tri.get_Vertex(k));
 
-                    bool new_point_exists = false;
+                    bool newPointExists = false;
                     for (int l = 0; l < vertices.Count; ++l)
                     {
                         Point3D p = vertices[l];
-                        if ((p.X == new_point.X) && (p.Y == new_point.Y) && (p.Z == new_point.Z))
+                        if ((p.X == newPoint.X) && (p.Y == newPoint.Y) && (p.Z == newPoint.Z))
                         {
-                            indices_front.Add(l);
-                            new_point_exists = true;
+                            indicesFront.Add(l);
+                            newPointExists = true;
                             break;
                         }
                     }
 
-                    if (new_point_exists)
+                    if (newPointExists)
                         continue;
 
-                    indices_front.Add(vertices.Count);
-                    vertices.Add(new_point);
+                    indicesFront.Add(vertices.Count);
+                    vertices.Add(newPoint);
                 }
 
-                int a = indices_front[indices_front.Count - 3];
-                int b = indices_front[indices_front.Count - 2];
-                int c = indices_front[indices_front.Count - 1];
+                int a = indicesFront[indicesFront.Count - 3];
+                int b = indicesFront[indicesFront.Count - 2];
+                int c = indicesFront[indicesFront.Count - 1];
 
-                indices_back.Add(c);
-                indices_back.Add(b);
-                indices_back.Add(a);
+                indicesBack.Add(c);
+                indicesBack.Add(b);
+                indicesBack.Add(a);
             }
 
-            List<Mesh3D> meshes = new List<Mesh3D>();
-            meshes.Add(new Mesh3D(vertices, indices_front));
-            meshes.Add(new Mesh3D(vertices, indices_back));
+            var meshes = new List<Mesh3D>
+            {
+                new Mesh3D(vertices, indicesFront),
+                new Mesh3D(vertices, indicesBack)
+            };
 
             return meshes.ToArray();
         }
 
         public static void DrawFace(RenderDescription description, object obj)
         {
-            Autodesk.Revit.DB.Face face = obj as Autodesk.Revit.DB.Face;
+            var face = obj as Face;
 
             if (face == null)
                 return;
@@ -327,7 +319,7 @@ namespace Dynamo.Revit
 
         public static void DrawForm(RenderDescription description, object obj)
         {
-            Autodesk.Revit.DB.Form form = obj as Autodesk.Revit.DB.Form;
+            var form = obj as Form;
 
             if (form == null)
                 return;
@@ -339,7 +331,7 @@ namespace Dynamo.Revit
         {
             try
             {
-                GeometryElement gelem = obj as GeometryElement;
+                var gelem = obj as GeometryElement;
 
                 foreach (GeometryObject go in gelem)
                 {
@@ -363,19 +355,19 @@ namespace Dynamo.Revit
             if (obj == null)
                 return;
 
-            if (typeof(Autodesk.Revit.DB.XYZ).IsAssignableFrom(obj.GetType()))
+            if (obj is XYZ)
             {
                 DrawXYZ(description, obj);
             }
-            if (typeof(Autodesk.Revit.DB.Curve).IsAssignableFrom(obj.GetType()))
+            if (obj is Curve)
             {
                 DrawCurve(description, obj);
             }
-            else if (typeof(Autodesk.Revit.DB.Solid).IsAssignableFrom(obj.GetType()))
+            else if (obj is Solid)
             {
                 DrawSolid(description, obj);
             }
-            else if (typeof(Autodesk.Revit.DB.Face).IsAssignableFrom(obj.GetType()))
+            else if (obj is Face)
             {
                 DrawFace(description, obj);
             }
@@ -391,33 +383,32 @@ namespace Dynamo.Revit
             if (obj == null)
                 return;
 
-            if (typeof(Autodesk.Revit.DB.CurveElement).IsAssignableFrom(obj.GetType()))
+            if (obj is CurveElement)
             {
                 DrawCurveElement(description, obj);
             }
-            else if (typeof(Autodesk.Revit.DB.ReferencePoint).IsAssignableFrom(obj.GetType()))
+            else if (obj is ReferencePoint)
             {
                 DrawReferencePoint(description, obj);
             }
-            else if (typeof(Autodesk.Revit.DB.Form).IsAssignableFrom(obj.GetType()))
+            else if (obj is Form)
             {
                 DrawForm(description, obj);
             }
-            else if (typeof(Autodesk.Revit.DB.GeometryElement).IsAssignableFrom(obj.GetType()))
+            else if (obj is GeometryElement)
             {
                 DrawGeometryElement(description, obj);
             }
-            else if (typeof (Autodesk.Revit.DB.GeometryObject).IsAssignableFrom(obj.GetType()))
+            else if (obj is GeometryObject)
             {
                 DrawGeometryObject(description, obj);
             }
             else
             {
-                Element elem = obj as Element;
+                var elem = obj as Element;
                 if (elem != null)
                 {
-                    Options o = new Options();
-                    o.DetailLevel = ViewDetailLevel.Medium;
+                    var o = new Options { DetailLevel = ViewDetailLevel.Medium };
                     GeometryElement geom = elem.get_Geometry(o);
 
                     if (geom != null)
@@ -439,14 +430,14 @@ namespace Dynamo.Revit
         /// <summary>
         /// Implementation detail, records how many times this Element has been executed during this run.
         /// </summary>
-        protected int runCount;
+        private int _runCount;
 
         internal void ResetRuns()
         {
-            if (runCount > 0)
+            if (_runCount > 0)
             {
-                PruneRuns(runCount);
-                runCount = 0;
+                PruneRuns(_runCount);
+                _runCount = 0;
             }
         }
 
@@ -454,14 +445,14 @@ namespace Dynamo.Revit
         {
             base.OnEvaluate();
 
-            //runCount++;
+            _runCount++;
         }
 
-        internal void PruneRuns(int runCount)
+        internal void PruneRuns(int numRuns)
         {
-            Debug.WriteLine(string.Format("Pruning runs from {0} to {1}", elements.Count, runCount));
+            Debug.WriteLine(string.Format("Pruning runs from {0} to {1}", elements.Count, numRuns));
 
-            for (int i = elements.Count - 1; i >= runCount; i--)
+            for (int i = elements.Count - 1; i >= numRuns; i--)
             {
                 var elems = elements[i];
                 var query = from e in elems
@@ -475,11 +466,11 @@ namespace Dynamo.Revit
                 elems.Clear();
             }
 
-            if (elements.Count > runCount)
+            if (elements.Count > numRuns)
             {
                 elements.RemoveRange(
-                   runCount,
-                   elements.Count - runCount);
+                   numRuns,
+                   elements.Count - numRuns);
             }
         }
 
@@ -508,8 +499,7 @@ namespace Dynamo.Revit
                 {
                     controller.RegisterSuccessfulDeleteHook(
                        eid,
-                       onSuccessfulDelete
-                    );
+                       onSuccessfulDelete);
                 }
                 _deletedIds.Clear();
 
@@ -534,8 +524,7 @@ namespace Dynamo.Revit
                            {
                                controller.RegisterSuccessfulDeleteHook(
                                   eid,
-                                  onSuccessfulDelete
-                               );
+                                  onSuccessfulDelete);
                            }
                            _deletedIds.Clear();
 
@@ -594,7 +583,7 @@ namespace Dynamo.Revit
                    controller.InitTransaction();
                    try
                    {
-                       runCount = 0;
+                       _runCount = 0;
 
                        var query = controller.DynamoViewModel.Model.HomeSpace.Nodes
                            .OfType<dynFunctionWithRevit>()

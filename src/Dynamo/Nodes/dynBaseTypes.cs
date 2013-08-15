@@ -1796,8 +1796,7 @@ namespace Dynamo.Nodes
                     //Compile input and connect it
                     node.ConnectInput(
                         InPortData[data].NickName,
-                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
-                        );
+                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1));
                 }
 
                 RequiresRecalc = false;
@@ -1863,8 +1862,7 @@ namespace Dynamo.Nodes
                     //Compile input and connect it
                     node.ConnectInput(
                         InPortData[data].NickName,
-                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
-                        );
+                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1));
                 }
 
                 RequiresRecalc = false;
