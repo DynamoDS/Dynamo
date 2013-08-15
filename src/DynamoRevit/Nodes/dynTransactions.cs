@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
     [NodeName("Transaction")]
     [NodeCategory(BuiltinNodeCategories.CORE_TIME)]
     [NodeDescription("Executes Expression inside of a Revit API transaction")]
-    public class dynTransaction: dynNodeWithOneOutput
+    public class dynTransaction : dynNodeModel
     {
         public dynTransaction()
         {
@@ -50,11 +50,11 @@ namespace Dynamo.Nodes
             if (ReportingEnabled)
             {
                 DisableReporting();
-                this.RequiresRecalc = val;
+                RequiresRecalc = val;
                 EnableReporting();
             }
             else
-                this.RequiresRecalc = val;
+                RequiresRecalc = val;
         }
 
         protected override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)

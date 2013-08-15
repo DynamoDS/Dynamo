@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
@@ -105,33 +106,41 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Separate a color into its alpha, red, green, and blue components.")]
     [NodeSearchTags("argb")]
-    class dynColorComponents : dynNodeWithMultipleOutputs
+    class dynColorComponents : dynNodeModel
     {
+        private readonly PortData _alphaOut = new PortData(
+            "A", "The alpha part of the color between 0 and 255", typeof(Value.Number));
+
+        private readonly PortData _redOut = new PortData(
+            "R", "The red part of the color between 0 and 255", typeof(Value.Number));
+
+        private readonly PortData _greenOut = new PortData(
+            "G", "The green part of the color between 0 and 255", typeof(Value.Number));
+
+        private readonly PortData _blueOut = new PortData(
+            "B", "The blue part of the color between 0 and 255", typeof(Value.Number));
+
         public dynColorComponents()
         {
             InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
-            OutPortData.Add(new PortData("A", "The alpha part of the color between 0 and 255", typeof(Value.Number)));
-            OutPortData.Add(new PortData("R", "The red part of the color between 0 and 255", typeof(Value.Number)));
-            OutPortData.Add(new PortData("G", "The green part of the color between 0 and 255", typeof(Value.Number)));
-            OutPortData.Add(new PortData("B", "The blue part of the color between 0 and 255", typeof(Value.Number)));
+            OutPortData.Add(_alphaOut);
+            OutPortData.Add(_redOut);
+            OutPortData.Add(_greenOut);
+            OutPortData.Add(_blueOut);
 
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Longest;
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             var c = (Color)((Value.Container)args[0]).Item;
 
-            var results = FSharpList<Value>.Empty;
-            results = FSharpList<Value>.Cons(Value.NewNumber(c.B), results);
-            results = FSharpList<Value>.Cons(Value.NewNumber(c.G), results);
-            results = FSharpList<Value>.Cons(Value.NewNumber(c.R), results);
-            results = FSharpList<Value>.Cons(Value.NewNumber(c.A), results);
-
-            return Value.NewList(results);
-
+            outPuts[_alphaOut] = Value.NewNumber(c.A);
+            outPuts[_redOut] = Value.NewNumber(c.R);
+            outPuts[_greenOut] = Value.NewNumber(c.G);
+            outPuts[_blueOut] = Value.NewNumber(c.B);
         }
     }
 
