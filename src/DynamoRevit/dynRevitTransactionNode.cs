@@ -445,6 +445,15 @@ namespace Dynamo.Revit
         {
             base.OnEvaluate();
 
+            #region Register Elements w/ DMU
+
+            var del = new DynElementUpdateDelegate(onDeleted);
+
+            foreach (ElementId id in Elements)
+                dynRevitSettings.Controller.RegisterDMUHooks(id, del);
+
+            #endregion
+
             _runCount++;
         }
 
@@ -538,15 +547,6 @@ namespace Dynamo.Revit
 
                 #endregion
             }
-
-            #region Register Elements w/ DMU
-
-            var del = new DynElementUpdateDelegate(onDeleted);
-
-            foreach (ElementId id in Elements)
-                controller.RegisterDMUHooks(id, del);
-
-            #endregion
         }
 
         private readonly List<ElementId> _deletedIds = new List<ElementId>();
