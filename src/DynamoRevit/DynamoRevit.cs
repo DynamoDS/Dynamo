@@ -345,7 +345,7 @@ namespace Dynamo.Applications
 
 #if DEBUG
 
-    [Transaction(TransactionMode.Manual)]
+    [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     internal class DynamoRevitTester : IExternalCommand
     {
