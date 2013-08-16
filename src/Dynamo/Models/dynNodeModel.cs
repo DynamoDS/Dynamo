@@ -984,8 +984,8 @@ namespace Dynamo.Nodes
                 {
                     evalDict.Clear();
 
-                    OnEvaluate();
                     Evaluate(Utils.SequenceToFSharpList(argList), evalDict);
+                    OnEvaluate();
 
                     foreach (var data in OutPortData)
                         evalResult[data] = FSharpList<Value>.Cons(evalDict[data], evalResult[data]);
@@ -998,8 +998,8 @@ namespace Dynamo.Nodes
             }
             else
             {
-                OnEvaluate();
                 Evaluate(args, outPuts);
+                OnEvaluate();
             }
 
             if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
