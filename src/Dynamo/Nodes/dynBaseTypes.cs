@@ -263,6 +263,8 @@ namespace Dynamo.Nodes
 
         protected override void OnEvaluate()
         {
+            base.OnEvaluate();
+
             _lastEvaledAmt = InPortData.Count;
         }
     }
