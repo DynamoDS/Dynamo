@@ -925,10 +925,9 @@ namespace Dynamo.Nodes
             //and there is either an argument which does not match its expections 
             //OR an argument which requires a list and gets a list of lists
             //AND argument lacing is not disabled
-            if (args.Any() &&
+            if (ArgumentLacing != LacingStrategy.Disabled && args.Any() &&
                 (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
-                listOfListComparison.Any(x => x.Item1 && x.Item2 == typeof(Value.List))) &&
-                ArgumentLacing != LacingStrategy.Disabled)
+                listOfListComparison.Any(x => x.Item1 && x.Item2 == typeof(Value.List))))
             {
                 //if the argument is of the expected type, then
                 //leave it alone otherwise, wrap it in a list
