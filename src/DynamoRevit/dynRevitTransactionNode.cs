@@ -580,13 +580,14 @@ namespace Dynamo.Revit
                    {
                        _runCount = 0;
 
-                       var query = controller.DynamoViewModel.Model.HomeSpace.Nodes
-                           .OfType<dynFunctionWithRevit>()
-                           .Select(x => x.ElementsContainer)
-                           .Where(c => c.HasElements(GUID))
-                           .SelectMany(c => c[GUID]);
+                       //TODO: Re-enable once similar functionality is fleshed out for dynFunctionWithRevit
+                       //var query = controller.DynamoViewModel.Model.HomeSpace.Nodes
+                       //    .OfType<dynFunctionWithRevit>()
+                       //    .Select(x => x.ElementsContainer)
+                       //    .Where(c => c.HasElements(GUID))
+                       //    .SelectMany(c => c[GUID]);
 
-                       foreach (var els in query)
+                       foreach (var els in elements)
                        {
                            foreach (ElementId e in els)
                            {
