@@ -918,7 +918,7 @@ namespace Dynamo.Nodes
 
             //create a zip of the incoming args and the port data
             //to be used for type comparison
-            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
+            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType)).ToList();
             var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
 
             //there are more than zero arguments
@@ -946,7 +946,7 @@ namespace Dynamo.Nodes
                     {
                         //check if we have a list of lists, if so, then don't wrap
                         argSets.Add(
-                            Utils.IsListOfLists(arg) && !acceptsListOfLists(arg)
+                            Utils.IsListOfLists(arg) && !AcceptsListOfLists(arg)
                                 ? ((Value.List)arg).Item
                                 : Utils.MakeFSharpList(arg));
                     }
@@ -977,7 +977,7 @@ namespace Dynamo.Nodes
                 var evalDict = new Dictionary<PortData, Value>();
 
                 //run the evaluate method for each set of 
-                //arguments in the la result. do these
+                //arguments in the lace result. do these
                 //in reverse order so our cons comes out the right
                 //way around
                 foreach (var argList in lacedArgs.Reverse())
@@ -1008,7 +1008,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public virtual bool acceptsListOfLists(Value value)
+        protected virtual bool AcceptsListOfLists(Value value)
         {
             return false;
         }

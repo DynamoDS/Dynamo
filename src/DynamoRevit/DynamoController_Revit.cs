@@ -344,27 +344,23 @@ namespace Dynamo
 
         private readonly List<ElementId> _transElements = new List<ElementId>();
 
-        private readonly Dictionary<ElementId, DynElementUpdateDelegate> _transDelElements
-           = new Dictionary<ElementId, DynElementUpdateDelegate>();
+        private readonly Dictionary<DynElementUpdateDelegate, HashSet<ElementId>> _transDelElements
+           = new Dictionary<DynElementUpdateDelegate, HashSet<ElementId>>();
 
         internal void RegisterSuccessfulDeleteHook(ElementId id, DynElementUpdateDelegate updateDelegate)
         {
-            _transDelElements[id] = updateDelegate;
+            HashSet<ElementId> elements;
+            if (!_transDelElements.TryGetValue(updateDelegate, out elements))
+            {
+                elements = new HashSet<ElementId>();
+                _transDelElements[updateDelegate] = elements;
+            }
+            elements.Add(id);
         }
 
         private void CommitDeletions()
         {
-            var delDict = new Dictionary<DynElementUpdateDelegate, HashSet<ElementId>>();
             foreach (var kvp in _transDelElements)
-            {
-                if (!delDict.ContainsKey(kvp.Value))
-                {
-                    delDict[kvp.Value] = new HashSet<ElementId>();
-                }
-                delDict[kvp.Value].Add(kvp.Key);
-            }
-
-            foreach (var kvp in delDict)
                 kvp.Key(kvp.Value);
         }
 
@@ -372,16 +368,13 @@ namespace Dynamo
         {
             DynElementUpdateDelegate del = delegate(HashSet<ElementId> deleted)
             {
-                var valid = new HashSet<ElementId>();
                 var invalid = new HashSet<ElementId>();
                 foreach (var delId in deleted)
                 {
                     try
                     {
                         Element e = dynRevitSettings.Doc.Document.GetElement(delId);
-                        if (e != null)
-                            valid.Add(e.Id);
-                        else
+                        if (e == null)
                             invalid.Add(delId);
                     }
                     catch
@@ -389,7 +382,6 @@ namespace Dynamo
                         invalid.Add(delId);
                     }
                 }
-                valid.Clear();
                 updateDelegate(invalid);
                 foreach (var invId in invalid)
                 {
