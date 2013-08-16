@@ -63,7 +63,7 @@ using MessageBoxOptions = System.Windows.MessageBoxOptions;
 namespace Dynamo.Applications
 {
     //MDJ - Added by Matt Jezyk - 10.27.2011
-    [Transaction(TransactionMode.Automatic)]
+    [Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
     [Regeneration(RegenerationOption.Manual)]
     public class DynamoRevitApp : IExternalApplication
     {
@@ -155,7 +155,7 @@ namespace Dynamo.Applications
     }
 
 
-    [Transaction(TransactionMode.Manual)]
+    [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     internal class DynamoRevit : IExternalCommand
     {
