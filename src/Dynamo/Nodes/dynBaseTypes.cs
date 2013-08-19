@@ -1802,7 +1802,7 @@ namespace Dynamo.Nodes
                 }
 
                 RequiresRecalc = false;
-                OnEvaluate();
+                OnEvaluate(); //TODO: insert call into actual ast using a begin
 
                 result = new Dictionary<int, INode>();
                 result[outPort] = node;
@@ -1868,7 +1868,7 @@ namespace Dynamo.Nodes
                 }
 
                 RequiresRecalc = false;
-                OnEvaluate();
+                OnEvaluate(); //TODO: insert call into actual ast using a begin
 
                 result = new Dictionary<int, INode>();
                 result[outPort] = node;

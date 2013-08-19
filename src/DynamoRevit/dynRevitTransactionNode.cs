@@ -434,11 +434,11 @@ namespace Dynamo.Revit
 
         internal void ResetRuns()
         {
-            if (_runCount > 0)
-            {
-                PruneRuns(_runCount);
-                _runCount = 0;
-            }
+            if (_runCount <= 0) 
+                return;
+
+            PruneRuns(_runCount);
+            _runCount = 0;
         }
 
         protected override void OnEvaluate()
@@ -457,7 +457,7 @@ namespace Dynamo.Revit
             _runCount++;
         }
 
-        internal void PruneRuns(int numRuns)
+        private void PruneRuns(int numRuns)
         {
             Debug.WriteLine(string.Format("Pruning runs from {0} to {1}", elements.Count, numRuns));
 
