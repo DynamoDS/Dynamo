@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
     [NodeName("Transaction")]
     [NodeCategory(BuiltinNodeCategories.CORE_TIME)]
     [NodeDescription("Executes Expression inside of a Revit API transaction")]
-    public class dynTransaction: dynNodeWithOneOutput
+    public class dynTransaction : dynNodeModel
     {
         public dynTransaction()
         {
@@ -50,11 +50,11 @@ namespace Dynamo.Nodes
             if (ReportingEnabled)
             {
                 DisableReporting();
-                this.RequiresRecalc = val;
+                RequiresRecalc = val;
                 EnableReporting();
             }
             else
-                this.RequiresRecalc = val;
+                RequiresRecalc = val;
         }
 
         protected override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
@@ -74,12 +74,12 @@ namespace Dynamo.Nodes
 
         private class TransactionProcedureNode : InputNode
         {
-            private dynTransaction node;
+            private readonly dynTransaction _node;
             
             public TransactionProcedureNode(dynTransaction node, IEnumerable<string> inputNames)
                 : base(inputNames)
             {
-                this.node = node;
+                _node = node;
             }
 
             protected override Expression compileBody(
@@ -101,11 +101,9 @@ namespace Dynamo.Nodes
 
                             if (dynSettings.Controller.DynamoViewModel.RunInDebug)
                                 return f.Invoke(FSharpList<Value>.Empty);
-                            else
-                            {
-                                return IdlePromise<Value>.ExecuteOnIdle(
-                                    () => f.Invoke(FSharpList<Value>.Empty));
-                            }
+                            
+                            return IdlePromise<Value>.ExecuteOnIdle(
+                                () => f.Invoke(FSharpList<Value>.Empty));
                         }));
 
                 //startTransaction :: () -> ()
@@ -114,7 +112,7 @@ namespace Dynamo.Nodes
                     FSharpFunc<FSharpList<Value>, Value>.FromConverter(
                         _ =>
                         {
-                            if (node.Controller.RunCancelled)
+                            if (_node.Controller.RunCancelled)
                                 throw new CancelEvaluationException(false);
 
                             if (!dynSettings.Controller.DynamoViewModel.RunInDebug)
@@ -139,10 +137,10 @@ namespace Dynamo.Nodes
 
                                 dynSettings.Controller.DynamoViewModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
                                 
-                                node.ValidateConnections();
+                                _node.ValidateConnections();
                             }
                             else
-                                node.setDirty(false);
+                                _node.setDirty(false);
 
                             return Value.NewDummy("ended transaction");
                         }));
@@ -156,28 +154,31 @@ namespace Dynamo.Nodes
                 var idleArg = Expression.NewFun(
                     FSharpList<FScheme.Parameter>.Empty,
                     Expression.NewBegin(
-                        Utils.SequenceToFSharpList<Expression>(new List<Expression>() {
+                        Utils.SequenceToFSharpList(new List<Expression>
+                        {
                             Expression.NewList_E(
-                                Utils.SequenceToFSharpList<Expression>(
-                                    new List<Expression>() { startTransaction })),
+                                Utils.SequenceToFSharpList(
+                                    new List<Expression> { startTransaction })),
                             Expression.NewLet(
-                                Utils.SequenceToFSharpList<string>(
-                                    new List<string>() { "__result" }),
-                                Utils.SequenceToFSharpList<Expression>(
-                                    new List<Expression>() { arg }),
+                                Utils.SequenceToFSharpList(
+                                    new List<string> { "__result" }),
+                                Utils.SequenceToFSharpList(
+                                    new List<Expression> { arg }),
                                 Expression.NewBegin(
-                                    Utils.SequenceToFSharpList<Expression>(
-                                        new List<Expression>() {
+                                    Utils.SequenceToFSharpList(
+                                        new List<Expression>
+                                        {
                                             Expression.NewList_E(
-                                                Utils.SequenceToFSharpList<Expression>(
-                                                    new List<Expression>() { endTransaction })),
+                                                Utils.SequenceToFSharpList(
+                                                    new List<Expression> { endTransaction })),
                                             Expression.NewId("__result") 
                                         }))) 
                         })));
 
                 // (idle idleArg)
                 return Expression.NewList_E(
-                    Utils.SequenceToFSharpList<Expression>(new List<Expression>() {
+                    Utils.SequenceToFSharpList(new List<Expression>
+                    {
                         idle,
                         idleArg 
                     }));
