@@ -204,7 +204,7 @@ namespace Dynamo.Nodes
 
                 foreach (Value line in data)
                 {
-                    writer.WriteLine(string.Join(",", ((Value.List)line).Item.Select(x => ((Value.String)x).Item)));
+                    writer.WriteLine(string.Join(",", ((Value.List)line).Item.Select(x => x.Print())));
                 }
 
                 writer.Close();
