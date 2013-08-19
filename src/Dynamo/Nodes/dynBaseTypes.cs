@@ -154,26 +154,21 @@ namespace Dynamo.Nodes
 
     public abstract class dynVariableInput : dynNodeWithOneOutput
     {
-        protected dynVariableInput()
-        {
-            
-        }
-
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             System.Windows.Controls.Button addButton = new dynNodeButton();
             addButton.Content = "+";
             addButton.Width = 20;
             //addButton.Height = 20;
-            addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            addButton.HorizontalAlignment = HorizontalAlignment.Center;
+            addButton.VerticalAlignment = VerticalAlignment.Center;
 
             System.Windows.Controls.Button subButton = new dynNodeButton();
             subButton.Content = "-";
             subButton.Width = 20;
             //subButton.Height = 20;
-            subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            subButton.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            subButton.HorizontalAlignment = HorizontalAlignment.Center;
+            subButton.VerticalAlignment = VerticalAlignment.Top;
             
             var wp = new WrapPanel
             {
@@ -206,12 +201,12 @@ namespace Dynamo.Nodes
             return InPortData.Count;
         }
 
-        private int lastEvaledAmt;
+        private int _lastEvaledAmt;
         public override bool RequiresRecalc
         {
             get
             {
-                return lastEvaledAmt != InPortData.Count || base.RequiresRecalc;
+                return _lastEvaledAmt != InPortData.Count || base.RequiresRecalc;
             }
             set
             {
@@ -268,7 +263,9 @@ namespace Dynamo.Nodes
 
         protected override void OnEvaluate()
         {
-            lastEvaledAmt = InPortData.Count;
+            base.OnEvaluate();
+
+            _lastEvaledAmt = InPortData.Count;
         }
     }
 
@@ -757,6 +754,28 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("For Each")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Performs a computation on each element of a list. Does not accumulate results.")]
+    public class dynForEach : dynBuiltinFunction
+    {
+        public dynForEach()
+            : base(FScheme.ForEach)
+        {
+            InPortData.Add(new PortData("f(x)", "The computation to perform on each element", typeof(object)));
+            InPortData.Add(new PortData("seq", "The list to of elements.", typeof(Value.List)));
+            OutPortData.Add(new PortData("", "", typeof(Value.Dummy)));
+
+            RegisterAllPorts();
+        }
+
+        public override bool RequiresRecalc
+        {
+            get { return true; }
+            set { }
+        }
+    }
+
     [NodeName("True For All")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Tests to see if all elements in a sequence satisfy the given predicate.")]
@@ -987,7 +1006,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("An empty list")]
     [IsInteractive(false)]
-    public class dynEmpty : dynNodeWithOneOutput
+    public class dynEmpty : dynNodeModel
     {
         public dynEmpty()
         {
@@ -1736,7 +1755,7 @@ namespace Dynamo.Nodes
     [NodeName("And")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
     [NodeDescription("Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false.")]
-    public class dynAnd : dynNodeWithOneOutput
+    public class dynAnd : dynNodeModel
     {
         public dynAnd()
         {
@@ -1779,12 +1798,11 @@ namespace Dynamo.Nodes
                     //Compile input and connect it
                     node.ConnectInput(
                         InPortData[data].NickName,
-                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
-                        );
+                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1));
                 }
 
                 RequiresRecalc = false;
-                OnEvaluate();
+                OnEvaluate(); //TODO: insert call into actual ast using a begin
 
                 result = new Dictionary<int, INode>();
                 result[outPort] = node;
@@ -1797,7 +1815,7 @@ namespace Dynamo.Nodes
     [NodeName("Or")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
     [NodeDescription("Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false.")]
-    public class dynOr : dynNodeWithOneOutput
+    public class dynOr : dynNodeModel
     {
         public dynOr()
         {
@@ -1846,12 +1864,11 @@ namespace Dynamo.Nodes
                     //Compile input and connect it
                     node.ConnectInput(
                         InPortData[data].NickName,
-                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
-                        );
+                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1));
                 }
 
                 RequiresRecalc = false;
-                OnEvaluate();
+                OnEvaluate(); //TODO: insert call into actual ast using a begin
 
                 result = new Dictionary<int, INode>();
                 result[outPort] = node;
@@ -2519,6 +2536,11 @@ namespace Dynamo.Nodes
                 preBuilt[this] = result;
             }
             return result[outPort];
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            throw new NotImplementedException();
         }
     }
 

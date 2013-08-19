@@ -29,9 +29,9 @@ using System.Windows.Media.Media3D;
 namespace Dynamo.Nodes
 {
 
-    public abstract class dynParticleSystemBase : dynNodeWithMultipleOutputs, IDrawable
+    public abstract class dynParticleSystemBase : dynNodeModel, IDrawable
     {
-        internal ParticleSystem particleSystem;
+        internal ParticleSystem ParticleSystem;
 
         internal dynParticleSystemBase()
         {
@@ -51,45 +51,45 @@ namespace Dynamo.Nodes
 
         public void Draw()
         {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new Nodes.RenderDescription();
+            if (RenderDescription == null)
+                RenderDescription = new RenderDescription();
 
-            if (particleSystem == null)
+            if (ParticleSystem == null)
                 return;
 
-            for (int i = 0; i < particleSystem.numberOfParticles(); i++)
+            for (int i = 0; i < ParticleSystem.numberOfParticles(); i++)
             {
-                Particle p = particleSystem.getParticle(i);
+                Particle p = ParticleSystem.getParticle(i);
                 XYZ pos = p.getPosition();
-                if (i < this.RenderDescription.points.Count())
+                if (i < RenderDescription.points.Count())
                 {
-                    this.RenderDescription.points[i] = new Point3D(pos.X, pos.Y, pos.Z);
+                    RenderDescription.points[i] = new Point3D(pos.X, pos.Y, pos.Z);
                 }
                 else
                 {
-                    Point3D pt = new System.Windows.Media.Media3D.Point3D(pos.X, pos.Y, pos.Z);
-                    this.RenderDescription.points.Add(pt);
+                    var pt = new Point3D(pos.X, pos.Y, pos.Z);
+                    RenderDescription.points.Add(pt);
                 }
             }
 
-            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
+            for (int i = 0; i < ParticleSystem.numberOfSprings(); i++)
             {
-                ParticleSpring ps = particleSystem.getSpring(i);
+                ParticleSpring ps = ParticleSystem.getSpring(i);
                 XYZ pos1 = ps.getOneEnd().getPosition();
                 XYZ pos2 = ps.getTheOtherEnd().getPosition();
 
-                if (i * 2 + 1 < this.RenderDescription.lines.Count())
+                if (i * 2 + 1 < RenderDescription.lines.Count())
                 {
-                    this.RenderDescription.lines[i * 2] = new Point3D(pos1.X, pos1.Y, pos1.Z);
-                    this.RenderDescription.lines[i * 2 + 1] = new Point3D(pos2.X, pos2.Y, pos2.Z);
+                    RenderDescription.lines[i * 2] = new Point3D(pos1.X, pos1.Y, pos1.Z);
+                    RenderDescription.lines[i * 2 + 1] = new Point3D(pos2.X, pos2.Y, pos2.Z);
                 }
                 else
                 {
-                    Point3D pt1 = new System.Windows.Media.Media3D.Point3D(pos1.X, pos1.Y, pos1.Z);
-                    Point3D pt2 = new System.Windows.Media.Media3D.Point3D(pos2.X, pos2.Y, pos2.Z);
+                    var pt1 = new Point3D(pos1.X, pos1.Y, pos1.Z);
+                    var pt2 = new Point3D(pos2.X, pos2.Y, pos2.Z);
 
-                    this.RenderDescription.lines.Add(pt1);
-                    this.RenderDescription.lines.Add(pt2);
+                    RenderDescription.lines.Add(pt1);
+                    RenderDescription.lines.Add(pt2);
                 }
             }
         }
@@ -106,13 +106,19 @@ namespace Dynamo.Nodes
         private double _r;
         private double _g;
         private int _fixPtCount;
-        private bool _use_rl;
+        private bool _useRl;
         private double _rlf;
         private double _threshold;
-        private bool _reset = false;
+        private bool _reset;
         private FSharpList<Value> _points;
         private FSharpList<Value> _curves;
- 
+
+        private readonly PortData _psPort = new PortData(
+            "ps", "Particle System", typeof(ParticleSystem));
+
+        private readonly PortData _forcesPort = new PortData(
+            "forces", "Member forces.", typeof(Value.List));
+
         public dynDynamicRelaxation()
         {
             InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(Value.List)));
@@ -127,12 +133,12 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(Value.Number)));
             InPortData.Add(new PortData("threshold", "The convergence threshold. When the maximum nodal velocity falls below this number, the particle system is flagged \"converged\".", typeof(Value.Number)));
 
-            OutPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
-            OutPortData.Add(new PortData("f", "Member forces.", typeof(Value.List)));
+            OutPortData.Add(_psPort);
+            OutPortData.Add(_forcesPort);
 
             RegisterAllPorts();
 
-            particleSystem = new ParticleSystem();
+            ParticleSystem = new ParticleSystem();
 
         }
 
@@ -148,17 +154,17 @@ namespace Dynamo.Nodes
                     if (i == 0)
                     {
                         partXYZ = new XYZ(0, j*stepSize, 0);
-                        Particle a = particleSystem.makeParticle(mass, partXYZ, true);
+                        Particle a = ParticleSystem.makeParticle(mass, partXYZ, true);
                     }
                     else
                     {
                         partXYZ = new XYZ(i * stepSize, j * stepSize, 0);
-                        Particle b = particleSystem.makeParticle(mass, partXYZ, false);
-                        particleSystem.makeSpring(particleSystem.getParticle((i - 1)+(j*maxPartX)), b, springRestLength, springConstant, springDampening);
+                        Particle b = ParticleSystem.makeParticle(mass, partXYZ, false);
+                        ParticleSystem.makeSpring(ParticleSystem.getParticle((i - 1)+(j*maxPartX)), b, springRestLength, springConstant, springDampening);
                     }
                     if (i == maxPartX - 1)
                     {
-                        particleSystem.getParticle(i + (j*maxPartX)).makeFixed();
+                        ParticleSystem.getParticle(i + (j*maxPartX)).makeFixed();
                     }
                 }
 
@@ -166,10 +172,10 @@ namespace Dynamo.Nodes
                 {
                     for (int i = 0; i < maxPartX; i++)
                     {
-                        Particle a = particleSystem.getParticle(i + (j * maxPartX));
-                        Particle b = particleSystem.getParticle(i + ((j - 1 )*maxPartX));
+                        Particle a = ParticleSystem.getParticle(i + (j * maxPartX));
+                        Particle b = ParticleSystem.getParticle(i + ((j - 1 )*maxPartX));
 
-                        particleSystem.makeSpring(a, b, springRestLength, springConstant, springDampening);
+                        ParticleSystem.makeSpring(a, b, springRestLength, springConstant, springDampening);
                     }
                 }
             }
@@ -181,7 +187,7 @@ namespace Dynamo.Nodes
             Particle p;
 
             XYZ partXYZ1 = pt1.Position;
-            Particle fixedPart1 = particleSystem.makeParticleFromElementID(pt1.Id, mass, pt1.Position, true); // true means 'make fixed'
+            Particle fixedPart1 = ParticleSystem.makeParticleFromElementID(pt1.Id, mass, pt1.Position, true); // true means 'make fixed'
 
             XYZ partXYZ2 = partXYZ1 + new XYZ(10, 0, 0);
             //Line tempLine = this.UIDocument.Application.Application.Create.NewLineBound(partXYZ1, partXYZ2);
@@ -199,14 +205,14 @@ namespace Dynamo.Nodes
                 {
                     //curveParam = (double)j / numX;
                     //pointOnLine = tempLine.Evaluate(curveParam, true);
-                    p = particleSystem.makeParticle(mass, pointOnLine, true); // make first particle fixed
+                    p = ParticleSystem.makeParticle(mass, pointOnLine, true); // make first particle fixed
                 }
                 else // middle points
                 {
                     //curveParam = (double)j / numX;
                     //pointOnLine = tempLine.Evaluate(curveParam, true);
-                    p = particleSystem.makeParticle(mass, pointOnLine, false); // make a new particle along curve at j-th point on line
-                    particleSystem.makeSpring(particleSystem.getParticle((j - 1)), p, springRestLength, springConstant, springDampening);//make a new spring and connect it to the last-made point
+                    p = ParticleSystem.makeParticle(mass, pointOnLine, false); // make a new particle along curve at j-th point on line
+                    ParticleSystem.makeSpring(ParticleSystem.getParticle((j - 1)), p, springRestLength, springConstant, springDampening);//make a new spring and connect it to the last-made point
                 }
             }
 
@@ -229,20 +235,20 @@ namespace Dynamo.Nodes
 
                 if (j == 0) // starting point
                 {
-                    p = particleSystem.makeParticle(mass, partXYZ1, true); // make first particle fixed
+                    p = ParticleSystem.makeParticle(mass, partXYZ1, true); // make first particle fixed
                 }
                 else if(j > 0 && j < numX-1) // middle points
                 {
                     pointOnLine = partXYZ1 + lineVec.Normalize() * (j * stepSize);
-                    p = particleSystem.makeParticle(mass, pointOnLine, false); // make a new particle along curve at j-th point on line
-                    p2 = particleSystem.getParticle(j - 1);
-                    particleSystem.makeSpring(p, p2, springRestLength, springConstant, springDampening);//make a new spring and connect it to the last-made point
+                    p = ParticleSystem.makeParticle(mass, pointOnLine, false); // make a new particle along curve at j-th point on line
+                    p2 = ParticleSystem.getParticle(j - 1);
+                    ParticleSystem.makeSpring(p, p2, springRestLength, springConstant, springDampening);//make a new spring and connect it to the last-made point
                 }
                 else //last point - fixed
                 {
-                    p = particleSystem.getParticle(j - 1);
-                    p2 = particleSystem.makeParticle(mass, partXYZ2, true); // make last particle fixed
-                    particleSystem.makeSpring(p, p2, springRestLength, springConstant, springDampening);//make a new spring and connect the j-th point to the fixed point
+                    p = ParticleSystem.getParticle(j - 1);
+                    p2 = ParticleSystem.makeParticle(mass, partXYZ2, true); // make last particle fixed
+                    ParticleSystem.makeSpring(p, p2, springRestLength, springConstant, springDampening);//make a new spring and connect the j-th point to the fixed point
                 }
             }
 
@@ -254,7 +260,7 @@ namespace Dynamo.Nodes
             foreach (var pt in points)
             {
                 var xyz = (XYZ) ((Value.Container) pt).Item;
-                particleSystem.makeParticle(_m, xyz, true);
+                ParticleSystem.makeParticle(_m, xyz, true);
             }
 
             //create all the springs, checking for existing particles
@@ -265,35 +271,35 @@ namespace Dynamo.Nodes
                 XYZ end = curve.get_EndPoint(1);
 
                 //find an existing particle to use
-                Particle a = particleSystem.getParticleByXYZ(start);
-                Particle b = particleSystem.getParticleByXYZ(end);
+                Particle a = ParticleSystem.getParticleByXYZ(start);
+                Particle b = ParticleSystem.getParticleByXYZ(end);
 
                 //if not, create a particle
                 if (a == null)
-                    a = particleSystem.makeParticle(_m, start, false);
+                    a = ParticleSystem.makeParticle(_m, start, false);
                 if (b == null)
-                    b = particleSystem.makeParticle(_m, end, false);
+                    b = ParticleSystem.makeParticle(_m, end, false);
 
-                if (_use_rl)
-                    particleSystem.makeSpring(a, b, _r, _s, _d);
+                if (_useRl)
+                    ParticleSystem.makeSpring(a, b, _r, _s, _d);
                 else
                 {
                     double restLength = start.DistanceTo(end)*_rlf;
-                    particleSystem.makeSpring(a, b, restLength, _s, _d);
+                    ParticleSystem.makeSpring(a, b, restLength, _s, _d);
                 }
                     
             }
 
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             _points = ((Value.List)args[0]).Item;//point list
             _curves = ((Value.List)args[1]).Item;//spring list
             _d = ((Value.Number)args[2]).Item;//dampening
             _s = ((Value.Number)args[3]).Item;//spring constant
             _r = ((Value.Number)args[4]).Item;//rest length
-            _use_rl = Convert.ToBoolean(((Value.Number)args[5]).Item);//use rest length
+            _useRl = Convert.ToBoolean(((Value.Number)args[5]).Item);//use rest length
             _rlf = ((Value.Number)args[6]).Item;//rest length factor
             _m = ((Value.Number)args[7]).Item;//nodal mass
             _g = ((Value.Number)args[8]).Item;//gravity z component
@@ -302,15 +308,15 @@ namespace Dynamo.Nodes
             //if we are in the evaluate, this has been
             //marked dirty and we should set it to unconverged
             //in case one of the inputs has changed.
-            particleSystem.setConverged(false);
-            particleSystem.setGravity(_g);
-            particleSystem.setThreshold(_threshold);
+            ParticleSystem.setConverged(false);
+            ParticleSystem.setGravity(_g);
+            ParticleSystem.setThreshold(_threshold);
 
             //if the particle system has a different layout, then
             //clear it instead of updating
-            if(particleSystem.numberOfParticles() == 0 ||
+            if(ParticleSystem.numberOfParticles() == 0 ||
                 _fixPtCount != _points.Count() ||
-                _curves.Count() != particleSystem.numberOfSprings() ||
+                _curves.Count() != ParticleSystem.numberOfSprings() ||
                 _reset)
             {
                 ResetSystem(_points, _curves);
@@ -320,36 +326,25 @@ namespace Dynamo.Nodes
                 UpdateSystem();
             }
 
-            FSharpList<Value> forces = FSharpList<Value>.Empty;
-            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
-            {
-                forces = FSharpList<Value>.Cons(Value.NewNumber(particleSystem.getSpring(i).getResidualForce()), forces);
-            }
-            forces.Reverse();
-
-            FSharpList<Value> results = FSharpList<Value>.Empty;
-            results = FSharpList<Value>.Cons(Value.NewList(forces), results);
-            results = FSharpList<Value>.Cons(Value.NewContainer(particleSystem), results);
-
-            //return Value.NewContainer(particleSystem);
-            return Value.NewList(results);
-
+            outPuts[_psPort] = Value.NewContainer(ParticleSystem);
+            outPuts[_forcesPort] = Value.NewList(Utils.SequenceToFSharpList(
+                ParticleSystem.Springs.Select(s => Value.NewNumber(s.getResidualForce()))));
         }
 
         private void UpdateSystem()
         {
             //update the spring values
-            for (int j = 0; j < particleSystem.numberOfSprings(); j++)
+            for (int j = 0; j < ParticleSystem.numberOfSprings(); j++)
             {
-                ParticleSpring spring = particleSystem.getSpring(j);
+                ParticleSpring spring = ParticleSystem.getSpring(j);
                 spring.setDamping(_d);
-                if (!_use_rl)
+                if (!_useRl)
                     spring.setRestLength(_r);
                 spring.setSpringConstant(_s);
             }
-            for (int j = 0; j < particleSystem.numberOfParticles(); j++)
+            for (int j = 0; j < ParticleSystem.numberOfParticles(); j++)
             {
-                Particle p = particleSystem.getParticle(j);
+                Particle p = ParticleSystem.getParticle(j);
                 p.setMass(_m);
             }
         }
@@ -360,18 +355,18 @@ namespace Dynamo.Nodes
                 return;
 
             //particleSystem.Clear();
-            particleSystem = null;
-            particleSystem = new ParticleSystem();
+            ParticleSystem = null;
+            ParticleSystem = new ParticleSystem();
 
             _fixPtCount = points.Count();
 
-            particleSystem.setConverged(false);
-            particleSystem.setGravity(_g);
-            particleSystem.setThreshold(_threshold);
+            ParticleSystem.setConverged(false);
+            ParticleSystem.setGravity(_g);
+            ParticleSystem.setThreshold(_threshold);
 
             CreateSpringsFromCurves(curves, points);
 
-            DispatchOnUIThread(new Action(dynSettings.Controller.RequestClearDrawables));
+            DispatchOnUIThread(dynSettings.Controller.RequestClearDrawables);
 
             _reset = false;
         }
@@ -380,13 +375,13 @@ namespace Dynamo.Nodes
         {
  	         base.SetupCustomUIElements(nodeUI);
             
-            var resetButt = new Button()
-                {
-                    Content = "Reset",
-                    ToolTip = "Resets the system to its initial state.",
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Top
-                };
+            var resetButt = new Button
+            {
+                Content = "Reset",
+                ToolTip = "Resets the system to its initial state.",
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Top
+            };
 
             resetButt.Click += delegate
                 {
@@ -417,7 +412,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("ps", "Particle System", typeof(Value.Container)));
             RegisterAllPorts();
 
-            particleSystem = new ParticleSystem();
+            ParticleSystem = new ParticleSystem();
         }
 
         void setupParticleSystem(Autodesk.Revit.DB.Face f, int uDiv, int vDiv, double springDampening, double springRestLength, double springConstant, double mass)
@@ -434,16 +429,16 @@ namespace Dynamo.Nodes
                 {
                     double v = bbox.Min.V + vStep * i;
 
-                    Particle a = particleSystem.makeParticle(mass, f.Evaluate(new UV(u, v)), false);
+                    Particle a = ParticleSystem.makeParticle(mass, f.Evaluate(new UV(u, v)), false);
                     if(i > 0)
                     {   
-                        particleSystem.makeSpring(particleSystem.getParticle((i - 1) + (j * (vDiv+1))), a, springRestLength, springConstant, springDampening);
+                        ParticleSystem.makeSpring(ParticleSystem.getParticle((i - 1) + (j * (vDiv+1))), a, springRestLength, springConstant, springDampening);
                     }
 
                     if (j > 0)
                     {
-                        Particle b = particleSystem.getParticle(i + ((j - 1) * (vDiv+1)));
-                        particleSystem.makeSpring(a, b, springRestLength, springConstant, springDampening);
+                        Particle b = ParticleSystem.getParticle(i + ((j - 1) * (vDiv+1)));
+                        ParticleSystem.makeSpring(a, b, springRestLength, springConstant, springDampening);
                     }
 
                     if (i == 0 || i == vDiv || j==0 || j==uDiv)
@@ -454,7 +449,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             object arg0 = ((Value.Container)args[0]).Item;
             Autodesk.Revit.DB.Face f = null;
@@ -472,15 +467,15 @@ namespace Dynamo.Nodes
             int numY = (int)((Value.Number)args[6]).Item;//number of particles in Y
             double g = ((Value.Number)args[7]).Item;//gravity z component
 
-            particleSystem.setIsFaceConstrained(true);
-            particleSystem.setConstraintFace(f);
+            ParticleSystem.setIsFaceConstrained(true);
+            ParticleSystem.setConstraintFace(f);
 
-            particleSystem.Clear();
+            ParticleSystem.Clear();
 
             setupParticleSystem(f, numX, numY, d, r, s, m);
-            particleSystem.setGravity(g);
+            ParticleSystem.setGravity(g);
 
-            return Value.NewContainer(particleSystem);
+            outPuts[OutPortData[0]] = Value.NewContainer(ParticleSystem);
         }
     }
 
@@ -488,9 +483,15 @@ namespace Dynamo.Nodes
     [NodeDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     [IsInteractive(true)]
-    public class dynDynamicRelaxationStep: dynNodeWithMultipleOutputs
+    public class dynDynamicRelaxationStep : dynNodeModel
     {
-        private ParticleSystem particleSystem;
+        private readonly PortData _vMaxPort = new PortData(
+            "vMax", "Maximum nodal velocity.", typeof(Value.Number));
+
+        private readonly PortData _convergedPort = new PortData(
+            "converged?",
+            "Has the maximum nodal velocity dropped below the threshold set for the system?",
+            typeof(Value.Number));
 
         public dynDynamicRelaxationStep()
         {
@@ -498,34 +499,32 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("step", "Time to step.", typeof(Value.Number)));
             InPortData.Add(new PortData("interval", "An execution interval.", typeof(Value.Number)));
             
-            OutPortData.Add(new PortData("max_v", "Maximum nodal velocity.", typeof(Value.Number))); 
-            OutPortData.Add(new PortData("converged?", "Has the maximum nodal velocity dropped below the threshold set for the system?", typeof(Value.Number)));
+            OutPortData.Add(_vMaxPort); 
+            OutPortData.Add(_convergedPort);
 
             RegisterAllPorts();
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            var particleSystem = (ParticleSystem)((Value.Container)args[0]).Item;
+            var partSys = (ParticleSystem)((Value.Container)args[0]).Item;
             double timeStep = ((Value.Number)args[1]).Item;
-            particleSystem.step(timeStep);//in ms
+            partSys.step(timeStep);//in ms
 
             //trigger an intermittent update on the controller
             //this is useful for when this node is used in an infinite
             //loop and you need to draw its contents
             dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
 
-            return Value.NewList(Utils.MakeFSharpList<Value>(
-                new Value[] { Value.NewNumber(particleSystem.getMaxNodalVelocity()), Value.NewNumber(Convert.ToInt16(particleSystem.getConverged())) })
-                );
+            outPuts[_vMaxPort] = Value.NewNumber(partSys.getMaxNodalVelocity());
+            outPuts[_convergedPort] = Value.NewNumber(Convert.ToInt16(partSys.getConverged()));
         }
-
     }
 
     [NodeName("XYZs from Particle System")]
     [NodeDescription("Creates XYZs from a Particle System.")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
-    public class dynXYZsFromPS: dynNodeWithOneOutput
+    public class dynXYZsFromPS : dynNodeWithOneOutput
     {
         public dynXYZsFromPS()
         {
@@ -534,32 +533,21 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
         }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
+            var particleSystem = (ParticleSystem)((Value.Container)args[0]).Item;
 
-            ParticleSystem particleSystem = (ParticleSystem)((Value.Container)args[0]).Item;
-
-            var result = FSharpList<Value>.Empty;
-
-            Particle p;
-            XYZ pt;
-
-            //create an XYZ from each Particle
-            for (int i = 0; i < particleSystem.numberOfParticles(); i++)
-            {
-                p = particleSystem.getParticle(i);
-                pt = new XYZ(p.getPosition().X, p.getPosition().Y, p.getPosition().Z);
-                result = FSharpList<Value>.Cons(Value.NewContainer(pt), result);
-            }
-
-            return Value.NewList(result);
+            return Value.NewList(
+                Utils.SequenceToFSharpList(
+                    particleSystem.Particles.Select(p => Value.NewContainer(p.getPosition()))));
         }
     }
 
     [NodeName("Curves from Particle System")]
     [NodeDescription("Creates Curves from a Particle System.")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
-    public class dynCurvesFromPS: dynNodeWithOneOutput
+    public class dynCurvesFromPS : dynNodeWithOneOutput
     {
         public dynCurvesFromPS()
         {
@@ -571,28 +559,20 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-
-            ParticleSystem particleSystem = (ParticleSystem)((Value.Container)args[0]).Item;
+            var particleSystem = (ParticleSystem)((Value.Container)args[0]).Item;
 
             var result = FSharpList<Value>.Empty;
-
-            ParticleSpring s;
-            Particle springEnd1;
-            Particle springEnd2;
-            XYZ springXYZ1;
-            XYZ springXYZ2;
-            Line springLine;
 
             //create a geometry curve from each spring
             for (int i = 0; i < particleSystem.numberOfSprings(); i++)
             {
-                s = particleSystem.getSpring(i);
-                springEnd1 = s.getOneEnd();
-                springEnd2 = s.getTheOtherEnd();
+                ParticleSpring s = particleSystem.getSpring(i);
+                Particle springEnd1 = s.getOneEnd();
+                Particle springEnd2 = s.getTheOtherEnd();
 
-                springXYZ1 = springEnd1.getPosition();
-                springXYZ2 = springEnd2.getPosition();
-                springLine = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
+                XYZ springXYZ1 = springEnd1.getPosition();
+                XYZ springXYZ2 = springEnd2.getPosition();
+                Line springLine = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
 
                 result = FSharpList<Value>.Cons(Value.NewContainer(springLine), result);
             }
