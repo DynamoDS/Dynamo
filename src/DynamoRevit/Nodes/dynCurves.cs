@@ -1158,6 +1158,7 @@ namespace Dynamo.Nodes
                 }
 
                 int maxIterNum = 15;
+                bool bUnbound = dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef);
 
                 int iterNum = 0;
                 for (; iterNum < maxIterNum; iterNum++)
@@ -1177,18 +1178,20 @@ namespace Dynamo.Nodes
                         if (nextXYZ != null)
                             thisXYZ = nextXYZ;
                         else
-                            thisXYZ = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+                            thisXYZ = !bUnbound ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
  
                         double tNext = (iParam == numParams - 1) ?  1.0 : curveParams[iParam + 1];
-                        nextXYZ = (iParam == numParams - 1) ? endPoint : 
-                                   !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(tNext, true) : crvRef.Evaluate(tNext * crvRef.Period, false);
+                        nextXYZ = (iParam == numParams - 1) ? endPoint :
+                                   !bUnbound ? crvRef.Evaluate(tNext, true) : crvRef.Evaluate(tNext * crvRef.Period, false);
 
                         distValues[iParam] = thisXYZ.DistanceTo(prevPoint) - thisXYZ.DistanceTo(nextXYZ);
 
                         if (Math.Abs(distValues[iParam]) > maxDistVal)
                             maxDistVal = Math.Abs(distValues[iParam]);
-                        Transform  thisDerivTrf =  !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.ComputeDerivatives(t, true) : crvRef.ComputeDerivatives(t * crvRef.Period, false);
+                        Transform thisDerivTrf = !bUnbound ? crvRef.ComputeDerivatives(t, true) : crvRef.ComputeDerivatives(t * crvRef.Period, false);
                         XYZ derivThis = thisDerivTrf.BasisX;
+                        if (bUnbound)
+                            derivThis = derivThis.Multiply(crvRef.Period);
                         double distPrev = thisXYZ.DistanceTo(prevPoint);
                         if (distPrev  > Double.Epsilon)
                         {
@@ -1216,20 +1219,34 @@ namespace Dynamo.Nodes
                     Matrix<double> iterMatInvert = iterMat.Inverse();
                     Vector<double> changeValues = iterMatInvert.Multiply(distValues);
 
+                    double dampingFactor = 1.0;
+
                     for (int iParam = 0; iParam < numParams; iParam++)
                     {
-                        curveParams[iParam] -= changeValues[iParam];
+                        curveParams[iParam] -= dampingFactor * changeValues[iParam];
 
                         if (iParam == 0 && curveParams[iParam] < 0.000000001)
                         {
-                            curveParams[iParam] = 0.5 * (changeValues[iParam] + curveParams[iParam]);
+                            double oldValue = dampingFactor * changeValues[iParam] + curveParams[iParam];
+                            while (curveParams[iParam] < 0.000000001)
+                               curveParams[iParam] = 0.5 * (dampingFactor * changeValues[iParam] + curveParams[iParam]);
+                            changeValues[iParam] = (oldValue - curveParams[iParam]) / dampingFactor;
                         }
                         else if (iParam > 0 &&  curveParams[iParam] < 0.000000001 + curveParams[iParam - 1])
                         {
-                             curveParams[iParam] = 0.5 * (curveParams[iParam - 1] + changeValues[iParam] + curveParams[iParam]);
+                            for (; iParam > -1; iParam--)
+                                curveParams[iParam] = dampingFactor * changeValues[iParam] + curveParams[iParam];
+
+                            dampingFactor *= 0.5;
+                            continue;
                         }
                         else if (iParam == numParams - 1 && curveParams[iParam] > 1.0 - 0.000000001)
-                            curveParams[iParam] = 0.5 * (1.0 + changeValues[iParam] + curveParams[iParam]);
+                        {
+                            double oldValue = dampingFactor * changeValues[iParam] + curveParams[iParam];
+                            while (curveParams[iParam] > 1.0 - 0.000000001)
+                                 curveParams[iParam] = 0.5 * (1.0 + dampingFactor * changeValues[iParam] + curveParams[iParam]);
+                            changeValues[iParam] = (oldValue - curveParams[iParam]) / dampingFactor;
+                        }
                     }
                     if (maxDistVal < 0.000000001)
                     {
