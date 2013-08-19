@@ -366,45 +366,47 @@ namespace Dynamo
 
         internal void RegisterDMUHooks(ElementId id, DynElementUpdateDelegate updateDelegate)
         {
+            // Redundancies? Leaving commented out for now. -SJE
+
             DynElementUpdateDelegate del = delegate(HashSet<ElementId> deleted)
             {
-                var invalid = new HashSet<ElementId>();
-                foreach (var delId in deleted)
-                {
-                    try
-                    {
-                        Element e = dynRevitSettings.Doc.Document.GetElement(delId);
-                        if (e == null)
-                            invalid.Add(delId);
-                    }
-                    catch
-                    {
-                        invalid.Add(delId);
-                    }
-                }
-                updateDelegate(invalid);
-                foreach (var invId in invalid)
+                //var invalid = new HashSet<ElementId>();
+                //foreach (var delId in deleted)
+                //{
+                //    try
+                //    {
+                //        Element e = dynRevitSettings.Doc.Document.GetElement(delId);
+                //        if (e == null)
+                //            invalid.Add(delId);
+                //    }
+                //    catch
+                //    {
+                //        invalid.Add(delId);
+                //    }
+                //}
+                foreach (var invId in deleted)//invalid)
                 {
                     Updater.UnRegisterChangeHook(invId, ChangeTypeEnum.Modify);
                     Updater.UnRegisterChangeHook(invId, ChangeTypeEnum.Add);
                     Updater.UnRegisterChangeHook(invId, ChangeTypeEnum.Delete);
                 }
+                updateDelegate(deleted);//invalid);
             };
 
-            DynElementUpdateDelegate mod = delegate(HashSet<ElementId> modded)
-            {
-                _transElements.RemoveAll(modded.Contains);
+            //DynElementUpdateDelegate mod = delegate(HashSet<ElementId> modded)
+            //{
+            //    _transElements.RemoveAll(modded.Contains);
 
-                foreach (var mid in modded)
-                {
-                    Updater.UnRegisterChangeHook(mid, ChangeTypeEnum.Modify);
-                    Updater.UnRegisterChangeHook(mid, ChangeTypeEnum.Add);
-                }
-            };
+            //    foreach (var mid in modded)
+            //    {
+            //        Updater.UnRegisterChangeHook(mid, ChangeTypeEnum.Modify);
+            //        Updater.UnRegisterChangeHook(mid, ChangeTypeEnum.Add);
+            //    }
+            //};
 
             Updater.RegisterChangeHook(id, ChangeTypeEnum.Delete, del);
-            Updater.RegisterChangeHook(id, ChangeTypeEnum.Modify, mod);
-            Updater.RegisterChangeHook(id, ChangeTypeEnum.Add, mod);
+            //Updater.RegisterChangeHook(id, ChangeTypeEnum.Modify, mod);
+            //Updater.RegisterChangeHook(id, ChangeTypeEnum.Add, mod);
             _transElements.Add(id);
         }
 
