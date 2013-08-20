@@ -116,7 +116,8 @@ namespace Dynamo.Nodes
 
         void p_PortDisconnected(object sender, EventArgs e)
         {
-            Root.Children.Clear();
+            if(Root != null)
+                Root.Children.Clear();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

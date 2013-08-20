@@ -144,7 +144,6 @@ namespace Dynamo.Nodes
     {
         protected dynVariableInput()
         {
-            
         }
 
         protected abstract string GetInputRootName();
@@ -155,12 +154,12 @@ namespace Dynamo.Nodes
             return InPortData.Count;
         }
 
-        private int lastEvaledAmt;
+        private int _lastEvaledAmt;
         public override bool RequiresRecalc
         {
             get
             {
-                return lastEvaledAmt != InPortData.Count || base.RequiresRecalc;
+                return _lastEvaledAmt != InPortData.Count || base.RequiresRecalc;
             }
             set
             {
@@ -217,7 +216,9 @@ namespace Dynamo.Nodes
 
         protected override void OnEvaluate()
         {
-            lastEvaledAmt = InPortData.Count;
+            base.OnEvaluate();
+
+            _lastEvaledAmt = InPortData.Count;
         }
     }
 
@@ -596,14 +597,14 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Cartesian Product")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
-    [NodeSearchTags("cross")]
-    public class dynCartProd : dynVariableInput
+    public class dynLacerBase : dynVariableInput
     {
-        public dynCartProd()
+        private readonly Func<FSharpList<Value>, Value> _func;
+
+        public dynLacerBase(Func<FSharpList<Value>, Value> func)
         {
+            _func = func;
+
             InPortData.Add(new PortData("comb", "Combinator", typeof(object)));
             InPortData.Add(new PortData("list1", "List #1", typeof(Value.List)));
             InPortData.Add(new PortData("list2", "List #2", typeof(Value.List)));
@@ -661,8 +662,33 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return FScheme.CartProd(args);
+            return _func(args);
         }
+    }
+
+    [NodeName("Cartesian Product")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
+    [NodeSearchTags("cross")]
+    public class dynCartProd : dynLacerBase
+    {
+        public dynCartProd() : base(FScheme.CartProd) { }
+    }
+
+    [NodeName("Lace Shortest")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.")]
+    public class dynLaceShortest : dynLacerBase
+    {
+        public dynLaceShortest() : base(FScheme.LaceShortest) { }
+    }
+
+    [NodeName("Lace Longest")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.")]
+    public class dynLaceLongest : dynLacerBase
+    {
+        public dynLaceLongest() : base(FScheme.LaceLongest) { }
     }
 
     [NodeName("Map")]
@@ -678,6 +704,28 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("mapped", "Mapped sequence", typeof(Value.List)));
 
             RegisterAllPorts();
+        }
+    }
+
+    [NodeName("For Each")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Performs a computation on each element of a list. Does not accumulate results.")]
+    public class dynForEach : dynBuiltinFunction
+    {
+        public dynForEach()
+            : base(FScheme.ForEach)
+        {
+            InPortData.Add(new PortData("f(x)", "The computation to perform on each element", typeof(object)));
+            InPortData.Add(new PortData("seq", "The list to of elements.", typeof(Value.List)));
+            OutPortData.Add(new PortData("", "", typeof(Value.Dummy)));
+
+            RegisterAllPorts();
+        }
+
+        public override bool RequiresRecalc
+        {
+            get { return true; }
+            set { }
         }
     }
 
@@ -911,7 +959,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("An empty list")]
     [IsInteractive(false)]
-    public class dynEmpty : dynNodeWithOneOutput
+    public class dynEmpty : dynNodeModel
     {
         public dynEmpty()
         {
@@ -1633,7 +1681,7 @@ namespace Dynamo.Nodes
     [NodeName("And")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
     [NodeDescription("Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false.")]
-    public class dynAnd : dynNodeWithOneOutput
+    public class dynAnd : dynNodeModel
     {
         public dynAnd()
         {
@@ -1676,12 +1724,11 @@ namespace Dynamo.Nodes
                     //Compile input and connect it
                     node.ConnectInput(
                         InPortData[data].NickName,
-                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
-                        );
+                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1));
                 }
 
                 RequiresRecalc = false;
-                OnEvaluate();
+                OnEvaluate(); //TODO: insert call into actual ast using a begin
 
                 result = new Dictionary<int, INode>();
                 result[outPort] = node;
@@ -1694,7 +1741,7 @@ namespace Dynamo.Nodes
     [NodeName("Or")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
     [NodeDescription("Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false.")]
-    public class dynOr : dynNodeWithOneOutput
+    public class dynOr : dynNodeModel
     {
         public dynOr()
         {
@@ -1738,12 +1785,11 @@ namespace Dynamo.Nodes
                     //Compile input and connect it
                     node.ConnectInput(
                         InPortData[data].NickName,
-                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
-                        );
+                        Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1));
                 }
 
                 RequiresRecalc = false;
-                OnEvaluate();
+                OnEvaluate(); //TODO: insert call into actual ast using a begin
 
                 result = new Dictionary<int, INode>();
                 result[outPort] = node;
@@ -2411,6 +2457,11 @@ namespace Dynamo.Nodes
                 preBuilt[this] = result;
             }
             return result[outPort];
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            throw new NotImplementedException();
         }
     }
 

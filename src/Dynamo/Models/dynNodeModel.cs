@@ -13,6 +13,7 @@ using Dynamo.Utilities;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Core;
+using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Models
 {
@@ -790,7 +791,7 @@ namespace Dynamo.Models
                 var result = evaluateNode(args);
 
                 // if it was a failure, the old value is null
-                if (result.IsString && (result as FScheme.Value.String).Item == _failureString)
+                if (result.IsString && (result as FScheme.Value.String).Item == FailureString)
                 {
                     OldValue = null;
                 }
@@ -809,13 +810,11 @@ namespace Dynamo.Models
         /// Wraps node evaluation logic so that it can be called in different threads.
         /// </summary>
         /// <returns>Some(Value) -> Result | None -> Run was cancelled</returns>
-        private delegate FSharpOption<FScheme.Value> innerEvaluationDelegate();
-
-        public Dictionary<PortData, FScheme.Value> evaluationDict = new Dictionary<PortData, FScheme.Value>();
+        private delegate FSharpOption<FScheme.Value> InnerEvaluationDelegate();
 
         public FScheme.Value GetValue(int outPortIndex)
         {
-            return evaluationDict.Values.ElementAt(outPortIndex);
+            return _evaluationDict.Values.ElementAt(outPortIndex);
         }
 
         protected internal virtual FScheme.Value evaluateNode(FSharpList<FScheme.Value> args)
@@ -827,12 +826,13 @@ namespace Dynamo.Models
                 savePortMappings();
             }
 
-            evaluationDict.Clear();
+            var evalDict = new Dictionary<PortData, FScheme.Value>();
+            _evaluationDict = evalDict;
 
             object[] iaAttribs = GetType().GetCustomAttributes(typeof(IsInteractiveAttribute), false);
             bool isInteractive = iaAttribs.Length > 0 && ((IsInteractiveAttribute)iaAttribs[0]).IsInteractive;
 
-            innerEvaluationDelegate evaluation = delegate
+            InnerEvaluationDelegate evaluation = delegate
             {
                 FScheme.Value expr = null;
 
@@ -842,16 +842,14 @@ namespace Dynamo.Models
                         throw new CancelEvaluationException(false);
                     
 
-                    __eval_internal(args, evaluationDict);
+                    __eval_internal(args, evalDict);
 
                     expr = OutPortData.Count == 1
-                        ? evaluationDict[OutPortData[0]]
-                        : FScheme.Value.NewList(
+                        ? evalDict[OutPortData[0]]
+                        : Value.NewList(
                             Utils.SequenceToFSharpList(
-                                evaluationDict.OrderBy(
-                                    pair => OutPortData.IndexOf(pair.Key))
-                                .Select(
-                                    pair => pair.Value)));
+                                evalDict.OrderBy(pair => OutPortData.IndexOf(pair.Key))
+                                    .Select(pair => pair.Value)));
 
                     ValidateConnections();
                 }
@@ -862,7 +860,6 @@ namespace Dynamo.Models
                 }
                 catch (Exception ex)
                 {
-
                     Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                     DynamoLogger.Instance.Log(ex);
 
@@ -881,8 +878,6 @@ namespace Dynamo.Models
                 }
                 
 
-                OnEvaluate();
-
                 RequiresRecalc = false;
 
                 return FSharpOption<FScheme.Value>.Some(expr);
@@ -897,39 +892,122 @@ namespace Dynamo.Models
             {
                 throw new CancelEvaluationException(false);
             }
-            else
-            {
-                if (result.Value != null)
-                    return result.Value;
-                else
-                    return FScheme.Value.NewString(_failureString);
-            }
+            
+            return result.Value ?? Value.NewString(FailureString);
         }
 
-        private string _failureString = "Node evaluation failed";
+        private const string FailureString = "Node evaluation failed";
+        private Dictionary<PortData, FScheme.Value> _evaluationDict;
 
         protected virtual void OnRunCancelled()
         {
 
         }
         
-        protected internal virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
+        protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
-            var argList = new List<string>();
-            if (args.Any())
+            //if this element maintains a collcection of references
+            //then clear the collection
+            if (this is IClearable)
+                (this as IClearable).ClearReferences();
+
+            var argSets = new List<FSharpList<FScheme.Value>>();
+
+            //create a zip of the incoming args and the port data
+            //to be used for type comparison
+            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType)).ToList();
+            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
+
+            //there are more than zero arguments
+            //and there is either an argument which does not match its expections 
+            //OR an argument which requires a list and gets a list of lists
+            //AND argument lacing is not disabled
+            if (ArgumentLacing != LacingStrategy.Disabled && args.Any() &&
+                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
+                listOfListComparison.Any(x => x.Item1 && x.Item2 == typeof(Value.List))))
             {
-                argList = args.Select(x => x.ToString()).ToList<string>();
+                //if the argument is of the expected type, then
+                //leave it alone otherwise, wrap it in a list
+                int j = 0;
+                foreach (var arg in args)
+                {
+                    //incoming value is list and expecting single
+                    if (portComparison.ElementAt(j).Item1 == typeof(Value.List) &&
+                        portComparison.ElementAt(j).Item2 != typeof(Value.List))
+                    {
+                        //leave as list
+                        argSets.Add(((Value.List)arg).Item);
+                    }
+                    //incoming value is list and expecting list
+                    else
+                    {
+                        //check if we have a list of lists, if so, then don't wrap
+                        argSets.Add(
+                            Utils.IsListOfLists(arg) && !AcceptsListOfLists(arg)
+                                ? ((Value.List)arg).Item
+                                : Utils.MakeFSharpList(arg));
+                    }
+                    j++;
+                }
+
+                IEnumerable<IEnumerable<Value>> lacedArgs = null;
+                switch (ArgumentLacing)
+                {
+                    case LacingStrategy.First:
+                        lacedArgs = argSets.SingleSet();
+                        break;
+                    case LacingStrategy.Shortest:
+                        lacedArgs = argSets.ShortestSet();
+                        break;
+                    case LacingStrategy.Longest:
+                        lacedArgs = argSets.LongestSet();
+                        break;
+                    case LacingStrategy.CrossProduct:
+                        lacedArgs = argSets.CartesianProduct();
+                        break;
+                }
+
+                var evalResult = OutPortData.ToDictionary(
+                    x => x,
+                    _ => FSharpList<Value>.Empty);
+
+                var evalDict = new Dictionary<PortData, Value>();
+
+                //run the evaluate method for each set of 
+                //arguments in the lace result. do these
+                //in reverse order so our cons comes out the right
+                //way around
+                foreach (var argList in lacedArgs.Reverse())
+                {
+                    evalDict.Clear();
+
+                    Evaluate(Utils.SequenceToFSharpList(argList), evalDict);
+                    OnEvaluate();
+
+                    foreach (var data in OutPortData)
+                        evalResult[data] = FSharpList<Value>.Cons(evalDict[data], evalResult[data]);
+                }
+
+                //the result of evaluation will be a list. we split that result
+                //and send the results to the outputs
+                foreach (var data in OutPortData)
+                    outPuts[data] = Value.NewList(evalResult[data]);
             }
-            var outPutsList = new List<string>();
-            if(outPuts.Any())
+            else
             {
-                outPutsList = outPuts.Keys.Select(x=>x.NickName).ToList<string>();
+                Evaluate(args, outPuts);
+                OnEvaluate();
             }
 
-            //Debug.WriteLine(string.Format("__eval_internal : {0} : {1}", 
-            //    string.Join(",", argList), 
-            //    string.Join(",", outPutsList)));
-            Evaluate(args, outPuts);
+            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
+            {
+                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
+            }
+        }
+
+        protected virtual bool AcceptsListOfLists(Value value)
+        {
+            return false;
         }
         
         /// <summary>
@@ -1339,251 +1417,14 @@ namespace Dynamo.Models
         #endregion
     }
 
-    public abstract class dynNodeWithMultipleOutputs : dynNodeModel
-    {
-        /// <summary>
-        /// Implementation detail, records how many times this Element has been executed during this run.
-        /// </summary>
-        protected int runCount = 0;
-
-        public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
-        {
-            //if this element maintains a collcection of references
-            //then clear the collection
-            if (this is IClearable)
-                (this as IClearable).ClearReferences();
-
-            List<FSharpList<FScheme.Value>> argSets = new List<FSharpList<FScheme.Value>>();
-
-            //create a zip of the incoming args and the port data
-            //to be used for type comparison
-            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
-            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
-
-            //there are more than zero arguments
-            //and there is either an argument which does not match its expections 
-            //OR an argument which requires a list and gets a list of lists
-            //AND argument lacing is not disabled
-            if (args.Count() > 0 &&
-                (portComparison.Any(x => x.Item1 == typeof(FScheme.Value.List) && x.Item2 != typeof(FScheme.Value.List)) ||
-                listOfListComparison.Any(x => x.Item1 == true && x.Item2 == typeof(FScheme.Value.List))) &&
-                this.ArgumentLacing != LacingStrategy.Disabled)
-            {
-                //if the argument is of the expected type, then
-                //leave it alone otherwise, wrap it in a list
-                int j = 0;
-                foreach (var arg in args)
-                {
-                    //incoming value is list and expecting single
-                    if (portComparison.ElementAt(j).Item1 == typeof(FScheme.Value.List) &&
-                        portComparison.ElementAt(j).Item2 != typeof(FScheme.Value.List))
-                    {
-                        //leave as list
-                        argSets.Add(((FScheme.Value.List)arg).Item);
-                    }
-                    //incoming value is list and expecting list
-                    else
-                    {
-                        //check if we have a list of lists, if so, then don't wrap
-                        if (Utils.IsListOfLists(arg))
-                            //leave as list
-                            argSets.Add(((FScheme.Value.List)arg).Item);
-                        else
-                            //wrap in list
-                            argSets.Add(Utils.MakeFSharpList(arg));
-                    }
-                    j++;
-                }
-
-                IEnumerable<IEnumerable<FScheme.Value>> lacedArgs = null;
-                switch (this.ArgumentLacing)
-                {
-                    case LacingStrategy.First:
-                        lacedArgs = argSets.SingleSet();
-                        break;
-                    case LacingStrategy.Shortest:
-                        lacedArgs = argSets.ShortestSet();
-                        break;
-                    case LacingStrategy.Longest:
-                        lacedArgs = argSets.LongestSet();
-                        break;
-                    case LacingStrategy.CrossProduct:
-                        lacedArgs = argSets.CartesianProduct();
-                        break;
-                }
-
-                //setup a list to hold the results
-                //each output will have its own results collection
-                List<FSharpList<FScheme.Value>> results = new List<FSharpList<FScheme.Value>>();
-                for (int i = 0; i < OutPortData.Count(); i++)
-                {
-                    results.Add(FSharpList<FScheme.Value>.Empty);
-                }
-                //FSharpList<Value> result = FSharpList<Value>.Empty;
-
-                //run the evaluate method for each set of 
-                //arguments in the la result. do these
-                //in reverse order so our cons comes out the right
-                //way around
-                for (int i = lacedArgs.Count() - 1; i >= 0; i--)
-                {
-                    var evalResult = Evaluate(Utils.MakeFSharpList(lacedArgs.ElementAt(i).ToArray()));
-
-                    //if the list does not have the same number of items
-                    //as the number of output ports, then throw a wobbly
-                    if (!evalResult.IsList)
-                        throw new Exception("Output value of the node is not a list.");
-
-                    for (int k = 0; k < OutPortData.Count(); k++)
-                    {
-                        FSharpList<FScheme.Value> lst = ((FScheme.Value.List)evalResult).Item;
-                        results[k] = FSharpList<FScheme.Value>.Cons(lst[k], results[k]);
-                    }
-                    runCount++;
-                }
-
-                //the result of evaluation will be a list. we split that result
-                //and send the results to the outputs
-                for (int i = 0; i < OutPortData.Count(); i++)
-                {
-                    outPuts[OutPortData[i]] = FScheme.Value.NewList(results[i]);
-                }
-
-            }
-            else
-            {
-                FScheme.Value evalResult = Evaluate(args);
-
-                runCount++;
-
-                if (!evalResult.IsList)
-                    throw new Exception("Output value of the node is not a list.");
-
-                FSharpList<FScheme.Value> lst = ((FScheme.Value.List)evalResult).Item;
-
-                //the result of evaluation will be a list. we split that result
-                //and send the results to the outputs
-                for (int i = 0; i < OutPortData.Count(); i++)
-                {
-                    outPuts[OutPortData[i]] = lst[i];
-                }
-            }
-
-            ValidateConnections();
-
-            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
-            {
-                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
-            }  
-        }
-        public virtual FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
     public abstract class dynNodeWithOneOutput : dynNodeModel
     {
         public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
-            //if this element maintains a collcection of references
-            //then clear the collection
-            if(this is IClearable)
-                (this as IClearable).ClearReferences();
-
-            List<FSharpList<FScheme.Value>> argSets = new List<FSharpList<FScheme.Value>>();
-            
-            //create a zip of the incoming args and the port data
-            //to be used for type comparison
-            var portComparison = args.Zip(InPortData,
-                                          (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
-            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
-
-            //there are more than zero arguments
-            //and there is either an argument which does not match its expections 
-            //OR an argument which requires a list and gets a list of lists
-            //AND argument lacing is not disabled
-            if (args.Count() > 0 &&
-                (portComparison.Any(x => x.Item1 == typeof(FScheme.Value.List) && x.Item2 != typeof(FScheme.Value.List)) ||
-                listOfListComparison.Any(x => x.Item1 == true && x.Item2 == typeof(FScheme.Value.List))) &&
-                this.ArgumentLacing != LacingStrategy.Disabled)
-            {
-                //if the argument is of the expected type, then
-                //leave it alone otherwise, wrap it in a list
-                int j = 0;
-                foreach (var arg in args)
-                {
-                    //incoming value is list and expecting single
-                    if (portComparison.ElementAt(j).Item1 == typeof (FScheme.Value.List) && 
-                        portComparison.ElementAt(j).Item2 != typeof (FScheme.Value.List))
-                    {
-                        //leave as list
-                        argSets.Add(((FScheme.Value.List)arg).Item);
-                    }
-                    //incoming value is list and expecting list
-                    else
-                    {
-                        //check if we have a list of lists, if so, then don't wrap
-                        if (Utils.IsListOfLists(arg))
-                            //leave as list
-                            argSets.Add(((FScheme.Value.List)arg).Item);
-                        else
-                            //wrap in list
-                            argSets.Add(Utils.MakeFSharpList(arg));
-                    }
-                    j++;
-                }
-
-                IEnumerable<IEnumerable<FScheme.Value>> lacedArgs = null;
-                switch (this.ArgumentLacing)
-                {
-                    case LacingStrategy.First:
-                        lacedArgs = argSets.SingleSet();
-                        break;
-                    case LacingStrategy.Shortest:
-                        lacedArgs = argSets.ShortestSet();
-                        break;
-                    case LacingStrategy.Longest:
-                        lacedArgs = argSets.LongestSet();
-                        break;
-                    case LacingStrategy.CrossProduct:
-                        lacedArgs = argSets.CartesianProduct();
-                        break;
-                }
-
-                //setup an empty list to hold results
-                FSharpList<FScheme.Value> result = FSharpList<FScheme.Value>.Empty;
-
-                //run the evaluate method for each set of 
-                //arguments in the cartesian result. do these
-                //in reverse order so our cons comes out the right
-                //way around
-                for (int i = lacedArgs.Count() - 1; i >= 0; i--)
-                {
-                    var evalResult = Evaluate(Utils.MakeFSharpList(lacedArgs.ElementAt(i).ToArray()));
-                    result = FSharpList<FScheme.Value>.Cons(evalResult, result);
-                }
-
-                outPuts[OutPortData[0]] = FScheme.Value.NewList(result);
-            }
-            else
-            {
-                outPuts[OutPortData[0]] = Evaluate(args);  
-            }
-            
-            ValidateConnections();
-
-            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
-            {
-                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
-            }  
+            outPuts[OutPortData[0]] = Evaluate(args);
         }
 
-        public virtual FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Value Evaluate(FSharpList<Value> args);
     }
 
     #region class attributes

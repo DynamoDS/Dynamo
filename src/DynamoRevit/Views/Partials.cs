@@ -24,7 +24,7 @@ namespace Dynamo.Revit
                 Header = "Show Elements"
             };
 
-            mi.Click += new System.Windows.RoutedEventHandler(mi_Click);
+            mi.Click += mi_Click;
 
             nodeUI.MainContextMenu.Items.Add(mi);
 
@@ -32,7 +32,7 @@ namespace Dynamo.Revit
 
         void mi_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (AllElements.Count == 0)
+            if (!AllElements.Any())
                 return;
 
             //select the elements

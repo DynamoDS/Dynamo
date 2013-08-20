@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
@@ -78,7 +79,7 @@ namespace Dynamo.Nodes
     [NodeName("Surface Domain")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Measure the domain of a surface in U and V.")]
-    public class dynSurfaceDomain : dynNodeWithMultipleOutputs
+    public class dynSurfaceDomain : dynNodeModel
     {
         public dynSurfaceDomain()
         {
@@ -91,9 +92,9 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            FSharpList<Value> result = FSharpList<Value>.Empty;
+            //FSharpList<Value> result = FSharpList<Value>.Empty;
             BoundingBoxUV bbox = null;
 
             object arg0 = ((Value.Container)args[0]).Item;
@@ -111,28 +112,33 @@ namespace Dynamo.Nodes
                 bbox = f.GetBoundingBox();
             }
 
-            result = FSharpList<Value>.Cons(
-                           Value.NewNumber(bbox.Max.V - bbox.Min.V),
-                           result);
-            result = FSharpList<Value>.Cons(
-                           Value.NewNumber(bbox.Max.U - bbox.Min.U),
-                           result);
-            result = FSharpList<Value>.Cons(
-                           Value.NewContainer(bbox.Max),
-                           result);
-            result = FSharpList<Value>.Cons(
-                           Value.NewContainer(bbox.Min),
-                           result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewNumber(bbox.Max.V - bbox.Min.V),
+            //               result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewNumber(bbox.Max.U - bbox.Min.U),
+            //               result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewContainer(bbox.Max),
+            //               result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewContainer(bbox.Min),
+            //               result);
             
-            //Fin
-            return Value.NewList(result);
+            ////Fin
+            //return Value.NewList(result);
+
+            outPuts[OutPortData[3]] = Value.NewNumber(bbox.Max.V - bbox.Min.V);
+            outPuts[OutPortData[2]] = Value.NewNumber(bbox.Max.U - bbox.Min.U);
+            outPuts[OutPortData[1]] = Value.NewContainer(bbox.Max);
+            outPuts[OutPortData[0]] = Value.NewContainer(bbox.Min);
         }
     }
 
     [NodeName("Curve Domain")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Measure the domain of a curve.")]
-    public class dynCurveDomain : dynNodeWithMultipleOutputs
+    public class dynCurveDomain : dynNodeModel
     {
         public dynCurveDomain()
         {
@@ -145,9 +151,9 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            FSharpList<Value> result = FSharpList<Value>.Empty;
+            //FSharpList<Value> result = FSharpList<Value>.Empty;
             BoundingBoxUV bbox = null;
 
             var curveRef = ((Value.Container)args[0]).Item as Reference;
@@ -162,19 +168,23 @@ namespace Dynamo.Nodes
             var end = curve.get_EndParameter(1);
             var length = Math.Abs(end-start);
 
-            result = FSharpList<Value>.Cons(
-                           Value.NewNumber(length),
-                           result);
-            result = FSharpList<Value>.Cons(
-                           Value.NewNumber(end),
-                           result);
-            result = FSharpList<Value>.Cons(
-                           Value.NewNumber(start),
-                           result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewNumber(length),
+            //               result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewNumber(end),
+            //               result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewNumber(start),
+            //               result);
 
             
-            //Fin
-            return Value.NewList(result);
+            ////Fin
+            //return Value.NewList(result);
+            outPuts[OutPortData[2]] = Value.NewNumber(length);
+            outPuts[OutPortData[1]] = Value.NewNumber(end);
+            outPuts[OutPortData[0]] = Value.NewNumber(start);
+
         }
     }
 
