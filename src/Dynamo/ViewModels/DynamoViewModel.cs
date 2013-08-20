@@ -1247,11 +1247,21 @@ namespace Dynamo.Controls
             return true;
         }
 
+        private PackageManagerSearchView packageManagerSearch;
+
         private void ShowPackageManagerSearch()
         {
-            var pms = new PackageManagerSearchViewModel(Controller.PackageManagerClient);
-            var window = new PackageManagerSearchView(pms);
-            window.Show();
+            
+            if (packageManagerSearch == null)
+            {
+                var pms = new PackageManagerSearchViewModel(Controller.PackageManagerClient);
+                packageManagerSearch = new PackageManagerSearchView(pms);
+            }
+
+            packageManagerSearch.Closed += (sender, args) => packageManagerSearch = null;
+
+            packageManagerSearch.Show();
+            packageManagerSearch.Focus();
         }
 
         private bool CanShowPackageManagerSearch()
@@ -1259,10 +1269,20 @@ namespace Dynamo.Controls
             return true;
         }
 
+        private InstalledPackagesView installedPackagesView;
+
         private void ShowInstalledPackages()
         {
-            var window = new InstalledPackagesView();
-            window.Show();
+
+            if (installedPackagesView == null)
+            {
+                installedPackagesView = new InstalledPackagesView();
+            }
+
+            installedPackagesView.Closed += (sender, args) => installedPackagesView = null;
+
+            installedPackagesView.Show();
+            installedPackagesView.Focus();
         }
 
         private bool CanShowInstalledPackages()
