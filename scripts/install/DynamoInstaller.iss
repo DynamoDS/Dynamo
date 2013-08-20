@@ -45,8 +45,7 @@ Name: "{app}\samples"
 Name: "DynamoCore"; Description: "Dynamo Core Functionality"; Types: full compact custom; Flags: fixed
 Name: "DynamoForRevit2013"; Description: "Dynamo For Revit 2013"; Types: full compact custom;
 Name: "DynamoForRevit2014"; Description: "Dynamo For Revit 2014"; Types: full compact custom;
-Name: "DynamoForVasariBeta2"; Description: "Dynamo For Vasari Beta 2"; Types: full compact custom; 
-Name: "DynamoForVasariBeta2"; Description: "Dynamo For Vasari Beta 3"; Types: full compact custom; 
+Name: "DynamoForVasariBeta3"; Description: "Dynamo For Vasari Beta 3"; Types: full compact custom; 
 Name: "DynamoTrainingFiles"; Description: "Dynamo Training Files"; Types: full
 
 [Files]
@@ -63,7 +62,6 @@ Source: temp\Definitions\*.dyf; DestDir: {app}\definitions; Flags: ignoreversion
 [UninstallDelete]
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin"
-Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2013\Dynamo.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin"
 
 [Run]
@@ -132,20 +130,15 @@ begin
       WizardForm.ComponentsList.Checked[1] := False;
       WizardForm.ComponentsList.ItemEnabled[1] := False;
     end;
-        if not FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014')) then
+	if not FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014')) then
     begin
       WizardForm.ComponentsList.Checked[2] := False;
       WizardForm.ComponentsList.ItemEnabled[2] := False;
     end;
-        if not FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2013')) then
+	if not FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014')) then
     begin
       WizardForm.ComponentsList.Checked[3] := False;
       WizardForm.ComponentsList.ItemEnabled[3] := False;
-    end;
-        if not FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014')) then
-    begin
-      WizardForm.ComponentsList.Checked[4] := False;
-      WizardForm.ComponentsList.ItemEnabled[4] := False;
     end;
 end;
 
@@ -197,11 +190,6 @@ begin
     end;
 
     if (WizardForm.ComponentsList.Checked[3]) then
-    begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2013\Dynamo.addin'), AddInFileContents, False);
-    end;
-
-    if (WizardForm.ComponentsList.Checked[4]) then
     begin
       SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin'), AddInFileContents, False);
     end;
