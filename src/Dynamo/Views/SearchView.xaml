@@ -44,7 +44,7 @@ Source="..\Images\search_24.png" Opacity="1" Grid.Column="0">
             </Image>
 
             <TextBox Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,15,5,10" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="200">
+                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="280">
             </TextBox>
 
             <!--<Button Name="BackButton" Margin="1, 0, 1, 0" Width="42" FontSize="24" Foreground="White" ToolTip="Go Back" 
