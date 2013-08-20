@@ -1506,7 +1506,10 @@ namespace Dynamo.Nodes
 
             var result = FSharpList<Value>.Empty;
 
-            GeometryObject geomObj = thisElement.get_Geometry(new Autodesk.Revit.DB.Options());
+            Autodesk.Revit.DB.Options geoOptionsOne = new Autodesk.Revit.DB.Options();
+            geoOptionsOne.ComputeReferences = true;
+
+            GeometryObject geomObj = thisElement.get_Geometry(geoOptionsOne);
             GeometryElement geomElement = geomObj as GeometryElement;
 
             if ((thisElement is GenericForm) && (geomElement.Count() < 1))
@@ -1514,9 +1517,10 @@ namespace Dynamo.Nodes
                 GenericForm gF = (GenericForm)thisElement;
                 if (!gF.Combinations.IsEmpty)
                 {
-                    Autodesk.Revit.DB.Options geoOptions = new Autodesk.Revit.DB.Options();
-                    geoOptions.IncludeNonVisibleObjects = true;
-                    geomObj = thisElement.get_Geometry(geoOptions);
+                    Autodesk.Revit.DB.Options geoOptionsTwo = new Autodesk.Revit.DB.Options();
+                    geoOptionsTwo.IncludeNonVisibleObjects = true;
+                    geoOptionsTwo.ComputeReferences = true;
+                    geomObj = thisElement.get_Geometry(geoOptionsTwo);
                     geomElement = geomObj as GeometryElement;
                 }
             }
@@ -1593,6 +1597,7 @@ namespace Dynamo.Nodes
                 for (int iTry = 0; iTry < nTry && (mySolid == null); iTry++)
                 {
                     Autodesk.Revit.DB.Options geoOptions = new Autodesk.Revit.DB.Options();
+                    geoOptions.ComputeReferences = true;
                     if (bNotVisibleOption && (iTry == 1))
                         geoOptions.IncludeNonVisibleObjects = true;
 

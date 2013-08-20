@@ -33,13 +33,19 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        public override bool RequiresRecalc 
+        {
+            get { return true; }
+            set { }
+        }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
             int ms = (int)((Value.Number)args[0]).Item;
 
             Thread.Sleep(ms);
 
-            return Value.NewNumber(1);
+            return Value.NewDummy("pause");
         }
     }
 

@@ -16,6 +16,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Linq;
+using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -196,7 +197,7 @@ namespace Dynamo.Nodes
 
                 foreach (Value line in data)
                 {
-                    writer.WriteLine(string.Join(",", ((Value.List)line).Item.Select(x => ((Value.String)x).Item)));
+                    writer.WriteLine(string.Join(",", ((Value.List)line).Item.Select(x => x.Print())));
                 }
 
                 writer.Close();
@@ -210,7 +211,6 @@ namespace Dynamo.Nodes
             return Value.NewNumber(1);
         }
     }
-
 
     [NodeName("Write Image File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
@@ -255,7 +255,6 @@ namespace Dynamo.Nodes
         }
     }
 
-
     #region File Watcher
 
     [NodeName("Watch File")]
@@ -293,7 +292,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FileWatcher watcher = (FileWatcher)((Value.Container)args[0]).Item;
+            var watcher = (FileWatcher)((Value.Container)args[0]).Item;
 
             return Value.NewNumber(watcher.Changed ? 1 : 0);
         }
@@ -316,7 +315,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FileWatcher watcher = (FileWatcher)((Value.Container)args[0]).Item;
+            var watcher = (FileWatcher)((Value.Container)args[0]).Item;
             double timeout = ((Value.Number)args[1]).Item;
 
             timeout = timeout == 0 ? double.PositiveInfinity : timeout;
@@ -355,7 +354,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FileWatcher watcher = (FileWatcher)((Value.Container)args[0]).Item;
+            var watcher = (FileWatcher)((Value.Container)args[0]).Item;
 
             watcher.Reset();
 
@@ -367,8 +366,8 @@ namespace Dynamo.Nodes
     {
         public bool Changed { get; private set; }
 
-        private FileSystemWatcher watcher;
-        private FileSystemEventHandler handler;
+        private readonly FileSystemWatcher _watcher;
+        private readonly FileSystemEventHandler _handler;
 
         public event FileSystemEventHandler FileChanged;
 
@@ -376,17 +375,15 @@ namespace Dynamo.Nodes
         {
             Changed = false;
 
-            watcher = new FileSystemWatcher(
-               Path.GetDirectoryName(filePath),
-               Path.GetFileName(filePath)
-            );
-            handler = new FileSystemEventHandler(watcher_Changed);
+            _watcher = new FileSystemWatcher(
+                Path.GetDirectoryName(filePath), Path.GetFileName(filePath))
+            {
+                NotifyFilter = NotifyFilters.LastWrite,
+                EnableRaisingEvents = true
+            };
 
-            watcher.Changed += handler;
-
-            watcher.NotifyFilter = NotifyFilters.LastWrite;
-
-            watcher.EnableRaisingEvents = true;
+            _handler = watcher_Changed;
+            _watcher.Changed += _handler;
         }
 
         void watcher_Changed(object sender, FileSystemEventArgs e)
@@ -405,8 +402,8 @@ namespace Dynamo.Nodes
 
         public void Dispose()
         {
-            watcher.Changed -= handler;
-            watcher.Dispose();
+            _watcher.Changed -= _handler;
+            _watcher.Dispose();
         }
 
         #endregion

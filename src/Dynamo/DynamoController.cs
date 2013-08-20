@@ -200,6 +200,13 @@ namespace Dynamo
 
             this.Context = context;
 
+            //Start heartbeat reporting
+            Services.InstrumentationLogger.Start();
+
+            //create the view model to which the main window will bind
+            //the DynamoModel is created therein
+            this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(viewModelType,new object[]{this});
+
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
@@ -306,7 +313,7 @@ namespace Dynamo
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
             //Get our entry points (elements with nothing connected to output)
-            IEnumerable<dynNodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes();
+            List<dynNodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
 
             //Mark the topmost as dirty/clean
             foreach (dynNodeModel topMost in topElements)
@@ -391,15 +398,8 @@ namespace Dynamo
                     //Reset flag
                     runAgain = false;
 
-                    //if (dynSettings.Bench != null)
-                    //{
-                    //    //Run this method again from the main thread
-                    //    dynSettings.Bench.Dispatcher.BeginInvoke(new Action(
-                    //                                                 delegate { RunExpression(_showErrors); }
-                    //                                                 ));
-                    //}
-
                     dynSettings.Controller.DispatchOnUIThread(() => RunExpression(_showErrors));
+
                 }
                 else
                 {
@@ -408,18 +408,15 @@ namespace Dynamo
             }
         }
 
-        protected internal virtual void Run(IEnumerable<dynNodeModel> topElements, FScheme.Expression runningExpression)
+        protected virtual void Run(List<dynNodeModel> topElements, FScheme.Expression runningExpression)
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
             {
                 if (dynSettings.Controller.UIDispatcher != null)
                 {
-                    foreach (dynNodeModel node in topElements)
-                    {
-                        string exp = node.PrintExpression();
+                    foreach (string exp in topElements.Select(node => node.PrintExpression()))
                         DynamoLogger.Instance.Log("> " + exp);
-                    }
                 }
             }
 
@@ -457,10 +454,6 @@ namespace Dynamo
                     //Print unhandled exception
                     if (ex.Message.Length > 0)
                     {
-                        //dynSettings.Bench.Dispatcher.Invoke(new Action(
-                        //                            delegate { DynamoLogger.Instance.Log(ex); }
-                        //                            ));
-
                         dynSettings.Controller.DispatchOnUIThread(() => DynamoLogger.Instance.Log(ex));
                     }
                 }
