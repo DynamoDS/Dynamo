@@ -145,9 +145,9 @@ namespace Dynamo.Controls
         {
             //try and parse the value first
             //if it parses as a number, then just accept it
-            //double length;
-            //if (double.TryParse(value.ToString(), out length))
-            //    return length;
+            double length;
+            if (double.TryParse(value.ToString(),NumberStyles.Number,CultureInfo.CurrentCulture, out length))
+                return length;
 
             //The data binding engine calls this method when it propagates a value from the binding target to the binding source.
             var lengthObj = (DynamoLength<Foot>)parameter;
