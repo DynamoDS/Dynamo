@@ -94,14 +94,14 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FSharpList<Value> result = FSharpList<Value>.Empty;
+            //FSharpList<Value> result = FSharpList<Value>.Empty;
             BoundingBoxUV bbox = null;
 
             object arg0 = ((Value.Container)args[0]).Item;
 
             Autodesk.Revit.DB.Face f;
 
-            Reference faceRef = arg0 as Reference;
+            var faceRef = arg0 as Reference;
             if (faceRef != null)
                 f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             else
@@ -112,21 +112,23 @@ namespace Dynamo.Nodes
                 bbox = f.GetBoundingBox();
             }
 
-            result = FSharpList<Value>.Cons(
-                           Value.NewNumber(bbox.Max.V - bbox.Min.V),
-                           result);
-            result = FSharpList<Value>.Cons(
-                           Value.NewNumber(bbox.Max.U - bbox.Min.U),
-                           result);
-            result = FSharpList<Value>.Cons(
-                           Value.NewContainer(bbox.Max),
-                           result);
-            result = FSharpList<Value>.Cons(
-                           Value.NewContainer(bbox.Min),
-                           result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewNumber(bbox.Max.V - bbox.Min.V),
+            //               result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewNumber(bbox.Max.U - bbox.Min.U),
+            //               result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewContainer(bbox.Max),
+            //               result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewContainer(bbox.Min),
+            //               result);
             
-            //Fin
-            return Value.NewList(result);
+            ////Fin
+            //return Value.NewList(result);
+
+            return Value.NewContainer(Domain.ByMinimumAndMaximum(bbox.Min, bbox.Max));
         }
     }
 
