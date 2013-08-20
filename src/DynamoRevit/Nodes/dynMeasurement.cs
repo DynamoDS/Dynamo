@@ -15,18 +15,14 @@
 using System;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Data;
 using System.Xml;
-using System.Web;
-
 using Autodesk.Revit.DB;
 
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
-using Dynamo.Revit;
 using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Controls;
@@ -128,7 +124,7 @@ namespace Dynamo.Nodes
             ////Fin
             //return Value.NewList(result);
 
-            return Value.NewContainer(Domain.ByMinimumAndMaximum(bbox.Min, bbox.Max));
+            return Value.NewContainer(DSRevitNodes.Domain.ByMinimumAndMaximum(bbox.Min, bbox.Max));
         }
     }
 
