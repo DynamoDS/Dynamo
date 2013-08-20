@@ -17,7 +17,7 @@
       <Run />
     </Dynamo.Nodes.dynCurveFromModelCurve>
     <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="94a16b4d-f0f8-454c-92d6-56aaa8a8d582" nickname="Select Curve" x="72.836417546348" y="396.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <instance id="65cdf662-fcf3-46dc-a1b2-c727efda10ff-0000c060" />
+      <instance id="9bc0abb4-04f4-4901-9d17-fd7b92a45d3a-0000bf7f" />
     </Dynamo.Nodes.dynCurvesBySelection>
     <Dynamo.Nodes.dynCurveFromModelCurve type="Dynamo.Nodes.dynCurveFromModelCurve" guid="27c29f60-f805-482d-9d9c-79d2e0b6eead" nickname="Geometry Curve From Model Curve" x="274.598861452133" y="396.683001443002" isVisible="true" isUpstreamVisible="true" lacing="Longest">
       <Run />
