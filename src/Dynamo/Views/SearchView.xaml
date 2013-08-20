@@ -6,6 +6,7 @@
              xmlns:search="clr-namespace:Dynamo.Nodes.Search"
              xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements"
              xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:clr="clr-namespace:System;assembly=mscorlib"
+             xmlns:dynamo="clr-namespace:Dynamo"
              mc:Ignorable="d" 
              Visibility="{Binding Path=Visible}" 
              d:DesignWidth="300" 
@@ -43,10 +44,10 @@ Source="..\Images\search_24.png" Opacity="1" Grid.Column="0">
             </Image>
 
             <TextBox Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,15,5,10" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="200">
+                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="280">
             </TextBox>
 
-            <Button Name="BackButton" Margin="1, 0, 1, 0" Width="42" FontSize="24" Foreground="White" ToolTip="Go Back" 
+            <!--<Button Name="BackButton" Margin="1, 0, 1, 0" Width="42" FontSize="24" Foreground="White" ToolTip="Go Back" 
                       Style="{DynamicResource ResourceKey=SImageButton}" Click="Back_Click" Tag="..\Images\back_24.png" Grid.Column="2"/>
 
             <Button Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include extended Revit API" 
@@ -66,7 +67,7 @@ Source="..\Images\search_24.png" Opacity="1" Grid.Column="0">
 
                 </Button.ContextMenu>
 
-            </Button>
+            </Button>-->
         </Grid>
         
         <ScrollViewer Visibility="{Binding BrowserVisibility}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
@@ -236,6 +237,7 @@ Source="..\Images\search_24.png" Opacity="1" Grid.Column="0">
             <!--CATEGORIES-->
 
             <TreeView ItemsSource="{Binding Path=BrowserRootCategories}" Style="{StaticResource SearchTreeView}" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="1" >
+                
                 <TreeView.Resources>
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
@@ -246,33 +248,99 @@ Source="..\Images\search_24.png" Opacity="1" Grid.Column="0">
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
 
-
                         <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
 
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type searchElements:TopSearchElement}">
-                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
+                        
+                        <StackPanel Orientation="Horizontal">
+
+                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
                             
-                            <TextBlock.ToolTip>
-                                <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
-                                    <TextBlock Name="tt_longText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                             Text="{Binding Path=Description}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-                                </Grid>
-                            </TextBlock.ToolTip>
-                        </TextBlock>
+                                <TextBlock.ToolTip>
+                                    <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+                                        <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
+                                                 Text="{Binding Path=Type}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" />
+                                        
+                                        <TextBlock Name="name" TextWrapping="Wrap" Grid.Row ="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                                 Text="{Binding Path=Description}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+                                
+                                    </Grid>
+                                </TextBlock.ToolTip>
+                                
+                            </TextBlock>
+
+                            <Border Background="#444" Margin="10 0 0 0" CornerRadius="2" >
+
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+
+                                            <DataTrigger Binding="{Binding Type}" Value="Custom Node">
+                                                <Setter Property="Visibility" Value="Visible"></Setter>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Type}" Value="Node">
+                                                <Setter Property="Visibility" Value="Hidden"></Setter>
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="4" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0">
+                                </TextBlock>
+
+                            </Border>
+
+                        </StackPanel>
+
                     </HierarchicalDataTemplate>
                     
                     <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
+
+                        <StackPanel Orientation="Horizontal">
                             
-                            <TextBlock.ToolTip>
-                                <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
-                                    <TextBlock Name="tt_longText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                             Text="{Binding Path=Description}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-                                </Grid>
-                            </TextBlock.ToolTip>
-                        </TextBlock>
+                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
+                            
+                                <TextBlock.ToolTip>
+                                    <StackPanel Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+                                        <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
+                                                 Text="{Binding Path=Type}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" />
+                                        
+                                        <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                                 Text="{Binding Path=Description}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+                                
+                                    </StackPanel>
+                                </TextBlock.ToolTip>
+                                
+                            </TextBlock>
+
+                            <Border Background="#444" Margin="10 0 0 0" CornerRadius="2" >
+
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+
+                                            <DataTrigger Binding="{Binding Type}" Value="Custom Node">
+                                                <Setter Property="Visibility" Value="Visible"></Setter>
+                                            </DataTrigger>
+                                        
+                                            <DataTrigger Binding="{Binding Type}" Value="Node">
+                                                <Setter Property="Visibility" Value="Hidden"></Setter>
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="4" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0">
+                                </TextBlock>
+                                
+                            </Border>
+                            
+                        </StackPanel>
                         
                         <!--<Grid>
                             
