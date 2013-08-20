@@ -4215,6 +4215,25 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("To String")]
+    [NodeDescription("Converts anything into it's string representation")]
+    [NodeCategory(BuiltinNodeCategories.CORE_STRINGS)]
+    public class dynToString : dynNodeWithOneOutput
+    {
+        public dynToString()
+        {
+            InPortData.Add(new PortData("input", "Anything", typeof(Value.Number))); // proxy for any type
+            OutPortData.Add(new PortData("string", "The string representation of the input", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewString(dynNodeViewModel.BuildValueString(args[0],0,10000,0, 25));
+        }
+    }
+
     [NodeName("Split String")]
     [NodeDescription("Splits given string around given delimiter into a list of sub strings.")]
     [NodeCategory(BuiltinNodeCategories.CORE_STRINGS)]
