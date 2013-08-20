@@ -129,7 +129,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public string BuildValueString(FScheme.Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth )
+        public static string BuildValueString(FScheme.Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth )
         {
             if (eIn == null)
                 return "<null>";
