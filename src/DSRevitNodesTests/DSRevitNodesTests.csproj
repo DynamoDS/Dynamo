@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</ProjectGuid>
+    <ProjectGuid>{9E79DC8D-25B1-491F-B094-EA39DE1BBC66}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DSRevitNodes</RootNamespace>
-    <AssemblyName>DSRevitNodes</AssemblyName>
+    <RootNamespace>DSRevitNodesTests</RootNamespace>
+    <AssemblyName>DSRevitNodesTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -35,9 +35,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
     </Reference>
-    <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\RevitAPI.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,9 +47,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Geometry.cs" />
-    <Compile Include="ObjectWithPropertyDictionary.cs" />
+    <Compile Include="GeometryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DSNodes\DSRevitNodes.csproj">
+      <Project>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</Project>
+      <Name>DSRevitNodes</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -28,8 +28,6 @@ using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
-
-using DSRevitNodes;
 using Domain = DSRevitNodes.Domain;
 
 namespace Dynamo.Nodes
@@ -638,8 +636,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var min = (UV) ((Value.Container) args[0]).Item;
-            var max = (UV)((Value.Container)args[0]).Item;
+            var min = (Autodesk.LibG.Vector)((Value.Container) args[0]).Item;
+            var max = (Autodesk.LibG.Vector)((Value.Container)args[0]).Item;
 
             return Value.NewContainer(DSRevitNodes.Domain.ByMinimumAndMaximum(min, max));
         }
@@ -678,12 +676,12 @@ namespace Dynamo.Nodes
             //for (double u = min.U; u <= max.U; u += us)
             for (int i = 0; i <= ui; i++ )
             {
-                double u = domain.Min.U + i*us;
+                double u = domain.Min.x() + i*us;
 
                 //for (double v = min.V; v <= max.V; v += vs)
                 for (int j = 0; j <= vi; j++ )
                 {
-                    double v = domain.Min.V + j*vs;
+                    double v = domain.Min.y() + j*vs;
 
                     result = FSharpList<Value>.Cons(
                         Value.NewContainer(new UV(u, v)),

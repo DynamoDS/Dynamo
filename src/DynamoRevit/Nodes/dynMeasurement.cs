@@ -123,8 +123,9 @@ namespace Dynamo.Nodes
             
             ////Fin
             //return Value.NewList(result);
-
-            return Value.NewContainer(DSRevitNodes.Domain.ByMinimumAndMaximum(bbox.Min, bbox.Max));
+            var min = Autodesk.LibG.Vector.by_coordinates(bbox.Min.U, bbox.Min.V);
+            var max = Autodesk.LibG.Vector.by_coordinates(bbox.Max.U, bbox.Max.V);
+            return Value.NewContainer(DSRevitNodes.Domain.ByMinimumAndMaximum(min, max));
         }
     }
 
