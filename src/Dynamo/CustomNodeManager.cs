@@ -271,6 +271,11 @@ namespace Dynamo.Utilities
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
         public IEnumerable<CustomNodeInfo> ScanNodeHeadersInDirectory(string dir)
         {
+            if (!Directory.Exists(dir))
+            {
+                return new List<CustomNodeInfo>();
+            }
+
             return Directory.EnumerateFiles(dir, "*.dyf")
                             .Select(AddFileToPath)
                             .Where(nodeInfo => nodeInfo != null).ToList();
