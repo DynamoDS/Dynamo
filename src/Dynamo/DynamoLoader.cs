@@ -372,7 +372,7 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Load Custom Nodes from the CUstomNodeLoader search path and update search
+        ///     Load Custom Nodes from the CUstomNodeLoader search path and update searcht
         /// </summary>
         public static List<CustomNodeInfo> LoadCustomNodes(string path)
         {
