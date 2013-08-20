@@ -54,8 +54,8 @@
                                     <DockPanel >
                                         
                                         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="10,10,30,5" Width="360">
-                                            <TextBlock Text="{Binding Path=Name}" FontSize="13" Margin="0,0,10,0" Foreground="LightCyan"></TextBlock>
-                                            <TextBlock Text="{Binding Path=VersionName}" FontSize="13" Foreground="LightCyan"></TextBlock>
+                                            <TextBlock Text="{Binding Path=Name}" FontSize="13" Margin="0,0,10,0" Foreground="WhiteSmoke"></TextBlock>
+                                            <TextBlock Text="{Binding Path=VersionName}" FontSize="13" Foreground="WhiteSmoke"></TextBlock>
                                         </StackPanel>
 
                                         <!--<Button Name="MoreButton" Content="+" Margin="3" IsEnabled="True" Style="{DynamicResource ResourceKey=SBadgeButton}" Click="ibtnServiceController_MouseLeftButtonUp">
