@@ -309,6 +309,44 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("XYZ Length")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Gets the length of an XYZ")]
+    public class dynXYZLength : dynGeometryBase
+    {
+        public dynXYZLength()
+        {
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewNumber(((XYZ)((Value.Container)args[0]).Item).GetLength());
+        }
+    }
+
+    [NodeName("XYZ Is Zero Length")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Determines whether an XYZ has zero length")]
+    public class dynXYZIsZeroLength : dynGeometryBase
+    {
+        public dynXYZIsZeroLength()
+        {
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewNumber( ((XYZ) (((Value.Container)args[0]).Item)).IsZeroLength() ? 1 : 0);
+        }
+    }
+
     [NodeName("XYZ -> Y")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the Y value of the given XYZ")]
