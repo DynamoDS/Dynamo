@@ -19,8 +19,6 @@ using System.Windows.Controls; //for boolean option
 using System.Xml;              //for boolean option  
 using System.Windows.Media.Media3D;
 using System.Reflection;
-
-using Autodesk.Revit;
 using Autodesk.Revit.DB;
 
 using Microsoft.FSharp.Collections;
@@ -30,6 +28,9 @@ using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
+
+using DSRevitNodes;
+using Domain = DSRevitNodes.Domain;
 
 namespace Dynamo.Nodes
 {
@@ -621,39 +622,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    /// <summary>
-    /// A UV domain.
-    /// </summary>
-    public class Domain
-    {
-        public UV Min { get; set; }
-        public UV Max { get; set; }
-        public double USpan 
-        {
-            get { return Max.U - Min.U; }
-        }
-        public double VSpan
-        {
-            get { return Max.V - Min.V; }
-        }
-        
-        private Domain(UV min, UV max)
-        {
-            Min = min;
-            Max = max;
-        }
-
-        public static Domain ByMinimumAndMaximum(UV min, UV max)
-        {
-            return new Domain(min, max);
-        }
-
-        public override string ToString()
-        {
-            return string.Format("Min:{0},Max:{1}", Min.ToString(), Max.ToString());
-        }
-    }
-
     [NodeName("Domain")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Create a domain specifying the Minimum and Maximum UVs.")]
@@ -673,7 +641,7 @@ namespace Dynamo.Nodes
             var min = (UV) ((Value.Container) args[0]).Item;
             var max = (UV)((Value.Container)args[0]).Item;
 
-            return Value.NewContainer(Domain.ByMinimumAndMaximum(min, max));
+            return Value.NewContainer(DSRevitNodes.Domain.ByMinimumAndMaximum(min, max));
         }
     }
 
