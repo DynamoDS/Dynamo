@@ -25,25 +25,6 @@ namespace DynamoPython
 
         public void ProcessCode(string code)
         {
-            // check if we're in the revit context
-            // if so, add relevant assemblies
-
-            string header = "";
-
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            if ( assemblies.Any(x => x.FullName.Contains("RevitAPI")) && assemblies.Any(x => x.FullName.Contains("RevitAPIUI")) )
-            {
-                header = header + "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
-            }
-
-            if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
-            {
-                string current_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                header = header + "import sys\npath = r'C:\\Autodesk\\Dynamo\\Core'" + "\nexec_path = r'" + current_dir + "'\nsys.path.append(path)\nsys.path.append(exec_path)\nimport clr\nclr.AddReference('LibGNet')\nfrom Autodesk.LibG import *\n";
-            }
-
-            code = header + code;
-
             this.source = engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
         }
 

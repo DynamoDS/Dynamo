@@ -347,7 +347,8 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Load Custom Nodes from the CUstomNodeLoader search path and update search
+        ///     Load Custom Nodes from the default directory - the "definitions"
+        ///     directory where the executing assembly is located..
         /// </summary>
         public static IEnumerable<CustomNodeInfo> LoadCustomNodes()
         {
@@ -371,8 +372,7 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Load Custom Nodes from the default directory - the "definitions"
-        ///     directory where the executing assembly is located..
+        ///     Load Custom Nodes from the CUstomNodeLoader search path and update search
         /// </summary>
         public static List<CustomNodeInfo> LoadCustomNodes(string path)
         {
