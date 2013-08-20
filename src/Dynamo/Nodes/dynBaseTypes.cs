@@ -933,6 +933,31 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Slice List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeDescription("Get a sublist from a given list.")]
+    public class dynSliceList : dynNodeWithOneOutput
+    {
+        public dynSliceList()
+        {
+            InPortData.Add(new PortData("start", "Inclusive start index", typeof(object)));
+            InPortData.Add(new PortData("count", "Number of elements to obtain from list", typeof(object)));
+            InPortData.Add(new PortData("list", "The list to extract the elements from", typeof(Value.List)));
+            OutPortData.Add(new PortData("element", "Extracted elements", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var start = (int)((Value.Number)args[0]).Item;
+            var count = (int)((Value.Number)args[1]).Item;
+            var lst = ((Value.List)args[2]).Item;
+
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Skip(start).Take(count)));
+        }
+    }
+
     [NodeName("Remove From List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Removes an element from a list at a specified index.")]
@@ -4187,6 +4212,25 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             return Value.NewNumber(((Value.String)args[0]).Item.Length);
+        }
+    }
+
+    [NodeName("To String")]
+    [NodeDescription("Converts anything into it's string representation")]
+    [NodeCategory(BuiltinNodeCategories.CORE_STRINGS)]
+    public class dynToString : dynNodeWithOneOutput
+    {
+        public dynToString()
+        {
+            InPortData.Add(new PortData("input", "Anything", typeof(Value.Number))); // proxy for any type
+            OutPortData.Add(new PortData("string", "The string representation of the input", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewString(dynNodeViewModel.BuildValueString(args[0],0,10000,0, 25));
         }
     }
 
