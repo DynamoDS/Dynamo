@@ -414,6 +414,7 @@ namespace Dynamo.Controls
         {
             CopyCommand.RaiseCanExecuteChanged();
             PasteCommand.RaiseCanExecuteChanged();
+            AlignSelectedCommand.RaiseCanExecuteChanged();
         }
 
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -456,7 +457,7 @@ namespace Dynamo.Controls
 
         private bool CanAlignSelected(string param)
         {
-            return true;
+            return Selection.DynamoSelection.Instance.Selection.Count > 1;
         }
 
         private void SelectAll()
