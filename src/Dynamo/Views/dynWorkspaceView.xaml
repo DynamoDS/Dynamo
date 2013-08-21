@@ -128,8 +128,6 @@
             <Canvas.ContextMenu>
                 <ContextMenu>
 
-                    <MenuItem  Header="_Select All"  Name="SelectAll" Command="{Binding SelectAllCommand}" />
-                    
                     <MenuItem  Header="_Align Selection"  Name="Align">
                         <MenuItem  Header="_X Average"  Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalCenter"/>
                         <MenuItem  Header="_Left" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalLeft"/>
