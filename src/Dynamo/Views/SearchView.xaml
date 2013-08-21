@@ -253,20 +253,20 @@ Source="..\Images\search_24.png" Opacity="1" Grid.Column="0">
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type searchElements:TopSearchElement}">
-                        
+
                         <StackPanel Orientation="Horizontal">
 
                             <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
                             
                                 <TextBlock.ToolTip>
-                                    <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+                                    <StackPanel Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
                                         <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
                                                  Text="{Binding Path=Type}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" />
                                         
-                                        <TextBlock Name="name" TextWrapping="Wrap" Grid.Row ="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                        <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                                                  Text="{Binding Path=Description}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
                                 
-                                    </Grid>
+                                    </StackPanel>
                                 </TextBlock.ToolTip>
                                 
                             </TextBlock>
