@@ -66,13 +66,13 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Find Minimum No Derivative")]
+    [NodeName("Find Minimum With Derivative")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeSearchTags("optimize", "newton")]
-    [NodeDescription("Find the minimum of a 1 dimensional function without providing a derivative using Newton's method.")]
+    [NodeDescription("Find the minimum of a 1 dimensional function while providing a derivative using Newton's method.")]
     public class dynNewtonRootFind1dWithDeriv : dynNodeWithOneOutput
     {
-        public dynRootFind1dWithDeriv()
+        public dynNewtonRootFind1dWithDeriv()
         {
             InPortData.Add(new PortData("f(x)", "Objective Function", typeof(FScheme.Value.Function)));
             InPortData.Add(new PortData("df(x)/dx", "Derivative Function", typeof(FScheme.Value.Function)));
@@ -99,8 +99,8 @@ namespace Dynamo.Nodes
             // use newton's method 
             while (count < max_its && change > max_change)
             {
-                var fx = dynRootFind1dNoDeriv.InvokeFunction(f, x);
-                var dfx = dynRootFind1dNoDeriv.InvokeFunction(df, x);
+                var fx = dynNewtonRootFind1dNoDeriv.InvokeFunction(f, x);
+                var dfx = dynNewtonRootFind1dNoDeriv.InvokeFunction(df, x);
 
                 var x1 = x - fx / dfx;
                 change = x - x1;
@@ -115,3 +115,5 @@ namespace Dynamo.Nodes
     }
 
 }
+
+
