@@ -32,6 +32,7 @@
         </Grid.RowDefinitions>
         
         <Grid>
+            
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -39,35 +40,12 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Image  Margin="7,0,7,0"
-Source="..\Images\search_24.png" Opacity="1" Grid.Column="0">
-            </Image>
-
             <TextBox Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,15,5,10" Margin ="0"
                        IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="280">
             </TextBox>
 
-            <!--<Button Name="BackButton" Margin="1, 0, 1, 0" Width="42" FontSize="24" Foreground="White" ToolTip="Go Back" 
-                      Style="{DynamicResource ResourceKey=SImageButton}" Click="Back_Click" Tag="..\Images\back_24.png" Grid.Column="2"/>
+            <TextBlock FontSize ="13" Padding="20,15,5,10" Margin ="0" Foreground="#666" Grid.Column="1" Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search...</TextBlock>
 
-            <Button Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include extended Revit API" 
-                      Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\add_32_white.png" Click="ibtnServiceController_MouseLeftButtonUp" Grid.Column="3">
-
-                <Button.ContextMenu>
-
-                    <ContextMenu Name="RegionMenu" ItemsSource="{Binding Path=Regions}">
-
-                        <ContextMenu.ItemTemplate>
-                            <DataTemplate>
-                                <MenuItem Header="{Binding Key}" Command="{Binding Value}" IsChecked="{Binding Value.Loaded}" IsCheckable="True"/>
-                            </DataTemplate>
-                        </ContextMenu.ItemTemplate>
-
-                    </ContextMenu>
-
-                </Button.ContextMenu>
-
-            </Button>-->
         </Grid>
         
         <ScrollViewer Visibility="{Binding BrowserVisibility}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
