@@ -176,12 +176,14 @@ namespace Dynamo.PackageManager
         /// <param name="query"> The search query </param>
         internal void SearchAndUpdateResults(string query)
         {
+            this.SearchText = query;
             Task<List<PackageManagerSearchElement>>.Factory.StartNew(() => Search(query)
 
             ).ContinueWith((t) =>
             {
                 lock (SearchResults)
                 {
+
                     SearchResults.Clear();
                     foreach (var result in t.Result)
                     {
