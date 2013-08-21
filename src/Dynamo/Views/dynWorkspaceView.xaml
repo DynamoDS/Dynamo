@@ -121,10 +121,6 @@
                 
         </controls:ZoomBorder>
             
-            <Label Canvas.Top="40" Canvas.Right="0" Content="Not Under Package Control" Name="packageControlLabel" 
-                        HorizontalContentAlignment="Right" Visibility ="Collapsed" FontSize="14"
-                        FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
-
             <Canvas.ContextMenu>
                 <ContextMenu>
 

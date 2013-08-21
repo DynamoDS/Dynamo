@@ -328,6 +328,7 @@ namespace Dynamo
             FindNodesFromSelectionCommand = new DelegateCommand(FindNodesFromSelection, CanFindNodesFromSelection);
 
             DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += AlignSelectionCanExecuteChanged;
 
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
@@ -601,6 +602,11 @@ namespace Dynamo
 
         }
 
+        private bool CanAlignSelected(string alignType)
+        {
+            return Selection.DynamoSelection.Instance.Selection.Count > 1;
+        }
+
         private void UpdateSelectionOffsets()
         {
             var sel = new List<ISelectable>();
@@ -615,10 +621,6 @@ namespace Dynamo
             }
         }
 
-        private bool CanAlignSelected(string alignType)
-        {
-            return true;
-        }
 
         private void Hide(object parameters)
         {
@@ -738,6 +740,11 @@ namespace Dynamo
         private void NodeFromSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             NodeFromSelectionCommand.RaiseCanExecuteChanged();
+        }
+
+        private void AlignSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            AlignSelectedCommand.RaiseCanExecuteChanged();
         }
 
         private bool CanCreateNodeFromSelection()
