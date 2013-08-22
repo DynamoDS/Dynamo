@@ -55,8 +55,7 @@ namespace Dynamo
 
         static void RegisterSingleSignOn(PackageManagerClient client)
         {
-            var ads = Autodesk.Revit.AdWebServicesBase.GetInstance();
-            client.Client.Provider = new Greg.RevitOxygenProvider(ads);
+            client.Client.Provider = new Greg.RevitOxygenProvider();
         }
 
         /// <summary>
