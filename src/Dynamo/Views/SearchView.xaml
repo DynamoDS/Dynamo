@@ -44,7 +44,7 @@
                        IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="280">
             </TextBox>
 
-            <TextBlock FontSize ="13" Padding="20,15,5,10" Margin ="0" Foreground="#666" Grid.Column="1" Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search...</TextBlock>
+            <TextBlock FontSize ="13" IsHitTestVisible="False" Padding="20,15,5,10" Margin ="0" Foreground="#666" Grid.Column="1" Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search...</TextBlock>
 
         </Grid>
         
