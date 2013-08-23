@@ -999,7 +999,6 @@ namespace Dynamo.Nodes
             XYZ oldOrigin = oldP.Origin;
             XYZ oldNorm = oldP.Normal;
             
-            Transform trfP = null;
             if (oldNorm.IsAlmostEqualTo(newNorm))
             {
                 XYZ moveVec = newOrigin - oldOrigin;

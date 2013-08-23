@@ -255,7 +255,7 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }
-            catch (OperationCanceledException cancelEx)
+            catch (OperationCanceledException)
             {
                 CanSelect = true;
             }
@@ -287,7 +287,7 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }
-            catch (OperationCanceledException cancelEx)
+            catch (OperationCanceledException)
             {
                 CanSelect = true;
             }
