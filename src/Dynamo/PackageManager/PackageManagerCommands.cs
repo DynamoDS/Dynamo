@@ -29,13 +29,6 @@ namespace Dynamo.Commands
 
     public class ShowNodePublishInfoCommand : ICommand
     {
-        private bool init;
-        private PackageManagerPublishView _view;
-
-        public ShowNodePublishInfoCommand()
-        {
-            this.init = false;
-        }
 
         public void Execute(object funcDef)
         {
@@ -70,8 +63,6 @@ namespace Dynamo.Commands
                 dynSettings.Controller.DynamoViewModel.Log("Failed to obtain function definition from node.");
                 return;
             }
-
-            _view = new PackageManagerPublishView(dynSettings.Controller.PublishPackageViewModel);
 
         }
 

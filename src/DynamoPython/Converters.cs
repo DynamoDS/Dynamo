@@ -7,8 +7,6 @@ using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 
-using Dynamo.FSchemeInterop;
-
 namespace DynamoPython
 {
     internal static class Converters

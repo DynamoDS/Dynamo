@@ -115,7 +115,6 @@ limitations under the License.
     <Compile Include="DragCanvas.cs" />
     <Compile Include="DynamoCompletionData.cs" />
     <Compile Include="DynamoLogger.cs" />
-    <Compile Include="DynamoRunner.cs" />
     <Compile Include="DynamoSelection.cs" />
     <Compile Include="Nodes\dynMultithreading.cs" />
     <Compile Include="Nodes\dynOptimize.cs" />
