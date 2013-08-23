@@ -223,7 +223,6 @@ namespace Dynamo.Search.SearchElements
         }
 
 
-        public string FullCategoryName { get; set; }
     }
 
 }

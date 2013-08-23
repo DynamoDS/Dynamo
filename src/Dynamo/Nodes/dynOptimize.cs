@@ -94,7 +94,6 @@ namespace Dynamo.Nodes
             var count = 0;
             var change = 1e10;
             var max_change = 1e-5;
-            var h = 1e-5;
 
             // use newton's method 
             while (count < max_its && change > max_change)
