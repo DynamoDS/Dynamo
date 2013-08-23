@@ -40,6 +40,11 @@ namespace Dynamo.ViewModels
         private bool _watchEscapeIsDown = false;
 
         /// <summary>
+        /// Convenience property
+        /// </summary>
+        public DynamoViewModel DynamoViewModel { get { return dynSettings.Controller.DynamoViewModel; } }
+
+        /// <summary>
         /// Used during open and workspace changes to set the location of the workspace
         /// </summary>
         /// <param name="sender"></param>

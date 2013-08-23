@@ -57,7 +57,7 @@ namespace Dynamo.PackageManager
 
         public void Start()
         {
-            dynSettings.Controller.PackageManagerClient.DownloadAndInstall(this);
+            dynSettings.PackageManagerClient.DownloadAndInstall(this);
         }
 
         public void Error(string errorString)

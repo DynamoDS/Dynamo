@@ -19,7 +19,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Authentication;
 using System.Threading;
+using System.Windows;
+using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Greg;
 using Greg.Requests;
@@ -29,6 +33,7 @@ namespace Dynamo.PackageManager
 {
 
     public delegate void AuthenticationRequestHandler(PackageManagerClient sender);
+    public delegate void ShowPackagePublishUIHandler(PublishPackageViewModel publishViewModel);
 
     /// <summary>
     ///     A thin wrapper on the Greg rest client for performing IO with
@@ -45,6 +50,7 @@ namespace Dynamo.PackageManager
         #region Properties
 
         public event AuthenticationRequestHandler AuthenticationRequested;
+        public event ShowPackagePublishUIHandler ShowPackagePublishUIRequested;
 
         /// <summary>
         ///     Client property
@@ -79,6 +85,12 @@ namespace Dynamo.PackageManager
                 AuthenticationRequested(this);
         }
 
+        public void OnShowPackagePublishUIRequested(PublishPackageViewModel vm)
+        {
+            if (ShowPackagePublishUIRequested != null)
+                ShowPackagePublishUIRequested(vm);
+        }
+
         internal List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
         {
             try
@@ -95,6 +107,89 @@ namespace Dynamo.PackageManager
                 return new List<PackageManagerSearchElement>();
             }
             
+        }
+
+        public void PublishCurrentWorkspace(object m)
+        {
+            var currentFunDef =
+                dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(dynSettings.Controller.DynamoViewModel.CurrentSpace);
+
+            if (currentFunDef != null)
+            {
+                ShowNodePublishInfo(new List<FunctionDefinition> { currentFunDef });
+            }
+            else
+            {
+                MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+            }
+
+        }
+
+        public bool CanPublishCurrentWorkspace(object m)
+        {
+            return dynSettings.Controller.DynamoViewModel.CurrentSpace is FuncWorkspace;
+        }
+
+        public void PublishSelectedNode(object m)
+        {
+            var nodeList = DynamoSelection.Instance.Selection
+                                .Where(x => x is dynFunction)
+                                .Cast<dynFunction>()
+                                .Select(x => x.Definition.FunctionId)
+                                .ToList();
+
+            if (!nodeList.Any())
+            {
+                MessageBox.Show("You must select at least one custom node.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                return;
+            }
+
+            var defs = nodeList.Select(dynSettings.CustomNodeManager.GetFunctionDefinition).ToList();
+
+            if (defs.Any(x => x == null))
+                MessageBox.Show("There was a problem getting the node from the workspace.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+
+            ShowNodePublishInfo(defs);
+        }
+
+        public bool CanPublishSelectedNode(object m)
+        {
+            return DynamoSelection.Instance.Selection.Count > 0 &&
+                   DynamoSelection.Instance.Selection.All(x => x is dynFunction);
+        }
+
+        private void ShowNodePublishInfo(object funcDef)
+        {
+            if (funcDef is List<FunctionDefinition>)
+            {
+                var fs = funcDef as List<FunctionDefinition>;
+
+                foreach (var f in fs)
+                {
+                    var pkg = dynSettings.PackageLoader.GetOwnerPackage(f);
+
+                    if (dynSettings.PackageLoader.GetOwnerPackage(f) != null)
+                    {
+                        var m = MessageBox.Show("The node is part of the dynamo package called \"" + pkg.Name +
+                            "\" - do you want to submit a new version of this package?  \n\nIf not, this node will be moved to the new package you are creating.",
+                            "Package Warning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (m == MessageBoxResult.Yes)
+                        {
+                            pkg.PublishNewPackageVersionCommand.Execute();
+                            return;
+                        }
+                    }
+                }
+
+                var newPkgVm = new PublishPackageViewModel(dynSettings.PackageManagerClient);
+                newPkgVm.FunctionDefinitions = fs;
+                dynSettings.PackageManagerClient.OnShowPackagePublishUIRequested(newPkgVm);
+            }
+            else
+            {
+                DynamoLogger.Instance.Log("Failed to obtain function definition from node.");
+                return;
+            }
         }
 
         public PackageUploadHandle Publish( Package l, List<string> files, bool isNewVersion )

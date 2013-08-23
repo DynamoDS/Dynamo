@@ -14,8 +14,10 @@ using Newtonsoft.Json;
 
 namespace Dynamo.PackageManager
 {
+
     public class Package : NotificationObject
     {
+
         public string Name { get; set; }
 
         public string CustomNodeDirectory
@@ -211,13 +213,14 @@ namespace Dynamo.PackageManager
                         .ForEach(x => this.LoadedCustomNodes.Add(x));
         }
 
+
         private void PublishNewPackageVersion()
         {
             this.RefreshCustomNodesFromDirectory();
             var vm = PublishPackageViewModel.FromLocalPackage(this);
             vm.IsNewVersion = true;
-            //TODO: UI Refactor - Ensure this view is created by event
-            var e = new PackageManagerPublishView(vm);
+
+            dynSettings.PackageManagerClient.OnShowPackagePublishUIRequested(vm);
         }
 
         private bool CanPublishNewPackageVersion()
@@ -230,8 +233,8 @@ namespace Dynamo.PackageManager
             this.RefreshCustomNodesFromDirectory();
             var vm = PublishPackageViewModel.FromLocalPackage(this);
             vm.IsNewVersion = false;
-            //TODO: UI Refactor - Ensure this view is created by event
-            var e = new PackageManagerPublishView(vm);
+
+            dynSettings.PackageManagerClient.OnShowPackagePublishUIRequested(vm);
         }
 
         private bool CanPublishNewPackage()

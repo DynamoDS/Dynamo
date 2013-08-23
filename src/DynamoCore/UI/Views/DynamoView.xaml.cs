@@ -64,6 +64,7 @@ namespace Dynamo.Controls
             this.Loaded += dynBench_Activated;
         }
 
+
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
         {
             UpdateLayout();
@@ -87,27 +88,16 @@ namespace Dynamo.Controls
             dynSettings.Controller.SearchViewModel.Visible = true;
 
             //PACKAGE MANAGER
-            //var pmLoginView = new PackageManagerLoginView
-            //    {
-            //        DataContext = dynSettings.Controller.PackageManagerLoginViewModel
-            //    };
-            //mainGrid.Children.Add(pmLoginView);
-
-            //var pmPublishView = new PackageManagerPublishView
-            //    {
-            //        DataContext = dynSettings.Controller.PackageManagerPublishViewModel
-            //    };
-            //mainGrid.Children.Add(pmPublishView);
+            dynSettings.PackageManagerClient.ShowPackagePublishUIRequested += _vm_RequestShowPackageManagerPublish;
+            _vm.RequestShowInstalledPackages += new EventHandler(_vm_RequestShowInstalledPackages);
+            _vm.RequestShowPacakageManagerSearch += new EventHandler(_vm_RequestShowPackageManagerSearch);
 
             //FUNCTION NAME PROMPT
             _vm.Model.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
 
             _vm.RequestClose += new EventHandler(_vm_RequestClose);
             _vm.RequestSaveImage += new ImageSaveEventHandler(_vm_RequestSaveImage);
-            _vm.RequestShowInstalledPackages += new EventHandler(_vm_RequestShowInstalledPackages);
-            _vm.RequestShowPacakageManagerSearch += new EventHandler(_vm_RequestShowPacakageManagerSearch);
 
-            //dynSettings.Controller.PackageManagerClient.RequestSetLoginState += new LoginStateEventHandler(PackageManagerClient_RequestSetLoginState);
             dynSettings.Controller.RequestsCrashPrompt += new DynamoController.CrashPromptHandler(Controller_RequestsCrashPrompt);
 
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
@@ -117,9 +107,14 @@ namespace Dynamo.Controls
             dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
         }
 
-        void _vm_RequestShowPacakageManagerSearch(object sender, EventArgs e)
+        void _vm_RequestShowPackageManagerPublish(PublishPackageViewModel model)
         {
-            var pms = new PackageManagerSearchViewModel(dynSettings.Controller.PackageManagerClient);
+            new PackageManagerPublishView(model);
+        }
+
+        void _vm_RequestShowPackageManagerSearch(object sender, EventArgs e)
+        {
+            var pms = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
             var window = new PackageManagerSearchView(pms);
             window.Show();
         }

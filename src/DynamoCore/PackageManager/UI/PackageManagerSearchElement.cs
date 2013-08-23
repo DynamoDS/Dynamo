@@ -64,7 +64,7 @@ namespace Dynamo.PackageManager
                 var headers = version.full_dependency_ids.Select((id) =>
                     {
                         PackageHeader pkgHeader;
-                        var res = dynSettings.Controller.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
+                        var res = dynSettings.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
                         
                         if (!res.Success)
                             MessageBox.Show("Failed to download package with id: " + id + ".  Please try again and report the package if you continue to have problems.", "Package Download Error",

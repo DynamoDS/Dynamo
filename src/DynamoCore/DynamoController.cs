@@ -66,8 +66,6 @@ namespace Dynamo
 
         public CustomNodeManager CustomNodeManager { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
-        public PublishPackageViewModel PublishPackageViewModel { get; internal set; }
-        public PackageManagerClient PackageManagerClient { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
@@ -214,9 +212,6 @@ namespace Dynamo
             CustomNodeManager = new CustomNodeManager(pluginsPath);
             
             SearchViewModel = new SearchViewModel();
-            PackageManagerClient = new PackageManagerClient();
-            dynSettings.PackageManagerClient = PackageManagerClient;
-            PublishPackageViewModel = new PublishPackageViewModel(PackageManagerClient);
 
             dynSettings.PackageLoader = new PackageLoader();
 
@@ -557,17 +552,6 @@ namespace Dynamo
             {
                 return false;
             }
-            return true;
-        }
-
-        public void ShowPackageManager(object parameter)
-        {
-            //dynSettings.Bench.PackageManagerLoginStateContainer.Visibility = Visibility.Visible;
-            //dynSettings.Bench.PackageManagerMenu.Visibility = Visibility.Visible;
-        }
-
-        internal bool CanShowPackageManager(object parameter)
-        {
             return true;
         }
 

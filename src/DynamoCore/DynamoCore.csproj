@@ -115,7 +115,6 @@ limitations under the License.
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
     <Compile Include="UI\Commands\Commands.cs" />
-    <Compile Include="DynamoCompletionData.cs" />
     <Compile Include="DynamoLogger.cs" />
     <Compile Include="DynamoSelection.cs" />
     <Compile Include="Nodes\dynMultithreading.cs" />
@@ -250,11 +249,9 @@ limitations under the License.
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="Interfaces\dynIDrawable.cs" />
-    <Compile Include="UI\Commands\PackageManagerCommands.cs" />
     <Compile Include="UI\Commands\Regions\RegionBase.cs" />
     <Compile Include="UI\Commands\Regions\RevitAPIRegion.cs" />
     <Compile Include="UI\Commands\SearchCommands.cs" />
-    <Compile Include="PackageManager\PackageManagerCommands.cs" />
     <Compile Include="UI\Commands\Regions\PackageManagerRegion.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
