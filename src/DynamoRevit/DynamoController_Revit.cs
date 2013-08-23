@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Nodes;
@@ -11,6 +12,8 @@ using Dynamo.PackageManager;
 using Dynamo.Revit;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Greg;
+using RestSharp;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo
@@ -37,9 +40,6 @@ namespace Dynamo
             Predicate<dynNodeModel> manualTransactionPredicate = node => node is dynTransaction;
             CheckManualTransaction = new PredicateTraverser(manualTransactionPredicate);
 
-            //AppDomain currentDomain = AppDomain.CurrentDomain;
-            //currentDomain.AssemblyResolve += ResolveSSONETHandler;
-
             dynSettings.PackageManagerClient.AuthenticationRequested += RegisterSingleSignOn;
 
             AddPythonBindings();
@@ -51,45 +51,46 @@ namespace Dynamo
             //allow the showing of elements in context
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
-        }
 
-        static void RegisterSingleSignOn(PackageManagerClient client)
-        {
-            client.Client.Provider = new Greg.RevitOxygenProvider();
+
         }
 
         /// <summary>
-        /// This module is dependent on the IntfSPD assembly, which will not be in the 
-        /// executing directory
+        /// A reference to the the SSONET assembly ot prevent reloading.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args">Contains the name of the assembly</param>
-        /// <returns></returns>
-        private Assembly ResolveSSONETHandler(object sender, ResolveEventArgs args)
-        {
-            //Retrieve the list of referenced assemblies in an array of AssemblyName.
-            string strTempAssmbPath = "";
+        private Assembly _singleSignOnAssembly;
 
-            if (args.Name.Substring(0, args.Name.IndexOf(",")).ToLower() == "SSONET.dll".ToLower())
-            {
-                if (Context == "Revit 2013")
-                {
-                    strTempAssmbPath = @"C:\Program Files\Autodesk\Revit Architecture 2013\Program\SSONET.dll";
-                }
-                else if (Context == "Revit 2014")
-                {
-                    strTempAssmbPath = @"C:\Program Files\Autodesk\Revit Architecture 2014\Program\SSONET.dll";
-                }
-                else if (Context == "Vasari 2014") {
-                    strTempAssmbPath = @"C:\Program Files\Autodesk\Vasari Beta 3\Program\SSONET.dll";
-                }
-            }
+        /// <summary>
+        /// Callback for registering an authentication provider with the package manager
+        /// </summary>
+        /// <param name="client">The client, to which the provider will be attached</param>
+        void RegisterSingleSignOn(PackageManagerClient client)
+        {
+            if (_singleSignOnAssembly == null)
+                _singleSignOnAssembly = LoadSSONet();
+            client.Client.Provider = new RevitOxygenProvider();
+        }
+
+        /// <summary>
+        /// Delay loading of the SSONet.dll, which is used by the package manager for 
+        /// get authentication information.  Internally uses Assembly.LoadFrom so the DLL
+        /// will be loaded into the Load From context or extracted from the Load context
+        /// if already present there.
+        /// </summary>
+        /// <returns>The SSONet assembly</returns>
+        public Assembly LoadSSONet()
+        {            
+
+            // get the location of RevitAPI assembly.  SSONet is in the same directory.
+            var revitAPIAss = Assembly.GetAssembly(typeof(Autodesk.Revit.DB.XYZ)); // any type loaded from RevitAPI
+            var revitAPIDir = Path.GetDirectoryName(revitAPIAss.Location);
+
+            //Retrieve the list of referenced assemblies in an array of AssemblyName.
+            string strTempAssmbPath = Path.Combine(revitAPIDir, "SSONET.dll");
 
             //Load the assembly from the specified path. 					
-            Assembly myAssembly = Assembly.LoadFrom(strTempAssmbPath);
-
-            //Return the loaded assembly.
-            return myAssembly;	
+            return Assembly.LoadFrom(strTempAssmbPath);
+            
         }
 
         void FindNodesFromSelection()
