@@ -53,11 +53,11 @@ namespace Dynamo
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
 
-
+            
         }
 
         /// <summary>
-        /// A reference to the the SSONET assembly ot prevent reloading.
+        /// A reference to the the SSONET assembly to prevent reloading.
         /// </summary>
         private Assembly _singleSignOnAssembly;
 

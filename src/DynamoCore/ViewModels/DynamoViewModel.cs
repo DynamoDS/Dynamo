@@ -10,9 +10,11 @@ using System.Windows;
 using System.Windows.Forms;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Dynamo.ViewModels
 {
@@ -33,7 +35,7 @@ namespace Dynamo.ViewModels
         }
 
         public event EventHandler RequestShowPacakageManagerSearch;
-        public virtual void OnRequestShowPacakageManagerSearch(Object sender, EventArgs e)
+        public virtual void OnRequestShowPackageManagerSearch(Object sender, EventArgs e)
         {
             if (RequestShowPacakageManagerSearch != null)
             {
@@ -137,13 +139,10 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
         public DelegateCommand SelectNeighborsCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
-        //public DelegateCommand RefreshRemotePackagesCmd { get; set; }
         public DelegateCommand SubmitCommand { get; set; }
-        //public DelegateCommand ShowNodeNodePublishInfoCmd { get; set; }
-        //public DelegateCommand PublishCurrentWorkspaceCmd { get; set; }
-        //public DelegateCommand PublishSelectedNodeCmd { get; set; }
-        //public DelegateCommand ShowLoginCmd { get; set; }
-        //public DelegateCommand LoginCmd { get; set; }
+        public DelegateCommand PublishCurrentWorkspaceCommand { get; set; }
+        public DelegateCommand PublishSelectedNodesCommand { get; set; }
+
         public DelegateCommand PanCommand { get; set; }
 
         /// <summary>
@@ -403,7 +402,6 @@ namespace Dynamo.ViewModels
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
             CopyCommand = new DelegateCommand(_model.Copy, _model.CanCopy);
             PasteCommand = new DelegateCommand(_model.Paste, _model.CanPaste);
-            ShowPackageManagerCommand = new DelegateCommand(Controller.ShowPackageManager, Controller.CanShowPackageManager);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             CancelRunCommand = new DelegateCommand(Controller.CancelRun, Controller.CanCancelRun);
             RunExpressionCommand = new DelegateCommand(Controller.RunExpression, Controller.CanRunExpression);
@@ -415,33 +413,23 @@ namespace Dynamo.ViewModels
 
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
+            PublishCurrentWorkspaceCommand = new DelegateCommand(PublishCurrentWorkspace, CanPublishCurrentWorkspace);
+            PublishSelectedNodesCommand = new DelegateCommand(PublishSelectedNodes, CanPublishSelectedNodes);
 
             ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             SelectNeighborsCommand = new DelegateCommand(SelectNeighbors, CanSelectNeighbors);
             ClearLogCommand = new DelegateCommand(dynSettings.Controller.ClearLog, dynSettings.Controller.CanClearLog);
             PanCommand = new DelegateCommand(Pan, CanPan);
 
-            //TODO: UI Refactor - All the package manager commands have been removed from here. Confirm that these commands live somewhere else now.
-            /*
-            var pm_pub_vm = dynSettings.Controller.PackageManagerPublishViewModel;
-            SubmitCommand = new DelegateCommand(pm_pub_vm.OnSubmit, pm_pub_vm.CanSubmit);
-            ShowNodeNodePublishInfoCmd =
-                        new DelegateCommand(pm_pub_vm.ShowNodePublishInfo, pm_pub_vm.CanShowNodePublishInfo);
-            PublishCurrentWorkspaceCmd =
-                new DelegateCommand(pm_pub_vm.PublishCurrentWorkspace, pm_pub_vm.CanPublishCurrentWorkspace);
-            PublishSelectedNodeCmd =
-                new DelegateCommand(pm_pub_vm.PublishSelectedNode, pm_pub_vm.CanPublishSelectedNode);
-
-            var pm_login_vm = dynSettings.Controller.PackageManagerLoginViewModel;
-
-            ShowLoginCmd = new DelegateCommand(pm_login_vm.ShowLogin, pm_login_vm.CanShowLogin);
-            LoginCmd = new DelegateCommand(pm_login_vm.Login, pm_login_vm.CanLogin);
-
-            var pm_client = dynSettings.Controller.PackageManagerClient;
-            RefreshRemotePackagesCmd = new DelegateCommand(pm_client.RefreshRemotePackages, pm_client.CanRefreshRemotePackages);
-            */
-
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
+
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+        }
+
+        private void SelectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            PublishSelectedNodesCommand.RaiseCanExecuteChanged();
+            AlignSelectedCommand.RaiseCanExecuteChanged();
         }
 
         void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -476,6 +464,8 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("BackgroundColor");
                 RaisePropertyChanged("CurrentWorkspaceIndex");
                 RaisePropertyChanged("ViewingHomespace");
+                if (this.PublishCurrentWorkspaceCommand != null)
+                this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -581,13 +571,29 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void PublishCurrentWorkspace(object parameters)
+        {
+            dynSettings.PackageManagerClient.PublishCurrentWorkspace(parameters);
+        }
+
+        private bool CanPublishCurrentWorkspace(object parameters)
+        {
+            return dynSettings.PackageManagerClient.CanPublishCurrentWorkspace(parameters);
+        }
+
+        private void PublishSelectedNodes(object parameters)
+        {
+            dynSettings.PackageManagerClient.PublishSelectedNode(parameters);
+        }
+
+        private bool CanPublishSelectedNodes(object parameters)
+        {
+            return dynSettings.PackageManagerClient.CanPublishSelectedNode(parameters);
+        }
+
         private void ShowPackageManagerSearch(object parameters)
         {
-            //var pms = new PackageManagerSearchViewModel(Controller.PackageManagerClient);
-            //var window = new PackageManagerSearchView(pms);
-            //window.Show();
-
-            OnRequestShowPacakageManagerSearch(this, EventArgs.Empty);
+            OnRequestShowPackageManagerSearch(this, EventArgs.Empty);
         }
 
         private bool CanShowPackageManagerSearch(object parameters)
@@ -597,9 +603,6 @@ namespace Dynamo.ViewModels
 
         private void ShowInstalledPackages(object parameters)
         {
-            //var window = new InstalledPackagesView();
-            //window.Show();
-
             OnRequestShowInstalledPackages(this, EventArgs.Empty);
         }
 

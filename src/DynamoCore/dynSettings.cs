@@ -34,17 +34,20 @@ namespace Dynamo.Utilities
             }
         }
 
-        //public static Dynamo.Controls.DragCanvas Workbench { get; internal set; }
-
-        //public static DynamoView Bench { get; set; }
-
         public static PackageLoader PackageLoader { get; internal set; }
 
         public static CustomNodeManager CustomNodeManager { get { return Controller.CustomNodeManager; } }
 
         public static DynamoController Controller { get; internal set; }
 
-        public static PackageManagerClient PackageManagerClient { get; internal set; }
+        private static PackageManagerClient _packageManagerClient;
+        public static PackageManagerClient PackageManagerClient { 
+                get
+                {
+                    if (_packageManagerClient == null) _packageManagerClient = new PackageManagerClient();
+                    return _packageManagerClient;
+                }
+        }
 
         public static string FormatFileName(string filename)
         {
@@ -56,15 +59,7 @@ namespace Dynamo.Utilities
 
         public static void ReturnFocusToSearch() {
 
-            //trigger event to request the view to focus the
-            //search box
             dynSettings.Controller.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
-
-            //if ( Dynamo.Commands.ShowSearchCommand.search != null)
-            //{
-            //    Keyboard.Focus(Dynamo.Commands.ShowSearchCommand.search.SearchTextBox );
-                
-            //}
 
         }
 
