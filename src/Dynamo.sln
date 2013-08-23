@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPythonTests", "Dynamo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoNode", "DynamoNode\DynamoNode.csproj", "{9E5E449D-0933-4409-8E1F-06AFF56E5416}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevitTests", "DynamoRevitTester\DynamoRevitTests.csproj", "{9ADADC68-36A3-4A21-9B54-298154A88720}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevitTests", "DynamoRevitTests\DynamoRevitTests.csproj", "{9ADADC68-36A3-4A21-9B54-298154A88720}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoAsm", "DynamoAsm\DynamoAsm.csproj", "{95192F1A-3265-4986-8D07-50F8FD4F2439}"
 EndProject
