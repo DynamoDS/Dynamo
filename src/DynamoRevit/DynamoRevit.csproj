@@ -19,6 +19,11 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
+  <PropertyGroup>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    None
+  </ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -28,6 +33,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -43,6 +50,10 @@
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\greg-client\bin\Debug\Greg.dll</HintPath>
+    </Reference>
+    <Reference Include="GregRevitAuth, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\greg\GregRevitAuth.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
@@ -103,10 +114,6 @@
     <Reference Include="RevitAPIUI">
       <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="SSONET, Version=2014.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2014\SSONET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -201,7 +208,7 @@
       <Project>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</Project>
       <Name>DSRevitNodes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Dynamo\DynamoCore.csproj">
+    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
       <Private>False</Private>
