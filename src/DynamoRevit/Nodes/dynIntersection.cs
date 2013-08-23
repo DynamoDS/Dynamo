@@ -214,8 +214,8 @@ namespace Dynamo.Nodes
 
         #region IDrawable Interface
         protected List<XYZ> pts = new List<XYZ>();
-        public RenderDescription RenderDescription { get; set; }
-        public void Draw()
+ 
+       new public void Draw()
         {
             if (this.RenderDescription == null)
                 this.RenderDescription = new RenderDescription();
@@ -305,8 +305,8 @@ namespace Dynamo.Nodes
 
         #region IDrawable Interface
         protected List<XYZ> pts = new List<XYZ>();
-        public RenderDescription RenderDescription { get; set; }
-        public void Draw()
+
+        new public void Draw()
         {
             if (this.RenderDescription == null)
                 this.RenderDescription = new RenderDescription();
@@ -393,8 +393,8 @@ namespace Dynamo.Nodes
 
         #region IDrawable Interface
         protected List<Curve> curves = new List<Curve>();
-        public RenderDescription RenderDescription { get; set; }
-        public void Draw()
+
+        new public void Draw()
         {
             if (this.RenderDescription == null)
                 this.RenderDescription = new RenderDescription();

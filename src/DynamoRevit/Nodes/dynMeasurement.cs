@@ -154,8 +154,6 @@ namespace Dynamo.Nodes
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             //FSharpList<Value> result = FSharpList<Value>.Empty;
-            BoundingBoxUV bbox = null;
-
             var curveRef = ((Value.Container)args[0]).Item as Reference;
 
             Curve curve = curveRef == null
@@ -364,7 +362,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = false;
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-
+            
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Measure.Item.Length")
             {
@@ -376,6 +374,8 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, bindingVal);
+            
+            tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
 
             tb.Text = "0.0";
         }

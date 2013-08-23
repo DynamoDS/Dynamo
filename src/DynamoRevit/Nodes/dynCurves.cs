@@ -40,7 +40,6 @@ namespace Dynamo.Nodes
         public dynModelCurve()
         {
             InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Value.Container)));
-            InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(Value.Container)));
             OutPortData.Add(new PortData("mc", "Model Curve", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -48,10 +47,9 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Curve c = (Curve)((Value.Container)args[0]).Item;
-            SketchPlane sp = (SketchPlane)((Value.Container)args[1]).Item;
+            var c = (Curve)((Value.Container)args[0]).Item;
+            var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
 
-            
             ModelCurve mc;
             XYZ spOrigin = sp.Plane.Origin;
             XYZ modelOrigin = XYZ.Zero;
@@ -112,7 +110,6 @@ namespace Dynamo.Nodes
         public dynReferenceCurve()
         {
             InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Value.Container)));
-            InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(Value.Container)));
             OutPortData.Add(new PortData("mc", "Model Curve", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -120,9 +117,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Curve c = (Curve)((Value.Container)args[0]).Item;
-            SketchPlane sp = (SketchPlane)((Value.Container)args[1]).Item;
-
+            var c = (Curve)((Value.Container)args[0]).Item;
+            var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
 
             ModelCurve mc;
             XYZ spOrigin = sp.Plane.Origin;

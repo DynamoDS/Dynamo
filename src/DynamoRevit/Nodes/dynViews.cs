@@ -27,7 +27,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Data;
 using System.ComponentModel;
-using System.Globalization;
 
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
@@ -473,7 +472,7 @@ namespace Dynamo.Nodes
                 try
                 {
                     var image = (System.Drawing.Image)value;
-                    System.Drawing.Image readImage = null;
+
                     // Winforms Image we want to get the WPF Image from...
                     var bitmap = new System.Windows.Media.Imaging.BitmapImage();
                     bitmap.BeginInit();
