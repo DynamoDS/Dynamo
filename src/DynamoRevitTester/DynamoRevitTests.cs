@@ -85,6 +85,7 @@ namespace DynamoRevitTests
         //Called after each test method
         public void Cleanup()
         {
+            OpenEmptyModel();
         }
 
         [Test]
@@ -1071,6 +1072,7 @@ namespace DynamoRevitTests
             dynRevitSettings.Revit.OpenAndActivateDocument(modelPath);
             initialDoc.Close(false);
         }
+
 
         private void OpenEmptyModel()
         {
