@@ -495,7 +495,7 @@ namespace Dynamo.Applications
                     if (t != null)
                     {
                         Results.Results.Add(new DynamoRevitTest(t as TestMethod));
-                        Results.RunAllTests();
+                        Results.RunAllTests(null);
                     }
                 }
             }
