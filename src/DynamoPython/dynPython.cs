@@ -22,6 +22,8 @@ using System.Windows.Input;
 using System.Xml;
 
 using Dynamo.Connectors;
+using Dynamo.Controls;
+using Dynamo.Models;
 using DynamoPython;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Editing;
@@ -63,7 +65,6 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-
         private void InitializeDefaultScript()
         {
             script = "# Default imports\n";
@@ -83,8 +84,10 @@ namespace Dynamo.Nodes
             script = script + "\n#The input to this node will be stored in the IN variable.\ndataEnteringNode = IN\n\n#Assign your output to the OUT variable\nOUT = 0";
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //topControl.Height = 200;
             //topControl.Width = 300;
 

@@ -58,7 +58,6 @@ namespace Dynamo
 
         private void processUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted, IEnumerable<ElementId> added)
         {
-            //Document doc = data.GetDocument();
 
             #region Modified
             var modDict = _updateDict[ChangeTypeEnum.Modify];
@@ -77,8 +76,8 @@ namespace Dynamo
                 }
                 catch (Exception e)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log("Dynamic Model Update error while parsing modified elements.");
-                    dynSettings.Controller.DynamoViewModel.Log(e);
+                    DynamoLogger.Instance.Log("Dynamic Model Update error while parsing modified elements.");
+                    DynamoLogger.Instance.Log(e);
                 }
             }
 
@@ -103,8 +102,8 @@ namespace Dynamo
                 }
                 catch (Exception e)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log("Dynamic Model Update error while parsing added elements.");
-                    dynSettings.Controller.DynamoViewModel.Log(e);
+                    DynamoLogger.Instance.Log("Dynamic Model Update error while parsing added elements.");
+                    DynamoLogger.Instance.Log(e);
                 }
             }
 
@@ -129,8 +128,8 @@ namespace Dynamo
                 }
                 catch (Exception e)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log("Dynamic Model Update error while parsing deleted elements.");
-                    dynSettings.Controller.DynamoViewModel.Log(e);
+                    DynamoLogger.Instance.Log("Dynamic Model Update error while parsing deleted elements.");
+                    DynamoLogger.Instance.Log(e);
                 }
             }
 

@@ -22,8 +22,9 @@ using System.Windows.Media;
 using System.Linq;
 using System.Xml;
 using Autodesk.Revit.DB;
+using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Utilities;
-using Dynamo.Connectors;
 using Dynamo.Revit;
 using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
 using Microsoft.FSharp.Collections;
@@ -119,8 +120,10 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a button to the inputGrid on the dynElement
             var selectButton = new dynNodeButton
             {
@@ -229,7 +232,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log(
+                        DynamoLogger.Instance.Log(
                             "Unable to find element with ID: " + id);
                     }
                     SelectedElement = saved;
@@ -255,13 +258,13 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }
-            catch (OperationCanceledException cancelEx)
+            catch (OperationCanceledException)
             {
                 CanSelect = true;
             }
             catch (Exception e)
             {
-                dynSettings.Controller.DynamoViewModel.Log(e);
+                DynamoLogger.Instance.Log(e);
             }
         }
     }
@@ -287,13 +290,13 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }
-            catch (OperationCanceledException cancelEx)
+            catch (OperationCanceledException)
             {
                 CanSelect = true;
             }
             catch (Exception e)
             {
-                dynSettings.Controller.DynamoViewModel.Log(e);
+                DynamoLogger.Instance.Log(e);
             }
         }
     }
@@ -331,8 +334,10 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a button to the inputGrid on the dynElement
             _selectButton = new dynNodeButton
             {
@@ -500,7 +505,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log(
+                        DynamoLogger.Instance.Log(
                             "Unable to find element with ID: " + id);
                     }
                     if (SelectedElements == null)
@@ -539,7 +544,7 @@ namespace Dynamo.Nodes
         //    }
         //    catch (Exception e)
         //    {
-        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //        DynamoLogger.Instance.Log(e);
         //    }
         //}
 
@@ -668,7 +673,7 @@ namespace Dynamo.Nodes
         //    }
         //    catch (Exception e)
         //    {
-        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //        DynamoLogger.Instance.Log(e);
         //    }
             
         //}
@@ -706,7 +711,7 @@ namespace Dynamo.Nodes
         //    }
         //    catch (Exception e)
         //    {
-        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //        DynamoLogger.Instance.Log(e);
         //    }
         //}
 
@@ -920,7 +925,7 @@ namespace Dynamo.Nodes
         //    }
         //    catch (Exception e)
         //    {
-        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //        DynamoLogger.Instance.Log(e);
         //    }
         //}
 
@@ -954,7 +959,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log(
+                        DynamoLogger.Instance.Log(
                             "Unable to find element with ID: " + id);
                     }
 
@@ -1060,7 +1065,7 @@ namespace Dynamo.Nodes
         //    }
         //    catch (Exception e)
         //    {
-        //        dynSettings.Controller.DynamoViewModel.Log(e);
+        //        DynamoLogger.Instance.Log(e);
         //    }
             
         //}

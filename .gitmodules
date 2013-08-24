@@ -5,3 +5,7 @@
 [submodule "mathnet-numerics"]
         path = extern/mathnet-numerics
         url = git://github.com/mathnet/mathnet-numerics.git
+		
+[submodule "Newtonsoft.Json"]
+        path = extern/Newtonsoft.Json
+        url = https://github.com/JamesNK/Newtonsoft.Json

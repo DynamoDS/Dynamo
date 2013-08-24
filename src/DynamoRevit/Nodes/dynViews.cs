@@ -18,6 +18,8 @@ using System.Linq;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
+using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using System.Drawing;
@@ -25,7 +27,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Data;
 using System.ComponentModel;
-using System.Globalization;
 
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
@@ -83,7 +84,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log(string.Format("Could not create view: {0}", viewName));
+                        DynamoLogger.Instance.Log(string.Format("Could not create view: {0}", viewName));
                     }
                 }
                 else
@@ -386,7 +387,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                dynSettings.Controller.DynamoViewModel.Log(e);
+                DynamoLogger.Instance.Log(e);
                 return Value.NewContainer(0);
             }
 
@@ -412,8 +413,11 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView NodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+
+            var NodeUI = ui as dynNodeView;
+
             image1 = new System.Windows.Controls.Image();
             image1.Width = 320;
             image1.Height = 240;
@@ -468,7 +472,7 @@ namespace Dynamo.Nodes
                 try
                 {
                     var image = (System.Drawing.Image)value;
-                    System.Drawing.Image readImage = null;
+
                     // Winforms Image we want to get the WPF Image from...
                     var bitmap = new System.Windows.Media.Imaging.BitmapImage();
                     bitmap.BeginInit();
@@ -485,8 +489,8 @@ namespace Dynamo.Nodes
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log(ex.Message);
-                    dynSettings.Controller.DynamoViewModel.Log(ex.StackTrace);
+                    DynamoLogger.Instance.Log(ex.Message);
+                    DynamoLogger.Instance.Log(ex.StackTrace);
                     return null;
                 }
             }
@@ -541,8 +545,8 @@ namespace Dynamo.Nodes
                     }
                     catch (Exception ex)
                     {
-                        dynSettings.Controller.DynamoViewModel.Log(ex.Message);
-                        dynSettings.Controller.DynamoViewModel.Log(ex.StackTrace);
+                        DynamoLogger.Instance.Log(ex.Message);
+                        DynamoLogger.Instance.Log(ex.StackTrace);
                     }
                 }
             }

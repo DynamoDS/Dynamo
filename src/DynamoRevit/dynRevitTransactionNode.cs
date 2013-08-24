@@ -7,7 +7,7 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 
 using Autodesk.Revit.DB;
-
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
@@ -128,7 +128,7 @@ namespace Dynamo.Revit
                             }
                             catch (NullReferenceException)
                             {
-                                //dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
+                                //DynamoLogger.Instance.Log("Element with UID \"" + eid + "\" not found in Document.");
                                 sb.AppendLine("Element with UID \"" + eid + "\" not found in Document.");
                             }
                         }
@@ -136,7 +136,7 @@ namespace Dynamo.Revit
                 }
             }
 
-            dynSettings.Controller.DynamoViewModel.Log(sb.ToString());
+            DynamoLogger.Instance.Log(sb.ToString());
         }
 
         internal void RegisterAllElementsDeleteHook()
@@ -340,8 +340,8 @@ namespace Dynamo.Revit
             }
             catch (Exception ex)
             {
-                dynSettings.Controller.DynamoViewModel.Log(ex.Message);
-                dynSettings.Controller.DynamoViewModel.Log(ex.StackTrace);
+                DynamoLogger.Instance.Log(ex.Message);
+                DynamoLogger.Instance.Log(ex.StackTrace);
             }
 
         }
@@ -514,7 +514,7 @@ namespace Dynamo.Revit
             {
                 #region debug
 
-                dynSettings.Controller.DynamoViewModel.Log("Starting a debug transaction for element: " + NickName);
+                DynamoLogger.Instance.Log("Starting a debug transaction for element: " + NickName);
 
                 IdlePromise.ExecuteOnIdle(
                    delegate
@@ -605,7 +605,7 @@ namespace Dynamo.Revit
                    }
                    catch (Exception ex)
                    {
-                       dynSettings.Controller.DynamoViewModel.Log(
+                       DynamoLogger.Instance.Log(
                           "Error deleting elements: "
                           + ex.GetType().Name
                           + " -- " + ex.Message

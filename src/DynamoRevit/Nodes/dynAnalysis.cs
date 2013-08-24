@@ -5,6 +5,7 @@ using System.Text;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
+using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Autodesk.Revit.DB;

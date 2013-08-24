@@ -30,8 +30,6 @@ using System.Windows.Media;
 using System.Linq;
 using System.Windows.Threading;
 using System.Xml.Serialization;
-using Dynamo.Nodes.Prompts;
-using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
 using Autodesk.Revit.Attributes;
@@ -42,6 +40,7 @@ using Autodesk.Revit.UI;
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using Dynamo.UI.Commands;
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
@@ -53,7 +52,8 @@ using NUnit.Core;
 using NUnit.Core.Filters;
 using NUnit.Framework;
 using NUnit.Util;
-using MessageBoxOptions = System.Windows.MessageBoxOptions;
+using Application = System.Windows.Application;
+using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 
 #endif
 
@@ -136,6 +136,7 @@ namespace Dynamo.Applications
                 UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
 
                 env = new ExecutionEnvironment();
+                //EnsureApplicationResources();
 
                 return Result.Succeeded;
             }
@@ -150,8 +151,57 @@ namespace Dynamo.Applications
         {
             UpdaterRegistry.UnregisterUpdater(updater.GetUpdaterId());
 
+            //if(Application.Current != null)
+            //    Application.Current.Shutdown();
+
             return Result.Succeeded;
         }
+
+        //public static void EnsureApplicationResources()
+        //{
+        //    //http://drwpf.com/blog/2007/10/05/managing-application-resources-when-wpf-is-hosted/
+
+        //    if (Application.Current == null)
+        //    {
+        //        // create the Application object
+        //        new Application();
+        //        Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        //        Application.ResourceAssembly = typeof (DynamoView).Assembly;
+
+        //        var convertersUri = new Uri("/DynamoCore;component/UI/Themes/DynamoConverters.xaml", UriKind.Relative);
+        //        var colorsUri = new Uri("/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml", UriKind.Relative);
+        //        var modernUri = new Uri("/DynamoCore;component/UI/Themes/DynamoModern.xaml", UriKind.Relative);
+        //        var textUri = new Uri("/DynamoCore;component/UI/Themes/DynamoText.xaml", UriKind.Relative);
+
+        //        //http://msdn.microsoft.com/en-us/library/aa970069(v=vs.85).aspx
+
+        //        var converters = new ResourceDictionary
+        //        {
+        //            Source = convertersUri
+        //        };
+        //        Application.Current.Resources.MergedDictionaries.Add(converters);
+
+        //        var colors = new ResourceDictionary
+        //        {
+        //            Source = colorsUri
+        //        };
+        //        Application.Current.Resources.MergedDictionaries.Add(colors);
+
+        //        var modern = new ResourceDictionary
+        //        {
+        //            Source = modernUri
+        //        };
+        //        Application.Current.Resources.MergedDictionaries.Add(modern);
+
+        //        var text = new ResourceDictionary
+        //        {
+        //            Source = textUri
+        //        };
+        //        Application.Current.Resources.MergedDictionaries.Add(text);
+        //    }
+
+
+        //}
     }
 
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
@@ -222,10 +272,10 @@ namespace Dynamo.Applications
                             context = "Vasari 2014";
 
                         dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
+                        
 
-                        dynSettings.Bench = new DynamoView {DataContext = dynamoController.DynamoViewModel};
-                        dynamoController.UIDispatcher = dynSettings.Bench.Dispatcher;
-                        dynamoView = dynSettings.Bench;
+                        dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
+                        dynamoController.UIDispatcher = dynamoView.Dispatcher;
 
                         //set window handle and show dynamo
                         new WindowInteropHelper(dynamoView).Owner = mwHandle;
@@ -241,9 +291,11 @@ namespace Dynamo.Applications
                         dynamoView.Height = dynamoViewHeight ?? 800.0;
 
                         dynamoView.Show();
+
                         dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException; 
                         dynamoView.Closing += dynamoView_Closing;
                         dynamoView.Closed += dynamoView_Closed;
+
                     });
             }
             catch (Exception ex)
@@ -282,10 +334,12 @@ namespace Dynamo.Applications
             handledCrash = true;
 
             var exceptionMessage = args.Exception.Message;
-            var stackTrace = args.Exception.StackTrace;
+            //var stackTrace = args.Exception.StackTrace;
 
-            var prompt = new CrashPrompt(exceptionMessage + "\n\n" + stackTrace);
-            prompt.ShowDialog();
+            //var prompt = new CrashPrompt(exceptionMessage + "\n\n" + stackTrace);
+            //prompt.ShowDialog();
+
+            dynSettings.Controller.OnRequestsCrashPrompt(this, args);
 
             try
             {
@@ -299,8 +353,8 @@ namespace Dynamo.Applications
 
             try
             {
-                dynamoController.DynamoViewModel.ExitCommand.Execute(false); // don't allow cancellation
-                dynamoController.DynamoViewModel.ReportABugCommand.Execute();
+                dynSettings.Controller.DynamoViewModel.Exit(false); // don't allow cancellation
+                dynSettings.Controller.ReportABug(null);
             }
             catch
             {
@@ -572,7 +626,7 @@ namespace Dynamo.Applications
             _testName = _test.TestName.Name;
         }
 
-        public void Run()
+        public void Run(object parameter)
         {
             OnTestStarted(EventArgs.Empty);
 
@@ -594,7 +648,7 @@ namespace Dynamo.Applications
             OnTestCompleted(EventArgs.Empty);
         }
 
-        public bool CanRun()
+        public bool CanRun(object parameter)
         {
             return true;
         }
@@ -723,25 +777,25 @@ namespace Dynamo.Applications
             RaisePropertyChanged("TestSummary");
         }
 
-        public void RunAllTests()
+        public void RunAllTests(object parameter)
         {
             Timer.Reset();
 
             foreach (DynamoRevitTest t in _tests)
             {
-                t.Run();
+                t.Run(null);
                 RaisePropertyChanged("TestSummary");
             }
 
-            Save();
+            Save(null);
         }
 
-        public bool CanRunAllTests()
+        public bool CanRunAllTests(object parameter)
         {
             return true;
         }
 
-        public void Save()
+        public void Save(object parameter)
         {
             try
             {
@@ -761,7 +815,7 @@ namespace Dynamo.Applications
             }
         }
 
-        public bool CanSave()
+        public bool CanSave(object parameter)
         {
             return true;
         }

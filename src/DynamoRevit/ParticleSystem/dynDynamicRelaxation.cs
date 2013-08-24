@@ -19,7 +19,9 @@ using System.Windows;
 using System.Windows.Controls;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
+using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
+using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -371,8 +373,10 @@ namespace Dynamo.Nodes
             _reset = false;
         }
 
-        public override void  SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void  SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
  	         base.SetupCustomUIElements(nodeUI);
             
             var resetButt = new Button
