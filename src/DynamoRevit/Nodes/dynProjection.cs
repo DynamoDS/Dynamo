@@ -5,7 +5,7 @@ using System.Windows.Media.Media3D;
 
 using Autodesk.Revit;
 using Autodesk.Revit.DB;
-
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
@@ -60,8 +60,8 @@ namespace Dynamo.Nodes
         }
 
         protected List<XYZ> pts = new List<XYZ>();
-        public RenderDescription RenderDescription { get; set; }
-        public void Draw()
+
+        new public void Draw()
         {
             if (this.RenderDescription == null)
                 this.RenderDescription = new RenderDescription();
@@ -169,8 +169,8 @@ namespace Dynamo.Nodes
         }
 
         protected List<XYZ> pts = new List<XYZ>();
-        public RenderDescription RenderDescription { get; set; }
-        public void Draw()
+
+        new public void Draw()
         {
             if (this.RenderDescription == null)
                 this.RenderDescription = new RenderDescription();

@@ -7,13 +7,14 @@ using System.Reflection;
 using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Revit;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Greg;
-using RestSharp;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo
@@ -52,11 +53,11 @@ namespace Dynamo
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
 
-
+            
         }
 
         /// <summary>
-        /// A reference to the the SSONET assembly ot prevent reloading.
+        /// A reference to the the SSONET assembly to prevent reloading.
         /// </summary>
         private Assembly _singleSignOnAssembly;
 
@@ -178,7 +179,7 @@ namespace Dynamo
                                       "Add", BindingFlags.InvokeMethod, null, pyBindings,
                                       new[] { createBinding(name, boundObject) });
 
-                addToBindings("DynLog", new LogDelegate(dynSettings.Controller.DynamoViewModel.Log)); //Logging
+                addToBindings("DynLog", new LogDelegate(DynamoLogger.Instance.Log)); //Logging
 
                 addToBindings(
                    "DynTransaction",
@@ -491,7 +492,7 @@ namespace Dynamo
                 InitTransaction(); //Initialize a transaction (if one hasn't been aleady)
 
                 //Reset all elements
-                var query = dynSettings.Controller.DynamoViewModel.AllNodes
+                var query = dynSettings.Controller.DynamoModel.AllNodes
                     .OfType<dynRevitTransactionNode>();
 
                 foreach (dynRevitTransactionNode element in query)
@@ -558,7 +559,7 @@ namespace Dynamo
                 TransMode = TransactionMode.Debug; //Debug transaction control
                 InIdleThread = true; //Everything will be evaluated in the idle thread.
 
-                dynSettings.Controller.DynamoViewModel.Log("Running expression in debug.");
+                DynamoLogger.Instance.Log("Running expression in debug.");
 
                 //Execute the Run Delegate.
                 base.Run(topElements, runningExpression);
@@ -586,7 +587,7 @@ namespace Dynamo
 
             foreach (var fail in query)
             {
-                dynSettings.Controller.DynamoViewModel.Log(
+                DynamoLogger.Instance.Log(
                     "!! Warning: " + fail.GetDescriptionText());
                 failuresAccessor.DeleteWarning(fail);
             }

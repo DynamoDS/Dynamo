@@ -1,5 +1,6 @@
 ﻿using Dynamo.Connectors;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Revit;
 using Microsoft.FSharp.Collections;
 
@@ -11,7 +12,7 @@ namespace Dynamo.Nodes
     [NodeName("My Node")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING_CUSTOMNODES)]
     [NodeDescription("A description for your node which will appear in the tooltip.")]
-    public class CustomNode : dynRevitTransactionNodeWithOneOutput
+    public class CustomNode : dynNodeWithOneOutput
     {
         public CustomNode()
         {
@@ -27,7 +28,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object nodeUI)
         {
             //If you have custom UI elements which you want to
             //add to the node, set them up here.

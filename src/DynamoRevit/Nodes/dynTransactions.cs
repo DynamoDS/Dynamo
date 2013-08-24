@@ -20,6 +20,7 @@ using Dynamo;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
@@ -135,7 +136,7 @@ namespace Dynamo.Nodes
                                 dynRevitSettings.Controller.EndTransaction();
                                 dynRevitSettings.Controller.InIdleThread = false;
 
-                                dynSettings.Controller.DynamoViewModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
+                                dynSettings.Controller.DynamoModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
                                 
                                 _node.ValidateConnections();
                             }

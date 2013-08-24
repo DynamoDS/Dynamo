@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Diagnostics;
 
 using System.Windows.Media.Media3D;
+using Dynamo.Models;
 using Autodesk.Revit.Creation;
 using Dynamo.Nodes;
 using Dynamo.Revit;

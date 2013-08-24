@@ -13,21 +13,18 @@
 //limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Data;
 using System.Xml;
-using System.Web;
-
 using Autodesk.Revit.DB;
-
+using Dynamo.Models;
+using Dynamo.Nodes;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
-using Dynamo.Revit;
-using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Controls;
 using Dynamo.Measure;
@@ -81,18 +78,21 @@ namespace Dynamo.Nodes
 
     [NodeName("Surface Domain")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
-    [NodeDescription("An element which measures the domain of a surface in U and V.")]
-    public class dynSurfaceDomain : dynNodeWithOneOutput
+    [NodeDescription("Measure the domain of a surface in U and V.")]
+    public class dynSurfaceDomain : dynNodeModel
     {
         public dynSurfaceDomain()
         {
             InPortData.Add(new PortData("f", "The surface whose domain you wish to calculate (Reference).", typeof(Value.Container)));//Ref to a face of a form
-            OutPortData.Add(new PortData("d", "The min, max, and dimensions of the surface domain. (List)", typeof(Value.List)));
+            OutPortData.Add(new PortData("min", "The minimum of the domain's bounding box.", typeof(Value.List)));
+            OutPortData.Add(new PortData("max", "The maximum of the domain's bounding box.", typeof(Value.List)));
+            OutPortData.Add(new PortData("u span", "The U dimension of the domain.", typeof(Value.List)));
+            OutPortData.Add(new PortData("v span", "The V dimension of the domain.", typeof(Value.List)));
 
             RegisterAllPorts();
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             //FSharpList<Value> result = FSharpList<Value>.Empty;
             BoundingBoxUV bbox = null;
@@ -128,7 +128,61 @@ namespace Dynamo.Nodes
             ////Fin
             //return Value.NewList(result);
 
-            return Value.NewContainer(Domain.ByMinimumAndMaximum(bbox.Min, bbox.Max));
+            outPuts[OutPortData[3]] = Value.NewNumber(bbox.Max.V - bbox.Min.V);
+            outPuts[OutPortData[2]] = Value.NewNumber(bbox.Max.U - bbox.Min.U);
+            outPuts[OutPortData[1]] = Value.NewContainer(bbox.Max);
+            outPuts[OutPortData[0]] = Value.NewContainer(bbox.Min);
+        }
+    }
+
+    [NodeName("Curve Domain")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Measure the domain of a curve.")]
+    public class dynCurveDomain : dynNodeModel
+    {
+        public dynCurveDomain()
+        {
+            InPortData.Add(new PortData("curve", "The curve whose domain you wish to calculate.", typeof(Value.Container)));
+            
+            OutPortData.Add(new PortData("start", "The domain start.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("end", "The domain end.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("length", "The domain length.", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        {
+            //FSharpList<Value> result = FSharpList<Value>.Empty;
+            var curveRef = ((Value.Container)args[0]).Item as Reference;
+
+            Curve curve = curveRef == null
+                              ? (Curve) ((Value.Container)args[0]).Item
+                              : (Curve)
+                                dynRevitSettings.Doc.Document.GetElement(curveRef.ElementId)
+                                                .GetGeometryObjectFromReference(curveRef);
+
+            var start = curve.get_EndParameter(0);
+            var end = curve.get_EndParameter(1);
+            var length = Math.Abs(end-start);
+
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewNumber(length),
+            //               result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewNumber(end),
+            //               result);
+            //result = FSharpList<Value>.Cons(
+            //               Value.NewNumber(start),
+            //               result);
+
+            
+            ////Fin
+            //return Value.NewList(result);
+            outPuts[OutPortData[2]] = Value.NewNumber(length);
+            outPuts[OutPortData[1]] = Value.NewNumber(end);
+            outPuts[OutPortData[0]] = Value.NewNumber(start);
+
         }
     }
 
@@ -286,22 +340,24 @@ namespace Dynamo.Nodes
             return Value.NewNumber(Measure.Item.Length);
         }
 
-        public override void SetupCustomUIElements(dynNodeView NodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add an edit window option to the 
             //main context window
             var editWindowItem = new System.Windows.Controls.MenuItem();
             editWindowItem.Header = "Edit...";
             editWindowItem.IsCheckable = false;
 
-            NodeUI.MainContextMenu.Items.Add(editWindowItem);
+            nodeUI.MainContextMenu.Items.Add(editWindowItem);
 
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
             //add a text box to the input grid of the control
             var tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            NodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = false;
