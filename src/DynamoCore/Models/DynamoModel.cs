@@ -362,7 +362,7 @@ namespace Dynamo.Models
                 #endregion
 
                 //If there is no function name, then we are opening a home definition
-                if (funName == null)
+                if (funName == null || funName == "Home")
                 {
                     //View the home workspace, then open the bench file
                     if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
