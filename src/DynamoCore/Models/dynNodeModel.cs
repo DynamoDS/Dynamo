@@ -313,6 +313,7 @@ namespace Dynamo.Models
             set
             {
                 _isDirty = value;
+                //DynamoLogger.Instance.Log("RR: " + value + " Rprt: " + _report + " WsNull: " + (WorkSpace != null));
                 if (value && _report && WorkSpace != null)
                     WorkSpace.Modified();
             }
