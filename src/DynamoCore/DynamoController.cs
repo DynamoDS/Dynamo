@@ -344,7 +344,7 @@ namespace Dynamo
 
                 OnRunCancelled(false);
                 //this.CancelRun = false; //Reset cancel flag
-                RunCancelled = true;
+                RunCancelled = false;
 
                 //If we are forcing this, then make sure we don't run again either.
                 if (ex.Force)
@@ -366,7 +366,7 @@ namespace Dynamo
 
                 //Reset the flags
                 runAgain = false;
-                RunCancelled = true;
+                RunCancelled = false;
 
                 OnRunCompleted(this, false);
 
@@ -389,14 +389,16 @@ namespace Dynamo
                 //If we should run again...
                 if (runAgain)
                 {
+                    //DynamoLogger.Instance.Log("Running again.");
+
                     //Reset flag
                     runAgain = false;
 
-                    dynSettings.Controller.DispatchOnUIThread(() => RunExpression(_showErrors));
-
+                    RunExpression(_showErrors);
                 }
                 else
                 {
+                    //DynamoLogger.Instance.Log("Run completed.");
                     OnRunCompleted(this, true);
                 }
             }
@@ -435,7 +437,7 @@ namespace Dynamo
                 /* Evaluation was cancelled */
 
                 OnRunCancelled(false);
-                //this.RunCancelled = false;
+                RunCancelled = false;
                 if (ex.Force)
                     runAgain = false;
             }
@@ -468,6 +470,7 @@ namespace Dynamo
 
         protected virtual void OnRunCancelled(bool error)
         {
+            //DynamoLogger.Instance.Log("Run cancelled. Error: " + error);
             if (error)
                 dynSettings.FunctionWasEvaluated.Clear();
         }
