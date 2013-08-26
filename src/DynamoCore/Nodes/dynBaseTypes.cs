@@ -2663,7 +2663,7 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract partial class dynBasicInteractive<T> : dynNodeWithOneOutput
     {
-        private T _value = default(T);
+        private T _value;
         public virtual T Value
         {
             get
@@ -2675,6 +2675,7 @@ namespace Dynamo.Nodes
                 if (_value == null || !_value.Equals(value))
                 {
                     _value = value;
+                    //DynamoLogger.Instance.Log("Value changed to: " + _value);
                     RequiresRecalc = value != null;
                     RaisePropertyChanged("Value");
                 }
@@ -3216,7 +3217,7 @@ namespace Dynamo.Nodes
             set
             {
                 base.Value = value;
-                RaisePropertyChanged("Value");
+                //RaisePropertyChanged("Value"); //already called in base --SJE
 
                 Debug.WriteLine(string.Format("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture)));
             }
@@ -3301,7 +3302,6 @@ namespace Dynamo.Nodes
                 }
             }
         }
-
     }
 
     [NodeName("Boolean")]
