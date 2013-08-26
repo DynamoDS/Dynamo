@@ -141,7 +141,6 @@
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Nodes\dynAdaptiveComponents.cs" />
     <Compile Include="Nodes\dynAnalysis.cs" />
-    <Compile Include="Nodes\dynASMToRevit.cs" />
     <Compile Include="Nodes\dynCurves.cs" />
     <Compile Include="Nodes\dynDatums.cs" />
     <Compile Include="Nodes\dynDivide.cs" />
