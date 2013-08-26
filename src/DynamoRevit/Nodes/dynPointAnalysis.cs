@@ -18,6 +18,7 @@ using System.Linq;
 using Autodesk.Revit.DB;
 
 using Dynamo.Connectors;
+using Dynamo.Models;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -29,36 +30,33 @@ namespace Dynamo.Nodes
     [NodeName("Best Fit Line")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Determine the best fit line for a set of points.  This line minimizes the sum of the distances between the line and the point set.")]
-    internal class dynBestFitLine : dynNodeWithMultipleOutputs
+    internal class dynBestFitLine : dynNodeModel
     {
+        private readonly PortData _axisPort = new PortData(
+            "axis", "A normalized vector representing the axis of the best fit line.",
+            typeof(Value.Container));
+
+        private readonly PortData _avgPort = new PortData(
+            "avg", "The average (mean) of the point list.", typeof(Value.Container));
+
         public dynBestFitLine()
         {
             InPortData.Add(new PortData("XYZs", "A List of XYZ's.", typeof (Value.List)));
-            OutPortData.Add(new PortData("axis", "A normalized vector representing the axis of the best fit line.", typeof (Value.Container)));
-            OutPortData.Add(new PortData("avg", "The average (mean) of the point list.", typeof(Value.Container)));
+            OutPortData.Add(_axisPort);
+            OutPortData.Add(_avgPort);
 
             ArgumentLacing = LacingStrategy.Longest;
             RegisterAllPorts();
-            
         }
 
         public static List<T> AsGenericList<T>(FSharpList<Value> list)
         {
-            var f = new List<T>();
-            var l = list.Length;
-            for (var i = 0; i < l; i++)
-            {
-                var ctnr = list.Head;
-                list = list.TailOrNull;
-
-                f.Add((T)(ctnr as Value.Container).Item);
-            }
-            return f;
+            return list.Cast<Value.Container>().Select(x => x.Item).Cast<T>().ToList();
         }
 
-        public static XYZ MeanXYZ( IEnumerable<XYZ> pts )
+        public static XYZ MeanXYZ( List<XYZ> pts )
         {
-            return pts.Aggregate(new XYZ(), (i, p) => i.Add(p)).Divide(pts.Count());
+            return pts.Aggregate(new XYZ(), (i, p) => i.Add(p)).Divide(pts.Count);
         }
 
         public static XYZ MakeXYZ(Vector<double> vec)
@@ -66,8 +64,7 @@ namespace Dynamo.Nodes
             return new XYZ(vec[0], vec[1], vec[2]);
         }
 
-        public static void PrincipalComponentsAnalysis( List<XYZ> pts, out XYZ meanXYZ,
-                                                            out List<XYZ> orderEigenvectors)
+        public static void PrincipalComponentsAnalysis(List<XYZ> pts, out XYZ meanXYZ, out List<XYZ> orderEigenvectors)
         {
             var meanPt = MeanXYZ(pts);
             meanXYZ = meanPt;
@@ -95,43 +92,45 @@ namespace Dynamo.Nodes
                 };
         }
         
-        public override Value Evaluate(FSharpList<Value> args)
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            var pts = (args[0] as Value.List).Item;
+            var pts = ((Value.List)args[0]).Item;
 
             var ptList = AsGenericList<XYZ>(pts);
             XYZ meanPt;
             List<XYZ> orderedEigenvectors;
             PrincipalComponentsAnalysis(ptList, out meanPt, out orderedEigenvectors );
 
-            var results = FSharpList<Value>.Empty;
-            results = FSharpList<Value>.Cons(Value.NewContainer(meanPt), results);
-            results = FSharpList<Value>.Cons(Value.NewContainer( orderedEigenvectors[0] ) , results);
-           
-            return Value.NewList(results);
+            outPuts[_axisPort] = Value.NewContainer(orderedEigenvectors[0]);
+            outPuts[_avgPort] = Value.NewContainer(meanPt);
         }
-
     }
 
     [NodeName("Best Fit Plane")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Determine the best fit plane for a set of points.  This line minimizes the sum of the distances between the line and the point set.")]
-    internal class dynBestFitPlane : dynNodeWithMultipleOutputs
+    internal class dynBestFitPlane : dynNodeModel
     {
+        private readonly PortData _normalPort = new PortData(
+            "normal", "A normalized vector representing the axis of the best fit line.",
+            typeof(Value.Container));
+
+        private readonly PortData _originPort = new PortData(
+            "origin", "The average (mean) of the point list.", typeof(Value.Container));
+
         public dynBestFitPlane()
         {
             InPortData.Add(new PortData("XYZs", "A List of XYZ's.", typeof(Value.List)));
-            OutPortData.Add(new PortData("normal", "A normalized vector representing the axis of the best fit line.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("origin", "The average (mean) of the point list.", typeof(Value.Container)));
+            OutPortData.Add(_normalPort);
+            OutPortData.Add(_originPort);
 
             ArgumentLacing = LacingStrategy.Longest;
             RegisterAllPorts();
-            
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            var pts = (args[0] as Value.List).Item;
+            var pts = ((Value.List)args[0]).Item;
 
             if (pts.Length < 3)
                 throw new Exception("3 or more XYZs are necessary to form the best fit plane.");
@@ -143,13 +142,8 @@ namespace Dynamo.Nodes
 
             var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
 
-            var results = FSharpList<Value>.Empty;
-            results = FSharpList<Value>.Cons(Value.NewContainer( meanPt ) , results);
-            results = FSharpList<Value>.Cons(Value.NewContainer(normal), results);
-
-            return Value.NewList(results);
+            outPuts[_normalPort] = Value.NewContainer(normal);
+            outPuts[_originPort] = Value.NewContainer(meanPt);
         }
-
     }
-
 }

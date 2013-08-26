@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using Autodesk.Revit.DB;
 
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 
@@ -12,8 +13,10 @@ namespace Dynamo.Revit
 {
     public partial class dynRevitTransactionNode : dynNodeModel, IDrawable
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             base.SetupCustomUIElements(nodeUI);
 
             var mi = new MenuItem
@@ -21,7 +24,7 @@ namespace Dynamo.Revit
                 Header = "Show Elements"
             };
 
-            mi.Click += new System.Windows.RoutedEventHandler(mi_Click);
+            mi.Click += mi_Click;
 
             nodeUI.MainContextMenu.Items.Add(mi);
 
@@ -29,7 +32,7 @@ namespace Dynamo.Revit
 
         void mi_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (AllElements.Count == 0)
+            if (!AllElements.Any())
                 return;
 
             //select the elements

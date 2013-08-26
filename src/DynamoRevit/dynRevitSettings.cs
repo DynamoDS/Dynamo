@@ -19,14 +19,13 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Utility function to determine if an Element of the given ID exists in the document.
         /// </summary>
-        /// <param name="e">ID to check.</param>
         /// <returns>True if exists, false otherwise.</returns>
         public static bool TryGetElement(ElementId id, Type t, out Element e)
         {
             try
             {
                 e = dynRevitSettings.Doc.Document.GetElement(id);
-                if (e != null && t.IsAssignableFrom(e.GetType()))
+                if (e != null && t.IsInstanceOfType(e))
                 {
                     _testid = e.Id;
                     return true;
@@ -53,10 +52,7 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         public static IEnumerable<T> MakeEnumerable<T>(IEnumerable en)
         {
-            foreach (T item in en)
-            {
-                yield return item;
-            }
+            return en.Cast<T>();
         }
 
         /// <summary>
@@ -197,7 +193,7 @@ namespace Dynamo.Utilities
 
                 choices.Elements.Clear();
 
-                dynSettings.Controller.DynamoViewModel.Log(message);
+                DynamoLogger.Instance.Log(message);
 
                 //create some geometry options so that we computer references
                 var opts = new Options
@@ -227,7 +223,7 @@ namespace Dynamo.Utilities
                 choices.Elements.Clear();
 
                 //MessageBox.Show(message);
-                dynSettings.Controller.DynamoViewModel.Log(message);
+                DynamoLogger.Instance.Log(message);
 
                 Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -243,7 +239,7 @@ namespace Dynamo.Utilities
                 Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
                 choices.Elements.Clear();
 
-                dynSettings.Controller.DynamoViewModel.Log(message);
+                DynamoLogger.Instance.Log(message);
 
                 var ca = new ElementArray();
                 ISelectionFilter selFilter = new CurveSelectionFilter();
@@ -279,7 +275,7 @@ namespace Dynamo.Utilities
 
                 choices.Elements.Clear();
 
-                dynSettings.Controller.DynamoViewModel.Log(message);
+                DynamoLogger.Instance.Log(message);
 
                 //create some geometry options so that we computer references
                 var opts = new Options
@@ -310,7 +306,7 @@ namespace Dynamo.Utilities
                 Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
                 choices.Elements.Clear();
 
-                dynSettings.Controller.DynamoViewModel.Log(message);
+                DynamoLogger.Instance.Log(message);
                 faceRef = doc.Selection.PickObject(ObjectType.Face);
 
                 return faceRef;
@@ -323,7 +319,7 @@ namespace Dynamo.Utilities
                 Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
                 choices.Elements.Clear();
 
-                dynSettings.Controller.DynamoViewModel.Log(message);
+                DynamoLogger.Instance.Log(message);
 
                 Reference edgeRef = doc.Selection.PickObject(ObjectType.Edge);
 
@@ -340,7 +336,7 @@ namespace Dynamo.Utilities
 
                 choices.Elements.Clear();
 
-                dynSettings.Controller.DynamoViewModel.Log(message);
+                DynamoLogger.Instance.Log(message);
 
                 //create some geometry options so that we computer references
                 var opts = new Options
@@ -373,7 +369,7 @@ namespace Dynamo.Utilities
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Controller.DynamoViewModel.Log(message);
+                    DynamoLogger.Instance.Log(message);
 
                     Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -391,7 +387,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
+                    DynamoLogger.Instance.Log(ex);
                     return null;
                 }
             }
@@ -407,7 +403,7 @@ namespace Dynamo.Utilities
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Controller.DynamoViewModel.Log(message);
+                    DynamoLogger.Instance.Log(message);
 
                     Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -420,7 +416,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
+                    DynamoLogger.Instance.Log(ex);
                     return null;
                 }
             }
@@ -436,7 +432,7 @@ namespace Dynamo.Utilities
                 choices.Elements.Clear();
 
                 //MessageBox.Show(message);
-                dynSettings.Controller.DynamoViewModel.Log(message);
+                DynamoLogger.Instance.Log(message);
 
                 Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -469,7 +465,7 @@ namespace Dynamo.Utilities
                         choices.Elements.Clear();
 
                         //MessageBox.Show(message);
-                        dynSettings.Controller.DynamoViewModel.Log(message);
+                        DynamoLogger.Instance.Log(message);
 
                         Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -489,7 +485,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Controller.DynamoViewModel.Log(ex);
+                    DynamoLogger.Instance.Log(ex);
                     return null;
                 }
             }
@@ -504,7 +500,7 @@ namespace Dynamo.Utilities
 
                 choices.Elements.Clear();
 
-                dynSettings.Controller.DynamoViewModel.Log(message);
+                DynamoLogger.Instance.Log(message);
 
                 Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -527,7 +523,7 @@ namespace Dynamo.Utilities
                 Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
                 choices.Elements.Clear();
 
-                dynSettings.Controller.DynamoViewModel.Log(message);
+                DynamoLogger.Instance.Log(message);
 
                 Reference xyzRef = doc.Selection.PickObject(ObjectType.PointOnElement);
 

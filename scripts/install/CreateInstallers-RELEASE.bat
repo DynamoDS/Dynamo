@@ -1,4 +1,5 @@
 robocopy ..\..\bin\Release temp\bin *.dll -XF *Tests.dll
+robocopy ..\..\bin\Release temp\bin *.exe
 robocopy ..\..\ Extra README.md
 cd Extra
 del README.txt
