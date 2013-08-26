@@ -962,9 +962,9 @@ namespace Dynamo.Nodes
 
         public dynImageFileReader()
         {
-
             InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
             InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
+            OutPortData.Add(new PortData("contents", "File contents", typeof(FScheme.Value.List)));
             RegisterAllPorts();
         }
 
