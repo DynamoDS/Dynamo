@@ -3,32 +3,27 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 using System.Xml;
 
 using Autodesk.Revit.DB;
-
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Connectors;
-using Dynamo.FSchemeInterop;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 
 using HelixToolkit.Wpf;
 
-
-
-
 namespace Dynamo.Revit
 {
     public abstract partial class dynRevitTransactionNode : dynNodeModel, IDrawable
     {
-        protected object drawableObject = null;
-        protected Func<object, RenderDescription> drawMethod = null;
+        protected object DrawableObject = null;
+        protected Func<object, RenderDescription> DrawMethod = null;
 
         //private Type base_type = null;
 
@@ -55,21 +50,17 @@ namespace Dynamo.Revit
         {
             get
             {
-                while (elements.Count <= runCount)
+                while (elements.Count <= _runCount)
                     elements.Add(new List<ElementId>());
-                return elements[runCount];
-            }
-            private set
-            {
-                elements[runCount] = value;
+                return elements[_runCount];
             }
         }
 
-        public List<ElementId> AllElements
+        public IEnumerable<ElementId> AllElements
         {
             get
             {
-                return elements.SelectMany(x=>x.Select(y=>y)).ToList();
+                return elements.SelectMany(x => x);
             }
         }
 
@@ -81,7 +72,7 @@ namespace Dynamo.Revit
             RegisterAllElementsDeleteHook();
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Don't copy over stored references
             if (context == SaveContext.Copy)
@@ -109,7 +100,7 @@ namespace Dynamo.Revit
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             var del = new DynElementUpdateDelegate(onDeleted);
 
@@ -133,11 +124,11 @@ namespace Dynamo.Revit
                             {
                                 var id = UIDocument.Document.GetElement(eid).Id;
                                 runElements.Add(id);
-                                dynRevitSettings.Controller.RegisterDeleteHook(id, del);
+                                dynRevitSettings.Controller.RegisterDMUHooks(id, del);
                             }
                             catch (NullReferenceException)
                             {
-                                //dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
+                                //DynamoLogger.Instance.Log("Element with UID \"" + eid + "\" not found in Document.");
                                 sb.AppendLine("Element with UID \"" + eid + "\" not found in Document.");
                             }
                         }
@@ -145,17 +136,16 @@ namespace Dynamo.Revit
                 }
             }
 
-            dynSettings.Controller.DynamoViewModel.Log(sb.ToString());
+            DynamoLogger.Instance.Log(sb.ToString());
         }
 
         internal void RegisterAllElementsDeleteHook()
         {
             var del = new DynElementUpdateDelegate(onDeleted);
 
-            foreach (var eList in elements)
+            foreach (var id in elements.SelectMany(eList => eList)) 
             {
-                foreach (var id in eList)
-                    dynRevitSettings.Controller.RegisterDeleteHook(id, del);
+                dynRevitSettings.Controller.RegisterDMUHooks(id, del);
             }
         }
 
@@ -186,7 +176,7 @@ namespace Dynamo.Revit
 
         public static void DrawReferencePoint(RenderDescription description, object obj)
         {
-            ReferencePoint point = obj as ReferencePoint;
+            var point = obj as ReferencePoint;
 
             if (point == null)
                 return;
@@ -198,7 +188,7 @@ namespace Dynamo.Revit
 
         public static void DrawXYZ(RenderDescription description, object obj)
         {
-            XYZ point = obj as XYZ;
+            var point = obj as XYZ;
             if (point == null)
                 return;
 
@@ -207,7 +197,7 @@ namespace Dynamo.Revit
 
         public static void DrawCurve(RenderDescription description, object obj)
         {
-            Autodesk.Revit.DB.Curve curve = obj as Autodesk.Revit.DB.Curve;
+            var curve = obj as Curve;
 
             if (curve == null)
                 return;
@@ -229,7 +219,7 @@ namespace Dynamo.Revit
 
         public static void DrawCurveElement(RenderDescription description, object obj)
         {
-            Autodesk.Revit.DB.CurveElement elem = obj as Autodesk.Revit.DB.CurveElement;
+            var elem = obj as CurveElement;
 
             if (elem == null)
                 return;
@@ -239,7 +229,7 @@ namespace Dynamo.Revit
 
         public static void DrawSolid(RenderDescription description, object obj)
         {
-            Autodesk.Revit.DB.Solid solid = obj as Autodesk.Revit.DB.Solid;
+            var solid = obj as Solid;
 
             if (solid == null)
                 return;
@@ -255,17 +245,17 @@ namespace Dynamo.Revit
             }
         }
 
-        public static Point3D RevitPointToWindowsPoint(Autodesk.Revit.DB.XYZ xyz)
+        public static Point3D RevitPointToWindowsPoint(XYZ xyz)
         {
             return new Point3D(xyz.X, xyz.Y, xyz.Z);
         }
 
         // must return an array to make mesh double sided
-        public static Mesh3D[] RevitMeshToHelixMesh(Autodesk.Revit.DB.Mesh rmesh)
+        public static Mesh3D[] RevitMeshToHelixMesh(Mesh rmesh)
         {
-            List<int> indices_front = new List<int>();
-            List<int> indices_back = new List<int>();
-            List<Point3D> vertices = new List<Point3D>();
+            var indicesFront = new List<int>();
+            var indicesBack = new List<int>();
+            var vertices = new List<Point3D>();
 
             for (int i = 0; i < rmesh.NumTriangles; ++i)
             {
@@ -273,46 +263,48 @@ namespace Dynamo.Revit
 
                 for (int k = 0; k < 3; ++k)
                 {
-                    Point3D new_point = RevitPointToWindowsPoint(tri.get_Vertex(k));
+                    Point3D newPoint = RevitPointToWindowsPoint(tri.get_Vertex(k));
 
-                    bool new_point_exists = false;
+                    bool newPointExists = false;
                     for (int l = 0; l < vertices.Count; ++l)
                     {
                         Point3D p = vertices[l];
-                        if ((p.X == new_point.X) && (p.Y == new_point.Y) && (p.Z == new_point.Z))
+                        if ((p.X == newPoint.X) && (p.Y == newPoint.Y) && (p.Z == newPoint.Z))
                         {
-                            indices_front.Add(l);
-                            new_point_exists = true;
+                            indicesFront.Add(l);
+                            newPointExists = true;
                             break;
                         }
                     }
 
-                    if (new_point_exists)
+                    if (newPointExists)
                         continue;
 
-                    indices_front.Add(vertices.Count);
-                    vertices.Add(new_point);
+                    indicesFront.Add(vertices.Count);
+                    vertices.Add(newPoint);
                 }
 
-                int a = indices_front[indices_front.Count - 3];
-                int b = indices_front[indices_front.Count - 2];
-                int c = indices_front[indices_front.Count - 1];
+                int a = indicesFront[indicesFront.Count - 3];
+                int b = indicesFront[indicesFront.Count - 2];
+                int c = indicesFront[indicesFront.Count - 1];
 
-                indices_back.Add(c);
-                indices_back.Add(b);
-                indices_back.Add(a);
+                indicesBack.Add(c);
+                indicesBack.Add(b);
+                indicesBack.Add(a);
             }
 
-            List<Mesh3D> meshes = new List<Mesh3D>();
-            meshes.Add(new Mesh3D(vertices, indices_front));
-            meshes.Add(new Mesh3D(vertices, indices_back));
+            var meshes = new List<Mesh3D>
+            {
+                new Mesh3D(vertices, indicesFront),
+                new Mesh3D(vertices, indicesBack)
+            };
 
             return meshes.ToArray();
         }
 
         public static void DrawFace(RenderDescription description, object obj)
         {
-            Autodesk.Revit.DB.Face face = obj as Autodesk.Revit.DB.Face;
+            var face = obj as Face;
 
             if (face == null)
                 return;
@@ -327,7 +319,7 @@ namespace Dynamo.Revit
 
         public static void DrawForm(RenderDescription description, object obj)
         {
-            Autodesk.Revit.DB.Form form = obj as Autodesk.Revit.DB.Form;
+            var form = obj as Form;
 
             if (form == null)
                 return;
@@ -339,7 +331,7 @@ namespace Dynamo.Revit
         {
             try
             {
-                GeometryElement gelem = obj as GeometryElement;
+                var gelem = obj as GeometryElement;
 
                 foreach (GeometryObject go in gelem)
                 {
@@ -348,8 +340,8 @@ namespace Dynamo.Revit
             }
             catch (Exception ex)
             {
-                dynSettings.Controller.DynamoViewModel.Log(ex.Message);
-                dynSettings.Controller.DynamoViewModel.Log(ex.StackTrace);
+                DynamoLogger.Instance.Log(ex.Message);
+                DynamoLogger.Instance.Log(ex.StackTrace);
             }
 
         }
@@ -363,19 +355,19 @@ namespace Dynamo.Revit
             if (obj == null)
                 return;
 
-            if (typeof(Autodesk.Revit.DB.XYZ).IsAssignableFrom(obj.GetType()))
+            if (obj is XYZ)
             {
                 DrawXYZ(description, obj);
             }
-            if (typeof(Autodesk.Revit.DB.Curve).IsAssignableFrom(obj.GetType()))
+            if (obj is Curve)
             {
                 DrawCurve(description, obj);
             }
-            else if (typeof(Autodesk.Revit.DB.Solid).IsAssignableFrom(obj.GetType()))
+            else if (obj is Solid)
             {
                 DrawSolid(description, obj);
             }
-            else if (typeof(Autodesk.Revit.DB.Face).IsAssignableFrom(obj.GetType()))
+            else if (obj is Face)
             {
                 DrawFace(description, obj);
             }
@@ -391,33 +383,32 @@ namespace Dynamo.Revit
             if (obj == null)
                 return;
 
-            if (typeof(Autodesk.Revit.DB.CurveElement).IsAssignableFrom(obj.GetType()))
+            if (obj is CurveElement)
             {
                 DrawCurveElement(description, obj);
             }
-            else if (typeof(Autodesk.Revit.DB.ReferencePoint).IsAssignableFrom(obj.GetType()))
+            else if (obj is ReferencePoint)
             {
                 DrawReferencePoint(description, obj);
             }
-            else if (typeof(Autodesk.Revit.DB.Form).IsAssignableFrom(obj.GetType()))
+            else if (obj is Form)
             {
                 DrawForm(description, obj);
             }
-            else if (typeof(Autodesk.Revit.DB.GeometryElement).IsAssignableFrom(obj.GetType()))
+            else if (obj is GeometryElement)
             {
                 DrawGeometryElement(description, obj);
             }
-            else if (typeof (Autodesk.Revit.DB.GeometryObject).IsAssignableFrom(obj.GetType()))
+            else if (obj is GeometryObject)
             {
                 DrawGeometryObject(description, obj);
             }
             else
             {
-                Element elem = obj as Element;
+                var elem = obj as Element;
                 if (elem != null)
                 {
-                    Options o = new Options();
-                    o.DetailLevel = ViewDetailLevel.Medium;
+                    var o = new Options { DetailLevel = ViewDetailLevel.Medium };
                     GeometryElement geom = elem.get_Geometry(o);
 
                     if (geom != null)
@@ -439,46 +430,56 @@ namespace Dynamo.Revit
         /// <summary>
         /// Implementation detail, records how many times this Element has been executed during this run.
         /// </summary>
-        protected int runCount;
+        private int _runCount;
 
         internal void ResetRuns()
         {
-            if (runCount > 0)
-            {
-                PruneRuns(runCount);
-                runCount = 0;
-            }
+            if (_runCount <= 0) 
+                return;
+
+            PruneRuns(_runCount);
+            _runCount = 0;
         }
 
         protected override void OnEvaluate()
         {
             base.OnEvaluate();
 
-            //runCount++;
+            #region Register Elements w/ DMU
+
+            var del = new DynElementUpdateDelegate(onDeleted);
+
+            foreach (ElementId id in Elements)
+                dynRevitSettings.Controller.RegisterDMUHooks(id, del);
+
+            #endregion
+
+            _runCount++;
         }
 
-        internal void PruneRuns(int runCount)
+        private void PruneRuns(int numRuns)
         {
-            Debug.WriteLine(string.Format("Pruning runs from {0} to {1}", elements.Count, runCount));
+            Debug.WriteLine(string.Format("Pruning runs from {0} to {1}", elements.Count, numRuns));
 
-            for (int i = elements.Count - 1; i >= runCount; i--)
+            for (int i = elements.Count - 1; i >= numRuns; i--)
             {
                 var elems = elements[i];
-                foreach (var e in elems)
-                {
-                    Element el = UIDocument.Document.GetElement(e);
-                    if(el!=null)
-                        UIDocument.Document.Delete(e);
-                }
+                var query = from e in elems
+                            let el = UIDocument.Document.GetElement(e)
+                            where el != null
+                            select e;
+
+                foreach (var e in query)
+                    UIDocument.Document.Delete(e);
+
                 elems.Clear();
             }
 
-            if (elements.Count > runCount)
+            if (elements.Count > numRuns)
             {
                 elements.RemoveRange(
-                   runCount,
-                   elements.Count - runCount
-                );
+                   numRuns,
+                   elements.Count - numRuns);
             }
         }
 
@@ -486,31 +487,26 @@ namespace Dynamo.Revit
         {
             var controller = dynRevitSettings.Controller;
 
-            bool debug = controller.DynamoViewModel.RunInDebug;
-
-            if (!debug)
+            if (controller.TransMode != TransactionMode.Debug)
             {
                 #region no debug
 
-                if ((controller.DynamoViewModel as DynamoRevitViewModel).TransMode == 
-                    DynamoRevitViewModel.TransactionMode.Manual && 
-                    !controller.IsTransactionActive())
+                if (controller.TransMode == TransactionMode.Manual && !controller.IsTransactionActive())
                 {
                     throw new Exception("A Revit transaction is required in order evaluate this element.");
                 }
 
                 controller.InitTransaction();
 
-                Evaluate(args, outPuts);
+                base.__eval_internal(args, outPuts);
 
-                foreach (ElementId eid in deletedIds)
+                foreach (ElementId eid in _deletedIds)
                 {
                     controller.RegisterSuccessfulDeleteHook(
                        eid,
-                       onSuccessfulDelete
-                    );
+                       onSuccessfulDelete);
                 }
-                deletedIds.Clear();
+                _deletedIds.Clear();
 
                 #endregion
             }
@@ -518,7 +514,7 @@ namespace Dynamo.Revit
             {
                 #region debug
 
-                dynSettings.Controller.DynamoViewModel.Log("Starting a debug transaction for element: " + NickName);
+                DynamoLogger.Instance.Log("Starting a debug transaction for element: " + NickName);
 
                 IdlePromise.ExecuteOnIdle(
                    delegate
@@ -527,44 +523,33 @@ namespace Dynamo.Revit
 
                        try
                        {
-                           Evaluate(args, outPuts);
+                           base.__eval_internal(args, outPuts);
 
-                           foreach (ElementId eid in deletedIds)
+                           foreach (ElementId eid in _deletedIds)
                            {
                                controller.RegisterSuccessfulDeleteHook(
                                   eid,
-                                  onSuccessfulDelete
-                               );
+                                  onSuccessfulDelete);
                            }
-                           deletedIds.Clear();
+                           _deletedIds.Clear();
 
                            controller.EndTransaction();
 
                            ValidateConnections();
                        }
-                       catch (Exception ex)
+                       catch (Exception)
                        {
                            controller.CancelTransaction();
-                           throw ex;
+                           throw;
                        }
                    },
-                   false
-                );
+                   false);
 
                 #endregion
             }
-
-            #region Register Elements w/ DMU
-
-            var del = new DynElementUpdateDelegate(onDeleted);
-
-            foreach (ElementId id in Elements)
-                controller.RegisterDeleteHook(id, del);
-
-            #endregion
         }
 
-        private List<ElementId> deletedIds = new List<ElementId>();
+        private readonly List<ElementId> _deletedIds = new List<ElementId>();
 
         /// <summary>
         /// Deletes an Element from the Document and removes all Dynamo regen hooks. If the second
@@ -573,11 +558,11 @@ namespace Dynamo.Revit
         /// </summary>
         /// <param name="id">ID belonging to the element to be deleted.</param>
         /// <param name="hookOnly">Whether or not to only remove the regen hooks.</param>
-        protected void DeleteElement(ElementId id, bool hookOnly = false)
+        protected void DeleteElement(ElementId id, bool hookOnly=false)
         {
             if (!hookOnly)
                 UIDocument.Document.Delete(id);
-            deletedIds.Add(id);
+            _deletedIds.Add(id);
         }
 
         /// <summary>
@@ -593,15 +578,16 @@ namespace Dynamo.Revit
                    controller.InitTransaction();
                    try
                    {
-                       runCount = 0;
+                       _runCount = 0;
 
-                       var query = controller.DynamoViewModel.Model.HomeSpace.Nodes
-                           .Where(x => x is dynFunctionWithRevit)
-                           .Select(x => (x as dynFunctionWithRevit).ElementsContainer)
-                           .Where(c => c.HasElements(GUID))
-                           .SelectMany(c => c[GUID]);
+                       //TODO: Re-enable once similar functionality is fleshed out for dynFunctionWithRevit
+                       //var query = controller.DynamoViewModel.Model.HomeSpace.Nodes
+                       //    .OfType<dynFunctionWithRevit>()
+                       //    .Select(x => x.ElementsContainer)
+                       //    .Where(c => c.HasElements(GUID))
+                       //    .SelectMany(c => c[GUID]);
 
-                       foreach (var els in query)
+                       foreach (var els in elements)
                        {
                            foreach (ElementId e in els)
                            {
@@ -619,7 +605,7 @@ namespace Dynamo.Revit
                    }
                    catch (Exception ex)
                    {
-                       dynSettings.Controller.DynamoViewModel.Log(
+                       DynamoLogger.Instance.Log(
                           "Error deleting elements: "
                           + ex.GetType().Name
                           + " -- " + ex.Message
@@ -627,12 +613,10 @@ namespace Dynamo.Revit
                    }
                    controller.EndTransaction();
                    WorkSpace.Modified();
-               },
-               true
-            );
+               });
         }
 
-        void onDeleted(List<ElementId> deleted)
+        void onDeleted(HashSet<ElementId> deleted)
         {
             int count = elements.Sum(els => els.RemoveAll(deleted.Contains));
 
@@ -640,251 +624,21 @@ namespace Dynamo.Revit
                 isDirty = count > 0;
         }
 
-        void onSuccessfulDelete(List<ElementId> deleted)
+        void onSuccessfulDelete(HashSet<ElementId> deleted)
         {
             foreach (var els in elements)
-                els.RemoveAll(x => deleted.Contains(x));
+                els.RemoveAll(deleted.Contains);
         }
-
-        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
-        {
-            //if this element maintains a collcection of references
-            //then clear the collection
-            if (this is IClearable)
-                (this as IClearable).ClearReferences();
-
-            List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
-
-            //create a zip of the incoming args and the port data
-            //to be used for type comparison
-            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
-            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
-
-            //there are more than zero arguments
-            //and there is either an argument which does not match its expections 
-            //OR an argument which requires a list and gets a list of lists
-            //AND argument lacing is not disabled
-            if (args.Count() > 0 &&
-                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
-                listOfListComparison.Any(x=>x.Item1 ==true && x.Item2 == typeof(Value.List))) &&
-                this.ArgumentLacing != LacingStrategy.Disabled )
-            {
-                //if the argument is of the expected type, then
-                //leave it alone otherwise, wrap it in a list
-                int j = 0;
-                foreach (var arg in args)
-                {
-                    //incoming value is list and expecting single
-                    if (portComparison.ElementAt(j).Item1 == typeof(Value.List) &&
-                        portComparison.ElementAt(j).Item2 != typeof(Value.List))
-                    {
-                        //leave as list
-                        argSets.Add(((Value.List)arg).Item);
-                    }
-                    //incoming value is list and expecting list
-                    else
-                    {
-                        //check if we have a list of lists, if so, then don't wrap
-                        if (Utils.IsListOfLists(arg))
-                            //leave as list
-                            argSets.Add(((Value.List)arg).Item);
-                        else
-                            //wrap in list
-                            argSets.Add(Utils.MakeFSharpList(arg));
-                    }
-                    j++;
-                }
-
-                IEnumerable<IEnumerable<Value>> lacedArgs = null;
-                switch (this.ArgumentLacing)
-                {
-                    case LacingStrategy.First:
-                        lacedArgs = argSets.SingleSet();
-                        break;
-                    case LacingStrategy.Shortest:
-                        lacedArgs = argSets.ShortestSet();
-                        break;
-                    case LacingStrategy.Longest:
-                        lacedArgs = argSets.LongestSet();
-                        break;
-                    case LacingStrategy.CrossProduct:
-                        lacedArgs = argSets.CartesianProduct();
-                        break;
-                }
-
-                //setup a list to hold the results
-                //each output will have its own results collection
-                List<FSharpList<Value>> results = new List<FSharpList<FScheme.Value>>();
-                for(int i=0; i<OutPortData.Count(); i++)
-                {
-                    results.Add(FSharpList<Value>.Empty);
-                }
-                //FSharpList<Value> result = FSharpList<Value>.Empty;
-
-                //run the evaluate method for each set of 
-                //arguments in the la result. do these
-                //in reverse order so our cons comes out the right
-                //way around
-                for (int i = lacedArgs.Count() - 1; i >= 0; i--)
-                {
-                    var evalResult = Evaluate(Utils.MakeFSharpList(lacedArgs.ElementAt(i).ToArray()));
-
-                    //if the list does not have the same number of items
-                    //as the number of output ports, then throw a wobbly
-                    if (!evalResult.IsList)
-                        throw new Exception("Output value of the node is not a list.");
-
-                    for (int k = 0; k < OutPortData.Count(); k++)
-                    {
-                        FSharpList<Value> lst = ((Value.List)evalResult).Item;
-                        results[k] = FSharpList<Value>.Cons(lst[k], results[k]);
-                    }
-                    runCount++;
-                }
-
-                //the result of evaluation will be a list. we split that result
-                //and send the results to the outputs
-                for (int i = 0; i < OutPortData.Count(); i++)
-                {
-                    outPuts[OutPortData[i]] = Value.NewList(results[i]);      
-                }
-                
-            }
-            else
-            {
-                Value evalResult = Evaluate(args);
-
-                runCount++;
-
-                if (!evalResult.IsList)
-                        throw new Exception("Output value of the node is not a list.");
-
-                FSharpList<Value> lst = ((Value.List)evalResult).Item;
-
-                //the result of evaluation will be a list. we split that result
-                //and send the results to the outputs
-                for (int i = 0; i < OutPortData.Count(); i++)
-                {
-                    outPuts[OutPortData[i]] = lst[i];
-                }
-            }
-
-            ValidateConnections();
-        }
-
-        public virtual Value Evaluate(FSharpList<Value> args)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 
-    public class dynRevitTransactionNodeWithOneOutput : dynRevitTransactionNode
+    public abstract class dynRevitTransactionNodeWithOneOutput : dynRevitTransactionNode
     {
-        public virtual bool acceptsListOfLists(FScheme.Value value)
-        {
-            return false;
-        }
-
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            //THE OLD WAY
-            //outPuts[OutPortData[0]] = Evaluate(args);
-
-            //THE NEW WAY
-            //if this element maintains a collcection of references
-            //then clear the collection
-            if (this is IClearable)
-                (this as IClearable).ClearReferences();
-
-            List<FSharpList<Value>> argSets = new List<FSharpList<Value>>();
-
-            //create a zip of the incoming args and the port data
-            //to be used for type comparison
-            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType));
-            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
-
-            //there are more than zero arguments
-            //and there is either an argument which does not match its expections 
-            //OR an argument which requires a list and gets a list of lists
-            //AND argument lacing is not disabled
-            if (args.Count() > 0 &&
-                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
-                listOfListComparison.Any(x => x.Item1 == true && x.Item2 == typeof(Value.List))) &&
-                this.ArgumentLacing != LacingStrategy.Disabled)
-            {
-                //if the argument is of the expected type, then
-                //leave it alone otherwise, wrap it in a list
-                int j = 0;
-                foreach (var arg in args)
-                {
-                    var portAtThis = portComparison.ElementAt(j);
-
-                    //incoming value is list and expecting single
-                    if (portAtThis.Item1 == typeof(Value.List) &&
-                        portAtThis.Item2 != typeof(Value.List))
-                    {
-                        //leave as list
-                        argSets.Add(((Value.List)arg).Item);
-                    }
-                    //incoming value is list and expecting list
-                    else
-                    {
-                        //check if we have a list of lists, if so, then don't wrap
-                        if (Utils.IsListOfLists(arg) && !acceptsListOfLists(arg))
-                            //leave as list
-                            argSets.Add(((Value.List)arg).Item);
-                        else
-                            //wrap in list
-                            argSets.Add(Utils.MakeFSharpList(arg));
-                    }
-                    j++;
-                }
-
-                IEnumerable<IEnumerable<Value>> lacedArgs = null;
-                switch (this.ArgumentLacing)
-                {
-                    case LacingStrategy.First:
-                        lacedArgs = argSets.SingleSet();
-                        break;
-                    case LacingStrategy.Shortest:
-                        lacedArgs = argSets.ShortestSet();
-                        break;
-                    case LacingStrategy.Longest:
-                        lacedArgs = argSets.LongestSet();
-                        break;
-                    case LacingStrategy.CrossProduct:
-                        lacedArgs = argSets.CartesianProduct();
-                        break;
-                }
-
-                //setup an empty list to hold results
-                FSharpList<Value> result = FSharpList<Value>.Empty;
-
-                //run the evaluate method for each set of 
-                //arguments in the cartesian result. do these
-                //in reverse order so our cons comes out the right
-                //way around
-                for (int i = lacedArgs.Count() - 1; i >= 0; i--)
-                {
-                    var evalResult = Evaluate(Utils.MakeFSharpList(lacedArgs.ElementAt(i).ToArray()));
-                    result = FSharpList<Value>.Cons(evalResult, result);
-                    runCount++;
-                }
-
-                outPuts[OutPortData[0]] = Value.NewList(result);
-            }
-            else
-            {
-                outPuts[OutPortData[0]] = Evaluate(args);
-                runCount++;
-            }
+            outPuts[OutPortData[0]] = Evaluate(args);
         }
 
-        public virtual Value Evaluate(FSharpList<Value> args)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Value Evaluate(FSharpList<Value> args);
     }
 
     namespace SyncedNodeExtensions
@@ -895,8 +649,7 @@ namespace Dynamo.Revit
             /// Registers the given element id with the DMU such that any change in the element will
             /// trigger a workspace modification event (dynamic running and saving).
             /// </summary>
-            /// <param name="id">ElementId of the element to watch.</param>
-            public static void RegisterEvalOnModified(this dynNodeModel node, ElementId id, Action modAction = null, Action delAction = null)
+            public static void RegisterEvalOnModified(this dynNodeModel node, ElementId id, Action modAction=null, Action delAction=null)
             {
                 var u = dynRevitSettings.Controller.Updater;
                 u.RegisterChangeHook(
@@ -915,7 +668,6 @@ namespace Dynamo.Revit
             /// Unregisters the given element id with the DMU. Should not be called unless it has already
             /// been registered with RegisterEvalOnModified
             /// </summary>
-            /// <param name="id">ElementId of the element to stop watching.</param>
             public static void UnregisterEvalOnModified(this dynNodeModel node, ElementId id)
             {
                 var u = dynRevitSettings.Controller.Updater;
@@ -929,7 +681,7 @@ namespace Dynamo.Revit
 
             static DynElementUpdateDelegate UnRegOnDelete(Action deleteAction)
             {
-                return delegate(List<ElementId> deleted)
+                return delegate(HashSet<ElementId> deleted)
                 {
                     foreach (var d in deleted)
                     {
@@ -944,7 +696,7 @@ namespace Dynamo.Revit
 
             static DynElementUpdateDelegate ReEvalOnModified(dynNodeModel node, Action modifiedAction)
             {
-                return delegate(List<ElementId> modified)
+                return delegate
                 {
                     if (!node.RequiresRecalc && !dynRevitSettings.Controller.Running)
                     {

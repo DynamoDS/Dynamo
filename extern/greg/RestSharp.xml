@@ -137,7 +137,7 @@
             </summary>
         </member>
         <member name="P:RestSharp.Http.CookieContainer">
-            <summary>
+            <summary>r
             The System.Net.CookieContainer to be used for the request
             </summary>
         </member>

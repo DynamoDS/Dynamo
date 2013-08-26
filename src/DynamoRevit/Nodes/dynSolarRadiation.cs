@@ -20,6 +20,8 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.UI;
 using Dynamo.Connectors;
+using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -79,8 +81,10 @@ namespace Dynamo.Nodes
 
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a button to the inputGrid on the dynElement
             Button analysisResultButt = new dynNodeButton();
             nodeUI.inputGrid.Children.Add(analysisResultButt);
@@ -165,8 +169,10 @@ namespace Dynamo.Nodes
             RegisterAllPorts();  
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a button to the inputGrid on the dynElement
             sunPathButt = new dynNodeButton();
 
@@ -289,7 +295,7 @@ namespace Dynamo.Nodes
                 throw new Exception("SANITY CHECK FAILED");
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (this.PickedSunAndShadowSettings != null)
@@ -300,7 +306,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {

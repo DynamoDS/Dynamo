@@ -14,14 +14,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 
 using Dynamo.Connectors;
+using Dynamo.Controls;
+using Dynamo.Models;
 using DynamoPython;
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
@@ -45,7 +50,7 @@ namespace Dynamo.Nodes
         /// </summary>
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
-        private string script = "#The input to this node will be stored in the IN variable.\ndataEnteringNode = IN\n\n#Assign your output to the OUT variable\nOUT = 0";
+        private string script;
 
         public RenderDescription RenderDescription{get;set;}
 
@@ -55,12 +60,34 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 
             RegisterAllPorts();
+            InitializeDefaultScript();
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        private void InitializeDefaultScript()
         {
+            script = "# Default imports\n";
+
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            if (assemblies.Any(x => x.FullName.Contains("RevitAPI")) && assemblies.Any(x => x.FullName.Contains("RevitAPIUI")))
+            {
+                script = script + "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
+            }
+
+            if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            {
+                string current_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                script = script + "import sys\nimport clr\npath = r'C:\\Autodesk\\Dynamo\\Core'" + "\nexec_path = r'" + current_dir + "'\nsys.path.append(path)\nsys.path.append(exec_path)\nclr.AddReference('LibGNet')\nfrom Autodesk.LibG import *\n";
+            }
+
+            script = script + "\n#The input to this node will be stored in the IN variable.\ndataEnteringNode = IN\n\n#Assign your output to the OUT variable\nOUT = 0";
+        }
+
+        public override void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
             //topControl.Height = 200;
             //topControl.Width = 300;
 
@@ -95,7 +122,7 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             XmlElement script = xmlDoc.CreateElement("Script");
             //script.InnerText = this.tb.Text;
@@ -103,7 +130,7 @@ namespace Dynamo.Nodes
             dynEl.AppendChild(script);
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {

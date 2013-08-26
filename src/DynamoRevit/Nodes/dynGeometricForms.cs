@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -28,15 +29,15 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("form", "Loft Form", typeof(object)));
 
             RegisterAllPorts();
-            if (formId == null)
-                formId = ElementId.InvalidElementId;
+            if (_formId == null)
+                _formId = ElementId.InvalidElementId;
         }
 
-        Dictionary<ElementId, ElementId> sformCurveToReferenceCurveMap;
-        ElementId formId;
-        bool preferSurfaceForOneLoop;
+        Dictionary<ElementId, ElementId> _sformCurveToReferenceCurveMap;
+        ElementId _formId;
+        bool _preferSurfaceForOneLoop;
 
-        public override bool acceptsListOfLists(FScheme.Value value)
+        protected override bool AcceptsListOfLists(Value value)
         {
             if (Utils.IsListOfListsOfLists(value))
                 return false;
@@ -56,31 +57,31 @@ namespace Dynamo.Nodes
 
         bool matchOrAddFormCurveToReferenceCurveMap(Form formElement, ReferenceArrayArray refArrArr, bool doMatch)
         {
-            if (formElement.Id != formId && doMatch)
+            if (formElement.Id != _formId && doMatch)
             {
                 return false;
             }
             else if (!doMatch)
-                formId = formElement.Id;
+                _formId = formElement.Id;
 
-            if (doMatch && sformCurveToReferenceCurveMap.Count == 0)
+            if (doMatch && _sformCurveToReferenceCurveMap.Count == 0)
                 return false;
             else if (!doMatch)
-                sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
+                _sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
 
             for (int indexRefArr = 0; indexRefArr < refArrArr.Size; indexRefArr++)
             {
                 if (indexRefArr >= refArrArr.Size)
                 {
                     if (!doMatch)
-                        sformCurveToReferenceCurveMap.Clear();
+                        _sformCurveToReferenceCurveMap.Clear();
                     return false;
                 }
 
                 if (refArrArr.get_Item(indexRefArr).Size != formElement.get_CurveLoopReferencesOnProfile(indexRefArr, 0).Size)
                 {
                     if (!doMatch)
-                        sformCurveToReferenceCurveMap.Clear();
+                        _sformCurveToReferenceCurveMap.Clear();
                     return false;
                 }
                 for (int indexRef = 0; indexRef < refArrArr.get_Item(indexRefArr).Size; indexRef++)
@@ -95,20 +96,20 @@ namespace Dynamo.Nodes
                             oldRef.ElementReferenceType != newRef.ElementReferenceType)
                     {
                         if (!doMatch)
-                            sformCurveToReferenceCurveMap.Clear();
+                            _sformCurveToReferenceCurveMap.Clear();
                         return false;
                     }
                     ElementId oldRefId = oldRef.ElementId;
                     ElementId newRefId = newRef.ElementId;
 
-                    if (doMatch && (!sformCurveToReferenceCurveMap.ContainsKey(newRefId) ||
-                                    sformCurveToReferenceCurveMap[newRefId] != oldRefId)
+                    if (doMatch && (!_sformCurveToReferenceCurveMap.ContainsKey(newRefId) ||
+                                    _sformCurveToReferenceCurveMap[newRefId] != oldRefId)
                        )
                     {
                         return false;
                     }
                     else if (!doMatch)
-                        sformCurveToReferenceCurveMap[newRefId] = oldRefId;
+                        _sformCurveToReferenceCurveMap[newRefId] = oldRefId;
                 }
             }
             return true;
@@ -117,7 +118,6 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-
             //Solid argument
             bool isSolid = ((Value.Number)args[0]).Item == 1;
 
@@ -211,7 +211,7 @@ namespace Dynamo.Nodes
                 {
                     Form oldF = (Form)e;
                     if (oldF.IsSolid == isSolid  &&
-                        preferSurfaceForOneLoop == isSurface 
+                        _preferSurfaceForOneLoop == isSurface 
                         && matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
                     {
                             return Value.NewContainer(oldF);
@@ -226,15 +226,15 @@ namespace Dynamo.Nodes
                 this.DeleteElement(this.Elements[0], true);
 
             }
-            else if (this.formId != ElementId.InvalidElementId)
+            else if (this._formId != ElementId.InvalidElementId)
             {
                 Element e = null;
-                if (dynUtils.TryGetElement(this.formId, typeof(Form), out e) && e != null &&
+                if (dynUtils.TryGetElement(this._formId, typeof(Form), out e) && e != null &&
                     e is Form)
                 {
                     Form oldF = (Form)e;
                     if (oldF.IsSolid == isSolid  &&
-                        preferSurfaceForOneLoop == isSurface 
+                        _preferSurfaceForOneLoop == isSurface 
                         && matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
                     {
                         return Value.NewContainer(oldF);
@@ -242,7 +242,7 @@ namespace Dynamo.Nodes
                 }
             }
 
-            preferSurfaceForOneLoop = isSurface;
+            _preferSurfaceForOneLoop = isSurface;
 
             //We use the ReferenceArrayArray to make the form, and we store it for later runs.
 
@@ -274,16 +274,16 @@ namespace Dynamo.Nodes
             return Value.NewContainer(f);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            dynEl.SetAttribute("FormId", formId.ToString());
-            dynEl.SetAttribute("PreferSurfaceForOneLoop", preferSurfaceForOneLoop.ToString());
+            dynEl.SetAttribute("FormId", _formId.ToString());
+            dynEl.SetAttribute("PreferSurfaceForOneLoop", _preferSurfaceForOneLoop.ToString());
 
             String mapAsString = "";
 
-            if (sformCurveToReferenceCurveMap != null)
+            if (_sformCurveToReferenceCurveMap != null)
             {
-                var enumMap = sformCurveToReferenceCurveMap.GetEnumerator();
+                var enumMap = _sformCurveToReferenceCurveMap.GetEnumerator();
                 for (; enumMap.MoveNext(); )
                 {
                     ElementId keyId = enumMap.Current.Key;
@@ -295,19 +295,19 @@ namespace Dynamo.Nodes
             dynEl.SetAttribute("FormCurveToReferenceCurveMap", mapAsString);
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {
-                formId = new ElementId(Convert.ToInt32(elNode.Attributes["FormId"].Value));
+                _formId = new ElementId(Convert.ToInt32(elNode.Attributes["FormId"].Value));
                 var thisIsSurface = elNode.Attributes["PreferSurfaceForOneLoop"];
                 if (thisIsSurface != null)
-                   preferSurfaceForOneLoop = Convert.ToBoolean(thisIsSurface.Value);
+                   _preferSurfaceForOneLoop = Convert.ToBoolean(thisIsSurface.Value);
                 else //used to be able to make only surface, so init to more likely value
-                   preferSurfaceForOneLoop = true;
+                   _preferSurfaceForOneLoop = true;
 
                 string mapAsString = elNode.Attributes["FormCurveToReferenceCurveMap"].Value;
-                sformCurveToReferenceCurveMap = new Dictionary<ElementId,ElementId>();
+                _sformCurveToReferenceCurveMap = new Dictionary<ElementId,ElementId>();
                 if (mapAsString != "")
                 {
 
@@ -318,18 +318,18 @@ namespace Dynamo.Nodes
                         string[] thisMap = curMap[iMap].Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
                         if (thisMap.Length != 2)
                         {
-                            sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
+                            _sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
                             break;
                         }
                         ElementId keyId = new ElementId(Convert.ToInt32(thisMap[0]));
                         ElementId valueId = new ElementId(Convert.ToInt32(thisMap[1]));
-                        sformCurveToReferenceCurveMap[keyId] = valueId;
+                        _sformCurveToReferenceCurveMap[keyId] = valueId;
                     }
                 }
             }
             catch 
             {
-                sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
+                _sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
             }
         }
     }
@@ -362,7 +362,8 @@ namespace Dynamo.Nodes
             {
                 //And register the form for deletion. Since we've already deleted it here manually, we can 
                 //pass "true" as the second argument.
-                this.DeleteElement(this.Elements[0], true);
+                deleteId = this.Elements[0];
+                this.DeleteElement(this.Elements[0], false);
             }
 
             //Surface argument

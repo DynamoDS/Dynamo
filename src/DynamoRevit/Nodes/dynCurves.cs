@@ -19,12 +19,16 @@ using System.Diagnostics;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
 using System.Reflection;
+using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra.Double;
+
 
 namespace Dynamo.Nodes
 {
@@ -36,7 +40,6 @@ namespace Dynamo.Nodes
         public dynModelCurve()
         {
             InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Value.Container)));
-            InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(Value.Container)));
             OutPortData.Add(new PortData("mc", "Model Curve", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -44,10 +47,9 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Curve c = (Curve)((Value.Container)args[0]).Item;
-            SketchPlane sp = (SketchPlane)((Value.Container)args[1]).Item;
+            var c = (Curve)((Value.Container)args[0]).Item;
+            var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
 
-            
             ModelCurve mc;
             XYZ spOrigin = sp.Plane.Origin;
             XYZ modelOrigin = XYZ.Zero;
@@ -108,7 +110,6 @@ namespace Dynamo.Nodes
         public dynReferenceCurve()
         {
             InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Value.Container)));
-            InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(Value.Container)));
             OutPortData.Add(new PortData("mc", "Model Curve", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -116,9 +117,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Curve c = (Curve)((Value.Container)args[0]).Item;
-            SketchPlane sp = (SketchPlane)((Value.Container)args[1]).Item;
-
+            var c = (Curve)((Value.Container)args[0]).Item;
+            var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
 
             ModelCurve mc;
             XYZ spOrigin = sp.Plane.Origin;
@@ -376,9 +376,10 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Curve From Curve Element")]
+    [NodeName("Geometry Curve From Model Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Takes in a model curve and extracts a geometry curve")]
+    [NodeSearchTags("Convert", "Extract", "Geometry", "Curve", "Model", "Reference")]
     public class dynCurveFromModelCurve : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurveFromModelCurve()
@@ -1089,6 +1090,187 @@ namespace Dynamo.Nodes
             }
 
             return Value.NewList(result);
+        }
+    }
+    [NodeName("Equal Distanced XYZs On Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a list of equal distanced XYZs along a curve.")]
+    public class dynEqualDistXYZAlongCurve : dynXYZBase
+    {
+            public dynEqualDistXYZAlongCurve()
+            {
+            InPortData.Add(new PortData("curve", "Curve", typeof(Value.Container)));
+            InPortData.Add(new PortData("count", "Number", typeof(Value.Number))); // just divide equally for now, dont worry about spacing and starting point
+            OutPortData.Add(new PortData("XYZs", "List of equal distanced XYZs", typeof(Value.List)));
+
+            RegisterAllPorts();
+            }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+
+            double xi;//, x0, xs;
+            xi = ((Value.Number)args[1]).Item;// Number
+            xi = Math.Round(xi);
+            if (xi < Double.Epsilon)
+                throw new Exception("The point count must be larger than 0.");
+
+            //x0 = ((Value.Number)args[2]).Item;// Starting Coord
+            //xs = ((Value.Number)args[3]).Item;// Spacing
+
+
+            var result = FSharpList<Value>.Empty;
+
+            Curve crvRef = null;
+
+            if (((Value.Container)args[0]).Item is CurveElement)
+            {
+                var c = (CurveElement)((Value.Container)args[0]).Item; // Curve 
+                crvRef = c.GeometryCurve;
+            }
+            else
+            {
+                crvRef = (Curve)((Value.Container)args[0]).Item; // Curve 
+            }
+
+            double t = 0.0;
+
+            XYZ startPoint  = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+                
+            result = FSharpList<Value>.Cons(Value.NewContainer(startPoint), result);
+            pts.Add(startPoint);
+           
+            t = 1.0;
+            XYZ endPoint = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+
+            if (xi > 2.0 +  Double.Epsilon)
+            {
+                int numParams = Convert.ToInt32(xi - 2.0);
+
+                var curveParams = new List<double>();
+
+                for (int ii = 0; ii < numParams; ii++)
+                {
+                    curveParams.Add((ii + 1.0)/(xi - 1.0));
+                }
+
+                int maxIterNum = 15;
+                bool bUnbound = dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef);
+
+                int iterNum = 0;
+                for (; iterNum < maxIterNum; iterNum++)
+                {
+                    XYZ prevPoint = startPoint;
+                    XYZ thisXYZ = null;
+                    XYZ nextXYZ = null;
+
+                    Vector<double> distValues = DenseVector.Create(numParams, (c) => 0.0);
+
+                    Matrix<double> iterMat = DenseMatrix.Create(numParams, numParams, (r, c) => 0.0);
+                    double maxDistVal = -1.0;
+                    for (int iParam = 0; iParam < numParams; iParam++)
+                    {
+                        t = curveParams[iParam];
+
+                        if (nextXYZ != null)
+                            thisXYZ = nextXYZ;
+                        else
+                            thisXYZ = !bUnbound ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+ 
+                        double tNext = (iParam == numParams - 1) ?  1.0 : curveParams[iParam + 1];
+                        nextXYZ = (iParam == numParams - 1) ? endPoint :
+                                   !bUnbound ? crvRef.Evaluate(tNext, true) : crvRef.Evaluate(tNext * crvRef.Period, false);
+
+                        distValues[iParam] = thisXYZ.DistanceTo(prevPoint) - thisXYZ.DistanceTo(nextXYZ);
+
+                        if (Math.Abs(distValues[iParam]) > maxDistVal)
+                            maxDistVal = Math.Abs(distValues[iParam]);
+                        Transform thisDerivTrf = !bUnbound ? crvRef.ComputeDerivatives(t, true) : crvRef.ComputeDerivatives(t * crvRef.Period, false);
+                        XYZ derivThis = thisDerivTrf.BasisX;
+                        if (bUnbound)
+                            derivThis = derivThis.Multiply(crvRef.Period);
+                        double distPrev = thisXYZ.DistanceTo(prevPoint);
+                        if (distPrev  > Double.Epsilon)
+                        {
+                           double valDeriv = (thisXYZ - prevPoint).DotProduct(derivThis) / distPrev;
+                           iterMat[iParam, iParam] += valDeriv;
+                           if (iParam > 0)
+                           {
+                               iterMat[iParam - 1, iParam] -= valDeriv;
+                           }
+                        }
+                        double distNext = thisXYZ.DistanceTo(nextXYZ);
+                        if (distNext> Double.Epsilon)
+                        {
+                            double valDeriv = (thisXYZ - nextXYZ).DotProduct(derivThis) / distNext;
+
+                           iterMat[iParam, iParam] -= valDeriv;
+                           if (iParam < numParams - 1)
+                           {
+                               iterMat[iParam + 1, iParam] += valDeriv;
+                           }
+                        }
+                        prevPoint = thisXYZ;
+                    }
+
+                    Matrix<double> iterMatInvert = iterMat.Inverse();
+                    Vector<double> changeValues = iterMatInvert.Multiply(distValues);
+
+                    double dampingFactor = 1.0;
+
+                    for (int iParam = 0; iParam < numParams; iParam++)
+                    {
+                        curveParams[iParam] -= dampingFactor * changeValues[iParam];
+
+                        if (iParam == 0 && curveParams[iParam] < 0.000000001)
+                        {
+                            double oldValue = dampingFactor * changeValues[iParam] + curveParams[iParam];
+                            while (curveParams[iParam] < 0.000000001)
+                               curveParams[iParam] = 0.5 * (dampingFactor * changeValues[iParam] + curveParams[iParam]);
+                            changeValues[iParam] = (oldValue - curveParams[iParam]) / dampingFactor;
+                        }
+                        else if (iParam > 0 &&  curveParams[iParam] < 0.000000001 + curveParams[iParam - 1])
+                        {
+                            for (; iParam > -1; iParam--)
+                                curveParams[iParam] = dampingFactor * changeValues[iParam] + curveParams[iParam];
+
+                            dampingFactor *= 0.5;
+                            continue;
+                        }
+                        else if (iParam == numParams - 1 && curveParams[iParam] > 1.0 - 0.000000001)
+                        {
+                            double oldValue = dampingFactor * changeValues[iParam] + curveParams[iParam];
+                            while (curveParams[iParam] > 1.0 - 0.000000001)
+                                 curveParams[iParam] = 0.5 * (1.0 + dampingFactor * changeValues[iParam] + curveParams[iParam]);
+                            changeValues[iParam] = (oldValue - curveParams[iParam]) / dampingFactor;
+                        }
+                    }
+                    if (maxDistVal < 0.000000001)
+                    {
+                        for (int iParam = 0; iParam < numParams; iParam++)
+                        {
+                            t = curveParams[iParam];
+                            thisXYZ = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+                            result = FSharpList<Value>.Cons(Value.NewContainer(thisXYZ), result);
+                            pts.Add(thisXYZ);
+                        }
+                        break;
+                    }
+                }
+          
+                if (iterNum == maxIterNum)
+                    throw new Exception("could not solve for equal distances");
+
+            }
+
+            if (xi > 1.0 + Double.Epsilon)
+            {
+                result = FSharpList<Value>.Cons(Value.NewContainer(endPoint), result);
+                pts.Add(endPoint);
+            }
+            return Value.NewList(
+               ListModule.Reverse(result)
+            );
         }
     }
 }

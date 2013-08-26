@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.IO;
 using Dynamo;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -24,15 +25,6 @@ namespace DynamoPython
 
         public void ProcessCode(string code)
         {
-            // check if we're in the revit context
-            // if so, add relevant assemblies
-
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            if ( assemblies.Any(x => x.FullName.Contains("RevitAPI")) && assemblies.Any(x => x.FullName.Contains("RevitAPIUI")) )
-            {
-                code = "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n" + code;
-            }
-
             this.source = engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
         }
 

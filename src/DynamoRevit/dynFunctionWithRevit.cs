@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Microsoft.FSharp.Collections;
 using Dynamo.Utilities;
@@ -29,7 +30,7 @@ namespace Dynamo.Nodes
             return result;
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             base.SaveNode(xmlDoc, dynEl, context);
 
@@ -63,7 +64,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             base.LoadNode(elNode);
 
@@ -84,19 +85,19 @@ namespace Dynamo.Nodes
                             var runElements = new List<ElementId>();
                             runs.Add(runElements);
 
-                            foreach (XmlNode element in run.ChildNodes)
+                            var query = from XmlNode element in run.ChildNodes
+                                        where element.Name == "Element"
+                                        select element.InnerText;
+
+                            foreach (var eid in query) 
                             {
-                                if (element.Name == "Element")
+                                try
                                 {
-                                    var eid = element.InnerText;
-                                    try
-                                    {
-                                        runElements.Add(dynRevitSettings.Doc.Document.GetElement(eid).Id);
-                                    }
-                                    catch (NullReferenceException)
-                                    {
-                                        dynSettings.Controller.DynamoViewModel.Log("Element with UID \"" + eid + "\" not found in Document.");
-                                    }
+                                    runElements.Add(dynRevitSettings.Doc.Document.GetElement(eid).Id);
+                                }
+                                catch (NullReferenceException)
+                                {
+                                    DynamoLogger.Instance.Log("Element with UID \"" + eid + "\" not found in Document.");
                                 }
                             }
                         }
@@ -120,17 +121,14 @@ namespace Dynamo.Nodes
                    }
                    catch (Exception ex)
                    {
-                       dynSettings.Controller.DynamoViewModel.Log(
+                       DynamoLogger.Instance.Log(
                           "Error deleting elements: "
                           + ex.GetType().Name
-                          + " -- " + ex.Message
-                       );
+                          + " -- " + ex.Message);
                    }
                    dynRevitSettings.Controller.EndTransaction();
                    WorkSpace.Modified();
-               },
-               true
-            );
+               });
         }
     }
 }

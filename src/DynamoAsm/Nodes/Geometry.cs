@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Collections.Generic;
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -187,10 +188,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point 2D")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a point in the XY plane.")]
+    [NodeSearchable(false)]
     public class Point2DNode : GraphicItemNode
     {
         private Point _point = null;
@@ -224,10 +226,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a point in 3D space.")]
+    [NodeSearchable(false)]
     public class Point3DNode : GraphicItemNode
     {
         private Point _point = null;
@@ -257,10 +260,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point X")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the X value of a Point.")]
+    [NodeSearchable(false)]
     public class PointXNode : GraphicItemNode
     {
         public PointXNode()
@@ -281,10 +285,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point Y")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the Y value of a Point.")]
+    [NodeSearchable(false)]
     public class PointYNode : GraphicItemNode
     {
         public PointYNode()
@@ -305,10 +310,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point Z")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the Z value of a Point.")]
+    [NodeSearchable(false)]
     public class PointZNode : GraphicItemNode
     {
         public PointZNode()
@@ -329,10 +335,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Vector X")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the X value of a Vector.")]
+    [NodeSearchable(false)]
     public class VectorXNode : GraphicItemNode
     {
         public VectorXNode()
@@ -353,10 +360,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Vector Y")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the Y value of a Vector.")]
+    [NodeSearchable(false)]
     public class VectorYNode : GraphicItemNode
     {
         public VectorYNode()
@@ -377,10 +385,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Vector Z")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the Z value of a Vector.")]
+    [NodeSearchable(false)]
     public class VectorZNode : GraphicItemNode
     {
         public VectorZNode()
@@ -401,10 +410,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Vector")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a Vector representing a direction.")]
+    [NodeSearchable(false)]
     public class VectorNode : LibGNode
     {
         private Vector _vector = null;
@@ -441,10 +451,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("CoordinateSystem")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a CoordinateSystem.")]
+    [NodeSearchable(false)]
     public class CoordinateSystemNode : GraphicItemNode
     {
         private CoordinateSystem _cs = null;
@@ -472,10 +483,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
-    [NodeName("Line")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
+    [NodeName("Line - LibG")]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a Line between two Points.")]
+    [NodeSearchable(false)]
     public class LineNode : GraphicItemNode
     {
         private Line _line = null;
@@ -501,11 +513,12 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
-    [NodeName("Circle")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
+    [NodeName("Circle - LibG")]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a Circle at a Point with radius")]
     [NodeSearchTags("circle")]
+    [NodeSearchable(false)]
     public class CircleNode : GraphicItemNode
     {
         private Circle _circle = null;
@@ -534,10 +547,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Sweep As Surface")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Sweep a Crve along a path producing a Surface")]
+    [NodeSearchable(false)]
     public class SweepAsSurfaceNode : GraphicItemNode
     {
         private Surface _surface = null;
@@ -564,10 +578,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Sweep As Solid")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Sweep a Crve along a path producing a Solid")]
+    [NodeSearchable(false)]
     public class SweepAsSolidNode : GraphicItemNode
     {
         private Solid _solid = null;
@@ -594,10 +609,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
-    [NodeName("Length")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
+    [NodeName("Length - LibG")]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Get the length of a Curve.")]
+    [NodeSearchable(false)]
     public class LengthNode : GraphicItemNode
     {
         public LengthNode()
@@ -618,10 +634,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Area")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Get the area of a Surface.")]
+    [NodeSearchable(false)]
     public class AreaNode : GraphicItemNode
     {
         public AreaNode()
@@ -642,10 +659,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Translate")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Translate Object.")]
+    [NodeSearchable(false)]
     public class TranslateNode : GraphicItemNode
     {
         TransformableItem _transformableItem;
@@ -683,10 +701,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("BSplineCurve")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a B-Spline Curve through input points.")]
+    [NodeSearchable(false)]
     public class BSplineCurveNode : GraphicItemNode
     {
         private BSplineCurve _bsplinecurve = null;
@@ -717,10 +736,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Closed BSplineCurve")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a B-Spline Curve through input points.")]
+    [NodeSearchable(false)]
     public class ClosedBSplineCurveNode : GraphicItemNode
     {
         private BSplineCurve _bsplinecurve = null;
@@ -751,10 +771,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Polygon")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a Polygon from a set of points.")]
+    [NodeSearchable(false)]
     public class PolygonNode : GraphicItemNode
     {
         private Polygon _polygon = null;
@@ -785,10 +806,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Loft")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Loft Curves to create a surface")]
+    [NodeSearchable(false)]
     public class LoftNode : GraphicItemNode
     {
         private Surface _surface = null;
@@ -819,43 +841,40 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Draw")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Draws Geometry created in a Python or external script")]
+    [NodeSearchable(false)]
     public class ForceDrawNode : GraphicItemNode
     {
         public ForceDrawNode()
         {
-            InPortData.Add(new PortData("Objects", "List of Objects to draw.", typeof(Value.List)));
-            OutPortData.Add(new PortData("Objects", "List of same Objects", typeof(Value.Container)));
+            InPortData.Add(new PortData("Object", "Object to draw.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Object", "Same Object", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var input = (args[0] as Value.List).Item;
+            var input = ((Value.Container)args[0]).Item;
 
-            foreach (Value v in input)
-            {
-                GraphicItem item = ((Value.Container)v).Item as GraphicItem;
+            GraphicItem item = input as GraphicItem;
 
-                if (item == null)
-                    continue;
-
+            if (item != null)
                 _graphicItems.Add(item);
-            }
 
             return args[0];
         }
     }
 
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Patch")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Patch Curves to create a Surface")]
+    [NodeSearchable(false)]
     public class PatchNode : GraphicItemNode
     {
         private Surface _surface = null;
@@ -886,10 +905,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Extrude Curve")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extrude a curve in a direction.")]
+    [NodeSearchable(false)]
     public class ExtrudeNode : GraphicItemNode
     {
         Surface _surface = null;
@@ -919,10 +939,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Cuboid")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Cuboid is like a cube, or a shoebox.")]
+    [NodeSearchable(false)]
     public class CuboidNode : GraphicItemNode
     {
         Solid _solid = null;
@@ -953,10 +974,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
-    [NodeName("Plane")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
+    [NodeName("Plane - LibG")]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Plane, an infinite 2D expanse in 3D space.")]
+    [NodeSearchable(false)]
     public class PlaneNode : GraphicItemNode
     {
         Plane _plane = null;
@@ -983,10 +1005,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point At Parameter")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Point at parameter along Curve.")]
+    [NodeSearchable(false)]
     public class PointAtParameterNode : GraphicItemNode
     {
         Point _point = null;
@@ -1013,10 +1036,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point At Distance")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Point at distance along Curve.")]
+    [NodeSearchable(false)]
     public class PointAtDistanceNode : GraphicItemNode
     {
         Point _point = null;
@@ -1043,10 +1067,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Normal At Parameter")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Normal at Parameter along Curve.")]
+    [NodeSearchable(false)]
     public class NormalAtParameterNode : LibGNode
     {
         Vector _vector = null;
@@ -1071,10 +1096,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point At UV Parameter")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Point at Parameter on Surface.")]
+    [NodeSearchable(false)]
     public class PointAtUVParameterNode : GraphicItemNode
     {
         Point _point = null;
@@ -1104,10 +1130,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Normal At UV Parameter")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Normal at Parameter on Surface.")]
+    [NodeSearchable(false)]
     public class NormalAtUVParameterNode : LibGNode
     {
         Vector _vector = null;
@@ -1134,10 +1161,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Thicken Surface")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Thicken / Extrude a Surface by an amount.")]
+    [NodeSearchable(false)]
     public class ThickenSurfaceNode : GraphicItemNode
     {
         Solid _solid = null;
@@ -1167,10 +1195,11 @@ namespace Dynamo.Nodes
 
 
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Intersect")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Intersect two pieces of Geometry.")]
+    [NodeSearchable(false)]
     public class IntersectNode : GraphicItemNode
     {
         List<Geometry> _result = new List<Geometry>();
@@ -1224,10 +1253,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Trim")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Trim Geometry with a tool Geometry.")]
+    [NodeSearchable(false)]
     public class TrimNode : GraphicItemNode
     {
         Geometry _result = null;
@@ -1270,10 +1300,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Import SAT")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Import SAT Geometry from file.")]
+    [NodeSearchable(false)]
     public class ImportSATNode : GraphicItemNode
     {
         List<DSObject> _result = new List<DSObject>();
@@ -1321,10 +1352,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013, Context.VASARI_2014)]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Export To SAT")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Export Geometry to a SAT file.")]
+    [NodeSearchable(false)]
     public class ExportSATNode : LibGNode
     {
         public ExportSATNode()

@@ -19,10 +19,9 @@ using System.Windows.Controls; //for boolean option
 using System.Xml;              //for boolean option  
 using System.Windows.Media.Media3D;
 using System.Reflection;
-
-using Autodesk.Revit;
 using Autodesk.Revit.DB;
-
+using Dynamo.Controls;
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
@@ -30,6 +29,7 @@ using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
+using Domain = DSRevitNodes.Domain;
 
 namespace Dynamo.Nodes
 {
@@ -202,9 +202,9 @@ namespace Dynamo.Nodes
     {
         public dynXYZ()
         {
-            InPortData.Add(new PortData("X", "X", typeof(Value.Number)));
-            InPortData.Add(new PortData("Y", "Y", typeof(Value.Number)));
-            InPortData.Add(new PortData("Z", "Z", typeof(Value.Number)));
+            InPortData.Add(new PortData("X", "X", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("Y", "Y", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("Z", "Z", typeof(Value.Number), Value.NewNumber(0)));
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -306,6 +306,44 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             return Value.NewNumber(((XYZ)((Value.Container)args[0]).Item).X);
+        }
+    }
+
+    [NodeName("XYZ Length")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Gets the length of an XYZ")]
+    public class dynXYZLength : dynGeometryBase
+    {
+        public dynXYZLength()
+        {
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewNumber(((XYZ)((Value.Container)args[0]).Item).GetLength());
+        }
+    }
+
+    [NodeName("XYZ Is Zero Length")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Determines whether an XYZ has zero length")]
+    public class dynXYZIsZeroLength : dynGeometryBase
+    {
+        public dynXYZIsZeroLength()
+        {
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewNumber( ((XYZ) (((Value.Container)args[0]).Item)).IsZeroLength() ? 1 : 0);
         }
     }
 
@@ -621,6 +659,29 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Domain")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Create a domain specifying the Minimum and Maximum UVs.")]
+    public class dynDomain : dynNodeWithOneOutput
+    {
+        public dynDomain()
+        {
+            InPortData.Add(new PortData("min", "The minimum UV of the domain.", typeof(Value.Container)));
+            InPortData.Add(new PortData("max", "The maximum UV of the domain.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("domain", "A domain.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var min = (Autodesk.LibG.Vector)((Value.Container) args[0]).Item;
+            var max = (Autodesk.LibG.Vector)((Value.Container)args[0]).Item;
+
+            return Value.NewContainer(DSRevitNodes.Domain.ByMinimumAndMaximum(min, max));
+        }
+    }
+
     [NodeName("UV Grid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of UVs from a domain.")]
@@ -628,7 +689,7 @@ namespace Dynamo.Nodes
     {
         public dynUVGrid()
         {
-            InPortData.Add(new PortData("dom", "A domain.", typeof(Value.List)));
+            InPortData.Add(new PortData("domain", "A domain.", typeof(Value.Container)));
             InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(Value.Number)));
             InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(Value.Number)));
             OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(Value.List)));
@@ -638,26 +699,28 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FSharpList<Value> domain = ((Value.List)args[0]).Item;
+            var domain = (Domain)((Value.Container)args[0]).Item;
             double ui = ((Value.Number)args[1]).Item;
             double vi = ((Value.Number)args[2]).Item;
-            double us = ((Value.Number)domain[2]).Item / ui;
-            double vs = ((Value.Number)domain[3]).Item / vi;
+            //double us = ((Value.Number)domain[2]).Item / ui;
+            //double vs = ((Value.Number)domain[3]).Item / vi;
+            double us = domain.USpan/ui;
+            double vs = domain.VSpan/vi;
 
             FSharpList<Value> result = FSharpList<Value>.Empty;
 
-            var min = ((Value.Container)domain[0]).Item as UV;
-            var max = ((Value.Container)domain[1]).Item as UV;
+            //var min = ((Value.Container)domain[0]).Item as UV;
+            //var max = ((Value.Container)domain[1]).Item as UV;
 
             //for (double u = min.U; u <= max.U; u += us)
             for (int i = 0; i <= ui; i++ )
             {
-                double u = min.U + i*us;
+                double u = domain.Min.x() + i*us;
 
                 //for (double v = min.V; v <= max.V; v += vs)
                 for (int j = 0; j <= vi; j++ )
                 {
-                    double v = min.V + j*vs;
+                    double v = domain.Min.y() + j*vs;
 
                     result = FSharpList<Value>.Cons(
                         Value.NewContainer(new UV(u, v)),
@@ -903,7 +966,6 @@ namespace Dynamo.Nodes
             XYZ oldOrigin = oldP.Origin;
             XYZ oldNorm = oldP.Normal;
             
-            Transform trfP = null;
             if (oldNorm.IsAlmostEqualTo(newNorm))
             {
                 XYZ moveVec = newOrigin - oldOrigin;
@@ -1489,7 +1551,7 @@ namespace Dynamo.Nodes
 
         public dynElementGeometryObjects()
         {
-            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.List)));
+            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.Container)));
             OutPortData.Add(new PortData("Geometry objects of the element", "List", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -1505,7 +1567,10 @@ namespace Dynamo.Nodes
 
             var result = FSharpList<Value>.Empty;
 
-            GeometryObject geomObj = thisElement.get_Geometry(new Autodesk.Revit.DB.Options());
+            Autodesk.Revit.DB.Options geoOptionsOne = new Autodesk.Revit.DB.Options();
+            geoOptionsOne.ComputeReferences = true;
+
+            GeometryObject geomObj = thisElement.get_Geometry(geoOptionsOne);
             GeometryElement geomElement = geomObj as GeometryElement;
 
             if ((thisElement is GenericForm) && (geomElement.Count() < 1))
@@ -1513,9 +1578,10 @@ namespace Dynamo.Nodes
                 GenericForm gF = (GenericForm)thisElement;
                 if (!gF.Combinations.IsEmpty)
                 {
-                    Autodesk.Revit.DB.Options geoOptions = new Autodesk.Revit.DB.Options();
-                    geoOptions.IncludeNonVisibleObjects = true;
-                    geomObj = thisElement.get_Geometry(geoOptions);
+                    Autodesk.Revit.DB.Options geoOptionsTwo = new Autodesk.Revit.DB.Options();
+                    geoOptionsTwo.IncludeNonVisibleObjects = true;
+                    geoOptionsTwo.ComputeReferences = true;
+                    geomObj = thisElement.get_Geometry(geoOptionsTwo);
                     geomElement = geomObj as GeometryElement;
                 }
             }
@@ -1551,7 +1617,7 @@ namespace Dynamo.Nodes
 
         public dynElementSolid()
         {
-            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.List)));
+            InPortData.Add(new PortData("element", "element to create geometrical reference to", typeof(Value.Container)));
             OutPortData.Add(new PortData("solid", "solid in the element's geometry objects", typeof(object)));
 
             RegisterAllPorts();
@@ -1592,6 +1658,7 @@ namespace Dynamo.Nodes
                 for (int iTry = 0; iTry < nTry && (mySolid == null); iTry++)
                 {
                     Autodesk.Revit.DB.Options geoOptions = new Autodesk.Revit.DB.Options();
+                    geoOptions.ComputeReferences = true;
                     if (bNotVisibleOption && (iTry == 1))
                         geoOptions.IncludeNonVisibleObjects = true;
 
@@ -1946,8 +2013,10 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
         }
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a drop down list to the window
             combo = new ComboBox();
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -1978,12 +2047,12 @@ namespace Dynamo.Nodes
 
         public enum BooleanOperationOptions {Union, Intersect, Difference};
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             dynEl.SetAttribute("index", this.combo.SelectedIndex.ToString());
         }
 
-        public override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode elNode)
         {
             try
             {
@@ -2592,6 +2661,29 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("Result", "Computed Solid", typeof(object)));
 
             RegisterAllPorts();
+        }
+
+        public static bool noSkinSolidMethod()
+        {
+            
+            Type SolidType = typeof(Autodesk.Revit.DB.Solid);
+
+            MethodInfo[] solidTypeMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            String nameOfMethodCreate = "skinCurveLoopsIntoSolid";
+            bool methodFound = false;
+
+            foreach (MethodInfo m in solidTypeMethods)
+            {
+                if (m.Name == nameOfMethodCreate)
+                {
+                    methodFound = true;
+
+                    break;
+                }
+            }
+
+            return !methodFound;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
