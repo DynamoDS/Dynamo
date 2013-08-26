@@ -163,6 +163,7 @@
     <Compile Include="Nodes\dynTransforms.cs" />
     <Compile Include="Nodes\dynViews.cs" />
     <Compile Include="IdlePromise.cs" />
+    <Compile Include="Nodes\Materials.cs" />
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\dynParticle.cs" />
     <Compile Include="ParticleSystem\dynParticleSpring.cs" />
