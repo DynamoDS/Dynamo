@@ -271,7 +271,6 @@ namespace Dynamo
 
         public void RunExpression(bool showErrors = true)
         {
-
             //If we're already running, do nothing.
             if (Running)
                 return;
