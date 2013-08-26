@@ -5,7 +5,7 @@ using Microsoft.FSharp.Collections;
 namespace Dynamo.Nodes
 {
     [NodeName("Domain 2D")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
     [NodeDescription("Create a two dimensional domain specifying the Minimum and Maximum UVs.")]
     public class dynDomain : dynNodeWithOneOutput
     {
@@ -28,7 +28,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Domain")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
     [NodeDescription("Create a domain specifying the Minimum and Maximum UVs.")]
     public class dynDomain1 : dynNodeWithOneOutput
     {
