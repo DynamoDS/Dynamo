@@ -303,6 +303,70 @@ namespace Dynamo.Models
 
         public class WorkspaceHeader
         {
+            private WorkspaceHeader()
+            {
+                
+            }
+
+            public static WorkspaceHeader FromPath(string path)
+            {
+                try
+                {
+                    var xmlDoc = new XmlDocument();
+                    xmlDoc.Load(path);
+
+                    string funName = null;
+                    double cx = 0;
+                    double cy = 0;
+                    double zoom = 1.0;
+                    string id = "";
+
+                    // load the header
+                    foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
+                    {
+                        foreach (XmlAttribute att in node.Attributes)
+                        {
+                            if (att.Name.Equals("X"))
+                                cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                            else if (att.Name.Equals("Y"))
+                                cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                            else if (att.Name.Equals("zoom"))
+                                zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                            else if (att.Name.Equals("Name"))
+                                funName = att.Value;
+                            else if (att.Name.Equals("ID"))
+                            {
+                                id = att.Value;
+                            }
+                        }
+                    }
+
+                    // we have a dyf and it lacks an ID field, we need to assign it
+                    // a deterministic guid based on its name.  By doing it deterministically,
+                    // files remain compatible
+                    if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != "Home")
+                    {
+                        id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
+                    }
+
+
+                    return new WorkspaceHeader() { ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FilePath = path };
+
+
+                }
+                catch (Exception ex)
+                {
+                    DynamoLogger.Instance.Log("There was an error opening the workbench.");
+                    DynamoLogger.Instance.Log(ex);
+                    Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
+
+                    if (dynSettings.Controller.Testing)
+                        Assert.Fail(ex.Message);
+
+                    return null;
+                }
+            }
+
             public double X { get; set; }
             public double Y { get; set; }
             public double Zoom { get; set; }
@@ -334,73 +398,12 @@ namespace Dynamo.Models
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspaceHeader.X, workspaceHeader.Y)));
 
             this.CurrentSpace = ws;
-        }
-
-        public WorkspaceHeader GetWorkspaceHeaderFromPath(string xmlPath)
-        {
-            try
-            {
-                var xmlDoc = new XmlDocument();
-                xmlDoc.Load(xmlPath);
-
-                string funName = null;
-                double cx = 0;
-                double cy = 0;
-                double zoom = 1.0;
-                string id = "";
-
-                // load the header
-                foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
-                {
-                    foreach (XmlAttribute att in node.Attributes)
-                    {
-                        if (att.Name.Equals("X"))
-                            cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals("Y"))
-                            cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals("zoom"))
-                            zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals("Name"))
-                            funName = att.Value;
-                        else if (att.Name.Equals("ID"))
-                        {
-                            id = att.Value;
-                        }
-                    }
-                }
-
-                // we have a dyf and it lacks an ID field, we need to assign it
-                // a deterministic guid based on its name.  By doing it deterministically,
-                // files remain compatible
-                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName))
-                {
-                    id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
-                }
-
-
-                return new WorkspaceHeader() {ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FilePath = xmlPath};
-
-
-            }
-            catch (Exception ex)
-            {
-                DynamoLogger.Instance.Log("There was an error opening the workbench.");
-                DynamoLogger.Instance.Log(ex);
-                Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
-                CleanWorkbench();
-
-                if (dynSettings.Controller.Testing)
-                    Assert.Fail(ex.Message);
-
-                return null;
-            }
-           
-        }        
+        }   
         
         internal bool OpenDefinition( string xmlPath )
         {
 
-            var workspaceInfo = GetWorkspaceHeaderFromPath(xmlPath);
+            var workspaceInfo = WorkspaceHeader.FromPath(xmlPath);
 
             if (workspaceInfo == null)
             {
