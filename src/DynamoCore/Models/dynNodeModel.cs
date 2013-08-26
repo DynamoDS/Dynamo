@@ -545,7 +545,6 @@ namespace Dynamo.Models
             }
             if (!_isDirty)
                 _isDirty = dirty;
-            return;
         }
 
         internal virtual INode BuildExpression(Dictionary<dynNodeModel, Dictionary<int, INode>> buildDict)
