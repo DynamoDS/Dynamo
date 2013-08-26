@@ -218,9 +218,11 @@ namespace Dynamo.Controls
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                var rtb = new RenderTargetBitmap((int)width,
-                                                 (int)height, 96, 96,
-                                                 System.Windows.Media.PixelFormats.Default);
+                var rtb = new RenderTargetBitmap( Math.Max(1, (int)width),
+                                                  Math.Max(1, (int)height), 
+                                                  96, 
+                                                  96,
+                                                  System.Windows.Media.PixelFormats.Default);
 
                 rtb.Render(control);
 
