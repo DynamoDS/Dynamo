@@ -1114,7 +1114,7 @@ namespace Dynamo.Utilities
             }
             else if (topMost.Count == 1)
             {
-                top = topMost[0].Item2.BuildExpression(buildDict);
+                top = topMost[0].Item2.Build(buildDict, topMost[0].Item1);
             }
             else
             {
