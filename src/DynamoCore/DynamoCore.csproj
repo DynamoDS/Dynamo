@@ -93,6 +93,26 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
     </Reference>
+    <Reference Include="ProtoCore">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
+    </Reference>
+     <Reference Include="ProtoInterface">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoImperative">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoImperative.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoAssociative">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoAssociative.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoScript">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoScript.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -112,6 +132,7 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
     <Compile Include="UI\Commands\Commands.cs" />
