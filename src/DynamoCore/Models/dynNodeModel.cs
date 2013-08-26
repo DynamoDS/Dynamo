@@ -799,8 +799,8 @@ namespace Dynamo.Models
                     OldValue = result;
                 }               
             }
-            else
-                OnEvaluate();
+            //else
+            //    OnEvaluate();
 
             return OldValue;
         }
