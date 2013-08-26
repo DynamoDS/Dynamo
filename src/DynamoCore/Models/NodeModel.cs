@@ -15,6 +15,8 @@ using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Core;
 using String = System.String;
 using Value = Dynamo.FScheme.Value;
+using ProtoCore.AST.AssociativeAST;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Models
 {
@@ -92,6 +94,8 @@ namespace Dynamo.Models
         private bool _interactionEnabled = true;
         private bool _isVisible;
         private bool _isUpstreamVisible;
+
+        private IdentifierNode _identifier = null;
 
         /// <summary>
         /// Returns whether this node represents a built-in or custom function.
@@ -416,6 +420,19 @@ namespace Dynamo.Models
             }
         }
 
+        public AssociativeNode AstIdentifier
+        {
+            get
+            {
+                if (_identifier == null)
+                {
+                    _identifier = new IdentifierNode();
+                    _identifier.Name = dynAstBuilder.StringConstants.kVarPrefix + GUID.ToString().Replace("-", string.Empty);
+                }
+                return _identifier;
+            }
+        }
+
         #endregion
 
         protected NodeModel()
@@ -735,6 +752,52 @@ namespace Dynamo.Models
 
             //And we're done
             return nodes[outPort];
+        }
+
+        protected virtual AssociativeNode CompileToAstNodeInternal(dynAstBuilder builder, 
+                                                                   List<AssociativeNode> inputAstNodes)
+        {
+            // For any dyn node which doesn't override this function, we treat
+            // them as custom nodes, therefore their evaluation is based on f#
+            // evaluation engine. This is done through evalutor.
+            return builder.BuildEvaluator(this, inputAstNodes);
+        }
+
+        public AssociativeNode CompileToAstNode(dynAstBuilder builder)
+        {
+            if (!RequiresRecalc || builder.ContainsAstNodes(GUID))
+            {
+                return this.AstIdentifier;
+            }
+
+            bool isPartiallyApplied = false;
+
+            // Recursively compile its inputs to ast nodes and add intermediate
+            // nodes to builder
+            List<AssociativeNode> inputAstNodes = new List<AssociativeNode>();
+            for (int index = 0; index < InPortData.Count; ++index)
+            {
+                Tuple<int, dynNodeModel> input;
+                if (!TryGetInput(index, out input))
+                {
+                    isPartiallyApplied = true;
+                    inputAstNodes.Add(null);
+                }
+                else
+                {
+                    inputAstNodes.Add(input.Item2.CompileToAstNode(builder));
+                }
+            }
+
+            // Build evaluatiion for this node. If the rhs is a partially
+            // applied function, then a function defintion node will be created.
+            // But in the end there is always an assignment:
+            //
+            //     AstIdentifier = ...;
+            var rhs = CompileToAstNodeInternal(builder, inputAstNodes);
+            builder.BuildEvaluation(this, rhs, isPartiallyApplied);
+
+            return AstIdentifier;
         }
 
         /// <summary>
