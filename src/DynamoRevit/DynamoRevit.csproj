@@ -203,6 +203,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DSCoreNodes\DSCoreNodes.csproj">
+      <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
+      <Name>DSCoreNodes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DSNodes\DSRevitNodes.csproj">
       <Project>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</Project>
       <Name>DSRevitNodes</Name>
