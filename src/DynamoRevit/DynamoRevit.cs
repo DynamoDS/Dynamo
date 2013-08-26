@@ -204,7 +204,6 @@ namespace Dynamo.Applications
         //}
     }
 
-
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     internal class DynamoRevit : IExternalCommand
@@ -214,7 +213,6 @@ namespace Dynamo.Applications
         private UIApplication m_revit;
         private DynamoController dynamoController;
         private static bool isRunning = false;
-
         public static double? dynamoViewX = null;
         public static double? dynamoViewY = null;
         public static double? dynamoViewWidth = null;
@@ -401,6 +399,7 @@ namespace Dynamo.Applications
 
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
+    [Journaling(JournalingMode.UsingCommandData)]
     internal class DynamoRevitTester : IExternalCommand
     {
         private UIDocument m_doc;
@@ -410,6 +409,9 @@ namespace Dynamo.Applications
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             DynamoLogger.Instance.StartLogging();
+
+            // Get the StringStringMap class which can write support into.
+            IDictionary<string, string> dataMap = revit.JournalData;
 
             try
             {
@@ -438,10 +440,10 @@ namespace Dynamo.Applications
                 //flag to run evalauation synchronously, helps to 
                 //avoid threading issues when testing.
                 dynamoController.Testing = true;
-                
+
                 //execute the tests
                 Results = new DynamoRevitTestRunner();
-                DynamoRevitTestResultsView resultsView = new DynamoRevitTestResultsView();
+                var resultsView = new DynamoRevitTestResultsView();
                 resultsView.DataContext = Results;
 
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
@@ -453,9 +455,9 @@ namespace Dynamo.Applications
                 //NUnit's SimpleTestRunner runs the tests on the main thread
                 //http://stackoverflow.com/questions/16216011/nunit-c-run-specific-tests-through-coding?rq=1
                 CoreExtensions.Host.InitializeService();
-                SimpleTestRunner runner = new SimpleTestRunner();
-                TestSuiteBuilder builder = new TestSuiteBuilder();
-                TestPackage package = new TestPackage("DynamoRevitTests", new List<string>() { testLoc });
+                var runner = new SimpleTestRunner();
+                var builder = new TestSuiteBuilder();
+                var package = new TestPackage("DynamoRevitTests", new List<string>() { testLoc });
                 runner.Load(package);
                 TestSuite suite = builder.Build(package);
                 TestFixture fixture = null;
@@ -480,6 +482,22 @@ namespace Dynamo.Applications
 
                 resultsView.ShowDialog();
 
+                //for testing
+                //if the journal file contains data
+                //bool canReadData = (0 < dataMap.Count) ? true : false;
+                //if (canReadData)
+                //{
+                //    //revit.Application.OpenAndActivateDocument(dataMap["dynamoModel"]);
+                //    //dynamoController.DynamoViewModel.OpenCommand.Execute(dataMap["dynamoGraph"]);
+                //    //dynamoController.DynamoViewModel.RunExpressionCommand.Execute(null);
+
+                //    TestMethod t = FindTestByName(fixture, dataMap["dynamoTestName"]);
+                //    if (t != null)
+                //    {
+                //        Results.Results.Add(new DynamoRevitTest(t as TestMethod));
+                //        Results.RunAllTests(null);
+                //    }
+                //}
             }
             catch (Exception ex)
             {
@@ -511,6 +529,21 @@ namespace Dynamo.Applications
             }
 
             fixture = null;
+        }
+    
+        private TestMethod FindTestByName(TestFixture fixture, string name)
+        {
+            foreach (var t in fixture.Tests)
+            {
+                if (t is TestMethod)
+                {
+                    if ((t as TestMethod).TestName.Name == name)
+                    {
+                        return t as TestMethod;
+                    }
+                }      
+            }
+            return null;
         }
     }
 

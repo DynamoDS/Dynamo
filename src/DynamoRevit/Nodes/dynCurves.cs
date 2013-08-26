@@ -104,13 +104,13 @@ namespace Dynamo.Nodes
 
     [NodeName("Reference Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Creates a model curve.")]
+    [NodeDescription("Creates a reference curve.")]
     public class dynReferenceCurve : dynRevitTransactionNodeWithOneOutput
     {
         public dynReferenceCurve()
         {
             InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("mc", "Model Curve", typeof(Value.Container)));
+            OutPortData.Add(new PortData("rc", "Reference Curve", typeof(Value.Container)));
 
             RegisterAllPorts();
         }

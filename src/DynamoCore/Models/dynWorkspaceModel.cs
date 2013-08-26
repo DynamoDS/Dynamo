@@ -337,6 +337,7 @@ namespace Dynamo.Models
 
         public virtual void Modified()
         {
+            //DynamoLogger.Instance.Log("Workspace modified.");
             if (OnModified != null)
                 OnModified();
         }
@@ -351,7 +352,7 @@ namespace Dynamo.Models
             return Nodes.Where(
                 x =>
                     x.OutPortData.Any()
-                    && x.OutPorts.All(y => y.Connectors.All(c => c.End.Owner is dynOutput)));
+                    && x.OutPorts.Any(y => !y.Connectors.Any() || y.Connectors.Any(c => c.End.Owner is dynOutput)));
         }
 
         public event EventHandler Updated;
@@ -501,9 +502,6 @@ namespace Dynamo.Models
         }
 
         #endregion
-
-
-
     }
 
     internal static class WorkspaceHelpers
@@ -514,8 +512,6 @@ namespace Dynamo.Models
 
     public class FuncWorkspace : dynWorkspaceModel
     {
-
-
         #region Contructors
 
         public FuncWorkspace()
@@ -560,8 +556,9 @@ namespace Dynamo.Models
             base.Modified();
 
             //add a check if any loaded defs match this workspace
-            if (dynSettings.Controller.CustomNodeManager.GetLoadedDefinitions().All(x => x.Workspace != this))
-                return;
+            // unnecessary given the next lines --SJE
+            //if (dynSettings.Controller.CustomNodeManager.GetLoadedDefinitions().All(x => x.Workspace != this))
+            //    return;
 
             var def =
                 dynSettings.Controller.CustomNodeManager
@@ -612,10 +609,17 @@ namespace Dynamo.Models
             var controller = dynSettings.Controller;
             if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)
             {
+                //DynamoLogger.Instance.Log("Running Dynamically");
                 if (!controller.Running)
+                {
+                    //DynamoLogger.Instance.Log("Nothing currently running, now running.");
                     controller.RunExpression(false);
+                }
                 else
+                {
+                    //DynamoLogger.Instance.Log("Run in progress, cancelling then running.");
                     controller.QueueRun();
+                }
             }
         }
 
