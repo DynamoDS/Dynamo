@@ -169,7 +169,7 @@ namespace Dynamo.Controls
                         break;
 
                     case DisplayUnitType.DUT_FRACTIONAL_INCHES:
-                        lengthObj.FromDisplayString(value.ToString() + "'", DynamoUnitDisplayType.FRACTIONAL_INCHES);
+                        lengthObj.FromDisplayString(value.ToString() + "\"", DynamoUnitDisplayType.FRACTIONAL_INCHES);
                         break;
 
                     case DisplayUnitType.DUT_FEET_FRACTIONAL_INCHES:
