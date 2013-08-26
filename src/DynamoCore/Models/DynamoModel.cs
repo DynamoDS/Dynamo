@@ -791,13 +791,13 @@ namespace Dynamo.Models
             foreach (dynNodeModel el in elements)
             {
                 el.DisableReporting();
-                try
-                {
-                    el.Destroy();
-                }
-                catch
-                {
-                }
+                //try
+                //{
+                //    el.Destroy();
+                //}
+                //catch
+                //{
+                //}
             }
 
             foreach (dynNodeModel el in elements)
