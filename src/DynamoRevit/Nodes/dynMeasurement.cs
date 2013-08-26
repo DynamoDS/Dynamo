@@ -19,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Data;
 using System.Xml;
 using Autodesk.Revit.DB;
+using DSCoreNodes;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
@@ -28,7 +29,6 @@ using Dynamo.Controls;
 using Dynamo.Measure;
 using Curve = Autodesk.Revit.DB.Curve;
 using Vector = Autodesk.LibG.Vector;
-using DSRevitNodes;
 
 namespace Dynamo.Nodes
 {
@@ -154,7 +154,7 @@ namespace Dynamo.Nodes
             var start = curve.get_EndParameter(0);
             var end = curve.get_EndParameter(1);
 
-            return Value.NewContainer(DSRevitNodes.Domain.ByMinimumAndMaximum(start, end));
+            return Value.NewContainer(DSCoreNodes.Domain.ByMinimumAndMaximum(start, end));
         }
     }
 
