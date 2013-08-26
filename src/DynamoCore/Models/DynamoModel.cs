@@ -377,7 +377,9 @@ namespace Dynamo.Models
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
 
+
                 return new WorkspaceHeader() {ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FilePath = xmlPath};
+
 
             }
             catch (Exception ex)
@@ -511,13 +513,13 @@ namespace Dynamo.Models
             foreach (dynNodeModel el in elements)
             {
                 el.DisableReporting();
-                try
-                {
-                    el.Destroy();
-                }
-                catch
-                {
-                }
+                //try
+                //{
+                //    el.Destroy();
+                //}
+                //catch
+                //{
+                //}
             }
 
             foreach (dynNodeModel el in elements)

@@ -13,7 +13,6 @@
 //limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
@@ -21,13 +20,15 @@ using System.Windows.Data;
 using System.Xml;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Controls;
 using Dynamo.Measure;
+using Curve = Autodesk.Revit.DB.Curve;
+using Vector = Autodesk.LibG.Vector;
+using DSRevitNodes;
 
 namespace Dynamo.Nodes
 {
@@ -76,25 +77,21 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Surface Domain")]
+    [NodeName("Get Surface Domain")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Measure the domain of a surface in U and V.")]
-    public class dynSurfaceDomain : dynNodeModel
+    public class dynSurfaceDomain : dynNodeWithOneOutput
     {
         public dynSurfaceDomain()
         {
             InPortData.Add(new PortData("f", "The surface whose domain you wish to calculate (Reference).", typeof(Value.Container)));//Ref to a face of a form
-            OutPortData.Add(new PortData("min", "The minimum of the domain's bounding box.", typeof(Value.List)));
-            OutPortData.Add(new PortData("max", "The maximum of the domain's bounding box.", typeof(Value.List)));
-            OutPortData.Add(new PortData("u span", "The U dimension of the domain.", typeof(Value.List)));
-            OutPortData.Add(new PortData("v span", "The V dimension of the domain.", typeof(Value.List)));
+            OutPortData.Add(new PortData("domain", "The surface's domain.", typeof(Value.List)));
 
             RegisterAllPorts();
         }
 
-        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            //FSharpList<Value> result = FSharpList<Value>.Empty;
             BoundingBoxUV bbox = null;
 
             object arg0 = ((Value.Container)args[0]).Item;
@@ -112,77 +109,52 @@ namespace Dynamo.Nodes
                 bbox = f.GetBoundingBox();
             }
 
-            //result = FSharpList<Value>.Cons(
-            //               Value.NewNumber(bbox.Max.V - bbox.Min.V),
-            //               result);
-            //result = FSharpList<Value>.Cons(
-            //               Value.NewNumber(bbox.Max.U - bbox.Min.U),
-            //               result);
-            //result = FSharpList<Value>.Cons(
-            //               Value.NewContainer(bbox.Max),
-            //               result);
-            //result = FSharpList<Value>.Cons(
-            //               Value.NewContainer(bbox.Min),
-            //               result);
-            
-            ////Fin
-            //return Value.NewList(result);
+            var min = Vector.by_coordinates(bbox.Min.U, bbox.Min.V);
+            var max = Vector.by_coordinates(bbox.Max.U, bbox.Max.V);
 
-            outPuts[OutPortData[3]] = Value.NewNumber(bbox.Max.V - bbox.Min.V);
-            outPuts[OutPortData[2]] = Value.NewNumber(bbox.Max.U - bbox.Min.U);
-            outPuts[OutPortData[1]] = Value.NewContainer(bbox.Max);
-            outPuts[OutPortData[0]] = Value.NewContainer(bbox.Min);
+            return Value.NewContainer(Domain2D.ByMinimumAndMaximum(min, max));
         }
     }
 
-    [NodeName("Curve Domain")]
+    [NodeName("Get Curve Domain")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Measure the domain of a curve.")]
-    public class dynCurveDomain : dynNodeModel
+    public class dynCurveDomain : dynNodeWithOneOutput
     {
         public dynCurveDomain()
         {
             InPortData.Add(new PortData("curve", "The curve whose domain you wish to calculate.", typeof(Value.Container)));
-            
-            OutPortData.Add(new PortData("start", "The domain start.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("end", "The domain end.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("length", "The domain length.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("domain", "The curve's domain.", typeof(Value.Number)));
 
             RegisterAllPorts();
         }
 
-        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            //FSharpList<Value> result = FSharpList<Value>.Empty;
             var curveRef = ((Value.Container)args[0]).Item as Reference;
 
-            Curve curve = curveRef == null
-                              ? (Curve) ((Value.Container)args[0]).Item
+            Curve curve = null;
+
+            var el = ((Value.Container) args[0]).Item as CurveElement;
+            if (el != null)
+            {
+                var crvEl = el;
+                curve = crvEl.GeometryCurve;
+            }
+            else
+            {
+                curve = curveRef == null
+                              ? (Curve)((Value.Container)args[0]).Item
                               : (Curve)
                                 dynRevitSettings.Doc.Document.GetElement(curveRef.ElementId)
                                                 .GetGeometryObjectFromReference(curveRef);
+            }
+            
 
             var start = curve.get_EndParameter(0);
             var end = curve.get_EndParameter(1);
-            var length = Math.Abs(end-start);
 
-            //result = FSharpList<Value>.Cons(
-            //               Value.NewNumber(length),
-            //               result);
-            //result = FSharpList<Value>.Cons(
-            //               Value.NewNumber(end),
-            //               result);
-            //result = FSharpList<Value>.Cons(
-            //               Value.NewNumber(start),
-            //               result);
-
-            
-            ////Fin
-            //return Value.NewList(result);
-            outPuts[OutPortData[2]] = Value.NewNumber(length);
-            outPuts[OutPortData[1]] = Value.NewNumber(end);
-            outPuts[OutPortData[0]] = Value.NewNumber(start);
-
+            return Value.NewContainer(DSRevitNodes.Domain.ByMinimumAndMaximum(start, end));
         }
     }
 
