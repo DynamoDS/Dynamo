@@ -301,29 +301,49 @@ namespace Dynamo.Models
             return true;
         }
 
-        internal bool OpenDefinition(string xmlPath)
+        public class WorkspaceHeader
         {
-            return OpenDefinition(
-                xmlPath,
-                new Dictionary<Guid, HashSet<FunctionDefinition>>(),
-                new Dictionary<Guid, HashSet<Guid>>());
+            public double X { get; set; }
+            public double Y { get; set; }
+            public double Zoom { get; set; }
+            public string Name { get; set; }
+            public string ID { get; set; }
+            public string FilePath { get; set; }
+
+            public bool IsCustomNodeWorkspace()
+            {
+                return !String.IsNullOrEmpty(ID);
+            }
         }
 
-        // PB: This is deprecated, can't do it now, though...
-        internal bool OpenDefinition(
-            string xmlPath,
-            Dictionary<Guid, HashSet<FunctionDefinition>> children,
-            Dictionary<Guid, HashSet<Guid>> parents)
+        internal void OpenCustomNodeAndFocus( WorkspaceHeader workspaceHeader )
+        {
+            // load custom node
+            var manager = dynSettings.Controller.CustomNodeManager;
+            var info = manager.AddFileToPath(workspaceHeader.FilePath);
+            var funcDef = manager.GetFunctionDefinition(info.Guid);
+            var ws = funcDef.Workspace;
+            ws.Zoom = workspaceHeader.Zoom;
+
+            if (!this.Workspaces.Contains(ws))
+            {
+                this.Workspaces.Add(ws);
+            }
+
+            var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == ws);
+            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspaceHeader.X, workspaceHeader.Y)));
+
+            this.CurrentSpace = ws;
+        }
+
+        public WorkspaceHeader GetWorkspaceHeaderFromPath(string xmlPath)
         {
             try
             {
-                #region read xml file
-
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(xmlPath);
 
                 string funName = null;
-                string category = "";
                 double cx = 0;
                 double cy = 0;
                 double zoom = 1.0;
@@ -342,8 +362,6 @@ namespace Dynamo.Models
                             zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("Name"))
                             funName = att.Value;
-                        else if (att.Name.Equals("Category"))
-                            category = att.Value;
                         else if (att.Name.Equals("ID"))
                         {
                             id = att.Value;
@@ -359,308 +377,9 @@ namespace Dynamo.Models
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
 
-                #endregion
 
-                //If there is no function name, then we are opening a home definition
-                if (funName == null || funName == "Home")
-                {
-                    //View the home workspace, then open the bench file
-                    if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
-                        ViewHomeWorkspace();
+                return new WorkspaceHeader() {ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FilePath = xmlPath};
 
-                    dynSettings.Controller.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(xmlPath));
-                    dynSettings.Controller.CustomNodeManager.UpdateSearchPath();
-
-                    return OpenWorkspace(xmlPath);
-                }
-                else if (dynSettings.Controller.CustomNodeManager.Contains(funName))
-                {
-                    DynamoLogger.Instance.Log("ERROR: Could not load definition for \"" + funName +
-                              "\", a node with this name already exists.");
-                    return false;
-                }
-
-                DynamoLogger.Instance.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
-
-                //we're using a default description here
-                FunctionDefinition def = NewFunction(
-                    Guid.Parse(id),
-                    funName,
-                    category.Length > 0
-                        ? category
-                        : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES,
-                    "",
-                    false, cx, cy
-                    );
-
-                dynWorkspaceModel ws = def.Workspace;
-
-                //this.Log("Opening definition " + xmlPath + "...");
-
-                XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
-                XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
-                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("dynNotes");
-
-                XmlNode elNodesList = elNodes[0];
-                XmlNode cNodesList = cNodes[0];
-                XmlNode nNodesList = nNodes[0];
-
-                var dependencies = new Stack<Guid>();
-
-                #region instantiate nodes
-
-                //if there is any problem loading a node, then
-                //add the node's guid to the bad nodes collection
-                //so we can avoid attempting to make connections to it
-                List<Guid> badNodes = new List<Guid>();
-
-                foreach (XmlNode elNode in elNodesList.ChildNodes)
-                {
-                    XmlAttribute typeAttrib = elNode.Attributes[0];
-                    XmlAttribute guidAttrib = elNode.Attributes[1];
-                    XmlAttribute nicknameAttrib = elNode.Attributes[2];
-                    XmlAttribute xAttrib = elNode.Attributes[3];
-                    XmlAttribute yAttrib = elNode.Attributes[4];
-
-                    XmlAttribute lacingAttrib = null;
-                    if (elNode.Attributes.Count > 5)
-                    {
-                        lacingAttrib = elNode.Attributes[5];
-                    }
-
-                    string typeName = typeAttrib.Value;
-
-                    string oldNamespace = "Dynamo.Elements.";
-                    if (typeName.StartsWith(oldNamespace))
-                        typeName = "Dynamo.Nodes." + typeName.Remove(0, oldNamespace.Length);
-
-                    //test the GUID to confirm that it is non-zero
-                    //if it is zero, then we have to fix it
-                    //this will break the connectors, but it won't keep
-                    //propagating bad GUIDs
-                    var guid = new Guid(guidAttrib.Value);
-                    if (guid == Guid.Empty)
-                    {
-                        guid = Guid.NewGuid();
-                    }
-
-                    string nickname = nicknameAttrib.Value;
-
-                    double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
-                    double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
-
-                    //Type t = Type.GetType(typeName);
-                    TypeLoadData tData;
-                    Type t;
-
-                    if (!dynSettings.Controller.BuiltInTypesByName.TryGetValue(typeName, out tData))
-                    {
-                        //try and get a system type by this name
-                        t = Type.GetType(typeName);
-
-                        //if we still can't find the type, try the also known as attributes
-                        if (t == null)
-                        {
-                            //try to get the also known as values
-                            foreach (KeyValuePair<string, TypeLoadData> kvp in dynSettings.Controller.BuiltInTypesByName)
-                            {
-                                var akaAttribs = kvp.Value.Type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), false);
-                                if (akaAttribs.Count() > 0)
-                                {
-                                    if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
-                                    {
-                                        DynamoLogger.Instance.Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key, typeName));
-                                        t = kvp.Value.Type;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (t == null)
-                        {
-                            DynamoLogger.Instance.Log("Could not load node of type: " + typeName);
-                            DynamoLogger.Instance.Log("Loading will continue but nodes might be missing from your workflow.");
-
-                            //return false;
-                            badNodes.Add(guid);
-                            continue;
-                        }
-                    }
-                    else
-                        t = tData.Type;
-
-                    dynNodeModel el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws);
-
-                    if (lacingAttrib != null)
-                    {
-                        //don't set the lacing strategy if the type
-                        //wants it disabled
-                        if (el.ArgumentLacing != LacingStrategy.Disabled)
-                        {
-                            LacingStrategy lacing = LacingStrategy.First;
-                            Enum.TryParse(lacingAttrib.Value, out lacing);
-                            el.ArgumentLacing = lacing;
-                        }
-                    }
-
-                    el.DisableReporting();
-                    el.Load(elNode);
-
-                    if (el is dynFunction)
-                    {
-                        var fun = el as dynFunction;
-
-                        // we've found a custom node, we need to attempt to load its guid.  
-                        // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
-                        // deterministically
-                        Guid funId;
-                        try
-                        {
-                            funId = Guid.Parse(fun.Symbol);
-                        }
-                        catch
-                        {
-                            funId = GuidUtility.Create(GuidUtility.UrlNamespace, nicknameAttrib.Value);
-                            fun.Symbol = funId.ToString();
-                        }
-
-                        if (dynSettings.Controller.CustomNodeManager.IsInitialized(funId))
-                            fun.Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
-                        else
-                            dependencies.Push(funId);
-                    }
-                }
-
-                #endregion
-
-                //Bench.WorkBench.UpdateLayout();
-                OnRequestLayoutUpdate(this, EventArgs.Empty);
-
-                #region instantiate connectors
-
-                foreach (XmlNode connector in cNodesList.ChildNodes)
-                {
-                    XmlAttribute guidStartAttrib = connector.Attributes[0];
-                    XmlAttribute intStartAttrib = connector.Attributes[1];
-                    XmlAttribute guidEndAttrib = connector.Attributes[2];
-                    XmlAttribute intEndAttrib = connector.Attributes[3];
-                    XmlAttribute portTypeAttrib = connector.Attributes[4];
-
-                    var guidStart = new Guid(guidStartAttrib.Value);
-                    var guidEnd = new Guid(guidEndAttrib.Value);
-                    int startIndex = Convert.ToInt16(intStartAttrib.Value);
-                    int endIndex = Convert.ToInt16(intEndAttrib.Value);
-                    int portType = Convert.ToInt16(portTypeAttrib.Value);
-
-                    //find the elements to connect
-                    dynNodeModel start = null;
-                    dynNodeModel end = null;
-
-                    if (badNodes.Contains(guidStart) || badNodes.Contains(guidEnd))
-                        continue;
-
-                    foreach (dynNodeModel e in ws.Nodes)
-                    {
-                        if (e.GUID == guidStart)
-                        {
-                            start = e;
-                        }
-                        else if (e.GUID == guidEnd)
-                        {
-                            end = e;
-                        }
-                        if (start != null && end != null)
-                        {
-                            break;
-                        }
-                    }
-
-                    try
-                    {
-                        if (start != null && end != null && start != end)
-                        {
-                            var newConnector = dynConnectorModel.Make(
-                                start, end,
-                                startIndex, endIndex,
-                                portType);
-
-                            ws.Connectors.Add(newConnector);
-                        }
-                    }
-                    catch
-                    {
-                        DynamoLogger.Instance.Log(string.Format("ERROR : Could not create connector between {0} and {1}.", start.GUID, end.GUID));
-                    }
-                }
-
-                #endregion
-
-                #region instantiate notes
-
-                if (nNodesList != null)
-                {
-                    foreach (XmlNode note in nNodesList.ChildNodes)
-                    {
-                        XmlAttribute textAttrib = note.Attributes[0];
-                        XmlAttribute xAttrib = note.Attributes[1];
-                        XmlAttribute yAttrib = note.Attributes[2];
-
-                        string text = textAttrib.Value;
-                        double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
-                        double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
-
-                        var paramDict = new Dictionary<string, object>();
-                        paramDict.Add("x", x);
-                        paramDict.Add("y", y);
-                        paramDict.Add("text", text);
-                        paramDict.Add("workspace", ws);
-                        //DynamoCommands.AddNoteCmd.Execute(paramDict);
-                        //dynSettings.Controller.DynamoViewModel.AddNoteCommand.Execute(paramDict);
-                        AddNote(paramDict);
-                    }
-                }
-
-                #endregion
-
-                foreach (dynNodeModel e in ws.Nodes)
-                    e.EnableReporting();
-
-                //DynamoModel.hideWorkspace(ws);
-
-                ws.FilePath = xmlPath;
-
-                bool canLoad = true;
-
-                //For each node this workspace depends on...
-                foreach (Guid dep in dependencies)
-                {
-                    canLoad = false;
-                    //Dep -> Ws
-                    if (children.ContainsKey(dep))
-                        children[dep].Add(def);
-                    else
-                        children[dep] = new HashSet<FunctionDefinition> { def };
-
-                    //Ws -> Deps
-                    if (parents.ContainsKey(def.FunctionId))
-                        parents[def.FunctionId].Add(dep);
-                    else
-                        parents[def.FunctionId] = new HashSet<Guid> { dep };
-                }
-
-                if (canLoad)
-                    SaveFunction(def, false);
-
-                //TODO: UI Refactor - This method seems to be no longer available. Confirm pacakage headers are being loaded.
-                //dynSettings.Controller.PackageManagerClient.LoadPackageHeader(def, funName);
-
-                nodeWorkspaceWasLoaded(def, children, parents);
-
-                //set the zoom and trigger events
-                //to get the view to scale iteself
-                ws.Zoom = zoom;
-                var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == ws);
-                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 
             }
             catch (Exception ex)
@@ -673,10 +392,38 @@ namespace Dynamo.Models
                 if (dynSettings.Controller.Testing)
                     Assert.Fail(ex.Message);
 
+                return null;
+            }
+           
+        }        
+        
+        internal bool OpenDefinition( string xmlPath )
+        {
+
+            var workspaceInfo = GetWorkspaceHeaderFromPath(xmlPath);
+
+            if (workspaceInfo == null)
+            {
                 return false;
             }
 
-            return true;
+            if (workspaceInfo.IsCustomNodeWorkspace())
+            {
+                OpenCustomNodeAndFocus(workspaceInfo);
+                return true;
+            }
+            else
+            {
+                //View the home workspace, then open the bench file
+                if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
+                    ViewHomeWorkspace();
+
+                dynSettings.Controller.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(xmlPath));
+                dynSettings.Controller.CustomNodeManager.UpdateSearchPath();
+
+                return OpenWorkspace(xmlPath);
+            }
+
         }
 
         /// <summary>
@@ -687,31 +434,6 @@ namespace Dynamo.Models
         {
             CurrentSpace = HomeSpace;
             CurrentSpace.OnDisplayed();
-        }
-
-        private void nodeWorkspaceWasLoaded(
-            FunctionDefinition def,
-            Dictionary<Guid, HashSet<FunctionDefinition>> children,
-            Dictionary<Guid, HashSet<Guid>> parents)
-        {
-            //If there were some workspaces that depended on this node...
-            if (children.ContainsKey(def.FunctionId))
-            {
-                //For each workspace...
-                foreach (FunctionDefinition child in children[def.FunctionId])
-                {
-                    //Nodes the workspace depends on
-                    HashSet<Guid> allParents = parents[child.FunctionId];
-                    //Remove this workspace, since it's now loaded.
-                    allParents.Remove(def.FunctionId);
-                    //If everything the node depends on has been loaded...
-                    if (!allParents.Any())
-                    {
-                        SaveFunction(child, false);
-                        nodeWorkspaceWasLoaded(child, children, parents);
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -1654,7 +1376,7 @@ namespace Dynamo.Models
             {
                 dynFunction func;
 
-                if (dynSettings.Controller.CustomNodeManager.GetNodeInstance(dynSettings.Controller, Guid.Parse(name), out func))
+                if (dynSettings.Controller.CustomNodeManager.GetNodeInstance(Guid.Parse(name), out func))
                 {
                     result = func;
                 }
