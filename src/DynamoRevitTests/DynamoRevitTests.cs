@@ -116,11 +116,11 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void CanOpenReferencePointTest()
+        public void ReferencePoint()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string testPath = Path.Combine(_testPath, "ReferencePointTest.dyn");
+            string testPath = Path.Combine(_testPath, "ReferencePoint.dyn");
             model.Open(testPath);
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
             
@@ -529,7 +529,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void ModelCurveNode()
+        public void ModelCurve()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -564,7 +564,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void ReferenceCurveNode()
+        public void ReferenceCurve()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -617,7 +617,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void CurveByPointsNode()
+        public void CurveByPoints()
         {
             var model = dynSettings.Controller.DynamoModel;
 
