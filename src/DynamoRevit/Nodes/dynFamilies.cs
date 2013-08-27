@@ -1105,7 +1105,7 @@ namespace Dynamo.Nodes
             }
             else if (p.StorageType == StorageType.ElementId)
             {
-                p.Set(((Element)((Value.Container)valueExpr).Item).Id);
+                p.Set((ElementId)((Value.Container)valueExpr).Item);
             }
             else if (valueExpr.IsNumber)
             {
