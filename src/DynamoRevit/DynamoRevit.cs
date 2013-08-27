@@ -448,7 +448,7 @@ namespace Dynamo.Applications
 
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
                 string assLocation = Assembly.GetExecutingAssembly().Location;
-                FileInfo fi = new FileInfo(assLocation);
+                var fi = new FileInfo(assLocation);
                 string testLoc = Path.Combine(fi.DirectoryName, @"DynamoRevitTester.dll");
 
                 //Tests must be executed on the main thread in order to access the Revit API.
@@ -494,8 +494,11 @@ namespace Dynamo.Applications
                     TestMethod t = FindTestByName(fixture, dataMap["dynamoTestName"]);
                     if (t != null)
                     {
-                        Results.Results.Add(new DynamoRevitTest(t as TestMethod));
-                        Results.RunAllTests(null);
+                        //Results.Results.Add(new DynamoRevitTest(t as TestMethod));
+                        //Results.RunAllTests(null);
+                        var dynTest = new DynamoRevitTest(t as TestMethod);
+                        dynTest.Run(null);
+                        dynTest.Save();
                     }
                 }
             }
@@ -652,6 +655,22 @@ namespace Dynamo.Applications
         {
             return true;
         }
+
+        /// <summary>
+        /// Serialize the result of this test to a file.
+        /// Test results are saved in the same directory as the current model.
+        /// </summary>
+        public void Save()
+        {
+            var x = new XmlSerializer(this.GetType());
+            string resultsDir = Path.GetDirectoryName(dynRevitSettings.Doc.Document.PathName);
+                string resultsPath = Path.Combine(resultsDir,
+                                                  string.Format("{0}_result.xml", this.TestName));
+            using (TextWriter tw = new StreamWriter(resultsPath))
+            {
+                x.Serialize(tw, this);
+            }
+        }
     }
 
     //http://sqa.stackexchange.com/questions/2880/nunit-global-error-method-event-for-handling-exceptions
@@ -800,7 +819,7 @@ namespace Dynamo.Applications
             try
             {
                 //serialize the test results to a file
-                System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(Results.GetType());
+                var x = new System.Xml.Serialization.XmlSerializer(Results.GetType());
                 string resultsDir = Path.GetDirectoryName(DynamoLogger.Instance.LogPath);
                 string resultsPath = Path.Combine(resultsDir,
                                                   string.Format("dynamoRevitTests_{0}.xml", Guid.NewGuid().ToString()));
