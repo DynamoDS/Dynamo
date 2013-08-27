@@ -272,8 +272,6 @@ namespace Dynamo.Models
 
         internal void PostUIActivation(object parameter)
         {
-            //DynamoLoader.LoadCustomNodes(dynSettings.Controller.CustomNodeManager, 
-            //    dynSettings.Controller.SearchViewModel);
 
             DynamoLoader.LoadCustomNodes();
 
