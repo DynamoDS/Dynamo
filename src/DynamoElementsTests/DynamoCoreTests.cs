@@ -129,7 +129,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
         }
 
-
         [Test]
         public void CanAddANodeByName()
         {

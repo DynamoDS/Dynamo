@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DSRevitNodes
+namespace DSCoreNodes
 {
     /// <summary>
     /// Base class for all node objects.

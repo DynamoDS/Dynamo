@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -17,7 +15,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using Binding = System.Windows.Data.Binding;
-using Brush = System.Windows.Media.Brush;
 using Color = System.Windows.Media.Color;
 using ComboBox = System.Windows.Controls.ComboBox;
 using DialogResult = System.Windows.Forms.DialogResult;
@@ -768,133 +765,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    public class dynTextBox : TextBox
-    {
-        public event Action OnChangeCommitted;
-
-        private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255, 255, 255));
-        private static Brush highlighted = new SolidColorBrush(System.Windows.Media.Color.FromArgb(200, 255, 255, 255));
-
-        public dynTextBox()
-        {
-            //turn off the border
-            Background = clear;
-            BorderThickness = new Thickness(1);
-            GotFocus += OnGotFocus;
-            LostFocus += OnLostFocus;
-            LostKeyboardFocus += OnLostFocus;
-        }
-
-        private void OnLostFocus(object sender, RoutedEventArgs routedEventArgs)
-        {
-            Background = clear;
-        }
-
-        private void OnGotFocus(object sender, RoutedEventArgs routedEventArgs)
-        {
-            Background = highlighted;
-        }
-
-        private bool numeric;
-        public bool IsNumeric
-        {
-            get { return numeric; }
-            set
-            {
-                numeric = value;
-                if (value && Text.Length > 0)
-                {
-                    Text = dynSettings.RemoveChars(
-                       Text,
-                       Text.ToCharArray()
-                          .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
-                          .Select(c => c.ToString())
-                    );
-                }
-            }
-        }
-
-        private bool pending;
-        public bool Pending
-        {
-            get { return pending; }
-            set
-            {
-                if (value)
-                {
-                    FontStyle = FontStyles.Italic;
-                }
-                else
-                {
-                    FontStyle = FontStyles.Normal;
-                }
-                pending = value;
-            }
-        }
-
-        public void Commit()
-        {
-            var expr = GetBindingExpression(TextProperty);
-            if (expr != null)
-                expr.UpdateSource();
-
-            if (OnChangeCommitted != null)
-            {
-                OnChangeCommitted();
-            }
-            Pending = false;
-
-            //dynSettings.Bench.mainGrid.Focus();
-        }
-
-        new public string Text
-        {
-            get { return base.Text; }
-            set
-            {
-                base.Text = value;
-                Commit();
-            }
-        }
-
-        private bool shouldCommit()
-        {
-            return !dynSettings.Controller.DynamoViewModel.DynamicRunEnabled;
-        }
-
-        protected override void OnTextChanged(TextChangedEventArgs e)
-        {
-            Pending = true;
-
-            if (IsNumeric)
-            {
-                var p = CaretIndex;
-
-                //base.Text = dynSettings.RemoveChars(
-                //   Text,
-                //   Text.ToCharArray()
-                //      .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
-                //      .Select(c => c.ToString())
-                //);
-
-                CaretIndex = p;
-            }
-        }
-
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == Key.Return || e.Key == Key.Enter)
-            {
-                dynSettings.ReturnFocusToSearch();
-            }
-        }
-
-        protected override void OnLostFocus(RoutedEventArgs e)
-        {
-            Commit();
-        }
-    }
-
     public class dynStringTextBox : dynTextBox
     {
 
@@ -962,9 +832,9 @@ namespace Dynamo.Nodes
 
         public dynImageFileReader()
         {
-
             InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
             InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
+            OutPortData.Add(new PortData("contents", "File contents", typeof(FScheme.Value.List)));
             RegisterAllPorts();
         }
 

@@ -144,11 +144,10 @@ namespace Dynamo.Utilities
             this.loadedNodes[id] = def;
         }
 
-
         /// <summary>
-        ///     Import a dyf file for eventual initialization
+        ///     Import a dyf file for eventual initialization.  
         /// </summary>
-        /// <returns>False if we failed to get data from the path, otherwise true</returns>
+        /// <returns>null if we failed to get data from the path, otherwise the CustomNodeInfo object for the </returns>
         public CustomNodeInfo AddFileToPath(string file)
         {
             Guid guid;
@@ -395,7 +394,7 @@ namespace Dynamo.Utilities
             else
             {
                 FunctionDefinition def;
-                if (this.GetDefinitionFromPath(id, dynSettings.Controller, out def))
+                if (this.GetDefinitionFromPath(id, out def))
                 {
                     return def;
                 }
@@ -490,7 +489,7 @@ namespace Dynamo.Utilities
                 return false;
             }
 
-            return this.GetNodeInstance(controller, GetGuidFromName(name), out result);
+            return this.GetNodeInstance(GetGuidFromName(name), out result);
 
         }
 
@@ -501,8 +500,10 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="environment">The environment from which to get the </param>
         /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
-        public bool GetNodeInstance(DynamoController controller, Guid guid, out dynFunction result)
+        public bool GetNodeInstance(Guid guid, out dynFunction result)
         {
+            var controller = dynSettings.Controller;
+
             if (!this.Contains(guid))
             {
                 result = null;
@@ -512,7 +513,7 @@ namespace Dynamo.Utilities
             FunctionDefinition def = null;
             if (!this.IsInitialized(guid))
             {
-                if (!GetDefinitionFromPath(guid, controller, out def))
+                if (!GetDefinitionFromPath(guid, out def))
                 {
                     result = null;
                     return false;
@@ -671,8 +672,10 @@ namespace Dynamo.Utilities
         /// <param name="controller">Reference to the calling controller</param>
         /// <param name="def">The resultant function definition</param>
         /// <returns></returns>
-        private bool GetDefinitionFromPath(Guid funcDefGuid, DynamoController controller, out FunctionDefinition def)
+        private bool GetDefinitionFromPath(Guid funcDefGuid, out FunctionDefinition def)
         {
+            var controller = dynSettings.Controller;
+
             try
             {
                 var xmlPath = GetNodePath(funcDefGuid);
@@ -973,18 +976,15 @@ namespace Dynamo.Utilities
                         XmlAttribute yAttrib = note.Attributes[2];
 
                         string text = textAttrib.Value;
-                        double x = Convert.ToDouble(xAttrib.Value);
-                        double y = Convert.ToDouble(yAttrib.Value);
-
-                        //dynNoteView n = Bench.AddNote(text, x, y, ws);
-                        //Bench.AddNote(text, x, y, ws);
+                        double x = Convert.ToDouble(xAttrib.Value, CultureInfo.InvariantCulture);
+                        double y = Convert.ToDouble(yAttrib.Value, CultureInfo.InvariantCulture);
 
                         var paramDict = new Dictionary<string, object>();
                         paramDict.Add("x", x);
                         paramDict.Add("y", y);
                         paramDict.Add("text", text);
                         paramDict.Add("workspace", ws);
-                        //dynSettings.Controller.DynamoViewModel.AddNoteCommand.Execute(paramDict);
+
                         dynSettings.Controller.DynamoModel.AddNote(paramDict);
                     }
                 }
@@ -1114,7 +1114,7 @@ namespace Dynamo.Utilities
             }
             else if (topMost.Count == 1)
             {
-                top = topMost[0].Item2.BuildExpression(buildDict);
+                top = topMost[0].Item2.Build(buildDict, topMost[0].Item1);
             }
             else
             {
