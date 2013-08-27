@@ -336,7 +336,7 @@ Jrn.Directive "IdleTimeTaskSymbol"  _
  Jrn.Command "StartupPage" , "Open this project , ID_FILE_MRU_FIRST"
  'H 23-Aug-2013 16:26:57.414;   0:< 
  Jrn.Data "MRUFileName"  _
-         , "empty.rfa"
+         , "shell.rfa"
  ' 1:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
  ' 1:< RAM Statistics:     4686 /     8102       394=InUse      395=Peak  
  ' 1:< VM  Statistics:  8386969 /  8388607       293=InUse      295=Peak  
@@ -685,7 +685,7 @@ Jrn.Directive "AllowPressAndDrag"  _
 '  1.404394   1:<<<API External Command Time 
 'H 23-Aug-2013 16:27:07.626;   0:< 
 Jrn.Data "APIStringStringMapJournalData"  _
-        , 1, "dynamoTestName", "DividedSurface"
+        , 1, "dynamoTestName", "RevolveSolid"
  ' 0:< ::13:: Delta VM: Avail -6 -> 8386830 MB, Used +1 -> 381 MB, Peak +5 -> 386 MB; RAM: Avail +19 -> 4592 MB, Used +3 -> 504 MB, Peak +3 -> 504 MB 
  'E 23-Aug-2013 16:27:12.652;   0:< 
  Jrn.MouseMove    0 ,   1390 ,     57
