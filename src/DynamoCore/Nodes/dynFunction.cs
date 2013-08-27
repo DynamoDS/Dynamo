@@ -252,7 +252,7 @@ namespace Dynamo
                         {
                             var manager = dynSettings.Controller.CustomNodeManager;
 
-                            // if there is a node with this name, use it
+                            // if there is a node with this name, use it instead
                             if (manager.Contains(this.NickName))
                             {
                                 var guid = manager.GetGuidFromName(this.NickName);
@@ -350,7 +350,7 @@ namespace Dynamo
                 ArgumentLacing = LacingStrategy.Disabled;
 
                 // we've found a custom node, we need to attempt to load its guid.  
-                // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
+                // if it doesn't exist (i.e. its a legacy node), we need to assign it one
                 // deterministically
                 Guid funId;
                 try
