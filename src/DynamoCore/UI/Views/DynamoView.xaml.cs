@@ -305,32 +305,38 @@ namespace Dynamo.Controls
                     return;
                 }
 
-                e.Name = dialog.Text;
-                e.Category = dialog.Category;
-                e.Description = dialog.Description;
-
-                if (dynSettings.Controller.CustomNodeManager.Contains(e.Name))
+                if (String.IsNullOrEmpty(dialog.Text))
                 {
-                    error = "A custom node with the given name already exists.";
-                    MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                    error = "You must supply a name.";
+                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
-                else if (dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(e.Name))
+                else if (e.Name != dialog.Text && dynSettings.Controller.CustomNodeManager.Contains(dialog.Text))
+                {
+                    error = "A custom node with the given name already exists.";
+                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
+                }
+                else if (e.Name != dialog.Text && dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(dialog.Text))
                 {
                     error = "A built-in node with the given name already exists.";
-                    MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
                 else if (e.Category.Equals(""))
                 {
                     error = "You must enter a new category or choose one from the existing categories.";
-                    MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
                 else
                 {
                     error = "";
                 }
+
+                e.Name = dialog.Text;
+                e.Category = dialog.Category;
+                e.Description = dialog.Description;
 
             } while (!error.Equals(""));
 
