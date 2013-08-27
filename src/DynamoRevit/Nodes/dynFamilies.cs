@@ -1103,6 +1103,10 @@ namespace Dynamo.Nodes
             {
                 p.Set(((Value.String)valueExpr).Item);
             }
+            else if (p.StorageType == StorageType.ElementId)
+            {
+                p.Set((ElementId)((Value.Container)valueExpr).Item);
+            }
             else if (valueExpr.IsNumber)
             {
                 p.Set(new ElementId((int)(valueExpr as Value.Number).Item));
@@ -1170,7 +1174,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get Family Instance Parameter")]
+    [NodeName("Get Family Instance Parameter Value")]
     [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
     [NodeDescription("Fetches the value of a parameter of a Family Instance.")]
     public class dynFamilyInstanceParameterGetter : dynRevitTransactionNodeWithOneOutput
@@ -1178,7 +1182,7 @@ namespace Dynamo.Nodes
         public dynFamilyInstanceParameterGetter()
         {
             InPortData.Add(new PortData("fi", "Family instance.", typeof(Value.Container)));
-            InPortData.Add(new PortData("param", "Parameter to fetch.", typeof(Value.String)));
+            InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(Value.String)));
 
             OutPortData.Add(new PortData("val", "Parameter value.", typeof(object)));
 

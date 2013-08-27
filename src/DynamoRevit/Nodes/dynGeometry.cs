@@ -20,6 +20,7 @@ using System.Xml;              //for boolean option
 using System.Windows.Media.Media3D;
 using System.Reflection;
 using Autodesk.Revit.DB;
+using DSCoreNodes;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
@@ -27,9 +28,7 @@ using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
-using Dynamo.Connectors;
 using Dynamo.Utilities;
-using Domain = DSRevitNodes.Domain;
 
 namespace Dynamo.Nodes
 {
@@ -659,29 +658,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Domain")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("Create a domain specifying the Minimum and Maximum UVs.")]
-    public class dynDomain : dynNodeWithOneOutput
-    {
-        public dynDomain()
-        {
-            InPortData.Add(new PortData("min", "The minimum UV of the domain.", typeof(Value.Container)));
-            InPortData.Add(new PortData("max", "The maximum UV of the domain.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("domain", "A domain.", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var min = (Autodesk.LibG.Vector)((Value.Container) args[0]).Item;
-            var max = (Autodesk.LibG.Vector)((Value.Container)args[0]).Item;
-
-            return Value.NewContainer(DSRevitNodes.Domain.ByMinimumAndMaximum(min, max));
-        }
-    }
-
     [NodeName("UV Grid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of UVs from a domain.")]
@@ -689,7 +665,7 @@ namespace Dynamo.Nodes
     {
         public dynUVGrid()
         {
-            InPortData.Add(new PortData("domain", "A domain.", typeof(Value.Container)));
+            InPortData.Add(new PortData("domain", "A two dimensional domain.", typeof(Value.Container)));
             InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(Value.Number)));
             InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(Value.Number)));
             OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(Value.List)));
@@ -699,25 +675,18 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var domain = (Domain)((Value.Container)args[0]).Item;
+            var domain = (Domain2D)((Value.Container)args[0]).Item;
             double ui = ((Value.Number)args[1]).Item;
             double vi = ((Value.Number)args[2]).Item;
-            //double us = ((Value.Number)domain[2]).Item / ui;
-            //double vs = ((Value.Number)domain[3]).Item / vi;
             double us = domain.USpan/ui;
             double vs = domain.VSpan/vi;
 
             FSharpList<Value> result = FSharpList<Value>.Empty;
 
-            //var min = ((Value.Container)domain[0]).Item as UV;
-            //var max = ((Value.Container)domain[1]).Item as UV;
-
-            //for (double u = min.U; u <= max.U; u += us)
             for (int i = 0; i <= ui; i++ )
             {
                 double u = domain.Min.x() + i*us;
 
-                //for (double v = min.V; v <= max.V; v += vs)
                 for (int j = 0; j <= vi; j++ )
                 {
                     double v = domain.Min.y() + j*vs;
