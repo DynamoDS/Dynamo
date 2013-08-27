@@ -895,7 +895,7 @@ namespace Dynamo.Nodes
                 var idxs = (indeces as Value.List).Item.Select(x => (int)((Value.Number)x).Item);
                 return
                     Value.NewList(
-                        Utils.SequenceToFSharpList(idxs.Select(i => ListModule.Get(lst, i)));
+                        Utils.SequenceToFSharpList(idxs.Select(i => ListModule.Get(lst, i))));
             }
             else
             {
@@ -962,7 +962,7 @@ namespace Dynamo.Nodes
                         (indeces as Value.List).Item.Select(x => (int)((Value.Number)x).Item));
                 return
                     Value.NewList(
-                        Utils.SequenceToFSharpList(lst.Where((_, i) => !idxs.Contains(i))))
+                        Utils.SequenceToFSharpList(lst.Where((_, i) => !idxs.Contains(i))));
             }
             else
             {
