@@ -1,0 +1,416 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Dynamo.Commands;
+using Dynamo.Models;
+using Dynamo.Search;
+using Dynamo.Controls;
+using System.Reflection;
+using System.IO;
+using Dynamo.Nodes;
+using System.Windows.Controls;
+using Dynamo.Utilities;
+using System.Windows;
+using System.Diagnostics;
+using Dynamo.ViewModels;
+
+namespace Dynamo.Utilities
+{
+    /// <summary>
+    ///     Handles loading various types of elements into Dynamo at startup
+    /// </summary>
+    internal class DynamoLoader
+    {
+        private static string _dynamoDirectory = "";
+        public static string GetDynamoDirectory()
+        {
+            if (String.IsNullOrEmpty(_dynamoDirectory))
+            {
+                var dynamoAssembly = Assembly.GetExecutingAssembly();
+                _dynamoDirectory = Path.GetDirectoryName(dynamoAssembly.Location);
+                
+            }
+            return _dynamoDirectory;
+        }
+
+        public static HashSet<string> LoadedAssemblyNames = new HashSet<string>();
+        public static Dictionary<string, List<Type>> AssemblyPathToTypesLoaded = new Dictionary<string, List<Type>>();
+
+        internal static void LoadPackages()
+        {
+            dynSettings.PackageLoader.LoadPackages();
+        }
+
+        /// <summary>
+        ///     Enumerate local library assemblies and add them to DynamoController's
+        ///     dictionaries and search.  
+        /// </summary>
+        /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
+        /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
+        internal static void LoadBuiltinTypes()
+        {
+            string location = GetDynamoDirectory();
+
+            #region determine assemblies to load
+
+            var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
+            var allLoadedAssemblies = new Dictionary<string, Assembly>();
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                try
+                {
+                    allLoadedAssembliesByPath[assembly.Location] = assembly;
+                    allLoadedAssemblies[assembly.FullName] = assembly;
+                }
+                catch { }
+            }
+
+            IEnumerable<string> allDynamoAssemblyPaths = Directory.GetFiles(location, "*.dll");
+
+            allDynamoAssemblyPaths = SearchPaths.Select(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)).Aggregate(allDynamoAssemblyPaths, (current, dlls) => current.Concat(dlls));
+
+            var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
+            {
+                Assembly result;
+                allLoadedAssemblies.TryGetValue(args.Name, out result);
+                return result;
+            });
+
+            AppDomain.CurrentDomain.AssemblyResolve += resolver;
+
+            foreach (var assemblyPath in allDynamoAssemblyPaths)
+            {
+                var fn = Path.GetFileName(assemblyPath);
+
+                if (fn == null)
+                    continue;
+
+                if (LoadedAssemblyNames.Contains(fn))
+                    continue;
+
+                LoadedAssemblyNames.Add(fn);
+
+                if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
+                {
+                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
+                }
+                else
+                {
+                    try
+                    {
+                        var assembly = Assembly.LoadFrom(assemblyPath);
+                        allLoadedAssemblies[assembly.GetName().Name] = assembly;
+                        LoadNodesFromAssembly(assembly);
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+
+            AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+
+            #endregion
+
+        }
+
+
+        /// <summary>
+        ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
+        ///     out what nodes to load from other libraries (.dlls).
+        /// </summary>
+        /// <parameter>The type</parameter>
+        /// <returns>True if the type is node.</returns>
+        public static bool IsNodeSubType(Type t)
+        {
+            return t.Namespace == "Dynamo.Nodes" &&
+                   !t.IsAbstract &&
+                   t.IsSubclassOf(typeof(dynNodeModel));
+        }
+
+        /// <summary>
+        ///     Enumerate the types in an assembly and add them to DynamoController's
+        ///     dictionaries and the search view model.  Internally catches exceptions and sends the error 
+        ///     to the console.
+        /// </summary>
+        /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
+        /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
+        /// <param name="bench">The bench where logging errors will be sent</param>
+        /// <Returns>The list of node types loaded from this assembly</Returns>
+        public static List<Type> LoadNodesFromAssembly(Assembly assembly)
+        {
+            var controller = dynSettings.Controller;
+            var searchViewModel = dynSettings.Controller.SearchViewModel;
+
+            AssemblyPathToTypesLoaded.Add(assembly.Location, new List<Type>());
+
+            try
+            {
+                Type[] loadedTypes = assembly.GetTypes();
+
+                foreach (var t in loadedTypes)
+                {
+                    try
+                    {
+                        //only load types that are in the right namespace, are not abstract
+                        //and have the elementname attribute
+                        object[] attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
+
+                        if (!IsNodeSubType(t)) /*&& attribs.Length > 0*/
+                            continue;
+
+                        //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
+                        //if available, to discern whether we should load this type
+                        if (!controller.Context.Equals(Context.NONE))
+                        {
+
+                            object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
+                            if (platformExclusionAttribs.Length > 0)
+                            {
+                                string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
+                                int iExclusion = exclusions.Length - 1;
+                                for (; iExclusion > -1; iExclusion--)
+                                {
+                                    if (exclusions[iExclusion].Contains(controller.Context))
+                                        //if the attribute's values contain the context stored on the controller
+                                        //then skip loading this type.
+                                        break;
+                                }
+                                if (iExclusion > -1)
+                                    continue;
+
+                                //utility was late for Vasari release, but could be available with after-post RevitAPI.dll
+                                if (t.Name.Equals("dynSkinCurveLoops"))
+                                {
+                                    MethodInfo[] specialTypeStaticMethods = t.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+                                    String nameOfMethodCreate = "noSkinSolidMethod";
+                                    bool exclude = true;
+                                    foreach (MethodInfo m in specialTypeStaticMethods)
+                                    {
+                                        if (m.Name == nameOfMethodCreate)
+                                        {
+                                            object[] argsM = new object[0];
+                                            exclude = (bool)m.Invoke(null, argsM);
+                                            break;
+                                        }
+                                    }
+                                    if (exclude)
+                                        continue;
+                                }
+                            }
+                        }
+
+                        string typeName;
+
+                        if (attribs.Length > 0)
+                        {
+                            searchViewModel.Add(t);
+                            typeName = (attribs[0] as NodeNameAttribute).Name;
+                            
+                        }
+                        else
+                        {
+                            typeName = t.Name;
+                        }
+
+                        AssemblyPathToTypesLoaded[assembly.Location].Add(t);
+
+                        var data = new TypeLoadData(assembly, t);
+
+                        if (!controller.BuiltInTypesByNickname.ContainsKey(typeName))
+                        {
+                            controller.BuiltInTypesByNickname.Add(typeName, data);
+                        }
+                        else
+                        {
+                            DynamoLogger.Instance.Log("Duplicate type encountered: " + typeName);
+                        }
+
+                        if (!controller.BuiltInTypesByName.ContainsKey(t.FullName))
+                        {
+                            controller.BuiltInTypesByName.Add(t.FullName, data);
+                        }
+                        else
+                        {
+                            DynamoLogger.Instance.Log("Duplicate type encountered: " + typeName);
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        DynamoLogger.Instance.Log("Failed to load type from " + assembly.FullName);
+                        DynamoLogger.Instance.Log("The type was " + t.FullName);
+                        DynamoLogger.Instance.Log(e);
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                DynamoLogger.Instance.Log("Could not load types.");
+                DynamoLogger.Instance.Log(e);
+                if (e is ReflectionTypeLoadException)
+                {
+                    var typeLoadException = e as ReflectionTypeLoadException;
+                    Exception[] loaderExceptions = typeLoadException.LoaderExceptions;
+                    DynamoLogger.Instance.Log("Dll Load Exception: " + loaderExceptions[0]);
+                    DynamoLogger.Instance.Log(loaderExceptions[0].ToString());
+                    if (loaderExceptions.Count() > 1)
+                    {
+                        DynamoLogger.Instance.Log("Dll Load Exception: " + loaderExceptions[1]);
+                        DynamoLogger.Instance.Log(loaderExceptions[1].ToString());
+                    }
+                }
+            }
+
+            return AssemblyPathToTypesLoaded[assembly.Location];
+        }
+
+        /// <summary>
+        ///     Setup the "Samples" sub-menu with contents of samples directory.
+        /// </summary>
+        /// <param name="bench">The bench where the UI will be loaded</param>
+        public static void LoadSamplesMenu(DynamoView bench)
+        {
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string samplesPath = Path.Combine(directory, "samples");
+
+            if (Directory.Exists(samplesPath))
+            {
+                string[] dirPaths = Directory.GetDirectories(samplesPath);
+                string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
+
+                // handle top-level files
+                if (filePaths.Any())
+                {
+                    foreach (string path in filePaths)
+                    {
+                        var item = new MenuItem
+                        {
+                            Header = Path.GetFileNameWithoutExtension(path),
+                            Tag = path
+                        };
+                        item.Click += OpenSample_Click;
+                        bench.SamplesMenu.Items.Add(item);
+                    }
+                }
+
+                // handle top-level dirs, TODO - factor out to a seperate function, make recusive
+                if (dirPaths.Any())
+                {
+                    foreach (string dirPath in dirPaths)
+                    {
+                        var dirItem = new MenuItem
+                        {
+                            Header = Path.GetFileName(dirPath),
+                            Tag = Path.GetFileName(dirPath)
+                        };
+
+                        filePaths = Directory.GetFiles(dirPath, "*.dyn");
+                        if (filePaths.Any())
+                        {
+                            foreach (string path in filePaths)
+                            {
+                                var item = new MenuItem
+                                {
+                                    Header = Path.GetFileNameWithoutExtension(path),
+                                    Tag = path
+                                };
+                                item.Click += OpenSample_Click;
+                                dirItem.Items.Add(item);
+                            }
+                        }
+                        bench.SamplesMenu.Items.Add(dirItem);
+                    }
+                    return;
+                }
+            }
+            //this.fileMenu.Items.Remove(this.samplesMenu);
+        }
+
+        /// <summary>
+        ///     Callback for opening a sample.
+        /// </summary>
+        private static void OpenSample_Click(object sender, RoutedEventArgs e)
+        {
+            var path = (string)((MenuItem)sender).Tag;
+
+            if (dynSettings.Controller.DynamoViewModel.IsUILocked)
+                dynSettings.Controller.DynamoViewModel.QueueLoad(path);
+            else
+            {
+                if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
+                    dynSettings.Controller.DynamoModel.ViewHomeWorkspace();
+
+                dynSettings.Controller.DynamoModel.OpenWorkspace(path);
+            }
+        }
+
+        /// <summary>
+        ///     Load Custom Nodes from the default directory - the "definitions"
+        ///     directory where the executing assembly is located..
+        /// </summary>
+        public static IEnumerable<CustomNodeInfo> LoadCustomNodes()
+        {
+
+            var customNodeLoader = dynSettings.CustomNodeManager;
+            var searchViewModel = dynSettings.Controller.SearchViewModel;
+
+            var loadedNodes = customNodeLoader.UpdateSearchPath();
+
+            // add nodes to search
+            foreach (var pair in loadedNodes)
+            {
+                searchViewModel.Add(pair.Name, pair.Category, pair.Description, pair.Guid);
+            }
+            
+            // update search view
+            searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
+
+            return loadedNodes;
+
+        }
+
+        /// <summary>
+        ///     Load Custom Nodes from the CUstomNodeLoader search path and update searcht
+        /// </summary>
+        public static List<CustomNodeInfo> LoadCustomNodes(string path)
+        {
+            if (!Directory.Exists(path))
+                return new List<CustomNodeInfo>();
+
+            var customNodeLoader = dynSettings.CustomNodeManager;
+            var searchViewModel = dynSettings.Controller.SearchViewModel;
+
+            var loadedNodes = customNodeLoader.ScanNodeHeadersInDirectory(path).ToList();
+            customNodeLoader.AddDirectoryToSearchPath(path);
+
+            // add nodes to search
+            foreach (var pair in loadedNodes)
+            {
+                searchViewModel.Add(pair.Name, pair.Category, pair.Description, pair.Guid);
+            }
+
+            // update search view
+            searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
+
+            return loadedNodes;
+
+        }
+
+        public static HashSet<string> SearchPaths = new HashSet<string>();
+
+        internal static void AddBinarySearchPath(string p)
+        {
+            SearchPaths.Add(p);
+        }
+
+        internal static void ClearCachedAssemblies()
+        {
+            LoadedAssemblyNames = new HashSet<string>();
+            AssemblyPathToTypesLoaded = new Dictionary<string, List<Type>>();
+        }
+    }
+}

@@ -123,8 +123,8 @@ limitations under the License.
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
     <Compile Include="UI\Commands\Commands.cs" />
-    <Compile Include="DynamoLogger.cs" />
-    <Compile Include="DynamoSelection.cs" />
+    <Compile Include="Core\DynamoLogger.cs" />
+    <Compile Include="Core\DynamoSelection.cs" />
     <Compile Include="Nodes\dynMultithreading.cs" />
     <Compile Include="Nodes\dynOptimize.cs" />
     <Compile Include="Services\Heartbeat.cs" />
@@ -133,7 +133,6 @@ limitations under the License.
     <Compile Include="PackageManager\Package.cs" />
     <Compile Include="PackageManager\PackageUploadBuilder.cs" />
     <Compile Include="PackageManager\PackageUploadHandle.cs" />
-    <Compile Include="SettingsManager.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Models\dynModelBase.cs" />
@@ -239,7 +238,7 @@ limitations under the License.
     </Compile>
     <Compile Include="Search\SearchElements\TopSearchElement.cs" />
     <Compile Include="Nodes\dynFormula.cs" />
-    <Compile Include="Units.cs" />
+    <Compile Include="Core\Units.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
@@ -250,11 +249,11 @@ limitations under the License.
     <Compile Include="ViewModels\dynPortViewModel.cs" />
     <Compile Include="ViewModels\dynViewModelBase.cs" />
     <Compile Include="ViewModels\dynWorkspaceViewModel.cs" />
-    <Compile Include="CustomNodeManager.cs" />
-    <Compile Include="DynamoLoader.cs" />
-    <Compile Include="NodeCollapser.cs" />
+    <Compile Include="Core\CustomNodeManager.cs" />
+    <Compile Include="Core\DynamoLoader.cs" />
+    <Compile Include="Core\NodeCollapser.cs" />
     <Compile Include="Search\SearchElements\CommandElement.cs" />
-    <Compile Include="DynamoController.cs" />
+    <Compile Include="Core\DynamoController.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="Interfaces\dynIDrawable.cs" />
@@ -276,7 +275,7 @@ limitations under the License.
     <Compile Include="Nodes\dynFiles.cs" />
     <Compile Include="Nodes\dynFunction.cs" />
     <Compile Include="Models\dynNodeModel.cs" />
-    <Compile Include="dynSettings.cs" />
+    <Compile Include="Core\dynSettings.cs" />
     <Compile Include="Models\dynWorkspaceModel.cs" />
     <Compile Include="Nodes\dynWatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
