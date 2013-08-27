@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -671,5 +670,24 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, ((FScheme.Value.List)res).Item.Count());
         }
 
+        [Test]
+        public void ReadImageFile()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\files");
+
+            string openPath = Path.Combine(examplePath, "readImageFileTest.dyn");
+            model.Open(openPath);
+
+            //set the path to the image file
+            var pathNode = (dynStringFilename)model.Nodes.First(x => x is dynStringFilename);
+            pathNode.Value = Path.Combine(examplePath,"honey-badger.jpg");
+
+            dynSettings.Controller.RunExpression(null);
+
+            var watch = GetWatchNodeFromCurrentSpace(model, "4744f516-c6b5-421c-b7f1-1731610667bb");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(25, doubleWatchVal, 0.00001);
+        }
     }
 }

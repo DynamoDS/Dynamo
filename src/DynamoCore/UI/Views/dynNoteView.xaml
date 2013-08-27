@@ -6,6 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200" 
              MinWidth="50"
+             MinHeight="20"
              Height="Auto" Width="Auto" MaxWidth="300" Visibility="Visible"
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}" 
@@ -26,7 +27,6 @@
           Text="{Binding Path=Text, Mode=OneWay}"
           Grid.Column="0" Grid.Row="0" FontFamily="Trebuchet" 
             FontSize="12" 
-            
             Padding="10" TextWrapping="Wrap">
             
           <TextBlock.RenderTransform>
