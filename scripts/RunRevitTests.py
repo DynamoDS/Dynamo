@@ -14,13 +14,13 @@ def main():
     	for dirpath, dirnames, files in os.walk(testsPath)
     	for f in fnmatch.filter(files, '*.txt')]
 
-	#print testJournals
+	print testJournals
 
 	# run all tests
 	print 'running revit tests....'
 	for journal in testJournals:
 		print 'running ' + journal
-		run_cmd( ['Revit'] + testJournals )
+		run_cmd( ['Revit', journal] )
 
 	# aggregate results
 	results = [os.path.join(dirpath, f)
@@ -35,10 +35,10 @@ def main():
 			result_type = member.find('ResultType').text
 			message_element = member.find('Message')
 			message = ''
-			if message_element:
+			if message_element is not None:
 				message = message_element.text
 			print testName + ':' + result_type
-			if message:
+			if message is not '':
 				print '\t' + message
 
 	# cleanup results files and journals created during testing
@@ -50,16 +50,16 @@ def main():
 	for journal in runJournals:
 		os.remove(journal)
 
-	print 'cleaning results files...'
-	results = [os.path.join(dirpath, f)
-    	for dirpath, dirnames, files in os.walk(testsPath)
-    	for f in fnmatch.filter(files, '*_result.xml')]
+	# print 'cleaning results files...'
+	# results = [os.path.join(dirpath, f)
+ #    	for dirpath, dirnames, files in os.walk(testsPath)
+ #    	for f in fnmatch.filter(files, '*_result.xml')]
 
-	for result in results:
-		os.remove(result)
+	# for result in results:
+	# 	os.remove(result)
 
 def run_cmd( args, printOutput = True, cwd = None ):	
-	p = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd = cwd)
+	processes = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd = cwd)
 	
 	out = ''
 
