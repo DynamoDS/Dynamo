@@ -36,11 +36,14 @@ limitations under the License.
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config\Dynamo.CS.props" />
+  </ImportGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -50,7 +53,7 @@ limitations under the License.
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\</OutputPath>
+    <OutputPath>$(OuputPath)</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -87,11 +90,11 @@ limitations under the License.
     </Reference>
     <Reference Include="nunit.core, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\NUnit\nunit.core.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -120,8 +123,8 @@ limitations under the License.
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
     <Compile Include="UI\Commands\Commands.cs" />
-    <Compile Include="DynamoLogger.cs" />
-    <Compile Include="DynamoSelection.cs" />
+    <Compile Include="Core\DynamoLogger.cs" />
+    <Compile Include="Core\DynamoSelection.cs" />
     <Compile Include="Nodes\dynMultithreading.cs" />
     <Compile Include="Nodes\dynOptimize.cs" />
     <Compile Include="Services\Heartbeat.cs" />
@@ -130,7 +133,6 @@ limitations under the License.
     <Compile Include="PackageManager\Package.cs" />
     <Compile Include="PackageManager\PackageUploadBuilder.cs" />
     <Compile Include="PackageManager\PackageUploadHandle.cs" />
-    <Compile Include="SettingsManager.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Models\dynModelBase.cs" />
@@ -236,7 +238,7 @@ limitations under the License.
     </Compile>
     <Compile Include="Search\SearchElements\TopSearchElement.cs" />
     <Compile Include="Nodes\dynFormula.cs" />
-    <Compile Include="Units.cs" />
+    <Compile Include="Core\Units.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
@@ -247,11 +249,11 @@ limitations under the License.
     <Compile Include="ViewModels\dynPortViewModel.cs" />
     <Compile Include="ViewModels\dynViewModelBase.cs" />
     <Compile Include="ViewModels\dynWorkspaceViewModel.cs" />
-    <Compile Include="CustomNodeManager.cs" />
-    <Compile Include="DynamoLoader.cs" />
-    <Compile Include="NodeCollapser.cs" />
+    <Compile Include="Core\CustomNodeManager.cs" />
+    <Compile Include="Core\DynamoLoader.cs" />
+    <Compile Include="Core\NodeCollapser.cs" />
     <Compile Include="Search\SearchElements\CommandElement.cs" />
-    <Compile Include="DynamoController.cs" />
+    <Compile Include="Core\DynamoController.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="Interfaces\dynIDrawable.cs" />
@@ -273,7 +275,7 @@ limitations under the License.
     <Compile Include="Nodes\dynFiles.cs" />
     <Compile Include="Nodes\dynFunction.cs" />
     <Compile Include="Models\dynNodeModel.cs" />
-    <Compile Include="dynSettings.cs" />
+    <Compile Include="Core\dynSettings.cs" />
     <Compile Include="Models\dynWorkspaceModel.cs" />
     <Compile Include="Nodes\dynWatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
