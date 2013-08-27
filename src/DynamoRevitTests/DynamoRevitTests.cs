@@ -46,7 +46,7 @@ namespace DynamoRevitTests
             //fixture, so the initfixture method is not called.
 
             //get the test path
-            FileInfo fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
             string testsLoc = Path.Combine(assDir, @"..\..\test\revit\");
             _testPath = Path.GetFullPath(testsLoc);
@@ -78,14 +78,19 @@ namespace DynamoRevitTests
             _emptyModelPath1 = Path.Combine(_testPath, "empty1.rfa");
             */
             //open an empty model before every test
-            OpenEmptyModel();
+            //OpenEmptyModel();
         }
 
         [TearDown]
         //Called after each test method
         public void Cleanup()
         {
+            // opens an empty model and closes
+            // the current model without saving 
             OpenEmptyModel();
+
+            // clean up all journal files
+
         }
 
         [Test]
@@ -970,12 +975,11 @@ namespace DynamoRevitTests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\DividedSurfaceTest.dyn");
+            string samplePath = Path.Combine(_testPath, @".\DividedSurface.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            var shellPath = Path.Combine(_testPath, "shell.rfa");
-
-            SwapCurrentModel(shellPath);
+            //var shellPath = Path.Combine(_testPath, "shell.rfa");
+            //SwapCurrentModel(shellPath);
 
             model.Open(testPath);
             dynSettings.Controller.RunExpression(true);
@@ -1092,8 +1096,13 @@ namespace DynamoRevitTests
             UIDocument empty1 = dynRevitSettings.Revit.OpenAndActivateDocument(_emptyModelPath1);
             initialDoc.Close(false);
 
-            dynRevitSettings.Revit.OpenAndActivateDocument(_emptyModelPath);
-            empty1.Document.Close(false);
+            // this was used in the previous incarnation of the revit tester
+            // it acted as a document swap in the case that the document you were
+            // testing on was one of the default 'empty' documents
+            // it is removed for now because as tests are called from the journal file
+            // they will specify a file to open
+            //dynRevitSettings.Revit.OpenAndActivateDocument(_emptyModelPath);
+            //empty1.Document.Close(false);
         }
 
         /// <summary>
