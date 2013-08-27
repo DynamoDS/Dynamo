@@ -119,14 +119,14 @@ namespace Dynamo.Nodes
             "origin", "The average (mean) of the point list.", typeof(Value.Container));
 
         private readonly PortData _planePort = new PortData(
-    "origin", "The average (mean) of the point list.", typeof(Value.Container));
+    "plane", "The plane representing the output.", typeof(Value.Container));
 
         public dynBestFitPlane()
         {
             InPortData.Add(new PortData("XYZs", "A List of XYZ's.", typeof(Value.List)));
             OutPortData.Add(_planePort);
-            OutPortData.Add(_originPort);
             OutPortData.Add(_normalPort);
+            OutPortData.Add(_originPort);
 
             ArgumentLacing = LacingStrategy.Longest;
             RegisterAllPorts();
@@ -149,8 +149,8 @@ namespace Dynamo.Nodes
             var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
 
             outPuts[_planePort] = Value.NewContainer(plane);
-            outPuts[_originPort] = Value.NewContainer(meanPt);
             outPuts[_normalPort] = Value.NewContainer(normal);
+            outPuts[_originPort] = Value.NewContainer(meanPt);
             
         }
     }
