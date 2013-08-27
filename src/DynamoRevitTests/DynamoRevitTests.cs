@@ -89,8 +89,6 @@ namespace DynamoRevitTests
             // the current model without saving 
             OpenEmptyModel();
 
-            // clean up all journal files
-
         }
 
         [Test]
