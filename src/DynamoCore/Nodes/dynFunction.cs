@@ -250,7 +250,16 @@ namespace Dynamo
                         // if the dyf does not exist on the search path...
                         if (!dynSettings.Controller.CustomNodeManager.Contains(funcId))
                         {
-                            
+                            var manager = dynSettings.Controller.CustomNodeManager;
+
+                            // if there is a node with this name, use it
+                            if (manager.Contains(this.NickName))
+                            {
+                                var guid = manager.GetGuidFromName(this.NickName);
+                                this.Symbol = guid.ToString();
+                                continue;
+                            }
+
                             var proxyDef = new FunctionDefinition(funcId)
                             {
                                 Workspace =
