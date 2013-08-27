@@ -443,12 +443,12 @@ namespace Dynamo.Applications
 
                 //execute the tests
                 Results = new DynamoRevitTestRunner();
-                var resultsView = new DynamoRevitTestResultsView();
-                resultsView.DataContext = Results;
+                //var resultsView = new DynamoRevitTestResultsView();
+                //resultsView.DataContext = Results;
 
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
                 string assLocation = Assembly.GetExecutingAssembly().Location;
-                FileInfo fi = new FileInfo(assLocation);
+                var fi = new FileInfo(assLocation);
                 string testLoc = Path.Combine(fi.DirectoryName, @"DynamoRevitTester.dll");
 
                 //Tests must be executed on the main thread in order to access the Revit API.
@@ -465,39 +465,42 @@ namespace Dynamo.Applications
                 if (fixture == null)
                     throw new Exception("Could not find DynamoRevitTests fixture.");
 
-                foreach (var t in fixture.Tests)
-                {
-                    if (t is ParameterizedMethodSuite)
-                    {
-                        var paramSuite = t as ParameterizedMethodSuite;
-                        foreach (var tInner in paramSuite.Tests)
-                        {
-                            if (tInner is TestMethod)
-                                Results.Results.Add(new DynamoRevitTest(tInner as TestMethod));
-                        }
-                    }
-                    else if (t is TestMethod)
-                        Results.Results.Add(new DynamoRevitTest(t as TestMethod));
-                }
+                //foreach (var t in fixture.Tests)
+                //{
+                //    if (t is ParameterizedMethodSuite)
+                //    {
+                //        var paramSuite = t as ParameterizedMethodSuite;
+                //        foreach (var tInner in paramSuite.Tests)
+                //        {
+                //            if (tInner is TestMethod)
+                //                Results.Results.Add(new DynamoRevitTest(tInner as TestMethod));
+                //        }
+                //    }
+                //    else if (t is TestMethod)
+                //        Results.Results.Add(new DynamoRevitTest(t as TestMethod));
+                //}
 
-                resultsView.ShowDialog();
+                //resultsView.ShowDialog();
 
                 //for testing
                 //if the journal file contains data
-                //bool canReadData = (0 < dataMap.Count) ? true : false;
-                //if (canReadData)
-                //{
-                //    //revit.Application.OpenAndActivateDocument(dataMap["dynamoModel"]);
-                //    //dynamoController.DynamoViewModel.OpenCommand.Execute(dataMap["dynamoGraph"]);
-                //    //dynamoController.DynamoViewModel.RunExpressionCommand.Execute(null);
+                bool canReadData = (0 < dataMap.Count) ? true : false;
+                if (canReadData)
+                {
+                    //revit.Application.OpenAndActivateDocument(dataMap["dynamoModel"]);
+                    //dynamoController.DynamoViewModel.OpenCommand.Execute(dataMap["dynamoGraph"]);
+                    //dynamoController.DynamoViewModel.RunExpressionCommand.Execute(null);
 
-                //    TestMethod t = FindTestByName(fixture, dataMap["dynamoTestName"]);
-                //    if (t != null)
-                //    {
-                //        Results.Results.Add(new DynamoRevitTest(t as TestMethod));
-                //        Results.RunAllTests(null);
-                //    }
-                //}
+                    TestMethod t = FindTestByName(fixture, dataMap["dynamoTestName"]);
+                    if (t != null)
+                    {
+                        //Results.Results.Add(new DynamoRevitTest(t as TestMethod));
+                        //Results.RunAllTests(null);
+                        var dynTest = new DynamoRevitTest(t as TestMethod);
+                        dynTest.Run(null);
+                        dynTest.Save();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -652,6 +655,22 @@ namespace Dynamo.Applications
         {
             return true;
         }
+
+        /// <summary>
+        /// Serialize the result of this test to a file.
+        /// Test results are saved in the same directory as the current model.
+        /// </summary>
+        public void Save()
+        {
+            var x = new XmlSerializer(this.GetType());
+            string resultsDir = Path.GetDirectoryName(dynRevitSettings.Doc.Document.PathName);
+                string resultsPath = Path.Combine(resultsDir,
+                                                  string.Format("{0}_result.xml", this.TestName));
+            using (TextWriter tw = new StreamWriter(resultsPath))
+            {
+                x.Serialize(tw, this);
+            }
+        }
     }
 
     //http://sqa.stackexchange.com/questions/2880/nunit-global-error-method-event-for-handling-exceptions
@@ -800,7 +819,7 @@ namespace Dynamo.Applications
             try
             {
                 //serialize the test results to a file
-                System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(Results.GetType());
+                var x = new System.Xml.Serialization.XmlSerializer(Results.GetType());
                 string resultsDir = Path.GetDirectoryName(DynamoLogger.Instance.LogPath);
                 string resultsPath = Path.Combine(resultsDir,
                                                   string.Format("dynamoRevitTests_{0}.xml", Guid.NewGuid().ToString()));
