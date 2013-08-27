@@ -317,6 +317,7 @@ namespace Dynamo.Models
             set
             {
                 _isDirty = value;
+                //DynamoLogger.Instance.Log("RR: " + value + " Rprt: " + _report + " WsNull: " + (WorkSpace != null));
                 if (value && _report && WorkSpace != null)
                     WorkSpace.Modified();
             }
@@ -562,7 +563,6 @@ namespace Dynamo.Models
             }
             if (!_isDirty)
                 _isDirty = dirty;
-            return;
         }
 
         internal virtual INode BuildExpression(Dictionary<dynNodeModel, Dictionary<int, INode>> buildDict)
@@ -863,8 +863,8 @@ namespace Dynamo.Models
                     OldValue = result;
                 }               
             }
-            else
-                OnEvaluate();
+            //else
+            //    OnEvaluate();
 
             return OldValue;
         }

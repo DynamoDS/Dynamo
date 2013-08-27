@@ -40,6 +40,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodes", "DSNodes\DSR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodesTests", "DSRevitNodesTests\DSRevitNodesTests.csproj", "{9E79DC8D-25B1-491F-B094-EA39DE1BBC66}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCoreNodes", "DSCoreNodes\DSCoreNodes.csproj", "{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCoreNodesTests", "DSCoreNodesTests\DSCoreNodesTests.csproj", "{09EC17AF-24D2-4542-A913-0C27AE345C18}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Dynamo.vsmdi
@@ -229,6 +233,26 @@ Global
 		{9E79DC8D-25B1-491F-B094-EA39DE1BBC66}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9E79DC8D-25B1-491F-B094-EA39DE1BBC66}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9E79DC8D-25B1-491F-B094-EA39DE1BBC66}.Release|x86.ActiveCfg = Release|Any CPU
+		{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}.Release|x86.ActiveCfg = Release|Any CPU
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
