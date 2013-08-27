@@ -5,19 +5,19 @@
         Title="Edit Python Script..." Height="500" Width="600">
   <Grid Background="Black">
 
-        <Border Margin="0,0,0,60" BorderThickness="0" Background="Black" >
+        <Border Margin="0,0,0,44" BorderThickness="0" Background="Black" >
             <avalonedit:TextEditor Name="editText" FontFamily="Consolas" FontSize="10pt" ShowLineNumbers="True" Background="#272822" Foreground="#F8F8F2" HorizontalScrollBarVisibility="Disabled"/>
         </Border>
 
-        <Button Content="Cancel" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="10,10,10,10" Name="button1" VerticalAlignment="Bottom" Width="75" Click="button1_Click" />
-        <Button Content="Accept Changes" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="10,10,100,10" Name="button2" VerticalAlignment="Bottom" Width="130" Click="button2_Click" />
+        <Button Content="Cancel" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="2" Name="button1" VerticalAlignment="Bottom" Width="75" Click="button1_Click" />
+        <Button Content="Accept Changes" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="2 2 80 2" Name="button2" VerticalAlignment="Bottom" Width="130" Click="button2_Click" />
       
     </Grid>
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/DynamoElements;component/Themes/DynamoModern.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/DynamoCore;component/UI/Themes/DynamoModern.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

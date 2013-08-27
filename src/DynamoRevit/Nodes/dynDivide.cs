@@ -17,6 +17,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
@@ -250,7 +251,7 @@ namespace Dynamo.Nodes
         {
             var input = args[0];
             var uDiv = ((Value.Number)args[1]).Item;
-            var vDiv = ((Value.Number)args[1]).Item;
+            var vDiv = ((Value.Number)args[2]).Item;
 
             if(uDiv < 0 || vDiv < 0)
                 throw new Exception("Can not create subdivided surface with a negative number of U or V divisions.");

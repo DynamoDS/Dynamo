@@ -19,6 +19,11 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
+  <PropertyGroup>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    None
+  </ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -28,6 +33,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -43,6 +50,10 @@
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\greg-client\bin\Debug\Greg.dll</HintPath>
+    </Reference>
+    <Reference Include="GregRevitAuth, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\greg\GregRevitAuth.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
@@ -102,10 +113,6 @@
     <Reference Include="RevitAPIUI">
       <HintPath>..\..\..\..\..\..\..\Autodesk\WI\Autodesk Vasari Beta 3\x64\VAS2014\Program Files\Autodesk\Root\RevitAPIUI.dll</HintPath>
     </Reference>
-    <Reference Include="SSONET, Version=2014.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2014\SSONET.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -132,7 +139,6 @@
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Nodes\dynAdaptiveComponents.cs" />
     <Compile Include="Nodes\dynAnalysis.cs" />
-    <Compile Include="Nodes\dynASMToRevit.cs" />
     <Compile Include="Nodes\dynCurves.cs" />
     <Compile Include="Nodes\dynDatums.cs" />
     <Compile Include="Nodes\dynDivide.cs" />
@@ -142,7 +148,7 @@
     <Compile Include="Nodes\dynIntersection.cs" />
     <Compile Include="Nodes\dynPointAnalysis.cs" />
     <Compile Include="Nodes\dynMeasurement.cs" />
-    <Compile Include="Nodes\dynModelUpdater.cs" />
+    <Compile Include="dynModelUpdater.cs" />
     <Compile Include="Nodes\dynAnalyze.cs" />
     <Compile Include="Nodes\dynPoints.cs" />
     <Compile Include="Nodes\dynProjection.cs" />
@@ -155,6 +161,7 @@
     <Compile Include="Nodes\dynTransforms.cs" />
     <Compile Include="Nodes\dynViews.cs" />
     <Compile Include="IdlePromise.cs" />
+    <Compile Include="Nodes\Materials.cs" />
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\dynParticle.cs" />
     <Compile Include="ParticleSystem\dynParticleSpring.cs" />
@@ -195,9 +202,17 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
+    <ProjectReference Include="..\DSCoreNodes\DSCoreNodes.csproj">
+      <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
+      <Name>DSCoreNodes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DSNodes\DSRevitNodes.csproj">
+      <Project>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</Project>
+      <Name>DSRevitNodes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
-      <Name>DynamoElements</Name>
+      <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">

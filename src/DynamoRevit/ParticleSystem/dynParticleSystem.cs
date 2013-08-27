@@ -24,8 +24,6 @@ using Autodesk.Revit.DB;
 
 namespace Dynamo.Nodes
 {
-
-
     /* The ParticleSystem Class.  
 
     High level data structure holding all particles and forces.  Manages drag and
@@ -35,7 +33,7 @@ namespace Dynamo.Nodes
     course, which is also quite similar to that found in Traer Physics.
     */
 
-     class ParticleSystem
+    class ParticleSystem
     {
         protected List<Particle> particles;
         protected List<ParticleSpring> springs;
@@ -355,9 +353,19 @@ namespace Dynamo.Nodes
             return particles[i];
         }
 
+        public IEnumerable<Particle> Particles
+        {
+            get { return particles; }
+        }
+
         public ParticleSpring getSpring(int i)
         {
             return springs[i];
+        }
+
+        public IEnumerable<ParticleSpring> Springs
+        {
+            get { return springs; }
         }
 
          public bool getConverged()

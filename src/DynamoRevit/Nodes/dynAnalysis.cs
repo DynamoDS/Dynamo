@@ -5,6 +5,7 @@ using System.Text;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
+using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Autodesk.Revit.DB;
@@ -17,14 +18,14 @@ namespace Dynamo.Nodes
      
     [NodeName("Spatial Field Manager")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
-    [NodeDescription("Gets or creates the spatial field manager on the view.")]
+    [NodeDescription("Gets or creates the spatial field manager on the active view.")]
     class dynSpatialFieldManager : dynRevitTransactionNodeWithOneOutput
     {
         //AnalysisDisplayStyle analysisDisplayStyle;
 
         public dynSpatialFieldManager()
         {
-            InPortData.Add(new PortData("n", "Number of samples at a location.", typeof(Value.Number)));
+            InPortData.Add(new PortData("n", "Number of samples to be stored in the spatial field manager.", typeof(Value.Number)));
             OutPortData.Add(new PortData("sfm", "Spatial field manager for the active view", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -42,7 +43,7 @@ namespace Dynamo.Nodes
             }
             else
             {
-                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynRevitSettings.Doc.ActiveView, Convert.ToInt16(((Value.Number)args[0]).Item));
+                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynRevitSettings.Doc.ActiveView, (int) ((Value.Number)args[0]).Item );
             }
 
             return Value.NewContainer(sfm);
@@ -346,7 +347,7 @@ namespace Dynamo.Nodes
 
         public dynSpatialFieldPoints()
         {
-            InPortData.Add(new PortData("vals", "A list of values, corresponding in length, to the list of sample points.", typeof(Value.List)));
+            InPortData.Add(new PortData("vals", "A list of numeric values, corresponding in length, to the list of sample points.", typeof(Value.List)));
             InPortData.Add(new PortData("pts", "Locations (XYZs) of sample points.", typeof(Value.List)));
             InPortData.Add(new PortData("sfm", "A Spatial Field Manager object.", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "The index of the resulting analysis results object.", typeof(Value.Container)));
@@ -432,7 +433,7 @@ namespace Dynamo.Nodes
 
         public dynSpatialFieldVectors()
         {
-            InPortData.Add(new PortData("vals", "A list of vectors corresponding in length, to the list of sample points.", typeof(Value.List)));
+            InPortData.Add(new PortData("vals", "A list of XYZs corresponding in length, to the list of sample points.", typeof(Value.List)));
             InPortData.Add(new PortData("pts", "Locations (XYZs) of sample points.", typeof(Value.List)));
             InPortData.Add(new PortData("sfm", "A Spatial Field Manager object.", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "The index of the resulting analysis results object.", typeof(Value.Container)));

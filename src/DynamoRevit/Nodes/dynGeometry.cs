@@ -19,16 +19,15 @@ using System.Windows.Controls; //for boolean option
 using System.Xml;              //for boolean option  
 using System.Windows.Media.Media3D;
 using System.Reflection;
-
-using Autodesk.Revit;
 using Autodesk.Revit.DB;
-
+using DSCoreNodes;
+using Dynamo.Controls;
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
-using Dynamo.Connectors;
 using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
@@ -306,6 +305,44 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             return Value.NewNumber(((XYZ)((Value.Container)args[0]).Item).X);
+        }
+    }
+
+    [NodeName("XYZ Length")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Gets the length of an XYZ")]
+    public class dynXYZLength : dynGeometryBase
+    {
+        public dynXYZLength()
+        {
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewNumber(((XYZ)((Value.Container)args[0]).Item).GetLength());
+        }
+    }
+
+    [NodeName("XYZ Is Zero Length")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Determines whether an XYZ has zero length")]
+    public class dynXYZIsZeroLength : dynGeometryBase
+    {
+        public dynXYZIsZeroLength()
+        {
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewNumber( ((XYZ) (((Value.Container)args[0]).Item)).IsZeroLength() ? 1 : 0);
         }
     }
 
@@ -628,7 +665,7 @@ namespace Dynamo.Nodes
     {
         public dynUVGrid()
         {
-            InPortData.Add(new PortData("dom", "A domain.", typeof(Value.List)));
+            InPortData.Add(new PortData("domain", "A two dimensional domain.", typeof(Value.Container)));
             InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(Value.Number)));
             InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(Value.Number)));
             OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(Value.List)));
@@ -638,26 +675,21 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FSharpList<Value> domain = ((Value.List)args[0]).Item;
+            var domain = (Domain2D)((Value.Container)args[0]).Item;
             double ui = ((Value.Number)args[1]).Item;
             double vi = ((Value.Number)args[2]).Item;
-            double us = ((Value.Number)domain[2]).Item / ui;
-            double vs = ((Value.Number)domain[3]).Item / vi;
+            double us = domain.USpan/ui;
+            double vs = domain.VSpan/vi;
 
             FSharpList<Value> result = FSharpList<Value>.Empty;
 
-            var min = ((Value.Container)domain[0]).Item as UV;
-            var max = ((Value.Container)domain[1]).Item as UV;
-
-            //for (double u = min.U; u <= max.U; u += us)
             for (int i = 0; i <= ui; i++ )
             {
-                double u = min.U + i*us;
+                double u = domain.Min.x() + i*us;
 
-                //for (double v = min.V; v <= max.V; v += vs)
                 for (int j = 0; j <= vi; j++ )
                 {
-                    double v = min.V + j*vs;
+                    double v = domain.Min.y() + j*vs;
 
                     result = FSharpList<Value>.Cons(
                         Value.NewContainer(new UV(u, v)),
@@ -903,7 +935,6 @@ namespace Dynamo.Nodes
             XYZ oldOrigin = oldP.Origin;
             XYZ oldNorm = oldP.Normal;
             
-            Transform trfP = null;
             if (oldNorm.IsAlmostEqualTo(newNorm))
             {
                 XYZ moveVec = newOrigin - oldOrigin;
@@ -1951,8 +1982,10 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
         }
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a drop down list to the window
             combo = new ComboBox();
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;

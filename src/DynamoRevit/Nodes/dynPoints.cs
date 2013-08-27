@@ -17,10 +17,10 @@ using System.Linq;
 using System.Windows.Controls;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
+using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Dynamo.FSchemeInterop;
-
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
 
@@ -47,25 +47,24 @@ namespace Dynamo.Nodes
 
             ReferencePoint pt;
 
-            if (this.Elements.Any())
+            if (Elements.Any())
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(ReferencePoint), out e))
+                if (dynUtils.TryGetElement(Elements[0], typeof(ReferencePoint), out e))
                 {
-                    //..and if we do, update it's position.
                     pt = (ReferencePoint)e;
                     pt.Position = xyz;
                 }
                 else
                 {
-                    pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
-                    this.Elements[0] = pt.Id;
+                    pt = UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
+                    Elements[0] = pt.Id;
                 }
             }
             else
             {
-                pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
-                this.Elements.Add(pt.Id);
+                pt = UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
+                Elements.Add(pt.Id);
             }
 
             return Value.NewContainer(pt);
@@ -257,8 +256,10 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a drop down list to the window
             combo = new ComboBox();
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;

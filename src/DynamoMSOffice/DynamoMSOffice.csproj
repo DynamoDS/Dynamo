@@ -48,9 +48,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
+    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
-      <Name>DynamoElements</Name>
+      <Name>DynamoCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
       <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
@@ -74,6 +74,7 @@
     <COMReference Include="Microsoft.Office.Interop.Excel">
       <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>1</VersionMajor>
+      <VersionMinor>7</VersionMinor>
       <VersionMinor>6</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
