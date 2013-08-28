@@ -24,6 +24,52 @@ The current version will run on top of Revit 2013, Revit 2014, Project Vasari Be
 
 ## Releases ##
 
+###0.6.0###
+
+August 2013
+
+Fixes
+- Nodes properly save/load port state
+- Better descriptions for boolean logic nodes
+- Fixed bug for equal distance on curve node for closed curves
+- Fixed List To CSV to allow for non-string data
+- Performance improvement for Combine node
+- Nodes properly save/load port state
+- Fixed cultural variaces issues with number node
+- Number sequence and range fixes
+- Better descriptions for boolean logic nodes
+- Length node fixes
+- Best Fit Plane fixes
+- Legacy custom node loading fixes
+- Watch node performance improvements
+- Installer now installs for all users
+- Better output ports for intersection nodes
+
+
+New
+- Package Manager: share custom nodes online
+- Excel nodes (New, Read, Write, and other manipulations) 
+- Can now use material parameters (Get Material by Name node)
+- Get and Remove From List nodes now can remove ranges of items
+- Color Range node
+- Adaptive Component By Face and By Curve nodes 
+- Default values for some nodes
+- Root finding nodes
+- Convert anything to a String (To String node)
+- Is XYZ Zero Length & XYZ Length nodes
+- New Slice List node (get a sublist from a given list)
+- Custom nodes differentiated from built in nodes in search
+- Domain node (specify a domain by Min and Max)
+- For Each node
+- Multithreading nodes
+- Nodes to perform explicit lacing (Lace Shortest, Longest, Cartesian)
+- Divided Surface Selection node (returns a list of hosted components)
+- Add basic instrumentation infrastructure to report usage
+- Allow writing a range of data to excel
+- Face Face intersection node
+- Default value capability for ports
+
+
 ###0.5.3###
 
 July 2013
