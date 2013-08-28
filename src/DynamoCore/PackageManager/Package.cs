@@ -213,7 +213,6 @@ namespace Dynamo.PackageManager
                         .ForEach(x => this.LoadedCustomNodes.Add(x));
         }
 
-
         private void PublishNewPackageVersion()
         {
             this.RefreshCustomNodesFromDirectory();

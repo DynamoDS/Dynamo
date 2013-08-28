@@ -190,10 +190,11 @@ namespace Dynamo.Utilities
 
         public List<CustomNodeInfo> GetInfosFromFolder(string dir)
         {
-            return Directory.EnumerateFiles(dir, "*.dyf")
+            
+            return Directory.Exists(dir) ? Directory.EnumerateFiles(dir, "*.dyf")
                      .Select( AddFileToPath )
                      .Where(x => x != null)
-                     .ToList();
+                     .ToList() : new List<CustomNodeInfo>();
 
         } 
 
@@ -750,6 +751,8 @@ namespace Dynamo.Utilities
                 // will find an (empty) identifier on compilation
                 FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
+
+                // set the node as loaded
                 this.loadedNodes.Add(def.FunctionId, def);
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
@@ -774,7 +777,6 @@ namespace Dynamo.Utilities
                     XmlAttribute lacingAttrib = elNode.Attributes["lacing"];
                     XmlAttribute isVisAttrib = elNode.Attributes["isVisible"];
                     XmlAttribute isUpstreamVisAttrib = elNode.Attributes["isUpstreamVisible"];
-
 
                     string typeName = typeAttrib.Value;
 
@@ -857,8 +859,6 @@ namespace Dynamo.Utilities
                     el.IsVisible = isVisible;
                     el.IsUpstreamVisible = isUpstreamVisible;
 
-                    // note - this is because the connectors fail to be created if there's not added
-                    // to the canvas
                     ws.Nodes.Add(el);
                     el.WorkSpace = ws;
                     var node = el;
@@ -870,40 +870,42 @@ namespace Dynamo.Utilities
                         return false;
 
                     el.DisableReporting();
-                    el.Load(elNode); // inject the node properties from the xml
-
+                    
                     // moved this logic to LoadNode in dynFunction --SJE
 
-                    //if (el is dynFunction)
-                    //{
-                    //    var fun = el as dynFunction;
+                    if (el is dynFunction)
+                    {
+                        var fun = el as dynFunction;
+                        // we've found a custom node, we need to attempt to load its guid.  
+                        // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
+                        // deterministically
+                        //Guid funId;
+                        //try
+                        //{
+                        //    funId = Guid.Parse(fun.Symbol);
+                        //}
+                        //catch
+                        //{
+                        //    funId = GuidUtility.Create(GuidUtility.UrlNamespace, nicknameAttrib.Value);
+                        //    fun.Symbol = funId.ToString();
+                        //}
 
-                    //    // we've found a custom node, we need to attempt to load its guid.  
-                    //    // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
-                    //    // deterministically
-                    //    Guid funId;
-                    //    try
-                    //    {
-                    //        funId = Guid.Parse(fun.Symbol);
-                    //    }
-                    //    catch
-                    //    {
-                    //        funId = GuidUtility.Create(GuidUtility.UrlNamespace, nicknameAttrib.Value);
-                    //        fun.Symbol = funId.ToString();
-                    //    }
+                        // if it's not a recurisve node and it's not yet loaded, load it
+                        //if (funcDefGuid != funId && !this.loadedNodes.ContainsKey(funId))
+                        //{
+                        //    dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
+                        //    fun.Definition = this.loadedNodes[funId];
+                        //}
+                        //else if (this.loadedNodes.ContainsKey(funId))
+                        //{
+                        //    fun.Definition = this.loadedNodes[funId];
+                        //}
 
-                    //    // if it's not a recurisve node and it's not yet loaded, load it
-                    //    if (funcDefGuid != funId && !this.loadedNodes.ContainsKey(funId))
-                    //    {
-                    //        dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
-                    //        fun.Definition = this.loadedNodes[funId];
-                    //    }  
-                    //    else if ( this.loadedNodes.ContainsKey(funId ))
-                    //    {
-                    //        fun.Definition = this.loadedNodes[funId];
-                    //    }
+                    }
 
-                    //}
+                    el.Load(elNode); // has load definition in it, which we have not yet completed.
+                   
+                    
                 }
 
                 #endregion

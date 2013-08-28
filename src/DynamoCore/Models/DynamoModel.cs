@@ -272,8 +272,6 @@ namespace Dynamo.Models
 
         internal void PostUIActivation(object parameter)
         {
-            //DynamoLoader.LoadCustomNodes(dynSettings.Controller.CustomNodeManager, 
-            //    dynSettings.Controller.SearchViewModel);
 
             DynamoLoader.LoadCustomNodes();
 
@@ -913,16 +911,15 @@ namespace Dynamo.Models
                 try
                 {
 
-                    dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
-
                     if (addToSearch)
                     {
                         dynSettings.Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category,functionWorkspace.Description, definition.FunctionId);
                     }
 
                     var info = new CustomNodeInfo(definition.FunctionId, functionWorkspace.Name, functionWorkspace.Category, functionWorkspace.Description, path);
-                    //dynSettings.Controller.CustomNodeManager.SetNodeInfo(functionWorkspace.Name, functionWorkspace.Category, definition.FunctionId, path);
                     dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
+
+                    dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
 
                     #region Compile Function and update all nodes
 
@@ -952,7 +949,6 @@ namespace Dynamo.Models
 
 
                     #endregion
-
 
                 }
                 catch (Exception e)
@@ -1596,7 +1592,7 @@ namespace Dynamo.Models
 
             //TODO: UI Refactor - Is this the right data for refactor?
             var info = new CustomNodeInfo(def.FunctionId, editName, CurrentSpace.Category, CurrentSpace.Description, CurrentSpace.FilePath);
-            //dynSettings.Controller.SearchViewModel.Refactor(def, editName, (CurrentSpace).Name);
+
             dynSettings.Controller.SearchViewModel.Refactor(info);
 
             //Update existing function nodes
