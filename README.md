@@ -45,11 +45,11 @@ Fixes
 - Watch node performance improvements
 - Installer now installs for all users
 - Better output ports for intersection nodes
+- Excel nodes improvements
 
 
 New
 - Package Manager: share custom nodes online
-- Excel nodes (New, Read, Write, and other manipulations) 
 - Can now use material parameters (Get Material by Name node)
 - Get and Remove From List nodes now can use ranges of indecies
 - Color Range node
