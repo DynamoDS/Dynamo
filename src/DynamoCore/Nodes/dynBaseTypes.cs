@@ -411,17 +411,17 @@ namespace Dynamo.Nodes
 
     [NodeName("Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Reduces a sequence.")]
+    [NodeDescription("Reduces a list into a new value by combining each element with an accumulated result.")]
     [NodeSearchTags("foldl")]
     public class dynFold : dynBuiltinFunction
     {
         public dynFold()
             : base(FScheme.FoldL)
         {
-            InPortData.Add(new PortData("f(x, a)", "Reductor Funtion", typeof(object)));
-            InPortData.Add(new PortData("a", "Seed", typeof(object)));
-            InPortData.Add(new PortData("seq", "Sequence", typeof(Value.List)));
-            OutPortData.Add(new PortData("out", "Result", typeof(object)));
+            InPortData.Add(new PortData("f(x, a)", "Reductor Function: first argument is an item in the list, second is the current accumulated value, result is the new accumulated value.", typeof(object)));
+            InPortData.Add(new PortData("a", "Starting result (accumulator).", typeof(object)));
+            InPortData.Add(new PortData("list", "List to reduce.", typeof(Value.List)));
+            OutPortData.Add(new PortData("", "Result", typeof(object)));
 
             RegisterAllPorts();
         }
@@ -693,7 +693,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Maps a sequence")]
+    [NodeDescription("Applies a function over all elements of a list, generating a new list from the results.")]
     public class dynMap : dynBuiltinFunction
     {
         public dynMap()
@@ -720,12 +720,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", "", typeof(Value.Dummy)));
 
             RegisterAllPorts();
-        }
-
-        public override bool RequiresRecalc
-        {
-            get { return true; }
-            set { }
         }
     }
 
@@ -873,16 +867,40 @@ namespace Dynamo.Nodes
     [NodeName("Get From List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Gets an element from a list at a specified index.")]
-    public class dynGetFromList : dynBuiltinFunction
+    public class dynGetFromList : dynNodeWithOneOutput
     {
         public dynGetFromList()
-            : base(FScheme.Get)
         {
             InPortData.Add(new PortData("index", "Index of the element to extract", typeof(object)));
             InPortData.Add(new PortData("list", "The list to extract the element from", typeof(Value.List)));
             OutPortData.Add(new PortData("element", "Extracted element", typeof(object)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var indeces = args[0];
+            var lst = ((Value.List)args[1]).Item;
+
+            if (indeces.IsNumber)
+            {
+                var idx = (int)(indeces as Value.Number).Item;
+                return ListModule.Get(lst, idx);
+            }
+            else if (indeces.IsList)
+            {
+                var idxs = (indeces as Value.List).Item.Select(x => (int)((Value.Number)x).Item);
+                return
+                    Value.NewList(
+                        Utils.SequenceToFSharpList(idxs.Select(i => ListModule.Get(lst, i))));
+            }
+            else
+            {
+                throw new Exception("\"index\" argument not a number or a list of numbers.");
+            }
         }
     }
 
@@ -923,14 +941,33 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("list", "List with element removed", typeof(object)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var idx = (int)((Value.Number)args[0]).Item;
+            var indeces = args[0];
             var lst = ((Value.List)args[1]).Item;
 
-            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => i != idx)));
+            if (indeces.IsNumber)
+            {
+                var idx = (int)(indeces as Value.Number).Item;
+                return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => i != idx)));
+            }
+            else if (indeces.IsList)
+            {
+                var idxs =
+                    new HashSet<int>(
+                        (indeces as Value.List).Item.Select(x => (int)((Value.Number)x).Item));
+                return
+                    Value.NewList(
+                        Utils.SequenceToFSharpList(lst.Where((_, i) => !idxs.Contains(i))));
+            }
+            else
+            {
+                throw new Exception("\"index\" argument not a number or a list of numbers.");
+            }
         }
     }
 
@@ -943,6 +980,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("n", "All indeces that are a multiple of this number will be removed.", typeof(object)));
             InPortData.Add(new PortData("list", "The list to remove elements from.", typeof(Value.List)));
+            InPortData.Add(new PortData("offset", "Skip this amount before removing every Nth.", typeof(Value.Number), Value.NewNumber(0)));
             OutPortData.Add(new PortData("list", "List with elements removed.", typeof(object)));
 
             RegisterAllPorts();
@@ -952,8 +990,9 @@ namespace Dynamo.Nodes
         {
             var n = (int)((Value.Number)args[0]).Item;
             var lst = ((Value.List)args[1]).Item;
+            var offset = (int)((Value.Number)args[2]).Item;
 
-            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => (i + 1) % n != 0)));
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Skip(offset).Where((_, i) => (i + 1) % n != 0)));
         }
     }
 
@@ -966,6 +1005,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("n", "All indeces that are a multiple of this number will be extracted.", typeof(object)));
             InPortData.Add(new PortData("list", "The list to extract elements from.", typeof(Value.List)));
+            InPortData.Add(new PortData("offset", "Skip this amount before taking every Nth.", typeof(Value.Number), Value.NewNumber(0)));
             OutPortData.Add(new PortData("list", "Extracted elements.", typeof(object)));
 
             RegisterAllPorts();
@@ -975,8 +1015,9 @@ namespace Dynamo.Nodes
         {
             var n = (int)((Value.Number)args[0]).Item;
             var lst = ((Value.List)args[1]).Item;
+            var offset = (int)((Value.Number)args[2]).Item;
 
-            return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => (i + 1) % n == 0)));
+            return Value.NewList(Utils.SequenceToFSharpList(lst.Skip(offset).Where((_, i) => (i + 1) % n == 0)));
         }
     }
 

@@ -3,23 +3,23 @@
 
 [Setup]
 AppName=Dynamo
-AppVerName=Dynamo 0.5.3
+AppVerName=Dynamo 0.6
 AppPublisher=Autodesk, Inc.
 AppID={{12A2BEA3-7641-4AEC-B344-9B49C8DDFF1A}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.com
 AppSupportURL=
 AppUpdatesURL=
-AppVersion=0.5.3
-VersionInfoVersion=0.5.3
+AppVersion=0.6
+VersionInfoVersion=0.6
 VersionInfoCompany=Autodesk 
-VersionInfoDescription=Dynamo 0.5.3
-VersionInfoTextVersion=Dynamo 0.5.3
+VersionInfoDescription=Dynamo 0.6
+VersionInfoTextVersion=Dynamo 0.6
 VersionInfoCopyright=
 DefaultDirName=C:\Autodesk\Dynamo\Core
 DefaultGroupName=
 OutputDir=Installers
-OutputBaseFilename=InstallDynamo0.5.3
+OutputBaseFilename=InstallDynamo
 SetupIconFile=Extra\Nodes_32_32.ico
 Compression=lzma
 SolidCompression=true
@@ -29,7 +29,7 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\Nodes_32_32.ico
-UninstallDisplayName=Dynamo 0.5.3
+UninstallDisplayName=Dynamo 0.6
 UsePreviousAppDir=no
 
 [Types]
