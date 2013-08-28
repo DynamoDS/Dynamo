@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using Dynamo.FSchemeInterop.Node;
 
 namespace Dynamo.Models
 {
@@ -216,9 +217,18 @@ namespace Dynamo.Models
         public string NickName { get; internal set; }
         public string ToolTipString { get; internal set; }
         public Type PortType { get; set; }
-        public FScheme.Value DefaultValue { get; set; }
+        public INode DefaultValue { get; set; }
 
         public PortData(string nickName, string tip, Type portType, FScheme.Value defaultValue=null)
+        {
+            NickName = nickName;
+            ToolTipString = tip;
+            PortType = portType;
+            if (defaultValue != null)
+                DefaultValue = new ValueNode(defaultValue);
+        }
+
+        internal PortData(string nickName, string tip, Type portType, INode defaultValue)
         {
             NickName = nickName;
             ToolTipString = tip;

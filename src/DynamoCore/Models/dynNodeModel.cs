@@ -612,7 +612,7 @@ namespace Dynamo.Models
                 }
                 else if (InPorts[data.Index].UsingDefaultValue)
                 {
-                    connections.Add(Tuple.Create(data.Name, new ValueNode(InPortData[data.Index].DefaultValue) as INode));
+                    connections.Add(Tuple.Create(data.Name, InPortData[data.Index].DefaultValue));
                 }
                 else //othwise, remember that this is a partial application
                 {
