@@ -13,8 +13,7 @@ from optparse import OptionParser
 def main():
 
 	parser = OptionParser()
-	
-	parser.add_option("-r", "--root", dest="root", help="The root directory of the dynamo project.", metavar="FILE", default="E://Dynamo")
+	parser.add_option("-r", "--root", dest="root", help="The root directory of the dynamo project.", metavar="FILE", default="E:/Dynamo")
 
 	(options, args) = parser.parse_args()
 
@@ -23,11 +22,13 @@ def main():
 	installer_bin_dir = 'Installers'
 	installer_bat = 'CreateInstallers-RELEASE.bat'
 	print "Publishing to s3"
+	print installer_dir
+	print installer_bin_dir
 	
-	#publish_to_s3( installer_dir, installer_bin_dir )
+	publish_to_s3( installer_dir, installer_bin_dir )
 
 # S3 ##############################
-	
+
 def publish_to_s3(installer_dir, installer_bin_dir):
 
 	try:
