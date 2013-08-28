@@ -20,10 +20,8 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    None
-  </ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-  </PropertyGroup>
+	  <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+	</PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -31,10 +29,9 @@
     <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>3</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <NoWarn>
-    </NoWarn>
+    <NoWarn>618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
