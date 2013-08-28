@@ -311,6 +311,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Length")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Gets the length of an XYZ")]
+    [NodeSearchTags("vector", "length", "xyz", "magnitude", "amplitude")]
     public class dynXYZLength : dynGeometryBase
     {
         public dynXYZLength()
@@ -330,6 +331,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Is Zero Length")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Determines whether an XYZ has zero length")]
+    [NodeSearchTags("vector", "length", "xyz", "magnitude", "amplitude")]
     public class dynXYZIsZeroLength : dynGeometryBase
     {
         public dynXYZIsZeroLength()
