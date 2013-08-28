@@ -597,7 +597,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void LoftNode()
+        public void Loft()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -607,7 +607,7 @@ namespace DynamoRevitTests
             model.Open(testPath);
             dynSettings.Controller.RunExpression(true);
 
-            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(GenericForm));
 
             //verify one loft created
@@ -674,7 +674,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void XYZFromReferencePointNode()
+        public void XYZFromReferencePoint()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -824,7 +824,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void ClosedCurveTest()
+        public void ClosedCurve()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -1007,6 +1007,18 @@ namespace DynamoRevitTests
                           () => dynSettings.Controller.RunExpression(true));
         }
 
+        [Test]
+        public void CurveLoop()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\CurveLoop.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
         /// <summary>
         /// Automated creation of regression test cases.
         /// </summary>
@@ -1086,7 +1098,6 @@ namespace DynamoRevitTests
             dynRevitSettings.Revit.OpenAndActivateDocument(modelPath);
             initialDoc.Close(false);
         }
-
 
         private void OpenEmptyModel()
         {
