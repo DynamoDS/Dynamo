@@ -155,31 +155,24 @@ namespace Dynamo.Controls
                 {
                     case DisplayUnitType.DUT_CENTIMETERS:
                         return total*0.032808;
-                        break;
 
                     case DisplayUnitType.DUT_MILLIMETERS:
                         return total * 0.003281;
-                        break;
 
                     case DisplayUnitType.DUT_METERS:
                         return total*3.28084;
-                        break;
 
                     case DisplayUnitType.DUT_FRACTIONAL_INCHES:
                         return total/12.0;
-                        break;
 
                     case DisplayUnitType.DUT_FEET_FRACTIONAL_INCHES:
                         return total;
-                        break;
 
                     case DisplayUnitType.DUT_DECIMAL_INCHES:
                         return total/12;
-                        break;
 
                     case DisplayUnitType.DUT_DECIMAL_FEET:
                         return total;
-                        break;
                 }
             }
 
