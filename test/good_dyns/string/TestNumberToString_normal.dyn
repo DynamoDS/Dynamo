@@ -1,0 +1,35 @@
+<dynWorkspace X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <dynElements>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="f8767579-f7c1-475f-980e-7cd6a42684c8" nickname="Watch" x="785" y="186.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynNum2String type="Dynamo.Nodes.dynNum2String" guid="b8e70cee-f3dd-4a54-a9c6-cf62fee67c5a" nickname="Number to String" x="481" y="217.02" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="b6fbfc57-f9a1-4609-912d-3824f806f5b8" nickname="Number" x="254" y="221.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="123456789" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="5a974eeb-6bca-4029-9948-c6af1c9fe913" nickname="Watch" x="793" y="369.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynNum2String type="Dynamo.Nodes.dynNum2String" guid="2f886630-a892-4759-aae7-ab696fcce6b4" nickname="Number to String" x="489" y="400.02" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="9b74289c-cd72-4274-9bfb-b6b56d2774bb" nickname="Number" x="268" y="405.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-123456789" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="ce2c9ef8-8fac-427a-b550-ecec8f66aacf" nickname="Watch" x="773" y="496.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynNum2String type="Dynamo.Nodes.dynNum2String" guid="6f0c1a11-69ba-4b67-95ee-c19defcae9a8" nickname="Number to String" x="469" y="527.02" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="075ecd65-d9b4-4489-b090-41a309f0b794" nickname="Number" x="248" y="532.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3.456" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="bd14730f-fddc-4301-9d63-7b1e77eeb72a" nickname="Watch" x="776" y="618.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynNum2String type="Dynamo.Nodes.dynNum2String" guid="3c2d8c78-7958-4e29-bc37-c102f994dea3" nickname="Number to String" x="472" y="649.02" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="1ce66222-719e-414e-b4e3-93544239f4e5" nickname="Number" x="251" y="654.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-3.456" />
+    </Dynamo.Nodes.dynDoubleInput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Models.dynConnectorModel start="b8e70cee-f3dd-4a54-a9c6-cf62fee67c5a" start_index="0" end="f8767579-f7c1-475f-980e-7cd6a42684c8" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="b6fbfc57-f9a1-4609-912d-3824f806f5b8" start_index="0" end="b8e70cee-f3dd-4a54-a9c6-cf62fee67c5a" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="2f886630-a892-4759-aae7-ab696fcce6b4" start_index="0" end="5a974eeb-6bca-4029-9948-c6af1c9fe913" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="9b74289c-cd72-4274-9bfb-b6b56d2774bb" start_index="0" end="2f886630-a892-4759-aae7-ab696fcce6b4" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="6f0c1a11-69ba-4b67-95ee-c19defcae9a8" start_index="0" end="ce2c9ef8-8fac-427a-b550-ecec8f66aacf" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="075ecd65-d9b4-4489-b090-41a309f0b794" start_index="0" end="6f0c1a11-69ba-4b67-95ee-c19defcae9a8" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="3c2d8c78-7958-4e29-bc37-c102f994dea3" start_index="0" end="bd14730f-fddc-4301-9d63-7b1e77eeb72a" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="1ce66222-719e-414e-b4e3-93544239f4e5" start_index="0" end="3c2d8c78-7958-4e29-bc37-c102f994dea3" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>
