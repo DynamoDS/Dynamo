@@ -46,7 +46,7 @@ namespace DynamoRevitTests
             //fixture, so the initfixture method is not called.
 
             //get the test path
-            FileInfo fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
             string testsLoc = Path.Combine(assDir, @"..\..\test\revit\");
             _testPath = Path.GetFullPath(testsLoc);
@@ -78,14 +78,17 @@ namespace DynamoRevitTests
             _emptyModelPath1 = Path.Combine(_testPath, "empty1.rfa");
             */
             //open an empty model before every test
-            OpenEmptyModel();
+            //OpenEmptyModel();
         }
 
         [TearDown]
         //Called after each test method
         public void Cleanup()
         {
+            // opens an empty model and closes
+            // the current model without saving 
             OpenEmptyModel();
+
         }
 
         [Test]
@@ -113,11 +116,11 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void CanOpenReferencePointTest()
+        public void ReferencePoint()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string testPath = Path.Combine(_testPath, "ReferencePointTest.dyn");
+            string testPath = Path.Combine(_testPath, "ReferencePoint.dyn");
             model.Open(testPath);
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
             
@@ -526,7 +529,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void ModelCurveNode()
+        public void ModelCurve()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -561,7 +564,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void ReferenceCurveNode()
+        public void ReferenceCurve()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -594,7 +597,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void LoftNode()
+        public void Loft()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -604,7 +607,7 @@ namespace DynamoRevitTests
             model.Open(testPath);
             dynSettings.Controller.RunExpression(true);
 
-            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(GenericForm));
 
             //verify one loft created
@@ -614,7 +617,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void CurveByPointsNode()
+        public void CurveByPoints()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -671,7 +674,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void XYZFromReferencePointNode()
+        public void XYZFromReferencePoint()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -821,7 +824,7 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void ClosedCurveTest()
+        public void ClosedCurve()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -970,12 +973,11 @@ namespace DynamoRevitTests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\DividedSurfaceTest.dyn");
+            string samplePath = Path.Combine(_testPath, @".\DividedSurface.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            var shellPath = Path.Combine(_testPath, "shell.rfa");
-
-            SwapCurrentModel(shellPath);
+            //var shellPath = Path.Combine(_testPath, "shell.rfa");
+            //SwapCurrentModel(shellPath);
 
             model.Open(testPath);
             dynSettings.Controller.RunExpression(true);
@@ -1003,6 +1005,18 @@ namespace DynamoRevitTests
             numNode.Value = "-5";
             Assert.Throws(typeof(AssertionException),
                           () => dynSettings.Controller.RunExpression(true));
+        }
+
+        [Test]
+        public void CurveLoop()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\CurveLoop.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         /// <summary>
@@ -1085,15 +1099,19 @@ namespace DynamoRevitTests
             initialDoc.Close(false);
         }
 
-
         private void OpenEmptyModel()
         {
             Document initialDoc = dynRevitSettings.Doc.Document;
             UIDocument empty1 = dynRevitSettings.Revit.OpenAndActivateDocument(_emptyModelPath1);
             initialDoc.Close(false);
 
-            dynRevitSettings.Revit.OpenAndActivateDocument(_emptyModelPath);
-            empty1.Document.Close(false);
+            // this was used in the previous incarnation of the revit tester
+            // it acted as a document swap in the case that the document you were
+            // testing on was one of the default 'empty' documents
+            // it is removed for now because as tests are called from the journal file
+            // they will specify a file to open
+            //dynRevitSettings.Revit.OpenAndActivateDocument(_emptyModelPath);
+            //empty1.Document.Close(false);
         }
 
         /// <summary>

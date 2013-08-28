@@ -418,12 +418,17 @@ namespace Dynamo.Models
 
                 if (!savingHomespace) //If we are not saving the home space
                 {
-                    var guid =
-                        dynSettings.Controller.CustomNodeManager.GetGuidFromName(workSpace.Name);
+                    var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(workSpace);
+                    Guid guid;
 
-                    //friends don't let friends save an empty GUID
-                    if (guid == Guid.Empty)
+                    if (def != null)
+                    {
+                        guid = def.FunctionId;
+                    }
+                    else
+                    {
                         guid = Guid.NewGuid();
+                    }
 
                     root.SetAttribute("ID", guid.ToString());
                 }
