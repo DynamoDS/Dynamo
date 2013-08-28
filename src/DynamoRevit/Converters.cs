@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Windows.Data;
 
 using Autodesk.Revit.DB;
@@ -143,131 +144,89 @@ namespace Dynamo.Controls
         /// <returns></returns>
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            DisplayUnitType displayUnit = getDisplayUnitTypeOfFormatUnits();
-
-            //The data binding engine calls this method when it propagates a value from the binding target to the binding source.
-            var lengthObj = (DynamoLength<Foot>)parameter;
-
-            //try and parse the value first
-            //if it parses as a number, then just accept it
-            double length;
-            if (double.TryParse(value.ToString(), NumberStyles.Number, CultureInfo.CurrentCulture, out length))
+            //first try to parse the input as a number
+            //it it's parsable, then just cram it into
+            //whatever the project units are
+            double total = 0.0;
+            if (double.TryParse(value.ToString(), NumberStyles.Number, CultureInfo.CurrentCulture, out total))
             {
-                #region parse with no units specified
+                DisplayUnitType displayUnit = getDisplayUnitTypeOfFormatUnits();
                 switch (displayUnit)
                 {
                     case DisplayUnitType.DUT_CENTIMETERS:
-                        lengthObj.FromDisplayString(value.ToString() + "cm", DynamoUnitDisplayType.CENTIMETERS);
+                        return total*0.032808;
                         break;
 
                     case DisplayUnitType.DUT_MILLIMETERS:
-                        lengthObj.FromDisplayString(value.ToString() + "mm", DynamoUnitDisplayType.MILLIMETERS);
+                        return total * 0.003281;
                         break;
 
                     case DisplayUnitType.DUT_METERS:
-                        lengthObj.FromDisplayString(value.ToString() + "m", DynamoUnitDisplayType.METERS);
+                        return total*3.28084;
                         break;
 
                     case DisplayUnitType.DUT_FRACTIONAL_INCHES:
-                        lengthObj.FromDisplayString(value.ToString() + "\"", DynamoUnitDisplayType.FRACTIONAL_INCHES);
+                        return total/12.0;
                         break;
 
                     case DisplayUnitType.DUT_FEET_FRACTIONAL_INCHES:
-                        lengthObj.FromDisplayString(value.ToString() + "'", DynamoUnitDisplayType.FRACTIONAL_FEET_INCHES);
+                        return total;
                         break;
 
                     case DisplayUnitType.DUT_DECIMAL_INCHES:
-                        lengthObj.FromDisplayString(value.ToString() + "\"", DynamoUnitDisplayType.DECIMAL_INCHES);
+                        return total/12;
                         break;
 
                     case DisplayUnitType.DUT_DECIMAL_FEET:
-                        lengthObj.FromDisplayString(value.ToString() + "'", DynamoUnitDisplayType.DECIMAL_FEET);
+                        return total;
                         break;
                 }
-                #endregion
             }
-            else
+
+            string pattern = @"(((?<ft>([\-\+]?\d+([.,]\d{1,2})?))('|ft))*\s*((?<in>(?<num>[\-\+]?\d+([.,]\d{1,2})?)/(?<den>\d+([.,]\d{1,2})?)*(""|in))|(?<in>(?<wholeInch>[\-\+]?\d+([.,]\d{1,2})?)*(\s|-)*(?<num>[\-\+]?\d+([.,]\d{1,2})?)/(?<den>\d+([.,]\d{1,2})?)*(""|in))|(?<in>(?<wholeInch>[\-\+]?\d+([.,]\d{1,2})?)(""|in)))?)*((?<m>([\-\+]?\d+([.,]\d{1,2})?))m($|\s))*((?<cm>([\-\+]?\d+([.,]\d{1,2})?))cm($|\s))*((?<mm>([\-\+]?\d+([.,]\d{1,2})?))mm($|\s))*";
+
+            int feet = 0;
+            int inch = 0;
+            int mm = 0;
+            int cm = 0;
+            int m = 0;
+            double numerator = 0.0;
+            double denominator = 0.0;
+            double fractionalInch = 0.0;
+
+            const RegexOptions opts = RegexOptions.None;
+            var regex = new Regex(pattern, opts);
+            Match match = regex.Match(value.ToString().Trim().ToLower());
+            if (match.Success)
             {
-                #region parse with units specified
-                if (value.ToString().Contains("'") && value.ToString().Contains("\""))
-                {
-                    //fractional feet and inches
-                    lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.FRACTIONAL_FEET_INCHES);
-                }
-                else if (value.ToString().Contains("'") && !value.ToString().Contains("\""))
-                {
-                    //fractional feet only
-                    lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.FRACTIONAL_FEET_INCHES);
-                }
-                else if (value.ToString().Contains("ft"))
-                {
-                    //decimal feet
-                    lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.DECIMAL_FEET);
-                }
-                else if (value.ToString().Contains("in"))
-                {
-                    //decimal inches
-                    lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.DECIMAL_INCHES);
-                }
-                else if (value.ToString().Contains("\"") && !value.ToString().Contains("'"))
-                {
-                    //fractional inches only
-                    lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.FRACTIONAL_INCHES);
-                }
-                else if (value.ToString().ToLower().Contains("cm"))
-                {
-                    //centimeters
-                    lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.CENTIMETERS);
-                }
-                else if (value.ToString().Contains("mm"))
-                {
-                    //millimeters
-                    lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.MILLIMETERS);
-                }
-                else if (value.ToString().ToLower().Contains("m"))
-                {
-                    //meters
-                    lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.METERS);
-                }
-                else
-                {
-                    //fall back to parsing the length based on the the display unit type
-                    switch (displayUnit)
-                    {
-                        case DisplayUnitType.DUT_CENTIMETERS:
-                            lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.CENTIMETERS);
-                            break;
+                //parse imperial values
+                int.TryParse(match.Groups["ft"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out feet);
+                int.TryParse(match.Groups["wholeInch"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out inch);
+                double.TryParse(match.Groups["num"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture,
+                                out numerator);
+                double.TryParse(match.Groups["den"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture,
+                                out denominator);
 
-                        case DisplayUnitType.DUT_MILLIMETERS:
-                            lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.MILLIMETERS);
-                            break;
+                //parse metric values
+                int.TryParse(match.Groups["m"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out m);
+                int.TryParse(match.Groups["cm"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out cm);
+                int.TryParse(match.Groups["mm"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out mm);
 
-                        case DisplayUnitType.DUT_METERS:
-                            lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.METERS);
-                            break;
-
-                        case DisplayUnitType.DUT_FRACTIONAL_INCHES:
-                            lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.FRACTIONAL_INCHES);
-                            break;
-
-                        case DisplayUnitType.DUT_FEET_FRACTIONAL_INCHES:
-                            lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.FRACTIONAL_FEET_INCHES);
-                            break;
-
-                        case DisplayUnitType.DUT_DECIMAL_INCHES:
-                            lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.DECIMAL_INCHES);
-                            break;
-
-                        case DisplayUnitType.DUT_DECIMAL_FEET:
-                            lengthObj.FromDisplayString(value.ToString(), DynamoUnitDisplayType.DECIMAL_FEET);
-                            break;
-                    }
-                }
-                #endregion
             }
-            
 
-            return lengthObj.Item.Length;
+            if (denominator != 0)
+                fractionalInch = numerator / denominator;
+
+            if (feet < 0)
+                total = feet - inch / 12.0 - fractionalInch / 12.0;
+            else
+                total = feet + inch / 12.0 + fractionalInch / 12.0;
+
+            total += m*3.28084;
+            total += cm*0.032808;
+            total += mm*0.003281;
+
+            return total;
         }
     }
 }
