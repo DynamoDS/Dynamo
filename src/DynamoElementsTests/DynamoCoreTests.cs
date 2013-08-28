@@ -13,6 +13,8 @@ using Dynamo.Utilities;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using NUnit.Framework;
+using Dynamo.Models;
+using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Tests
 {
@@ -797,6 +799,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(180.0, degrees, 0.01);
         }
 
+#if false
+
         [Test]
         public void AdditionOfTwoArray()
         {
@@ -917,6 +921,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, controller.DynamoViewModel.CurrentSpace.Connectors.Count);
 
         }
+
+#endif // Both "CommandQueue" and "ProcessCommandQueue" no longer available.
 
         //// CancelRunCommand
 
