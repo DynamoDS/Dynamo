@@ -30,6 +30,7 @@ August 2013
 
 Fixes
 - Nodes properly save/load port state
+- Build sublists now uses same sematics as Number node
 - Better descriptions for boolean logic nodes
 - Fixed bug for equal distance on curve node for closed curves
 - Fixed List To CSV to allow for non-string data
@@ -50,8 +51,9 @@ New
 - Package Manager: share custom nodes online
 - Excel nodes (New, Read, Write, and other manipulations) 
 - Can now use material parameters (Get Material by Name node)
-- Get and Remove From List nodes now can remove ranges of items
+- Get and Remove From List nodes now can use ranges of indecies
 - Color Range node
+- Intersection nodes return more granular results
 - Adaptive Component By Face and By Curve nodes 
 - Default values for some nodes
 - Root finding nodes
