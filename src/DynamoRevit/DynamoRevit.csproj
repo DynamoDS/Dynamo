@@ -49,7 +49,7 @@
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\greg-client\bin\Debug\Greg.dll</HintPath>
+      <HintPath>..\..\extern\greg\Greg.dll</HintPath>
     </Reference>
     <Reference Include="GregRevitAuth, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -105,14 +105,14 @@
     </Reference>
     <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\greg-client\bin\Debug\RestSharp.dll</HintPath>
+      <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPI.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2014\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPIUI.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2014\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
