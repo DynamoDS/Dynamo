@@ -54,6 +54,7 @@
     <Compile Include="DynamoCoreTests.cs" />
     <Compile Include="DynamoCoreUITests.cs" />
     <Compile Include="DynamoSampleTests.cs" />
+    <Compile Include="DynamoStringTests.cs" />
     <Compile Include="PackageDependencyTests.cs" />
     <Compile Include="SearchTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
