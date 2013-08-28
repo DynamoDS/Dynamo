@@ -1395,37 +1395,31 @@ namespace Dynamo.Nodes
 
         private void processTextForNewInputs()
         {
-            if (InPortData.Count > 2)
-                InPortData.RemoveRange(2, InPortData.Count - 2);
-
-            var parameters = new HashSet<string>();
+            var parameters = new List<string>();
 
             try
             {
-                processText(
-                    Value,
-                    int.MaxValue,
-                    delegate(string identifier)
-                    {
-                        parameters.Add(identifier);
-                        return 0;
-                    });
+                _parsed = dynDoubleInput.ParseValue(Value, new[] { ',' }, parameters);
+
+                if (InPortData.Count > 2)
+                    InPortData.RemoveRange(2, InPortData.Count - 2);
+
+                foreach (string parameter in parameters)
+                {
+                    InPortData.Add(new PortData(parameter, "variable", typeof(Value.Number)));
+                }
+
+                RegisterInputs();
             }
             catch (Exception e)
             {
                 Error(e.Message);
             }
-
-            foreach (string parameter in parameters)
-            {
-                InPortData.Add(new PortData(parameter, "variable", typeof(Value.Number)));
-            }
-
-            RegisterInputs();
         }
 
         internal static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|\[(?<id>\w(?:[^}\\]|(?:\\}))*)\]");
         internal static readonly string[] RangeSeparatorTokens = { "..", ":", };
+        private List<dynDoubleInput.IDoubleSequence> _parsed;
 
         private static List<Tuple<int, int, int>> processText(string text, int maxVal, Func<string, int> idFoundCallback)
         {
@@ -1477,13 +1471,12 @@ namespace Dynamo.Nodes
 
                 if (valueRange.Length > 2)
                 {
-                    step = end;
                     if (!int.TryParse(valueRange[2], out end))
                     {
                         var match = IdentifierPattern.Match(valueRange[2]);
                         if (match.Success)
                         {
-                            end = idFoundCallback(match.Groups["id"].Value);
+                            step = idFoundCallback(match.Groups["id"].Value);
                         }
                         else
                         {
@@ -1507,14 +1500,12 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            if (!args[0].IsList)
-                throw new Exception("A list is required to create sub-lists.");
-
-            FSharpList<Value> list = ((Value.List)args[0]).Item;
-            int offset = Convert.ToInt32(((Value.Number)args[1]).Item);
+            var list = ((Value.List)args[0]).Item;
+            var len = list.Length;
+            var offset = Convert.ToInt32(((Value.Number)args[1]).Item);
 
             if (offset <= 0)
-                throw new Exception(InPortData[1].NickName + " argument must be greater than zero.");
+                throw new Exception("\"" + InPortData[1].NickName + "\" argument must be greater than zero.");
 
             //sublist creation semantics are as follows:
             //EX. 1..2,5..8
@@ -1525,28 +1516,23 @@ namespace Dynamo.Nodes
             var paramLookup = args.Skip(2)
                                   .Select(
                                       (x, i) => new { Name = InPortData[i+2].NickName, Argument = x })
-                                  .ToDictionary(x => x.Name, x => Convert.ToInt32(((Value.Number)x.Argument).Item));
+                                  .ToDictionary(x => x.Name, x => ((Value.Number)x.Argument).Item);
 
-            var ranges = processText(Value, list.Length, x => paramLookup[x]);
+            var ranges = _parsed
+                .Select(x => x.GetValue(paramLookup).Select(Convert.ToInt32).ToList())
+                .ToList();
 
             //move through the list, creating sublists
             var finalList = new List<Value>();
 
-            for (int j = 0; j < list.Count(); j+=offset)
+            for (int j = 0; j < len; j+=offset)
             {
                 var currList = new List<Value>();
-                foreach (Tuple<int, int, int> range in ranges)
-                {
-                    if (range.Item1 + j > list.Count() - 1 ||
-                        range.Item2 + j > list.Count() - 1)
-                    {
-                        continue;
-                    }
 
-                    for (int i = range.Item1 + j; i <= range.Item2 + j; i += range.Item3)
-                    {
-                        currList.Add(list.ElementAt(i));
-                    }
+                var query = ranges.Where(r => r[0] + j <= len - 1 && r.Last() + j <= len - 1);
+                foreach (var range in query)
+                {
+                    currList.AddRange(range.Select(i => list.ElementAt(j+i)));
                 }
 
                 if (currList.Any())
@@ -1554,7 +1540,6 @@ namespace Dynamo.Nodes
             }
 
             return FScheme.Value.NewList(Utils.SequenceToFSharpList(finalList));
-
         }
 
         protected override string DeserializeValue(string val)
@@ -2823,7 +2808,7 @@ namespace Dynamo.Nodes
 
                 try
                 {
-                    _parsed = ParseValue(idList);
+                    _parsed = ParseValue(value, new[] { '\n' }, idList);
 
                     InPortData.Clear();
 
@@ -2862,10 +2847,10 @@ namespace Dynamo.Nodes
             }
         }
 
-        private List<IDoubleSequence> ParseValue(List<string> identifiers)
+        public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers)
         {
             var idSet = new HashSet<string>(identifiers);
-            return Value.Replace(" ", "").Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries).Select(
+            return text.Replace(" ", "").Split(seps, StringSplitOptions.RemoveEmptyEntries).Select(
                 delegate(string x)
                 {
                     var rangeIdentifiers = x.Split(
@@ -2957,32 +2942,38 @@ namespace Dynamo.Nodes
                 .ToDictionary(x => x.Item1, x => ((Value.Number)x.Item2).Item);
 
             return _parsed.Count == 1
-                ? _parsed[0].GetValue(paramDict)
-                : FScheme.Value.NewList(Utils.SequenceToFSharpList(_parsed.Select(x => x.GetValue(paramDict))));
+                ? _parsed[0].GetFSchemeValue(paramDict)
+                : FScheme.Value.NewList(Utils.SequenceToFSharpList(_parsed.Select(x => x.GetFSchemeValue(paramDict))));
         }
 
-        interface IDoubleSequence
+        public interface IDoubleSequence
         {
-            Value GetValue(Dictionary<string, double> idLookup);
+            Value GetFSchemeValue(Dictionary<string, double> idLookup);
+            IEnumerable<double> GetValue(Dictionary<string, double> idLookup);
         }
 
         private class OneNumber : IDoubleSequence
         {
             private readonly IDoubleInputToken _token;
 
-            private readonly Value _result;
+            private readonly double? _result;
 
             public OneNumber(IDoubleInputToken t)
             {
                 _token = t;
 
                 if (_token is DoubleToken)
-                    _result = GetValue(new Dictionary<string, double>());
+                    _result = GetValue(null).First();
             }
 
-            public Value GetValue(Dictionary<string, double> idLookup)
+            public Value GetFSchemeValue(Dictionary<string, double> idLookup)
             {
-                return _result ?? (FScheme.Value.NewNumber(_token.GetValue(idLookup)));
+                return FScheme.Value.NewNumber(GetValue(idLookup).First());
+            }
+
+            public IEnumerable<double> GetValue(Dictionary<string, double> idLookup)
+            {
+                yield return _result ?? _token.GetValue(idLookup);
             }
         }
 
@@ -2992,7 +2983,7 @@ namespace Dynamo.Nodes
             private readonly IDoubleInputToken _step;
             private readonly IDoubleInputToken _count;
 
-            private readonly Value _result;
+            private readonly IEnumerable<double> _result;
 
             public Sequence(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken count)
             {
@@ -3002,11 +2993,18 @@ namespace Dynamo.Nodes
 
                 if (_start is DoubleToken && _step is DoubleToken && _count is DoubleToken)
                 {
-                    _result = GetValue(new Dictionary<string, double>());
+                    _result = GetValue(null);
                 }
             }
 
-            public Value GetValue(Dictionary<string, double> idLookup)
+            public Value GetFSchemeValue(Dictionary<string, double> idLookup)
+            {
+                return FScheme.Value.NewList(
+                    Utils.SequenceToFSharpList(
+                        GetValue(idLookup).Select(FScheme.Value.NewNumber)));
+            }
+
+            public IEnumerable<double> GetValue(Dictionary<string, double> idLookup)
             {
                 if (_result == null)
                 {
@@ -3021,20 +3019,20 @@ namespace Dynamo.Nodes
                     if (count < 0)
                     {
                         count *= -1;
-                        start += step*(count-1);
+                        start += step * (count - 1);
                         step *= -1;
                     }
 
-                    return FScheme.Value.NewList(Utils.SequenceToFSharpList(CreateSequence(start, step, count)));
+                    return CreateSequence(start, step, count);
                 }
                 return _result;
             }
 
-            private static IEnumerable<Value> CreateSequence(double start, double step, int count)
+            private static IEnumerable<double> CreateSequence(double start, double step, int count)
             {
                 for (var i = 0; i < count; i++)
                 {
-                    yield return FScheme.Value.NewNumber(start);
+                    yield return start;
                     start += step;
                 }
             }
@@ -3046,7 +3044,7 @@ namespace Dynamo.Nodes
             private readonly IDoubleInputToken _step;
             private readonly IDoubleInputToken _end;
 
-            private readonly Value _result;
+            private readonly IEnumerable<double> _result;
 
             public Range(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end)
             {
@@ -3056,11 +3054,18 @@ namespace Dynamo.Nodes
 
                 if (_start is DoubleToken && _step is DoubleToken && _end is DoubleToken)
                 {
-                    _result = GetValue(new Dictionary<string, double>());
+                    _result = GetValue(null);
                 }
             }
 
-            public Value GetValue(Dictionary<string, double> idLookup)
+            public Value GetFSchemeValue(Dictionary<string, double> idLookup)
+            {
+                return FScheme.Value.NewList(
+                    Utils.SequenceToFSharpList(
+                        GetValue(idLookup).Select(FScheme.Value.NewNumber)));
+            }
+
+            public IEnumerable<double> GetValue(Dictionary<string, double> idLookup)
             {
                 if (_result == null)
                 {
@@ -3077,7 +3082,7 @@ namespace Dynamo.Nodes
                 return _result;
             }
 
-            protected virtual Value Process(double start, double step, double end)
+            protected virtual IEnumerable<double> Process(double start, double step, double end)
             {
                 if (step < 0)
                 {
@@ -3089,9 +3094,9 @@ namespace Dynamo.Nodes
 
                 var countingUp = start < end;
 
-                var range = countingUp ? FScheme.Range(start, step, end) : FScheme.Range(end, step, start).Reverse();
-
-                return FScheme.Value.NewList(Utils.SequenceToFSharpList(range.Select(FScheme.Value.NewNumber)));
+                return countingUp 
+                    ? FScheme.Range(start, step, end) 
+                    : FScheme.Range(end, step, start).Reverse();
             }
         }
 
@@ -3101,7 +3106,7 @@ namespace Dynamo.Nodes
                 : base(startToken, countToken, endToken)
             { }
 
-            protected override Value Process(double start, double count, double end)
+            protected override IEnumerable<double> Process(double start, double count, double end)
             {
                 var c = (int)count;
 
@@ -3122,7 +3127,7 @@ namespace Dynamo.Nodes
                 : base(start, step, end)
             { }
 
-            protected override Value Process(double start, double approx, double end)
+            protected override IEnumerable<double> Process(double start, double approx, double end)
             {
                 var neg = approx < 0;
 
@@ -3184,7 +3189,6 @@ namespace Dynamo.Nodes
                 return _d;
             }
         }
- 
     }
 
     [NodeName("Angle(deg.)")]
