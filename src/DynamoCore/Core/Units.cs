@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -518,49 +519,49 @@ namespace Dynamo.Measure
 
             //The following pattern will accept imperial units specified in
             //any of the following ways:
-            //1' -> only fee specified
+            //1' -> only feet specified
             //1' 2" -> feet and inches specified
             //1' 2 3/32" -> feet, inches, and fractional inches specified
             //2 3/32" -> inches and fractional inches specified
             //3/32" -> only fractional inches specified
 
-            //string pattern = "(((?<feet>[\-\+]?[0-9])')*\s*("+
-            //    "(?<inches>(?<num>[\-\+]?[0-9]+)/(?<den>[0-9]+)*\")|"+
-            //    "(?<inches>(?<whole_inch>[\-\+]?[0-9]+)*\s*(?<num>[\-\+]?[0-9]+)/(?<den>[0-9]+)*\")|"+
-            //    "(?<inches>(?<whole_inch>[\-\+]?[0-9]+)\"))?)*";
-
-            //unescaped form
-            //(((?<feet>[\-\+]?\d+(\.\d{1,2})?)')*\s*((?<inches>(?<num>[\-\+]?\d+(\.\d{1,2})?)/(?<den>\d+(\.\d{1,2})?)*\")|(?<inches>(?<whole_inch>[\-\+]?\d+(\.\d{1,2})?)*\s*(?<num>[\-\+]?\d+(\.\d{1,2})?)/(?<den>\d+(\.\d{1,2})?)*\")|(?<inches>(?<whole_inch>[\-\+]?\d+(\.\d{1,2})?)\"))?)*
-
+            string pattern = @"(((?<ft>([\-\+]?\d+([.,]\d{1,2})?))('|ft))*\s*((?<in>(?<num>[\-\+]?\d+([.,]\d{1,2})?)/(?<den>\d+([.,]\d{1,2})?)*(""|in))|(?<in>(?<wholeInch>[\-\+]?\d+([.,]\d{1,2})?)*(\s|-)*(?<num>[\-\+]?\d+([.,]\d{1,2})?)/(?<den>\d+([.,]\d{1,2})?)*(""|in))|(?<in>(?<wholeInch>[\-\+]?\d+([.,]\d{1,2})?)(""|in)))?)*((?<m>([\-\+]?\d+([.,]\d{1,2})?))m($|\s))*((?<cm>([\-\+]?\d+([.,]\d{1,2})?))cm($|\s))*((?<mm>([\-\+]?\d+([.,]\d{1,2})?))mm($|\s))*";            
+            
             //modified to allow decimals as well
-            string pattern = "(((?<feet>[\\-\\+]?\\d+(\\.\\d{1,2})?)')*\\s*(" +
-                "(?<inches>(?<num>[\\-\\+]?\\d+(\\.\\d{1,2})?)/(?<den>\\d+(\\.\\d{1,2})?)*\")|" +
-                "(?<inches>(?<whole_inch>[\\-\\+]?\\d+(\\.\\d{1,2})?)*\\s*(?<num>[\\-\\+]?\\d+(\\.\\d{1,2})?)/(?<den>\\d+(\\.\\d{1,2})?)*\")|" +
-                "(?<inches>(?<whole_inch>[\\-\\+]?\\d+(\\.\\d{1,2})?)\"))?)*";
+            //string pattern = "(((?<feet>[\\-\\+]?\\d+(\\.\\d{1,2})?)')*\\s*(" +
+            //    "(?<inches>(?<num>[\\-\\+]?\\d+(\\.\\d{1,2})?)/(?<den>\\d+(\\.\\d{1,2})?)*\")|" +
+            //    "(?<inches>(?<whole_inch>[\\-\\+]?\\d+(\\.\\d{1,2})?)*\\s*(?<num>[\\-\\+]?\\d+(\\.\\d{1,2})?)/(?<den>\\d+(\\.\\d{1,2})?)*\")|" +
+            //    "(?<inches>(?<whole_inch>[\\-\\+]?\\d+(\\.\\d{1,2})?)\"))?)*";
 
-            Regex regex = new Regex(pattern);
-            Match match = regex.Match(value);
+            int feet = 0;
+            int inch = 0;
+            double numerator = 0.0;
+            double denominator = 0.0;
+            double fractionalInch = 0.0;
+
+            const RegexOptions opts = RegexOptions.None;
+            var regex = new Regex(pattern, opts);
+            Match match = regex.Match(value.Trim().ToLower());
             if (match.Success)
             {
-                int feet = 0;
-                int.TryParse(match.Groups["feet"].Value, out feet);
-                int inch = 0;
-                int.TryParse(match.Groups["whole_inch"].Value, out inch);
-
-                double fractionalInch = 0.0;
-                double numerator = 0.0;
-                double denominator = 0.0;
-                double.TryParse(match.Groups["num"].Value, out numerator);
-                double.TryParse(match.Groups["den"].Value, out denominator);
-                if (denominator != 0)
-                    fractionalInch = numerator / denominator;
-
-                if (feet < 0)
-                    return feet - inch / 12.0 - fractionalInch / 12.0;
-                else
-                    return feet + inch / 12.0 + fractionalInch / 12.0;
+                int.TryParse(match.Groups["ft"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out feet);
+                int.TryParse(match.Groups["wholeInch"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out inch);
+                double.TryParse(match.Groups["num"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture,
+                                out numerator);
+                double.TryParse(match.Groups["den"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture,
+                                out denominator);
             }
-            else return 0.0;
+            else
+                return 0.0;
+            
+
+            if (denominator != 0)
+                fractionalInch = numerator / denominator;
+
+            if (feet < 0)
+                return feet - inch / 12.0 - fractionalInch / 12.0;
+            else
+                return feet + inch / 12.0 + fractionalInch / 12.0;
         }
 
         /// <summary>
