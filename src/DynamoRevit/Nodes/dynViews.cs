@@ -344,52 +344,43 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Save Image from View")]
+    [NodeName("Save Image Of View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
-    [NodeDescription("Saves an image from a Revit view.")]
+    [NodeDescription("Saves an image of a Revit view.")]
     public class dynSaveImageFromRevitView : dynRevitTransactionNodeWithOneOutput
     {
         public dynSaveImageFromRevitView()
         {
-            InPortData.Add(new PortData("view", "The view to export.", typeof(Value.Container)));
-            InPortData.Add(new PortData("path", "The path to export to.", typeof(Value.String)));
-            OutPortData.Add(new PortData("image", "An image from the revit view.", typeof(Value.Container)));
+            InPortData.Add(new PortData("view", "The view to save an image of.", typeof(Value.Container)));
+            InPortData.Add(new PortData("filename", "The file to save the image as.", typeof(Value.String)));
+            OutPortData.Add(new PortData("image", "An image of the revit view.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            View view = (View)((Value.Container)args[0]).Item;
-            string path = ((Value.String)args[1]).Item;
+            var view = (View)((Value.Container)args[0]).Item;
+            string pathName = ((Value.String)args[1]).Item;
 
-            string name = view.ViewName;
-            string pathName = path + "\\" + name;
-            System.Drawing.Image image;
+            //string name = view.ViewName;
+            //string pathName = path; +"\\" + name;
 
-
-            ImageExportOptions options = new ImageExportOptions();
-            options.ExportRange = ExportRange.VisibleRegionOfCurrentView;
-            options.FilePath = pathName;
-            options.HLRandWFViewsFileType = ImageFileType.PNG; //hack - make sure to change the read image below if other file types are supported
-            options.ImageResolution = ImageResolution.DPI_72; 
-            options.ZoomType = ZoomFitType.Zoom;
-            options.ShadowViewsFileType = ImageFileType.PNG;
- 
-
-            try
+            var options = new ImageExportOptions
             {
-                dynRevitSettings.Doc.Document.ExportImage(options);//revit only has a method to save image to disk.
-                //hack - make sure to change the read image below if other file types are supported
-                image = Image.FromFile(pathName + ".png");//read the saved image so we can pass it downstream
+                ExportRange = ExportRange.SetOfViews,
+                FilePath = pathName,
+                HLRandWFViewsFileType = ImageFileType.PNG,
+                ImageResolution = ImageResolution.DPI_72,
+                ZoomType = ZoomFitType.Zoom,
+                ShadowViewsFileType = ImageFileType.PNG
+            };
 
+            options.SetViewsAndSheets(new List<ElementId> { view.Id });
 
-            }
-            catch (Exception e)
-            {
-                DynamoLogger.Instance.Log(e);
-                return Value.NewContainer(0);
-            }
+            dynRevitSettings.Doc.Document.ExportImage(options);//revit only has a method to save image to disk.
+            //hack - make sure to change the read image below if other file types are supported
+            Image image = Image.FromFile(pathName + ".png");
 
             return Value.NewContainer(image);
         }
