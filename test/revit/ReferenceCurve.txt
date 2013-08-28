@@ -336,7 +336,7 @@ Jrn.Directive "IdleTimeTaskSymbol"  _
  Jrn.Command "StartupPage" , "Open this project , ID_FILE_MRU_FIRST"
  'H 23-Aug-2013 16:26:57.414;   0:< 
  Jrn.Data "MRUFileName"  _
-         , "shell.rfa"
+         , "empty.rfa"
  ' 1:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
  ' 1:< RAM Statistics:     4686 /     8102       394=InUse      395=Peak  
  ' 1:< VM  Statistics:  8386969 /  8388607       293=InUse      295=Peak  
