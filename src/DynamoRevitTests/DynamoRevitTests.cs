@@ -19,7 +19,6 @@ namespace DynamoRevitTests
     internal class DynamoRevitTests
     {
         private Transaction _trans;
-        private List<Element> _elements = new List<Element>();
         private string _testPath;
         private string _samplesPath;
         private string _defsPath;
@@ -845,15 +844,15 @@ namespace DynamoRevitTests
         }
 
         [Test]
-        public void AdaptiveComponentsNode()
+        public void AdaptiveComponent()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string path = Path.Combine(_testPath, @".\AdaptiveComponents\AdaptiveComponentSample.rfa");
-            string modelPath = Path.GetFullPath(path);
-            SwapCurrentModel(modelPath);
+            //string path = Path.Combine(_testPath, @".\AdaptiveComponent.rfa");
+            //string modelPath = Path.GetFullPath(path);
+            //SwapCurrentModel(modelPath);
 
-            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponents\AdaptiveComponents.dyn");
+            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponent.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -1080,6 +1079,18 @@ namespace DynamoRevitTests
         }
 
         [Test]
+        public void FaceFaceIntersection()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\FaceFaceIntersection.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
+        [Test]
         public void GetCurveDomain()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1097,6 +1108,57 @@ namespace DynamoRevitTests
             var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\GetSurfaceDomain.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
+        [Test]
+        public void OffsetCurve()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\OffsetCurve.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
+        [Test]
+        public void ThickenCurve()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\ThickenCurve.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
+        [Test]
+        public void GetMaterialByName()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\GetMaterialByName.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
+        /// <summary>
+        /// Sanity Check should always throw an error.
+        /// </summary>
+        [Test]
+        public void SanityCheck()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\SanityCheck.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
