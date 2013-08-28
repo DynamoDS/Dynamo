@@ -45,7 +45,7 @@
                            Text="{Binding Path=NickName}" FontSize="11" FontWeight="Bold" TextTrimming="WordEllipsis" Margin="2" 
                            Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
                 <TextBlock Name="tt_descript" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                           Text="{Binding Path=Description}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" 
+                           Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" 
                            Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
 
             <!-- Last value -->
