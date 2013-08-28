@@ -66,21 +66,21 @@ def main():
 				print '\t' + message
 
 	# cleanup results files and journals created during testing
-	# print 'cleaning journal files...'
-	# runJournals = [os.path.join(dirpath, f)
- #    	for dirpath, dirnames, files in os.walk(testsPath)
- #    	for f in fnmatch.filter(files, 'journal.*')]
+	print 'cleaning journal files...'
+	runJournals = [os.path.join(dirpath, f)
+    	for dirpath, dirnames, files in os.walk(testsPath)
+    	for f in fnmatch.filter(files, 'journal.*')]
 
-	# for journal in runJournals:
-	# 	os.remove(journal)
+	for journal in runJournals:
+		os.remove(journal)
 
 	# print 'cleaning results files...'
-	# results = [os.path.join(dirpath, f)
- #    	for dirpath, dirnames, files in os.walk(testsPath)
- #    	for f in fnmatch.filter(files, '*_result.xml')]
+	results = [os.path.join(dirpath, f)
+    	for dirpath, dirnames, files in os.walk(testsPath)
+    	for f in fnmatch.filter(files, '*_result.xml')]
 
-	# for result in results:
-	# 	os.remove(result)
+	for result in results:
+		os.remove(result)
 
 def run_cmd( args, printOutput = True, cwd = None ):	
 	p = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd = cwd)
