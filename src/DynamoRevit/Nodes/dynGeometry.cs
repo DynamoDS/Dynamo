@@ -311,6 +311,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Length")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Gets the length of an XYZ")]
+    [NodeSearchTags("vector", "length", "xyz", "magnitude", "amplitude")]
     public class dynXYZLength : dynGeometryBase
     {
         public dynXYZLength()
@@ -330,6 +331,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Is Zero Length")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Determines whether an XYZ has zero length")]
+    [NodeSearchTags("vector", "length", "xyz", "magnitude", "amplitude")]
     public class dynXYZIsZeroLength : dynGeometryBase
     {
         public dynXYZIsZeroLength()
@@ -711,7 +713,7 @@ namespace Dynamo.Nodes
     {
         public dynUVRandom()
         {
-            InPortData.Add(new PortData("dom", "A domain.", typeof(Value.List)));
+            InPortData.Add(new PortData("dom", "A domain.", typeof(Value.Container)));
             InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(Value.Number)));
             InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(Value.Number)));
             OutPortData.Add(new PortData("UVs", "List of UVs in the grid", typeof(Value.List)));
@@ -721,19 +723,21 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FSharpList<Value> domain;
             double ui, vi;
 
-            domain = ((Value.List)args[0]).Item;
+            var domain = (DSCoreNodes.Domain2D)((Value.Container)args[0]).Item;
             ui = ((Value.Number)args[1]).Item;
             vi = ((Value.Number)args[2]).Item;
 
             FSharpList<Value> result = FSharpList<Value>.Empty;
 
-            UV min = ((Value.Container)domain[0]).Item as UV;
-            UV max = ((Value.Container)domain[1]).Item as UV;
-            
-            Random r = new Random();
+            //UV min = ((Value.Container)domain[0]).Item as UV;
+            //UV max = ((Value.Container)domain[1]).Item as UV;
+
+            var min = new UV(domain.Min.x(), domain.Min.y());
+            var max = new UV(domain.Max.x(), domain.Max.y());
+
+            var r = new Random();
             double uSpan = max.U-min.U;
             double vSpan = max.V-min.V;
 
@@ -2726,6 +2730,32 @@ namespace Dynamo.Nodes
             }
 
             return Value.NewList(results);
+        }
+    }
+
+    [NodeName("Domain 2D")]
+    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeDescription("Create a two dimensional domain specifying the Minimum and Maximum UVs.")]
+    public class dynDomain2D : dynNodeWithOneOutput
+    {
+        public dynDomain2D()
+        {
+            InPortData.Add(new PortData("min", "The minimum UV of the domain.", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("max", "The maximum UV of the domain.", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("domain", "A domain.", typeof(FScheme.Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            var min = (UV)((FScheme.Value.Container)args[0]).Item;
+            var max = (UV)((FScheme.Value.Container)args[1]).Item;
+
+            var vmax = Autodesk.LibG.Vector.by_coordinates(max.U, max.V);
+            var vmin = Autodesk.LibG.Vector.by_coordinates(min.U, min.V);
+
+            return FScheme.Value.NewContainer(Domain2D.ByMinimumAndMaximum(vmin, vmax));
         }
     }
 }

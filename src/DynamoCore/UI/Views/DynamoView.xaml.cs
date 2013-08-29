@@ -45,7 +45,9 @@ namespace Dynamo.Controls
         public const int CANVAS_OFFSET_X = 0;
 
         private Point dragOffset;
+#pragma warning disable 649
         private dynNodeView draggedNode;
+#pragma warning restore 649
         private DynamoViewModel _vm;
         private Stopwatch _timer;
 
@@ -106,23 +108,43 @@ namespace Dynamo.Controls
 
             dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
         }
-
+        
+        private PackageManagerPublishView _pubPkgView;
         void _vm_RequestShowPackageManagerPublish(PublishPackageViewModel model)
         {
-            new PackageManagerPublishView(model);
+            if (_pubPkgView == null)
+            {
+                _pubPkgView = new PackageManagerPublishView(model);
+                _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
+                _pubPkgView.Show();
+            }
+
+            _pubPkgView.Focus();
         }
 
-        void _vm_RequestShowPackageManagerSearch(object sender, EventArgs e)
+        private PackageManagerSearchView _searchPkgsView;
+        void _vm_RequestShowPackageManagerSearch(object s, EventArgs e)
         {
-            var pms = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
-            var window = new PackageManagerSearchView(pms);
-            window.Show();
+            if (_searchPkgsView == null)
+            {
+                var pms = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
+                _searchPkgsView = new PackageManagerSearchView(pms);
+                _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
+                _searchPkgsView.Show();
+            }
+             _searchPkgsView.Focus();
         }
 
-        void _vm_RequestShowInstalledPackages(object sender, EventArgs e)
+        private InstalledPackagesView _installedPkgsView;
+        void _vm_RequestShowInstalledPackages(object s, EventArgs e)
         {
-            var window = new InstalledPackagesView();
-            window.Show();
+            if (_installedPkgsView == null)
+            {
+                _installedPkgsView = new InstalledPackagesView();
+                _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
+                _installedPkgsView.Show();
+            }
+            _installedPkgsView.Focus();
         }
 
         void ClipBoard_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -285,32 +307,38 @@ namespace Dynamo.Controls
                     return;
                 }
 
-                e.Name = dialog.Text;
-                e.Category = dialog.Category;
-                e.Description = dialog.Description;
-
-                if (dynSettings.Controller.CustomNodeManager.Contains(e.Name))
+                if (String.IsNullOrEmpty(dialog.Text))
                 {
-                    error = "A custom node with the given name already exists.";
-                    MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                    error = "You must supply a name.";
+                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
-                else if (dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(e.Name))
+                else if (e.Name != dialog.Text && dynSettings.Controller.CustomNodeManager.Contains(dialog.Text))
+                {
+                    error = "A custom node with the given name already exists.";
+                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
+                }
+                else if (e.Name != dialog.Text && dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(dialog.Text))
                 {
                     error = "A built-in node with the given name already exists.";
-                    MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
                 else if (e.Category.Equals(""))
                 {
                     error = "You must enter a new category or choose one from the existing categories.";
-                    MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
                 else
                 {
                     error = "";
                 }
+
+                e.Name = dialog.Text;
+                e.Category = dialog.Category;
+                e.Description = dialog.Description;
 
             } while (!error.Equals(""));
 

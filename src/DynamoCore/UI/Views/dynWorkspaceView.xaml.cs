@@ -87,24 +87,23 @@ namespace Dynamo.Views
                     Name = newName,
                     Description = newDescription,
                     Category = newCategory
+
                 };
 
-            dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, new FunctionNamePromptEventArgs());
-            // show the dialog
-            //if (dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newName, ref newCategory,
-            //                                                                    ref newDescription, true))
+            dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
+
             if(args.Success)
             {
 
                 if (workspace is FuncWorkspace)
                 {
-                    var id = dynSettings.CustomNodeManager.GetGuidFromName(workspace.Name);
-                    dynSettings.CustomNodeManager.Refactor(id, newName, newCategory, newDescription);
+                    var def = dynSettings.CustomNodeManager.GetDefinitionFromWorkspace(workspace);
+                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.Name, args.Category, args.Description);
                 }
 
-                workspace.Name = newName;
-                workspace.Description = newDescription;
-                workspace.Category = newCategory;
+                workspace.Name = args.Name;
+                workspace.Description = args.Description;
+                workspace.Category = args.Category;
                 // workspace.Author = "";
 
             }
@@ -117,12 +116,6 @@ namespace Dynamo.Views
             {
                 vm.OnWorkspacePropertyEditRequested();
             }
-        }
-
-        public void WorkspacePublishClick(object sender, RoutedEventArgs routedEventArgs)
-        {
-            
-
         }
 
         void selectionCanvas_Loaded(object sender, RoutedEventArgs e)

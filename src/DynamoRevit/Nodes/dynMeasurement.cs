@@ -348,8 +348,6 @@ namespace Dynamo.Nodes
             tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, bindingVal);
             
             tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
-
-            tb.Text = "0.0";
         }
 
         private void editWindowItem_Click(object sender, RoutedEventArgs e)

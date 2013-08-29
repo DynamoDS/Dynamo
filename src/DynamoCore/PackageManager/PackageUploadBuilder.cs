@@ -46,7 +46,7 @@ namespace Dynamo.PackageManager
             pkg.RootDirectory = rootDir.FullName;
             WritePackageHeader(pkg.Header, rootDir);
             CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
-            RemoveDyfFiles(files, dyfDir); // doesn't remove if the folder hasn't changed
+            RemoveDyfFiles(files, dyfDir); 
             RemapCustomNodeFilePaths(files, dyfDir.FullName);
 
             uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
