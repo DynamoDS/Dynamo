@@ -241,11 +241,6 @@ namespace Dynamo.Models
 
         #endregion
 
-        public DynamoModel()
-        {
-            Console.Write("hi");
-        }
-
         public virtual void OnCleanup(EventArgs e)
         {
             if (CleaningUp != null)
