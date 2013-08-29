@@ -314,7 +314,6 @@ namespace Dynamo
             foreach (dynNodeModel topMost in topElements)
                 topMost.MarkDirty();
 
-            //TODO: Flesh out error handling
             try
             {
                 var topNode = new BeginNode(new List<string>());
@@ -390,8 +389,6 @@ namespace Dynamo
                 //If we should run again...
                 if (runAgain)
                 {
-                    //DynamoLogger.Instance.Log("Running again.");
-
                     //Reset flag
                     runAgain = false;
 
@@ -399,7 +396,6 @@ namespace Dynamo
                 }
                 else
                 {
-                    //DynamoLogger.Instance.Log("Run completed.");
                     OnRunCompleted(this, true);
                 }
             }
