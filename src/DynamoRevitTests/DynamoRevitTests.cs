@@ -1162,6 +1162,18 @@ namespace DynamoRevitTests
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
+            Assert.Throws(typeof(AssertionException), () => dynSettings.Controller.RunExpression(true));
+        }
+
+        [Test]
+        public void Length()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Length.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
