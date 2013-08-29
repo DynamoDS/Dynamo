@@ -14,7 +14,6 @@ The intent of this project is to provide a visual interface for building interes
 * [Luke Church](https://github.com/lukechurch): Software Architecture
 * Lillian Smith: Useful feedback and use cases.
 * [Tom Vollaro](https://github.com/tvollaro): Useful feedback and use cases.
-* 
 
 
 Dynamo has been developed based on feedback from several parties inlcuding Buro Happold Engineers, Autodesk, and students and faculty at the USC School of Architecture.
