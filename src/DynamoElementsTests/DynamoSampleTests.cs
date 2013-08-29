@@ -245,8 +245,6 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"dynamo_elements_samples\working\combine\");
 
             string openPath = Path.Combine(examplePath, "combine-with-three.dyn");
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "combine2.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Sequence2.dyf")) != null);
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
@@ -259,8 +257,37 @@ namespace Dynamo.Tests
             // wait for the expression to complete
             Thread.Sleep(500);
 
+            // [[0,3,6], [2,5,4], [0,5,8]]
+
             // check the output values are correctly computed
-            Assert.Inconclusive("Finish me!");
+            var watchNode = GetFirstWatchNodeFromCurrentSpace(model);
+            Assert.IsNotNull(watchNode);
+
+            var expected = new List<List<double>>()
+                {
+                    new List<double>() {0, 3, 6},
+                    new List<double>() {1, 4, 7},
+                    new List<double>() {2, 5, 8},
+                };
+
+            // 50 elements between -1 and 1
+            Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode.OldValue);
+            var outerList = (watchNode.OldValue as FScheme.Value.List).Item;
+
+            Assert.AreEqual(3, outerList.Count());
+            int i = 0;
+            foreach (var innerList in outerList)
+            {
+                var fList = GetListFromFSchemeValue(innerList);
+                int j = 0;
+                foreach (var ele in fList)
+                {
+                    var num = (ele as FScheme.Value.Number).Item;
+                    Assert.AreEqual(num, expected[i][j], 0.001);
+                    j++;
+                }
+                i++;
+            }
 
         }
 
@@ -270,9 +297,6 @@ namespace Dynamo.Tests
             var model = controller.DynamoModel;
 
             var examplePath = Path.Combine(GetTestDirectory(), @"dynamo_elements_samples\working\reduce_and_recursion\");
-
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "MyReduce.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Sum Numbers.dyf")) != null);
 
             string openPath = Path.Combine(examplePath, "reduce-example.dyn");
             model.Open(openPath);
@@ -288,7 +312,17 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            Assert.Inconclusive("Finish me!");
+            var watch = GetWatchNodeFromCurrentSpace(model, "157557d2-2452-413a-9944-1df3df793cee");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(doubleWatchVal, 15.0, 0.001);
+
+            var watch2 = GetWatchNodeFromCurrentSpace(model, "068dd555-a5d5-4f11-af05-e4fa0cc015c9");
+            var doubleWatchVal1 = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(doubleWatchVal1, 15.0, 0.001);
+
+            var watch3 = GetWatchNodeFromCurrentSpace(model, "1aca382d-ca81-4955-a6c1-0f549df19fd7");
+            var doubleWatchVal2 = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(doubleWatchVal2, 15.0, 0.001);
 
         }
 
@@ -314,7 +348,22 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            Assert.Inconclusive("Finish me!");
+            var watchNode = GetFirstWatchNodeFromCurrentSpace(model);
+            Assert.IsNotNull(watchNode);
+
+            // odd numbers between 0 and 5
+            Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode.OldValue);
+            var list = (watchNode.OldValue as FScheme.Value.List).Item;
+
+            Assert.AreEqual(3, list.Count());
+            var count = 1;
+            list.ToList().ForEach(x =>
+            {
+                Assert.IsAssignableFrom(typeof(FScheme.Value.Number), x);
+                var val = (x as FScheme.Value.Number).Item;
+                Assert.AreEqual(count, val, 0.0001);
+                count += 2;
+            });
 
         }
 
@@ -338,7 +387,35 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            Assert.Inconclusive("Finish me!");
+            var watchNode1 = GetWatchNodeFromCurrentSpace(model, "d8ee9c7c-c456-4a38-a5d8-07eca624ebfe");
+            var watchNode2 = GetWatchNodeFromCurrentSpace(model, "c966ac1d-5caa-4cfe-bb0c-f6db9e5697c4");
+            Assert.IsNotNull(watchNode1);
+            Assert.IsNotNull(watchNode2);
+
+            // odd numbers between 0 and 5
+            Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode1.OldValue);
+            Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode2.OldValue);
+            var list1 =
+                (watchNode1.OldValue as FScheme.Value.List).Item.Select(x => (x as FScheme.Value.String).Item).ToList();
+            var list2 =
+                (watchNode2.OldValue as FScheme.Value.List).Item.Select(x => (x as FScheme.Value.String).Item).ToList();
+
+            Assert.AreEqual(5, list1.Count);
+            Assert.AreEqual(5, list2.Count);
+
+            var values = new List<string>(){"aaaaa", "bbb", "aa", "c", "dddd"};
+
+            values.Sort((e1, e2) => String.Compare(e1, e2));
+            for (var i = 0; i < 5; i++)
+            {
+                Assert.AreEqual(list1[i], values[i]);
+            }
+
+            values.Sort((e1, e2) => e1.Count().CompareTo(e2.Count()));
+            for (var i = 0; i < 5; i++)
+            {
+                Assert.AreEqual(list2[i], values[i]);
+            }
 
         }
 

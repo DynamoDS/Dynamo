@@ -3,7 +3,7 @@
     <Dynamo.Nodes.dynConcatStrings type="Dynamo.Nodes.dynConcatStrings" guid="b4dca1b1-e421-443d-a7a0-63b808691784" nickname="Concat Strings" x="535" y="45.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="8c7c1a80-021b-4064-b9d1-873a0538bb0b" nickname="Watch" x="0" y="335.508095238096" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="06189b89-84bf-413c-91a1-9d6629810394" nickname="File Path" x="8" y="71.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="C:\Users\t_nguys\Documents\GitHub\Dynamo\test\good_dyns\string\TestConcatString_fromFile.txt" />
+      <System.String value="..\..\test\good_dyns\string\TestConcatString_fromFile.txt" />
     </Dynamo.Nodes.dynStringFilename>
     <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="fa7cd4dd-fc45-4009-8c0b-50ee7ac8d0df" nickname="Read Text File" x="283" y="91.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </dynElements>
