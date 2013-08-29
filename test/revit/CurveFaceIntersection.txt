@@ -36,7 +36,7 @@ Jrn.Directive "IdleTimeTaskSymbol"  _
 Jrn.Command "Internal" , "Show or hide recent files , ID_STARTUP_PAGE"
 Jrn.Command "StartupPage" , "Open this project , ID_FILE_MRU_FIRST"
 Jrn.Data "MRUFileName"  _
-, "shell.rfa"
+, "CurveFaceIntersection.rfa"
 Jrn.Directive "DocSymbol"  _
 , "[empty.rfa]"
 Jrn.Directive "GlobalToProj"  _
@@ -114,6 +114,6 @@ Jrn.MouseMove    0 ,     42 ,     42
 Jrn.RibbonEvent "TabActivated:Add-Ins"
 Jrn.RibbonEvent "Execute external command:CustomCtrl_%CustomCtrl_%Add-Ins%Visual Programming%Test:Dynamo.Applications.DynamoRevitTester"
 Jrn.Data "APIStringStringMapJournalData"  _
-, 1, "dynamoTestName", "ReferencePoint"
+, 1, "dynamoTestName", "CurveFaceIntersection"
 Jrn.MouseMove    0 ,   1390 ,     57
 Jrn.Command "SystemMenu" , "Quit the application; prompts to save projects , ID_APP_EXIT"

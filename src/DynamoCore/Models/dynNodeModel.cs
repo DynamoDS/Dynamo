@@ -409,8 +409,8 @@ namespace Dynamo.Models
         }
 
         #endregion
-        
-        public dynNodeModel()
+
+        protected dynNodeModel()
         {
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
@@ -612,7 +612,7 @@ namespace Dynamo.Models
                 }
                 else if (InPorts[data.Index].UsingDefaultValue)
                 {
-                    connections.Add(Tuple.Create(data.Name, new ValueNode(InPortData[data.Index].DefaultValue) as INode));
+                    connections.Add(Tuple.Create(data.Name, InPortData[data.Index].DefaultValue));
                 }
                 else //othwise, remember that this is a partial application
                 {
@@ -1352,7 +1352,9 @@ namespace Dynamo.Models
         {
             // if there are inputs without connections
             // mark as dead
-            State = inPorts.Select(x => x).Any(x => x.Connectors.Count == 0) ? ElementState.DEAD : ElementState.ACTIVE;
+            State = inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled))
+                ? ElementState.DEAD 
+                : ElementState.ACTIVE;
         }
 
         public void Error(string p)
