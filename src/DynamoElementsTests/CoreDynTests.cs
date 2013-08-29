@@ -624,11 +624,11 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "StringInputTest.dyn");
             model.Open(openPath);
 
-            dynStringInput strNode = (dynStringInput)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynStringInput);
-            string expected =
+            var strNode = (dynStringInput)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynStringInput);
+            const string expected =
                 "A node\twith tabs, and\r\ncarriage returns,\r\nand !@#$%^&* characters, and also something \"in quotes\".";
 
-            Assert.AreEqual(expected, strNode.Value.ToString());
+            Assert.AreEqual(expected, strNode.Value);
             
         }
 
@@ -658,7 +658,7 @@ namespace Dynamo.Tests
 
             //test the negative case to make sure it throws an error
             numNode.Value = "-1";
-            Assert.Throws<NUnit.Framework.AssertionException>(() => dynSettings.Controller.RunExpression(null));
+            Assert.Throws<AssertionException>(() => dynSettings.Controller.RunExpression(null));
 
         }
 
@@ -667,14 +667,13 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            var data = new Dictionary<string, object>();
-            data.Add("name", "Partition List");
+            var data = new Dictionary<string, object> {{"name", "Partition List"}};
             model.CreateNode(data);
 
             //Create a List
             //For a list of 0..20, this will have 21 elements
             //Slicing by 5 should return 6 lists, the last containing one element
-            var list = Utils.MakeFSharpList(Enumerable.Range(0, 21).Select(x => FScheme.Value.NewNumber(x)).ToArray());
+            var list = Utils.SequenceToFSharpList(Enumerable.Range(0, 21).Select(x => FScheme.Value.NewNumber(x)));
 
             var sliceNode = (dynSlice)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynSlice);
             var args = FSharpList<FScheme.Value>.Empty;
@@ -698,7 +697,7 @@ namespace Dynamo.Tests
 
             //test if you pass in a list wwith less elements than the
             //slice, you should just get back the same list
-            list = Utils.MakeFSharpList(Enumerable.Range(0, 1).Select(x => FScheme.Value.NewNumber(x)).ToArray());
+            list = Utils.SequenceToFSharpList(Enumerable.Range(0, 1).Select(x => FScheme.Value.NewNumber(x)));
             args = FSharpList<FScheme.Value>.Empty;
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
@@ -727,7 +726,7 @@ namespace Dynamo.Tests
             //14,18
             //19
 
-            var list = Utils.MakeFSharpList(Enumerable.Range(0, 20).Select(x => FScheme.Value.NewNumber(x)).ToArray());
+            var list = Utils.SequenceToFSharpList(Enumerable.Range(0, 20).Select(x => FScheme.Value.NewNumber(x)));
 
             var data = new Dictionary<string, object> {{"name", "Diagonal Left List"}};
             model.CreateNode(data);

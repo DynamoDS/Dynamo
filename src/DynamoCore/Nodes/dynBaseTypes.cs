@@ -462,7 +462,8 @@ namespace Dynamo.Nodes
             var p = ((Value.Function)args[0]).Item;
             var seq = ((Value.List)args[1]).Item;
 
-            return Value.NewList(Utils.SequenceToFSharpList(seq.Where(x => !FScheme.ValueToBool(p.Invoke(Utils.MakeFSharpList(x))))));
+            return Value.NewList(Utils.SequenceToFSharpList(
+                seq.Where(x => !FScheme.ValueToBool(p.Invoke(Utils.MakeFSharpList(x))))));
         }
     }
 
@@ -1177,7 +1178,7 @@ namespace Dynamo.Nodes
 
                 if (count == n)
                 {
-                    finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                    finalList.Add(Value.NewList(Utils.SequenceToFSharpList(currList)));
                     currList = new List<Value>();
                     count = 0;
                 }
@@ -1185,11 +1186,10 @@ namespace Dynamo.Nodes
 
             if (currList.Any())
             {
-                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                finalList.Add(Value.NewList(Utils.SequenceToFSharpList(currList)));
             }
 
-            return Value.NewList(Utils.MakeFSharpList(finalList.ToArray()));
-
+            return Value.NewList(Utils.SequenceToFSharpList(finalList));
         }
     }
 
@@ -1259,16 +1259,16 @@ namespace Dynamo.Nodes
                     if (nextRow > currentRow + 1 || nextRow == currentRow)
                         break;
                 }
-                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                finalList.Add(Value.NewList(Utils.SequenceToFSharpList(currList)));
                 currList = new List<Value>();
             }
 
             if (currList.Any())
             {
-                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                finalList.Add(Value.NewList(Utils.SequenceToFSharpList(currList)));
             }
 
-            return Value.NewList(Utils.MakeFSharpList(finalList.ToArray()));
+            return Value.NewList(Utils.SequenceToFSharpList(finalList));
 
         }
     }
@@ -1339,16 +1339,16 @@ namespace Dynamo.Nodes
                     if (nextRow > currentRow + 1 || nextRow == currentRow)
                         break;
                 }
-                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                finalList.Add(Value.NewList(Utils.SequenceToFSharpList(currList)));
                 currList = new List<Value>();
             }
 
             if (currList.Any())
             {
-                finalList.Add(Value.NewList(Utils.MakeFSharpList(currList.ToArray())));
+                finalList.Add(Value.NewList(Utils.SequenceToFSharpList(currList)));
             }
 
-            return Value.NewList(Utils.MakeFSharpList<Value>(finalList.ToArray()));
+            return Value.NewList(Utils.SequenceToFSharpList(finalList));
 
         }
     }
