@@ -22,7 +22,7 @@ Dynamo has been developed based on feedback from several parties inlcuding Buro 
 
 ## Running Dynamo ##
 
-The current version will run on top of Revit 2013, Revit 2014, Project Vasari Beta 2, and Project Vasari Beta 3. 
+The current version will run on top of Revit 2013, Revit 2014, and Project Vasari Beta 3. 
 
 ## Releases ##
 
@@ -53,7 +53,7 @@ Fixes
 New
 - Package Manager: share custom nodes online
 - Can now use material parameters (Get Material by Name node)
-- Get and Remove From List nodes now can use ranges of indecies
+- Get and Remove From List nodes now can use ranges of indices
 - Color Range node
 - Intersection nodes return more granular results
 - Adaptive Component By Face and By Curve nodes 
