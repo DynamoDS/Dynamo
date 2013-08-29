@@ -16,7 +16,7 @@ Dynamo extends the parametric functionality of Autodesk Revit. Dynamo aims to be
 * [Tom Vollaro](https://github.com/tvollaro): Useful feedback and use cases.
 
 
-Dynamo has been developed based on feedback from several parties inlcuding Buro Happold Engineers, Autodesk, and students and faculty at the USC School of Architecture.
+Dynamo has been developed based on feedback from several parties including Arup, KPF, Buro Happold, Autodesk, and students and faculty at the USC School of Architecture.
 
 
 ## Running Dynamo ##
