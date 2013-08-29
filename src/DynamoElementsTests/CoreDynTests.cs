@@ -15,7 +15,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    internal class DynamoSampleTests
+    internal class CoreDynTests
     {
 
         #region startup and shutdown
@@ -67,8 +67,10 @@ namespace Dynamo.Tests
                 DynamoLogger.Instance.StartLogging();
 
                 //create a new instance of the ViewModel
-                controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE);
-                controller.Testing = true;
+                controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE)
+                {
+                    Testing = true
+                };
             }
             catch (Exception ex)
             {
@@ -87,8 +89,6 @@ namespace Dynamo.Tests
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
-
-                
             }
         }
 
@@ -122,6 +122,11 @@ namespace Dynamo.Tests
             return (dynWatch)nodeToWatch;
         }
 
+        public dynWatch GetFirstWatchNodeFromCurrentSpace(DynamoModel model)
+        {
+            return (dynWatch) model.CurrentSpace.Nodes.FirstOrDefault(x => x is dynWatch);
+        }
+
         public double GetDoubleFromFSchemeValue(FScheme.Value value)
         {
             var doubleWatchVal = 0.0;
@@ -143,7 +148,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"dynamo_elements_samples\working\map_reduce_filter\map_reduce_filter.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\map_reduce_filter\map_reduce_filter.dyn");
             model.Open(openPath);
 
 
@@ -201,7 +206,7 @@ namespace Dynamo.Tests
         {
             var model = controller.DynamoModel;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"dynamo_elements_samples\working\sequence\sequence.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\sequence\sequence.dyn");
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
@@ -209,24 +214,37 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentSpace.Nodes.Count);
 
             // run the expression
-            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
             dynSettings.Controller.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            Assert.Inconclusive("Finish me!");
+            var watchNode = GetFirstWatchNodeFromCurrentSpace(model);
+            Assert.IsNotNull(watchNode);
+
+            // 50 elements between -1 and 1
+            Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode.OldValue);
+            var list = (watchNode.OldValue as FScheme.Value.List).Item;
+
+            Assert.AreEqual(50, list.Count());
+            list.ToList().ForEach(x =>
+                {
+                    Assert.IsAssignableFrom(typeof(FScheme.Value.Number), x);
+                    var val = (x as FScheme.Value.Number).Item;
+                    Assert.IsTrue((val < 1.0));
+                    Assert.IsTrue((val > -1.0));
+                });
+
         }
 
         [Test]
         public void CombineWithCustomNodes()
         {
             var model = controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"dynamo_elements_samples\working\combine\");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine\");
 
             string openPath = Path.Combine(examplePath, "combine-with-three.dyn");
-            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
@@ -234,14 +252,42 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentSpace.Nodes.Count);
 
             // run the expression
-            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
             dynSettings.Controller.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
 
+            // [[0,3,6], [2,5,4], [0,5,8]]
+
             // check the output values are correctly computed
-            Assert.Inconclusive("Finish me!");
+            var watchNode = GetFirstWatchNodeFromCurrentSpace(model);
+            Assert.IsNotNull(watchNode);
+
+            var expected = new List<List<double>>()
+                {
+                    new List<double>() {0, 3, 6},
+                    new List<double>() {1, 4, 7},
+                    new List<double>() {2, 5, 8},
+                };
+
+            // 50 elements between -1 and 1
+            Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode.OldValue);
+            var outerList = (watchNode.OldValue as FScheme.Value.List).Item;
+
+            Assert.AreEqual(3, outerList.Count());
+            int i = 0;
+            foreach (var innerList in outerList)
+            {
+                var fList = GetListFromFSchemeValue(innerList);
+                int j = 0;
+                foreach (var ele in fList)
+                {
+                    var num = (ele as FScheme.Value.Number).Item;
+                    Assert.AreEqual(num, expected[i][j], 0.001);
+                    j++;
+                }
+                i++;
+            }
 
         }
 
@@ -250,10 +296,7 @@ namespace Dynamo.Tests
         {
             var model = controller.DynamoModel;
 
-            var examplePath = Path.Combine(GetTestDirectory(), @"dynamo_elements_samples\working\reduce_and_recursion\");
-
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "MyReduce.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Sum Numbers.dyf")) != null);
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\reduce_and_recursion\");
 
             string openPath = Path.Combine(examplePath, "reduce-example.dyn");
             model.Open(openPath);
@@ -269,7 +312,17 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            Assert.Inconclusive("Finish me!");
+            var watch = GetWatchNodeFromCurrentSpace(model, "157557d2-2452-413a-9944-1df3df793cee");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(doubleWatchVal, 15.0, 0.001);
+
+            var watch2 = GetWatchNodeFromCurrentSpace(model, "068dd555-a5d5-4f11-af05-e4fa0cc015c9");
+            var doubleWatchVal1 = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(doubleWatchVal1, 15.0, 0.001);
+
+            var watch3 = GetWatchNodeFromCurrentSpace(model, "1aca382d-ca81-4955-a6c1-0f549df19fd7");
+            var doubleWatchVal2 = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(doubleWatchVal2, 15.0, 0.001);
 
         }
 
@@ -277,9 +330,9 @@ namespace Dynamo.Tests
         public void FilterWithCustomNode()
         {
             var model = controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"dynamo_elements_samples\working\filter\");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\filter\");
 
-            //Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf")) != null);
+            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf")) != null);
 
             string openPath = Path.Combine(examplePath, "filter-example.dyn");
             model.Open(openPath);
@@ -295,7 +348,22 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            //Assert.Inconclusive("Finish me!");
+            var watchNode = GetFirstWatchNodeFromCurrentSpace(model);
+            Assert.IsNotNull(watchNode);
+
+            // odd numbers between 0 and 5
+            Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode.OldValue);
+            var list = (watchNode.OldValue as FScheme.Value.List).Item;
+
+            Assert.AreEqual(3, list.Count());
+            var count = 1;
+            list.ToList().ForEach(x =>
+            {
+                Assert.IsAssignableFrom(typeof(FScheme.Value.Number), x);
+                var val = (x as FScheme.Value.Number).Item;
+                Assert.AreEqual(count, val, 0.0001);
+                count += 2;
+            });
 
         }
 
@@ -303,7 +371,7 @@ namespace Dynamo.Tests
         public void Sorting()
         {
             var model = controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"dynamo_elements_samples\working\sorting\");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\sorting\");
 
             string openPath = Path.Combine(examplePath, "sorting.dyn");
             model.Open(openPath);
@@ -319,7 +387,35 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            Assert.Inconclusive("Finish me!");
+            var watchNode1 = GetWatchNodeFromCurrentSpace(model, "d8ee9c7c-c456-4a38-a5d8-07eca624ebfe");
+            var watchNode2 = GetWatchNodeFromCurrentSpace(model, "c966ac1d-5caa-4cfe-bb0c-f6db9e5697c4");
+            Assert.IsNotNull(watchNode1);
+            Assert.IsNotNull(watchNode2);
+
+            // odd numbers between 0 and 5
+            Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode1.OldValue);
+            Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode2.OldValue);
+            var list1 =
+                (watchNode1.OldValue as FScheme.Value.List).Item.Select(x => (x as FScheme.Value.String).Item).ToList();
+            var list2 =
+                (watchNode2.OldValue as FScheme.Value.List).Item.Select(x => (x as FScheme.Value.String).Item).ToList();
+
+            Assert.AreEqual(5, list1.Count);
+            Assert.AreEqual(5, list2.Count);
+
+            var values = new List<string>(){"aaaaa", "bbb", "aa", "c", "dddd"};
+
+            values.Sort((e1, e2) => String.Compare(e1, e2));
+            for (var i = 0; i < 5; i++)
+            {
+                Assert.AreEqual(list1[i], values[i]);
+            }
+
+            values.Sort((e1, e2) => e1.Count().CompareTo(e2.Count()));
+            for (var i = 0; i < 5; i++)
+            {
+                Assert.AreEqual(list2[i], values[i]);
+            }
 
         }
 
@@ -327,7 +423,7 @@ namespace Dynamo.Tests
         public void Add()
         {
             var model = controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\math");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Add.dyn");
             model.Open(openPath);
@@ -342,7 +438,7 @@ namespace Dynamo.Tests
         public void Subtract()
         {
             var model = controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\math");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Subtract.dyn");
             model.Open(openPath);
@@ -357,7 +453,7 @@ namespace Dynamo.Tests
         public void Multiply()
         {
             var model = controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\math");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Multiply.dyn");
             model.Open(openPath);
@@ -372,7 +468,7 @@ namespace Dynamo.Tests
         public void Divide()
         {
             var model = controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\math");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Divide.dyn");
             model.Open(openPath);
@@ -387,7 +483,7 @@ namespace Dynamo.Tests
         public void Modulo()
         {
             var model = controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\math");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Modulo.dyn");
             model.Open(openPath);
@@ -402,7 +498,7 @@ namespace Dynamo.Tests
         public void Ceiling()
         {
             var model = controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\math");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Ceiling.dyn");
             model.Open(openPath);
@@ -417,7 +513,7 @@ namespace Dynamo.Tests
         public void Floor()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\math");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Floor.dyn");
             model.Open(openPath);
@@ -432,7 +528,7 @@ namespace Dynamo.Tests
         public void Power()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\math");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Power.dyn");
             model.Open(openPath);
@@ -447,7 +543,7 @@ namespace Dynamo.Tests
         public void Round()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\math");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Round.dyn");
             model.Open(openPath);
@@ -462,7 +558,7 @@ namespace Dynamo.Tests
         public void Sine()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\math");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Sine.dyn");
             model.Open(openPath);
@@ -477,7 +573,7 @@ namespace Dynamo.Tests
         public void Cosine()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\math");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Cosine.dyn");
             model.Open(openPath);
@@ -494,7 +590,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(delegate
                 {
                     var model = dynSettings.Controller.DynamoModel;
-                    var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\CASE");
+                    var examplePath = Path.Combine(GetTestDirectory(), @"core\CASE");
                     string openPath = Path.Combine(examplePath, "case_flip_matrix.dyn");
 
                     model.Open(openPath);
@@ -509,7 +605,7 @@ namespace Dynamo.Tests
         public void Tangent()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\math");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Tangent.dyn");
             model.Open(openPath);
@@ -524,15 +620,15 @@ namespace Dynamo.Tests
         public void StringInputNodeWorksWithSpecialCharacters()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core");
             string openPath = Path.Combine(examplePath, "StringInputTest.dyn");
             model.Open(openPath);
 
-            dynStringInput strNode = (dynStringInput)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynStringInput);
-            string expected =
+            var strNode = (dynStringInput)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynStringInput);
+            const string expected =
                 "A node\twith tabs, and\r\ncarriage returns,\r\nand !@#$%^&* characters, and also something \"in quotes\".";
 
-            Assert.AreEqual(expected, strNode.Value.ToString());
+            Assert.AreEqual(expected, strNode.Value);
             
         }
 
@@ -540,7 +636,7 @@ namespace Dynamo.Tests
         public void Repeat()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core");
             string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
 
             //open and run the expression
@@ -562,7 +658,7 @@ namespace Dynamo.Tests
 
             //test the negative case to make sure it throws an error
             numNode.Value = "-1";
-            Assert.Throws<NUnit.Framework.AssertionException>(() => dynSettings.Controller.RunExpression(null));
+            Assert.Throws<AssertionException>(() => dynSettings.Controller.RunExpression(null));
 
         }
 
@@ -571,14 +667,13 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            var data = new Dictionary<string, object>();
-            data.Add("name", "Partition List");
+            var data = new Dictionary<string, object> {{"name", "Partition List"}};
             model.CreateNode(data);
 
             //Create a List
             //For a list of 0..20, this will have 21 elements
             //Slicing by 5 should return 6 lists, the last containing one element
-            var list = Utils.MakeFSharpList(Enumerable.Range(0, 21).Select(x => FScheme.Value.NewNumber(x)).ToArray());
+            var list = Utils.SequenceToFSharpList(Enumerable.Range(0, 21).Select(x => FScheme.Value.NewNumber(x)));
 
             var sliceNode = (dynSlice)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynSlice);
             var args = FSharpList<FScheme.Value>.Empty;
@@ -602,7 +697,7 @@ namespace Dynamo.Tests
 
             //test if you pass in a list wwith less elements than the
             //slice, you should just get back the same list
-            list = Utils.MakeFSharpList(Enumerable.Range(0, 1).Select(x => FScheme.Value.NewNumber(x)).ToArray());
+            list = Utils.SequenceToFSharpList(Enumerable.Range(0, 1).Select(x => FScheme.Value.NewNumber(x)));
             args = FSharpList<FScheme.Value>.Empty;
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
@@ -631,7 +726,7 @@ namespace Dynamo.Tests
             //14,18
             //19
 
-            var list = Utils.MakeFSharpList(Enumerable.Range(0, 20).Select(x => FScheme.Value.NewNumber(x)).ToArray());
+            var list = Utils.SequenceToFSharpList(Enumerable.Range(0, 20).Select(x => FScheme.Value.NewNumber(x)));
 
             var data = new Dictionary<string, object> {{"name", "Diagonal Left List"}};
             model.CreateNode(data);
@@ -674,7 +769,7 @@ namespace Dynamo.Tests
         public void ReadImageFile()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\files");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\files");
 
             string openPath = Path.Combine(examplePath, "readImageFileTest.dyn");
             model.Open(openPath);
@@ -688,6 +783,42 @@ namespace Dynamo.Tests
             var watch = GetWatchNodeFromCurrentSpace(model, "4744f516-c6b5-421c-b7f1-1731610667bb");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
             Assert.AreEqual(25, doubleWatchVal, 0.00001);
+        }
+
+        [Test]
+        public void UsingDefaultValue()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\default_values");
+
+            string openPath = Path.Combine(examplePath, "take-every-default.dyn");
+            model.Open(openPath);
+
+            var watch = GetWatchNodeFromCurrentSpace(model, "360f3b50-5f27-460a-a57a-bb6338064d98");
+
+            // Run once
+            dynSettings.Controller.RunExpression(null);
+
+            var oldVal = watch.OldValue;
+            Assert.IsNotNull(oldVal);
+            Assert.IsTrue(oldVal.IsList);
+
+            // Pretend we never ran
+            model.Nodes.ForEach(
+                x =>
+                {
+                    x.RequiresRecalc = true;
+                    x.ResetOldValue();
+                });
+
+            // Make sure results are still consistent
+            dynSettings.Controller.RunExpression(null);
+            
+            var newVal = watch.OldValue;
+            Assert.IsNotNull(newVal);
+            Assert.IsTrue(newVal.IsList);
+
+            Assert.IsTrue(oldVal.Print() == newVal.Print());
         }
     }
 }

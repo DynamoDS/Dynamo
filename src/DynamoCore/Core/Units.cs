@@ -443,11 +443,18 @@ namespace Dynamo.Measure
         public static double FromFeetAndFractionalInches(string value)
         {
             double fractionalInch = 0.0;
+
             double feet, inch, m, cm, mm, numerator, denominator;
             Utils.ParseLengthFromString(value.ToString(), out feet, out inch, out m, out cm, out mm, out numerator, out denominator);
 
             if (denominator != 0.0)
                 fractionalInch = numerator / denominator;
+
+            double sign = 1;
+            if (value.StartsWith("-"))
+            {
+                sign *= -1;
+            }
 
             if (feet < 0)
                 return feet - inch / 12.0 - fractionalInch / 12.0;
