@@ -1655,9 +1655,8 @@ namespace Dynamo.Models
             node.Destroy();
             node.Cleanup();
             DynamoSelection.Instance.Selection.Remove(node);
-            OnNodeDeleted(node);
-
             node.WorkSpace.Nodes.Remove(node);
+            OnNodeDeleted(node);
         }
 
         /// <summary>

@@ -170,15 +170,33 @@ namespace Dynamo.PackageManager
 
         public bool InUse()
         {
+            return (LoadedTypes.Any() || WorkspaceOpen() || CustomNodeInWorkspace() ) && Loaded;
+        }
+
+        public bool CustomNodeInWorkspace()
+        {
             // get all of the function ids from the custom nodes in this package
             var guids = LoadedCustomNodes.Select(x => x.Guid);
 
             // check if any of the custom nodes is in a workspace
-            var customNodeInUse =  dynSettings.Controller.DynamoModel.AllNodes.Where(x => x is dynFunction)
+            return dynSettings.Controller.DynamoModel.AllNodes.Where(x => x is dynFunction)
                                    .Cast<dynFunction>()
                                    .Any(x => guids.Contains(x.Definition.FunctionId));
 
-            return (LoadedTypes.Any() || customNodeInUse) && Loaded;
+        }
+
+        public bool WorkspaceOpen()
+        {
+            // get all of the function ids from the custom nodes in this package
+            var guids = LoadedCustomNodes.Select(x => x.Guid);
+
+            return
+                dynSettings.Controller.DynamoModel.Workspaces.Any(
+                    x =>
+                        {
+                            var def = dynSettings.CustomNodeManager.GetDefinitionFromWorkspace(x);
+                            return def != null && guids.Contains(def.FunctionId);
+                        });
         }
 
         private void Uninstall()
