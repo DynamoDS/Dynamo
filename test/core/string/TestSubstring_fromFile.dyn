@@ -9,7 +9,7 @@
       <System.Double value="7" />
     </Dynamo.Nodes.dynDoubleInput>
     <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="fbe6306d-0607-4476-9380-2936759163a4" nickname="File Path" x="71.1031746031747" y="126.061428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="..\..\test\good_dyns\string\TestSubstring_fromFile.txt" />
+      <System.String value="..\..\test\core\string\TestSubstring_fromFile.txt" />
     </Dynamo.Nodes.dynStringFilename>
     <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="75a98da1-6da1-467a-99de-a46aa97a7d58" nickname="Read Text File" x="317.769841269841" y="141.616984126984" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </dynElements>
