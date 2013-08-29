@@ -59,4 +59,5 @@
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter"/>
     <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter"/>
     <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter"/>
+    <controls:TooltipLengthTruncater x:Key="TooltipLengthTruncater" />
 </ResourceDictionary>
