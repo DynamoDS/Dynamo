@@ -24,7 +24,99 @@ namespace Dynamo.Models
     public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
     public delegate void CleanupHandler(object sender, EventArgs e);
     public delegate void NodeHandler(dynNodeModel node);
-        
+    public delegate void WorkspaceHandler(dynWorkspaceModel model);
+
+    #region Helper types
+
+    public class WorkspaceHeader
+    {
+        private WorkspaceHeader()
+        {
+
+        }
+
+        public static WorkspaceHeader FromPath(string path)
+        {
+            try
+            {
+                var xmlDoc = new XmlDocument();
+                xmlDoc.Load(path);
+
+                string funName = null;
+                double cx = 0;
+                double cy = 0;
+                double zoom = 1.0;
+                string id = "";
+
+                // load the header
+                foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
+                {
+                    foreach (XmlAttribute att in node.Attributes)
+                    {
+                        if (att.Name.Equals("X"))
+                            cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                        else if (att.Name.Equals("Y"))
+                            cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                        else if (att.Name.Equals("zoom"))
+                            zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                        else if (att.Name.Equals("Name"))
+                            funName = att.Value;
+                        else if (att.Name.Equals("ID"))
+                        {
+                            id = att.Value;
+                        }
+                    }
+                }
+
+                // we have a dyf and it lacks an ID field, we need to assign it
+                // a deterministic guid based on its name.  By doing it deterministically,
+                // files remain compatible
+                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != "Home")
+                {
+                    id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
+                }
+
+
+                return new WorkspaceHeader() { ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FilePath = path };
+
+
+            }
+            catch (Exception ex)
+            {
+                DynamoLogger.Instance.Log("There was an error opening the workbench.");
+                DynamoLogger.Instance.Log(ex);
+                Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
+
+                if (dynSettings.Controller.Testing)
+                    Assert.Fail(ex.Message);
+
+                return null;
+            }
+        }
+
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Zoom { get; set; }
+        public string Name { get; set; }
+        public string ID { get; set; }
+        public string FilePath { get; set; }
+
+        public bool IsCustomNodeWorkspace()
+        {
+            return !String.IsNullOrEmpty(ID);
+        }
+    }
+
+    public class DynamoModelUpdateArgs : EventArgs
+    {
+        public object Item { get; set; }
+
+        public DynamoModelUpdateArgs(object item)
+        {
+            Item = item;
+        }
+    }
+
     public class FunctionNamePromptEventArgs : EventArgs
     {
         public string Name { get; set; }
@@ -40,11 +132,16 @@ namespace Dynamo.Models
         }
     }
 
+    #endregion
+
     /// <summary>
     /// The Dynamo model.
     /// </summary>
     public class DynamoModel:dynModelBase
     {
+
+        #region properties and fields
+
         public event EventHandler RequestLayoutUpdate;
         public virtual void OnRequestLayoutUpdate(object sender, EventArgs e)
         {
@@ -66,6 +163,11 @@ namespace Dynamo.Models
         public string UnlockLoadPath { get; set; }
         private dynWorkspaceModel _cspace;
         internal string editName = "";
+
+        /// <summary>
+        /// Event called when a workspace is hidden
+        /// </summary>
+        public event WorkspaceHandler WorkspaceHidden;
 
         /// <summary>
         /// Event called when a node is added to a workspace
@@ -109,57 +211,8 @@ namespace Dynamo.Models
             get { return CurrentSpace.Nodes.ToList(); }
         }
 
-        public void HideWorkspace(dynWorkspaceModel workspace)
-        {
-            this.CurrentSpace = _workSpaces[0];  // typically the home workspace
-            _workSpaces.Remove(workspace);
-            _hiddenWorkspaces.Add(workspace);
-        }
+        
 
-        /// <summary>
-        /// Replace the home workspace with a new 
-        /// workspace. Only valid if the home workspace is already
-        /// defined (usually by calling AddHomeWorkspace).
-        /// </summary>
-        public void NewHomeWorkspace()
-        {
-            if (this.Workspaces.Count > 0 && this.HomeSpace != null)
-            {
-                //var homeIndex = this._workSpaces.IndexOf(this.HomeSpace);
-                //var newHomespace = new HomeWorkspace();
-                //this.Workspaces[0] = newHomespace;
-                //this.HomeSpace = newHomespace;
-                //this.CurrentSpace = newHomespace;
-
-                this.AddHomeWorkspace();
-                _cspace = this.HomeSpace;
-                this.CurrentSpace = this.HomeSpace;
-                this.Workspaces.RemoveAt(1);
-            }
-        }
-
-        /// <summary>
-        /// Add a workspace to the dynamo model.
-        /// </summary>
-        /// <param name="workspace"></param>
-        public void AddHomeWorkspace()
-        {
-            var workspace = new HomeWorkspace()
-            {
-                WatchChanges = true
-            };
-            HomeSpace = workspace;
-            _workSpaces.Insert(0, workspace); // to front
-        }
-
-        /// <summary>
-        /// Remove a workspace from the dynamo model.
-        /// </summary>
-        /// <param name="workspace"></param>
-        public void RemoveWorkspace(dynWorkspaceModel workspace)
-        {
-            _workSpaces.Remove(workspace);
-        }
 
         public static bool RunEnabled { get; set; }
 
@@ -185,6 +238,8 @@ namespace Dynamo.Models
         /// An event triggered when the workspace is being cleaned.
         /// </summary>
         public event CleanupHandler CleaningUp;
+
+        #endregion
 
         public virtual void OnCleanup(EventArgs e)
         {
@@ -311,84 +366,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        public class WorkspaceHeader
-        {
-            private WorkspaceHeader()
-            {
-                
-            }
 
-            public static WorkspaceHeader FromPath(string path)
-            {
-                try
-                {
-                    var xmlDoc = new XmlDocument();
-                    xmlDoc.Load(path);
-
-                    string funName = null;
-                    double cx = 0;
-                    double cy = 0;
-                    double zoom = 1.0;
-                    string id = "";
-
-                    // load the header
-                    foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
-                    {
-                        foreach (XmlAttribute att in node.Attributes)
-                        {
-                            if (att.Name.Equals("X"))
-                                cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                            else if (att.Name.Equals("Y"))
-                                cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                            else if (att.Name.Equals("zoom"))
-                                zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                            else if (att.Name.Equals("Name"))
-                                funName = att.Value;
-                            else if (att.Name.Equals("ID"))
-                            {
-                                id = att.Value;
-                            }
-                        }
-                    }
-
-                    // we have a dyf and it lacks an ID field, we need to assign it
-                    // a deterministic guid based on its name.  By doing it deterministically,
-                    // files remain compatible
-                    if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != "Home")
-                    {
-                        id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
-                    }
-
-
-                    return new WorkspaceHeader() { ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FilePath = path };
-
-
-                }
-                catch (Exception ex)
-                {
-                    DynamoLogger.Instance.Log("There was an error opening the workbench.");
-                    DynamoLogger.Instance.Log(ex);
-                    Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
-
-                    if (dynSettings.Controller.Testing)
-                        Assert.Fail(ex.Message);
-
-                    return null;
-                }
-            }
-
-            public double X { get; set; }
-            public double Y { get; set; }
-            public double Zoom { get; set; }
-            public string Name { get; set; }
-            public string ID { get; set; }
-            public string FilePath { get; set; }
-
-            public bool IsCustomNodeWorkspace()
-            {
-                return !String.IsNullOrEmpty(ID);
-            }
-        }
 
         internal void OpenCustomNodeAndFocus( WorkspaceHeader workspaceHeader )
         {
@@ -437,6 +415,71 @@ namespace Dynamo.Models
                 return OpenWorkspace(xmlPath);
             }
 
+        }
+
+        public void HideWorkspace(dynWorkspaceModel workspace)
+        {
+            this.CurrentSpace = _workSpaces[0];  // go home
+            _workSpaces.Remove(workspace);
+            OnWorkspaceHidden(workspace);
+            _hiddenWorkspaces.Add(workspace);
+        }
+
+        /// <summary>
+        /// Called when a workspace is hidden
+        /// </summary>
+        /// <param name="workspace"></param>
+        private void OnWorkspaceHidden(dynWorkspaceModel workspace)
+        {
+            if (WorkspaceHidden != null)
+            {
+                WorkspaceHidden(workspace);
+            }
+        }
+
+        /// <summary>
+        /// Replace the home workspace with a new 
+        /// workspace. Only valid if the home workspace is already
+        /// defined (usually by calling AddHomeWorkspace).
+        /// </summary>
+        public void NewHomeWorkspace()
+        {
+            if (this.Workspaces.Count > 0 && this.HomeSpace != null)
+            {
+                //var homeIndex = this._workSpaces.IndexOf(this.HomeSpace);
+                //var newHomespace = new HomeWorkspace();
+                //this.Workspaces[0] = newHomespace;
+                //this.HomeSpace = newHomespace;
+                //this.CurrentSpace = newHomespace;
+
+                this.AddHomeWorkspace();
+                _cspace = this.HomeSpace;
+                this.CurrentSpace = this.HomeSpace;
+                this.Workspaces.RemoveAt(1);
+            }
+        }
+
+        /// <summary>
+        /// Add a workspace to the dynamo model.
+        /// </summary>
+        /// <param name="workspace"></param>
+        public void AddHomeWorkspace()
+        {
+            var workspace = new HomeWorkspace()
+            {
+                WatchChanges = true
+            };
+            HomeSpace = workspace;
+            _workSpaces.Insert(0, workspace); // to front
+        }
+
+        /// <summary>
+        /// Remove a workspace from the dynamo model.
+        /// </summary>
+        /// <param name="workspace"></param>
+        public void RemoveWorkspace(dynWorkspaceModel workspace)
+        {
+            _workSpaces.Remove(workspace);
         }
 
         /// <summary>
@@ -865,7 +908,7 @@ namespace Dynamo.Models
                                         double workspaceOffsetX = 0,
                                         double workspaceOffsetY = 0)
         {
-            //Add an entry to the funcdict
+
             var workSpace = new FuncWorkspace(
                 name, category, description, workspaceOffsetX, workspaceOffsetY)
             {
@@ -874,8 +917,8 @@ namespace Dynamo.Models
 
             Workspaces.Add(workSpace);
 
-            List<dynNodeModel> newElements = workSpace.Nodes.ToList();
-            List<dynConnectorModel> newConnectors = workSpace.Connectors.ToList();
+            workSpace.Nodes.ToList();
+            workSpace.Connectors.ToList();
 
             var functionDefinition = new FunctionDefinition(id)
             {
@@ -1466,6 +1509,28 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Save the current workspace.
+        /// </summary>
+        /// <param name="parameters">The file path.</param>
+        public void SaveAs(object parameters)
+        {
+            if (parameters == null)
+                return;
+
+            var fi = new FileInfo(parameters.ToString());
+
+            SaveAs(fi.FullName);
+        }
+
+        internal bool CanSaveAs(object parameters)
+        {
+            if (parameters == null)
+                return false;
+
+            return true;
+        }
+
+        /// <summary>
         ///     Save to a specific file path, if the path is null or empty, does nothing.
         ///     If successful, the CurrentSpace.FilePath field is updated as a side effect
         /// </summary>
@@ -1513,28 +1578,6 @@ namespace Dynamo.Models
 
         internal bool CanSave(object parameter)
         {
-            return true;
-        }
-
-        /// <summary>
-        /// Save the current workspace.
-        /// </summary>
-        /// <param name="parameters">The file path.</param>
-        public void SaveAs(object parameters)
-        {
-            if (parameters == null)
-                return;
-
-            var fi = new FileInfo(parameters.ToString());
-            
-            SaveAs(fi.FullName);
-        }
-
-        internal bool CanSaveAs(object parameters)
-        {
-            if (parameters == null)
-                return false;
-
             return true;
         }
 
@@ -1836,13 +1879,4 @@ namespace Dynamo.Models
         }
     }
 
-    public class DynamoModelUpdateArgs : EventArgs
-    {
-        public object Item { get; set; }
-
-        public DynamoModelUpdateArgs(object item)
-        {
-            Item = item;
-        }
-    }
 }
