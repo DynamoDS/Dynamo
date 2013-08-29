@@ -17,6 +17,7 @@ def main():
 	parser.add_option("-r", "--root", dest="root", default=os.getcwd() + "\\..\\..", help="The root path of the repo")
 	parser.add_option("-n", "--repo_name", dest="repo_name", default="Dynamo" , help="The name of the repo.  Don't screw this up.")
 	parser.add_option("-p", "--sol_path", dest="solution_path", default="src/Dynamo.sln", help="Solution path relative to repo root.")
+	parser.add_option("-t", "--no_test", action="store_false", dest="test", default=True, help="Don't run tests")
 	parser.add_option("-b", "--msbuild_path", dest="msbuild_path", default="C:/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe", help="Path to MSBuild.exe")
 	
 	(options, args) = parser.parse_args()
@@ -33,10 +34,10 @@ def main():
 
 	# perform unit tests
 	unit_test_result = {}
-	if build_result["success"] == True and build_result_debug["success"] == True:
+	if build_result["success"] == True and build_result_debug["success"] == True and options.test:
 		unit_test_result = interpret_unit_tests( run_unit_tests( repo_root ) )
 
-	# build log
+	# print results
 	result = get_email_content([build_result, build_result_debug], unit_test_result )
 	for line in result[1].split("\n"):
 		print line
@@ -194,12 +195,12 @@ def get_email_content(  build_results, unit_test_result):
 	message = message + str( build_results[0]["warnings"] ) + " warnings in the Debug build. \n\n"
 	message = message + "------------------------- \n\n\n"
 
-	message = message + "UNIT TEST RESULTS \n\n\n"
+	message = message + "TEST RESULTS \n\n\n"
 
+	
 	if tests_run:
 
-		message = message + "Test results were a "
-
+		message = message + "Tests were a "
 
 		# Unit tests
 		if "success" in unit_test_result and unit_test_result["success"] == True:
@@ -213,11 +214,12 @@ def get_email_content(  build_results, unit_test_result):
 		message = message + "  Failures: " + str( unit_test_result["failures"] )
 		message = message + "  Time elapsed: " + str( unit_test_result["time"] ) + "\n\n"
 		# message = message + "\n\n" + "Full results: " + "\n\n" + str( unit_test_result["full_results"] )
-		message = message + "------------------------- \n\n"
 
 	else:
-		message = message + "Unit tests were not run.  This is likely because of a build failure. \n\n"
 		message = message + "------------------------- \n\n"
+		message = message + "Unit tests were not run.  \n\n"
+	
+	message = message + "------------------------- \n\n"
 
 
 	return [subject, message]
