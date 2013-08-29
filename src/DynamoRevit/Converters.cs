@@ -100,35 +100,32 @@ namespace Dynamo.Controls
         /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            double length = System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
-
-            var lengthObj = (DynamoLength<Foot>)parameter;
-            lengthObj.Item.Length = length;
-
             DisplayUnitType displayUnit = getDisplayUnitTypeOfFormatUnits();
+
+            var feet = (double) value;
 
             switch (displayUnit)
             {
                 case DisplayUnitType.DUT_CENTIMETERS:
-                    return lengthObj.ToDisplayString(DynamoUnitDisplayType.CENTIMETERS);
+                    return Foot.ToDisplayString(feet, DynamoUnitDisplayType.Centimeters);
 
                 case DisplayUnitType.DUT_MILLIMETERS:
-                    return lengthObj.ToDisplayString(DynamoUnitDisplayType.MILLIMETERS);
+                    return Foot.ToDisplayString(feet, DynamoUnitDisplayType.Millimeters);
 
                 case DisplayUnitType.DUT_METERS:
-                    return lengthObj.ToDisplayString(DynamoUnitDisplayType.METERS);
+                    return Foot.ToDisplayString(feet, DynamoUnitDisplayType.Meters);
 
                 case DisplayUnitType.DUT_FRACTIONAL_INCHES:
-                    return lengthObj.ToDisplayString(DynamoUnitDisplayType.FRACTIONAL_INCHES);
+                    return Foot.ToDisplayString(feet, DynamoUnitDisplayType.FractionalInches);
 
                 case DisplayUnitType.DUT_FEET_FRACTIONAL_INCHES:
-                    return lengthObj.ToDisplayString(DynamoUnitDisplayType.FRACTIONAL_FEET_INCHES);
+                    return Foot.ToDisplayString(feet, DynamoUnitDisplayType.FractionalFeetInches);
 
                 case DisplayUnitType.DUT_DECIMAL_INCHES:
-                    return lengthObj.ToDisplayString(DynamoUnitDisplayType.DECIMAL_INCHES);
+                    return Foot.ToDisplayString(feet, DynamoUnitDisplayType.DecimalInches);
 
                 case DisplayUnitType.DUT_DECIMAL_FEET:
-                    return lengthObj.ToDisplayString(DynamoUnitDisplayType.DECIMAL_FEET);
+                    return Foot.ToDisplayString(feet, DynamoUnitDisplayType.DecimalFeet);
             }
 
             return 0.0;
@@ -176,36 +173,9 @@ namespace Dynamo.Controls
                 }
             }
 
-            string pattern = @"(((?<ft>((\+|-)?\d+([.,]\d{1,2})?))('|ft))*\s*((?<in>(?<num>(\+|-)?\d+([.,]\d{1,2})?)/(?<den>\d+([.,]\d{1,2})?)*(""|in))|(?<in>(?<wholeInch>(\+|-)?\d+([.,]\d{1,2})?)*(\s|-)*(?<num>(\+|-)?\d+([.,]\d{1,2})?)/(?<den>\d+([.,]\d{1,2})?)*(""|in))|(?<in>(?<wholeInch>(\+|-)?\d+([.,]\d{1,2})?)(""|in)))?)*((?<m>((\+|-)?\d+([.,]\d{1,2})?))m($|\s))*((?<cm>((\+|-)?\d+([.,]\d{1,2})?))cm($|\s))*((?<mm>((\+|-)?\d+([.,]\d{1,2})?))mm($|\s))*";
-            
-            int feet = 0;
-            int inch = 0;
-            int mm = 0;
-            int cm = 0;
-            int m = 0;
-            double numerator = 0.0;
-            double denominator = 0.0;
             double fractionalInch = 0.0;
-
-            const RegexOptions opts = RegexOptions.None;
-            var regex = new Regex(pattern, opts);
-            Match match = regex.Match(value.ToString().Trim().ToLower());
-            if (match.Success)
-            {
-                //parse imperial values
-                int.TryParse(match.Groups["ft"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out feet);
-                int.TryParse(match.Groups["wholeInch"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out inch);
-                double.TryParse(match.Groups["num"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture,
-                                out numerator);
-                double.TryParse(match.Groups["den"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture,
-                                out denominator);
-
-                //parse metric values
-                int.TryParse(match.Groups["m"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out m);
-                int.TryParse(match.Groups["cm"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out cm);
-                int.TryParse(match.Groups["mm"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out mm);
-
-            }
+            double feet, inch, m, cm, mm, numerator, denominator;
+            Utils.ParseLengthFromString(value.ToString(), out feet, out inch, out m, out cm, out mm, out numerator, out denominator);
 
             if (denominator != 0)
                 fractionalInch = numerator / denominator;
