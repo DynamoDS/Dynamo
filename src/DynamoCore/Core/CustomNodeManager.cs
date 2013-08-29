@@ -262,10 +262,10 @@ namespace Dynamo.Utilities
         ///     Does not instantiate the nodes.
         /// </summary>
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public IEnumerable<CustomNodeInfo> UpdateSearchPath()
+        public List<CustomNodeInfo> UpdateSearchPath()
         {
             var nodes = SearchPath.Select(ScanNodeHeadersInDirectory);
-            return nodes.SelectMany(x => x);
+            return nodes.SelectMany(x => x).ToList();
         }
 
         /// <summary>
