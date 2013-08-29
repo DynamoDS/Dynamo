@@ -243,7 +243,7 @@ namespace Dynamo.Models
 
         public DynamoModel()
         {
-            Console.Write("hi");
+            //Console.Write("hi");
         }
 
         public virtual void OnCleanup(EventArgs e)
