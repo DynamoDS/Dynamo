@@ -8,7 +8,7 @@ namespace Dynamo.Tests
     internal class UnitsOfMeasureTests
     {
         [Test]
-        public void MeasurementConversions()
+        public void MeasurementConversionsValidInput()
         {
             //feet tests
             Assert.AreEqual("1' 3\"", Foot.ToDisplayString(1.25, DynamoUnitDisplayType.FractionalFeetInches));
@@ -32,7 +32,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CreateAndConvertInches()
+        public void CreateAndConvertInchesValidINput()
         {
             //var inchLength = new DynamoLength<Inch>(1.25);
 
@@ -98,7 +98,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CreateAndConvertFeet()
+        public void CreateAndConvertFeetValidInput()
         {
             //var ftLength = new DynamoLength<Foot>(1.3177);
 
@@ -167,7 +167,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CreateAndConvertMillimeters()
+        public void CreateAndConvertMillimetersValidInput()
         {
             Assert.AreEqual(1.0, Millimeter.ConvertTo(1.0,DynamoUnitType.Millimeters), 0.001);
             Assert.AreEqual(.1, Millimeter.ConvertTo(1.0, DynamoUnitType.Centimeters), 0.001);
@@ -178,7 +178,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CreateAndConvertCentimeters()
+        public void CreateAndConvertCentimetersValidInput()
         {
             Assert.AreEqual(10.0, Centimeter.ConvertTo(1.0, DynamoUnitType.Millimeters), 0.001);
             Assert.AreEqual(1.0, Centimeter.ConvertTo(1.0, DynamoUnitType.Centimeters), 0.001);
@@ -189,7 +189,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CreateAndConvertMeters()
+        public void CreateAndConvertMetersValidInput()
         {
             Assert.AreEqual(1000.0, Meter.ConvertTo(1.0, DynamoUnitType.Millimeters), 0.001);
             Assert.AreEqual(100.0, Meter.ConvertTo(1.0, DynamoUnitType.Centimeters), 0.001);
@@ -200,7 +200,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void FeetAndFractionalInches()
+        public void FeetAndFractionalInchesValidInput()
         {
             Assert.AreEqual(1.0, Utils.FromFeetAndFractionalInches("1'"));
             Assert.AreEqual(1.0, Utils.FromFeetAndFractionalInches("1' 0\""));
@@ -291,7 +291,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(-100, cm);
             Assert.AreEqual(-5, mm);
         }
-    
+
         [Test]
         public void CreateFraction()
         {
@@ -304,7 +304,18 @@ namespace Dynamo.Tests
             Assert.AreEqual("17/32", Utils.ParsePartialInchesToString(0.53125, 0.015625));
             Assert.AreEqual("1/64", Utils.ParsePartialInchesToString(.015625, 0.015625)); //1/64"
             Assert.AreEqual("63/64", Utils.ParsePartialInchesToString(.984375, 0.015625)); //63/64"
-            Assert.AreEqual("1", Utils.ParsePartialInchesToString(.99, 0.015625)); //63/64"
+            Assert.AreEqual("1", Utils.ParsePartialInchesToString(.99, 0.015625));
+        }
+
+        [Test]
+        public void FeetAndFractionalInchesInvalidInput()
+        {
+            Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("--1'"));
+            Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("turtles"));
+            Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("isn't this nice!"));
+            Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("ft"));
+            Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("\""));
+            Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("6.5"));
         }
     }
 }

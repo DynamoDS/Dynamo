@@ -15,7 +15,7 @@ using NUnit.Framework;
 namespace Dynamo.Utilities
 {
     /// <summary>
-    /// A struct to keep track of custom nodes.
+    /// A simple class to keep track of custom nodes.
     /// </summary>
     public class CustomNodeInfo
     {
@@ -35,6 +35,8 @@ namespace Dynamo.Utilities
         public string Path { get; set; }
     }
 
+    public delegate void DefinitionLoadHandler(FunctionDefinition def);
+
     /// <summary>
     ///     Manages instantiation of custom nodes.  All custom nodes known to Dynamo should be stored
     ///     with this type.  This object implements late initialization of custom nodes by providing a 
@@ -44,6 +46,11 @@ namespace Dynamo.Utilities
     {
 
         #region Fields and properties
+
+        /// <summary>
+        /// An event that is fired when a definition is loaded (e.g. when the node is placed)
+        /// </summary>
+        public event DefinitionLoadHandler DefinitionLoaded;
 
         private Dictionary<Guid, FunctionDefinition> loadedNodes = new Dictionary<Guid, FunctionDefinition>();
         private Dictionary<Guid, string> nodePaths = new Dictionary<Guid, string>();
@@ -255,10 +262,10 @@ namespace Dynamo.Utilities
         ///     Does not instantiate the nodes.
         /// </summary>
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public IEnumerable<CustomNodeInfo> UpdateSearchPath()
+        public List<CustomNodeInfo> UpdateSearchPath()
         {
             var nodes = SearchPath.Select(ScanNodeHeadersInDirectory);
-            return nodes.SelectMany(x => x);
+            return nodes.SelectMany(x => x).ToList();
         }
 
         /// <summary>
@@ -1003,6 +1010,8 @@ namespace Dynamo.Utilities
 
                 ws.WatchChanges = true;
 
+                this.OnGetDefinitionFromPath(def);
+
             }
             catch (Exception ex)
             {
@@ -1017,6 +1026,12 @@ namespace Dynamo.Utilities
             }
 
             return true;
+        }
+
+        public void OnGetDefinitionFromPath(FunctionDefinition def)
+        {
+            if (DefinitionLoaded != null && def != null)
+                DefinitionLoaded(def);
         }
 
         public static FScheme.Expression CompileFunction(FunctionDefinition definition)
