@@ -189,6 +189,11 @@ namespace Dynamo
 
         #region Constructor and Initialization
 
+        public static DynamoController MakeSandbox()
+        {
+            return new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), "None");
+        }
+
         /// <summary>
         ///     Class constructor
         /// </summary>

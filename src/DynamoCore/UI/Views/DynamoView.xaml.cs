@@ -56,6 +56,21 @@ namespace Dynamo.Controls
             get { return LogScroller.Height > 0; }
         }
 
+        public static Application Start()
+        {
+            var controller = DynamoController.MakeSandbox();
+            var app = new Application();
+
+            //create the view
+            var ui = new DynamoView();
+            ui.DataContext = controller.DynamoViewModel;
+            controller.UIDispatcher = ui.Dispatcher;
+
+            app.Run(ui);
+
+            return app;
+        }
+
         public DynamoView()
         {
             _timer = new Stopwatch();
