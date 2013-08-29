@@ -217,11 +217,7 @@ namespace Dynamo
 
             dynSettings.PackageLoader.DoCachedPackageUninstalls();
             dynSettings.PackageLoader.LoadPackages();
-
             
-            //create the view model to which the main window will bind
-            //the DynamoModel is created therein
-            DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(viewModelType,new object[]{this});
             FSchemeEnvironment = env;
 
             DynamoViewModel.Model.CurrentSpace.X = 0;

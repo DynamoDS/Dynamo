@@ -241,6 +241,11 @@ namespace Dynamo.Models
 
         #endregion
 
+        public DynamoModel()
+        {
+            Console.Write("hi");
+        }
+
         public virtual void OnCleanup(EventArgs e)
         {
             if (CleaningUp != null)
@@ -1384,6 +1389,8 @@ namespace Dynamo.Models
             {
                 node.SaveResult = true;
             }
+
+            OnNodeAdded(node);
         }
 
         internal bool CanCreateNode(object parameters)
