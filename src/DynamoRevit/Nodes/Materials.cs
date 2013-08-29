@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
             {
                 foundMat = (Autodesk.Revit.DB.Material)fec.ToElements().First(x => x.Name == matName);
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 throw new Exception("A material with that name could not be found.");
             }

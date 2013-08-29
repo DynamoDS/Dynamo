@@ -45,7 +45,9 @@ namespace Dynamo.Controls
         public const int CANVAS_OFFSET_X = 0;
 
         private Point dragOffset;
+#pragma warning disable 649
         private dynNodeView draggedNode;
+#pragma warning restore 649
         private DynamoViewModel _vm;
         private Stopwatch _timer;
 

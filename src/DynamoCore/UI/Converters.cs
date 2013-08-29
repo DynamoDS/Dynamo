@@ -13,6 +13,27 @@ using Dynamo.PackageManager;
 
 namespace Dynamo.Controls
 {
+    public class TooltipLengthTruncater : IValueConverter
+    {
+        private const int MaxChars = 100;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var tooltip = value as string;
+            if (tooltip != null && tooltip.Length > MaxChars)
+            {
+                var trimIndex = tooltip.LastIndexOf(' ', MaxChars - 5);
+                return tooltip.Remove(trimIndex > 0 ? trimIndex : MaxChars - 5) + " ...";
+            } 
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PackageUploadStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
