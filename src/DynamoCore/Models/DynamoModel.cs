@@ -409,7 +409,8 @@ namespace Dynamo.Models
                 if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
                     ViewHomeWorkspace();
 
-                dynSettings.Controller.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(xmlPath));
+                var dirName = Path.GetDirectoryName(xmlPath);
+                dynSettings.Controller.CustomNodeManager.AddDirectoryToSearchPath(dirName);
                 dynSettings.Controller.CustomNodeManager.UpdateSearchPath();
 
                 return OpenWorkspace(xmlPath);

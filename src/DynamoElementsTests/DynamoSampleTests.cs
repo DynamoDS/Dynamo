@@ -122,6 +122,11 @@ namespace Dynamo.Tests
             return (dynWatch)nodeToWatch;
         }
 
+        public dynWatch GetFirstWatchNodeFromCurrentSpace(DynamoModel model)
+        {
+            return (dynWatch) model.CurrentSpace.Nodes.FirstOrDefault(x => x is dynWatch);
+        }
+
         public double GetDoubleFromFSchemeValue(FScheme.Value value)
         {
             var doubleWatchVal = 0.0;
@@ -209,14 +214,28 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentSpace.Nodes.Count);
 
             // run the expression
-            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
             dynSettings.Controller.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            Assert.Inconclusive("Finish me!");
+            var watchNode = GetFirstWatchNodeFromCurrentSpace(model);
+            Assert.IsNotNull(watchNode);
+
+            // 50 elements between -1 and 1
+            Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode.OldValue);
+            var list = (watchNode.OldValue as FScheme.Value.List).Item;
+
+            Assert.AreEqual(50, list.Count());
+            list.ToList().ForEach(x =>
+                {
+                    Assert.IsAssignableFrom(typeof(FScheme.Value.Number), x);
+                    var val = (x as FScheme.Value.Number).Item;
+                    Assert.IsTrue((val < 1.0));
+                    Assert.IsTrue((val > -1.0));
+                });
+
         }
 
         [Test]
@@ -226,7 +245,8 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"dynamo_elements_samples\working\combine\");
 
             string openPath = Path.Combine(examplePath, "combine-with-three.dyn");
-            //DynamoCommands.RunCommand(DynamoCommands.OpenCommand, openPath);
+            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "combine2.dyf")) != null);
+            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Sequence2.dyf")) != null);
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
@@ -234,7 +254,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentSpace.Nodes.Count);
 
             // run the expression
-            //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
             dynSettings.Controller.RunExpression(null);
 
             // wait for the expression to complete
@@ -279,7 +298,7 @@ namespace Dynamo.Tests
             var model = controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"dynamo_elements_samples\working\filter\");
 
-            //Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf")) != null);
+            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf")) != null);
 
             string openPath = Path.Combine(examplePath, "filter-example.dyn");
             model.Open(openPath);
@@ -295,7 +314,7 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            //Assert.Inconclusive("Finish me!");
+            Assert.Inconclusive("Finish me!");
 
         }
 
