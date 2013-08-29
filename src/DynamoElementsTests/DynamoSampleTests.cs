@@ -67,8 +67,10 @@ namespace Dynamo.Tests
                 DynamoLogger.Instance.StartLogging();
 
                 //create a new instance of the ViewModel
-                controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE);
-                controller.Testing = true;
+                controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE)
+                {
+                    Testing = true
+                };
             }
             catch (Exception ex)
             {
@@ -87,8 +89,6 @@ namespace Dynamo.Tests
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
-
-                
             }
         }
 
@@ -688,6 +688,42 @@ namespace Dynamo.Tests
             var watch = GetWatchNodeFromCurrentSpace(model, "4744f516-c6b5-421c-b7f1-1731610667bb");
             var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
             Assert.AreEqual(25, doubleWatchVal, 0.00001);
+        }
+
+        [Test]
+        public void UsingDefaultValue()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"good_dyns\default_values");
+
+            string openPath = Path.Combine(examplePath, "take-every-default.dyn");
+            model.Open(openPath);
+
+            var watch = GetWatchNodeFromCurrentSpace(model, "360f3b50-5f27-460a-a57a-bb6338064d98");
+
+            // Run once
+            dynSettings.Controller.RunExpression(null);
+
+            var oldVal = watch.OldValue;
+            Assert.IsNotNull(oldVal);
+            Assert.IsTrue(oldVal.IsList);
+
+            // Pretend we never ran
+            model.Nodes.ForEach(
+                x =>
+                {
+                    x.RequiresRecalc = true;
+                    x.ResetOldValue();
+                });
+
+            // Make sure results are still consistent
+            dynSettings.Controller.RunExpression(null);
+            
+            var newVal = watch.OldValue;
+            Assert.IsNotNull(newVal);
+            Assert.IsTrue(newVal.IsList);
+
+            Assert.IsTrue(oldVal.Print() == newVal.Print());
         }
     }
 }
