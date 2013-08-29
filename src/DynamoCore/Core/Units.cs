@@ -538,13 +538,15 @@ namespace Dynamo.Measure
             double numerator = 0.0;
             double denominator = 0.0;
             double fractionalInch = 0.0;
+            string val = "";
 
             const RegexOptions opts = RegexOptions.None;
             var regex = new Regex(pattern, opts);
             Match match = regex.Match(value.Trim().ToLower());
             if (match.Success)
             {
-                int.TryParse(match.Groups["ft"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out feet);
+                val = match.Groups["ft"].Value;
+                int.TryParse(val, NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out feet);
                 int.TryParse(match.Groups["wholeInch"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out inch);
                 double.TryParse(match.Groups["num"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture,
                                 out numerator);
@@ -557,6 +559,12 @@ namespace Dynamo.Measure
 
             if (denominator != 0)
                 fractionalInch = numerator / denominator;
+
+            double sign = 1;
+            if (value.StartsWith("-"))
+            {
+                sign *= -1;
+            }
 
             if (feet < 0)
                 return feet - inch / 12.0 - fractionalInch / 12.0;
