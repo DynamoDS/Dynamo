@@ -118,9 +118,13 @@ namespace Dynamo.Nodes
         private readonly PortData _originPort = new PortData(
             "origin", "The average (mean) of the point list.", typeof(Value.Container));
 
+        private readonly PortData _planePort = new PortData(
+    "plane", "The plane representing the output.", typeof(Value.Container));
+
         public dynBestFitPlane()
         {
             InPortData.Add(new PortData("XYZs", "A List of XYZ's.", typeof(Value.List)));
+            OutPortData.Add(_planePort);
             OutPortData.Add(_normalPort);
             OutPortData.Add(_originPort);
 
@@ -142,8 +146,12 @@ namespace Dynamo.Nodes
 
             var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
 
+            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
+
+            outPuts[_planePort] = Value.NewContainer(plane);
             outPuts[_normalPort] = Value.NewContainer(normal);
             outPuts[_originPort] = Value.NewContainer(meanPt);
+            
         }
     }
 }

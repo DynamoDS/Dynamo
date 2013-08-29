@@ -624,6 +624,12 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
+            if (this.Name.Contains(@"\") || this.Name.Contains(@"/") || this.Name.Contains(@"*"))
+            {
+                this.ErrorString = @"The name of the package cannot contain /,\, or *.";
+                return false;
+            }
+
             if (this.Name.Length < 3)
             {
                 this.ErrorString = "Name must be at least 3 characters.";

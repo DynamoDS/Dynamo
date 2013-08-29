@@ -13,18 +13,11 @@
 //limitations under the License.
 
 using System;
-using System.Collections;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Controls;
 using System.Xml;
-using System.Windows.Data;
-
 using Autodesk.Revit.DB;
-
-using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Utilities;

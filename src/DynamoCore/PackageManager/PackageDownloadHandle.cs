@@ -78,7 +78,7 @@ namespace Dynamo.PackageManager
 
             Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
             string location = Path.GetDirectoryName(dynamoAssembly.Location);
-            return Path.Combine(location, "dynamo_packages", this.Name);
+            return Path.Combine(location, "dynamo_packages") + @"\" + this.Name.Replace("/","_").Replace(@"\","_");
 
         }
 
