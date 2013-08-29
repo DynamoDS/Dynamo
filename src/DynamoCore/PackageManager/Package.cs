@@ -89,6 +89,10 @@ namespace Dynamo.PackageManager
             PublishNewPackageCommand = new DelegateCommand(PublishNewPackage, CanPublishNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
 
+            dynSettings.Controller.DynamoModel.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoModel.NodeDeleted += (node) => UninstallCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoModel.WorkspaceHidden += (ws) => UninstallCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoModel.Workspaces.CollectionChanged += (sender, args) => UninstallCommand.RaiseCanExecuteChanged();
         }
 
         public static Package FromDirectory(string rootPath)
