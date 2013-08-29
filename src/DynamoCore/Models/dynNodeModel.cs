@@ -264,16 +264,22 @@ namespace Dynamo.Models
         /// <summary>
         /// Get the last computed value from the node.
         /// </summary>
-        public FScheme.Value _oldValue = null;
-        public FScheme.Value OldValue { 
-            get
+        private FScheme.Value _oldValue = null;
+        public FScheme.Value OldValue
+        {
+            get { return _oldValue; }
+            protected set
             {
-                return _oldValue;
-            }
-            protected set { 
                 _oldValue = value;
                 RaisePropertyChanged("OldValue");
-        }}
+            }
+        }
+
+        public void ResetOldValue()
+        {
+            OldValue = null;
+            RequiresRecalc = true;
+        }
 
         protected internal ExecutionEnvironment macroEnvironment = null;
 
@@ -786,7 +792,6 @@ namespace Dynamo.Models
             // should I re-evaluate?
             if (OldValue == null || !SaveResult || RequiresRecalc)
             {
-                
                 // re-evaluate
                 var result = evaluateNode(args);
 
