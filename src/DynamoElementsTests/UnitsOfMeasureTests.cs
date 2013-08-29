@@ -8,7 +8,7 @@ namespace Dynamo.Tests
     internal class UnitsOfMeasureTests
     {
         [Test]
-        public void MeasurementConversions()
+        public void MeasurementConversionsValidInput()
         {
             //feet tests
             var foot = new DynamoLength<Foot>(1.25);
@@ -40,7 +40,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CreateAndConvertInches()
+        public void CreateAndConvertInchesValidINput()
         {
             var inchLength = new DynamoLength<Inch>(1.25);
 
@@ -106,7 +106,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CreateAndConvertFeet()
+        public void CreateAndConvertFeetValidInput()
         {
             var ftLength = new DynamoLength<Foot>(1.3177);
 
@@ -175,7 +175,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CreateAndConvertMillimeters()
+        public void CreateAndConvertMillimetersValidInput()
         {
             var mmLength = new DynamoLength<Millimeter>(1.0);
 
@@ -189,7 +189,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CreateAndConvertCentimeters()
+        public void CreateAndConvertCentimetersValidInput()
         {
             var cmLength = new DynamoLength<Centimeter>(1.0);
 
@@ -203,7 +203,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CreateAndConvertMeters()
+        public void CreateAndConvertMetersValidInput()
         {
             var mLength = new DynamoLength<Meter>(1.0);
 
@@ -217,7 +217,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void FeetAndFractionalInches()
+        public void FeetAndFractionalInchesValidInput()
         {
             Assert.AreEqual(1.0, Utils.FromFeetAndFractionalInches("1'"));
             Assert.AreEqual(1.0, Utils.FromFeetAndFractionalInches("1' 0\""));
@@ -228,9 +228,16 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void ParseUnitsFromString()
+        public void FeetAndFractionalInchesInvalidInput()
         {
-            
+            Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("--1'"));
+            Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("turtles"));
+            Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("isn't this nice!"));
+            Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("ft"));
+            Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("\""));
+            Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("6.5"));
         }
+
+ 
     }
 }
