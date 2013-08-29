@@ -20,6 +20,8 @@ using NUnit.Framework;
 
 namespace Dynamo.Models
 {
+    
+    public delegate void NodeAddedToWorkspaceHandler(dynNodeModel node, dynWorkspaceModel ws);   
     public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
     public delegate void CleanupHandler(object sender, EventArgs e);
 
@@ -64,6 +66,11 @@ namespace Dynamo.Models
         public string UnlockLoadPath { get; set; }
         private dynWorkspaceModel _cspace;
         internal string editName = "";
+
+        /// <summary>
+        /// Event called when a node is added to a workspace
+        /// </summary>
+        public event NodeAddedToWorkspaceHandler NodeAddedToWorkspace;
 
         public dynWorkspaceModel CurrentSpace
         {
@@ -462,6 +469,8 @@ namespace Dynamo.Models
                 node.IsVisible = isVisible;
                 node.IsUpstreamVisible = isUpstreamVisible;
 
+                OnNodeAddedToWorkspace(node, ws);
+
                 return node;
             }
             catch (Exception e)
@@ -469,6 +478,19 @@ namespace Dynamo.Models
                 DynamoLogger.Instance.Log("Could not create an instance of the selected type: " + elementType);
                 DynamoLogger.Instance.Log(e);
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Called when a node is added to a workspace
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="ws"></param>
+        private void OnNodeAddedToWorkspace(dynNodeModel node, dynWorkspaceModel ws)
+        {
+            if (NodeAddedToWorkspace != null && node != null && ws != null)
+            {
+                NodeAddedToWorkspace(node, ws);
             }
         }
 
