@@ -20,11 +20,11 @@ using NUnit.Framework;
 
 namespace Dynamo.Models
 {
-    
-    public delegate void NodeAddedToWorkspaceHandler(dynNodeModel node, dynWorkspaceModel ws);   
+     
     public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
     public delegate void CleanupHandler(object sender, EventArgs e);
-
+    public delegate void NodeHandler(dynNodeModel node);
+        
     public class FunctionNamePromptEventArgs : EventArgs
     {
         public string Name { get; set; }
@@ -70,7 +70,12 @@ namespace Dynamo.Models
         /// <summary>
         /// Event called when a node is added to a workspace
         /// </summary>
-        public event NodeAddedToWorkspaceHandler NodeAddedToWorkspace;
+        public event NodeHandler NodeAdded;
+
+        /// <summary>
+        /// Event called when a node is deleted
+        /// </summary>
+        public event NodeHandler NodeDeleted;
 
         public dynWorkspaceModel CurrentSpace
         {
@@ -469,7 +474,7 @@ namespace Dynamo.Models
                 node.IsVisible = isVisible;
                 node.IsUpstreamVisible = isUpstreamVisible;
 
-                OnNodeAddedToWorkspace(node, ws);
+                OnNodeAdded(node);
 
                 return node;
             }
@@ -486,11 +491,11 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="node"></param>
         /// <param name="ws"></param>
-        private void OnNodeAddedToWorkspace(dynNodeModel node, dynWorkspaceModel ws)
+        private void OnNodeAdded(dynNodeModel node)
         {
-            if (NodeAddedToWorkspace != null && node != null && ws != null)
+            if (NodeAdded != null && node != null)
             {
-                NodeAddedToWorkspace(node, ws);
+                NodeAdded(node);
             }
         }
 
@@ -1588,7 +1593,7 @@ namespace Dynamo.Models
             CurrentSpace.Notes.Remove(note);
         }
 
-        private static void DeleteNodeAndItsConnectors(dynNodeModel node)
+        private void DeleteNodeAndItsConnectors(dynNodeModel node)
         {
             foreach (var conn in node.AllConnectors().ToList())
             {
@@ -1600,7 +1605,21 @@ namespace Dynamo.Models
             node.Destroy();
             node.Cleanup();
             DynamoSelection.Instance.Selection.Remove(node);
+            OnNodeDeleted(node);
+
             node.WorkSpace.Nodes.Remove(node);
+        }
+
+        /// <summary>
+        /// Called when a node is deleted
+        /// </summary>
+        /// <param name="node"></param>
+        public void OnNodeDeleted(dynNodeModel node)
+        {
+            if (NodeDeleted != null)
+            {
+                NodeDeleted(node);
+            }
         }
 
         /// <summary>
