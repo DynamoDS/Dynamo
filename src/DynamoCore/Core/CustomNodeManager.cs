@@ -1105,8 +1105,8 @@ namespace Dynamo.Utilities
             }
 
             //Find function entry point, and then compile the function and add it to our environment
-            IEnumerable<dynNodeModel> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
-            inputNames = variables.Select(x => (x as dynSymbol).Symbol);
+            var variables = functionWorkspace.Nodes.OfType<dynSymbol>().ToList();
+            inputNames = variables.Select(x => x.Symbol);
 
             INode top;
             var buildDict = new Dictionary<dynNodeModel, Dictionary<int, INode>>();
@@ -1118,7 +1118,7 @@ namespace Dynamo.Utilities
                 int i = 0;
                 foreach (var topNode in topMost)
                 {
-                    string inputName = i.ToString();
+                    string inputName = i.ToString(CultureInfo.InvariantCulture);
                     node.AddInput(inputName);
                     node.ConnectInput(inputName, new BeginNode());
                     try
@@ -1155,19 +1155,22 @@ namespace Dynamo.Utilities
 
                 foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
                 {
-                    beginNode.AddInput(tNode.Index.ToString());
-                    beginNode.ConnectInput(tNode.Index.ToString(), tNode.Node.Build(buildDict, 0));
+                    beginNode.AddInput(tNode.Index.ToString(CultureInfo.InvariantCulture));
+                    beginNode.ConnectInput(
+                        tNode.Index.ToString(CultureInfo.InvariantCulture),
+                        tNode.Node.Build(buildDict, 0));
                 }
 
-                beginNode.AddInput(hangingNodes.Count.ToString());
-                beginNode.ConnectInput(hangingNodes.Count.ToString(), top);
+                beginNode.AddInput(hangingNodes.Count.ToString(CultureInfo.InvariantCulture));
+                beginNode.ConnectInput(hangingNodes.Count.ToString(CultureInfo.InvariantCulture), top);
 
                 top = beginNode;
             }
 
             // make the anonymous function
-            FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.GUID.ToString()),
-                                                            top.Compile());
+            FScheme.Expression expression = Utils.MakeAnon(
+                variables.Select(x => x.GUID.ToString()),
+                top.Compile());
 
             return expression;
 
@@ -1183,9 +1186,7 @@ namespace Dynamo.Utilities
 
         internal static string RemoveChars(string s, IEnumerable<string> chars)
         {
-            foreach (string c in chars)
-                s = s.Replace(c, "");
-            return s;
+            return chars.Aggregate(s, (current, c) => current.Replace(c, ""));
         }
 
         /// <summary>
