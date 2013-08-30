@@ -487,15 +487,9 @@ namespace Dynamo.Applications
                 bool canReadData = (0 < dataMap.Count) ? true : false;
                 if (canReadData)
                 {
-                    //revit.Application.OpenAndActivateDocument(dataMap["dynamoModel"]);
-                    //dynamoController.DynamoViewModel.OpenCommand.Execute(dataMap["dynamoGraph"]);
-                    //dynamoController.DynamoViewModel.RunExpressionCommand.Execute(null);
-
                     TestMethod t = FindTestByName(fixture, dataMap["dynamoTestName"]);
                     if (t != null)
                     {
-                        //Results.Results.Add(new DynamoRevitTest(t as TestMethod));
-                        //Results.RunAllTests(null);
                         var dynTest = new DynamoRevitTest(t as TestMethod);
                         dynTest.Run(null);
                         dynTest.Save();
