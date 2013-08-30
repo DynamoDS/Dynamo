@@ -4,12 +4,13 @@ using System.Globalization;
 using System.Text;
 using System.Windows.Input;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
 using Dynamo.Utilities;
 
 namespace Dynamo.UI.Commands
 {
+    /// <summary>
+    /// Custom implementation of DelegateCommand which prints to the log.
+    /// </summary>
     public class DelegateCommand : ICommand
     {
         //http://wpftutorial.net/DelegateCommand.html
