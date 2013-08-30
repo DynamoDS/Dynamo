@@ -237,7 +237,7 @@ namespace Dynamo.Nodes
     [NodeName("Spatial Field Face")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Visualize analytical results at speficied UV values on a face.")]
-    [AlsoKnownAs("dynAnalysisResults")]
+    [AlsoKnownAs("dynAnalysisResults", "AnalysisResults")]
     class SpatialFieldFace : RevitTransactionNodeWithOneOutput, IClearable
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results by Face";

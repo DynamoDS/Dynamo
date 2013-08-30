@@ -717,8 +717,15 @@ namespace Dynamo.Models
                     double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
                     double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
+                    // older files will have nodes in the Dynamo.Elements namespace
                     if (typeName.StartsWith("Dynamo.Elements."))
+                    {
                         typeName = "Dynamo.Nodes." + typeName.Remove(0, 16);
+                    }
+
+                    // older files will have nodes that are prefixed with dyn
+                    if (typeName.Remove(0, 13).StartsWith("dyn"))
+                        typeName = "Dynamo.Nodes." + typeName.Remove(0, 13).Remove(0, 3);
 
                     TypeLoadData tData;
                     Type t;

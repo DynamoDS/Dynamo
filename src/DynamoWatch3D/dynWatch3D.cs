@@ -31,7 +31,7 @@ namespace Dynamo.Nodes
     [NodeName("Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
-    [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview")]
+    [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     public partial class Watch3D : NodeWithOneOutput
     {
         private PointsVisual3D _points;

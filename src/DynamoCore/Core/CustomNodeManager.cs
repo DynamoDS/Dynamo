@@ -788,9 +788,15 @@ namespace Dynamo.Utilities
 
                     string typeName = typeAttrib.Value;
 
-                    const string oldNamespace = "Dynamo.Elements.";
-                    if (typeName.StartsWith(oldNamespace))
-                        typeName = "Dynamo.Nodes." + typeName.Remove(0, oldNamespace.Length);
+                    // older files will have nodes in the Dynamo.Elements namespace
+                    if (typeName.StartsWith("Dynamo.Elements."))
+                    {
+                        typeName = "Dynamo.Nodes." + typeName.Remove(0, 16);
+                    }
+
+                    // older files will have nodes that are prefixed with dyn
+                    if (typeName.Remove(0, 13).StartsWith("dyn"))
+                        typeName = "Dynamo.Nodes." + typeName.Remove(0, 13).Remove(0, 3);
 
                     //test the GUID to confirm that it is non-zero
                     //if it is zero, then we have to fix it
