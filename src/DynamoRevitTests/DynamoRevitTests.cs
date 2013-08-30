@@ -547,10 +547,10 @@ namespace DynamoRevitTests
             var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(CurveElement));
 
-            //verify one model curve created
+            //verify five model curves created
             int count = fec.ToElements().Count;
             Assert.IsInstanceOf(typeof(ModelCurve), fec.ToElements().First());
-            Assert.AreEqual(1, count);
+            Assert.AreEqual(5, count);
 
             ElementId id = fec.ToElements().First().Id;
 
@@ -563,7 +563,7 @@ namespace DynamoRevitTests
 
             node.Value = node.Value + .1;
             dynSettings.Controller.RunExpression(true);
-            Assert.AreEqual(1, fec.ToElements().Count);
+            Assert.AreEqual(5, fec.ToElements().Count);
 
             Assert.AreEqual(id.IntegerValue, fec.ToElements().First().Id.IntegerValue);
         }
@@ -582,21 +582,24 @@ namespace DynamoRevitTests
             FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(CurveElement));
 
-            //verify one model curve created
+            //verify five model curves created
             int count = fec.ToElements().Count;
             Assert.IsInstanceOf(typeof(ModelCurve), fec.ToElements().First());
             Assert.IsTrue(((ModelCurve)fec.ToElements().First()).IsReferenceLine);
-            Assert.AreEqual(1, count);
+            Assert.AreEqual(5, count);
 
             ElementId id = fec.ToElements().First().Id;
 
             //update any number node and verify 
             //that the element gets updated not recreated
-            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is BasicInteractive<double>);
-            BasicInteractive<double> node = doubleNodes.First() as BasicInteractive<double>;
+            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is DoubleInput);
+            var node = doubleNodes.First() as DoubleInput;
+
+            Assert.IsNotNull(node);
+
             node.Value = node.Value + .1;
             dynSettings.Controller.RunExpression(true);
-            Assert.AreEqual(1, fec.ToElements().Count);
+            Assert.AreEqual(5, fec.ToElements().Count);
 
             Assert.AreEqual(id.IntegerValue, fec.ToElements().First().Id.IntegerValue);
         }
