@@ -168,6 +168,7 @@ namespace Dynamo.Utilities
             //  remove from old
             foreach (var ele in selectedNodeSet)
             {
+                ele.SaveResult = false;
                 currentWorkspace.Nodes.Remove(ele);
             }
             foreach (var ele in connectors)
@@ -191,20 +192,20 @@ namespace Dynamo.Utilities
             #region Insert new node into the current workspace
 
             //Step 5: insert new node into original workspace
-            var collapsedNode = dynSettings.Controller.DynamoViewModel.CreateFunction(
-                inputs.Select(x => x.Item1.InPortData[x.Item2].NickName),
-                outputs
-                    .Where(x => !curriedNodeArgs.Any(y => y.OuterNode == x.Item3.Item2))
-                    .Select(x => x.Item1.OutPortData[x.Item2].NickName),
-                newNodeDefinition);
+            //var collapsedNode = dynSettings.Controller.DynamoViewModel.CreateFunction(
+            //    inputs.Select(x => x.Item1.InPortData[x.Item2].NickName),
+            //    outputs
+            //        .Where(x => !curriedNodeArgs.Any(y => y.OuterNode == x.Item3.Item2))
+            //        .Select(x => x.Item1.OutPortData[x.Item2].NickName),
+            //    newNodeDefinition);
 
-            collapsedNode.GUID = Guid.NewGuid();
+            //collapsedNode.GUID = Guid.NewGuid();
 
-            currentWorkspace.Nodes.Add(collapsedNode);
-            collapsedNode.WorkSpace = currentWorkspace;
+            //currentWorkspace.Nodes.Add(collapsedNode);
+            //collapsedNode.WorkSpace = currentWorkspace;
 
-            collapsedNode.X = avgX;
-            collapsedNode.Y = avgY;
+            //collapsedNode.X = avgX;
+            //collapsedNode.Y = avgY;
 
             #endregion
 
@@ -454,38 +455,34 @@ namespace Dynamo.Utilities
             #endregion
 
             //set the name on the node
-            collapsedNode.NickName = args.Name;
-            currentWorkspace.Nodes.Remove(collapsedNode);
+            //collapsedNode.NickName = args.Name;
+            //currentWorkspace.Nodes.Remove(collapsedNode);
 
             // save and load the definition from file
-            var customNodeInfo = new CustomNodeInfo(newNodeDefinition.FunctionId, args.Name, args.Category, "", "");
-            dynSettings.Controller.CustomNodeManager.SetNodeInfo(customNodeInfo);
-            var path = dynSettings.Controller.DynamoViewModel.SaveFunctionOnly(newNodeDefinition);
-            dynSettings.Controller.CustomNodeManager.SetNodePath(newNodeDefinition.FunctionId, path);
-            dynSettings.Controller.SearchViewModel.Add(args.Name, args.Category, "No description provided", newNodeDefinition.FunctionId);
+            dynSettings.Controller.DynamoModel.SaveFunction(newNodeDefinition, false, true, true);
+            //var customNodeInfo = new CustomNodeInfo(newNodeDefinition.FunctionId, args.Name, args.Category, args.Description, null);
+            //dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(newNodeDefinition.FunctionId, newNodeDefinition);
+            //dynSettings.Controller.CustomNodeManager.SetNodeInfo(customNodeInfo);
+            //dynSettings.Controller.SearchViewModel.Add(args.Name, args.Category, args.Description, newNodeDefinition.FunctionId);
 
-            dynSettings.Controller.DynamoModel.CreateNode(new Dictionary<string, object>()
+            var collapsedNode = dynSettings.Controller.DynamoModel.CreateNode_Internal(new Dictionary<string, object>()
                 {
-                    {"name", collapsedNode.Definition.FunctionId.ToString() },
+                    {"name", newNodeDefinition.FunctionId.ToString() },
                     {"x", avgX },
                     {"y", avgY }
                 });
 
-            var newlyPlacedCollapsedNode = currentWorkspace.Nodes
-                                            .Where(node => node is Function)
-                                            .First(node => ((Function)node).Definition.FunctionId == newNodeDefinition.FunctionId);
-
             // place the node as intended, not centered
-            newlyPlacedCollapsedNode.X = avgX;
-            newlyPlacedCollapsedNode.Y = avgY;
+            collapsedNode.X = avgX;
+            collapsedNode.Y = avgY;
 
-            newlyPlacedCollapsedNode.DisableReporting();
+            collapsedNode.DisableReporting();
 
             foreach (var nodeTuple in inConnectors)
             {
                 var conn = ConnectorModel.Make(
                                     nodeTuple.Item1,
-                                    newlyPlacedCollapsedNode,
+                                    collapsedNode,
                                     nodeTuple.Item2,
                                     nodeTuple.Item3,
                                     0 );
@@ -496,8 +493,9 @@ namespace Dynamo.Utilities
 
             foreach (var nodeTuple in outConnectors)
             {
+
                 var conn = ConnectorModel.Make(
-                                    newlyPlacedCollapsedNode,
+                                    collapsedNode,
                                     nodeTuple.Item1,
                                     nodeTuple.Item2,
                                     nodeTuple.Item3,
@@ -507,7 +505,7 @@ namespace Dynamo.Utilities
                     currentWorkspace.Connectors.Add(conn);
             }
 
-            newlyPlacedCollapsedNode.EnableReporting();
+            collapsedNode.EnableReporting();
             currentWorkspace.EnableReporting();
 
             newNodeWorkspace.WatchChanges = true;

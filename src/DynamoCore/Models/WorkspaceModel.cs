@@ -577,10 +577,7 @@ namespace Dynamo.Models
 
             try
             {
-                var expression = CustomNodeManager.CompileFunction(def);
-
-                dynSettings.Controller.FSchemeEnvironment.DefineSymbol(
-                    def.FunctionId.ToString(), expression);
+                dynSettings.Controller.DynamoModel.SaveFunction(def, false, true, true);
             }
             catch { }
         }

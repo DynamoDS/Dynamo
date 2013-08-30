@@ -57,6 +57,21 @@ namespace Dynamo.Controls
             get { return LogScroller.Height > 0; }
         }
 
+        public static Application Start()
+        {
+            var controller = DynamoController.MakeSandbox();
+            var app = new Application();
+
+            //create the view
+            var ui = new DynamoView();
+            ui.DataContext = controller.DynamoViewModel;
+            controller.UIDispatcher = ui.Dispatcher;
+
+            app.Run(ui);
+
+            return app;
+        }
+
         public DynamoView()
         {
             _timer = new Stopwatch();
@@ -297,10 +312,11 @@ namespace Dynamo.Controls
             {
                 //var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
                 var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories)
-                    {
-                        nameBox = {Text = e.Name},
-                        categoryBox = {Text = e.Category}
-                    };
+                {
+                    nameBox = { Text = e.Name },
+                    categoryBox = { Text = e.Category },
+                    DescriptionInput = { Text = e.Description }
+                };
 
                 if (dialog.ShowDialog() != true)
                 {
@@ -326,7 +342,7 @@ namespace Dynamo.Controls
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
-                else if (e.Category.Equals(""))
+                else if (dialog.Category.Equals(""))
                 {
                     error = "You must enter a new category or choose one from the existing categories.";
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,

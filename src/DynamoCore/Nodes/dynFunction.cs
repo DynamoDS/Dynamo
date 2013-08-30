@@ -558,9 +558,10 @@ namespace Dynamo
         }
 
         public Guid FunctionId { get; private set; }
-        public WorkspaceModel Workspace { get; internal set; }
+        public FuncWorkspace Workspace { get; internal set; }
         public List<Tuple<int, NodeModel>> OutPortMappings { get; internal set; }
         public List<Tuple<int, NodeModel>> InPortMappings { get; internal set; }
+
         public bool RequiresRecalc { get; internal set; }
 
         /// <summary>
