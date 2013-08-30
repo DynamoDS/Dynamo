@@ -20,7 +20,6 @@ using System.Xml;              //for boolean option
 using System.Windows.Media.Media3D;
 using System.Reflection;
 using Autodesk.Revit.DB;
-using DSCoreNodes;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;

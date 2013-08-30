@@ -726,6 +726,11 @@ namespace Dynamo.Models
                     if (typeName.Remove(0, 13).StartsWith("dyn"))
                         typeName = "Dynamo.Nodes." + typeName.Remove(0, 13).Remove(0, 3);
 
+                    // older files will have nodes that use XYZ and UV
+                    // instead of Xyz and Uv
+                    typeName = typeName.Replace("XYZ", "Xyz");
+                    typeName = typeName.Replace("UV", "Uv");
+
                     TypeLoadData tData;
                     Type t;
 

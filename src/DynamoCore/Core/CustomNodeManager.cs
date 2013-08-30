@@ -798,6 +798,11 @@ namespace Dynamo.Utilities
                     if (typeName.Remove(0, 13).StartsWith("dyn"))
                         typeName = "Dynamo.Nodes." + typeName.Remove(0, 13).Remove(0, 3);
 
+                    // older files will have nodes that use XYZ and UV
+                    // instead of Xyz and Uv
+                    typeName = typeName.Replace("XYZ", "Xyz");
+                    typeName = typeName.Replace("UV", "Uv");
+
                     //test the GUID to confirm that it is non-zero
                     //if it is zero, then we have to fix it
                     //this will break the connectors, but it won't keep
