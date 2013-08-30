@@ -5,7 +5,7 @@
       <PortInfo index="1" default="True" />
     </Dynamo.Nodes.dynJoinStrings>
     <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="68c6dd5e-cac2-41ba-abe5-5f097d2e5fb6" nickname="File Path" x="33.3253968253969" y="49.3947619047621" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="C:\Users\t_nguys\Documents\GitHub\Dynamo\test\good_dyns\string\TestJoinString_fromFile.txt" />
+      <System.String value="..\..\test\core\string\TestJoinString_fromFile.txt" />
     </Dynamo.Nodes.dynStringFilename>
     <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="48b02aa8-fc9b-487c-9d21-5e4a511bb480" nickname="Read Text File" x="264.436507936508" y="63.8392063492065" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="a2cfcc3a-46ae-4176-b6e3-4a672e7fcb5c" nickname="List" x="424.436507936508" y="72.7280952380954" isVisible="true" isUpstreamVisible="true" lacing="Disabled">

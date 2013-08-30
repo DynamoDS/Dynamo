@@ -15,7 +15,7 @@ namespace Dynamo.Tests
 {
 
     [TestFixture]
-    class DynamoStringTests
+    class StringTests
     {
 
         #region Startup and shutdown
@@ -100,7 +100,7 @@ namespace Dynamo.Tests
         private string getTestDirectory()
         {
             var directory = new DirectoryInfo(ExecutingDirectory);
-            return Path.Combine(directory.Parent.Parent.FullName, @"test\good_dyns\string");
+            return Path.Combine(directory.Parent.Parent.FullName, @"test\core\string");
         }
 
         private dynNodeModel nodeFromCurrentSpace(DynamoModel model, string guidString)

@@ -565,13 +565,6 @@
                       Content="Debug" VerticalContentAlignment="Center"/>
             
         </WrapPanel>
-        
-        <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" HorizontalAlignment="Right">
-
-            <!--<TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
-            <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>-->
-            
-        </DockPanel>
 
         <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"
