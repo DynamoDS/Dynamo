@@ -587,7 +587,7 @@ namespace Dynamo.Tests
 
             sumData.Add("x", 400.0);
             sumData.Add("y", 100.0);
-            sumData.Add("name", "Dynamo.Nodes.dynAddition");
+            sumData.Add("name", "Dynamo.Nodes.Addition");
 
             numData1.Add("x", 100.0);
             numData1.Add("y", 100.0);
@@ -600,7 +600,7 @@ namespace Dynamo.Tests
             var watch = new Dictionary<string, object>();
             watch.Add("x", 100.0);
             watch.Add("y", 300.0);
-            watch.Add("name", "Dynamo.Nodes.dynWatch");
+            watch.Add("name", "Dynamo.Nodes.Watch");
 
             model.CreateNode(sumData);
             model.CreateNode(numData1);
