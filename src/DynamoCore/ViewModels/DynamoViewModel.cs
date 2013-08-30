@@ -1122,18 +1122,6 @@ namespace Dynamo.ViewModels
         }
     }
 
-    public class TypeLoadData
-    {
-        public Assembly Assembly;
-        public Type Type;
-
-        public TypeLoadData(Assembly assemblyIn, Type typeIn)
-        {
-            Assembly = assemblyIn;
-            Type = typeIn;
-        }
-    }
-
     public class PointEventArgs:EventArgs
     {
         public Point Point { get; set; }
