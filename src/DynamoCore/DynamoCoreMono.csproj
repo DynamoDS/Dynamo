@@ -42,7 +42,6 @@
     <Compile Include="Nodes\dynFormula.cs" />
     <Compile Include="Nodes\dynFunction.cs" />
     <Compile Include="Nodes\dynTimer.cs" />
-    <Compile Include="Nodes\dynWatch.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\CommandElement.cs" />

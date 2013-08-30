@@ -21,7 +21,6 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using String = System.String;
 
 namespace Dynamo.ViewModels
 {
@@ -118,68 +117,8 @@ namespace Dynamo.ViewModels
                 {
                     return "Not available in custom nodes";
                 }
-                return BuildValueString(nodeLogic.OldValue, 0, 3, 0, 2).TrimEnd('\n');
+                return NodeModel.BuildValueString(nodeLogic.OldValue, 0, 3, 0, 2).TrimEnd('\n');
             }
-        }
-
-        public static string BuildValueString(FScheme.Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth )
-        {
-            if (eIn == null)
-                return "<null>";
-
-            string accString = String.Concat(Enumerable.Repeat("  ", currentDepth));
-
-            if ( maxDepth == currentDepth || currentListIndex == maxListIndex ) 
-            {
-                accString += "...\n";
-                return accString;
-            }
-            
-            if (eIn.IsContainer)
-            {
-                var str = (eIn as FScheme.Value.Container).Item != null
-                    ? (eIn as FScheme.Value.Container).Item.ToString()
-                    : "null";
-
-                accString += str;
-            }
-            else if (eIn.IsFunction)
-            {
-                accString += "<function>";
-            }
-            else if (eIn.IsList)
-            {
-                accString += "List\n";
-
-                var list = (eIn as FScheme.Value.List).Item;
-
-                // build all elements of sub list
-                foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
-                {
-
-                    if (e.Index > maxListIndex)
-                    {
-                        break;
-                    }
-                    accString += BuildValueString(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth );
-                }
-            }
-            else if (eIn.IsNumber)
-            {
-                accString += (eIn as FScheme.Value.Number).Item.ToString();
-            }
-            else if (eIn.IsString)
-            {
-                accString += "\"" + (eIn as FScheme.Value.String).Item + "\"";
-            }
-            else if (eIn.IsSymbol)
-            {
-                accString += "<" + (eIn as FScheme.Value.Symbol).Item + ">";
-            }
-
-            accString += "\n";
-
-            return accString;
         }
 
         public ElementState State

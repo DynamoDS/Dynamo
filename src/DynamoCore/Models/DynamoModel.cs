@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using System.Xml;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism;
 using NUnit.Framework;
@@ -1887,6 +1886,27 @@ namespace Dynamo.Models
         internal bool CanLayoutAll(object parameter)
         {
             return true;
+        }
+    }
+
+    public class PointEventArgs : EventArgs
+    {
+        public Point Point { get; set; }
+
+        public PointEventArgs(Point p)
+        {
+            Point = p;
+        }
+    }
+
+    public class ModelEventArgs : EventArgs
+    {
+        public ModelBase Model { get; set; }
+        public Dictionary<string, object> Data { get; set; }
+        public ModelEventArgs(ModelBase n, Dictionary<string, object> d)
+        {
+            Model = n;
+            Data = d;
         }
     }
 
