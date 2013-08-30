@@ -926,10 +926,7 @@ namespace Dynamo.Models
                 Workspace = workSpace
             };
 
-            dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(functionDefinition.FunctionId, functionDefinition);
-
-            // add the element to search
-            dynSettings.Controller.SearchViewModel.Add(name, category, description, id);
+            dynSettings.Controller.DynamoModel.SaveFunction(functionDefinition, false, true, true);
 
             if (display)
             {
@@ -937,7 +934,7 @@ namespace Dynamo.Models
                 {
                     var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(CurrentSpace);
                     if (def != null)
-                        SaveFunction(def);
+                        SaveFunction(def, false, true, true);
                 }
 
                 CurrentSpace = workSpace;
@@ -950,84 +947,79 @@ namespace Dynamo.Models
         ///     Save a function.  This includes writing to a file and compiling the 
         ///     function and saving it to the FSchemeEnvironment
         /// </summary>
-        /// <param name="definition">The definition to saveo</param>
-        /// <param name="bool">Whether to write the function to file.</param>
-        /// <returns>Whether the operation was successful</returns>
         public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = false, bool compileFunction = true)
         {
             if (definition == null)
                 return;
 
             // Get the internal nodes for the function
-            var functionWorkspace = definition.Workspace as FuncWorkspace;
+            var functionWorkspace = definition.Workspace;
 
+            string path = definition.Workspace.FilePath;
             // If asked to, write the definition to file
-            if (writeDefinition)
+            if (writeDefinition && !String.IsNullOrEmpty(path))
             {
-                string path = "";
-                if (String.IsNullOrEmpty(definition.Workspace.FilePath))
-                {
-                    var pluginsPath = dynSettings.Controller.CustomNodeManager.GetDefaultSearchPath();
+                //var pluginsPath = dynSettings.Controller.CustomNodeManager.GetDefaultSearchPath();
 
-                    if (!Directory.Exists(pluginsPath))
-                        Directory.CreateDirectory(pluginsPath);
+                //if (!Directory.Exists(pluginsPath))
+                //    Directory.CreateDirectory(pluginsPath);
 
-                    path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
-                }
-                else
-                {
-                    path = definition.Workspace.FilePath;
-                }
+                //path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
 
-                try
-                {
-
-                    if (addToSearch)
-                    {
-                        dynSettings.Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category,functionWorkspace.Description, definition.FunctionId);
-                    }
-
-                    var info = new CustomNodeInfo(definition.FunctionId, functionWorkspace.Name, functionWorkspace.Category, functionWorkspace.Description, path);
-                    dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
-
-                    dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
-
-                    #region Compile Function and update all nodes
-
-                    IEnumerable<string> inputNames = new List<string>();
-                    IEnumerable<string> outputNames = new List<string>();
-                    dynSettings.Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), CustomNodeManager.CompileFunction(definition, ref inputNames, ref outputNames));
-
-                    //Update existing function nodes which point to this function to match its changes
-                    foreach (dynNodeModel el in AllNodes)
-                    {
-                        if (el is dynFunction)
-                        {
-                            var node = (dynFunction)el;
-
-                            if (node.Definition != definition)
-                                continue;
-
-                            node.SetInputs(inputNames);
-                            node.SetOutputs(outputNames);
-                            el.RegisterAllPorts();
-                        }
-                    }
-
-                    //Call OnSave for all saved elements
-                    foreach (dynNodeModel el in functionWorkspace.Nodes)
-                        el.onSave();
-
-
-                    #endregion
-
-                }
-                catch (Exception e)
-                {
-                    DynamoLogger.Instance.Log("Error saving:" + e.GetType());
-                    DynamoLogger.Instance.Log(e);
-                }
+                dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
             }
+
+            try
+            {
+                dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(definition.FunctionId, definition);
+
+                if (addToSearch)
+                {
+                    dynSettings.Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category,
+                        functionWorkspace.Description, definition.FunctionId);
+                }
+
+                var info = new CustomNodeInfo(definition.FunctionId, functionWorkspace.Name, functionWorkspace.Category,
+                    functionWorkspace.Description, path);
+                dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
+
+                #region Compile Function and update all nodes
+
+                IEnumerable<string> inputNames = new List<string>();
+                IEnumerable<string> outputNames = new List<string>();
+                dynSettings.Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(),
+                    CustomNodeManager.CompileFunction(definition, ref inputNames, ref outputNames));
+
+                //Update existing function nodes which point to this function to match its changes
+                foreach (dynNodeModel el in AllNodes)
+                {
+                    if (el is dynFunction)
+                    {
+                        var node = (dynFunction) el;
+
+                        if (node.Definition != definition)
+                            continue;
+
+                        node.SetInputs(inputNames);
+                        node.SetOutputs(outputNames);
+                        el.RegisterAllPorts();
+                    }
+                }
+
+                //Call OnSave for all saved elements
+                foreach (dynNodeModel el in functionWorkspace.Nodes)
+                    el.onSave();
+
+
+                #endregion
+
+            }
+            catch (Exception e)
+            {
+                DynamoLogger.Instance.Log("Error saving:" + e.GetType());
+                DynamoLogger.Instance.Log(e);
+            }
+
 
         }
 
@@ -1337,23 +1329,28 @@ namespace Dynamo.Models
         /// <param name="parameters">A dictionary containing data about the node.</param>
         public void CreateNode(object parameters)
         {
+            CreateNode_Internal(parameters);
+        }
+
+        internal dynNodeModel CreateNode_Internal(object parameters)
+        {
             var data = parameters as Dictionary<string, object>;
             if (data == null)
             {
-                return;
+                return null;
             }
 
             dynNodeModel node = CreateNode(data["name"].ToString());
             if (node == null)
             {
                 dynSettings.Controller.DynamoModel.WriteToLog("Failed to create the node");
-                return;
+                return null;
             }
 
             if ((node is dynSymbol || node is dynOutput) && CurrentSpace is HomeWorkspace)
             {
                 dynSettings.Controller.DynamoModel.WriteToLog("Cannot place dynSymbol or dynOutput in HomeWorkspace");
-                return;
+                return null;
             }
 
             CurrentSpace.Nodes.Add(node);
@@ -1387,6 +1384,8 @@ namespace Dynamo.Models
             }
 
             OnNodeAdded(node);
+
+            return node;
         }
 
         internal bool CanCreateNode(object parameters)

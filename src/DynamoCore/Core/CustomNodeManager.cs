@@ -417,7 +417,7 @@ namespace Dynamo.Utilities
         /// <returns>The path to the node or null if it wasn't found.</returns>
         public string GetNodePath(Guid id)
         {
-            if (this.Contains(id))
+            if (this.Contains(id) && nodePaths.ContainsKey(id))
             {
                 return nodePaths[id];
             }
@@ -1076,6 +1076,13 @@ namespace Dynamo.Utilities
 
                 foreach (dynNodeModel topNode in topMostNodes)
                 {
+                    if (topNode is dynFunction && (topNode as dynFunction).Definition == definition)
+                    {
+                        topMost.Add(Tuple.Create(0, topNode));
+                        outNames.Add("");
+                        continue;
+                    }
+
                     foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
                     {
                         if (!topNode.HasOutput(output))
@@ -1197,10 +1204,6 @@ namespace Dynamo.Utilities
         internal CustomNodeInfo GetNodeInfo(Guid x)
         {
             var path = GetNodePath(x);
-            if (path == null)
-            {
-                return null;
-            }
             var des = NodeDescriptions[x];
             var cat = NodeCategories[x];
             var name = this.NodeNames.FirstOrDefault(pair => pair.Value == x).Key;
