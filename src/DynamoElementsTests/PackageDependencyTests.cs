@@ -136,16 +136,7 @@ namespace Dynamo.Tests
         public void CanDiscoverDependenciesForFunctionDefinitionOpenFromFile()
         {
             var vm = controller.DynamoViewModel;
-            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\custom_node_dep_test\");
-
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "RootNode.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "SecondLevelNode1.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "SecondLevelNode2.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "ThirdLevelCustomNodeB1.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "ThirdLevelCustomNodeB2.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "ThirdLevelCustomNodeB3.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "ThirdLevelCustomNodeA1.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "ThirdLevelCustomNodeA2.dyf")) != null);
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\core\custom_node_dep_test\");
 
             string openPath = Path.Combine(examplePath, "custom_node_dep_test.dyn");
             controller.DynamoModel.Open(openPath);

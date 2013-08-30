@@ -125,10 +125,7 @@ namespace Dynamo.FSchemeInterop
         /// </summary>
         public static FSharpList<T> MakeFSharpList<T>(params T[] ar)
         {
-            FSharpList<T> foo = FSharpList<T>.Empty;
-            for (int n = ar.Length - 1; n >= 0; n--)
-                foo = FSharpList<T>.Cons(ar[n], foo);
-            return foo;
+            return SequenceToFSharpList(ar);
         }
 
         /// <summary>
@@ -149,7 +146,9 @@ namespace Dynamo.FSchemeInterop
         /// <returns></returns>
         public static string Print(this Value v)
         {
-            return FScheme.print(v);
+            return v.IsString 
+                ? (v as Value.String).Item 
+                : FScheme.print(v);
         }
 
         /// <summary>
