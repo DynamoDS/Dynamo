@@ -6,7 +6,7 @@ namespace Dynamo.Controls
     /// <summary>
     /// Interaction logic for WatchControl.xaml
     /// </summary>
-    public partial class WatchView : IViewModelView<dynNodeViewModel>
+    public partial class WatchView : IViewModelView<NodeViewModel>
     {
         System.Windows.Point _rightMousePoint;
 
@@ -35,12 +35,12 @@ namespace Dynamo.Controls
             }
         }
 
-        public dynNodeViewModel ViewModel
+        public NodeViewModel ViewModel
         {
             get
             {
-                if (this.DataContext is dynNodeViewModel)
-                    return (dynNodeViewModel)this.DataContext;
+                if (this.DataContext is NodeViewModel)
+                    return (NodeViewModel)this.DataContext;
                 else
                     return null;
             }

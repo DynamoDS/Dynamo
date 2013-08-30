@@ -5,7 +5,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
-    public partial class dynNoteViewModel: dynViewModelBase
+    public partial class NoteViewModel: ViewModelBase
     {
 
         #region Properties
@@ -85,7 +85,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public dynNoteViewModel(NoteModel model)
+        public NoteViewModel(NoteModel model)
         {
             _model = model;
             model.PropertyChanged += note_PropertyChanged;

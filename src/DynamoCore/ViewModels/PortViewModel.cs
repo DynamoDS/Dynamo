@@ -8,7 +8,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
-    public partial class dynPortViewModel : dynViewModelBase
+    public partial class PortViewModel : ViewModelBase
     {
         private readonly PortModel _port;
         private readonly NodeModel _node;
@@ -72,7 +72,7 @@ namespace Dynamo.ViewModels
             set { _port.UsingDefaultValue = value; }
         }
 
-        public dynPortViewModel(PortModel port, NodeModel node)
+        public PortViewModel(PortModel port, NodeModel node)
         {
             _node = node;
             _port = port;
@@ -146,7 +146,7 @@ namespace Dynamo.ViewModels
                 if (_port.Connectors.Count > 0 && _port.Connectors[0].Start != _port)
                 {
                     //define the new active connector
-                    var c = new dynConnectorViewModel(_port.Connectors[0].Start);
+                    var c = new ConnectorViewModel(_port.Connectors[0].Start);
                     dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
                     dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
 
@@ -164,7 +164,7 @@ namespace Dynamo.ViewModels
                         //Create a connector view model to begin drawing
                         if (_port.PortType != PortType.INPUT)
                         {
-                            var c = new dynConnectorViewModel(_port);
+                            var c = new ConnectorViewModel(_port);
                             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
                             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
                         }

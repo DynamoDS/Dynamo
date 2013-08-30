@@ -224,9 +224,9 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
-            if (value is dynWorkspaceViewModel)
+            if (value is WorkspaceViewModel)
             {
-                var val = (value as dynWorkspaceViewModel).Model.GetType();
+                var val = (value as WorkspaceViewModel).Model.GetType();
                 return val;
             }
 
@@ -377,7 +377,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            ObservableCollection<dynPortViewModel> ports = (ObservableCollection<dynPortViewModel>)value;
+            ObservableCollection<PortViewModel> ports = (ObservableCollection<PortViewModel>)value;
             return Math.Max(30, ports.Count * 20 + 10); //spacing for inputs + title space + bottom space
         }
 

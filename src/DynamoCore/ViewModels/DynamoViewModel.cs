@@ -21,7 +21,7 @@ namespace Dynamo.ViewModels
 
     public delegate void WorkspaceSaveEventHandler(object sender, WorkspaceSaveEventArgs e);
 
-    public class DynamoViewModel:dynViewModelBase
+    public class DynamoViewModel:ViewModelBase
     {
         #region events
 
@@ -148,9 +148,9 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
         /// </summary>
-        private ObservableCollection<dynWorkspaceViewModel> _workspaces = new ObservableCollection<dynWorkspaceViewModel>();
+        private ObservableCollection<WorkspaceViewModel> _workspaces = new ObservableCollection<WorkspaceViewModel>();
 
-        public ObservableCollection<dynWorkspaceViewModel> Workspaces
+        public ObservableCollection<WorkspaceViewModel> Workspaces
         {
             get { return _workspaces; }
             set
@@ -255,7 +255,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Get the workspace view model whose workspace model is the model's current workspace
         /// </summary>
-        public dynWorkspaceViewModel CurrentSpaceViewModel
+        public WorkspaceViewModel CurrentSpaceViewModel
         {
             get
             {
@@ -288,7 +288,7 @@ namespace Dynamo.ViewModels
 
                 // NOTE: I couldn't get the binding to work in the XAML so
                 //       this is a temporary hack
-                foreach (dynWorkspaceViewModel workspace in dynSettings.Controller.DynamoViewModel.Workspaces)
+                foreach (WorkspaceViewModel workspace in dynSettings.Controller.DynamoViewModel.Workspaces)
                 {
                     workspace.FullscreenChanged();
                 }
@@ -308,7 +308,7 @@ namespace Dynamo.ViewModels
 
                 int workspace_index = CurrentWorkspaceIndex;
 
-                dynWorkspaceViewModel view_model = Workspaces[workspace_index];
+                WorkspaceViewModel view_model = Workspaces[workspace_index];
 
                 view_model.WatchEscapeIsDown = value;
             }
@@ -480,7 +480,7 @@ namespace Dynamo.ViewModels
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
-                        _workspaces.Add(new dynWorkspaceViewModel(item as WorkspaceModel, this));
+                        _workspaces.Add(new WorkspaceViewModel(item as WorkspaceModel, this));
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
@@ -796,7 +796,7 @@ namespace Dynamo.ViewModels
             if (FullscreenWatchShowing)
             {
                 //delete the watches
-                foreach (dynWorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
+                foreach (WorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
                 {
                     vm.Watch3DViewModels.Clear();
                 }
@@ -806,7 +806,7 @@ namespace Dynamo.ViewModels
             else
             {
                 //construct a watch
-                foreach (dynWorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
+                foreach (WorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
                 {
                     vm.Watch3DViewModels.Add(new Watch3DFullscreenViewModel(vm));
                 }
