@@ -21,7 +21,7 @@ namespace Dynamo.ViewModels
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
     public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace );
 
-    public partial class dynWorkspaceViewModel: dynViewModelBase
+    public partial class WorkspaceViewModel: ViewModelBase
     {
         #region Properties and Fields
         
@@ -115,12 +115,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        ObservableCollection<dynConnectorViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
+        ObservableCollection<ConnectorViewModel> _connectors = new ObservableCollection<ConnectorViewModel>();
         private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();
-        ObservableCollection<dynNodeViewModel> _nodes = new ObservableCollection<dynNodeViewModel>();
-        ObservableCollection<dynNoteViewModel> _notes = new ObservableCollection<dynNoteViewModel>();
+        ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
+        ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
 
-        public ObservableCollection<dynConnectorViewModel> Connectors
+        public ObservableCollection<ConnectorViewModel> Connectors
         {
             get { return _connectors; }
             set { 
@@ -128,7 +128,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Connectors");
             }
         }
-        public ObservableCollection<dynNodeViewModel> Nodes
+        public ObservableCollection<NodeViewModel> Nodes
         {
             get { return _nodes; }
             set
@@ -137,7 +137,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Nodes");
             }
         }
-        public ObservableCollection<dynNoteViewModel> Notes
+        public ObservableCollection<NoteViewModel> Notes
         {
             get { return _notes; }
             set
@@ -182,8 +182,8 @@ namespace Dynamo.ViewModels
             get { return dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing; }
         }
 
-        private dynConnectorViewModel activeConnector;
-        public dynConnectorViewModel ActiveConnector
+        private ConnectorViewModel activeConnector;
+        public ConnectorViewModel ActiveConnector
         {
             get { return activeConnector; }
             set
@@ -288,7 +288,7 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public dynWorkspaceViewModel(WorkspaceModel model, DynamoViewModel vm)
+        public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel vm)
         {
             _model = model;
 
@@ -325,7 +325,7 @@ namespace Dynamo.ViewModels
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
                     {
-                        var viewModel = new dynConnectorViewModel(item as ConnectorModel);
+                        var viewModel = new ConnectorViewModel(item as ConnectorModel);
                         _connectors.Add(viewModel);
                     }
                     break;
@@ -349,7 +349,7 @@ namespace Dynamo.ViewModels
                     foreach (var item in e.NewItems)
                     {
                         //add a corresponding note
-                        var viewModel = new dynNoteViewModel(item as NoteModel);
+                        var viewModel = new NoteViewModel(item as NoteModel);
                         _notes.Add(viewModel);
                     }
                     break;
@@ -375,7 +375,7 @@ namespace Dynamo.ViewModels
                         if (item != null && item is NodeModel)
                         {
                             var node = item as NodeModel;
-                            _nodes.Add(new dynNodeViewModel(node));
+                            _nodes.Add(new NodeViewModel(node));
                             
                             //submit the node for rendering
                             if(node is IDrawable)
@@ -838,8 +838,8 @@ namespace Dynamo.ViewModels
 
     public class ViewModelEventArgs:EventArgs
     {
-        public dynNodeViewModel ViewModel { get; set; }
-        public ViewModelEventArgs(dynNodeViewModel vm)
+        public NodeViewModel ViewModel { get; set; }
+        public ViewModelEventArgs(NodeViewModel vm)
         {
             ViewModel = vm;
         }

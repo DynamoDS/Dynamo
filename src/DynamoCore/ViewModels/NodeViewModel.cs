@@ -29,7 +29,7 @@ namespace Dynamo.ViewModels
     /// Interaction logic for dynControl.xaml
     /// </summary>
     
-    public partial class dynNodeViewModel : dynViewModelBase
+    public partial class NodeViewModel : ViewModelBase
     {
         #region delegates
         public delegate void SetToolTipDelegate(string message);
@@ -38,8 +38,8 @@ namespace Dynamo.ViewModels
 
         #region private members
 
-        ObservableCollection<dynPortViewModel> inPorts = new ObservableCollection<dynPortViewModel>();
-        ObservableCollection<dynPortViewModel> outPorts = new ObservableCollection<dynPortViewModel>();
+        ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
+        ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
         
         NodeModel nodeLogic;
         public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; }}
@@ -80,7 +80,7 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.ToolTipText; }
         }
         
-        public ObservableCollection<dynPortViewModel> InPorts
+        public ObservableCollection<PortViewModel> InPorts
         {
             get { return inPorts; }
             set
@@ -90,7 +90,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public ObservableCollection<dynPortViewModel> OutPorts
+        public ObservableCollection<PortViewModel> OutPorts
         {
             get { return outPorts; }
             set
@@ -305,7 +305,7 @@ namespace Dynamo.ViewModels
 
         #region constructors
 
-        public dynNodeViewModel(NodeModel logic)
+        public NodeViewModel(NodeModel logic)
         {
             nodeLogic = logic;
 
@@ -343,12 +343,12 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in nodeLogic.InPorts)
             {
-                InPorts.Add(new dynPortViewModel(item as PortModel, nodeLogic));
+                InPorts.Add(new PortViewModel(item as PortModel, nodeLogic));
             }
 
             foreach (var item in nodeLogic.OutPorts)
             {
-                OutPorts.Add(new dynPortViewModel(item as PortModel, nodeLogic));
+                OutPorts.Add(new PortViewModel(item as PortModel, nodeLogic));
             }
         }
 
@@ -532,7 +532,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    InPorts.Add(new dynPortViewModel(item as PortModel,nodeLogic));
+                    InPorts.Add(new PortViewModel(item as PortModel,nodeLogic));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -556,7 +556,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    OutPorts.Add(new dynPortViewModel(item as PortModel, nodeLogic));
+                    OutPorts.Add(new PortViewModel(item as PortModel, nodeLogic));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)

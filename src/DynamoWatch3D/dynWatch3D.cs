@@ -20,7 +20,6 @@ using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
-using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
 using HelixToolkit.Wpf;
 using System.Windows.Media.Media3D;

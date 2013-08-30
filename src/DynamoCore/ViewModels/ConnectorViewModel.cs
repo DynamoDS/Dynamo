@@ -6,7 +6,7 @@ using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
 {
-    public partial class dynConnectorViewModel:dynViewModelBase
+    public partial class ConnectorViewModel:ViewModelBase
     {
 
         #region Properties
@@ -229,7 +229,7 @@ namespace Dynamo.ViewModels
 #endregion
 
         //construct a view and start drawing.
-        public dynConnectorViewModel(PortModel port)
+        public ConnectorViewModel(PortModel port)
         {
             //var bc = new BrushConverter();
             //StrokeBrush = (Brush)bc.ConvertFrom("#777");
@@ -249,7 +249,7 @@ namespace Dynamo.ViewModels
 
         }
 
-        public dynConnectorViewModel(ConnectorModel model)
+        public ConnectorViewModel(ConnectorModel model)
         {
             //var bc = new BrushConverter();
             //StrokeBrush = (Brush)bc.ConvertFrom("#777");

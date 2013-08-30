@@ -78,15 +78,15 @@
 
                         <ItemsControl.Resources>
 
-                            <DataTemplate DataType="{x:Type viewModels:dynNodeViewModel}">
+                            <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
                                 <controls:dynNodeView></controls:dynNodeView>
                             </DataTemplate>
 
-                            <DataTemplate DataType="{x:Type viewModels:dynNoteViewModel}">
+                            <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
                                 <nodes:dynNoteView></nodes:dynNoteView>
                             </DataTemplate>
 
-                            <DataTemplate DataType="{x:Type viewModels:dynConnectorViewModel}">
+                            <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
                                 <views:dynConnectorView></views:dynConnectorView>
                             </DataTemplate>
                         </ItemsControl.Resources>

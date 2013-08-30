@@ -3624,7 +3624,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewString(dynNodeViewModel.BuildValueString(args[0],0,10000,0, 25));
+            return Value.NewString(NodeViewModel.BuildValueString(args[0],0,10000,0, 25));
         }
     }
 
