@@ -1076,6 +1076,13 @@ namespace Dynamo.Utilities
 
                 foreach (dynNodeModel topNode in topMostNodes)
                 {
+                    if (topNode is dynFunction && (topNode as dynFunction).Definition == definition)
+                    {
+                        topMost.Add(Tuple.Create(0, topNode));
+                        outNames.Add("");
+                        continue;
+                    }
+
                     foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
                     {
                         if (!topNode.HasOutput(output))
