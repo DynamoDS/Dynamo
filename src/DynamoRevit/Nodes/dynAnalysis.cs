@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Dynamo.Connectors;
-using Dynamo.FSchemeInterop;
-using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
