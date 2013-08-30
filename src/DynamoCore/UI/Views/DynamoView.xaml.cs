@@ -99,10 +99,13 @@ namespace Dynamo.Controls
                                                                      _timer.Elapsed));
             LoadSamplesMenu();
 
-            //SEARCH
+            #region Search initialization
+
             var search = new SearchView {DataContext = dynSettings.Controller.SearchViewModel};
             sidebarGrid.Children.Add(search);
             dynSettings.Controller.SearchViewModel.Visible = true;
+
+            #endregion
 
             //PACKAGE MANAGER
             dynSettings.PackageManagerClient.ShowPackagePublishUIRequested += _vm_RequestShowPackageManagerPublish;
