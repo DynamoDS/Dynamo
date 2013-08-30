@@ -11,9 +11,9 @@ namespace Dynamo.Nodes
     [NodeName("Future")]
     [NodeDescription("Runs the given thunk (0-argument function) in a separate thread.")]
     [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
-    public class dynFuture : dynNodeWithOneOutput
+    public class Future : NodeWithOneOutput
     {
-        public dynFuture()
+        public Future()
         {
             InPortData.Add(new PortData("thunk", "Function to evaluate in a new thread.",
                 typeof (FScheme.Value.Function)));
@@ -36,9 +36,9 @@ namespace Dynamo.Nodes
     [NodeName("Now")]
     [NodeDescription("Fetches the result of a future evaluation, waiting for completion if necessary.")]
     [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
-    public class dynNow : dynNodeWithOneOutput
+    public class Now : NodeWithOneOutput
     {
-        public dynNow()
+        public Now()
         {
             InPortData.Add(new PortData("receipt", "Receipt to a future evaluation.", typeof (object)));
             OutPortData.Add(new PortData("result", "Result of the future evaluation.", typeof (object)));
@@ -59,9 +59,9 @@ namespace Dynamo.Nodes
     [NodeName("Create Thunk")]
     [NodeDescription("Wraps the attached upstream workflow in a 0-argument function.")]
     [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
-    public class dynThunk : dynNodeWithOneOutput
+    public class Thunk : NodeWithOneOutput
     {
-        public dynThunk()
+        public Thunk()
         {
             InPortData.Add(new PortData("body", "Body of the thunk.", typeof(object)));
             OutPortData.Add(new PortData("thunk", "Thunk that will evaluate the given body when executed.", typeof(FScheme.Value.Function)));
@@ -69,13 +69,13 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> outputs;
             if (preBuilt.TryGetValue(this, out outputs))
                 return outputs[outPort];
 
-            Tuple<int, dynNodeModel> input;
+            Tuple<int, NodeModel> input;
             if (TryGetInput(0, out input))
                 return new AnonymousFunctionNode(input.Item2.Build(preBuilt, input.Item1));
 

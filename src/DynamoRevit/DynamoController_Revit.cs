@@ -15,6 +15,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Greg;
+using Transaction = Dynamo.Nodes.Transaction;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo
@@ -35,10 +36,10 @@ namespace Dynamo
             
             dynRevitSettings.Controller = this;
 
-            Predicate<dynNodeModel> requiresTransactionPredicate = node => node is dynRevitTransactionNode;
+            Predicate<NodeModel> requiresTransactionPredicate = node => node is RevitTransactionNode;
             CheckRequiresTransaction = new PredicateTraverser(requiresTransactionPredicate);
 
-            Predicate<dynNodeModel> manualTransactionPredicate = node => node is dynTransaction;
+            Predicate<NodeModel> manualTransactionPredicate = node => node is Transaction;
             CheckManualTransaction = new PredicateTraverser(manualTransactionPredicate);
 
             dynSettings.PackageManagerClient.AuthenticationRequested += RegisterSingleSignOn;
@@ -97,7 +98,7 @@ namespace Dynamo
         void FindNodesFromSelection()
         {
             var selectedIds = dynRevitSettings.Doc.Selection.Elements.Cast<Element>().Select(x => x.Id);
-            var transNodes = dynSettings.Controller.DynamoModel.CurrentSpace.Nodes.OfType<dynRevitTransactionNode>();
+            var transNodes = dynSettings.Controller.DynamoModel.CurrentSpace.Nodes.OfType<RevitTransactionNode>();
             var foundNodes = transNodes.Where(x => x.AllElements.Intersect(selectedIds).Any()).ToList();
 
             if (foundNodes.Any())
@@ -259,11 +260,11 @@ namespace Dynamo
 
                 if(drawable is XYZ)
                 {
-                    dynRevitTransactionNode.DrawXYZ(rd, drawable);
+                    RevitTransactionNode.DrawXYZ(rd, drawable);
                 }
                 else if (drawable is GeometryObject)
                 {
-                    dynRevitTransactionNode.DrawGeometryObject(rd, drawable);
+                    RevitTransactionNode.DrawGeometryObject(rd, drawable);
                 }
             }
         }
@@ -312,7 +313,7 @@ namespace Dynamo
         #region Watch Node Revit Hooks
         void AddWatchNodeHandler()
         {
-            dynWatch.AddWatchHandler(new RevitElementWatchHandler());
+            Watch.AddWatchHandler(new RevitElementWatchHandler());
         }
 
         private class RevitElementWatchHandler : WatchHandler
@@ -411,12 +412,12 @@ namespace Dynamo
             _transElements.Add(id);
         }
 
-        private Transaction _trans;
+        private Autodesk.Revit.DB.Transaction _trans;
         public void InitTransaction()
         {
             if (_trans == null || _trans.GetStatus() != TransactionStatus.Started)
             {
-                _trans = new Transaction(dynRevitSettings.Doc.Document, "Dynamo Script");
+                _trans = new Autodesk.Revit.DB.Transaction(dynRevitSettings.Doc.Document, "Dynamo Script");
                 _trans.Start();
 
                 FailureHandlingOptions failOpt = _trans.GetFailureHandlingOptions();
@@ -425,7 +426,7 @@ namespace Dynamo
             }
         }
 
-        public Transaction Transaction { get { return _trans; } }
+        public Autodesk.Revit.DB.Transaction Transaction { get { return _trans; } }
 
         public void EndTransaction()
         {
@@ -493,9 +494,9 @@ namespace Dynamo
 
                 //Reset all elements
                 var query = dynSettings.Controller.DynamoModel.AllNodes
-                    .OfType<dynRevitTransactionNode>();
+                    .OfType<RevitTransactionNode>();
 
-                foreach (dynRevitTransactionNode element in query)
+                foreach (RevitTransactionNode element in query)
                     element.ResetRuns();
 
                 //////
@@ -515,7 +516,7 @@ namespace Dynamo
                 cleanup();
         }
 
-        protected override void Run(List<dynNodeModel> topElements, FScheme.Expression runningExpression)
+        protected override void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
         {
             var model = (DynamoRevitViewModel)DynamoViewModel;
 

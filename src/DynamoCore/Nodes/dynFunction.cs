@@ -28,9 +28,9 @@ namespace Dynamo
     {
         [NodeDescription("A node with customized internal functionality.")]
         [IsInteractive(false)]
-        public partial class dynFunction : dynNodeWithOneOutput
+        public partial class Function : NodeWithOneOutput
         {
-            protected internal dynFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition def)
+            protected internal Function(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition def)
             {
                 _def = def;
 
@@ -46,7 +46,7 @@ namespace Dynamo
                 ArgumentLacing = LacingStrategy.Disabled;
             }
 
-            public dynFunction()
+            public Function()
             {
 
             }
@@ -391,11 +391,11 @@ namespace Dynamo
         [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
         [NodeDescription("A function output")]
         [IsInteractive(false)]
-        public partial class dynOutput : dynNodeModel
+        public partial class Output : NodeModel
         {
             private string symbol = "";
 
-            public dynOutput()
+            public Output()
             {
                 InPortData.Add(new PortData("", "", typeof(object)));
 
@@ -449,12 +449,12 @@ namespace Dynamo
         [NodeDescription("A function parameter")]
         [NodeSearchTags("variable", "argument", "parameter")]
         [IsInteractive(false)]
-        public partial class dynSymbol : dynNodeModel
+        public partial class Symbol : NodeModel
         {
             
-            private string symbol = "";
+            private string _inputSymbol = "";
 
-            public dynSymbol()
+            public Symbol()
             {
                 OutPortData.Add(new PortData("", "Symbol", typeof(object)));
 
@@ -470,23 +470,22 @@ namespace Dynamo
                 set { }
             }
 
-            //MVVM: removed direct set of tb.text
-            public string Symbol
+            public string InputSymbol
             {
                 get
                 {
                     //return tb.Text;
-                    return symbol;
+                    return _inputSymbol;
                 }
                 set
                 {
                     //tb.Text = value;
-                    symbol = value;
-                    RaisePropertyChanged("Symbol");
+                    _inputSymbol = value;
+                    RaisePropertyChanged("InputSymbol");
                 }
             }
 
-            protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+            protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
             {
                 Dictionary<int, INode> result;
                 if (!preBuilt.TryGetValue(this, out result))
@@ -502,7 +501,7 @@ namespace Dynamo
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("Symbol");
-                outEl.SetAttribute("value", Symbol);
+                outEl.SetAttribute("value", InputSymbol);
                 dynEl.AppendChild(outEl);
             }
 
@@ -512,7 +511,7 @@ namespace Dynamo
                 {
                     if (subNode.Name == "Symbol")
                     {
-                        Symbol = subNode.Attributes[0].Value;
+                        InputSymbol = subNode.Attributes[0].Value;
                     }
                 }
             }
@@ -559,9 +558,9 @@ namespace Dynamo
         }
 
         public Guid FunctionId { get; private set; }
-        public dynWorkspaceModel Workspace { get; internal set; }
-        public List<Tuple<int, dynNodeModel>> OutPortMappings { get; internal set; }
-        public List<Tuple<int, dynNodeModel>> InPortMappings { get; internal set; }
+        public WorkspaceModel Workspace { get; internal set; }
+        public List<Tuple<int, NodeModel>> OutPortMappings { get; internal set; }
+        public List<Tuple<int, NodeModel>> InPortMappings { get; internal set; }
         public bool RequiresRecalc { get; internal set; }
 
         /// <summary>
@@ -602,8 +601,8 @@ namespace Dynamo
         private IEnumerable<FunctionDefinition> findDirectDependencies()
         {
             var query = Workspace.Nodes
-                                 .Where(node => node is dynFunction)
-                                 .Select(node => (node as dynFunction).Definition)
+                                 .Where(node => node is Function)
+                                 .Select(node => (node as Function).Definition)
                                  .Where((def) => def != this)
                                  .Distinct();
 

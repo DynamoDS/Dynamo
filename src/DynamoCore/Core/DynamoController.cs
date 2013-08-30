@@ -16,6 +16,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
+using String = System.String;
 
 namespace Dynamo
 {
@@ -81,8 +82,8 @@ namespace Dynamo
             set { testing = value; }
         }
 
-        ObservableCollection<dynModelBase> clipBoard = new ObservableCollection<dynModelBase>();
-        public ObservableCollection<dynModelBase> ClipBoard
+        ObservableCollection<ModelBase> clipBoard = new ObservableCollection<ModelBase>();
+        public ObservableCollection<ModelBase> ClipBoard
         {
             get { return clipBoard; }
             set { clipBoard = value; }
@@ -303,10 +304,10 @@ namespace Dynamo
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
             //Get our entry points (elements with nothing connected to output)
-            List<dynNodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
+            List<NodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
 
             //Mark the topmost as dirty/clean
-            foreach (dynNodeModel topMost in topElements)
+            foreach (NodeModel topMost in topElements)
                 topMost.MarkDirty();
 
             //TODO: Flesh out error handling
@@ -314,8 +315,8 @@ namespace Dynamo
             {
                 var topNode = new BeginNode(new List<string>());
                 int i = 0;
-                var buildDict = new Dictionary<dynNodeModel, Dictionary<int, INode>>();
-                foreach (dynNodeModel topMost in topElements)
+                var buildDict = new Dictionary<NodeModel, Dictionary<int, INode>>();
+                foreach (NodeModel topMost in topElements)
                 {
                     string inputName = i.ToString();
                     topNode.AddInput(inputName);
@@ -400,7 +401,7 @@ namespace Dynamo
             }
         }
 
-        protected virtual void Run(List<dynNodeModel> topElements, FScheme.Expression runningExpression)
+        protected virtual void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
@@ -482,7 +483,7 @@ namespace Dynamo
         /// <param name="e"></param>
         void Controller_NodeRemovedFromRendering(object sender, EventArgs e)
         {
-            var node = sender as dynNodeModel;
+            var node = sender as NodeModel;
             if (_renderDescriptions.ContainsKey(node.GUID))
                 _renderDescriptions.Remove(node.GUID);
         }
@@ -494,7 +495,7 @@ namespace Dynamo
         /// <param name="e"></param>
         void Controller_NodeSubmittedForRendering(object sender, EventArgs e)
         {
-            var node = sender as dynNodeModel;
+            var node = sender as NodeModel;
             if (!_renderDescriptions.ContainsKey(node.GUID))
             {
                 //don't allow an empty render description

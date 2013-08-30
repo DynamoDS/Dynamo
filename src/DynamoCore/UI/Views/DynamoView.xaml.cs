@@ -33,6 +33,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
+using String = System.String;
 
 namespace Dynamo.Controls
 {
@@ -228,13 +229,13 @@ namespace Dynamo.Controls
 
                 // connectors are most often within the bounding box of the nodes and notes
 
-                foreach (dynNodeModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Nodes)
+                foreach (NodeModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Nodes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                foreach (dynNoteModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Notes)
+                foreach (NoteModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Notes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);

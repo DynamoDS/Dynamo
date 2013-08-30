@@ -21,6 +21,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using String = System.String;
 
 namespace Dynamo.ViewModels
 {
@@ -40,8 +41,8 @@ namespace Dynamo.ViewModels
         ObservableCollection<dynPortViewModel> inPorts = new ObservableCollection<dynPortViewModel>();
         ObservableCollection<dynPortViewModel> outPorts = new ObservableCollection<dynPortViewModel>();
         
-        dynNodeModel nodeLogic;
-        public dynNodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; }}
+        NodeModel nodeLogic;
+        public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; }}
         
         private bool isFullyConnected = false;
         
@@ -69,7 +70,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public dynNodeModel NodeLogic
+        public NodeModel NodeLogic
         {
             get { return nodeLogic; }
         }
@@ -304,7 +305,7 @@ namespace Dynamo.ViewModels
 
         #region constructors
 
-        public dynNodeViewModel(dynNodeModel logic)
+        public dynNodeViewModel(NodeModel logic)
         {
             nodeLogic = logic;
 
@@ -327,7 +328,7 @@ namespace Dynamo.ViewModels
 
         void Controller_RequestNodeSelect(object sender, EventArgs e)
         {
-            dynModelBase n = (e as ModelEventArgs).Model;
+            ModelBase n = (e as ModelEventArgs).Model;
 
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(n);
@@ -342,12 +343,12 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in nodeLogic.InPorts)
             {
-                InPorts.Add(new dynPortViewModel(item as dynPortModel, nodeLogic));
+                InPorts.Add(new dynPortViewModel(item as PortModel, nodeLogic));
             }
 
             foreach (var item in nodeLogic.OutPorts)
             {
-                OutPorts.Add(new dynPortViewModel(item as dynPortModel, nodeLogic));
+                OutPorts.Add(new dynPortViewModel(item as PortModel, nodeLogic));
             }
         }
 
@@ -492,7 +493,7 @@ namespace Dynamo.ViewModels
 
         private void ViewCustomNodeWorkspace(object parameter)
         {
-            var f = (nodeLogic as dynFunction);
+            var f = (nodeLogic as Function);
             if(f!= null)
                 dynSettings.Controller.DynamoViewModel.ViewCustomNodeWorkspace(f.Definition);
         }
@@ -531,7 +532,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    InPorts.Add(new dynPortViewModel(item as dynPortModel,nodeLogic));
+                    InPorts.Add(new dynPortViewModel(item as PortModel,nodeLogic));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -555,7 +556,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    OutPorts.Add(new dynPortViewModel(item as dynPortModel, nodeLogic));
+                    OutPorts.Add(new dynPortViewModel(item as PortModel, nodeLogic));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -661,8 +662,8 @@ namespace Dynamo.ViewModels
 
     public class NodeHelpEventArgs : EventArgs
     {
-        public dynNodeModel Model { get; set; }
-        public NodeHelpEventArgs(dynNodeModel model)
+        public NodeModel Model { get; set; }
+        public NodeHelpEventArgs(NodeModel model)
         {
             Model = model;
         }

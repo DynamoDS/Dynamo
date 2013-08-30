@@ -230,7 +230,7 @@ namespace Dynamo.ViewModels
 
         public bool IsAbleToGoHome { get; set; }
 
-        public dynWorkspaceModel CurrentSpace
+        public WorkspaceModel CurrentSpace
         {
             get { return _model.CurrentSpace; }
         }
@@ -480,7 +480,7 @@ namespace Dynamo.ViewModels
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
-                        _workspaces.Add(new dynWorkspaceViewModel(item as dynWorkspaceModel, this));
+                        _workspaces.Add(new dynWorkspaceViewModel(item as WorkspaceModel, this));
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
@@ -491,7 +491,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("Workspaces");
         }
 
-        public FileDialog GetSaveDialog(dynWorkspaceModel workspace)
+        public FileDialog GetSaveDialog(WorkspaceModel workspace)
         {
             FileDialog fileDialog = new SaveFileDialog
             {
@@ -543,7 +543,7 @@ namespace Dynamo.ViewModels
         ///     workspace does not already have a path associated with it
         /// </summary>
         /// <param name="workspace">The workspace for which to show the dialog</param>
-        internal void ShowSaveDialogIfNeededAndSave(dynWorkspaceModel workspace)
+        internal void ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
             if (workspace.FilePath != null)
             {
@@ -624,7 +624,7 @@ namespace Dynamo.ViewModels
                 return "";
 
             // Get the internal nodes for the function
-            dynWorkspaceModel functionWorkspace = definition.Workspace;
+            WorkspaceModel functionWorkspace = definition.Workspace;
 
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
@@ -635,7 +635,7 @@ namespace Dynamo.ViewModels
                     Directory.CreateDirectory(pluginsPath);
 
                 string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
-                dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
+                WorkspaceModel.SaveWorkspace(path, functionWorkspace);
                 return path;
             }
             catch (Exception e)
@@ -661,7 +661,7 @@ namespace Dynamo.ViewModels
             if (_model.CurrentSpace.Name.Equals(symbol.Workspace.Name))
                 return;
 
-            dynWorkspaceModel newWs = symbol.Workspace;
+            WorkspaceModel newWs = symbol.Workspace;
 
             if ( !this._model.Workspaces.Contains(newWs) )
                 this._model.Workspaces.Add(newWs);
@@ -677,10 +677,10 @@ namespace Dynamo.ViewModels
             vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
         }
 
-        public virtual dynFunction CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs,
+        public virtual Function CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs,
                                                      FunctionDefinition functionDefinition)
         {
-            return new dynFunction(inputs, outputs, functionDefinition);
+            return new Function(inputs, outputs, functionDefinition);
         }
 
 
@@ -692,7 +692,7 @@ namespace Dynamo.ViewModels
             _model.UnlockLoadPath = path;
         }
 
-        internal void ShowElement(dynNodeModel e)
+        internal void ShowElement(NodeModel e)
         {
             if (dynamicRun)
                 return;
@@ -927,7 +927,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="workspace">The workspace for which to show the dialog</param>
         /// <returns>False if the user cancels, otherwise true</returns>
-        public bool AskUserToSaveWorkspaceOrCancel(dynWorkspaceModel workspace, bool allowCancel = true)
+        public bool AskUserToSaveWorkspaceOrCancel(WorkspaceModel workspace, bool allowCancel = true)
         {
             var args = new WorkspaceSaveEventArgs(workspace, allowCancel);
             OnRequestUserSaveWorkflow(this, args);
@@ -1025,8 +1025,8 @@ namespace Dynamo.ViewModels
 
             foreach (ISelectable sel in sels)
             {
-                if (sel is dynNodeModel)
-                    ((dynNodeModel)sel).SelectNeighbors();
+                if (sel is NodeModel)
+                    ((NodeModel)sel).SelectNeighbors();
             }
         }
 
@@ -1156,9 +1156,9 @@ namespace Dynamo.ViewModels
 
     public class ModelEventArgs : EventArgs
     {
-        public dynModelBase Model { get; set; }
+        public ModelBase Model { get; set; }
         public Dictionary<string, object> Data { get; set; }
-        public ModelEventArgs(dynModelBase n, Dictionary<string, object> d)
+        public ModelEventArgs(ModelBase n, Dictionary<string, object> d)
         {
             Model = n;
             Data = d;
@@ -1167,9 +1167,9 @@ namespace Dynamo.ViewModels
 
     public class NoteEventArgs : EventArgs
     {
-        public dynNoteModel Note { get; set; }
+        public NoteModel Note { get; set; }
         public Dictionary<string, object> Data { get; set; }
-        public NoteEventArgs(dynNoteModel n, Dictionary<string, object> d)
+        public NoteEventArgs(NoteModel n, Dictionary<string, object> d)
         {
             Note = n;
             Data = d;
@@ -1188,10 +1188,10 @@ namespace Dynamo.ViewModels
 
     public class WorkspaceSaveEventArgs : EventArgs
     {
-        public dynWorkspaceModel Workspace { get; set; }
+        public WorkspaceModel Workspace { get; set; }
         public bool AllowCancel { get; set; }
         public bool Success { get; set; }
-        public WorkspaceSaveEventArgs(dynWorkspaceModel ws, bool allowCancel)
+        public WorkspaceSaveEventArgs(WorkspaceModel ws, bool allowCancel)
         {
             Workspace = ws;
             AllowCancel = allowCancel;

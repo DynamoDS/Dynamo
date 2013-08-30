@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using System.Windows;
 using System.Diagnostics;
 using Dynamo.ViewModels;
+using String = System.String;
 
 namespace Dynamo.Utilities
 {
@@ -127,7 +128,7 @@ namespace Dynamo.Utilities
         {
             return t.Namespace == "Dynamo.Nodes" &&
                    !t.IsAbstract &&
-                   t.IsSubclassOf(typeof(dynNodeModel));
+                   t.IsSubclassOf(typeof(NodeModel));
         }
 
         /// <summary>

@@ -230,7 +230,7 @@ namespace Dynamo.Controls
                 return val;
             }
 
-            if (value is dynWorkspaceModel)
+            if (value is WorkspaceModel)
             {
                 return value.GetType();
             }

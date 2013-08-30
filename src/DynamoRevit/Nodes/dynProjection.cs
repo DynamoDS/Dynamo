@@ -19,7 +19,7 @@ namespace Dynamo.Nodes
     [NodeName("Project Point On Curve")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Project a point onto a curve.")]
-    public class dynProjectPointOnCurve : dynRevitTransactionNode, IDrawable, IClearable
+    public class ProjectPointOnCurve : RevitTransactionNode, IDrawable, IClearable
     {
         private readonly PortData _xyzPort = new PortData(
             "xyz", "The nearest point on the curve.", typeof(Value.Container));
@@ -30,7 +30,7 @@ namespace Dynamo.Nodes
         private readonly PortData _dPort = new PortData(
             "d", "The distance from the point to the curve .", typeof(Value.Number));
 
-        public dynProjectPointOnCurve()
+        public ProjectPointOnCurve()
         {
             InPortData.Add(new PortData("xyz", "The point to be projected.", typeof(Value.Container)));
             InPortData.Add(new PortData("crv", "The curve on which to project the point.", typeof(Value.Container)));
@@ -81,7 +81,7 @@ namespace Dynamo.Nodes
     [NodeName("Project Point On Face/Plane")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Project a point onto a face or plane.")]
-    public class dynProjectPointOnFace : dynRevitTransactionNode, IDrawable, IClearable
+    public class ProjectPointOnFace : RevitTransactionNode, IDrawable, IClearable
     {
         private readonly PortData _xyzPort = new PortData(
             "xyz", "The nearest point to the projected point on the face.", typeof(Value.Container));
@@ -98,7 +98,7 @@ namespace Dynamo.Nodes
         private readonly PortData _edgeTPort = new PortData(
             "edge t", "The parameter of the nearest point on the edge.", typeof(Value.Number));
 
-        public dynProjectPointOnFace()
+        public ProjectPointOnFace()
         {
             InPortData.Add(new PortData("xyz", "The point to be projected.", typeof(Value.Container)));
             InPortData.Add(new PortData("face/plane", "The face or plane on which to project the point.", typeof(Value.Container)));
@@ -124,11 +124,11 @@ namespace Dynamo.Nodes
             double et;
   
             var face = inputArg is Face ? (Face)inputArg : null;
-            if (face == null && !(inputArg is Plane))
+            if (face == null && !(inputArg is Autodesk.Revit.DB.Plane))
                 throw new Exception(" Project Point On Face needs Face or Plane as argument no. 1");
             if (face == null)
             {
-                var pln = (Plane)inputArg;
+                var pln = (Autodesk.Revit.DB.Plane)inputArg;
                 uv = new UV(
                     pln.XVec.DotProduct(xyz - pln.Origin), pln.YVec.DotProduct(xyz - pln.Origin));
                 pt = pln.Origin + uv[0]*pln.XVec + uv[1]*pln.YVec;
