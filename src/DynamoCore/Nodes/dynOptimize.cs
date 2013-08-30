@@ -7,7 +7,7 @@ namespace Dynamo.Nodes
 {
 
     [NodeName("Find Root")]
-    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeSearchTags("optimize", "newton")]
     [NodeDescription("Find the minimum of a 1 dimensional function without providing a derivative using Newton's method.")]
     public class NewtonRootFind1DNoDeriv : NodeWithOneOutput
@@ -64,7 +64,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Find Root With Derivative")]
-    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeSearchTags("optimize", "newton")]
     [NodeDescription("Find the minimum of a 1 dimensional function while providing a derivative using Newton's method.")]
     public class NewtonRootFind1DWithDeriv : NodeWithOneOutput

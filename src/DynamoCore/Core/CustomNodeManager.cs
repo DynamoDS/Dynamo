@@ -229,11 +229,9 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         public bool RemoveFolder(string path)
         {
-
             if (SearchPath.Contains(path))
                 SearchPath.Remove(path);
             return RemoveTypesLoadedFromFolder(path);
-
         }
 
         /// <summary>
@@ -252,7 +250,7 @@ namespace Dynamo.Utilities
             nodeName.ForEach((pair) =>
              {
                     NodeNames.Remove(pair.Key);
-                    dynSettings.Controller.SearchViewModel.Remove(pair.Key);
+                    dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(pair.Key);
              });
             dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
             dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
@@ -265,8 +263,8 @@ namespace Dynamo.Utilities
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
         public List<CustomNodeInfo> UpdateSearchPath()
         {
-            var nodes = SearchPath.Select(ScanNodeHeadersInDirectory);
-            return nodes.SelectMany(x => x).ToList();
+            return SearchPath.Select(ScanNodeHeadersInDirectory)
+                             .SelectMany(x => x).ToList();
         }
 
         /// <summary>
@@ -1116,9 +1114,9 @@ namespace Dynamo.Utilities
                 ele.Item2.ValidateConnections();
             }
 
-            //Find function entry point, and then compile the function and add it to our environment
-            IEnumerable<NodeModel> variables = functionWorkspace.Nodes.Where(x => x is Symbol);
-            inputNames = variables.Select(x => (x as Symbol).InputSymbol);
+            //Find function entry point, and then compile the function and add it to our environmen
+            var variables = functionWorkspace.Nodes.OfType<Symbol>().ToList();
+            inputNames = variables.Select(x => x.InputSymbol);
 
             INode top;
             var buildDict = new Dictionary<NodeModel, Dictionary<int, INode>>();
@@ -1130,7 +1128,7 @@ namespace Dynamo.Utilities
                 int i = 0;
                 foreach (var topNode in topMost)
                 {
-                    string inputName = i.ToString();
+                    string inputName = i.ToString(CultureInfo.InvariantCulture);
                     node.AddInput(inputName);
                     node.ConnectInput(inputName, new BeginNode());
                     try
@@ -1167,19 +1165,22 @@ namespace Dynamo.Utilities
 
                 foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
                 {
-                    beginNode.AddInput(tNode.Index.ToString());
-                    beginNode.ConnectInput(tNode.Index.ToString(), tNode.Node.Build(buildDict, 0));
+                    beginNode.AddInput(tNode.Index.ToString(CultureInfo.InvariantCulture));
+                    beginNode.ConnectInput(
+                        tNode.Index.ToString(CultureInfo.InvariantCulture),
+                        tNode.Node.Build(buildDict, 0));
                 }
 
-                beginNode.AddInput(hangingNodes.Count.ToString());
-                beginNode.ConnectInput(hangingNodes.Count.ToString(), top);
+                beginNode.AddInput(hangingNodes.Count.ToString(CultureInfo.InvariantCulture));
+                beginNode.ConnectInput(hangingNodes.Count.ToString(CultureInfo.InvariantCulture), top);
 
                 top = beginNode;
             }
 
             // make the anonymous function
-            FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.GUID.ToString()),
-                                                            top.Compile());
+            FScheme.Expression expression = Utils.MakeAnon(
+                variables.Select(x => x.GUID.ToString()),
+                top.Compile());
 
             return expression;
 
@@ -1195,9 +1196,7 @@ namespace Dynamo.Utilities
 
         internal static string RemoveChars(string s, IEnumerable<string> chars)
         {
-            foreach (string c in chars)
-                s = s.Replace(c, "");
-            return s;
+            return chars.Aggregate(s, (current, c) => current.Replace(c, ""));
         }
 
         /// <summary>
@@ -1246,7 +1245,7 @@ namespace Dynamo.Utilities
                                x.NickName = newName;
                            });
 
-            dynSettings.Controller.SearchViewModel.Remove(nodeInfo.Name);
+            dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Name);
 
             nodeInfo.Name = newName;
             nodeInfo.Category = newCategory;
