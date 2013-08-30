@@ -340,7 +340,7 @@ namespace Dynamo.Controls
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
-                else if (e.Category.Equals(""))
+                else if (dialog.Category.Equals(""))
                 {
                     error = "You must enter a new category or choose one from the existing categories.";
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
