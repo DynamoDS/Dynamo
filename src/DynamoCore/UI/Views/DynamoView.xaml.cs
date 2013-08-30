@@ -311,10 +311,11 @@ namespace Dynamo.Controls
             {
                 //var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
                 var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories)
-                    {
-                        nameBox = {Text = e.Name},
-                        categoryBox = {Text = e.Category}
-                    };
+                {
+                    nameBox = { Text = e.Name },
+                    categoryBox = { Text = e.Category },
+                    DescriptionInput = { Text = e.Description }
+                };
 
                 if (dialog.ShowDialog() != true)
                 {
