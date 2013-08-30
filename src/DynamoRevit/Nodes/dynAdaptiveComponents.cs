@@ -15,9 +15,9 @@ namespace Dynamo.Nodes
     [NodeName("Adaptive Component by XYZs")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
     [NodeDescription("Given a list of XYZs and a family type, creates an adaptive component at that location.")]
-    public class dynAdaptiveComponentByPoints : dynRevitTransactionNodeWithOneOutput
+    public class AdaptiveComponentByPoints : RevitTransactionNodeWithOneOutput
     {
-        public dynAdaptiveComponentByPoints()
+        public AdaptiveComponentByPoints()
         {
             InPortData.Add(new PortData("xyzs", "The XYZs that define the locations of your adaptive points.", typeof(Value.Container)));
             InPortData.Add(new PortData("fs", "The family type to create the adaptive component.", typeof(Value.Container)));
@@ -85,9 +85,9 @@ namespace Dynamo.Nodes
     [NodeName("Adaptive Component by UVs on Face")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
     [NodeDescription("Given a list of XYZs and a family type, creates an adaptive component at that location on the face.")]
-    public class dynAdaptiveComponentByUvsOnFace : dynRevitTransactionNodeWithOneOutput
+    public class AdaptiveComponentByUvsOnFace : RevitTransactionNodeWithOneOutput
     {
-        public dynAdaptiveComponentByUvsOnFace()
+        public AdaptiveComponentByUvsOnFace()
         {
             InPortData.Add(new PortData("uvs", "The UVs that define the locations of your adaptive points on the face.", typeof(Value.List)));
             InPortData.Add(new PortData("face", "The face on which to host your Adaptive Component instance.", typeof(Value.Container)));
@@ -166,9 +166,9 @@ namespace Dynamo.Nodes
     [NodeName("Adaptive Component by Parameter on Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
     [NodeDescription("Given a list of parameters and a family type, creates an adaptive component at that location on the curve.")]
-    public class dynAdaptiveComponentByParametersOnCurve : dynRevitTransactionNodeWithOneOutput
+    public class AdaptiveComponentByParametersOnCurve : RevitTransactionNodeWithOneOutput
     {
-        public dynAdaptiveComponentByParametersOnCurve()
+        public AdaptiveComponentByParametersOnCurve()
         {
             InPortData.Add(new PortData("params", "The parameters that define the locations of your adaptive points on the curve.", typeof(Value.List)));
             InPortData.Add(new PortData("curve", "The curve on which to host your Adaptive Component instance.", typeof(Value.Container)));

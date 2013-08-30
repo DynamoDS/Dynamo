@@ -11,7 +11,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Revit
 {
-    public partial class dynRevitTransactionNode : dynNodeModel, IDrawable
+    public partial class RevitTransactionNode : NodeModel, IDrawable
     {
         public override void SetupCustomUIElements(object ui)
         {

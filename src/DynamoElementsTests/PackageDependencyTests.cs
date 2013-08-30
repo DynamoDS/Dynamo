@@ -96,24 +96,24 @@ namespace Dynamo.Tests
 
         #region utility methods
 
-        public dynNodeModel NodeFromCurrentSpace(DynamoViewModel vm, string guidString)
+        public NodeModel NodeFromCurrentSpace(DynamoViewModel vm, string guidString)
         {
             Guid guid = Guid.Empty;
             Guid.TryParse(guidString, out guid);
             return NodeFromCurrentSpace(vm, guid);
         }
 
-        public dynNodeModel NodeFromCurrentSpace(DynamoViewModel vm, Guid guid)
+        public NodeModel NodeFromCurrentSpace(DynamoViewModel vm, Guid guid)
         {
             return vm.CurrentSpace.Nodes.FirstOrDefault((node) => node.GUID == guid);
         }
 
-        public dynWatch GetWatchNodeFromCurrentSpace(DynamoViewModel vm, string guidString)
+        public Watch GetWatchNodeFromCurrentSpace(DynamoViewModel vm, string guidString)
         {
             var nodeToWatch = NodeFromCurrentSpace(vm, guidString);
             Assert.NotNull(nodeToWatch);
-            Assert.IsAssignableFrom(typeof(dynWatch), nodeToWatch);
-            return (dynWatch)nodeToWatch;
+            Assert.IsAssignableFrom(typeof(Watch), nodeToWatch);
+            return (Watch)nodeToWatch;
         }
 
         public double GetDoubleFromFSchemeValue(FScheme.Value value)
@@ -143,9 +143,9 @@ namespace Dynamo.Tests
             var rootNode = NodeFromCurrentSpace(vm, "333ed3ad-c786-4064-8203-e79ce7cb109f");
 
             Assert.NotNull(rootNode);
-            Assert.IsAssignableFrom(typeof(dynFunction), rootNode);
+            Assert.IsAssignableFrom(typeof(Function), rootNode);
 
-            var funcRootNode = rootNode as dynFunction;
+            var funcRootNode = rootNode as Function;
 
             var dirDeps = funcRootNode.Definition.DirectDependencies;
             Assert.AreEqual(2, dirDeps.Count() );

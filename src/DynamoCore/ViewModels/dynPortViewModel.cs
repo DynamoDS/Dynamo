@@ -10,10 +10,10 @@ namespace Dynamo.ViewModels
 {
     public partial class dynPortViewModel : dynViewModelBase
     {
-        private readonly dynPortModel _port;
-        private readonly dynNodeModel _node;
+        private readonly PortModel _port;
+        private readonly NodeModel _node;
 
-        public dynPortModel PortModel
+        public PortModel PortModel
         {
             get { return _port; }
         }
@@ -72,7 +72,7 @@ namespace Dynamo.ViewModels
             set { _port.UsingDefaultValue = value; }
         }
 
-        public dynPortViewModel(dynPortModel port, dynNodeModel node)
+        public dynPortViewModel(PortModel port, NodeModel node)
         {
             _node = node;
             _port = port;
@@ -197,7 +197,7 @@ namespace Dynamo.ViewModels
                 var start = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ActiveStartPort;
                 var end = _port;
 
-                var newConnectorModel = dynConnectorModel.Make(start.Owner, end.Owner, start.Index, end.Index, 0);
+                var newConnectorModel = ConnectorModel.Make(start.Owner, end.Owner, start.Index, end.Index, 0);
 
                 // the connector is invalid
                 if (newConnectorModel == null)

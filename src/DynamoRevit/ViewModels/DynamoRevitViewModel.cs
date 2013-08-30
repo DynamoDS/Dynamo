@@ -56,15 +56,15 @@ namespace Dynamo.Controls
             }
         }
 
-        public override dynFunction CreateFunction(
+        public override Function CreateFunction(
             IEnumerable<string> inputs, 
             IEnumerable<string> outputs, 
             FunctionDefinition functionDefinition)
         {
-            if (functionDefinition.Workspace.Nodes.Any(x => x is dynRevitTransactionNode)
-                || functionDefinition.Dependencies.Any(d => d.Workspace.Nodes.Any(x => x is dynRevitTransactionNode)))
+            if (functionDefinition.Workspace.Nodes.Any(x => x is RevitTransactionNode)
+                || functionDefinition.Dependencies.Any(d => d.Workspace.Nodes.Any(x => x is RevitTransactionNode)))
             {
-                return new dynFunctionWithRevit(inputs, outputs, functionDefinition);
+                return new FunctionWithRevit(inputs, outputs, functionDefinition);
             }
             return base.CreateFunction(inputs, outputs, functionDefinition);
         }

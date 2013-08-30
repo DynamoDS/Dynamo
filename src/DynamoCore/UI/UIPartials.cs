@@ -25,7 +25,7 @@ using TreeView = System.Windows.Controls.TreeView;
 
 namespace Dynamo.Nodes
 {
-    public abstract partial class dynVariableInput : dynNodeWithOneOutput
+    public abstract partial class VariableInput : NodeWithOneOutput
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -70,7 +70,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class dynSublists : dynBasicInteractive<string>
+    public partial class Sublists : BasicInteractive<string>
     {
 
         public override void SetupCustomUIElements(object ui)
@@ -80,7 +80,7 @@ namespace Dynamo.Nodes
             //add a text box to the input grid of the control
             var tb = new dynTextBox
             {
-                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
             tb.OnChangeCommitted += processTextForNewInputs;
@@ -108,7 +108,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class dynBreakpoint : dynNodeWithOneOutput
+    public partial class Breakpoint : NodeWithOneOutput
     {
         //System.Windows.Controls.Button button;
 
@@ -147,7 +147,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public abstract partial class dynBasicInteractive<T> : dynNodeWithOneOutput
+    public abstract partial class BasicInteractive<T> : NodeWithOneOutput
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -173,7 +173,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class dynDoubleInput : dynNodeWithOneOutput
+    public partial class DoubleInput : NodeWithOneOutput
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -185,7 +185,7 @@ namespace Dynamo.Nodes
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,
                 IsNumeric = true,
-                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
             nodeUI.inputGrid.Children.Add(tb);
@@ -208,7 +208,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class dynAngleInput : dynDouble
+    public partial class AngleInput : Double
     {
 
         public override void SetupCustomUIElements(object ui)
@@ -223,7 +223,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = true;
-            tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             tb.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")
@@ -241,7 +241,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class dynDoubleSliderInput : dynDouble
+    public partial class DoubleSliderInput : Double
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -264,7 +264,7 @@ namespace Dynamo.Nodes
             var mintb = new dynTextBox();
             mintb.Width = double.NaN;
 
-            mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            mintb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             // input value textbox
             var valtb = new dynTextBox();
@@ -274,7 +274,7 @@ namespace Dynamo.Nodes
             var maxtb = new dynTextBox();
             maxtb.Width = double.NaN;
 
-            maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            maxtb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             var sliderGrid = new Grid();
             sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
@@ -355,7 +355,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public partial class dynBoolSelector : dynBool
+    public partial class BoolSelector : Bool
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -417,7 +417,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public partial class dynStringInput : dynString
+    public partial class StringInput : String
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -452,7 +452,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class dynStringFilename : dynBasicInteractive<string>
+    public partial class StringFilename : BasicInteractive<string>
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -512,7 +512,7 @@ namespace Dynamo.Nodes
  
     }
 
-    public abstract partial class dynDropDrownBase : dynNodeWithOneOutput
+    public abstract partial class DropDrownBase : NodeWithOneOutput
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -559,7 +559,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public abstract partial class dynEnum : dynNodeWithOneOutput
+    public abstract partial class Enum : NodeWithOneOutput
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -591,7 +591,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class dynFormula : dynMathBase
+    public partial class Formula : MathBase
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -604,7 +604,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = false;
-            tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             tb.DataContext = this;
             var bindingVal = new Binding("Formula")
@@ -618,7 +618,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public partial class dynFunction : dynNodeWithOneOutput
+    public partial class Function : NodeWithOneOutput
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -636,7 +636,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class dynOutput : dynNodeModel
+    public partial class Output : NodeModel
     {
         TextBox tb;
 
@@ -675,13 +675,13 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class dynSymbol : dynNodeModel
+    public partial class Symbol : NodeModel
     {
         TextBox tb;
 
         void tb_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Symbol = tb.Text;
+            InputSymbol = tb.Text;
         }
 
         public override void SetupCustomUIElements(object ui)
@@ -714,7 +714,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class dynWatch : dynNodeWithOneOutput
+    public partial class Watch : NodeWithOneOutput
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -749,7 +749,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class dynStringDirectory : dynStringFilename
+    public partial class StringDirectory : StringFilename
     {
         protected override void readFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -784,7 +784,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public abstract partial class dynString : dynBasicInteractive<string>
+    public abstract partial class String : BasicInteractive<string>
     {
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
@@ -826,11 +826,11 @@ namespace Dynamo.Nodes
     [NodeName("Read Image File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Reads data from an image file.")]
-    public class dynImageFileReader : dynFileReaderBase
+    public class ImageFileReader : FileReaderBase
     {
         System.Windows.Controls.Image image1;
 
-        public dynImageFileReader()
+        public ImageFileReader()
         {
             InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
             InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));

@@ -614,9 +614,9 @@ namespace Dynamo.Tests
             //dynSettings.Bench.Dispatcher.Invoke(
             //    new Action(delegate { controller.Bench.UpdateLayout(); }), DispatcherPriority.Render, null);
 
-            var num1 = controller.DynamoViewModel.Model.Nodes[1] as dynDoubleInput;
+            var num1 = controller.DynamoViewModel.Model.Nodes[1] as DoubleInput;
             num1.Value = "2";
-            var num2 = controller.DynamoViewModel.Model.Nodes[2] as dynDoubleInput;
+            var num2 = controller.DynamoViewModel.Model.Nodes[2] as DoubleInput;
             num2.Value = "2";
 
             var cd1 = new Dictionary<string, object>();
@@ -649,9 +649,9 @@ namespace Dynamo.Tests
 
             Thread.Sleep(250);
 
-            Assert.AreEqual(controller.DynamoViewModel.Model.Nodes[3] is dynWatch, true);
+            Assert.AreEqual(controller.DynamoViewModel.Model.Nodes[3] is Watch, true);
 
-            var w = (dynWatch)controller.DynamoViewModel.Model.Nodes[3];
+            var w = (Watch)controller.DynamoViewModel.Model.Nodes[3];
             double val = 0.0;
             Assert.AreEqual(true, Utils.Convert(w.OldValue, ref val) );
             Assert.AreEqual(4.0, val);

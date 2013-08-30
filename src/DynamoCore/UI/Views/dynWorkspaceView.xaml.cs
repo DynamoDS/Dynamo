@@ -74,7 +74,7 @@ namespace Dynamo.Views
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
         }
 
-        private void VmOnWorkspacePropertyEditRequested(dynWorkspaceModel workspace)
+        private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
         {
 
             // copy these strings
@@ -141,7 +141,7 @@ namespace Dynamo.Views
         {
             double x = 0;
             double y = 0;
-            dynModelBase node = (e as ModelEventArgs).Model;
+            ModelBase node = (e as ModelEventArgs).Model;
             Dictionary<string, object> data = (e as ModelEventArgs).Data;
 
             x = outerCanvas.ActualWidth / 2.0;

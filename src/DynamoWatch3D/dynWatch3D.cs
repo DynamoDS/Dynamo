@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview")]
-    public partial class dynWatch3D : dynNodeWithOneOutput
+    public partial class Watch3D : NodeWithOneOutput
     {
         private PointsVisual3D _points;
         private LinesVisual3D _lines;
@@ -47,7 +47,7 @@ namespace Dynamo.Nodes
         private bool _requiresRedraw = false;
         private bool _isRendering = false;
 
-        public dynWatch3D()
+        public Watch3D()
         {
             InPortData.Add(new PortData("", "Incoming geometry objects.", typeof(object)));
             OutPortData.Add(new PortData("", "Watch contents, passed through", typeof(object)));
@@ -58,14 +58,14 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        private void GetUpstreamIDrawable(List<IDrawable> drawables, Dictionary<int, Tuple<int, dynNodeModel>> inputs)
+        private void GetUpstreamIDrawable(List<IDrawable> drawables, Dictionary<int, Tuple<int, NodeModel>> inputs)
         {
-            foreach (KeyValuePair<int, Tuple<int, dynNodeModel>> pair in inputs)
+            foreach (KeyValuePair<int, Tuple<int, NodeModel>> pair in inputs)
             {
                 if (pair.Value == null)
                     continue;
 
-                dynNodeModel node = pair.Value.Item2;
+                NodeModel node = pair.Value.Item2;
                 IDrawable drawable = node as IDrawable;
 
                 if (node.IsVisible && drawable != null)
@@ -80,11 +80,11 @@ namespace Dynamo.Nodes
                 //drawables inside that node. only do this if the
                 //node's workspace is the home space to avoid infinite
                 //recursion in the case of custom nodes in custom nodes
-                if (node is dynFunction && node.WorkSpace == dynSettings.Controller.DynamoModel.HomeSpace)
+                if (node is Function && node.WorkSpace == dynSettings.Controller.DynamoModel.HomeSpace)
                 {
-                    dynFunction func = (dynFunction)node;
-                    IEnumerable<dynNodeModel> topElements = func.Definition.Workspace.GetTopMostNodes();
-                    foreach (dynNodeModel innerNode in topElements)
+                    Function func = (Function)node;
+                    IEnumerable<NodeModel> topElements = func.Definition.Workspace.GetTopMostNodes();
+                    foreach (NodeModel innerNode in topElements)
                     {
                         GetUpstreamIDrawable(drawables, innerNode.Inputs);
                     }
