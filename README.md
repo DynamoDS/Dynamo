@@ -1,7 +1,7 @@
 #Dynamo: Visual Programming for BIM#
 
 ## Description ##
-The intent of this project is to provide a visual interface for building interesting parametric functionality on top of that already offered by Revit. Dynamo aims to be accessable both to the non-programmer and the programmer alike with the ability to visually script behavior and define your own nodes, but also the ability to write functionality using Python or by compiling .net code into dlls that can be linked at run time.
+Dynamo extends the parametric functionality of Autodesk Revit. Dynamo aims to be accessible to both non-programmers and the programmers alike with the ability to visually script behavior, define custom nodes, and script using Python.
 
 ## Contributors ##
 
@@ -14,10 +14,9 @@ The intent of this project is to provide a visual interface for building interes
 * [Luke Church](https://github.com/lukechurch): Software Architecture
 * Lillian Smith: Useful feedback and use cases.
 * [Tom Vollaro](https://github.com/tvollaro): Useful feedback and use cases.
-* 
 
 
-Dynamo has been developed based on feedback from several parties inlcuding Buro Happold Engineers, Autodesk, and students and faculty at the USC School of Architecture.
+Dynamo has been developed based on feedback from several parties including Arup, KPF, Buro Happold, Autodesk, and students and faculty at the USC School of Architecture.
 
 
 ## Running Dynamo ##
