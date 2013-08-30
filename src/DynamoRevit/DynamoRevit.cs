@@ -52,17 +52,10 @@ using NUnit.Core;
 using NUnit.Core.Filters;
 using NUnit.Framework;
 using NUnit.Util;
-using Application = System.Windows.Application;
-using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
-
 #endif
-
-//MDJ needed for spatialfeildmanager
-//TAF added to get strings from resource files
 
 namespace Dynamo.Applications
 {
-    //MDJ - Added by Matt Jezyk - 10.27.2011
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
     [Regeneration(RegenerationOption.Manual)]
     public class DynamoRevitApp : IExternalApplication
@@ -156,52 +149,6 @@ namespace Dynamo.Applications
 
             return Result.Succeeded;
         }
-
-        //public static void EnsureApplicationResources()
-        //{
-        //    //http://drwpf.com/blog/2007/10/05/managing-application-resources-when-wpf-is-hosted/
-
-        //    if (Application.Current == null)
-        //    {
-        //        // create the Application object
-        //        new Application();
-        //        Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-        //        Application.ResourceAssembly = typeof (DynamoView).Assembly;
-
-        //        var convertersUri = new Uri("/DynamoCore;component/UI/Themes/DynamoConverters.xaml", UriKind.Relative);
-        //        var colorsUri = new Uri("/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml", UriKind.Relative);
-        //        var modernUri = new Uri("/DynamoCore;component/UI/Themes/DynamoModern.xaml", UriKind.Relative);
-        //        var textUri = new Uri("/DynamoCore;component/UI/Themes/DynamoText.xaml", UriKind.Relative);
-
-        //        //http://msdn.microsoft.com/en-us/library/aa970069(v=vs.85).aspx
-
-        //        var converters = new ResourceDictionary
-        //        {
-        //            Source = convertersUri
-        //        };
-        //        Application.Current.Resources.MergedDictionaries.Add(converters);
-
-        //        var colors = new ResourceDictionary
-        //        {
-        //            Source = colorsUri
-        //        };
-        //        Application.Current.Resources.MergedDictionaries.Add(colors);
-
-        //        var modern = new ResourceDictionary
-        //        {
-        //            Source = modernUri
-        //        };
-        //        Application.Current.Resources.MergedDictionaries.Add(modern);
-
-        //        var text = new ResourceDictionary
-        //        {
-        //            Source = textUri
-        //        };
-        //        Application.Current.Resources.MergedDictionaries.Add(text);
-        //    }
-
-
-        //}
     }
 
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
@@ -835,7 +782,6 @@ namespace Dynamo.Applications
     }
 
 #endif
-
 
     public enum DynamoRevitTestResultType { Pass, Fail, Error, Exception, Unknown, Inconclusive }
 
