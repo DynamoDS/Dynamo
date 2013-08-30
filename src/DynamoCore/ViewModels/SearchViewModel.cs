@@ -479,8 +479,6 @@ namespace Dynamo.ViewModels
                 return this.TryAddRootCategory(categoryName);
             }
 
-            //var currentCatName = splitCat[0];
-
             // attempt to add root category
             var currentCat = TryAddRootCategory(splitCat[0]);    
 
@@ -488,18 +486,6 @@ namespace Dynamo.ViewModels
             {
 
                 currentCat = TryAddChildCategory(currentCat, splitCat[i]);
-
-                //currentCatName = currentCatName + CATEGORY_DELIMITER + splitCat[i];
-
-                //var tempCat = currentCat.Items.FirstOrDefault((x) => x.Name == splitCat[i]);
-                //if (tempCat == null)
-                //{
-                //    tempCat = new BrowserInternalElement(splitCat[i], currentCat);
-                //    currentCat.AddChild( (BrowserInternalElement) tempCat);
-                //    _browserCategoryDict.Add(currentCatName, tempCat);
-                //}
-
-                //currentCat = tempCat;
 
             }
 
@@ -847,6 +833,7 @@ namespace Dynamo.ViewModels
 
             // create the node in search
             var nodeEle = new NodeSearchElement(name, description, functionId);
+            nodeEle.FullCategoryName = category;
 
             if (SearchDictionary.Contains(nodeEle))
                 return;
@@ -856,7 +843,7 @@ namespace Dynamo.ViewModels
 
             TryAddCategoryAndItem(category, nodeEle);
 
-            NodeCategories[category].NumElements++;
+            
 
         }
 
@@ -979,43 +966,6 @@ namespace Dynamo.ViewModels
                 RemoveEmptyCategory(node);
             }
 
-
-            // if the category is now empty, remove it
-            //foreach (var node in nodes)
-            //{
-            //    var categoryName = ((SearchElementBase)node).FullCategoryName;
-            //    var parentCategoryName = ((BrowserInternalElement)node).Parent.Name;
-
-            //    if (!NodeCategories.ContainsKey(categoryName))
-            //    {
-            //        return;
-            //    }
-
-            //    if (!NodeCategories.ContainsKey(parentCategoryName))
-            //    {
-            //        return;
-            //    }
-
-            //    // first level category
-            //    var pcategory = NodeCategories[parentCategoryName];
-            //    pcategory.NumElements--;
-
-            //    if (pcategory.NumElements == 0)
-            //    {
-            //        this.RemoveCategory(pcategory.Name);
-            //    }
-
-            //    // immediate category
-            //    var category = NodeCategories[categoryName];
-            //    category.NumElements--;
-
-            //    if (category.NumElements == 0)
-            //    {
-            //        this.RemoveCategory(category.Name);
-            //    }
-            //}
-            
-
         }
 
         public void Add(CustomNodeInfo nodeInfo)
@@ -1041,8 +991,6 @@ namespace Dynamo.ViewModels
 
         internal void HideSearch(object parameter)
         {
-            //dynSettings.Controller.PackageManagerPublishViewModel.Visible = false;
-            //dynSettings.Controller.PackageManagerLoginViewModel.Visible = false;
             dynSettings.Controller.SearchViewModel.Visible = false;
         }
 
