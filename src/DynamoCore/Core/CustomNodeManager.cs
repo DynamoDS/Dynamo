@@ -262,8 +262,8 @@ namespace Dynamo.Utilities
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
         public List<CustomNodeInfo> UpdateSearchPath()
         {
-            var nodes = SearchPath.Select(ScanNodeHeadersInDirectory);
-            return nodes.SelectMany(x => x).ToList();
+            return SearchPath.Select(ScanNodeHeadersInDirectory)
+                             .SelectMany(x => x).ToList();
         }
 
         /// <summary>

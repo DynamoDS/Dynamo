@@ -357,7 +357,6 @@ namespace Dynamo.Utilities
 
             var customNodeLoader = dynSettings.CustomNodeManager;
             var searchViewModel = dynSettings.Controller.SearchViewModel;
-
             var loadedNodes = customNodeLoader.UpdateSearchPath();
 
             // add nodes to search
@@ -374,7 +373,7 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Load Custom Nodes from the CUstomNodeLoader search path and update searcht
+        ///     Load Custom Nodes from the CustomNodeLoader search path and update search
         /// </summary>
         public static List<CustomNodeInfo> LoadCustomNodes(string path)
         {
