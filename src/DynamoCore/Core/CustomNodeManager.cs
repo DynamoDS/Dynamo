@@ -1083,7 +1083,7 @@ namespace Dynamo.Utilities
 
                 foreach (NodeModel topNode in topMostNodes)
                 {
-                    if (topNode is dynFunction && (topNode as dynFunction).Definition == definition)
+                    if (topNode is Function && (topNode as Function).Definition == definition)
                     {
                         topMost.Add(Tuple.Create(0, topNode));
                         outNames.Add("");
