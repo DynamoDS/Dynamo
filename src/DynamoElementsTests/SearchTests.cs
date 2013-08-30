@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using Dynamo.Nodes.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
@@ -11,59 +13,208 @@ namespace Dynamo.Tests
     internal class SearchTests
     {
 
-        [Test]
-        public void AddingARootCategoryTwiceOnlyCreatesOneCategory()
+        private static SearchViewModel search;
+
+        [SetUp]
+        public void Init()
         {
-            Assert.Inconclusive("Not completed.");
+           search = new SearchViewModel();
         }
 
-        [Test]
-        public void AddingANestedCategoryDoeNotDuplicateAnyParentCategories()
-        {
-            Assert.Inconclusive("Not completed.");
-        }
+        #region Obtaining Stored Categories
 
         [Test]
         public void GetCategoryByNameWithValidInput()
         {
-            Assert.Inconclusive("Not completed.");
+            const string catName = "Category.Child";
+            search.AddCategory(catName);
+            Assert.IsTrue(search.ContainsCategory(catName));
+            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
+            var nestedCat = search.GetCategoryByName("Category.Child");
+            Assert.NotNull(nestedCat);
         }
 
         [Test]
         public void GetCategoryByNameWithInvalidInput()
         {
-            Assert.Inconclusive("Not completed.");
+            const string catName = "Category.Child";
+            search.AddCategory(catName);
+            Assert.IsTrue(search.ContainsCategory(catName));
+            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
+            var nestedCat = search.GetCategoryByName("Toonces.The.Cat");
+            Assert.IsNull(nestedCat);
         }
 
         [Test]
         public void ContainsCategoryWithValidInput()
         {
-            Assert.Inconclusive("Not completed.");
+            const string catName = "Category.Child";
+            search.AddCategory(catName);
+            Assert.IsTrue(search.ContainsCategory(catName));
         }
 
         [Test]
         public void ContainsCategoryWithInvalidInput()
         {
-            Assert.Inconclusive("Not completed.");
+            const string catName = "Category.Child";
+            search.AddCategory(catName);
+            Assert.IsFalse(search.ContainsCategory("Toonces.The.Cat"));
         }
 
-        [Test]
-        public void SearchingForACategoryReturnsAllItsChildren()
-        {
-            Assert.Inconclusive("Not completed.");
-        }
 
         [Test]
         public void TryGetSubCategoryWithValidInput()
         {
-            Assert.Inconclusive("Not completed.");
+            const string catName = "Category";
+            var cat = search.AddCategory(catName);
+            cat.Items.Add(new BrowserInternalElement("Child",cat));
+            Assert.IsNotNull(search.TryGetSubCategory(cat, "Child"));
         }
 
         [Test]
         public void TryGetSubCategoryWithInvalidInput()
         {
-            Assert.Inconclusive("Not completed.");
+            const string catName = "Category";
+            var cat = search.AddCategory(catName);
+            cat.Items.Add(new BrowserInternalElement("Child", cat));
+            Assert.IsNull(search.TryGetSubCategory(cat, "Purple"));
         }
+
+        #endregion
+
+        #region Search
+
+        [Test]
+        public void CanSearchForPartOfTextAndGetResult()
+        {
+            const string catName = "Category.Child";
+            search.AddCategory(catName);
+            Assert.IsTrue(search.ContainsCategory(catName));
+            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
+            var nestedCat = search.GetCategoryByName("Category.Child");
+            Assert.NotNull(nestedCat);
+        }
+
+        [Test]
+        public void DoNotDuplicateAddedNodesInSearch()
+        {
+            const string catName = "Category.Child.Thing.That";
+            const string nodeName = "what is this";
+            for (var i = 0; i < 100; i++)
+            {
+                search.Add(nodeName, catName, "des", Guid.NewGuid());
+            }
+            search.SearchAndUpdateResultsSync(nodeName);
+            Assert.AreEqual(1, search.SearchResults.Count);
+            Assert.AreEqual(nodeName, search.SearchResults[0].Name);
+        }
+
+        [Test]
+        public void CanAddMultiplyNestedCategory()
+        {
+            const string catName = "Category.Child.Thing.That";
+            search.AddCategory(catName);
+            Assert.True(search.ContainsCategory(catName));
+        }
+
+        [Test]
+        public void CanAddAndRemoveMultiplyNestedCategory()
+        {
+            const string catName = "Category.Child.Thing.That";
+            search.AddCategory(catName);
+            Assert.True(search.ContainsCategory(catName));
+            search.RemoveCategory(catName);
+            Assert.False(search.ContainsCategory(catName));
+        }
+
+        [Test]
+        public void CanRemoveRootAndRestOfChildrenOfNestedCategory()
+        {
+            const string catName = "Category.Child.Thing.That";
+            search.AddCategory(catName);
+            Assert.True(search.ContainsCategory(catName));
+            search.RemoveCategory("Category");
+            Assert.False(search.ContainsCategory(catName));
+        }
+
+        [Test]
+        public void CanAddMultiplyNestedCategoryMultipleTimes()
+        {
+            const string catName = "Category.Child.Thing.That";
+            search.AddCategory(catName);
+            search.AddCategory(catName);
+            search.AddCategory(catName);
+            search.AddCategory(catName);
+            Assert.True(search.ContainsCategory(catName));
+        }
+
+        [Test]
+        public void DoNotDuplicateAddedNodesInBrowser()
+        {
+            const string catName = "Category.Child.Thing.That";
+            const string nodeName = "what is this";
+            for (var i = 0; i < 100; i++)
+            {
+                search.Add(nodeName, catName, "des", Guid.NewGuid());
+            }
+
+            var nestedCat = search.GetCategoryByName(catName);
+            Assert.AreEqual(1, nestedCat.Items.Count);
+            Assert.AreEqual(nodeName, nestedCat.Items[0].Name);
+        }
+
+        [Test]
+        public void DoNotGetResultsWhenNoElementsMatch()
+        {
+            const string catName = "Category.Child.Thing.That";
+            const string nodeName = "what is this";
+            search.Add(nodeName, catName, "des", Guid.NewGuid());
+
+            search.SearchAndUpdateResultsSync("frog");
+            Assert.AreEqual(0, search.SearchResults.Count);
+        }
+
+        [Test]
+        public void GetResultsWhenTheresIsPartialMatch()
+        {
+            const string catName = "Category.Child.Thing.That";
+            const string nodeName = "what is this";
+            search.Add(nodeName, catName, "des", Guid.NewGuid());
+
+            search.SearchAndUpdateResultsSync("hi");
+            Assert.AreEqual(1, search.SearchResults.Count);
+        }
+
+        [Test]
+        public void ResultsAreOrderProperlyForPartialMatch()
+        {
+            const string catName = "Category.Child.Thing.That";
+            const string nodeName1 = "what is this";
+            const string nodeName2 = "where is this";
+            search.Add(nodeName1, catName, "des", Guid.NewGuid());
+            search.Add(nodeName2, catName, "des", Guid.NewGuid());
+
+            search.SearchAndUpdateResultsSync("wh");
+            Assert.AreEqual(2, search.SearchResults.Count);
+            Assert.AreEqual(nodeName1, search.SearchResults[0].Name);
+            Assert.AreEqual(nodeName2, search.SearchResults[1].Name);
+        }
+
+        [Test]
+        public void SearchingForACategoryReturnsAllItsChildren()
+        {
+            const string catName = "Category.Child";
+            search.AddCategory(catName);
+            search.Add("what", catName, "des", Guid.NewGuid());
+            search.Add("where", catName, "des", Guid.NewGuid());
+            search.Add("why", catName, "des", Guid.NewGuid());
+            search.SearchAndUpdateResultsSync("Category.Child");
+            Assert.AreEqual(3, search.SearchResults.Count);
+        }
+
+        #endregion
+
+        #region Split categories
 
         [Test]
         public void CanSplitCategoryNameWithValidInput()
@@ -113,6 +264,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(0, split.Count);
         }
 
+        #endregion
+
+        #region Add Nodes
+
         /// <summary>
         /// Helper method for custom node adding and removing
         /// </summary>
@@ -153,6 +308,38 @@ namespace Dynamo.Tests
             var catName = "TheCat.TheInnerCat";
             AssertAddAndRemoveCustomNode(model, nodeName, catName);
         }
+        #endregion
+
+        #region Add Categories
+
+        [Test]
+        public void AddingARootCategoryMultipleTimesOnlyCreatesOneCategory()
+        {
+            const string catName = "Category";
+
+            for (var i = 0; i < 10; i++)
+            {
+                search.TryAddRootCategory(catName);
+            }
+            Assert.IsTrue(search.ContainsCategory(catName));
+            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == catName));
+        }
+
+        [Test]
+        public void AddingANestedCategoryMultipleTimesDoeNotDuplicateParentCategories()
+        {
+            const string catName = "Category.Child";
+
+            for (var i = 0; i < 10; i++)
+            {
+                search.AddCategory(catName);
+            }
+            Assert.IsTrue(search.ContainsCategory(catName));
+            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
+            var nestedCat = (BrowserInternalElement)search.GetCategoryByName("Category.Child");
+            Assert.NotNull(nestedCat);
+            Assert.AreEqual(1, nestedCat.Parent.Items.Count);
+        }
 
         [Test]
         public void CanAddCategory()
@@ -166,6 +353,21 @@ namespace Dynamo.Tests
             Assert.Contains( root, model.BrowserRootCategories );
             
         }
+
+
+        [Test]
+        public void CanAddCategoryWithDelimiters()
+        {
+            var model = new SearchViewModel();
+            model.AddCategory("Peter.Boyer");
+
+            model.RemoveCategory("Peter.Boyer");
+
+        }
+
+        #endregion
+
+        #region Remove Categories
 
         [Test]
         public void CanRemoveRootCategoryWithInternalElements()
@@ -206,15 +408,9 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
-        public void CanAddCategoryWithDelimiters()
-        {
-            var model = new SearchViewModel();
-            model.AddCategory("Peter.Boyer");
+        #endregion
 
-            model.RemoveCategory("Peter.Boyer");
-
-        }
+        #region Remove Nodes
 
         [Test]
         public void CanTryToRemoveElementFromSearchWithNonexistentName()
@@ -255,6 +451,8 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(0, model.SearchResults.Count);
         }
+
+        #endregion
 
     }
 }
