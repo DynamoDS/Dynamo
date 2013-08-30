@@ -17,7 +17,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    internal class DynamoCoreTests
+    internal class CoreTests
     {
         [SetUp]
         public void Init()
@@ -123,7 +123,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
 
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string openPath = Path.Combine(directory, @"..\..\test\dynamo_elements_samples\working\multiplicationAndAdd\multiplicationAndAdd.dyn");
+            string openPath = Path.Combine(directory, @"..\..\test\core\multiplicationAndAdd\multiplicationAndAdd.dyn");
             model.Open(openPath);
 
             Assert.AreEqual(5, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
@@ -693,7 +693,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
 
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string openPath = Path.Combine(directory, @"..\..\test\good_dyns\nodeLocationTest.dyn");
+            string openPath = Path.Combine(directory, @"..\..\test\core\nodeLocationTest.dyn");
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-AR");
             //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.OpenCommand, openPath));

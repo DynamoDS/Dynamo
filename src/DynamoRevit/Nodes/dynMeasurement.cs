@@ -26,7 +26,6 @@ using Microsoft.FSharp.Collections;
 using Dynamo.Utilities;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Controls;
-using Dynamo.Measure;
 using Curve = Autodesk.Revit.DB.Curve;
 using Vector = Autodesk.LibG.Vector;
 
@@ -287,29 +286,26 @@ namespace Dynamo.Nodes
     [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
     public class dynLengthInput : dynNodeWithOneOutput
     {
-        private DynamoLength<Foot> _measure;
-        public DynamoLength<Foot> Measure
+        private double _value;
+        public double Value
         {
-            get { return _measure; }
+            get { return _value; }
             set
             {
-                _measure = value;
-                RaisePropertyChanged("Measure");
+                _value = value;
+                RaisePropertyChanged("Value");
             }
         }
 
         public dynLengthInput()
         {
-            //Create a measure to coincide with Revit's internal project units
-            _measure = new DynamoLength<Foot>(0.0);
-
             OutPortData.Add(new PortData("length", "The length. Stored internally as decimal feet.", typeof(Value.Number)));
             RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewNumber(Measure.Item.Length);
+            return FScheme.Value.NewNumber(Value);
         }
 
         public override void SetupCustomUIElements(object ui)
@@ -336,11 +332,11 @@ namespace Dynamo.Nodes
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             
             tb.DataContext = this;
-            var bindingVal = new System.Windows.Data.Binding("Measure.Item.Length")
+            var bindingVal = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new RevitProjectUnitsConverter(),
-                ConverterParameter = Measure,
+                //ConverterParameter = Measure,
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
@@ -355,11 +351,11 @@ namespace Dynamo.Nodes
             var editWindow = new dynEditWindow();
 
             editWindow.DataContext = this;
-            var bindingVal = new System.Windows.Data.Binding("Measure.Item.Length")
+            var bindingVal = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new RevitProjectUnitsConverter(),
-                ConverterParameter = Measure,
+                //ConverterParameter = Measure,
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
@@ -374,9 +370,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement(Measure.Item.GetType().FullName);
-            outEl.SetAttribute("value",  Measure.Item.Length.ToString(CultureInfo.InvariantCulture));
+            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             dynEl.AppendChild(outEl);
         }
 
@@ -384,18 +379,20 @@ namespace Dynamo.Nodes
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
-                if (subNode.Name.Equals(Measure.Item.GetType().FullName))
+                // this node now stores a double, having previously stored a measure type
+                // by checking for the measure type as well we allow for loading of older files.
+                if (subNode.Name.Equals(typeof(double).FullName) || subNode.Name.Equals("Dynamo.Measure.Foot"))
                 {
-                    Measure.Item.Length = DeserializeValue(subNode.Attributes[0].Value);
+                    Value = DeserializeValue(subNode.Attributes[0].Value);
                 }
             }
         }
 
         public override string PrintExpression()
         {
-            return Measure.Item.ToString();
+            return Value.ToString();
         }
-        
+
         protected double DeserializeValue(string val)
         {
             try
