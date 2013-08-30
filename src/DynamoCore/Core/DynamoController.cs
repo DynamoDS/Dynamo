@@ -190,6 +190,11 @@ namespace Dynamo
 
         #region Constructor and Initialization
 
+        public static DynamoController MakeSandbox()
+        {
+            return new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), "None");
+        }
+
         /// <summary>
         ///     Class constructor
         /// </summary>
@@ -310,7 +315,6 @@ namespace Dynamo
             foreach (NodeModel topMost in topElements)
                 topMost.MarkDirty();
 
-            //TODO: Flesh out error handling
             try
             {
                 var topNode = new BeginNode(new List<string>());
@@ -386,8 +390,6 @@ namespace Dynamo
                 //If we should run again...
                 if (runAgain)
                 {
-                    //DynamoLogger.Instance.Log("Running again.");
-
                     //Reset flag
                     runAgain = false;
 
@@ -395,7 +397,6 @@ namespace Dynamo
                 }
                 else
                 {
-                    //DynamoLogger.Instance.Log("Run completed.");
                     OnRunCompleted(this, true);
                 }
             }
