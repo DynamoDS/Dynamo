@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Models
 {
@@ -111,6 +112,20 @@ namespace Dynamo.Models
                     {
                         return Owner.OutPortData[index].ToolTipString;
                     }
+                }
+                return "";
+            }
+        }
+
+        public string DefaultValueTip
+        {
+            get
+            {
+                if (PortType == PortType.INPUT && Owner != null)
+                {
+                    var port = Owner.InPortData[index];
+                    if (port.HasDefaultValue)
+                        return FScheme.print(port.DefaultValue);
                 }
                 return "";
             }
