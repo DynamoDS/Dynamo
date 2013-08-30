@@ -934,7 +934,7 @@ namespace Dynamo.Models
                 {
                     var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(CurrentSpace);
                     if (def != null)
-                        SaveFunction(def);
+                        SaveFunction(def, false, true, true);
                 }
 
                 CurrentSpace = workSpace;
@@ -957,20 +957,17 @@ namespace Dynamo.Models
 
             string path = definition.Workspace.FilePath;
             // If asked to, write the definition to file
-            //if (writeDefinition)
-            //{
-            //    if (String.IsNullOrEmpty(path))
-            //    {
-            //        var pluginsPath = dynSettings.Controller.CustomNodeManager.GetDefaultSearchPath();
+            if (writeDefinition && !String.IsNullOrEmpty(path))
+            {
+                //var pluginsPath = dynSettings.Controller.CustomNodeManager.GetDefaultSearchPath();
 
-            //        if (!Directory.Exists(pluginsPath))
-            //            Directory.CreateDirectory(pluginsPath);
+                //if (!Directory.Exists(pluginsPath))
+                //    Directory.CreateDirectory(pluginsPath);
 
-            //        path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
-            //    }
+                //path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
 
-            //    dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
-            //}
+                dynWorkspaceModel.SaveWorkspace(path, functionWorkspace);
+            }
 
             try
             {
