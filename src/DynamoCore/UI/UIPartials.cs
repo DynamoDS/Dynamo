@@ -727,7 +727,8 @@ namespace Dynamo.Nodes
             watchTree.SetValue(Grid.ColumnSpanProperty, 3);
             watchTree.Margin = new Thickness(5, 0, 5, 5);
 
-            Root = new WatchNode();
+            if (Root == null)
+                Root = new WatchNode();
             watchTree.DataContext = Root;
 
             this.RequestBindingUnhook += new EventHandler(delegate
@@ -742,7 +743,7 @@ namespace Dynamo.Nodes
                     Mode = BindingMode.TwoWay,
                     Source = Root,
                 };
-                watchTree.treeView1.SetBinding(TreeView.ItemsSourceProperty, sourceBinding);
+                watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
             });
 
         }
