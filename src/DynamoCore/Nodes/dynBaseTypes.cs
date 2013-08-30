@@ -26,7 +26,6 @@ using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using RestSharp.Contrib;
@@ -3624,7 +3623,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewString(NodeViewModel.BuildValueString(args[0],0,10000,0, 25));
+            return Value.NewString(NodeModel.BuildValueString(args[0],0,10000,0, 25));
         }
     }
 

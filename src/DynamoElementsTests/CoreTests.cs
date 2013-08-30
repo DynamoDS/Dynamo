@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.Selection;

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Windows;
 using System.Linq;
 using Dynamo.Models;
-using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels

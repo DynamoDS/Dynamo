@@ -10,11 +10,9 @@ using System.Windows;
 using System.Windows.Forms;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using MessageBox = System.Windows.MessageBox;
 
 namespace Dynamo.ViewModels
 {
@@ -1122,16 +1120,6 @@ namespace Dynamo.ViewModels
         }
     }
 
-    public class PointEventArgs:EventArgs
-    {
-        public Point Point { get; set; }
-
-        public PointEventArgs(Point p)
-        {
-            Point = p;
-        }
-    }
-
     public class ZoomEventArgs : EventArgs
     {
         public double Zoom { get; set; }
@@ -1139,17 +1127,6 @@ namespace Dynamo.ViewModels
         public ZoomEventArgs(double zoom)
         {
             Zoom = zoom;
-        }
-    }
-
-    public class ModelEventArgs : EventArgs
-    {
-        public ModelBase Model { get; set; }
-        public Dictionary<string, object> Data { get; set; }
-        public ModelEventArgs(ModelBase n, Dictionary<string, object> d)
-        {
-            Model = n;
-            Data = d;
         }
     }
 
