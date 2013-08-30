@@ -864,7 +864,7 @@ namespace Dynamo.ViewModels
         public void Remove(string nodeName)
         {
             // get the node, return if not found
-            var nodes = _browserLeaves.Where(x => x.Name == nodeName);
+            var nodes = _browserLeaves.Where(x => x.Name == nodeName).ToList();
             if (!nodes.Any())
             {
                 return;
