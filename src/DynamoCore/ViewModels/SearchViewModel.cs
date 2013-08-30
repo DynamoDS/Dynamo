@@ -280,21 +280,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private BrowserRootElement AddRootCategory(string name)
-        {
-            var ele = new BrowserRootElement(name, BrowserRootCategories);
-            BrowserRootCategories.Add(ele);
-            return ele;
-        }
-
-        /// <summary>
-        ///     Adds the Home Workspace to search.
-        /// </summary>
-        private void AddHomeToSearch()
-        {
-            SearchDictionary.Add(new WorkspaceSearchElement("Home", "Navigate to Home Workspace"), "Home");
-        }
-
         /// <summary>
         ///     If Revit API elements are shown, hides them.  Otherwise,
         ///     shows them.  Update search when done with either.
@@ -404,6 +389,7 @@ namespace Dynamo.ViewModels
             if (currentCat == null) return;
 
             RemoveCategory(currentCat);
+            
         }
 
         /// <summary>
@@ -423,7 +409,15 @@ namespace Dynamo.ViewModels
             cats.ToList().ForEach(RemoveCategory);
 
             ele.Items.Clear();
-            RemoveEmptyCategory(ele);
+
+            if (ele is BrowserRootElement)
+            {
+                BrowserRootCategories.Remove(ele as BrowserRootElement);
+            }
+            else if (ele is BrowserInternalElement)
+            {
+                (ele as BrowserInternalElement).Parent.Items.Remove(ele);
+            }
         }
 
         /// <summary>
@@ -484,9 +478,7 @@ namespace Dynamo.ViewModels
 
             for (var i = 1; i < splitCat.Count; i++)
             {
-
                 currentCat = TryAddChildCategory(currentCat, splitCat[i]);
-
             }
 
             return currentCat;
@@ -522,6 +514,23 @@ namespace Dynamo.ViewModels
             return ContainsCategory(categoryName) ? GetCategoryByName(categoryName) : AddRootCategory(categoryName);
         }
 
+        /// <summary>
+        /// Add a root category, assuming it doesn't already exist
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private BrowserRootElement AddRootCategory(string name)
+        {
+            var ele = new BrowserRootElement(name, BrowserRootCategories);
+            BrowserRootCategories.Add(ele);
+            return ele;
+        }
+
+        /// <summary>
+        /// Determine whether a category exists in search
+        /// </summary>
+        /// <param name="categoryName"></param>
+        /// <returns></returns>
         public bool ContainsCategory(string categoryName)
         {
             return GetCategoryByName(categoryName) != null;
@@ -533,7 +542,7 @@ namespace Dynamo.ViewModels
             if (!split.Any())
                 return null;
 
-            BrowserItem cat = (BrowserItem) BrowserRootCategories.FirstOrDefault(x => x.Name == split[0]);
+            var cat = (BrowserItem) BrowserRootCategories.FirstOrDefault(x => x.Name == split[0]);
 
             foreach (var splitName in split.GetRange(1, split.Count - 1))
             {
@@ -546,20 +555,7 @@ namespace Dynamo.ViewModels
 
         public BrowserItem TryGetSubCategory(BrowserItem category, string catName)
         {
-            if (category is BrowserRootElement)
-            {
-                var root = category as BrowserRootElement;
-                return root.Items.FirstOrDefault(x => x.Name == catName);
-            } 
-            else if (category is CategorySearchElement)
-            {
-                var catEle = category as CategorySearchElement;
-                return catEle.Items.FirstOrDefault(x => x.Name == catName);
-            }
-            else
-            {
-                return null;
-            }
+            return category.Items.FirstOrDefault(x => x.Name == catName);
         }
 
         /// <summary>
