@@ -23,6 +23,11 @@ namespace Dynamo.ViewModels
             get { return _port.ToolTipContent; }
         }
 
+        public string DefaultValueTip
+        {
+            get { return _port.DefaultValueTip; }
+        }
+
         public string PortName
         {
             get
