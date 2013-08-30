@@ -228,11 +228,9 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         public bool RemoveFolder(string path)
         {
-
             if (SearchPath.Contains(path))
                 SearchPath.Remove(path);
             return RemoveTypesLoadedFromFolder(path);
-
         }
 
         /// <summary>
@@ -251,7 +249,7 @@ namespace Dynamo.Utilities
             nodeName.ForEach((pair) =>
              {
                     NodeNames.Remove(pair.Key);
-                    dynSettings.Controller.SearchViewModel.Remove(pair.Key);
+                    dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(pair.Key);
              });
             dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
             dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
@@ -1234,7 +1232,7 @@ namespace Dynamo.Utilities
                                x.NickName = newName;
                            });
 
-            dynSettings.Controller.SearchViewModel.Remove(nodeInfo.Name);
+            dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Name);
 
             nodeInfo.Name = newName;
             nodeInfo.Category = newCategory;
