@@ -5,7 +5,7 @@ using System.Windows.Media.Media3D;
 
 using Autodesk.Revit;
 using Autodesk.Revit.DB;
-
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
@@ -19,21 +19,30 @@ namespace Dynamo.Nodes
     [NodeName("Project Point On Curve")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Project a point onto a curve.")]
-    public class dynProjectPointOnCurve : dynRevitTransactionNode, IDrawable, IClearable
+    public class ProjectPointOnCurve : RevitTransactionNode, IDrawable, IClearable
     {
-        public dynProjectPointOnCurve()
+        private readonly PortData _xyzPort = new PortData(
+            "xyz", "The nearest point on the curve.", typeof(Value.Container));
+
+        private readonly PortData _tPort = new PortData(
+            "t", "The unnormalized parameter on the curve.", typeof(Value.Number));
+
+        private readonly PortData _dPort = new PortData(
+            "d", "The distance from the point to the curve .", typeof(Value.Number));
+
+        public ProjectPointOnCurve()
         {
             InPortData.Add(new PortData("xyz", "The point to be projected.", typeof(Value.Container)));
             InPortData.Add(new PortData("crv", "The curve on which to project the point.", typeof(Value.Container)));
 
-            OutPortData.Add(new PortData("xyz", "The nearest point on the curve.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("t", "The unnormalized parameter on the curve.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("d", "The distance from the point to the curve .", typeof(Value.Number)));
+            OutPortData.Add(_xyzPort);
+            OutPortData.Add(_tPort);
+            OutPortData.Add(_dPort);
 
             RegisterAllPorts();
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             var xyz = (XYZ)((Value.Container)args[0]).Item;
             var crv = (Curve)((Value.Container)args[1]).Item;
@@ -43,19 +52,16 @@ namespace Dynamo.Nodes
             double t = ir.Parameter;
             double d = ir.Distance;
 
-            var results = FSharpList<Value>.Empty;
-            results = FSharpList<Value>.Cons(Value.NewNumber(d), results);
-            results = FSharpList<Value>.Cons(Value.NewNumber(t), results);
-            results = FSharpList<Value>.Cons(Value.NewContainer(pt), results);
-
             pts.Add(pt);
 
-            return Value.NewList(results);
+            outPuts[_xyzPort] = Value.NewContainer(pt);
+            outPuts[_tPort] = Value.NewNumber(t);
+            outPuts[_dPort] = Value.NewNumber(d);
         }
 
         protected List<XYZ> pts = new List<XYZ>();
-        public RenderDescription RenderDescription { get; set; }
-        public void Draw()
+
+        new public void Draw()
         {
             if (this.RenderDescription == null)
                 this.RenderDescription = new RenderDescription();
@@ -75,86 +81,96 @@ namespace Dynamo.Nodes
     [NodeName("Project Point On Face/Plane")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Project a point onto a face or plane.")]
-    public class dynProjectPointOnFace : dynRevitTransactionNode, IDrawable, IClearable
+    public class ProjectPointOnFace : RevitTransactionNode, IDrawable, IClearable
     {
-        public dynProjectPointOnFace()
+        private readonly PortData _xyzPort = new PortData(
+            "xyz", "The nearest point to the projected point on the face.", typeof(Value.Container));
+
+        private readonly PortData _uvPort = new PortData(
+            "uv", "The UV coordinates of the nearest point on the face.", typeof(Value.Number));
+
+        private readonly PortData _dPort = new PortData(
+            "d", "The distance from the point to the face", typeof(Value.Number));
+
+        private readonly PortData _edgePort = new PortData(
+            "edge", "The edge if projected point is near an edge.", typeof(Value.Container));
+
+        private readonly PortData _edgeTPort = new PortData(
+            "edge t", "The parameter of the nearest point on the edge.", typeof(Value.Number));
+
+        public ProjectPointOnFace()
         {
             InPortData.Add(new PortData("xyz", "The point to be projected.", typeof(Value.Container)));
             InPortData.Add(new PortData("face/plane", "The face or plane on which to project the point.", typeof(Value.Container)));
 
-            OutPortData.Add(new PortData("xyz", "The nearest point to the projected point on the face.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("uv", "The UV coordinates of the nearest point on the face.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("d", "The distance from the point to the face", typeof(Value.Number)));
-            OutPortData.Add(new PortData("edge", "The edge if projected point is near an edge.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("edge t", "The parameter of the nearest point on the edge.", typeof(Value.Number)));
+            OutPortData.Add(_xyzPort);
+            OutPortData.Add(_uvPort);
+            OutPortData.Add(_dPort);
+            OutPortData.Add(_edgePort);
+            OutPortData.Add(_edgeTPort);
 
             RegisterAllPorts();
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
             var xyz = (XYZ)((Value.Container)args[0]).Item;
-
             var inputArg = ((Value.Container)args[1]).Item;
+
+            XYZ pt;
+            UV uv;
+            double d;
+            Edge e;
+            double et;
   
-            var face = inputArg is Face ? (Autodesk.Revit.DB.Face)inputArg : null;
-            if (face == null && !(inputArg is Plane))
+            var face = inputArg is Face ? (Face)inputArg : null;
+            if (face == null && !(inputArg is Autodesk.Revit.DB.Plane))
                 throw new Exception(" Project Point On Face needs Face or Plane as argument no. 1");
             if (face == null)
             {
-                Plane pln = (Plane)inputArg;
-                if (pln != null)
+                var pln = (Autodesk.Revit.DB.Plane)inputArg;
+                uv = new UV(
+                    pln.XVec.DotProduct(xyz - pln.Origin), pln.YVec.DotProduct(xyz - pln.Origin));
+                pt = pln.Origin + uv[0]*pln.XVec + uv[1]*pln.YVec;
+                d = xyz.DistanceTo(pt);
+                e = null;
+                et = 0.0;
+            }
+            else
+            {
+                IntersectionResult ir = face.Project(xyz);
+
+                pt = ir.XYZPoint;
+                uv = ir.UVPoint;
+                d = ir.Distance;
+                e = null;
+                et = 0;
+
+                try
                 {
-                    UV uvP = new UV(pln.XVec.DotProduct(xyz - pln.Origin), pln.YVec.DotProduct(xyz - pln.Origin));
-                    XYZ ptP = pln.Origin + uvP[0] * pln.XVec + uvP[1] * pln.YVec;
-                    double dP = xyz.DistanceTo(ptP);
-                    Edge eP = null;
-                    double etP = 0.0;
-                    var resultsP = FSharpList<Value>.Empty;
-                    resultsP = FSharpList<Value>.Cons(Value.NewNumber(etP), resultsP);
-                    resultsP = FSharpList<Value>.Cons(Value.NewContainer(eP), resultsP);
-                    resultsP = FSharpList<Value>.Cons(Value.NewNumber(dP), resultsP);
-                    resultsP = FSharpList<Value>.Cons(Value.NewContainer(uvP), resultsP);
-                    resultsP = FSharpList<Value>.Cons(Value.NewContainer(ptP), resultsP);
-
-                    pts.Add(ptP);
-
-                    return Value.NewList(resultsP);
+                    e = ir.EdgeObject;
                 }
-            }
+                catch { }
 
-            IntersectionResult ir = face.Project(xyz);
-            XYZ pt = ir.XYZPoint;
-            UV uv = ir.UVPoint;
-            double d = ir.Distance;
-            Edge e = null;
-            try
-            {
-                e = ir.EdgeObject;
+                try
+                {
+                    et = ir.EdgeParameter;
+                }
+                catch { }
             }
-            catch { }
-            double et = 0;
-            try
-            {
-                et = ir.EdgeParameter;
-            }
-            catch { }
-
-            var results = FSharpList<Value>.Empty;
-            results = FSharpList<Value>.Cons(Value.NewNumber(et), results);
-            results = FSharpList<Value>.Cons(Value.NewContainer(e), results);
-            results = FSharpList<Value>.Cons(Value.NewNumber(d), results);
-            results = FSharpList<Value>.Cons(Value.NewContainer(uv), results);
-            results = FSharpList<Value>.Cons(Value.NewContainer(xyz), results);
 
             pts.Add(pt);
 
-            return Value.NewList(results);
+            outPuts[_xyzPort] = Value.NewContainer(xyz);
+            outPuts[_uvPort] = Value.NewContainer(uv);
+            outPuts[_dPort] = Value.NewNumber(d);
+            outPuts[_edgePort] = Value.NewContainer(e);
+            outPuts[_edgeTPort] = Value.NewNumber(et);
         }
 
         protected List<XYZ> pts = new List<XYZ>();
-        public RenderDescription RenderDescription { get; set; }
-        public void Draw()
+
+        new public void Draw()
         {
             if (this.RenderDescription == null)
                 this.RenderDescription = new RenderDescription();

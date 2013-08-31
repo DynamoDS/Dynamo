@@ -6,7 +6,8 @@ using System.Reflection;
 using System.Diagnostics;
 
 using System.Windows.Media.Media3D;
-
+using Dynamo.Models;
+using Autodesk.Revit.Creation;
 using Dynamo.Nodes;
 using Dynamo.Revit;
 
@@ -14,8 +15,13 @@ using Autodesk.Revit.DB;
 using Dynamo.FSchemeInterop;
 
 using Microsoft.FSharp.Collections;
+using Document = Autodesk.Revit.Creation.Document;
 using Expression = Dynamo.FScheme.Expression;
 using Face = Autodesk.Revit.DB.Face;
+using ModelCurve = Autodesk.Revit.DB.ModelCurve;
+using Plane = Autodesk.Revit.DB.Plane;
+using ReferencePlane = Autodesk.Revit.DB.ReferencePlane;
+using SketchPlane = Autodesk.Revit.DB.SketchPlane;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Utilities
@@ -29,7 +35,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="node"></param>
         /// <param name="result"></param>
-        public static void StoreElements(dynRevitTransactionNode node, List<object> results)
+        public static void StoreElements(RevitTransactionNode node, List<object> results)
         {
             foreach (object result in results)
             {
@@ -99,7 +105,7 @@ namespace Dynamo.Utilities
         /// <param name="mi">The method info for the method.</param>
         /// <param name="return_type">The expected return type from the method.</param>
         /// <returns></returns>
-        public static Value InvokeAPIMethod(dynRevitTransactionNode node, FSharpList<Value> args, Type api_base_type, ParameterInfo[] pi, MethodBase mi, Type return_type)
+        public static Value InvokeAPIMethod(RevitTransactionNode node, FSharpList<Value> args, Type api_base_type, ParameterInfo[] pi, MethodBase mi, Type return_type)
         {
             //if any argument are a list, honor the lacing strategy
             //compile a list of parameter lists to be used in our method invocation
@@ -123,9 +129,9 @@ namespace Dynamo.Utilities
 
             var invocationTargetList = new List<object>();
 
-            if (api_base_type == typeof(Autodesk.Revit.Creation.Document) ||
-                api_base_type == typeof(Autodesk.Revit.Creation.FamilyItemFactory) ||
-                api_base_type == typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+            if (api_base_type == typeof(Document) ||
+                api_base_type == typeof(FamilyItemFactory) ||
+                api_base_type == typeof(ItemFactoryBase))
             {
                 if (dynRevitSettings.Doc.Document.IsFamilyDocument)
                 {
@@ -136,7 +142,7 @@ namespace Dynamo.Utilities
                     invocationTargetList.Add(dynRevitSettings.Doc.Document.Create);
                 }
             }
-            else if (api_base_type == typeof(Autodesk.Revit.Creation.Application))
+            else if (api_base_type == typeof(Application))
             {
                 invocationTargetList.Add(dynRevitSettings.Revit.Application.Create);
             }
@@ -168,7 +174,7 @@ namespace Dynamo.Utilities
                 parameters.Select(x => ((ConstructorInfo) mi).Invoke(x.ToArray())).ToList() :
                 invocationTargetList.SelectMany(x => parameters.Select(y => mi.Invoke(x, y.ToArray())).ToList()).ToList();
             
-            dynRevitUtils.StoreElements(node, results);
+            StoreElements(node, results);
 
             return ConvertAllResults(results);
         }
@@ -379,6 +385,48 @@ namespace Dynamo.Utilities
             }
         }
 
+        public static SketchPlane GetSketchPlaneFromCurve(Curve c)
+        {
+            //cases to handle
+            //straight line - normal will be inconclusive
+            
+            //find the plane of the curve and generate a sketch plane
+            var p0 = c.Evaluate(0, true);
+            var p1 = c.Evaluate(0.5, true);
+            var p2 = c.Evaluate(1, true);
+
+            var v1 = p1 - p0;
+            var v2 = p2 - p0;
+            var norm = v1.CrossProduct(v2).Normalize();
+
+            //Normal can be zero length in the case of a straight line
+            //or a curve whose three parameter points as measured above
+            //happen to lie along the same line. In this case, project
+            //the last point down to a plane and use the projected vector
+            //and one of the vectors from above to calculate a normal.
+            if (norm.IsZeroLength())
+            {
+                if (p0.Z == p2.Z)
+                {
+                    norm = XYZ.BasisZ;
+                }
+                else
+                {
+                    var p3 = new XYZ(p2.X, p2.Y, p0.Z);
+                    var v3 = p3 - p0;
+                    norm = v1.CrossProduct(v3);
+                }
+            }
+
+            var curvePlane = new Plane(norm, p0);
+
+            SketchPlane sp = null;
+            sp = dynRevitSettings.Doc.Document.IsFamilyDocument ? 
+                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(curvePlane) : 
+                dynRevitSettings.Doc.Document.Create.NewSketchPlane(curvePlane);
+
+            return sp;
+        }
     }
 
     /// <summary>

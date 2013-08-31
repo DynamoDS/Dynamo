@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using Dynamo;
 using Dynamo.Controls;
-using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace DynamoSandbox
 {
@@ -12,19 +12,11 @@ namespace DynamoSandbox
         [STAThread]
         public static void Main(string[] args)
         {
-            //DynamoLogger.Instance.StartLogging();
+            DynamoLogger.Instance.StartLogging();
 
             try
             {
-                var controller = new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE);
-
-                //create the view
-                dynSettings.Bench = new DynamoView();
-                dynSettings.Bench.DataContext = controller.DynamoViewModel;
-                controller.UIDispatcher = dynSettings.Bench.Dispatcher;
-
-                var app = new Application();
-                app.Run(dynSettings.Bench);
+                DynamoView.Start();
             }
             catch (Exception e)
             {

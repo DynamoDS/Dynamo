@@ -56,9 +56,9 @@
       <Project>{FD56AE51-739E-4893-8DE4-925D60C7097C}</Project>
       <Name>DynamoRevit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
+    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
-      <Name>DynamoElements</Name>
+      <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">

@@ -39,9 +39,10 @@ namespace Dynamo.FSchemeInterop.Node
         /// <returns></returns>
         public Expression Compile()
         {
-            Dictionary<INode, string> symbols;
-            Dictionary<INode, List<INode>> letEntries;
+            Dictionary<INode, string> symbols; // bindings
+            Dictionary<INode, List<INode>> letEntries; // scope entry for bindings
 
+            //Perform graph analysis to determine nodes which should be stored in let bindings.
             if (!GraphAnalysis.LetOptimizations(this, out symbols, out letEntries))
                 throw new Exception("Can't compile INode, graph is not a DAG.");
 
@@ -643,6 +644,17 @@ namespace Dynamo.FSchemeInterop.Node
                 EntryPoint.compile(symbols, letEntries, initializedIds, conditionalIds)));
 
             return Expression.NewBegin(Utils.SequenceToFSharpList(initialized));
+        }
+
+        protected override Expression compileBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries, 
+            HashSet<string> initializedIds, 
+            HashSet<string> conditionalIds)
+        {
+            if (!Inputs.Any())
+                return GetBody(symbols, letEntries, initializedIds, conditionalIds);
+            return base.compileBody(symbols, letEntries, initializedIds, conditionalIds);
         }
 
         public AnonymousFunctionNode(IEnumerable<string> inputList, INode entryPoint)
