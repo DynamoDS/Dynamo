@@ -103,7 +103,7 @@ let ValueToBool = function
 type Frame = Value ref [] ref
 type Environment = Frame list ref
 
-///FScheme Function delegate. Takes a list of Expressions as arguments, and returns an Expression.
+///FScheme Function delegate. Takes a list of Expressions as arguments, le returns an Expression.
 type ExternFunc = delegate of Value list -> Value
 
 ///Makes an Expression.Function out of an ExternFunc
@@ -507,6 +507,26 @@ let CartProd = function
         List(List.map (function List(l) -> l | m -> failwith "bad cart prod arg") lists |> reduceLists |> Seq.map f |> Seq.toList)
     | m -> malformed "cartesian-product" <| List(m)
 
+let LaceShortest = function
+    | (Function(_) as f) :: lists ->
+        let lists' = List.map (function List(l) -> l | m -> malformed "lace-shortest" m) lists
+        let shortestLen = Seq.min <| Seq.map List.length lists'
+        Map <| f :: List.map (Seq.take shortestLen >> Seq.toList >> List) lists'
+    | m -> malformed "lace-shortest" <| List(m)
+
+let LaceLongest = function
+    | (Function(_) as f) :: lists ->
+        let lists' = List.map (function List(l) -> l | m -> malformed "lace-longest" m) lists
+        let longestLen = Seq.max <| Seq.map List.length lists'
+        Map <| f :: List.map 
+                        (fun l -> 
+                            let len = List.length l
+                            let last = List.nth l (len-1)
+                            let remainder = Seq.initInfinite (fun _ -> last) |> Seq.take (longestLen - len)
+                            Seq.append l remainder |> Seq.toList |> List)
+                        lists'
+    | m -> malformed "lace-longest" <| List(m)
+
 let ForEach = function
     | [Function(f); List(l)] ->
         for e in l do f [e] |> ignore
@@ -631,6 +651,8 @@ let Flatten = function
         flatten' [] l2d
     | m -> malformed "flatten" <| List(m)
 
+let Range (start : double) (step : double) (stop : double) = { start .. step .. stop }
+
 ///Build List
 let BuildSeq = function
     | [Number(start); Number(stop); Number(step)] -> [start .. step .. stop] |> List.map Number |> List
@@ -677,8 +699,22 @@ let Sub1 = function
     | m -> malformed "sub1" <| List(m)
 
 let Identity = function
-   | [e] -> e
-   | m   -> malformed "identity" <| List(m)
+    | [e] -> e
+    | m   -> malformed "identity" <| List(m)
+
+let MakeFuture f = 
+    let p = async { return f [] }
+    let t = Async.StartAsTask p
+    t
+    
+let Redeem (t : Threading.Tasks.Task<'a>) =
+    t.Wait()
+    if t.IsFaulted then
+        raise t.Exception
+    else if t.IsCanceled then
+        failwith "Cannot redeem a cancelled future order."
+    else
+        t.Result
 
 
 type private CompilerFrame = string list

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -29,9 +30,9 @@ namespace Dynamo.Nodes
     [NodeName("Level")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
     [NodeDescription("Creates a level datum.")]
-    public class dynLevel : dynRevitTransactionNodeWithOneOutput
+    public class Level : RevitTransactionNodeWithOneOutput
     {
-        public dynLevel()
+        public Level()
         {
             InPortData.Add(new PortData("el", "The elevation of the level.", typeof(Value.Number)));
             OutPortData.Add(new PortData("level", "The level.", typeof(Value.Container)));
@@ -44,14 +45,14 @@ namespace Dynamo.Nodes
             //Level elements take in one double for the z elevation (height)f
             double h = (double)((Value.Number)args[0]).Item;
 
-            Level lev;
+            Autodesk.Revit.DB.Level lev;
 
             if (this.Elements.Any())
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(Level), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.Level), out e))
                 {
-                    lev = e as Level;
+                    lev = e as Autodesk.Revit.DB.Level;
                     lev.Elevation = h;
 
                 }
@@ -78,9 +79,9 @@ namespace Dynamo.Nodes
     [NodeName("Ref Plane")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
     [NodeDescription("Creates a reference plane.")]
-    public class dynReferencePlane : dynRevitTransactionNodeWithOneOutput
+    public class ReferencePlane : RevitTransactionNodeWithOneOutput
     {
-        public dynReferencePlane()
+        public ReferencePlane()
         {
             InPortData.Add(new PortData("l", "Geometry Line.", typeof(Value.Container)));
             OutPortData.Add(new PortData("ref", "Reference Plane", typeof(Value.Container)));
@@ -107,7 +108,7 @@ namespace Dynamo.Nodes
                     //..taking each element in the list and...
                       delegate(Value x)
                       {
-                          ReferencePlane refPlane;
+                          Autodesk.Revit.DB.ReferencePlane refPlane;
                           Line line;
                           XYZ bubbleEnd;
                           XYZ freeEnd;
@@ -117,10 +118,10 @@ namespace Dynamo.Nodes
                           {
                               Element e;
                               //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count],typeof(ReferencePlane), out e))
+                              if (dynUtils.TryGetElement(this.Elements[count],typeof(Autodesk.Revit.DB.ReferencePlane), out e))
                               {
                                   //...and if we're successful, update it's position (well for now make a new one with the same name)... 
-                                  refPlane = e as ReferencePlane;
+                                  refPlane = e as Autodesk.Revit.DB.ReferencePlane;
                                   name = refPlane.Name;
                                   this.UIDocument.Document.Delete(refPlane.Id);//delete old one for now
 
@@ -225,7 +226,7 @@ namespace Dynamo.Nodes
                 //Ref plane elements take in one geometry curve 
                 Line c = (Line)((Value.Container)args[0]).Item;
 
-                ReferencePlane refPlane;
+                Autodesk.Revit.DB.ReferencePlane refPlane;
                 Line line;
                 XYZ bubbleEnd;
                 XYZ freeEnd;
@@ -234,11 +235,11 @@ namespace Dynamo.Nodes
                 if (this.Elements.Any())
                 {
                     Element e;
-                    if (dynUtils.TryGetElement(this.Elements[0],typeof(ReferencePlane), out e))
+                    if (dynUtils.TryGetElement(this.Elements[0],typeof(Autodesk.Revit.DB.ReferencePlane), out e))
                     {
                         
                         //...and if we're successful, update it's position (well for now make a new one with the same name)... 
-                        refPlane = e as ReferencePlane;
+                        refPlane = e as Autodesk.Revit.DB.ReferencePlane;
                         name = refPlane.Name;
 
                         XYZ oldBubbleEnd = refPlane.BubbleEnd;
@@ -347,9 +348,9 @@ namespace Dynamo.Nodes
     [NodeName("Column Grid")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
     [NodeDescription("Creates a column grid datum.")]
-    public class dynColumnGrid : dynRevitTransactionNodeWithOneOutput
+    public class ColumnGrid : RevitTransactionNodeWithOneOutput
     {
-        public dynColumnGrid()
+        public ColumnGrid()
         {
             InPortData.Add(new PortData("line", "Geometry Line.", typeof(Value.Container))); // MDJ TODO - expand this to work with curved grids.
             OutPortData.Add(new PortData("grid", "Grid", typeof(Value.Container)));

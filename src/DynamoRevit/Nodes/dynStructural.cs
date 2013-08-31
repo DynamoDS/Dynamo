@@ -6,6 +6,7 @@ using Autodesk.Revit.Creation;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using Dynamo.Connectors;
+using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -16,9 +17,9 @@ namespace Dynamo.Nodes
     [NodeName("Select Structural Framing Type")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
     [NodeDescription("Create structural framing.")]
-    public class dynStructuralFramingSelector: dynDropDrownBase
+    public class StructuralFramingSelector: DropDrownBase
     {
-        public dynStructuralFramingSelector()
+        public StructuralFramingSelector()
         {
             OutPortData.Add(new PortData("type", "The selected structural framing type.", typeof(Value.Container)));
 
@@ -48,9 +49,9 @@ namespace Dynamo.Nodes
     [NodeName("Structural Framing")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
     [NodeDescription("Create structural framing.")]
-    public class dynStructuralFraming : dynRevitTransactionNodeWithOneOutput
+    public class StructuralFraming : RevitTransactionNodeWithOneOutput
     {
-        public dynStructuralFraming()
+        public StructuralFraming()
         {
             InPortData.Add(new PortData("type", "The framing type.", typeof(Value.Container)));
             InPortData.Add(new PortData("curves", "The curve(s) to be used as center lines for your framing elements.", typeof(Value.List)));

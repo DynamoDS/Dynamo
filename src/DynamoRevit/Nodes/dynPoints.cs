@@ -17,10 +17,10 @@ using System.Linq;
 using System.Windows.Controls;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
+using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Dynamo.FSchemeInterop;
-
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
 
@@ -30,9 +30,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a reference point.")]
     [NodeSearchTags("pt","ref")]
-    public class dynReferencePointByXYZ : dynRevitTransactionNodeWithOneOutput
+    public class ReferencePointByXyz : RevitTransactionNodeWithOneOutput
     {
-        public dynReferencePointByXYZ()
+        public ReferencePointByXyz()
         {
             InPortData.Add(new PortData("xyz", "The point(s) from which to create reference points.", typeof(Value.Container)));
             OutPortData.Add(new PortData("pt", "The Reference Point(s) created from this operation.", typeof(Value.Container)));
@@ -47,25 +47,24 @@ namespace Dynamo.Nodes
 
             ReferencePoint pt;
 
-            if (this.Elements.Any())
+            if (Elements.Any())
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(ReferencePoint), out e))
+                if (dynUtils.TryGetElement(Elements[0], typeof(ReferencePoint), out e))
                 {
-                    //..and if we do, update it's position.
                     pt = (ReferencePoint)e;
                     pt.Position = xyz;
                 }
                 else
                 {
-                    pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
-                    this.Elements[0] = pt.Id;
+                    pt = UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
+                    Elements[0] = pt.Id;
                 }
             }
             else
             {
-                pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
-                this.Elements.Add(pt.Id);
+                pt = UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
+                Elements.Add(pt.Id);
             }
 
             return Value.NewContainer(pt);
@@ -76,9 +75,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an element which owns a reference point on a selected edge.")]
     [NodeSearchTags("ref", "pt")]
-    public class dynPointOnEdge : dynRevitTransactionNodeWithOneOutput
+    public class PointOnEdge : RevitTransactionNodeWithOneOutput
     {
-        public dynPointOnEdge()
+        public PointOnEdge()
         {
             InPortData.Add(new PortData("curve", "ModelCurve", typeof(Value.Container)));
             InPortData.Add(new PortData("t", "Parameter on edge.", typeof(Value.Number)));
@@ -131,9 +130,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an element which owns a reference point on a selected face.")]
     [NodeSearchTags("ref", "pt")]
-    public class dynPointOnFaceUV : dynRevitTransactionNodeWithOneOutput
+    public class PointOnFaceUv : RevitTransactionNodeWithOneOutput
     {
-        public dynPointOnFaceUV()
+        public PointOnFaceUv()
         {
             InPortData.Add(new PortData("face", "ModelFace", typeof(Value.Container)));
             InPortData.Add(new PortData("UV", "UV Parameter on face.", typeof(Value.Container)));
@@ -193,9 +192,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Owns a reference point which is projected from a point by normal and distance.")]
     [NodeSearchTags("normal", "ref")]
-    public class dynPointNormalDistance : dynRevitTransactionNodeWithOneOutput
+    public class PointNormalDistance : RevitTransactionNodeWithOneOutput
     {
-        public dynPointNormalDistance()
+        public PointNormalDistance()
         {
             InPortData.Add(new PortData("pt", "The point to reference", typeof(Value.Container)));
             InPortData.Add(new PortData("norm", "The normal", typeof(Value.Container)));
@@ -246,19 +245,21 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Extracts one of the primary Reference Planes from a Reference Point.")]
     [NodeSearchTags("ref")]
-    public class dynPlaneFromRefPoint : dynRevitTransactionNodeWithOneOutput
+    public class PlaneFromRefPoint : RevitTransactionNodeWithOneOutput
     {
         ComboBox combo;
 
-        public dynPlaneFromRefPoint()
+        public PlaneFromRefPoint()
         {
             InPortData.Add(new PortData("pt", "The point to extract the plane from", typeof(Value.Container)));
             OutPortData.Add(new PortData("r", "Reference", typeof(Value.Container)));
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(Controls.dynNodeView nodeUI)
+        public override void SetupCustomUIElements(object ui)
         {
+            var nodeUI = ui as dynNodeView;
+
             //add a drop down list to the window
             combo = new ComboBox();
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -288,7 +289,7 @@ namespace Dynamo.Nodes
 
             combo.Items.Clear();
 
-            foreach (var plane in Enum.GetValues(typeof(RefPointReferencePlanes)))
+            foreach (var plane in System.Enum.GetValues(typeof(RefPointReferencePlanes)))
             {
                 ComboBoxItem cbi = new ComboBoxItem();
                 cbi.Content = plane.ToString();
@@ -359,9 +360,9 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate curve or edge")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Evaluates curve or edge at parameter.")]
-    public class dynXYZOnCurveOrEdge : dynXYZBase
+    public class XyzOnCurveOrEdge : XyzBase
     {
-        public dynXYZOnCurveOrEdge()
+        public XyzOnCurveOrEdge()
         {
             InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range, any for closed curve.", typeof(Value.Number)));
             InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
@@ -436,9 +437,9 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate tangent transform of curve or edge")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
-    public class dynTangentTransformOnCurveOrEdge : dynTransformBase
+    public class TangentTransformOnCurveOrEdge : TransformBase
     {
-        public dynTangentTransformOnCurveOrEdge()
+        public TangentTransformOnCurveOrEdge()
         {
             InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range except for closed curve", typeof(Value.Number)));
             InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
@@ -471,7 +472,7 @@ namespace Dynamo.Nodes
             }
 
             Transform result = (thisCurve != null) ?
-                (!dynXYZOnCurveOrEdge.curveIsReallyUnbound(thisCurve) ? thisCurve.ComputeDerivatives(parameter, true) : thisCurve.ComputeDerivatives(parameter, false))
+                (!XyzOnCurveOrEdge.curveIsReallyUnbound(thisCurve) ? thisCurve.ComputeDerivatives(parameter, true) : thisCurve.ComputeDerivatives(parameter, false))
                 : 
                 (thisEdge == null ? null : thisEdge.ComputeDerivatives(parameter));
 
@@ -485,9 +486,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an ref point element on curve located by length from the start or end of the curve.")]
     [NodeSearchTags("ref", "pt", "curve")]
-    public class dynPointOnCurveByLength : dynRevitTransactionNodeWithOneOutput
+    public class PointOnCurveByLength : RevitTransactionNodeWithOneOutput
     {
-        public dynPointOnCurveByLength()
+        public PointOnCurveByLength()
         {
             InPortData.Add(new PortData("curve", "Model Curve", typeof(Value.Container)));
             InPortData.Add(new PortData("len", "measured length or percent of overall length", typeof(Value.Number)));

@@ -15,7 +15,7 @@
 using Autodesk.Revit.DB;
 
 using Dynamo.Connectors;
-
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Utilities;
@@ -26,9 +26,9 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate Normal")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Evaluate a point on a face to find the normal.")]
-    class dynNormalEvaluate: dynXYZBase
+    class NormalEvaluate: XyzBase
     {
-        public dynNormalEvaluate()
+        public NormalEvaluate()
         {
             InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(Value.Container)));
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(Value.Container)));
@@ -62,9 +62,9 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate UV")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Evaluate a parameter(UV) on a face to find the XYZ location.")]
-    class dynXYZEvaluate : dynXYZBase
+    class XyzEvaluate : XyzBase
     {
-        public dynXYZEvaluate()
+        public XyzEvaluate()
         {
             InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(Value.Container)));
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(Value.Container)));
@@ -98,9 +98,9 @@ namespace Dynamo.Nodes
     [NodeName("Compute Face Derivatives")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
-    public class dynComputeFaceDerivatives : dynTransformBase
+    public class ComputeFaceDerivatives : TransformBase
     {
-        public dynComputeFaceDerivatives()
+        public ComputeFaceDerivatives()
         {
             InPortData.Add(new PortData("f", "The face to evaluate(Face)", typeof(Value.Container)));
             InPortData.Add(new PortData("uv", "The parameter to evaluate(UV)", typeof(Value.Container)));
@@ -138,9 +138,9 @@ namespace Dynamo.Nodes
     [NodeName("Compute Curve Derivatives")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
-    public class dynComputeCurveDerivatives : dynTransformBase
+    public class ComputeCurveDerivatives : TransformBase
     {
-        public dynComputeCurveDerivatives()
+        public ComputeCurveDerivatives()
         {
             InPortData.Add(new PortData("crv", "The curve to evaluate", typeof(Value.Container)));
             InPortData.Add(new PortData("p", "The parameter to evaluate", typeof(Value.Container)));

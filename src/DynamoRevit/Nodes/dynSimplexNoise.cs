@@ -9,6 +9,7 @@ using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
@@ -79,9 +80,9 @@ namespace Dynamo.Nodes
     [NodeName("1D Noise Field")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Creates a randomly varying 1 field generated using simplex noise.")]
-    public class dynSimplex1D: dynNodeWithOneOutput
+    public class Simplex1D: NodeWithOneOutput
     {
-        public dynSimplex1D()
+        public Simplex1D()
         {
             InPortData.Add(new PortData("x", "X", typeof(FScheme.Value.Number)));
 
@@ -132,9 +133,9 @@ namespace Dynamo.Nodes
     [NodeName("2D Noise Field")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Creates a randomly varying 2D field generated using simplex noise.")]
-    public class dynSimplex2D: dynNodeWithOneOutput
+    public class Simplex2D: NodeWithOneOutput
     {
-        public dynSimplex2D()
+        public Simplex2D()
         {
             InPortData.Add(new PortData("x", "X", typeof(FScheme.Value.Number)));
             InPortData.Add(new PortData("y", "Y", typeof(FScheme.Value.Number)));
@@ -239,9 +240,9 @@ namespace Dynamo.Nodes
     [NodeName("3D Noise Field")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Creates a randomly varying 3D Field generated using simplex noise.")]
-    public class dynSimplex3D: dynNodeWithOneOutput
+    public class Simplex3D: NodeWithOneOutput
     {
-        public dynSimplex3D()
+        public Simplex3D()
         {
             InPortData.Add(new PortData("x", "X", typeof(FScheme.Value.Number)));
             InPortData.Add(new PortData("y", "Y", typeof(FScheme.Value.Number)));

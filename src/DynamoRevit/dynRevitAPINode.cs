@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.Revit;
@@ -13,7 +14,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Base class for all auto-generated Revit API nodes.
     /// </summary>
-    public abstract class dynAPIMethodNode : dynRevitTransactionNodeWithOneOutput
+    public abstract class ApiMethodNode : RevitTransactionNodeWithOneOutput
     {
         protected Type base_type;
         protected Type return_type;
@@ -23,7 +24,7 @@ namespace Dynamo.Nodes
         ///<summary>
         ///Default constructor
         ///</summary>
-        public dynAPIMethodNode()
+        public ApiMethodNode()
         {
 
         }
@@ -48,7 +49,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Base class for wrapped properties. Does not create a transaction.
     /// </summary>
-    public abstract class dynAPIPropertyNode : dynNodeWithOneOutput
+    public abstract class ApiPropertyNode : NodeWithOneOutput
     {
         protected Type base_type;
         protected Type return_type;
@@ -57,7 +58,7 @@ namespace Dynamo.Nodes
         ///<summary>
         ///Default constructor
         ///</summary>
-        public dynAPIPropertyNode()
+        public ApiPropertyNode()
         {
 
         }
@@ -78,9 +79,9 @@ namespace Dynamo.Nodes
     [NodeSearchTags("document", "active")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
     [NodeDescription("Gets the active Revit document.")]
-    public class dynRevitDocument : dynRevitTransactionNodeWithOneOutput
+    public class RevitDocument : RevitTransactionNodeWithOneOutput
     {
-        public dynRevitDocument()
+        public RevitDocument()
         {
             OutPortData.Add(new PortData("doc", "The active Revit doc.", typeof(Value.Container)));
             RegisterAllPorts();
