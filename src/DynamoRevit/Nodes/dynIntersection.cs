@@ -17,7 +17,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve Face Intersection")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of a curve and a face.")]
-    public class dynCurveFaceIntersection : dynRevitTransactionNode, IDrawable, IClearable
+    public class CurveFaceIntersection : RevitTransactionNode, IDrawable, IClearable
     {
         private readonly PortData _resultPort = new PortData(
             "result", "The set comparison result.", typeof(Value.String));
@@ -38,7 +38,7 @@ namespace Dynamo.Nodes
         private readonly PortData _edgeTPort = new PortData(
             "edge t", "The parameter of the nearest point(s) on the edge.", typeof(Value.List));
 
-        public dynCurveFaceIntersection()
+        public CurveFaceIntersection()
         {
             InPortData.Add(new PortData("crv", "The specified curve to intersect with this face.", typeof(Value.Container)));
             InPortData.Add(new PortData("face", "The face from which to calculate the intersection.", typeof(Value.Container)));
@@ -76,17 +76,17 @@ namespace Dynamo.Nodes
         {
             var crv = (Curve)((Value.Container)args[0]).Item;
             Face face = null;
-            Plane thisPlane = null;
+            Autodesk.Revit.DB.Plane thisPlane = null;
 
             var geo = ((Value.Container)args[1]).Item;
 
             if (geo is Face)
                 face = geo as Face;
-            else if (geo is Plane)
+            else if (geo is Autodesk.Revit.DB.Plane)
             {
                 #region plane processing
 
-                thisPlane = geo as Plane;
+                thisPlane = geo as Autodesk.Revit.DB.Plane;
                 // tesselate curve and find uv envelope in projection to the plane
                 IList<XYZ> tessCurve = crv.Tessellate();
                 var curvePointEnum = tessCurve.GetEnumerator();
@@ -121,7 +121,7 @@ namespace Dynamo.Nodes
                 double dist2 = thisPlane.Origin.DistanceTo(corner2);
                 double sizeRect = 2.0 * (dist1 + dist2) + 100.0;
  
-                var cLoop = new CurveLoop();
+                var cLoop = new Autodesk.Revit.DB.CurveLoop();
                 for (int index = 0; index < 4; index++)
                 {
                     double coord0 = (index == 0 || index == 3) ? -sizeRect : sizeRect;
@@ -134,7 +134,7 @@ namespace Dynamo.Nodes
                     Line cLine = dynRevitSettings.Revit.Application.Create.NewLineBound(pnt0, pnt1);
                     cLoop.Append(cLine);
                 }
-                var listCLoops = new List<CurveLoop> { cLoop };
+                var listCLoops = new List<Autodesk.Revit.DB.CurveLoop> { cLoop };
 
                 Solid tempSolid = GeometryCreationUtilities.CreateExtrusionGeometry(listCLoops, thisPlane.Normal, 100.0);
 
@@ -238,7 +238,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve Curve Intersection")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of two curves.")]
-    public class dynCurveCurveIntersection : dynRevitTransactionNode, IDrawable, IClearable
+    public class CurveCurveIntersection : RevitTransactionNode, IDrawable, IClearable
     {
         private readonly PortData _resultPort = new PortData(
             "result", "The set comparison result.", typeof(Value.String));
@@ -252,7 +252,7 @@ namespace Dynamo.Nodes
         private readonly PortData _vPort = new PortData(
             "v", "The unnormalized V parameter(s) on this curve.", typeof(Value.List));
 
-        public dynCurveCurveIntersection()
+        public CurveCurveIntersection()
         {
             InPortData.Add(new PortData("crv1", "The curve with which to intersect.", typeof(Value.Container)));
             InPortData.Add(new PortData("crv2", "The intersecting curve.", typeof(Value.Container)));
@@ -330,7 +330,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of two faces.")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
-    public class dynFaceFaceIntersection : dynRevitTransactionNode, IDrawable, IClearable
+    public class FaceFaceIntersection : RevitTransactionNode, IDrawable, IClearable
     {
         private readonly PortData _resultPort = new PortData(
             "result", "The intersection result.", typeof(Value.String));
@@ -338,7 +338,7 @@ namespace Dynamo.Nodes
         private readonly PortData _curvePort = new PortData(
             "curve", "A single Curve representing the intersection.", typeof(Value.Container));
 
-        public dynFaceFaceIntersection()
+        public FaceFaceIntersection()
         {
             InPortData.Add(new PortData("face1", "The first face to intersect.", typeof(Value.Container)));
             InPortData.Add(new PortData("face2", "The face to intersect with face1.", typeof(Value.Container)));

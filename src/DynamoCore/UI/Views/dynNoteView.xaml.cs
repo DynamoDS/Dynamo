@@ -27,10 +27,10 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Interaction logic for dynNoteView.xaml
     /// </summary>
-    public partial class dynNoteView : UserControl, IViewModelView<dynNoteViewModel>
+    public partial class dynNoteView : UserControl, IViewModelView<NoteViewModel>
     {
         
-        public dynNoteViewModel ViewModel { get; set; }
+        public NoteViewModel ViewModel { get; set; }
 
         public dynNoteView()
         {
@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
 
         void dynNoteView_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel = this.DataContext as dynNoteViewModel;
+            ViewModel = this.DataContext as NoteViewModel;
             ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
         }
 
@@ -102,11 +102,11 @@ namespace Dynamo.Nodes
                 };
 
             //setup a binding with the edit window's text field
-            editWindow.editText.DataContext = DataContext as dynNoteViewModel;
+            editWindow.editText.DataContext = DataContext as NoteViewModel;
             var bindingVal = new System.Windows.Data.Binding("Text")
             {
                 Mode = BindingMode.TwoWay,
-                Source = (DataContext as dynNoteViewModel),
+                Source = (DataContext as NoteViewModel),
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);

@@ -20,7 +20,6 @@ using System.Xml;              //for boolean option
 using System.Windows.Media.Media3D;
 using System.Reflection;
 using Autodesk.Revit.DB;
-using DSCoreNodes;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
@@ -32,15 +31,15 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
-    public abstract class dynGeometryBase : dynNodeWithOneOutput
+    public abstract class GeometryBase : NodeWithOneOutput
     {
-        protected dynGeometryBase()
+        protected GeometryBase()
         {
             ArgumentLacing = LacingStrategy.Longest;
         }
     }
 
-    public abstract class dynXYZBase : dynGeometryBase, IDrawable, IClearable
+    public abstract class XyzBase : GeometryBase, IDrawable, IClearable
     {
         protected List<XYZ> pts = new List<XYZ>();
         public RenderDescription RenderDescription { get; set; }
@@ -70,7 +69,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class dynCurveBase : dynGeometryBase, IDrawable, IClearable
+    public abstract class CurveBase : GeometryBase, IDrawable, IClearable
     {
         protected List<Curve> crvs = new List<Curve>();
         public RenderDescription RenderDescription { get; set; }
@@ -118,7 +117,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class dynSolidBase : dynGeometryBase, IDrawable, IClearable
+    public abstract class SolidBase : GeometryBase, IDrawable, IClearable
     {
         protected List<Solid> solids = new List<Solid>();
         public RenderDescription RenderDescription { get; set; }
@@ -137,7 +136,7 @@ namespace Dynamo.Nodes
                     if (s == null)
                         continue;
 
-                    dynRevitTransactionNode.DrawSolid(this.RenderDescription, s);
+                    RevitTransactionNode.DrawSolid(this.RenderDescription, s);
                 }
             }
            
@@ -155,7 +154,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class dynTransformBase : dynGeometryBase, IDrawable, IClearable
+    public abstract class TransformBase : GeometryBase, IDrawable, IClearable
     {
         protected List<Transform> transforms = new List<Transform>();
         public RenderDescription RenderDescription { get; set; }
@@ -197,9 +196,9 @@ namespace Dynamo.Nodes
     [NodeName("XYZ")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ from three numbers.")]
-    public class dynXYZ: dynXYZBase
+    public class Xyz: XyzBase
     {
-        public dynXYZ()
+        public Xyz()
         {
             InPortData.Add(new PortData("X", "X", typeof(Value.Number), Value.NewNumber(0)));
             InPortData.Add(new PortData("Y", "Y", typeof(Value.Number), Value.NewNumber(0)));
@@ -225,9 +224,9 @@ namespace Dynamo.Nodes
     [NodeName("XYZ from List of Numbers")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a list of XYZs by taking sets of 3 numbers from an list.")]
-    public class dynXYZFromListOfNumbers : dynXYZBase
+    public class XyzFromListOfNumbers : XyzBase
     {
-        public dynXYZFromListOfNumbers()
+        public XyzFromListOfNumbers()
         {
             InPortData.Add(new PortData("list", "The list of numbers from which to extract the XYZs.", typeof(Value.Number)));
             OutPortData.Add(new PortData("list", "A list of XYZs", typeof(Value.List)));
@@ -268,9 +267,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Extracts an XYZ from a Reference Point.")]
     [NodeSearchTags("xyz", "derive", "from", "reference", "point")]
-    public class dynXYZFromReferencePoint : dynXYZBase
+    public class XyzFromReferencePoint : XyzBase
     {
-        public dynXYZFromReferencePoint()
+        public XyzFromReferencePoint()
         {
             InPortData.Add(new PortData("pt", "Reference Point", typeof(Value.Container)));
             OutPortData.Add(new PortData("xyz", "Location of the reference point.", typeof(Value.Container)));
@@ -292,9 +291,9 @@ namespace Dynamo.Nodes
     [NodeName("XYZ -> X")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the X value of the given XYZ")]
-    public class dynXYZGetX: dynGeometryBase
+    public class XyzGetX: GeometryBase
     { 
-        public dynXYZGetX()
+        public XyzGetX()
         {
             InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
             OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(Value.Number)));
@@ -312,9 +311,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Gets the length of an XYZ")]
     [NodeSearchTags("vector", "length", "xyz", "magnitude", "amplitude")]
-    public class dynXYZLength : dynGeometryBase
+    public class XyzLength : GeometryBase
     {
-        public dynXYZLength()
+        public XyzLength()
         {
             InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
             OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(Value.Number)));
@@ -332,9 +331,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Determines whether an XYZ has zero length")]
     [NodeSearchTags("vector", "length", "xyz", "magnitude", "amplitude")]
-    public class dynXYZIsZeroLength : dynGeometryBase
+    public class XyzIsZeroLength : GeometryBase
     {
-        public dynXYZIsZeroLength()
+        public XyzIsZeroLength()
         {
             InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
             OutPortData.Add(new PortData("X", "X value of given XYZ", typeof(Value.Number)));
@@ -351,9 +350,9 @@ namespace Dynamo.Nodes
     [NodeName("XYZ -> Y")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the Y value of the given XYZ")]
-    public class dynXYZGetY : dynGeometryBase
+    public class XyzGetY : GeometryBase
     {
-        public dynXYZGetY()
+        public XyzGetY()
         {
             InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
             OutPortData.Add(new PortData("Y", "Y value of given XYZ", typeof(Value.Number)));
@@ -370,9 +369,9 @@ namespace Dynamo.Nodes
     [NodeName("XYZ -> Z")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Fetches the Z value of the given XYZ")]
-    public class dynXYZGetZ : dynGeometryBase
+    public class XyzGetZ : GeometryBase
     {
-        public dynXYZGetZ()
+        public XyzGetZ()
         {
             InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
             OutPortData.Add(new PortData("Z", "Z value of given XYZ", typeof(Value.Number)));
@@ -389,9 +388,9 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Zero")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ at the origin (0,0,0).")]
-    public class dynXYZZero: dynXYZBase
+    public class XyzZero: XyzBase
     {
-        public dynXYZZero()
+        public XyzZero()
         {
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
@@ -408,9 +407,9 @@ namespace Dynamo.Nodes
     [NodeName("X Axis")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the X basis (1,0,0).")]
-    public class dynXYZBasisX : dynGeometryBase
+    public class XyzBasisX : GeometryBase
     {
-        public dynXYZBasisX()
+        public XyzBasisX()
         {
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
@@ -427,9 +426,9 @@ namespace Dynamo.Nodes
     [NodeName("Y Axis")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the Y basis (0,1,0).")]
-    public class dynXYZBasisY : dynGeometryBase
+    public class XyzBasisY : GeometryBase
     {
-        public dynXYZBasisY()
+        public XyzBasisY()
         {
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
@@ -446,9 +445,9 @@ namespace Dynamo.Nodes
     [NodeName("Z Axis")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an XYZ representing the Z basis (0,0,1).")]
-    public class dynXYZBasisZ : dynGeometryBase
+    public class XyzBasisZ : GeometryBase
     {
-        public dynXYZBasisZ()
+        public XyzBasisZ()
         {
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
@@ -466,9 +465,9 @@ namespace Dynamo.Nodes
     [NodeName("Scale XYZ with Base Point")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Scales an XYZ relative to the supplies base point.")]
-    public class dynXYZScaleOffset : dynXYZBase
+    public class XyzScaleOffset : XyzBase
     {
-        public dynXYZScaleOffset()
+        public XyzScaleOffset()
         {
             InPortData.Add(new PortData("xyz", "XYZ to scale", typeof(Value.Container)));
             InPortData.Add(new PortData("n", "Scale amount", typeof(Value.Number)));
@@ -494,9 +493,9 @@ namespace Dynamo.Nodes
     [NodeName("Scale XYZ")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Multiplies each component of an XYZ by a number.")]
-    public class dynXYZScale : dynXYZBase
+    public class XyzScale : XyzBase
     {
-        public dynXYZScale()
+        public XyzScale()
         {
             InPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
             InPortData.Add(new PortData("n", "Scale amount", typeof(Value.Number)));
@@ -520,9 +519,9 @@ namespace Dynamo.Nodes
     [NodeName("Add XYZ")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Adds the components of two XYZs.")]
-    public class dynXYZAdd: dynXYZBase
+    public class XyzAdd: XyzBase
     {
-        public dynXYZAdd()
+        public XyzAdd()
         {
             InPortData.Add(new PortData("XYZ(a)", "XYZ", typeof(Value.Container)));
             InPortData.Add(new PortData("XYZ(b)", "XYZ", typeof(Value.Container)));
@@ -545,9 +544,9 @@ namespace Dynamo.Nodes
     [NodeName("Subtract XYZ")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Subtracts the components of two XYZs.")]
-    public class dynXYZSubtract : dynXYZBase
+    public class XyzSubtract : XyzBase
     {
-        public dynXYZSubtract()
+        public XyzSubtract()
         {
             InPortData.Add(new PortData("XYZ(a)", "XYZ", typeof(Value.Container)));
             InPortData.Add(new PortData("XYZ(b)", "XYZ", typeof(Value.Container)));
@@ -570,9 +569,9 @@ namespace Dynamo.Nodes
     [NodeName("Average XYZ")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Averages a list of XYZs.")]
-    public class dynXYZAverage : dynXYZBase
+    public class XyzAverage : XyzBase
     {
-        public dynXYZAverage()
+        public XyzAverage()
         {
             InPortData.Add(new PortData("XYZs", "The list of XYZs to average.", typeof(Value.Container)));
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
@@ -587,7 +586,7 @@ namespace Dynamo.Nodes
                 throw new Exception("A list of XYZs is required to average.");
 
             var lst = ((Value.List)args[0]).Item;
-            var average = dynBestFitLine.MeanXYZ(dynBestFitLine.AsGenericList<XYZ>(lst));
+            var average = BestFitLine.MeanXYZ(BestFitLine.AsGenericList<XYZ>(lst));
 
             return Value.NewContainer(average);
         }
@@ -596,9 +595,9 @@ namespace Dynamo.Nodes
     [NodeName("Negate XYZ")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Negate an XYZ.")]
-    public class dynXYZNegate : dynXYZBase
+    public class XyzNegate : XyzBase
     {
-        public dynXYZNegate()
+        public XyzNegate()
         {
             InPortData.Add(new PortData("XYZ", "The XYZ to negate.", typeof(Value.Container)));
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
@@ -617,9 +616,9 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Cross Product")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Calculate the cross product of two XYZs.")]
-    public class dynXYZCrossProduct : dynGeometryBase
+    public class XyzCrossProduct : GeometryBase
     {
-        public dynXYZCrossProduct()
+        public XyzCrossProduct()
         {
             InPortData.Add(new PortData("a", "XYZ A.", typeof(Value.Container)));
             InPortData.Add(new PortData("b", "XYZ B.", typeof(Value.Container)));
@@ -640,9 +639,9 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Start End Vector")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Calculate the normalized vector from one xyz to another.")]
-    public class dynXYZStartEndVector : dynGeometryBase
+    public class XyzStartEndVector : GeometryBase
     {
-        public dynXYZStartEndVector()
+        public XyzStartEndVector()
         {
             InPortData.Add(new PortData("start", "The start of the vector.", typeof(Value.Container)));
             InPortData.Add(new PortData("end", "The end of the vector.", typeof(Value.Container)));
@@ -663,9 +662,9 @@ namespace Dynamo.Nodes
     [NodeName("UV Grid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of UVs from a domain.")]
-    public class dynUVGrid: dynNodeWithOneOutput
+    public class UvGrid: NodeWithOneOutput
     {
-        public dynUVGrid()
+        public UvGrid()
         {
             InPortData.Add(new PortData("domain", "A two dimensional domain.", typeof(Value.Container)));
             InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(Value.Number)));
@@ -677,7 +676,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var domain = (Domain2D)((Value.Container)args[0]).Item;
+            var domain = (DSCoreNodes.Domain2D)((Value.Container)args[0]).Item;
             double ui = ((Value.Number)args[1]).Item;
             double vi = ((Value.Number)args[2]).Item;
             double us = domain.USpan/ui;
@@ -709,9 +708,9 @@ namespace Dynamo.Nodes
     [NodeName("UV Random")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of UVs froma domain.")]
-    public class dynUVRandom: dynNodeWithOneOutput
+    public class UvRandom: NodeWithOneOutput
     {
-        public dynUVRandom()
+        public UvRandom()
         {
             InPortData.Add(new PortData("dom", "A domain.", typeof(Value.Container)));
             InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(Value.Number)));
@@ -737,7 +736,7 @@ namespace Dynamo.Nodes
             var min = new UV(domain.Min.x(), domain.Min.y());
             var max = new UV(domain.Max.x(), domain.Max.y());
 
-            var r = new Random();
+            var r = new System.Random();
             double uSpan = max.U-min.U;
             double vSpan = max.V-min.V;
 
@@ -761,9 +760,9 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Grid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of XYZs.")]
-    public class dynReferencePtGrid: dynXYZBase
+    public class ReferencePtGrid: XyzBase
     {
-        public dynReferencePtGrid()
+        public ReferencePtGrid()
         {
             InPortData.Add(new PortData("x-count", "Number in the X direction.", typeof(Value.Number)));
             InPortData.Add(new PortData("y-count", "Number in the Y direction.", typeof(Value.Number)));
@@ -826,9 +825,9 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Array On Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a list of XYZs along a curve.")]
-    public class dynXYZArrayAlongCurve : dynXYZBase
+    public class XyzArrayAlongCurve : XyzBase
     {
-        public dynXYZArrayAlongCurve()
+        public XyzArrayAlongCurve()
         {
             InPortData.Add(new PortData("curve", "Curve", typeof(Value.Container)));
             InPortData.Add(new PortData("count", "Number", typeof(Value.Number))); // just divide equally for now, dont worry about spacing and starting point
@@ -843,7 +842,7 @@ namespace Dynamo.Nodes
             double xi;//, x0, xs;
             xi = ((Value.Number)args[1]).Item;// Number
             xi = Math.Round(xi);
-            if (xi < Double.Epsilon)
+            if (xi < System.Double.Epsilon)
                 throw new Exception("The point count must be larger than 0.");
             xi = xi - 1;
 
@@ -867,9 +866,9 @@ namespace Dynamo.Nodes
 
             double t = 0;
 
-            if (xi < Double.Epsilon)
+            if (xi < System.Double.Epsilon)
             {
-                var pt = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+                var pt = !XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
                 result = FSharpList<Value>.Cons(Value.NewContainer(pt), result);
                 pts.Add(pt);
                 return Value.NewList(
@@ -880,7 +879,7 @@ namespace Dynamo.Nodes
             for (int xCount = 0; xCount <= xi; xCount++)
             {
                 t = xCount / xi; // create normalized curve param by dividing current number by total number
-                var pt = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+                var pt = !XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
                 result = FSharpList<Value>.Cons(Value.NewContainer( pt ), result );
                 pts.Add(pt);
             }
@@ -894,9 +893,9 @@ namespace Dynamo.Nodes
     [NodeName("Plane")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates a geometric plane.")]
-    public class dynPlane: dynGeometryBase
+    public class Plane: GeometryBase
     {
-        public dynPlane()
+        public Plane()
         {
             InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(Value.Container)));
             InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(Value.Container)));
@@ -921,9 +920,9 @@ namespace Dynamo.Nodes
     [NodeName("Sketch Plane")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates a geometric sketch plane.")]
-    public class dynSketchPlane : dynRevitTransactionNodeWithOneOutput
+    public class SketchPlane : RevitTransactionNodeWithOneOutput
     {
-        public dynSketchPlane()
+        public SketchPlane()
         {
             InPortData.Add(new PortData("plane", "The plane in which to define the sketch.", typeof(Value.Container))); // SketchPlane can accept Plane, Reference or PlanarFace
             OutPortData.Add(new PortData("sp", "SketchPlane", typeof(Value.Container)));
@@ -931,7 +930,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        bool resetPlaneofSketchPlaneElement(SketchPlane sp, Plane p)
+        bool resetPlaneofSketchPlaneElement(Autodesk.Revit.DB.SketchPlane sp, Autodesk.Revit.DB.Plane p)
         {
             XYZ newOrigin = p.Origin;
             XYZ newNorm = p.Normal;
@@ -971,17 +970,17 @@ namespace Dynamo.Nodes
                    planeList.Select(
                       delegate(Value x)
                       {
-                          SketchPlane sp = null;
+                          Autodesk.Revit.DB.SketchPlane sp = null;
 
                           //handle Plane, Reference or PlanarFace, also test for family or project doc. there probably is a cleaner way to test for all these conditions.
-                          if (((Value.Container)x).Item is Plane) //TODO: ensure this is correctly casting and testing.
+                          if (((Value.Container)x).Item is Autodesk.Revit.DB.Plane) //TODO: ensure this is correctly casting and testing.
                           {
                               sp = (this.UIDocument.Document.IsFamilyDocument)
                               ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(
-                                 (Plane)((Value.Container)x).Item
+                                 (Autodesk.Revit.DB.Plane)((Value.Container)x).Item
                               )
                               : this.UIDocument.Document.Create.NewSketchPlane(
-                                 (Plane)((Value.Container)x).Item
+                                 (Autodesk.Revit.DB.Plane)((Value.Container)x).Item
                               );
                           }
                           else if (((Value.Container)x).Item is Reference)
@@ -1016,7 +1015,7 @@ namespace Dynamo.Nodes
             }
             else
             {
-                SketchPlane sp = null;
+                Autodesk.Revit.DB.SketchPlane sp = null;
                 bool keepExistingElement = false;
                 var x = ((Value.Container)input).Item;
 
@@ -1024,13 +1023,13 @@ namespace Dynamo.Nodes
                 if (this.Elements.Count == 1)
                 {
                     Element e = this.UIDocument.Document.GetElement(this.Elements[0]);
-                    if (e != null && ( e is SketchPlane))
+                    if (e != null && ( e is Autodesk.Revit.DB.SketchPlane))
                     {
-                       sp = (SketchPlane) e;
+                       sp = (Autodesk.Revit.DB.SketchPlane) e;
                        
                        if (x is Reference)
                            keepExistingElement = true;
-                       else if (x is Plane && resetPlaneofSketchPlaneElement(sp, (Plane) x))
+                       else if (x is Autodesk.Revit.DB.Plane && resetPlaneofSketchPlaneElement(sp, (Autodesk.Revit.DB.Plane) x))
                            keepExistingElement = true;
                     }
                 }
@@ -1040,9 +1039,9 @@ namespace Dynamo.Nodes
                         this.DeleteElement(e);
 
                     //handle Plane, Reference or PlanarFace, also test for family or project doc. there probably is a cleaner way to test for all these conditions.
-                    if (x is Plane)
+                    if (x is Autodesk.Revit.DB.Plane)
                     {
-                        Plane p = x as Plane;
+                        Autodesk.Revit.DB.Plane p = x as Autodesk.Revit.DB.Plane;
                         sp  = (this.UIDocument.Document.IsFamilyDocument)
                            ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
                            : this.UIDocument.Document.Create.NewSketchPlane(p);
@@ -1072,9 +1071,9 @@ namespace Dynamo.Nodes
     [NodeName("Line")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric line.")]
-    public class dynLineBound: dynCurveBase
+    public class LineBound: CurveBase
     {
-        public dynLineBound()
+        public LineBound()
         {
             InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
             InPortData.Add(new PortData("end", "End XYZ", typeof(Value.Container)));
@@ -1118,9 +1117,9 @@ namespace Dynamo.Nodes
     [NodeName("Arc By Start Mid End")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
-    public class dynArcStartMiddleEnd : dynCurveBase
+    public class ArcStartMiddleEnd : CurveBase
     {
-        public dynArcStartMiddleEnd()
+        public ArcStartMiddleEnd()
         {
             InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
             InPortData.Add(new PortData("mid", "XYZ on Curve", typeof(Value.Container)));
@@ -1164,9 +1163,9 @@ namespace Dynamo.Nodes
     [NodeName("Arc by Ctr Pt")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
-    public class dynArcCenter : dynCurveBase
+    public class ArcCenter : CurveBase
     {
-        public dynArcCenter()
+        public ArcCenter()
         {
             InPortData.Add(new PortData("center", "Center XYZ or Coordinate System", typeof(Value.Container)));
             InPortData.Add(new PortData("radius", "Radius", typeof(Value.Number)));
@@ -1216,9 +1215,9 @@ namespace Dynamo.Nodes
     [NodeName("Transform Crv")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
-    public class dynCurveTransformed: dynCurveBase
+    public class CurveTransformed: CurveBase
     {
-        public dynCurveTransformed()
+        public CurveTransformed()
         {
             InPortData.Add(new PortData("cv", "Curve(Curve)", typeof(Value.Container)));
             InPortData.Add(new PortData("t", "Transform(Transform)", typeof(Value.Container)));
@@ -1242,9 +1241,9 @@ namespace Dynamo.Nodes
     [NodeName("Circle")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric circle.")]
-    public class dynCircle: dynCurveBase
+    public class Circle: CurveBase
     {
-        public dynCircle()
+        public Circle()
         {
             InPortData.Add(new PortData("center", "Start XYZ", typeof(Value.Container)));
             InPortData.Add(new PortData("rad", "Radius", typeof(Value.Number)));
@@ -1283,9 +1282,9 @@ namespace Dynamo.Nodes
     [NodeName("Ellipse")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric ellipse.")]
-    public class dynEllipse: dynCurveBase
+    public class Ellipse: CurveBase
     {
-        public dynEllipse()
+        public Ellipse()
         {
             InPortData.Add(new PortData("center", "Center XYZ or Coordinate System", typeof(Value.Container)));
             InPortData.Add(new PortData("radX", "Major Radius", typeof(Value.Number)));
@@ -1303,7 +1302,7 @@ namespace Dynamo.Nodes
             var radX = (double)((Value.Number)args[1]).Item;
             var radY = (double)((Value.Number)args[2]).Item;
 
-            Ellipse ell = null;
+            Autodesk.Revit.DB.Ellipse ell = null;
 
             if (ptA is XYZ)
             {
@@ -1339,9 +1338,9 @@ namespace Dynamo.Nodes
     [NodeName("Ellipse Arc")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric elliptical arc. Start and End Values may be between 0 and 2*PI in Radians")]
-    public class dynEllipticalArc: dynCurveBase
+    public class EllipticalArc: CurveBase
     {
-        public dynEllipticalArc()
+        public EllipticalArc()
         {
             InPortData.Add(new PortData("center", "Center XYZ or Coordinate System", typeof(Value.Container)));
             InPortData.Add(new PortData("radX", "Major Radius", typeof(Value.Number)));
@@ -1361,7 +1360,7 @@ namespace Dynamo.Nodes
             var start = (double)((Value.Number)args[3]).Item;
             var end = (double)((Value.Number)args[4]).Item;
 
-            Ellipse ell = null;
+            Autodesk.Revit.DB.Ellipse ell = null;
 
             if (ptA is XYZ)
             {
@@ -1397,9 +1396,9 @@ namespace Dynamo.Nodes
     [NodeName("UV")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a UV from two double values.")]
-    public class dynUV : dynGeometryBase
+    public class Uv : GeometryBase
     {
-        public dynUV()
+        public Uv()
         {
             InPortData.Add(new PortData("U", "U", typeof(Value.Number)));
             InPortData.Add(new PortData("V", "V", typeof(Value.Number)));
@@ -1422,9 +1421,9 @@ namespace Dynamo.Nodes
     [NodeName("Line From Vector")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a line in the direction of an XYZ normal.")]
-    public class dynLineVectorfromXYZ: dynNodeWithOneOutput
+    public class LineVectorfromXyz: NodeWithOneOutput
     {
-        public dynLineVectorfromXYZ()
+        public LineVectorfromXyz()
         {
             InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(Value.Container)));
             InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(Value.Container)));
@@ -1445,7 +1444,7 @@ namespace Dynamo.Nodes
         }
 
 
-        public ModelCurve MakeLine(Document doc, XYZ ptA, XYZ ptB)
+        public Autodesk.Revit.DB.ModelCurve MakeLine(Document doc, XYZ ptA, XYZ ptB)
         {
             Autodesk.Revit.ApplicationServices.Application app = doc.Application;
             // Create plane by the points
@@ -1453,21 +1452,21 @@ namespace Dynamo.Nodes
             XYZ norm = ptA.CrossProduct(ptB);
             double length = norm.GetLength();
             if (length == 0) norm = XYZ.BasisZ;
-            Plane plane = app.Create.NewPlane(norm, ptB);
-            SketchPlane skplane = doc.FamilyCreate.NewSketchPlane(plane);
+            Autodesk.Revit.DB.Plane plane = app.Create.NewPlane(norm, ptB);
+            Autodesk.Revit.DB.SketchPlane skplane = doc.FamilyCreate.NewSketchPlane(plane);
             // Create line here
-            ModelCurve modelcurve = doc.FamilyCreate.NewModelCurve(line, skplane);
+            Autodesk.Revit.DB.ModelCurve modelcurve = doc.FamilyCreate.NewModelCurve(line, skplane);
             return modelcurve;
         }
 
-        public CurveByPoints MakeLineCBP(Document doc, XYZ ptA, XYZ ptB)
+        public Autodesk.Revit.DB.CurveByPoints MakeLineCBP(Document doc, XYZ ptA, XYZ ptB)
         {
             ReferencePoint sunRP = doc.FamilyCreate.NewReferencePoint(ptA);
             ReferencePoint originRP = doc.FamilyCreate.NewReferencePoint(ptB);
             ReferencePointArray sunRPArray = new ReferencePointArray();
             sunRPArray.Append(sunRP);
             sunRPArray.Append(originRP);
-            CurveByPoints sunPath = doc.FamilyCreate.NewCurveByPoints(sunRPArray);
+            Autodesk.Revit.DB.CurveByPoints sunPath = doc.FamilyCreate.NewCurveByPoints(sunRPArray);
             return sunPath;
         }
     }
@@ -1475,11 +1474,11 @@ namespace Dynamo.Nodes
     [NodeName("Hermite Spline")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric hermite spline.")]
-    public class dynHermiteSpline: dynCurveBase
+    public class HermiteSpline: CurveBase
     {
-        HermiteSpline hs;
+        Autodesk.Revit.DB.HermiteSpline hs;
 
-        public dynHermiteSpline()
+        public HermiteSpline()
         {
             InPortData.Add(new PortData("xyzs", "List of pts.(List XYZ)", typeof(Value.List)));
             OutPortData.Add(new PortData("spline", "Spline", typeof(Value.Container)));
@@ -1518,11 +1517,11 @@ namespace Dynamo.Nodes
     [NodeName("Element Geometry Objects")]
     [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
     [NodeDescription("Creates list of geometry object references in the element.")]
-    public class dynElementGeometryObjects : dynNodeWithOneOutput
+    public class ElementGeometryObjects : NodeWithOneOutput
     {
         List<GeometryObject> instanceGeometryObjects;
 
-        public dynElementGeometryObjects()
+        public ElementGeometryObjects()
         {
             InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.Container)));
             OutPortData.Add(new PortData("Geometry objects of the element", "List", typeof(Value.List)));
@@ -1584,11 +1583,11 @@ namespace Dynamo.Nodes
     [NodeName("Extract Solid from Element")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates reference to the solid in the element's geometry objects.")]
-    public class dynElementSolid : dynSolidBase
+    public class ElementSolid : SolidBase
     {
         Dictionary <ElementId, List<GeometryObject> > instanceSolids;
 
-        public dynElementSolid()
+        public ElementSolid()
         {
             InPortData.Add(new PortData("element", "element to create geometrical reference to", typeof(Value.Container)));
             OutPortData.Add(new PortData("solid", "solid in the element's geometry objects", typeof(object)));
@@ -1613,10 +1612,10 @@ namespace Dynamo.Nodes
             Solid mySolid = null;
 
             //because of r2013 used GenericForm  which is superclass of FreeFromElement
-            if ((thisElement is GenericForm) && (dynFreeForm.freeFormSolids != null &&
-                  dynFreeForm.freeFormSolids.ContainsKey(thisElement.Id)))
+            if ((thisElement is GenericForm) && (FreeForm.freeFormSolids != null &&
+                  FreeForm.freeFormSolids.ContainsKey(thisElement.Id)))
             {
-                mySolid = dynFreeForm.freeFormSolids[thisElement.Id];
+                mySolid = FreeForm.freeFormSolids[thisElement.Id];
             }
             else
             {
@@ -1705,7 +1704,7 @@ namespace Dynamo.Nodes
     [NodeName("Create Extrusion Geometry")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates a solid by linearly extruding one or more closed coplanar curve loops.")]
-    public class CreateExtrusionGeometry : dynSolidBase
+    public class CreateExtrusionGeometry : SolidBase
     {
         public CreateExtrusionGeometry()
         {
@@ -1726,7 +1725,7 @@ namespace Dynamo.Nodes
             //each list will contain curves. convert the curves
             //into curve loops
             FSharpList<Value> profileList = ((Value.List)args[0]).Item;
-            List<CurveLoop> loops = new List<CurveLoop>();
+            List<Autodesk.Revit.DB.CurveLoop> loops = new List<Autodesk.Revit.DB.CurveLoop>();
             foreach (var item in profileList)
             {
                 if (item.IsList)
@@ -1734,13 +1733,13 @@ namespace Dynamo.Nodes
                     var innerList = ((Value.List)item).Item;
                     foreach (var innerItem in innerList)
                     {
-                        loops.Add((CurveLoop)((Value.Container)item).Item);
+                        loops.Add((Autodesk.Revit.DB.CurveLoop)((Value.Container)item).Item);
                     }
                 }
                 else
                 {
                     //we'll assume a container
-                    loops.Add((CurveLoop)((Value.Container)item).Item);
+                    loops.Add((Autodesk.Revit.DB.CurveLoop)((Value.Container)item).Item);
                 }
             }
 
@@ -1755,7 +1754,7 @@ namespace Dynamo.Nodes
     [NodeName("Create Blend Geometry")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates a solid by blending two closed curve loops lying in non-coincident planes.")]
-    public class CreateBlendGeometry : dynSolidBase
+    public class CreateBlendGeometry : SolidBase
     {
         public CreateBlendGeometry()
         {
@@ -1768,8 +1767,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            CurveLoop firstLoop = (CurveLoop)((Value.Container)args[0]).Item;
-            CurveLoop secondLoop = (CurveLoop)((Value.Container)args[1]).Item;
+            Autodesk.Revit.DB.CurveLoop firstLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
+            Autodesk.Revit.DB.CurveLoop secondLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[1]).Item;
 
             List<VertexPair> vertPairs = null;
 
@@ -1798,7 +1797,7 @@ namespace Dynamo.Nodes
     [NodeName("Rectangle")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.  Outputs a CurveLoop object directed counter-clockwise from upper right.")]
-    public class Rectangle : dynCurveBase
+    public class Rectangle : CurveBase
     {
         public Rectangle()
         {
@@ -1832,7 +1831,7 @@ namespace Dynamo.Nodes
             var l3 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p2, p3);
             var l4 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p3, p0);
 
-            var cl = new CurveLoop();
+            var cl = new Autodesk.Revit.DB.CurveLoop();
             cl.Append(l1);
             cl.Append(l2);
             cl.Append(l3);
@@ -1850,9 +1849,9 @@ namespace Dynamo.Nodes
     [NodeName("Faces of Solid Along Line")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates list of faces of the solid intersecting given line.")]
-    public class dynFacesByLine : dynNodeWithOneOutput
+    public class FacesByLine : NodeWithOneOutput
     {
-        public dynFacesByLine()
+        public FacesByLine()
         {
             InPortData.Add(new PortData("solid", "solid to extract faces from", typeof(Value.Container)));
             InPortData.Add(new PortData("line", "line to extract faces from", typeof(Value.Container)));
@@ -1912,10 +1911,10 @@ namespace Dynamo.Nodes
     [NodeName("Explode Geometry Object")]
     [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
     [NodeDescription("Creates list of faces of solid or edges of face")]
-    public class dynGeometryObjectsFromRoot : dynNodeWithOneOutput
+    public class GeometryObjectsFromRoot : NodeWithOneOutput
     {
 
-        public dynGeometryObjectsFromRoot()
+        public GeometryObjectsFromRoot()
         {
             InPortData.Add(new PortData("Explode Geometry Object", "Solid to extract faces or face to extract edges", typeof(Value.Container)));
             OutPortData.Add(new PortData("Exploded Geometry objects", "List", typeof(Value.List)));
@@ -1971,12 +1970,12 @@ namespace Dynamo.Nodes
     [NodeName("Boolean Geometric Operation")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates solid by union, intersection or difference of two solids.")]
-    public class dynBooleanOperation : dynSolidBase
+    public class BooleanOperation : SolidBase
     {
         ComboBox combo;
         int selectedItem = -1;
 
-        public dynBooleanOperation()
+        public BooleanOperation()
         {
             InPortData.Add(new PortData("First Solid", "First solid input for boolean geometrical operation", typeof(object)));
             InPortData.Add(new PortData("Second Solid", "Second solid input for boolean geometrical operation", typeof(object)));
@@ -2077,10 +2076,10 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates face on grid of points")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynFaceThroughPoints : dynNodeWithOneOutput
+    public class FaceThroughPoints : NodeWithOneOutput
     {
 
-        public dynFaceThroughPoints()
+        public FaceThroughPoints()
         {
             InPortData.Add(new PortData("Points", "Points to create face, list or list of lists", typeof(Value.List)));
             InPortData.Add(new PortData("NumberOfRows", "Number of rows in the grid of the face", typeof(object)));
@@ -2124,7 +2123,7 @@ namespace Dynamo.Nodes
 
             MethodInfo[] hermiteFaceStaticMethods = HermiteFaceType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
-            String nameOfMethodCreate = "Create";
+            System.String nameOfMethodCreate = "Create";
             Autodesk.Revit.DB.Face result = null;
 
             foreach (MethodInfo m in hermiteFaceStaticMethods)
@@ -2154,9 +2153,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates solid by transforming solid")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynTransformSolid : dynSolidBase
+    public class TransformSolid : SolidBase
     {
-        public dynTransformSolid()
+        public TransformSolid()
         {
             InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));
             InPortData.Add(new PortData("Transform", "Transform to apply", typeof(Value.Container)));
@@ -2177,7 +2176,7 @@ namespace Dynamo.Nodes
 
             MethodInfo[] geometryCreationUtilitiesStaticMethods = GeometryCreationUtilitiesType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
-            String nameOfReplaceMethod = "CreateGeometryByFaceReplacement";
+            System.String nameOfReplaceMethod = "CreateGeometryByFaceReplacement";
 
             foreach (MethodInfo ms in geometryCreationUtilitiesStaticMethods)
             {
@@ -2197,7 +2196,7 @@ namespace Dynamo.Nodes
             Type SolidType = typeof(Autodesk.Revit.DB.Solid);
             MethodInfo[] solidInstanceMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
              
-            String nameOfMethodTransform = "transform";
+            System.String nameOfMethodTransform = "transform";
 
             foreach (MethodInfo m in solidInstanceMethods)
             {
@@ -2221,9 +2220,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Build solid replacing faces of input solid by supplied faces")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynReplaceFacesOfSolid : dynSolidBase
+    public class ReplaceFacesOfSolid : SolidBase
     {
-        public dynReplaceFacesOfSolid()
+        public ReplaceFacesOfSolid()
         {
             InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));
             InPortData.Add(new PortData("Faces", "Faces to be replaced", typeof(Value.List)));
@@ -2248,7 +2247,7 @@ namespace Dynamo.Nodes
 
             MethodInfo[] geometryCreationUtilitiesStaticMethods = GeometryCreationUtilitiesType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
-            String nameOfReplaceMethod = "CreateGeometryByFaceReplacement";
+            System.String nameOfReplaceMethod = "CreateGeometryByFaceReplacement";
 
             Solid result = null;
 
@@ -2276,9 +2275,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Build solid by replace edges with round blends")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynBlendEdges : dynSolidBase
+    public class BlendEdges : SolidBase
     {
-        public dynBlendEdges()
+        public BlendEdges()
         {
             InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));
             InPortData.Add(new PortData("Edges", "Edges to be blends", typeof(Value.List)));
@@ -2328,7 +2327,7 @@ namespace Dynamo.Nodes
 
             MethodInfo[] solidModificationUtilsStaticMethods = SolidModificationUtilsType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
-            String nameOfReplaceMethod = "ExecuteShapingOfEdges";
+            System.String nameOfReplaceMethod = "ExecuteShapingOfEdges";
 
             Solid result = null;
 
@@ -2359,9 +2358,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Build solid by replace edges with chamfers")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynChamferEdges : dynSolidBase
+    public class ChamferEdges : SolidBase
     {
-        public dynChamferEdges()
+        public ChamferEdges()
         {
             InPortData.Add(new PortData("Solid", "Solid to transform", typeof(Value.Container)));
             InPortData.Add(new PortData("Edges", "Edges to be blends", typeof(Value.List)));
@@ -2411,7 +2410,7 @@ namespace Dynamo.Nodes
 
             MethodInfo[] solidModificationUtilsStaticMethods = SolidModificationUtilsType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
-            String nameOfReplaceMethod = "ExecuteShapingOfEdges";
+            System.String nameOfReplaceMethod = "ExecuteShapingOfEdges";
 
             Solid result = null;
 
@@ -2441,7 +2440,7 @@ namespace Dynamo.Nodes
     [NodeName("Create Revolved Geometry")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates a solid by revolving  closed curve loops lying in xy plane of Transform.")]
-    public class CreateRevolvedGeometry : dynSolidBase
+    public class CreateRevolvedGeometry : SolidBase
     {
         public CreateRevolvedGeometry()
         {
@@ -2456,12 +2455,12 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            CurveLoop cLoop = (CurveLoop)((Value.Container)args[0]).Item;
+            Autodesk.Revit.DB.CurveLoop cLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
             Transform trf = (Transform)((Value.Container)args[1]).Item;
             double sAngle =  ((Value.Number)args[2]).Item;
             double eAngle =  ((Value.Number)args[3]).Item;
 
-            List<CurveLoop> loopList = new List<CurveLoop>();
+            List<Autodesk.Revit.DB.CurveLoop> loopList = new List<Autodesk.Revit.DB.CurveLoop>();
             loopList.Add(cLoop);
 
             Autodesk.Revit.DB.Frame thisFrame = new Autodesk.Revit.DB.Frame();
@@ -2478,7 +2477,7 @@ namespace Dynamo.Nodes
     [NodeName("Create Swept Geometry")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates a solid by sweeping curve loop along the path")]
-    public class CreateSweptGeometry : dynSolidBase
+    public class CreateSweptGeometry : SolidBase
     {
         public CreateSweptGeometry()
         {
@@ -2493,11 +2492,11 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            CurveLoop pathLoop = (CurveLoop)((Value.Container)args[0]).Item;
+            Autodesk.Revit.DB.CurveLoop pathLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
             int attachementIndex = (int)((Value.Number)args[1]).Item;
             double attachementPar = ((Value.Number)args[2]).Item;
-            CurveLoop profileLoop = (CurveLoop)((Value.Container)args[3]).Item;
-            List<CurveLoop> loopList = new List<CurveLoop>();
+            Autodesk.Revit.DB.CurveLoop profileLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[3]).Item;
+            List<Autodesk.Revit.DB.CurveLoop> loopList = new List<Autodesk.Revit.DB.CurveLoop>();
             loopList.Add(profileLoop);
 
             Solid result = GeometryCreationUtilities.CreateSweptGeometry(pathLoop, attachementIndex, attachementPar, loopList);
@@ -2512,10 +2511,10 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("List onesided edges of solid as CurveLoops")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynOnesidedEdgesAsCurveLoops : dynNodeWithOneOutput
+    public class OnesidedEdgesAsCurveLoops : NodeWithOneOutput
     {
 
-        public dynOnesidedEdgesAsCurveLoops()
+        public OnesidedEdgesAsCurveLoops()
         {
             InPortData.Add(new PortData("Incomplete Solid", "Geoemtry to check for being Solid", typeof(object)));
             InPortData.Add(new PortData("CurveLoops", "Additional curve loops ready for patching", typeof(Value.List)));
@@ -2529,15 +2528,15 @@ namespace Dynamo.Nodes
         {
             Solid thisSolid = (Solid)((Value.Container)args[0]).Item;
             var listIn = ((Value.List)args[1]).Item.Select(
-                    x => ((CurveLoop)((Value.Container)x).Item)
+                    x => ((Autodesk.Revit.DB.CurveLoop)((Value.Container)x).Item)
                        ).ToList();
 
             Type SolidType = typeof(Autodesk.Revit.DB.Solid);
 
             MethodInfo[] solidTypeMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
-            String nameOfMethodCreate = "oneSidedEdgesAsCurveLoops";
-            List <CurveLoop> oneSidedAsLoops = null;
+            System.String nameOfMethodCreate = "oneSidedEdgesAsCurveLoops";
+            List <Autodesk.Revit.DB.CurveLoop> oneSidedAsLoops = null;
 
             foreach (MethodInfo m in solidTypeMethods)
             {
@@ -2546,7 +2545,7 @@ namespace Dynamo.Nodes
                     object[] argsM = new object[1];
                     argsM[0] = listIn;
 
-                    oneSidedAsLoops = (List<CurveLoop>)m.Invoke(thisSolid, argsM);
+                    oneSidedAsLoops = (List<Autodesk.Revit.DB.CurveLoop>)m.Invoke(thisSolid, argsM);
 
                     break;
                 }
@@ -2557,7 +2556,7 @@ namespace Dynamo.Nodes
         
             for (; thisEnum.MoveNext(); )
             {
-                result = FSharpList<Value>.Cons(Value.NewContainer((CurveLoop) thisEnum.Current), result);
+                result = FSharpList<Value>.Cons(Value.NewContainer((Autodesk.Revit.DB.CurveLoop) thisEnum.Current), result);
             }
 
 
@@ -2569,10 +2568,10 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Patch set of faces as Solid ")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynPatchSolid : dynSolidBase
+    public class PatchSolid : SolidBase
     {
 
-        public dynPatchSolid()
+        public PatchSolid()
         {
             InPortData.Add(new PortData("Incomplete Solid", "Geoemtry to check for being Solid", typeof(object)));
             InPortData.Add(new PortData("CurveLoops", "Additional curve loops ready for patching", typeof(Value.List)));
@@ -2586,7 +2585,7 @@ namespace Dynamo.Nodes
         {
             Solid thisSolid = (Solid)((Value.Container)args[0]).Item;
             var listInCurveLoops = ((Value.List)args[1]).Item.Select(
-                    x => ((CurveLoop)((Value.Container)x).Item)
+                    x => ((Autodesk.Revit.DB.CurveLoop)((Value.Container)x).Item)
                        ).ToList();
             var listInFacesToExclude = ((Value.List)args[2]).Item.Select(
                     x => ((Autodesk.Revit.DB.Face)((Value.Container)x).Item)
@@ -2596,7 +2595,7 @@ namespace Dynamo.Nodes
 
             MethodInfo[] solidTypeMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
-            String nameOfMethodCreate = "patchSolid";
+            System.String nameOfMethodCreate = "patchSolid";
             Solid resultSolid = null;
 
             foreach (MethodInfo m in solidTypeMethods)
@@ -2625,10 +2624,10 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Skin Solid by patch faces on set of curve loops.")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynSkinCurveLoops : dynSolidBase
+    public class SkinCurveLoops : SolidBase
     {
 
-        public dynSkinCurveLoops()
+        public SkinCurveLoops()
         {
             InPortData.Add(new PortData("CurveLoops", "Additional curve loops ready for patching", typeof(Value.List)));
             OutPortData.Add(new PortData("Result", "Computed Solid", typeof(object)));
@@ -2643,7 +2642,7 @@ namespace Dynamo.Nodes
 
             MethodInfo[] solidTypeMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
-            String nameOfMethodCreate = "skinCurveLoopsIntoSolid";
+            System.String nameOfMethodCreate = "skinCurveLoopsIntoSolid";
             bool methodFound = false;
 
             foreach (MethodInfo m in solidTypeMethods)
@@ -2662,14 +2661,14 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var listInCurveLoops = ((Value.List)args[0]).Item.Select(
-                    x => ((CurveLoop)((Value.Container)x).Item)
+                    x => ((Autodesk.Revit.DB.CurveLoop)((Value.Container)x).Item)
                        ).ToList();
 
             Type SolidType = typeof(Autodesk.Revit.DB.Solid);
 
             MethodInfo[] solidTypeMethods = SolidType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
-            String nameOfMethodCreate = "skinCurveLoopsIntoSolid";
+            System.String nameOfMethodCreate = "skinCurveLoopsIntoSolid";
             Solid resultSolid = null;
             bool methodFound = false;
 
@@ -2702,9 +2701,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create a series of linear curves through a set of points.")]
     [NodeSearchTags("lines", "line", "through", "passing", "thread", "xyz")]
-    public class dynCurvesThroughPoints : dynCurveBase
+    public class CurvesThroughPoints : CurveBase
     {
-        public dynCurvesThroughPoints()
+        public CurvesThroughPoints()
         {
             InPortData.Add(new PortData("xyzs", "List of points (xyz) through which to create lines.", typeof(Value.List)));
             OutPortData.Add(new PortData("lines", "Lines created through points.", typeof(Value.Container)));
@@ -2736,9 +2735,9 @@ namespace Dynamo.Nodes
     [NodeName("Domain 2D")]
     [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
     [NodeDescription("Create a two dimensional domain specifying the Minimum and Maximum UVs.")]
-    public class dynDomain2D : dynNodeWithOneOutput
+    public class Domain2D : NodeWithOneOutput
     {
-        public dynDomain2D()
+        public Domain2D()
         {
             InPortData.Add(new PortData("min", "The minimum UV of the domain.", typeof(FScheme.Value.Container)));
             InPortData.Add(new PortData("max", "The maximum UV of the domain.", typeof(FScheme.Value.Container)));
@@ -2755,7 +2754,7 @@ namespace Dynamo.Nodes
             var vmax = Autodesk.LibG.Vector.by_coordinates(max.U, max.V);
             var vmin = Autodesk.LibG.Vector.by_coordinates(min.U, min.V);
 
-            return FScheme.Value.NewContainer(Domain2D.ByMinimumAndMaximum(vmin, vmax));
+            return FScheme.Value.NewContainer(DSCoreNodes.Domain2D.ByMinimumAndMaximum(vmin, vmax));
         }
     }
 }

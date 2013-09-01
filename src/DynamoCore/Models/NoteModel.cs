@@ -1,6 +1,6 @@
 ﻿namespace Dynamo.Models
 {
-    public class dynNoteModel:dynModelBase
+    public class NoteModel:ModelBase
     {
 
         private string _text;
@@ -14,7 +14,7 @@
             }
         }
 
-        public dynNoteModel(double x, double y)
+        public NoteModel(double x, double y)
         {
             X = x;
             Y = y;

@@ -22,7 +22,7 @@ using Polygon = Autodesk.LibG.Polygon;
 
 namespace Dynamo.Nodes
 {
-    public abstract class LibGNode : dynNodeWithOneOutput
+    public abstract class LibGNode : NodeWithOneOutput
     {
         public LibGNode()
         {
@@ -1320,7 +1320,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            String file_name = ((Value.String)args[0]).Item;
+            System.String file_name = ((Value.String)args[0]).Item;
 
             DSObjectList objects = ASMImporter.import_file(file_name);
 
@@ -1373,7 +1373,7 @@ namespace Dynamo.Nodes
         {
             GeometryList geometry = new GeometryList();
 
-            String file_name = ((Value.String)args[0]).Item;
+            System.String file_name = ((Value.String)args[0]).Item;
             var input = (args[1] as Value.List).Item;            
 
             foreach (Value v in input)

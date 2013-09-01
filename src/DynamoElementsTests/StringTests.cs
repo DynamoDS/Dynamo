@@ -10,6 +10,7 @@ using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
+using String = System.String;
 
 namespace Dynamo.Tests
 {
@@ -103,14 +104,14 @@ namespace Dynamo.Tests
             return Path.Combine(directory.Parent.Parent.FullName, @"test\core\string");
         }
 
-        private dynNodeModel nodeFromCurrentSpace(DynamoModel model, string guidString)
+        private NodeModel nodeFromCurrentSpace(DynamoModel model, string guidString)
         {
             Guid guid = Guid.Empty;
             Guid.TryParse(guidString, out guid);
             return nodeFromCurrentSpace(model, guid);
         }
 
-        private dynNodeModel nodeFromCurrentSpace(DynamoModel model, Guid guid)
+        private NodeModel nodeFromCurrentSpace(DynamoModel model, Guid guid)
         {
             return model.CurrentSpace.Nodes.FirstOrDefault((node) => node.GUID == guid);
         }
@@ -122,12 +123,12 @@ namespace Dynamo.Tests
             return listWatchVal;
         }
 
-        private dynWatch getWatchNodeFromCurrentSpace(DynamoModel model, string guidString)
+        private Watch getWatchNodeFromCurrentSpace(DynamoModel model, string guidString)
         {
             var nodeToWatch = nodeFromCurrentSpace(model, guidString);
             Assert.NotNull(nodeToWatch);
-            Assert.IsAssignableFrom(typeof(dynWatch), nodeToWatch);
-            return (dynWatch)nodeToWatch;
+            Assert.IsAssignableFrom(typeof(Watch), nodeToWatch);
+            return (Watch)nodeToWatch;
         }
 
         private string getStringFromFSchemeValue(FScheme.Value value)

@@ -6,17 +6,17 @@ using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
 {
-    public partial class dynConnectorViewModel:dynViewModelBase
+    public partial class ConnectorViewModel:ViewModelBase
     {
 
         #region Properties
 
-        private dynPortModel _activeStartPort;
-        public dynPortModel ActiveStartPort { get { return _activeStartPort; } internal set { _activeStartPort = value; } }
+        private PortModel _activeStartPort;
+        public PortModel ActiveStartPort { get { return _activeStartPort; } internal set { _activeStartPort = value; } }
 
-        private dynConnectorModel _model;
+        private ConnectorModel _model;
 
-        public dynConnectorModel ConnectorModel
+        public ConnectorModel ConnectorModel
         {
             get { return _model; }
         }
@@ -229,7 +229,7 @@ namespace Dynamo.ViewModels
 #endregion
 
         //construct a view and start drawing.
-        public dynConnectorViewModel(dynPortModel port)
+        public ConnectorViewModel(PortModel port)
         {
             //var bc = new BrushConverter();
             //StrokeBrush = (Brush)bc.ConvertFrom("#777");
@@ -249,7 +249,7 @@ namespace Dynamo.ViewModels
 
         }
 
-        public dynConnectorViewModel(dynConnectorModel model)
+        public ConnectorViewModel(ConnectorModel model)
         {
             //var bc = new BrushConverter();
             //StrokeBrush = (Brush)bc.ConvertFrom("#777");
@@ -302,9 +302,9 @@ namespace Dynamo.ViewModels
         private void Connect(object parameters)
         {
             //make the connector model
-            var end = parameters as dynPortModel;
+            var end = parameters as PortModel;
 
-            _model = dynConnectorModel.Make(_activeStartPort.Owner, end.Owner, _activeStartPort.Index, end.Index, 0);
+            _model = ConnectorModel.Make(_activeStartPort.Owner, end.Owner, _activeStartPort.Index, end.Index, 0);
             if (_model == null) return;
 
             _model.Connected += ModelConnected;
@@ -374,7 +374,7 @@ namespace Dynamo.ViewModels
 
         private bool CanConnect(object parameters)
         {
-            if ((parameters as dynPortModel) == null)
+            if ((parameters as PortModel) == null)
                 return false;
 
             return true;

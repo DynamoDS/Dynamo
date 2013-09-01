@@ -3,17 +3,16 @@ using System.Diagnostics;
 using System.Windows;
 using System.Linq;
 using Dynamo.Models;
-using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
-    public partial class dynPortViewModel : dynViewModelBase
+    public partial class PortViewModel : ViewModelBase
     {
-        private readonly dynPortModel _port;
-        private readonly dynNodeModel _node;
+        private readonly PortModel _port;
+        private readonly NodeModel _node;
 
-        public dynPortModel PortModel
+        public PortModel PortModel
         {
             get { return _port; }
         }
@@ -77,7 +76,7 @@ namespace Dynamo.ViewModels
             set { _port.UsingDefaultValue = value; }
         }
 
-        public dynPortViewModel(dynPortModel port, dynNodeModel node)
+        public PortViewModel(PortModel port, NodeModel node)
         {
             _node = node;
             _port = port;
@@ -151,7 +150,7 @@ namespace Dynamo.ViewModels
                 if (_port.Connectors.Count > 0 && _port.Connectors[0].Start != _port)
                 {
                     //define the new active connector
-                    var c = new dynConnectorViewModel(_port.Connectors[0].Start);
+                    var c = new ConnectorViewModel(_port.Connectors[0].Start);
                     dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
                     dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
 
@@ -169,7 +168,7 @@ namespace Dynamo.ViewModels
                         //Create a connector view model to begin drawing
                         if (_port.PortType != PortType.INPUT)
                         {
-                            var c = new dynConnectorViewModel(_port);
+                            var c = new ConnectorViewModel(_port);
                             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
                             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
                         }
@@ -202,7 +201,7 @@ namespace Dynamo.ViewModels
                 var start = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ActiveStartPort;
                 var end = _port;
 
-                var newConnectorModel = dynConnectorModel.Make(start.Owner, end.Owner, start.Index, end.Index, 0);
+                var newConnectorModel = ConnectorModel.Make(start.Owner, end.Owner, start.Index, end.Index, 0);
 
                 // the connector is invalid
                 if (newConnectorModel == null)

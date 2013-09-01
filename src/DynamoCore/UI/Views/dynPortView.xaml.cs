@@ -23,7 +23,7 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.Connectors
 {
-    public partial class dynPortView : UserControl, IViewModelView<dynPortViewModel>
+    public partial class dynPortView : UserControl, IViewModelView<PortViewModel>
     {
         private Dynamo.Controls.DragCanvas canvas;
 
@@ -98,12 +98,12 @@ namespace Dynamo.Connectors
                 ViewModel.UnHighlightCommand.Execute(null);
         }
 
-        public dynPortViewModel ViewModel
+        public PortViewModel ViewModel
         {
             get
             {
-                if (this.DataContext is dynPortViewModel)
-                    return (dynPortViewModel) this.DataContext;
+                if (this.DataContext is PortViewModel)
+                    return (PortViewModel) this.DataContext;
                 else
                     return null;
             }
