@@ -607,7 +607,7 @@ namespace Dynamo.Nodes
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             tb.DataContext = this;
-            var bindingVal = new Binding("Formula")
+            var bindingVal = new Binding("FormulaString")
             {
                 Mode = BindingMode.TwoWay,
                 NotifyOnValidationError = false,
