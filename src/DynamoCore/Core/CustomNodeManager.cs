@@ -1046,14 +1046,17 @@ namespace Dynamo.Utilities
 
         public static FScheme.Expression CompileFunction(FunctionDefinition definition)
         {
-            IEnumerable<string> ins = new List<string>();
-            IEnumerable<string> outs = new List<string>();
+            IEnumerable<string> ins;
+            IEnumerable<string> outs;
 
-            return CompileFunction(definition, ref ins, ref outs);
+            return CompileFunction(definition, out ins, out outs);
         }
 
-        public static FScheme.Expression CompileFunction(FunctionDefinition definition, ref IEnumerable<string> inputNames, ref IEnumerable<string> outputNames)
+        public static FScheme.Expression CompileFunction(FunctionDefinition definition, out IEnumerable<string> inputNames, out IEnumerable<string> outputNames)
         {
+            inputNames = null;
+            outputNames = null;
+
             if (definition == null)
                 return null;
 

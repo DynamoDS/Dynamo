@@ -328,7 +328,6 @@ namespace Dynamo.Nodes
             nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
-            tb.IsNumeric = false;
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             
             tb.DataContext = this;
