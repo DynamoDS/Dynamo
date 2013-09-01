@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
@@ -53,12 +54,12 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            dynEl.SetAttribute("formula", FormulaString);
+            dynEl.InnerText = FormulaString;
         }
 
         protected override void LoadNode(XmlNode elNode)
         {
-            FormulaString = elNode.Attributes["formula"].Value ?? "";
+            FormulaString = elNode.Attributes["formula"].Value ?? elNode.InnerText ?? "";
         }
 
         private static HashSet<string> RESERVED_FUNC_NAMES = new HashSet<string> { 
