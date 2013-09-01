@@ -48,7 +48,7 @@ namespace Dynamo.Nodes
 
         void setDirty(bool val)
         {
-            if (ReportingEnabled)
+            if (IsReportingModifications)
             {
                 DisableReporting();
                 RequiresRecalc = val;

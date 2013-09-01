@@ -988,8 +988,11 @@ namespace Dynamo.Models
 
                 if (addToSearch)
                 {
-                    dynSettings.Controller.SearchViewModel.Add(functionWorkspace.Name, functionWorkspace.Category,
-                        functionWorkspace.Description, definition.FunctionId);
+                    dynSettings.Controller.SearchViewModel.Add(
+                        functionWorkspace.Name, 
+                        functionWorkspace.Category,
+                        functionWorkspace.Description, 
+                        definition.FunctionId);
                 }
 
                 var info = new CustomNodeInfo(definition.FunctionId, functionWorkspace.Name, functionWorkspace.Category,
@@ -998,25 +1001,24 @@ namespace Dynamo.Models
 
                 #region Compile Function and update all nodes
 
-                IEnumerable<string> inputNames = new List<string>();
-                IEnumerable<string> outputNames = new List<string>();
-                dynSettings.Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(),
-                    CustomNodeManager.CompileFunction(definition, ref inputNames, ref outputNames));
+                IEnumerable<string> inputNames;
+                IEnumerable<string> outputNames;
+
+                var compiledFunction = CustomNodeManager.CompileFunction(definition, out inputNames, out outputNames);
+
+                if (compiledFunction == null)
+                    return;
+
+                dynSettings.Controller.FSchemeEnvironment.DefineSymbol(
+                    definition.FunctionId.ToString(),
+                    compiledFunction);
 
                 //Update existing function nodes which point to this function to match its changes
-                foreach (NodeModel el in AllNodes)
+                foreach (Function node in AllNodes.OfType<Function>().Where(el => el.Definition == definition))
                 {
-                    if (el is Function)
-                    {
-                        var node = (Function) el;
-
-                        if (node.Definition != definition)
-                            continue;
-
-                        node.SetInputs(inputNames);
-                        node.SetOutputs(outputNames);
-                        el.RegisterAllPorts();
-                    }
+                    node.SetInputs(inputNames);
+                    node.SetOutputs(outputNames);
+                    node.RegisterAllPorts();
                 }
 
                 //Call OnSave for all saved elements
