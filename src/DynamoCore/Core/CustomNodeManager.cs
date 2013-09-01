@@ -743,10 +743,10 @@ namespace Dynamo.Utilities
                     ? category
                     : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES, description, cx, cy)
                 {
-                    WatchChanges = false
+                    WatchChanges = false,
+                    FilePath = xmlPath,
+                    Zoom = zoom
                 };
-
-                ws.Zoom = zoom;
 
                 def = new FunctionDefinition(Guid.Parse(id))
                 {
@@ -1010,10 +1010,8 @@ namespace Dynamo.Utilities
 
                 #endregion
 
-                foreach (NodeModel e in ws.Nodes)
+                foreach (var e in ws.Nodes)
                     e.EnableReporting();
-
-                ws.FilePath = xmlPath;
 
                 var expression = CompileFunction(def);
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), expression);
