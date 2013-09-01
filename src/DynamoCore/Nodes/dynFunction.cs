@@ -124,6 +124,7 @@ namespace Dynamo
                             //Recursion detection start.
                             Definition.RequiresRecalc = false;
 
+                            //TODO: move this to RequiresRecalc property of FunctionDefinition?
                             foreach (var dep in Definition.Dependencies)
                                 dep.RequiresRecalc = false;
                         }
@@ -420,6 +421,7 @@ namespace Dynamo
                 set
                 {
                     symbol = value;
+                    ReportModification();
                     RaisePropertyChanged("Symbol");
                 }
             }
@@ -451,7 +453,6 @@ namespace Dynamo
         [IsInteractive(false)]
         public partial class Symbol : NodeModel
         {
-            
             private string _inputSymbol = "";
 
             public Symbol()
@@ -474,13 +475,12 @@ namespace Dynamo
             {
                 get
                 {
-                    //return tb.Text;
                     return _inputSymbol;
                 }
                 set
                 {
-                    //tb.Text = value;
                     _inputSymbol = value;
+                    ReportModification();
                     RaisePropertyChanged("InputSymbol");
                 }
             }
