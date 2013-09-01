@@ -427,7 +427,7 @@ namespace Dynamo.ViewModels
         /// <returns>A list of output</returns>
         public static List<string> SplitCategoryName(string categoryName)
         {
-            if (String.IsNullOrEmpty(categoryName))
+            if (System.String.IsNullOrEmpty(categoryName))
                 return new List<string>();
 
             var splitCat = new List<string>();
@@ -435,7 +435,7 @@ namespace Dynamo.ViewModels
             {
                 splitCat =
                     categoryName.Split(CATEGORY_DELIMITER)
-                                .Where(x => x != CATEGORY_DELIMITER.ToString() && !String.IsNullOrEmpty(x))
+                                .Where(x => x != CATEGORY_DELIMITER.ToString() && !System.String.IsNullOrEmpty(x))
                                 .ToList();
             }
             else

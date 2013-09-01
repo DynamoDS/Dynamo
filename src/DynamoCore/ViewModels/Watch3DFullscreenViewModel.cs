@@ -1,10 +1,10 @@
 ﻿namespace Dynamo.ViewModels
 {
-    public class Watch3DFullscreenViewModel : dynViewModelBase
+    public class Watch3DFullscreenViewModel : ViewModelBase
     {
-        public dynWorkspaceViewModel ParentWorkspace { get; set; }
+        public WorkspaceViewModel ParentWorkspace { get; set; }
 
-        public Watch3DFullscreenViewModel(dynWorkspaceViewModel parentWorkspace)
+        public Watch3DFullscreenViewModel(WorkspaceViewModel parentWorkspace)
         {
             ParentWorkspace = parentWorkspace;
         }

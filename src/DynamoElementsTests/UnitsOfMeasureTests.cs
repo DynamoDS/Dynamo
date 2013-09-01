@@ -34,8 +34,6 @@ namespace Dynamo.Tests
         [Test]
         public void CreateAndConvertInchesValidINput()
         {
-            //var inchLength = new DynamoLength<Inch>(1.25);
-
             //test positive cases
             var mm = Inch.ConvertTo(1.25, DynamoUnitType.Millimeters);
             Assert.AreEqual(25.4 * 1.25, mm, 0.001);
@@ -55,8 +53,6 @@ namespace Dynamo.Tests
             Assert.AreEqual("1 1/4\"", Inch.AsString(1.25));
 
             //test negative cases
-            //inchLength.Item.Length = -1.25;
-
             mm = Inch.ConvertTo(-1.25, DynamoUnitType.Millimeters);
             Assert.AreEqual(-25.4 * 1.25, mm, 0.001);
 
@@ -75,33 +71,22 @@ namespace Dynamo.Tests
             Assert.AreEqual("-1 1/4\"", Inch.AsString(-1.25));
 
             //test just the fractional case
-            //inchLength.Item.Length = .25;
             Assert.AreEqual("1/4\"", Inch.AsString(.25));
-            //inchLength.Item.Length = -.25;
             Assert.AreEqual("-1/4\"", Inch.AsString(-.25));
 
             //test just the whole case
-            //inchLength.Item.Length = 1.0;
             Assert.AreEqual("1\"", Inch.AsString(1.0));
-            //inchLength.Item.Length = -1.0;
             Assert.AreEqual("-1\"", Inch.AsString(-1.0));
 
             //test some edge cases
-            //inchLength.Item.Length = 0.0;
             Assert.AreEqual("0\"", Inch.AsString(0.0));
-
-            //inchLength.Item.Length = 0.01;
             Assert.AreEqual("1/64\"", Inch.AsString(0.01));
-
-            //inchLength.Item.Length = 0.99;
             Assert.AreEqual("1\"", Inch.AsString(0.99));
         }
 
         [Test]
         public void CreateAndConvertFeetValidInput()
         {
-            //var ftLength = new DynamoLength<Foot>(1.3177);
-
             //test positive cases
             var mm = Foot.ConvertTo(1.3177, DynamoUnitType.Millimeters);
             Assert.AreEqual(304.8 * 1.3177, mm, 0.001);
@@ -120,9 +105,6 @@ namespace Dynamo.Tests
 
             Assert.AreEqual("1' 3 13/16\"", Foot.AsString(1.3177));
 
-            //test negative cases
-            //ftLength.Item.Length = -1.3177;
-            
             mm = Foot.ConvertTo(-1.3177, DynamoUnitType.Millimeters);
             Assert.AreEqual(-304.8 * 1.3177, mm, 0.001);
 
@@ -141,28 +123,17 @@ namespace Dynamo.Tests
             //Assert.AreEqual("-1' 3 13/16\"", ftLength.ToString());
 
             //test just the fractional case
-            //ftLength.Item.Length = .25;
             Assert.AreEqual("3\"", Foot.AsString(.25));
-            //ftLength.Item.Length = -.25;
             Assert.AreEqual("-3\"", Foot.AsString(-.25));
 
             //test just the whole case
-            //ftLength.Item.Length = 1.0;
             Assert.AreEqual("1' 0\"", Foot.AsString(1.0));
-            //ftLength.Item.Length = -1.0;
             Assert.AreEqual("-1' 0\"", Foot.AsString(-1.0));
 
             //test some edge cases
-            //ftLength.Item.Length = 0.0;
             Assert.AreEqual("0' 0\"", Foot.AsString(0.0));
-
-            //ftLength.Item.Length = 0.01;
             Assert.AreEqual("1/8\"", Foot.AsString(0.01));
-
-            //ftLength.Item.Length = 0.99;
             Assert.AreEqual("11 57/64\"", Foot.AsString(0.99));
-
-            //ftLength.Item.Length = 0.9999;
             Assert.AreEqual("1'", Foot.AsString(0.999));
         }
 

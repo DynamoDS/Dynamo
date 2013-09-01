@@ -21,8 +21,9 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("To Revit Element")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Converts ASM Geometry to a Revit Element.")]
+    [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
+    [NodeSearchable(false)]
     public class dynASMToRevitNode : dynRevitTransactionNodeWithOneOutput
     {
         ReferencePoint _revitPoint = null;

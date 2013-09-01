@@ -16,26 +16,26 @@ namespace Dynamo.Nodes
     [NodeDescription("Design and compute mathematical expressions. Uses NCalc Syntax: http://ncalc.codeplex.com.")]
     [NodeSearchTags("Equation", "Arithmetic")]
     [IsInteractive(true)]
-    public partial class dynFormula : dynMathBase
+    public partial class Formula : MathBase
     {
-        private string _formula = "";
-        public string Formula
+        private string _formulaString = "";
+        public string FormulaString
         {
             get
             {
-                return _formula;
+                return _formulaString;
             }
 
             set
             {
-                if (_formula == null || !_formula.Equals(value))
+                if (_formulaString == null || !_formulaString.Equals(value))
                 {
-                    _formula = value;
+                    _formulaString = value;
                     if (value != null)
                     {
                         DisableReporting();
                         processFormula();
-                        RaisePropertyChanged("Formula");
+                        RaisePropertyChanged("FormulaString");
                         RequiresRecalc = true;
                         EnableReporting();
                         if (WorkSpace != null)
@@ -45,7 +45,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public dynFormula()
+        public Formula()
         {
             OutPortData.Add(new PortData("", "Result of math computation", typeof(Value.Number)));
             RegisterAllPorts();
@@ -53,12 +53,12 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            dynEl.SetAttribute("formula", Formula);
+            dynEl.SetAttribute("formula", FormulaString);
         }
 
         protected override void LoadNode(XmlNode elNode)
         {
-            Formula = elNode.Attributes["formula"].Value ?? "";
+            FormulaString = elNode.Attributes["formula"].Value ?? "";
         }
 
         private static HashSet<string> RESERVED_FUNC_NAMES = new HashSet<string> { 
@@ -77,7 +77,7 @@ namespace Dynamo.Nodes
             Expression e;
             try
             {
-                e = new Expression(Formula.ToLower(), EvaluateOptions.IgnoreCase);
+                e = new Expression(FormulaString.ToLower(), EvaluateOptions.IgnoreCase);
             }
             catch (Exception ex)
             {
@@ -139,7 +139,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var e = new Expression(Formula.ToLower(), EvaluateOptions.IgnoreCase);
+            var e = new Expression(FormulaString.ToLower(), EvaluateOptions.IgnoreCase);
 
             e.Parameters["pi"] = 3.14159265358979;
 

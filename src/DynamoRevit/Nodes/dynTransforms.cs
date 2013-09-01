@@ -14,9 +14,9 @@ namespace Dynamo.Nodes
     [NodeName("Identity Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the identity transformation.")]
-    public class dynTransformIdentity: dynTransformBase
+    public class TransformIdentity: TransformBase
     {
-        public dynTransformIdentity()
+        public TransformIdentity()
         {
             OutPortData.Add(new PortData("t", "Transform", typeof(Value.Container)));
 
@@ -35,9 +35,9 @@ namespace Dynamo.Nodes
     [NodeName("Transf From Origin and Vecs")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns a transformation with origin (o), up vector (u), and forward (f).")]
-    public class dynTransformOriginAndVectors : dynTransformBase
+    public class TransformOriginAndVectors : TransformBase
     {
-        public dynTransformOriginAndVectors()
+        public TransformOriginAndVectors()
         {
             InPortData.Add(new PortData("o", "Origin(XYZ)", typeof(Value.Container)));
             InPortData.Add(new PortData("u", "Up(XYZ)", typeof(Value.Container)));
@@ -70,9 +70,9 @@ namespace Dynamo.Nodes
     [NodeName("Scale Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the identity transformation.")]
-    public class dynTransformScaleBasis : dynTransformBase
+    public class TransformScaleBasis : TransformBase
     {
-        public dynTransformScaleBasis()
+        public TransformScaleBasis()
         {
             InPortData.Add(new PortData("t", "TransformToScale(Transform)", typeof(Value.Container)));
             InPortData.Add(new PortData("d", "Scale(Number)", typeof(Value.Number)));
@@ -95,9 +95,9 @@ namespace Dynamo.Nodes
     [NodeName("Rotate Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns a transform that rotates by the specified angle about the specified axis and point.")]
-    public class dynTransformRotation : dynTransformBase
+    public class TransformRotation : TransformBase
     {
-        public dynTransformRotation()
+        public TransformRotation()
         {
             InPortData.Add(new PortData("or", "Origin(XYZ)", typeof(Value.Container)));
             InPortData.Add(new PortData("ax", "Axis(XYZ)", typeof(Value.Container)));
@@ -124,9 +124,9 @@ namespace Dynamo.Nodes
     [NodeName("Translate Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns he transformation that translates by the specified vector.")]
-    public class dynTransformTranslation : dynTransformBase
+    public class TransformTranslation : TransformBase
     {
-        public dynTransformTranslation()
+        public TransformTranslation()
         {
             InPortData.Add(new PortData("v", "Vector(XYZ)", typeof(Value.Container)));
             OutPortData.Add(new PortData("t", "Transform", typeof(Value.Container)));
@@ -149,9 +149,9 @@ namespace Dynamo.Nodes
     [NodeName("Reflect Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the transformation that reflects about the specified plane.")]
-    public class dynTransformReflection : dynTransformBase
+    public class TransformReflection : TransformBase
     {
-        public dynTransformReflection()
+        public TransformReflection()
         {
             InPortData.Add(new PortData("pl", "Plane(Plane)", typeof(Value.Container)));
             OutPortData.Add(new PortData("t", "Transform", typeof(Value.Container)));
@@ -161,7 +161,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var plane = (Plane)((Value.Container)args[0]).Item;
+            var plane = (Autodesk.Revit.DB.Plane)((Value.Container)args[0]).Item;
 
             Transform t = Transform.get_Reflection(plane);
 
@@ -174,9 +174,9 @@ namespace Dynamo.Nodes
     [NodeName("Transform Point")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Transform a point with a transform.")]
-    public class dynTransformPoint : dynXYZBase
+    public class TransformPoint : XyzBase
     {
-        public dynTransformPoint()
+        public TransformPoint()
         {
             InPortData.Add(new PortData("t", "Transform(Plane)", typeof(Value.Container)));
             InPortData.Add(new PortData("p1", "The point(XYZ)", typeof(Value.Container)));
@@ -190,13 +190,13 @@ namespace Dynamo.Nodes
             var t = (Transform)((Value.Container)args[0]).Item;
             var pt = (XYZ)((Value.Container)args[1]).Item;
 
-            XYZ tpt = TransformPoint(pt, t);
+            XYZ tpt = GetPointTransformed(pt, t);
             pts.Add(tpt);
 
             return Value.NewContainer(tpt);
         }
 
-        private XYZ TransformPoint(XYZ point, Transform transform)
+        private XYZ GetPointTransformed(XYZ point, Transform transform)
         {
             double x = point.X;
             double y = point.Y;
@@ -222,7 +222,7 @@ namespace Dynamo.Nodes
     [NodeName("Multiply Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Multiply two transforms.")]
-    public class Multiplytransform : dynTransformBase
+    public class Multiplytransform : TransformBase
     {
         public Multiplytransform()
         {

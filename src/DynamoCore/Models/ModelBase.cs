@@ -5,7 +5,7 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Models
 {
-    public abstract class dynModelBase : NotificationObject, ISelectable, ILocatable
+    public abstract class ModelBase : NotificationObject, ISelectable, ILocatable
     {
         private Guid _guid;
         private bool _isSelected = false;
@@ -122,7 +122,7 @@ namespace Dynamo.Models
             }
         }
 
-        protected dynModelBase()
+        protected ModelBase()
         {
             GUID = Guid.NewGuid();
         }

@@ -11,10 +11,11 @@ using System.Globalization;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
+using String = System.String;
 
 namespace Dynamo.Models
 {
-    public abstract class dynWorkspaceModel : NotificationObject, ILocatable
+    public abstract class WorkspaceModel : NotificationObject, ILocatable
     {
         #region Properties
 
@@ -94,7 +95,7 @@ namespace Dynamo.Models
             }
         }
 
-        public ObservableCollection<dynNodeModel> Nodes
+        public ObservableCollection<NodeModel> Nodes
         {
             get { return _nodes; }
             internal set
@@ -105,7 +106,7 @@ namespace Dynamo.Models
             }
         }
 
-        public ObservableCollection<dynConnectorModel> Connectors
+        public ObservableCollection<ConnectorModel> Connectors
         {
             get { return _connectors; }
             internal set
@@ -116,7 +117,7 @@ namespace Dynamo.Models
             }
         }
 
-        public ObservableCollection<dynNoteModel> Notes { get; internal set; }
+        public ObservableCollection<NoteModel> Notes { get; internal set; }
 
         public string FilePath
         {
@@ -210,15 +211,15 @@ namespace Dynamo.Models
 
         #endregion
 
-        public delegate void WorkspaceSavedEvent(dynWorkspaceModel model);
+        public delegate void WorkspaceSavedEvent(WorkspaceModel model);
 
         /// <summary>
         ///     Defines whether this is the current space in Dynamo
         /// </summary>
         private bool _isCurrentSpace;
 
-        private ObservableCollection<dynNodeModel> _nodes;
-        private ObservableCollection<dynConnectorModel> _connectors;
+        private ObservableCollection<NodeModel> _nodes;
+        private ObservableCollection<ConnectorModel> _connectors;
 
         public double CenterX
         {
@@ -238,14 +239,14 @@ namespace Dynamo.Models
             }
         }
 
-        protected dynWorkspaceModel(
-            String name, IEnumerable<dynNodeModel> e, IEnumerable<dynConnectorModel> c, double x, double y)
+        protected WorkspaceModel(
+            String name, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
         {
             Name = name;
 
-            Nodes = new TrulyObservableCollection<dynNodeModel>(e);
-            Connectors = new TrulyObservableCollection<dynConnectorModel>(c);
-            Notes = new ObservableCollection<dynNoteModel>();
+            Nodes = new TrulyObservableCollection<NodeModel>(e);
+            Connectors = new TrulyObservableCollection<ConnectorModel>(c);
+            Notes = new ObservableCollection<NoteModel>();
             X = x;
             Y = y;
 
@@ -305,7 +306,7 @@ namespace Dynamo.Models
         ///     Updates relevant parameters on save
         /// </summary>
         /// <param name="model">The workspace that was just saved</param>
-        private static void OnWorkspaceSaved(dynWorkspaceModel model)
+        private static void OnWorkspaceSaved(WorkspaceModel model)
         {
             model.LastSaved = DateTime.Now;
             model.HasUnsavedChanges = false;
@@ -342,17 +343,17 @@ namespace Dynamo.Models
                 OnModified();
         }
 
-        public IEnumerable<dynNodeModel> GetHangingNodes()
+        public IEnumerable<NodeModel> GetHangingNodes()
         {
             return Nodes.Where(x => x.OutPortData.Any() && x.OutPorts.Any(y => !y.Connectors.Any()));
         }
 
-        public IEnumerable<dynNodeModel> GetTopMostNodes()
+        public IEnumerable<NodeModel> GetTopMostNodes()
         {
             return Nodes.Where(
                 x =>
                     x.OutPortData.Any()
-                    && x.OutPorts.Any(y => !y.Connectors.Any() || y.Connectors.Any(c => c.End.Owner is dynOutput)));
+                    && x.OutPorts.Any(y => !y.Connectors.Any() || y.Connectors.Any(c => c.End.Owner is Output)));
         }
 
         public event EventHandler Updated;
@@ -370,7 +371,7 @@ namespace Dynamo.Models
         /// <param name="xmlPath">The path to save to</param>
         /// <param name="workSpace">The workspace</param>
         /// <returns>Whether the operation was successful</returns>
-        public static bool SaveWorkspace(string xmlPath, dynWorkspaceModel workSpace)
+        public static bool SaveWorkspace(string xmlPath, WorkspaceModel workSpace)
         {
             DynamoLogger.Instance.Log("Saving " + xmlPath + "...");
             try
@@ -400,7 +401,7 @@ namespace Dynamo.Models
         /// <param name="savingHomespace"></param>
         /// <returns>The generated xmldoc</returns>
         public static XmlDocument GetXmlDocFromWorkspace(
-            dynWorkspaceModel workSpace, bool savingHomespace)
+            WorkspaceModel workSpace, bool savingHomespace)
         {
             try
             {
@@ -515,27 +516,27 @@ namespace Dynamo.Models
         //    new Dictionary<string, dynNodeView>();
     }
 
-    public class FuncWorkspace : dynWorkspaceModel
+    public class FuncWorkspace : WorkspaceModel
     {
         #region Contructors
 
         public FuncWorkspace()
-            : this("", "", "", new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
+            : this("", "", "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
         {
         }
 
         public FuncWorkspace(String name, String category)
-            : this(name, category, "",new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
+            : this(name, category, "",new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
         {
         }
 
         public FuncWorkspace(String name, String category, string description, double x, double y)
-            : this(name, category, description, new List<dynNodeModel>(), new List<dynConnectorModel>(), x, y)
+            : this(name, category, description, new List<NodeModel>(), new List<ConnectorModel>(), x, y)
         {
         }
 
         public FuncWorkspace(
-            String name, String category, string description, IEnumerable<dynNodeModel> e, IEnumerable<dynConnectorModel> c, double x, double y)
+            String name, String category, string description, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
             : base(name, e, c, x, y)
         {
             WatchChanges = true; 
@@ -587,19 +588,19 @@ namespace Dynamo.Models
         }
     }
 
-    public class HomeWorkspace : dynWorkspaceModel
+    public class HomeWorkspace : WorkspaceModel
     {
         public HomeWorkspace()
-            : this(new List<dynNodeModel>(), new List<dynConnectorModel>(), 0, 0)
+            : this(new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
         {
         }
 
         public HomeWorkspace(double x, double y)
-            : this(new List<dynNodeModel>(), new List<dynConnectorModel>(), x, y)
+            : this(new List<NodeModel>(), new List<ConnectorModel>(), x, y)
         {
         }
 
-        public HomeWorkspace(IEnumerable<dynNodeModel> e, IEnumerable<dynConnectorModel> c, double x, double y)
+        public HomeWorkspace(IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
             : base("Home", e, c, x, y)
         {
         }

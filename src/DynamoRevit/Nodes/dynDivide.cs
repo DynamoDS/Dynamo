@@ -31,9 +31,9 @@ namespace Dynamo.Nodes
     [NodeName("Divided Path")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("Divides curves or edges and makes a DividedPath.")]
-    public class dynDividedPath : dynRevitTransactionNodeWithOneOutput
+    public class DividedPath : RevitTransactionNodeWithOneOutput
     {
-        public dynDividedPath()
+        public DividedPath()
         {
             InPortData.Add(new PortData("refs", "Ref", typeof(Value.Container)));//TODO make this a ref, but how to handle tracking persistance
             InPortData.Add(new PortData("count", "Number", typeof(Value.Number))); // just divide equally for now, dont worry about spacing and starting point
@@ -53,7 +53,7 @@ namespace Dynamo.Nodes
             //x0 = ((Value.Number)args[2]).Item;// Starting Coord
             //xs = ((Value.Number)args[3]).Item;// Spacing
 
-            DividedPath divPath;
+            Autodesk.Revit.DB.DividedPath divPath;
             List<Reference> refList = new List<Reference>();
 
             // this node can take one or more curve elements and create one or more divided path elements
@@ -98,10 +98,10 @@ namespace Dynamo.Nodes
                               Element e;
 
                               //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count],typeof(DividedPath), out e))
+                              if (dynUtils.TryGetElement(this.Elements[count],typeof(Autodesk.Revit.DB.DividedPath), out e))
                               {
                                   //...if we find a divided path and if we're successful matching it to the doc, update it's properties... 
-                                  divPath = e as DividedPath;
+                                  divPath = e as Autodesk.Revit.DB.DividedPath;
 
                                   if (divPath != null)
                                   {
@@ -194,10 +194,10 @@ namespace Dynamo.Nodes
                 {
                     Element e;
                     //...try to get the first one...
-                    if (dynUtils.TryGetElement(this.Elements[0],typeof(DividedPath), out e))
+                    if (dynUtils.TryGetElement(this.Elements[0],typeof(Autodesk.Revit.DB.DividedPath), out e))
                     {
                         //..and if we do, update it's data.
-                        divPath = e as DividedPath;
+                        divPath = e as Autodesk.Revit.DB.DividedPath;
                         divPath.FixedNumberOfPoints = (int)xi;
                     }
                     else
@@ -233,9 +233,9 @@ namespace Dynamo.Nodes
     [NodeName("Divided Surface")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("An element which divides surfaces into patterns and faces")]
-    public class dynDividedSurface : dynRevitTransactionNodeWithOneOutput
+    public class DividedSurface : RevitTransactionNodeWithOneOutput
     {
-        public dynDividedSurface()
+        public DividedSurface()
         {
             InPortData.Add(new PortData("face", "The face to divide.", typeof(Value.Container)));
             InPortData.Add(new PortData("U", "Spacing on face in U direction.", typeof(Value.Number)));
@@ -256,7 +256,7 @@ namespace Dynamo.Nodes
             if(uDiv < 0 || vDiv < 0)
                 throw new Exception("Can not create subdivided surface with a negative number of U or V divisions.");
 
-            DividedSurface divSurf;
+            Autodesk.Revit.DB.DividedSurface divSurf;
 
             var face = (Face)((Value.Container)input).Item;
             
@@ -267,10 +267,10 @@ namespace Dynamo.Nodes
             {
                 Element e;
                 //...try to get the first one...
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(DividedSurface), out e))
+                if (dynUtils.TryGetElement(this.Elements[0],typeof(Autodesk.Revit.DB.DividedSurface), out e))
                 {
                     //..and if we do, update it's data.
-                    divSurf = e as DividedSurface;
+                    divSurf = e as Autodesk.Revit.DB.DividedSurface;
                 }
                 else
                 {

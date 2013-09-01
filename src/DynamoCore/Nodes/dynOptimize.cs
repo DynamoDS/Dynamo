@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml;
-using Dynamo.Connectors;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
@@ -14,9 +10,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeSearchTags("optimize", "newton")]
     [NodeDescription("Find the minimum of a 1 dimensional function without providing a derivative using Newton's method.")]
-    public class dynNewtonRootFind1dNoDeriv : dynNodeWithOneOutput
+    public class NewtonRootFind1DNoDeriv : NodeWithOneOutput
     {
-        public dynNewtonRootFind1dNoDeriv()
+        public NewtonRootFind1DNoDeriv()
         {
             InPortData.Add(new PortData("f(x)", "Objective Function", typeof(FScheme.Value.Function)));
             InPortData.Add(new PortData("x", "Starting value for x", typeof(FScheme.Value.Number)));
@@ -71,9 +67,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeSearchTags("optimize", "newton")]
     [NodeDescription("Find the minimum of a 1 dimensional function while providing a derivative using Newton's method.")]
-    public class dynNewtonRootFind1dWithDeriv : dynNodeWithOneOutput
+    public class NewtonRootFind1DWithDeriv : NodeWithOneOutput
     {
-        public dynNewtonRootFind1dWithDeriv()
+        public NewtonRootFind1DWithDeriv()
         {
             InPortData.Add(new PortData("f(x)", "Objective Function", typeof(FScheme.Value.Function)));
             InPortData.Add(new PortData("df(x)/dx", "Derivative Function", typeof(FScheme.Value.Function)));
@@ -99,8 +95,8 @@ namespace Dynamo.Nodes
             // use newton's method 
             while (count < max_its && change > max_change)
             {
-                var fx = dynNewtonRootFind1dNoDeriv.InvokeFunction(f, x);
-                var dfx = dynNewtonRootFind1dNoDeriv.InvokeFunction(df, x);
+                var fx = NewtonRootFind1DNoDeriv.InvokeFunction(f, x);
+                var dfx = NewtonRootFind1DNoDeriv.InvokeFunction(df, x);
 
                 var x1 = x - fx / dfx;
                 change = x - x1;
