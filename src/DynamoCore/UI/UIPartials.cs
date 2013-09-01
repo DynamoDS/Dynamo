@@ -184,7 +184,6 @@ namespace Dynamo.Nodes
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,
-                IsNumeric = true,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
@@ -222,7 +221,6 @@ namespace Dynamo.Nodes
             nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
-            tb.IsNumeric = true;
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             tb.DataContext = this;
@@ -591,20 +589,22 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class Formula : MathBase
+    public partial class Formula
     {
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
 
-            var tb = new dynTextBox();
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            var tb = new dynTextBox
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Top,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+            };
+
             nodeUI.inputGrid.Children.Add(tb);
-            System.Windows.Controls.Grid.SetColumn(tb, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 0);
-            tb.IsNumeric = false;
-            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
             var bindingVal = new Binding("FormulaString")
@@ -615,6 +615,8 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
+
+            tb.Text = FormulaString;
         }
     }
 
@@ -636,80 +638,67 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class Output : NodeModel
+    public partial class Output
     {
-        TextBox tb;
+        dynTextBox _tb;
 
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            tb = new TextBox();
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            nodeUI.inputGrid.Children.Add(tb);
-            System.Windows.Controls.Grid.SetColumn(tb, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 0);
+            _tb = new dynTextBox
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+            };
 
-            //turn off the border
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-            tb.Background = backgroundBrush;
-            tb.BorderThickness = new Thickness(0);
+            nodeUI.inputGrid.Children.Add(_tb);
+            Grid.SetColumn(_tb, 0);
+            Grid.SetRow(_tb, 0);
 
-            tb.DataContext = this;
-            var bindingSymbol = new System.Windows.Data.Binding("Symbol")
+            _tb.DataContext = this;
+            var bindingSymbol = new Binding("Symbol")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new StringDisplay()
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            tb.SetBinding(TextBox.TextProperty, bindingSymbol);
+            _tb.SetBinding(TextBox.TextProperty, bindingSymbol);
 
-            tb.TextChanged += tb_TextChanged;
+            _tb.Text = Symbol;
         }
-
-        void tb_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Symbol = tb.Text;
-        }
-
     }
 
-    public partial class Symbol : NodeModel
+    public partial class Symbol
     {
-        TextBox tb;
-
-        void tb_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            InputSymbol = tb.Text;
-        }
+        dynTextBox _tb;
 
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            tb = new TextBox();
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            nodeUI.inputGrid.Children.Add(tb);
-            System.Windows.Controls.Grid.SetColumn(tb, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 0);
-
-            //turn off the border
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-            tb.Background = backgroundBrush;
-            tb.BorderThickness = new Thickness(0);
-
-            tb.DataContext = this;
-            var bindingSymbol = new System.Windows.Data.Binding("Symbol")
+            _tb = new dynTextBox
             {
-                Mode = BindingMode.TwoWay
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
-            tb.SetBinding(TextBox.TextProperty, bindingSymbol);
 
-            tb.TextChanged += new TextChangedEventHandler(tb_TextChanged);
+            nodeUI.inputGrid.Children.Add(_tb);
+            Grid.SetColumn(_tb, 0);
+            Grid.SetRow(_tb, 0);
 
+            _tb.DataContext = this;
+            var bindingSymbol = new Binding("InputSymbol")
+            {
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            _tb.SetBinding(TextBox.TextProperty, bindingSymbol);
+
+            _tb.Text = InputSymbol;
         }
 
     }

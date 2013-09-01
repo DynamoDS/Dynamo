@@ -82,25 +82,6 @@ namespace Dynamo.Nodes
             SelectAll();
         }
 
-        private bool numeric;
-        public bool IsNumeric
-        {
-            get { return numeric; }
-            set
-            {
-                numeric = value;
-                if (value && Text.Length > 0)
-                {
-                    Text = dynSettings.RemoveChars(
-                        Text,
-                        Text.ToCharArray()
-                            .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
-                            .Select(c => c.ToString())
-                        );
-                }
-            }
-        }
-
         private bool pending;
         public bool Pending
         {
@@ -144,28 +125,16 @@ namespace Dynamo.Nodes
             }
         }
 
+/*
         private bool shouldCommit()
         {
             return !dynSettings.Controller.DynamoViewModel.DynamicRunEnabled;
         }
+*/
 
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
             Pending = true;
-
-            if (IsNumeric)
-            {
-                var p = CaretIndex;
-
-                //base.Text = dynSettings.RemoveChars(
-                //   Text,
-                //   Text.ToCharArray()
-                //      .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
-                //      .Select(c => c.ToString())
-                //);
-
-                CaretIndex = p;
-            }
         }
 
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
