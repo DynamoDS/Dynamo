@@ -1916,6 +1916,12 @@ namespace Dynamo.Nodes
             return Value.NewNumber(x + y);
         }
 
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildBinaryExpression(inputAstNodes[0],
+                                                 inputAstNodes[1],
+                                                 ProtoCore.DSASM.Operator.add);
+        }
     }
 
     [NodeName("Subtract")]
@@ -1938,6 +1944,13 @@ namespace Dynamo.Nodes
             var y = ((Value.Number)args[1]).Item;
 
             return Value.NewNumber(x - y);
+        }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildBinaryExpression(inputAstNodes[0],
+                                                 inputAstNodes[1],
+                                                 ProtoCore.DSASM.Operator.sub);
         }
     }
 
@@ -1963,6 +1976,12 @@ namespace Dynamo.Nodes
             return Value.NewNumber(x * y);
         }
 
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildBinaryExpression(inputAstNodes[0],
+                                                 inputAstNodes[1],
+                                                 ProtoCore.DSASM.Operator.mul);
+        }
     }
 
     [NodeName("Divide")]
@@ -1987,6 +2006,12 @@ namespace Dynamo.Nodes
             return Value.NewNumber(x / y);
         }
 
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildBinaryExpression(inputAstNodes[0],
+                                                 inputAstNodes[1],
+                                                 ProtoCore.DSASM.Operator.div);
+        }
     }
 
     [NodeName("Modulo")]
