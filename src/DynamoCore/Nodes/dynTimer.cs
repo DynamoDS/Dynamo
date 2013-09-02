@@ -23,9 +23,9 @@ namespace Dynamo.Nodes
     [NodeName("Pause")]
     [NodeDescription("Pauses execution for a given amount of time.")]
     [NodeCategory(BuiltinNodeCategories.CORE_TIME)]
-    public class dynPause : dynNodeWithOneOutput
+    public class Pause : NodeWithOneOutput
     {
-        public dynPause()
+        public Pause()
         {
             InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(Value.Number)));
             OutPortData.Add(new PortData("", "Success", typeof(Value.Number)));
@@ -52,9 +52,9 @@ namespace Dynamo.Nodes
     [NodeName("Execution Interval")]
     [NodeDescription("Forces an Execution after every interval")]
     [NodeCategory(BuiltinNodeCategories.CORE_TIME)]
-    public class dynExecuteInterval : dynNodeWithOneOutput
+    public class ExecuteInterval : NodeWithOneOutput
     {
-        public dynExecuteInterval()
+        public ExecuteInterval()
         {
             InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(Value.Number)));
             OutPortData.Add(new PortData("", "Success?", typeof(Value.Number)));

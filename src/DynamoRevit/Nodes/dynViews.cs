@@ -37,9 +37,9 @@ namespace Dynamo.Nodes
     [NodeName("Drafting View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
     [NodeDescription("Creates a drafting view.")]
-    public class dynDraftingView: dynNodeWithOneOutput
+    public class DraftingView: NodeWithOneOutput
     {
-        public dynDraftingView()
+        public DraftingView()
         {
             InPortData.Add(new PortData("name", "Name", typeof(Value.String)));
             OutPortData.Add(new PortData("v", "Drafting View", typeof(Value.Container)));
@@ -99,11 +99,11 @@ namespace Dynamo.Nodes
 
     public delegate View3D View3DCreationDelegate(ViewOrientation3D orient, string name, bool isPerspective);
 
-    public abstract class dynViewBase:dynRevitTransactionNodeWithOneOutput
+    public abstract class ViewBase:RevitTransactionNodeWithOneOutput
     {
         protected bool _isPerspective = false;
 
-        protected dynViewBase()
+        protected ViewBase()
         {
             InPortData.Add(new PortData("eye", "The eye position point.", typeof(Value.Container)));
             InPortData.Add(new PortData("up", "The up direction of the view.", typeof(Value.Container)));
@@ -152,7 +152,7 @@ namespace Dynamo.Nodes
                 else
                 {
                     //create a new view
-                    view = dynViewBase.Create3DView(orient, name, false);
+                    view = ViewBase.Create3DView(orient, name, false);
                     Elements[0] = view.Id;
                 }
             }
@@ -220,9 +220,9 @@ namespace Dynamo.Nodes
     [NodeName("Axonometric View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
     [NodeDescription("Creates an axonometric view.")]
-    public class dynIsometricView : dynViewBase
+    public class IsometricView : ViewBase
     {
-        public dynIsometricView ()
+        public IsometricView ()
         {
             _isPerspective = false;
         }
@@ -231,9 +231,9 @@ namespace Dynamo.Nodes
     [NodeName("Perspective View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
     [NodeDescription("Creates a perspective view.")]
-    public class dynPerspectiveView : dynViewBase
+    public class PerspectiveView : ViewBase
     {
-        public dynPerspectiveView()
+        public PerspectiveView()
         {
             _isPerspective = true;
         }
@@ -242,9 +242,9 @@ namespace Dynamo.Nodes
     [NodeName("Bounding Box XYZ")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Create a bounding box.")]
-    public class dynBoundingBoxXYZ : dynNodeWithOneOutput
+    public class BoundingBoxXyz : NodeWithOneOutput
     {
-        public dynBoundingBoxXYZ()
+        public BoundingBoxXyz()
         {
             InPortData.Add(new PortData("trans", "The coordinate system of the box.", typeof(Value.Container)));
             InPortData.Add(new PortData("x size", "The size of the bounding box in the x direction of the local coordinate system.", typeof(Value.Number)));
@@ -277,9 +277,9 @@ namespace Dynamo.Nodes
     [NodeName("Section View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
     [NodeDescription("Creates a section view.")]
-    public class dynSectionView : dynRevitTransactionNodeWithOneOutput
+    public class SectionView : RevitTransactionNodeWithOneOutput
     {
-        public dynSectionView()
+        public SectionView()
         {
             InPortData.Add(new PortData("bbox", "The bounding box of the view.", typeof(Value.Container)));
             OutPortData.Add(new PortData("v", "The newly created section view.", typeof(Value.Container)));
@@ -327,9 +327,9 @@ namespace Dynamo.Nodes
     [NodeName("Get Active View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
     [NodeDescription("Gets the active Revit view.")]
-    public class dynActiveRevitView : dynRevitTransactionNodeWithOneOutput
+    public class ActiveRevitView : RevitTransactionNodeWithOneOutput
     {
-        public dynActiveRevitView()
+        public ActiveRevitView()
         {
             OutPortData.Add(new PortData("v", "The active revit view.", typeof(Value.Container)));
 
@@ -347,9 +347,9 @@ namespace Dynamo.Nodes
     [NodeName("Save Image Of View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
     [NodeDescription("Saves an image of a Revit view.")]
-    public class dynSaveImageFromRevitView : dynRevitTransactionNodeWithOneOutput
+    public class SaveImageFromRevitView : RevitTransactionNodeWithOneOutput
     {
-        public dynSaveImageFromRevitView()
+        public SaveImageFromRevitView()
         {
             InPortData.Add(new PortData("view", "The view to save an image of.", typeof(Value.Container)));
             InPortData.Add(new PortData("filename", "The file to save the image as.", typeof(Value.String)));
@@ -390,13 +390,13 @@ namespace Dynamo.Nodes
     [NodeName("Watch Image")]
     [NodeDescription("Previews an image")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    public class dynWatchImage : dynNodeWithOneOutput
+    public class WatchImage : NodeWithOneOutput
     {
 
         ResultImageUI resultImageUI = new ResultImageUI();
 
         System.Windows.Controls.Image image1 = null;
-        public dynWatchImage()
+        public WatchImage()
         {
             InPortData.Add(new PortData("image", "image", typeof(object)));
             OutPortData.Add(new PortData("", "Success?", typeof(bool)));

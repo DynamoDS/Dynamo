@@ -15,11 +15,11 @@ namespace Dynamo.Nodes
     [NodeName("Voronoi On Face")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("Create a Voronoi tesselation on a face.")]
-    public class dynVoronoiOnFace : dynRevitTransactionNodeWithOneOutput
+    public class VoronoiOnFace : RevitTransactionNodeWithOneOutput
     {
         List<Line> _tessellationLines = new List<Line>();
 
-        public dynVoronoiOnFace()
+        public VoronoiOnFace()
         {
             InPortData.Add(new PortData("UVs", "List of UV coordinates.", typeof(Value.List)));
             InPortData.Add(new PortData("face", "The face on which to tessellate.", typeof(Value.Container)));
@@ -109,11 +109,11 @@ namespace Dynamo.Nodes
     [NodeName("Delaunay On Face")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("Create a Delaunay triangulation on a face.")]
-    public class dynDelaunayOnFace : dynRevitTransactionNodeWithOneOutput
+    public class DelaunayOnFace : RevitTransactionNodeWithOneOutput
     {
         List<Line> _tessellationLines = new List<Line>();
 
-        public dynDelaunayOnFace()
+        public DelaunayOnFace()
         {
             InPortData.Add(new PortData("UVs", "List of UV coordinates.", typeof(Value.List)));
             InPortData.Add(new PortData("face", "The face on which to tessellate.", typeof(Value.Container)));
@@ -300,12 +300,12 @@ namespace Dynamo.Nodes
     [NodeName("Convex Hull 3D")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("Find the convex hull of a set of XYZs.")]
-    public class dynConvexHull3d : dynRevitTransactionNodeWithOneOutput
+    public class ConvexHull3D : RevitTransactionNodeWithOneOutput
     {
         List<Line> _tessellationLines = new List<Line>();
         List<HelixToolkit.Wpf.Mesh3D> _tesselationMeshes = new List<HelixToolkit.Wpf.Mesh3D>();
 
-        public dynConvexHull3d()
+        public ConvexHull3D()
         {
             InPortData.Add(new PortData("XYZs", "List of xyz's.", typeof(Value.List)));
             OutPortData.Add(new PortData("out", "Tessellation data.", typeof(Value.List)));
@@ -412,11 +412,11 @@ namespace Dynamo.Nodes
     [NodeName("Delaunay 3D")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("Create a 3d delaunay tesselation of XYZs.")]
-    public class dynDelaunay3d : dynRevitTransactionNodeWithOneOutput
+    public class Delaunay3D : RevitTransactionNodeWithOneOutput
     {
         List<Line> _tessellationLines = new List<Line>();
 
-        public dynDelaunay3d()
+        public Delaunay3D()
         {
             InPortData.Add(new PortData("XYZs", "List of xyz's.", typeof(Value.List)));
             OutPortData.Add(new PortData("out", "Tessellation data.", typeof(Value.List)));

@@ -78,13 +78,13 @@
 
                 <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
                     <Setter Property="Focusable" Value="False"/>
-                    <Setter Property="Width" Value="32"/>
+                    <Setter Property="Width" Value="24"/>
                     <Setter Property="Foreground" Value="#888"/>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ToggleButton}">
 
-                                <Border Width="32" Background="Transparent">
+                                <Border Width="24" Background="Transparent">
                                     <Border SnapsToDevicePixels="true" Width="24" Height="10" Background="{TemplateBinding Background}" x:Name="border">
                                         <Path HorizontalAlignment="Center" 
                                               Margin="1,1,1,1" x:Name="ExpandPath" Fill="{TemplateBinding Foreground}" 
@@ -126,31 +126,40 @@
                                     <Border Name="ContainerLight" BorderThickness="3,0,0,0" BorderBrush="#222">
                                         <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" >
 
-                                            <Grid Background="Transparent">
-
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition MinWidth="19" Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
+                                            <Grid>
 
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
+                                                
+                                                <Grid Background="Transparent" Grid.Row="0">
 
-                                                <ToggleButton Margin="5,10,5,0" Grid.Row="0" VerticalAlignment="Top" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
-                                                <Rectangle Margin="5,10,5,0" Grid.Row="0" Width="7" Height="7" x:Name="whiteRect" VerticalAlignment="Top" Fill="#FFFFFF" HorizontalAlignment="Center" Visibility="Collapsed" />
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
 
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="*" />
+                                                    </Grid.RowDefinitions>
 
-                                                <Border Margin="5,7,5,5" Grid.Column="1" Grid.ColumnSpan="2" Name="C" VerticalAlignment="Center" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-                                                    <ContentPresenter Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ContentSource="Header"/>
+                                                    <ToggleButton Margin="5,10,0,0" Grid.Row="0" VerticalAlignment="Top" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
+                                                    
+                                                    <Border Margin="5,7,5,5" Name="NodeName" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ContentSource="Header"/>
+                                                    </Border>
 
+                                                </Grid>
+
+                                                <Border Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" Margin="15 0 0 0" >
+                                                    <ItemsPresenter x:Name="ItemsHost" />
                                                 </Border>
 
-                                                <ItemsPresenter Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"  x:Name="ItemsHost" />
-
                                             </Grid>
+                                            
 
                                         </Border>
 
@@ -165,12 +174,12 @@
 
                                     <Trigger Property="IsExpanded" Value="true">
 
-                                        <Setter Property="BorderBrush" TargetName="ContainerLight" Value="White"/>
+                                        <!--<Setter Property="BorderBrush" TargetName="ContainerLight" Value="White"/>-->
                                     </Trigger>
 
                                     <Trigger Property="HasItems" Value="false">
-                                        <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
-                                        <Setter Property="Visibility" TargetName="whiteRect" Value="Visible"/>
+                                        <Setter Property="Visibility" TargetName="Expander" Value="Collapsed"/>
+                                        <Setter Property="Margin" TargetName="NodeName" Value="10,7,5,5"/>
                                     </Trigger>
 
                                     <Trigger Property="IsSelected" Value="true">

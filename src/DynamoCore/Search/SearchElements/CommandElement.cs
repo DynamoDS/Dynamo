@@ -18,6 +18,7 @@ using System.Windows.Input;
 using Dynamo.Commands;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using String = System.String;
 
 namespace Dynamo.Search.SearchElements
 {

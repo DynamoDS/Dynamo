@@ -6,6 +6,8 @@ import xml.etree.ElementTree as ET
 import argparse
 import time
 import glob
+import smtplib
+import string
 
 def main():
 
@@ -48,7 +50,7 @@ def main():
 			base = os.path.basename(journal)
 			if base == args['name']+'.txt':
 				# print os.path.basename(journal)
-				run_cmd(['Revit', os.path.abspath(journal)])
+				run_cmd(['C:\Program Files\Autodesk\Revit Architecture 2014\Revit.exe', os.path.abspath(journal)])
 				found = True
 		if found == False:
 			print "Journal named {0} could not be found".format(args['name'])
@@ -131,7 +133,10 @@ def main():
 	parsed_results['time'] = ellapsed
 	parsed_results['inconclusives'] = inconclusiveCount
 
-	print "Test summary: {0} Pass, {1} Fail, {2} Inconclusive, {3} total time.".format(passCount, failCount, inconclusiveCount, ellapsed)
+	summary = "Revit test summary: {0} Pass, {1} Fail, {2} Inconclusive, {3} total time.".format(passCount, failCount, inconclusiveCount, ellapsed)
+
+	# send an email with the results
+	send_email('Dynamo Revit Test Summary', summary, 'ian.keough@autodesk.com', 'ian.keough@autodesk.com')
 
 	return parsed_results
 
@@ -149,6 +154,23 @@ def run_cmd( args, printOutput = True, cwd = None ):
 	    print ">>> " + line.rstrip()
 		
 	return out
+
+def send_email( subject, text, receiver, sender ):
+
+	message = string.join((
+				"From: %s" % sender,
+				"To: %s" % receiver,
+				"Subject: %s" % subject ,
+				"",
+				text
+				), "\r\n")
+
+	try:
+	   smtpObj = smtplib.SMTP('mail-relay.autodesk.com')
+	   smtpObj.sendmail(sender, receiver, message)         
+	   print ("Successfully sent email to " + receiver)
+	except SMTPException:
+	   print ("Error: unable to send email to " + receiver)
 
 if __name__ == "__main__":
 	main()
