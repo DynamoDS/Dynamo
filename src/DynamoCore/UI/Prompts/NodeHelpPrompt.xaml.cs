@@ -11,7 +11,7 @@ namespace Dynamo.Prompts
     /// </summary>
     public partial class NodeHelpPrompt : Window
     {
-        public NodeHelpPrompt(dynNodeModel node)
+        public NodeHelpPrompt(NodeModel node)
         {
             this.DataContext = node;
             this.Owner = WPF.FindUpVisualTree<DynamoView>(this);

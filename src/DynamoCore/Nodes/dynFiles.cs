@@ -24,7 +24,7 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-    public abstract class dynFileReaderBase : dynNodeWithOneOutput
+    public abstract class FileReaderBase : NodeWithOneOutput
     {
         FileSystemEventHandler handler;
 
@@ -36,19 +36,19 @@ namespace Dynamo.Nodes
             {
                 if (value != null && !value.Equals(_path))
                 {
-                    if (watcher != null)
-                        watcher.FileChanged -= handler;
+                    if (_watch != null)
+                        _watch.FileChanged -= handler;
 
                     _path = value;
-                    watcher = new FileWatcher(_path);
-                    watcher.FileChanged += handler;
+                    _watch = new FileWatch(_path);
+                    _watch.FileChanged += handler;
                 }
             }
         }
 
-        FileWatcher watcher;
+        FileWatch _watch;
 
-        public dynFileReaderBase()
+        public FileReaderBase()
         {
             handler = new FileSystemEventHandler(watcher_FileChanged);
 
@@ -75,7 +75,7 @@ namespace Dynamo.Nodes
     [NodeName("Read Text File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Reads data from a file.")]
-    public class dynFileReader : dynNodeWithOneOutput
+    public class FileReader : NodeWithOneOutput
     {
         FileSystemEventHandler handler;
 
@@ -87,19 +87,19 @@ namespace Dynamo.Nodes
             {
                 if (value != null && !value.Equals(_path))
                 {
-                    if (watcher != null)
-                        watcher.FileChanged -= handler;
+                    if (_watch != null)
+                        _watch.FileChanged -= handler;
 
                     _path = value;
-                    watcher = new FileWatcher(_path);
-                    watcher.FileChanged += handler;
+                    _watch = new FileWatch(_path);
+                    _watch.FileChanged += handler;
                 }
             }
         }
 
-        FileWatcher watcher;
+        FileWatch _watch;
 
-        public dynFileReader()
+        public FileReader()
         {
             handler = watcher_FileChanged;
 
@@ -142,9 +142,9 @@ namespace Dynamo.Nodes
     [NodeName("Write File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Writes the given string to the given file. Creates the file if it doesn't exist.")]
-    public class dynFileWriter : dynNodeWithOneOutput
+    public class FileWriter : NodeWithOneOutput
     {
-        public dynFileWriter()
+        public FileWriter()
         {
             InPortData.Add(new PortData("path", "Path to the file", typeof(Value.String)));
             InPortData.Add(new PortData("text", "Text to be written", typeof(Value.String)));
@@ -175,9 +175,9 @@ namespace Dynamo.Nodes
     [NodeName("Write CSV File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Writes a list of lists into a file using a comma-separated values format. Outer list represents rows, inner lists represent column.")]
-    public class dynListToCSV : dynNodeWithOneOutput
+    public class ListToCsv : NodeWithOneOutput
     {
-        public dynListToCSV()
+        public ListToCsv()
         {
             InPortData.Add(new PortData("path", "Filename to write to", typeof(Value.String)));
             InPortData.Add(new PortData("data", "List of lists to write into CSV", typeof(Value.List)));
@@ -215,9 +215,9 @@ namespace Dynamo.Nodes
     [NodeName("Write Image File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Writes the given image to an image file. Creates the file if it doesn't exist.")]
-    public class dynImageFileWriter : dynNodeWithOneOutput
+    public class ImageFileWriter : NodeWithOneOutput
     {
-        public dynImageFileWriter()
+        public ImageFileWriter()
         {
             InPortData.Add(new PortData("path", "Path to the file", typeof(Value.String)));
             InPortData.Add(new PortData("filename", "name of the file", typeof(Value.String)));
@@ -260,9 +260,9 @@ namespace Dynamo.Nodes
     [NodeName("Watch File")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Creates a FileWatcher for watching changes in a file.")]
-    public class dynFileWatcher : dynNodeWithOneOutput
+    public class FileWatcher : NodeWithOneOutput
     {
-        public dynFileWatcher()
+        public FileWatcher()
         {
             InPortData.Add(new PortData("path", "Path to the file to create a watcher for.", typeof(Value.String)));
             OutPortData.Add(new PortData("fw", "Instance of a FileWatcher.", typeof (Value.Container)));
@@ -273,16 +273,16 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             string fileName = ((Value.String)args[0]).Item;
-            return Value.NewContainer(new FileWatcher(fileName));
+            return Value.NewContainer(new FileWatch(fileName));
         }
     }
 
     [NodeName("Watched File Changed?")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Checks if the file watched by the given FileWatcher has changed.")]
-    public class dynFileWatcherChanged : dynNodeWithOneOutput
+    public class FileWatcherChanged : NodeWithOneOutput
     {
-        public dynFileWatcherChanged()
+        public FileWatcherChanged()
         {
             InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(Value.Container)));
             OutPortData.Add(new PortData("changed?", "Whether or not the file has been changed.", typeof(Value.Number)));
@@ -292,7 +292,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var watcher = (FileWatcher)((Value.Container)args[0]).Item;
+            var watcher = (FileWatch)((Value.Container)args[0]).Item;
 
             return Value.NewNumber(watcher.Changed ? 1 : 0);
         }
@@ -302,9 +302,9 @@ namespace Dynamo.Nodes
     [NodeName("Watched File Wait")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Waits for the specified watched file to change.")]
-    public class dynFileWatcherWait : dynNodeWithOneOutput
+    public class FileWatcherWait : NodeWithOneOutput
     {
-        public dynFileWatcherWait()
+        public FileWatcherWait()
         {
             InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(Value.Container)));
             InPortData.Add(new PortData("limit", "Amount of time (in milliseconds) to wait for an update before failing.", typeof(Value.Number)));
@@ -315,7 +315,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var watcher = (FileWatcher)((Value.Container)args[0]).Item;
+            var watcher = (FileWatch)((Value.Container)args[0]).Item;
             double timeout = ((Value.Number)args[1]).Item;
 
             timeout = timeout == 0 ? double.PositiveInfinity : timeout;
@@ -342,9 +342,9 @@ namespace Dynamo.Nodes
     [NodeName("Reset File Watch")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Resets state of FileWatcher so that it watches again.")]
-    public class dynFileWatcherReset : dynNodeWithOneOutput
+    public class FileWatcherReset : NodeWithOneOutput
     {
-        public dynFileWatcherReset()
+        public FileWatcherReset()
         {
             InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(Value.Container)));
             OutPortData.Add(new PortData("fw", "Updated watcher.", typeof(Value.Container)));
@@ -354,7 +354,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var watcher = (FileWatcher)((Value.Container)args[0]).Item;
+            var watcher = (FileWatch)((Value.Container)args[0]).Item;
 
             watcher.Reset();
 
@@ -362,7 +362,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    class FileWatcher : IDisposable
+    class FileWatch : IDisposable
     {
         public bool Changed { get; private set; }
 
@@ -371,7 +371,7 @@ namespace Dynamo.Nodes
 
         public event FileSystemEventHandler FileChanged;
 
-        public FileWatcher(string filePath)
+        public FileWatch(string filePath)
         {
             Changed = false;
 

@@ -31,11 +31,11 @@ using System.Windows.Media.Media3D;
 namespace Dynamo.Nodes
 {
 
-    public abstract class dynParticleSystemBase : dynNodeModel, IDrawable
+    public abstract class ParticleSystemBase : NodeModel, IDrawable
     {
         internal ParticleSystem ParticleSystem;
 
-        internal dynParticleSystemBase()
+        internal ParticleSystemBase()
         {
             dynSettings.Controller.RequestsRedraw += Controller_RequestsRedraw;
         }
@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
     [NodeName("Create Particle System")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     [NodeDescription("A node which allows you to drive the position of elements via a particle system.")]
-    class dynDynamicRelaxation :  dynParticleSystemBase
+    class DynamicRelaxation :  ParticleSystemBase
     {
         private double _d;
         private double _m;
@@ -121,7 +121,7 @@ namespace Dynamo.Nodes
         private readonly PortData _forcesPort = new PortData(
             "forces", "Member forces.", typeof(Value.List));
 
-        public dynDynamicRelaxation()
+        public DynamicRelaxation()
         {
             InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(Value.List)));
             InPortData.Add(new PortData("curves", "Curves to use as springs.", typeof(Value.List)));
@@ -400,9 +400,9 @@ namespace Dynamo.Nodes
     [NodeName("Create Particle System on Face")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
-    class dynDynamicRelaxationOnFace : dynParticleSystemBase
+    class DynamicRelaxationOnFace : ParticleSystemBase
     {
-        public dynDynamicRelaxationOnFace()
+        public DynamicRelaxationOnFace()
         {
             InPortData.Add(new PortData("face", "The face to use for distribution of particles.", typeof(Value.Container)));
             InPortData.Add(new PortData("d", "Dampening.", typeof(Value.Number)));
@@ -487,7 +487,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
     [IsInteractive(true)]
-    public class dynDynamicRelaxationStep : dynNodeModel
+    public class DynamicRelaxationStep : NodeModel
     {
         private readonly PortData _vMaxPort = new PortData(
             "vMax", "Maximum nodal velocity.", typeof(Value.Number));
@@ -497,7 +497,7 @@ namespace Dynamo.Nodes
             "Has the maximum nodal velocity dropped below the threshold set for the system?",
             typeof(Value.Number));
 
-        public dynDynamicRelaxationStep()
+        public DynamicRelaxationStep()
         {
             InPortData.Add(new PortData("ps", "Particle System to simulate", typeof(Value.Container)));
             InPortData.Add(new PortData("step", "Time to step.", typeof(Value.Number)));
@@ -528,9 +528,9 @@ namespace Dynamo.Nodes
     [NodeName("XYZs from Particle System")]
     [NodeDescription("Creates XYZs from a Particle System.")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
-    public class dynXYZsFromPS : dynNodeWithOneOutput
+    public class XyZsFromPs : NodeWithOneOutput
     {
-        public dynXYZsFromPS()
+        public XyZsFromPs()
         {
             InPortData.Add(new PortData("ps", "Particle System", typeof(Value.Container)));
             OutPortData.Add(new PortData("XYZs", "XYZs.", typeof(Value.Container)));
@@ -551,9 +551,9 @@ namespace Dynamo.Nodes
     [NodeName("Curves from Particle System")]
     [NodeDescription("Creates Curves from a Particle System.")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_STRUCTURE)]
-    public class dynCurvesFromPS : dynNodeWithOneOutput
+    public class CurvesFromPs : NodeWithOneOutput
     {
-        public dynCurvesFromPS()
+        public CurvesFromPs()
         {
             InPortData.Add(new PortData("ps", "Particle System", typeof(Value.Container)));
             OutPortData.Add(new PortData("curves", "geometry curves.", typeof(Value.List)));

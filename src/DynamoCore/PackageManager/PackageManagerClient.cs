@@ -133,8 +133,8 @@ namespace Dynamo.PackageManager
         public void PublishSelectedNode(object m)
         {
             var nodeList = DynamoSelection.Instance.Selection
-                                .Where(x => x is dynFunction)
-                                .Cast<dynFunction>()
+                                .Where(x => x is Function)
+                                .Cast<Function>()
                                 .Select(x => x.Definition.FunctionId)
                                 .ToList();
 
@@ -155,7 +155,7 @@ namespace Dynamo.PackageManager
         public bool CanPublishSelectedNode(object m)
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
-                   DynamoSelection.Instance.Selection.All(x => x is dynFunction);
+                   DynamoSelection.Instance.Selection.All(x => x is Function);
         }
 
         private void ShowNodePublishInfo(object funcDef)

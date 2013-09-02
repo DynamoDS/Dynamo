@@ -2,7 +2,7 @@
 
 namespace Dynamo.ViewModels
 {
-    public partial class dynNodeViewModel
+    public partial class NodeViewModel
     {
         private DelegateCommand _deleteCommand1;
         private DelegateCommand _setLacingTypeCommand;

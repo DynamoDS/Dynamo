@@ -33,9 +33,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a Family Type from a drop down list.")]
     [IsInteractive(true)]
-    public class dynFamilyTypeSelector : dynDropDrownBase
+    public class FamilyTypeSelector : DropDrownBase
     {
-        public dynFamilyTypeSelector()
+        public FamilyTypeSelector()
         {
             OutPortData.Add(new PortData("", "Family type", typeof(Value.Container)));
             RegisterAllPorts();
@@ -74,12 +74,12 @@ namespace Dynamo.Nodes
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a parameter as a string.")]
     [NodeSearchTags("fam")]
     [IsInteractive(true)]
-    public class dynFamilyInstanceParameterSelector : dynDropDrownBase
+    public class FamilyInstanceParameterSelector : DropDrownBase
     {
         ElementId storedId = null;
         private Element element;
 
-        public dynFamilyInstanceParameterSelector()
+        public FamilyInstanceParameterSelector()
         {
             InPortData.Add(new PortData("f", "Family Symbol or Instance", typeof(Value.Container)));
             OutPortData.Add(new PortData("", "Parameter Name", typeof(Value.String)));
@@ -626,9 +626,9 @@ namespace Dynamo.Nodes
     [NodeName("Create Family Instance")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
     [NodeDescription("Creates family instances at a given XYZ location.")]
-    public class dynFamilyInstanceCreatorXYZ : dynRevitTransactionNodeWithOneOutput
+    public class FamilyInstanceCreatorXyz : RevitTransactionNodeWithOneOutput
     {
-        public dynFamilyInstanceCreatorXYZ()
+        public FamilyInstanceCreatorXyz()
         {
             InPortData.Add(new PortData("xyz", "xyz", typeof(Value.Container)));
             InPortData.Add(new PortData("type", "The Family Symbol to use for instantiation.", typeof(Value.Container)));
@@ -736,9 +736,9 @@ namespace Dynamo.Nodes
     [NodeName("Create Family Instance By Level")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
     [NodeDescription("Creates family instances in the given level.")]
-    public class dynFamilyInstanceCreatorLevel : dynRevitTransactionNodeWithOneOutput
+    public class FamilyInstanceCreatorLevel : RevitTransactionNodeWithOneOutput
     {
-        public dynFamilyInstanceCreatorLevel()
+        public FamilyInstanceCreatorLevel()
         {
             InPortData.Add(new PortData("xyz", "xyz", typeof(Value.Container)));
             InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(Value.Container)));
@@ -749,7 +749,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        private Value makeFamilyInstance(object location, FamilySymbol fs, int count, Level level)
+        private Value makeFamilyInstance(object location, FamilySymbol fs, int count, Autodesk.Revit.DB.Level level)
         {
             XYZ pos = location is ReferencePoint
                ? (location as ReferencePoint).Position
@@ -803,7 +803,7 @@ namespace Dynamo.Nodes
         {
             FamilySymbol fs = (FamilySymbol)((Value.Container)args[1]).Item;
             var input = args[0];
-            Level level = (Level)((Value.Container)args[2]).Item;
+            Autodesk.Revit.DB.Level level = (Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 
             if (input.IsList)
             {
@@ -854,9 +854,9 @@ namespace Dynamo.Nodes
     [NodeName("Curves from Family Instance")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
     [NodeDescription("Extracts curves from family instances.")]
-    public class dynCurvesFromFamilyInstance : dynRevitTransactionNodeWithOneOutput
+    public class CurvesFromFamilyInstance : RevitTransactionNodeWithOneOutput
     {
-        public dynCurvesFromFamilyInstance()
+        public CurvesFromFamilyInstance()
         {
             InPortData.Add(new PortData("fi", "family instance", typeof(Value.Container)));
 
@@ -1050,9 +1050,9 @@ namespace Dynamo.Nodes
     [NodeName("Set Family Instance Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
     [NodeDescription("Modifies a parameter on a family instance.")]
-    public class dynFamilyInstanceParameterSetter : dynRevitTransactionNodeWithOneOutput
+    public class FamilyInstanceParameterSetter : RevitTransactionNodeWithOneOutput
     {
-        public dynFamilyInstanceParameterSetter()
+        public FamilyInstanceParameterSetter()
         {
             InPortData.Add(new PortData("fi", "Family instance.", typeof(Value.Container)));
             InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof(Value.String)));
@@ -1170,9 +1170,9 @@ namespace Dynamo.Nodes
     [NodeName("Get Family Instance Parameter Value")]
     [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
     [NodeDescription("Fetches the value of a parameter of a Family Instance.")]
-    public class dynFamilyInstanceParameterGetter : dynRevitTransactionNodeWithOneOutput
+    public class FamilyInstanceParameterGetter : RevitTransactionNodeWithOneOutput
     {
-        public dynFamilyInstanceParameterGetter()
+        public FamilyInstanceParameterGetter()
         {
             InPortData.Add(new PortData("fi", "Family instance.", typeof(Value.Container)));
             InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(Value.String)));
@@ -1285,9 +1285,9 @@ namespace Dynamo.Nodes
     [NodeName("Set Family Type Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
     [NodeDescription("Modifies a parameter on a family type.")]
-    public class dynFamilyTypeParameterSetter : dynRevitTransactionNodeWithOneOutput
+    public class FamilyTypeParameterSetter : RevitTransactionNodeWithOneOutput
     {
-        public dynFamilyTypeParameterSetter()
+        public FamilyTypeParameterSetter()
         {
             InPortData.Add(new PortData("ft", "Family type.", typeof(Value.Container)));
             InPortData.Add(new PortData("param", "Parameter to modify.", typeof(Value.String)));
@@ -1409,9 +1409,9 @@ namespace Dynamo.Nodes
     [NodeName("Get Family Type Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
     [NodeDescription("Fetches the value of a parameter of a Family Type.")]
-    public class dynFamilyTypeParameterGetter : dynRevitTransactionNodeWithOneOutput
+    public class FamilyTypeParameterGetter : RevitTransactionNodeWithOneOutput
     {
-        public dynFamilyTypeParameterGetter()
+        public FamilyTypeParameterGetter()
         {
             InPortData.Add(new PortData("ft", "Family type.", typeof(Value.Container)));
             InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(Value.String)));

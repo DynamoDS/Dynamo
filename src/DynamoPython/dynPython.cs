@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs an embedded IronPython script")]
-    public class dynPython : dynNodeWithOneOutput, IDrawable
+    public class Python : NodeWithOneOutput, IDrawable
     {
         private bool dirty = true;
         private Value lastEvalValue;
@@ -54,7 +54,7 @@ namespace Dynamo.Nodes
 
         public RenderDescription RenderDescription{get;set;}
 
-        public dynPython()
+        public Python()
         {
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
             OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
@@ -275,7 +275,7 @@ namespace Dynamo.Nodes
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs a IronPython script from a string")]
-    public class dynPythonString : dynNodeWithOneOutput
+    public class PythonString : NodeWithOneOutput
     {
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Dynamo.Nodes
         /// </summary>
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
-        public dynPythonString()
+        public PythonString()
         {
             InPortData.Add(new PortData("script", "Script to run", typeof(Value.String)));
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
