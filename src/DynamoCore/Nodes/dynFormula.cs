@@ -59,7 +59,17 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode elNode)
         {
-            FormulaString = elNode.Attributes["formula"].Value ?? elNode.InnerText ?? "";
+            if (elNode.Attributes != null)
+            {
+                var formulaAttr = elNode.Attributes["formula"];
+                if (formulaAttr != null)
+                {
+                    FormulaString = formulaAttr.Value;
+                    return;
+                }
+            }
+            
+            FormulaString = elNode.InnerText;
         }
 
         private static HashSet<string> RESERVED_FUNC_NAMES = new HashSet<string> { 
