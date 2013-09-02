@@ -11,6 +11,7 @@ using Greg.Requests;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
+using String = System.String;
 
 namespace Dynamo.PackageManager
 {
@@ -89,6 +90,10 @@ namespace Dynamo.PackageManager
             PublishNewPackageCommand = new DelegateCommand(PublishNewPackage, CanPublishNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
 
+            dynSettings.Controller.DynamoModel.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoModel.NodeDeleted += (node) => UninstallCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoModel.WorkspaceHidden += (ws) => UninstallCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoModel.Workspaces.CollectionChanged += (sender, args) => UninstallCommand.RaiseCanExecuteChanged();
         }
 
         public static Package FromDirectory(string rootPath)
@@ -166,15 +171,33 @@ namespace Dynamo.PackageManager
 
         public bool InUse()
         {
+            return (LoadedTypes.Any() || WorkspaceOpen() || CustomNodeInWorkspace() ) && Loaded;
+        }
+
+        public bool CustomNodeInWorkspace()
+        {
             // get all of the function ids from the custom nodes in this package
             var guids = LoadedCustomNodes.Select(x => x.Guid);
 
             // check if any of the custom nodes is in a workspace
-            var customNodeInUse =  dynSettings.Controller.DynamoModel.AllNodes.Where(x => x is dynFunction)
-                                   .Cast<dynFunction>()
+            return dynSettings.Controller.DynamoModel.AllNodes.Where(x => x is Function)
+                                   .Cast<Function>()
                                    .Any(x => guids.Contains(x.Definition.FunctionId));
 
-            return (LoadedTypes.Any() || customNodeInUse) && Loaded;
+        }
+
+        public bool WorkspaceOpen()
+        {
+            // get all of the function ids from the custom nodes in this package
+            var guids = LoadedCustomNodes.Select(x => x.Guid);
+
+            return
+                dynSettings.Controller.DynamoModel.Workspaces.Any(
+                    x =>
+                        {
+                            var def = dynSettings.CustomNodeManager.GetDefinitionFromWorkspace(x);
+                            return def != null && guids.Contains(def.FunctionId);
+                        });
         }
 
         private void Uninstall()
@@ -212,7 +235,6 @@ namespace Dynamo.PackageManager
                         .ToList()
                         .ForEach(x => this.LoadedCustomNodes.Add(x));
         }
-
 
         private void PublishNewPackageVersion()
         {

@@ -27,7 +27,7 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
 {
-    public partial class dynNodeView : IViewModelView<dynNodeViewModel>
+    public partial class dynNodeView : IViewModelView<NodeViewModel>
     {
         public delegate void SetToolTipDelegate(string message);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
@@ -42,7 +42,7 @@ namespace Dynamo.Controls
             get { return inputGrid; }
         }
 
-        public dynNodeViewModel ViewModel { get; set; }
+        public NodeViewModel ViewModel { get; set; }
 
         #region constructors
 
@@ -81,10 +81,10 @@ namespace Dynamo.Controls
             //You need to cache a reference to the data context or
             //when switching back and forth between tabs, the element's
             //data context will come back as disconnected.
-            ViewModel = this.DataContext as dynNodeViewModel;
+            ViewModel = this.DataContext as NodeViewModel;
 
             ViewModel.NodeLogic.DispatchedToUI += new DispatchedToUIThreadHandler(NodeLogic_DispatchedToUI);
-            ViewModel.RequestShowNodeHelp += new dynNodeViewModel.NodeHelpEventHandler(ViewModel_RequestShowNodeHelp);
+            ViewModel.RequestShowNodeHelp += new NodeViewModel.NodeHelpEventHandler(ViewModel_RequestShowNodeHelp);
             ViewModel.RequestShowNodeRename += new EventHandler(ViewModel_RequestShowNodeRename);
             ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
 

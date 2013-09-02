@@ -18,12 +18,13 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using String = System.String;
 
 namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A search element representing a local node </summary>
-    public partial class NodeSearchElement : SearchElementBase
+    public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
     {
         #region Properties
 
@@ -37,7 +38,7 @@ namespace Dynamo.Search.SearchElements
         /// Node property </summary>
         /// <value>
         /// The node used to instantiate this object </value>
-        public dynNodeModel Node { get; internal set; }
+        public NodeModel Node { get; internal set; }
 
         /// <summary>
         /// Type property </summary>
@@ -99,7 +100,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// The class constructor for a built-in type that is already loaded. </summary>
         /// <param name="node">The local node</param>
-        public NodeSearchElement(dynNodeModel node)
+        public NodeSearchElement(NodeModel node)
         {
             //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = node;
@@ -182,9 +183,9 @@ namespace Dynamo.Search.SearchElements
             //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
             string name;
 
-            if (this.Node != null && this.Node is dynFunction)
+            if (this.Node != null && this.Node is Function)
             {
-                name = ((dynFunction)Node).Definition.FunctionId.ToString();
+                name = ((Function)Node).Definition.FunctionId.ToString();
             } 
             else if (this.Guid != Guid.Empty && this._type == "Custom Node") 
             {
@@ -214,7 +215,17 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-
+        public bool Equals(NodeSearchElement other)
+        {
+           if (other.Type == this.Type && this.Type == "Custom Node")
+           {
+               return other.Guid == this.Guid;
+           }
+           else
+           {
+               return this.Name == other.Type && this.FullCategoryName == other.FullCategoryName;
+           }
+        }
     }
 
 }

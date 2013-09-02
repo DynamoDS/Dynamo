@@ -33,6 +33,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
+using String = System.String;
 
 namespace Dynamo.Controls
 {
@@ -45,13 +46,30 @@ namespace Dynamo.Controls
         public const int CANVAS_OFFSET_X = 0;
 
         private Point dragOffset;
+#pragma warning disable 649
         private dynNodeView draggedNode;
+#pragma warning restore 649
         private DynamoViewModel _vm;
         private Stopwatch _timer;
 
         public bool ConsoleShowing
         {
             get { return LogScroller.Height > 0; }
+        }
+
+        public static Application Start()
+        {
+            var controller = DynamoController.MakeSandbox();
+            var app = new Application();
+
+            //create the view
+            var ui = new DynamoView();
+            ui.DataContext = controller.DynamoViewModel;
+            controller.UIDispatcher = ui.Dispatcher;
+
+            app.Run(ui);
+
+            return app;
         }
 
         public DynamoView()
@@ -82,10 +100,13 @@ namespace Dynamo.Controls
                                                                      _timer.Elapsed));
             LoadSamplesMenu();
 
-            //SEARCH
+            #region Search initialization
+
             var search = new SearchView {DataContext = dynSettings.Controller.SearchViewModel};
             sidebarGrid.Children.Add(search);
             dynSettings.Controller.SearchViewModel.Visible = true;
+
+            #endregion
 
             //PACKAGE MANAGER
             dynSettings.PackageManagerClient.ShowPackagePublishUIRequested += _vm_RequestShowPackageManagerPublish;
@@ -106,23 +127,47 @@ namespace Dynamo.Controls
 
             dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
         }
-
+        
+        private PackageManagerPublishView _pubPkgView;
         void _vm_RequestShowPackageManagerPublish(PublishPackageViewModel model)
         {
-            new PackageManagerPublishView(model);
+            if (_pubPkgView == null)
+            {
+                _pubPkgView = new PackageManagerPublishView(model);
+                _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
+                _pubPkgView.Show();
+                _pubPkgView.Owner = this;
+            }
+
+            _pubPkgView.Focus();
         }
 
-        void _vm_RequestShowPackageManagerSearch(object sender, EventArgs e)
+        private PackageManagerSearchView _searchPkgsView;
+        void _vm_RequestShowPackageManagerSearch(object s, EventArgs e)
         {
-            var pms = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
-            var window = new PackageManagerSearchView(pms);
-            window.Show();
+            if (_searchPkgsView == null)
+            {
+                var pms = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
+                _searchPkgsView = new PackageManagerSearchView(pms);
+                _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
+                _searchPkgsView.Show();
+                _searchPkgsView.Owner = this;
+            }
+             _searchPkgsView.Focus();
         }
 
-        void _vm_RequestShowInstalledPackages(object sender, EventArgs e)
+        private InstalledPackagesView _installedPkgsView;
+        void _vm_RequestShowInstalledPackages(object s, EventArgs e)
         {
-            var window = new InstalledPackagesView();
-            window.Show();
+            if (_installedPkgsView == null)
+            {
+                _installedPkgsView = new InstalledPackagesView();
+                _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
+                _installedPkgsView.Show();
+                _installedPkgsView.Owner = this;
+                
+            }
+            _installedPkgsView.Focus();
         }
 
         void ClipBoard_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -206,13 +251,13 @@ namespace Dynamo.Controls
 
                 // connectors are most often within the bounding box of the nodes and notes
 
-                foreach (dynNodeModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Nodes)
+                foreach (NodeModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Nodes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                foreach (dynNoteModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Notes)
+                foreach (NoteModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Notes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
@@ -274,10 +319,11 @@ namespace Dynamo.Controls
             {
                 //var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
                 var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories)
-                    {
-                        nameBox = {Text = e.Name},
-                        categoryBox = {Text = e.Category}
-                    };
+                {
+                    nameBox = { Text = e.Name },
+                    categoryBox = { Text = e.Category },
+                    DescriptionInput = { Text = e.Description }
+                };
 
                 if (dialog.ShowDialog() != true)
                 {
@@ -285,32 +331,38 @@ namespace Dynamo.Controls
                     return;
                 }
 
-                e.Name = dialog.Text;
-                e.Category = dialog.Category;
-                e.Description = dialog.Description;
-
-                if (dynSettings.Controller.CustomNodeManager.Contains(e.Name))
+                if (String.IsNullOrEmpty(dialog.Text))
+                {
+                    error = "You must supply a name.";
+                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
+                                                   MessageBoxImage.Error);
+                }
+                else if (e.Name != dialog.Text && dynSettings.Controller.CustomNodeManager.Contains(dialog.Text))
                 {
                     error = "A custom node with the given name already exists.";
-                    MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
-                else if (dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(e.Name))
+                else if (e.Name != dialog.Text && dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(dialog.Text))
                 {
                     error = "A built-in node with the given name already exists.";
-                    MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
-                else if (e.Category.Equals(""))
+                else if (dialog.Category.Equals(""))
                 {
                     error = "You must enter a new category or choose one from the existing categories.";
-                    MessageBox.Show(error, "Error Initializing Custom Node", MessageBoxButton.OK,
+                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
                 else
                 {
                     error = "";
                 }
+
+                e.Name = dialog.Text;
+                e.Category = dialog.Category;
+                e.Description = dialog.Description;
 
             } while (!error.Equals(""));
 
@@ -357,7 +409,7 @@ namespace Dynamo.Controls
 
             int workspace_index = _vm.CurrentWorkspaceIndex;
 
-            dynWorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
+            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
             view_model.WatchEscapeIsDown = true;
         }
@@ -369,7 +421,7 @@ namespace Dynamo.Controls
 
             int workspace_index = _vm.CurrentWorkspaceIndex;
 
-            dynWorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
+            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
             view_model.WatchEscapeIsDown = false;
         }
@@ -380,7 +432,7 @@ namespace Dynamo.Controls
             //and trigger the command
             string id = id_tb.Text;
             int workspace_index = _vm.CurrentWorkspaceIndex;
-            dynWorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
+            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
             if (view_model.FindByIdCommand.CanExecute(id))
                 view_model.FindByIdCommand.Execute(id);
         }

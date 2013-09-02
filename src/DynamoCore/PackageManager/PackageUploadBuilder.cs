@@ -46,7 +46,7 @@ namespace Dynamo.PackageManager
             pkg.RootDirectory = rootDir.FullName;
             WritePackageHeader(pkg.Header, rootDir);
             CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
-            RemoveDyfFiles(files, dyfDir); // doesn't remove if the folder hasn't changed
+            RemoveDyfFiles(files, dyfDir); 
             RemapCustomNodeFilePaths(files, dyfDir.FullName);
 
             uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
@@ -90,12 +90,14 @@ namespace Dynamo.PackageManager
 
         private static void RemapCustomNodeFilePaths( IEnumerable<string> filePaths, string dyfRoot )
         {
-            filePaths
+
+            var defList= filePaths
                 .Where(x => x.EndsWith(".dyf"))
                 .Select( path => dynSettings.CustomNodeManager.GuidFromPath(path))
                 .Select( guid => dynSettings.CustomNodeManager.GetFunctionDefinition(guid) )
-                .ToList()
-                .ForEach( func =>
+                .ToList();
+                
+            defList.ForEach( func =>
                     {
                         var newPath = Path.Combine(dyfRoot, Path.GetFileName(func.Workspace.FilePath));
                         func.Workspace.FilePath = newPath;

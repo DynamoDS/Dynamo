@@ -505,6 +505,7 @@ namespace Dynamo.PackageManager
             catch (Exception e)
             {
                 ErrorString = e.Message;
+                Dynamo.DynamoLogger.Instance.Log(e);
             }
 
         }
@@ -621,6 +622,12 @@ namespace Dynamo.PackageManager
             if (Description.Length <= 10)
             {
                 this.ErrorString = "Description must be longer than 10 characters.";
+                return false;
+            }
+
+            if (this.Name.Contains(@"\") || this.Name.Contains(@"/") || this.Name.Contains(@"*"))
+            {
+                this.ErrorString = @"The name of the package cannot contain /,\, or *.";
                 return false;
             }
 

@@ -13,6 +13,27 @@ using Dynamo.PackageManager;
 
 namespace Dynamo.Controls
 {
+    public class TooltipLengthTruncater : IValueConverter
+    {
+        private const int MaxChars = 100;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var tooltip = value as string;
+            if (tooltip != null && tooltip.Length > MaxChars)
+            {
+                var trimIndex = tooltip.LastIndexOf(' ', MaxChars - 5);
+                return tooltip.Remove(trimIndex > 0 ? trimIndex : MaxChars - 5) + " ...";
+            } 
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PackageUploadStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -203,13 +224,13 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
-            if (value is dynWorkspaceViewModel)
+            if (value is WorkspaceViewModel)
             {
-                var val = (value as dynWorkspaceViewModel).Model.GetType();
+                var val = (value as WorkspaceViewModel).Model.GetType();
                 return val;
             }
 
-            if (value is dynWorkspaceModel)
+            if (value is WorkspaceModel)
             {
                 return value.GetType();
             }
@@ -356,7 +377,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            ObservableCollection<dynPortViewModel> ports = (ObservableCollection<dynPortViewModel>)value;
+            ObservableCollection<PortViewModel> ports = (ObservableCollection<PortViewModel>)value;
             return Math.Max(30, ports.Count * 20 + 10); //spacing for inputs + title space + bottom space
         }
 

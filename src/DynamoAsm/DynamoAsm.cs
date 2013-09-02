@@ -25,7 +25,7 @@ namespace Dynamo
                 _instance = new DynamoAsm();
         }
 
-        private static bool _hasStartde = false;
+        //private static bool _hasStartde = false;
         private static DynamoAsm _instance = null;
 
         public static bool HasShutdown = false;

@@ -26,15 +26,14 @@ using Microsoft.FSharp.Collections;
 using Dynamo.Utilities;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Controls;
-using Dynamo.Measure;
 using Curve = Autodesk.Revit.DB.Curve;
 using Vector = Autodesk.LibG.Vector;
 
 namespace Dynamo.Nodes
 {
-    public abstract class dynMeasurementBase:dynNodeWithOneOutput
+    public abstract class MeasurementBase:NodeWithOneOutput
     {
-        protected dynMeasurementBase()
+        protected MeasurementBase()
         {
             ArgumentLacing = LacingStrategy.Longest;
         }
@@ -43,9 +42,9 @@ namespace Dynamo.Nodes
     [NodeName("Surface Area")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("An element which measures the surface area of a face (f)")]
-    public class dynSurfaceArea : dynMeasurementBase
+    public class SurfaceArea : MeasurementBase
     {
-        public dynSurfaceArea()
+        public SurfaceArea()
         {
             InPortData.Add(new PortData("f", "The face whose surface area you wish to calculate (Reference).", typeof(Value.Container)));//Ref to a face of a form
             OutPortData.Add(new PortData("a", "The surface area of the face (Number).", typeof(Value.Number)));
@@ -80,9 +79,9 @@ namespace Dynamo.Nodes
     [NodeName("Get Surface Domain")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Measure the domain of a surface in U and V.")]
-    public class dynSurfaceDomain : dynNodeWithOneOutput
+    public class SurfaceDomain : NodeWithOneOutput
     {
-        public dynSurfaceDomain()
+        public SurfaceDomain()
         {
             InPortData.Add(new PortData("f", "The surface whose domain you wish to calculate (Reference).", typeof(Value.Container)));//Ref to a face of a form
             OutPortData.Add(new PortData("domain", "The surface's domain.", typeof(Value.List)));
@@ -112,16 +111,16 @@ namespace Dynamo.Nodes
             var min = Vector.by_coordinates(bbox.Min.U, bbox.Min.V);
             var max = Vector.by_coordinates(bbox.Max.U, bbox.Max.V);
 
-            return Value.NewContainer(Domain2D.ByMinimumAndMaximum(min, max));
+            return Value.NewContainer(DSCoreNodes.Domain2D.ByMinimumAndMaximum(min, max));
         }
     }
 
     [NodeName("Get Curve Domain")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Measure the domain of a curve.")]
-    public class dynCurveDomain : dynNodeWithOneOutput
+    public class CurveDomain : NodeWithOneOutput
     {
-        public dynCurveDomain()
+        public CurveDomain()
         {
             InPortData.Add(new PortData("curve", "The curve whose domain you wish to calculate.", typeof(Value.Container)));
             OutPortData.Add(new PortData("domain", "The curve's domain.", typeof(Value.Number)));
@@ -161,9 +160,9 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Distance")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Returns the distance between a(XYZ) and b(XYZ).")]
-    public class dynXYZDistance : dynMeasurementBase
+    public class XyzDistance : MeasurementBase
     {
-        public dynXYZDistance()
+        public XyzDistance()
         {
             InPortData.Add(new PortData("a", "Start (XYZ).", typeof(Value.Container)));//Ref to a face of a form
             InPortData.Add(new PortData("b", "End (XYZ)", typeof(Value.Container)));//Ref to a face of a form
@@ -184,9 +183,9 @@ namespace Dynamo.Nodes
     [NodeName("Height")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Returns the height in z of an element.")]
-    public class dynHeight : dynMeasurementBase
+    public class Height : MeasurementBase
     {
-        public dynHeight()
+        public Height()
         {
             InPortData.Add(new PortData("elem", "Level, Family Instance, RefPoint, XYZ", typeof(Value.Container)));//add elements here when adding switch statements 
             OutPortData.Add(new PortData("h", "The height of an element in z relative to project 0.", typeof(Value.Number)));
@@ -198,9 +197,9 @@ namespace Dynamo.Nodes
         {
             double h = 0;
 
-            if (elem is Level)
+            if (elem is Autodesk.Revit.DB.Level)
             {
-                h = ((Level)elem).Elevation;
+                h = ((Autodesk.Revit.DB.Level)elem).Elevation;
                 return h;
             }
             else if (elem is ReferencePoint)
@@ -238,9 +237,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeSearchTags("Distance", "dist", "norm")]
     [NodeDescription("Measures a distance between point(s).")]
-    public class dynDistanceBetweenPoints : dynMeasurementBase
+    public class DistanceBetweenPoints : MeasurementBase
     {
-        public dynDistanceBetweenPoints()
+        public DistanceBetweenPoints()
         {
             InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(Value.Container)));
             InPortData.Add(new PortData("ptB", "A Reference point.", typeof(Value.Container)));
@@ -285,31 +284,28 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Enter a length in project units.")]
     [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
-    public class dynLengthInput : dynNodeWithOneOutput
+    public class LengthInput : NodeWithOneOutput
     {
-        private DynamoLength<Foot> _measure;
-        public DynamoLength<Foot> Measure
+        private double _value;
+        public double Value
         {
-            get { return _measure; }
+            get { return _value; }
             set
             {
-                _measure = value;
-                RaisePropertyChanged("Measure");
+                _value = value;
+                RaisePropertyChanged("Value");
             }
         }
 
-        public dynLengthInput()
+        public LengthInput()
         {
-            //Create a measure to coincide with Revit's internal project units
-            _measure = new DynamoLength<Foot>(0.0);
-
             OutPortData.Add(new PortData("length", "The length. Stored internally as decimal feet.", typeof(Value.Number)));
             RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewNumber(Measure.Item.Length);
+            return FScheme.Value.NewNumber(Value);
         }
 
         public override void SetupCustomUIElements(object ui)
@@ -332,15 +328,14 @@ namespace Dynamo.Nodes
             nodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
-            tb.IsNumeric = false;
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             
             tb.DataContext = this;
-            var bindingVal = new System.Windows.Data.Binding("Measure.Item.Length")
+            var bindingVal = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new RevitProjectUnitsConverter(),
-                ConverterParameter = Measure,
+                //ConverterParameter = Measure,
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
@@ -348,8 +343,6 @@ namespace Dynamo.Nodes
             tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, bindingVal);
             
             tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
-
-            tb.Text = "0.0";
         }
 
         private void editWindowItem_Click(object sender, RoutedEventArgs e)
@@ -357,11 +350,11 @@ namespace Dynamo.Nodes
             var editWindow = new dynEditWindow();
 
             editWindow.DataContext = this;
-            var bindingVal = new System.Windows.Data.Binding("Measure.Item.Length")
+            var bindingVal = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new RevitProjectUnitsConverter(),
-                ConverterParameter = Measure,
+                //ConverterParameter = Measure,
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
@@ -376,9 +369,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement(Measure.Item.GetType().FullName);
-            outEl.SetAttribute("value",  Measure.Item.Length.ToString(CultureInfo.InvariantCulture));
+            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             dynEl.AppendChild(outEl);
         }
 
@@ -386,18 +378,20 @@ namespace Dynamo.Nodes
         {
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
-                if (subNode.Name.Equals(Measure.Item.GetType().FullName))
+                // this node now stores a double, having previously stored a measure type
+                // by checking for the measure type as well we allow for loading of older files.
+                if (subNode.Name.Equals(typeof(double).FullName) || subNode.Name.Equals("Dynamo.Measure.Foot"))
                 {
-                    Measure.Item.Length = DeserializeValue(subNode.Attributes[0].Value);
+                    Value = DeserializeValue(subNode.Attributes[0].Value);
                 }
             }
         }
 
         public override string PrintExpression()
         {
-            return Measure.Item.ToString();
+            return Value.ToString();
         }
-        
+
         protected double DeserializeValue(string val)
         {
             try

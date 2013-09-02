@@ -36,9 +36,9 @@ namespace Dynamo.Nodes
     [NodeName("Transaction")]
     [NodeCategory(BuiltinNodeCategories.CORE_TIME)]
     [NodeDescription("Executes Expression inside of a Revit API transaction")]
-    public class dynTransaction : dynNodeModel
+    public class Transaction : NodeModel
     {
-        public dynTransaction()
+        public Transaction()
         {
             InPortData.Add(new PortData("expr", "Expression to run in a transaction.", typeof(object)));
             OutPortData.Add(new PortData("result", "Result of the expression.", typeof(Value.List)));
@@ -48,7 +48,7 @@ namespace Dynamo.Nodes
 
         void setDirty(bool val)
         {
-            if (ReportingEnabled)
+            if (IsReportingModifications)
             {
                 DisableReporting();
                 RequiresRecalc = val;
@@ -58,7 +58,7 @@ namespace Dynamo.Nodes
                 RequiresRecalc = val;
         }
 
-        protected override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        protected override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
@@ -75,9 +75,9 @@ namespace Dynamo.Nodes
 
         private class TransactionProcedureNode : InputNode
         {
-            private readonly dynTransaction _node;
+            private readonly Transaction _node;
             
-            public TransactionProcedureNode(dynTransaction node, IEnumerable<string> inputNames)
+            public TransactionProcedureNode(Transaction node, IEnumerable<string> inputNames)
                 : base(inputNames)
             {
                 _node = node;

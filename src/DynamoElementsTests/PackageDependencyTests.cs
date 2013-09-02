@@ -96,24 +96,24 @@ namespace Dynamo.Tests
 
         #region utility methods
 
-        public dynNodeModel NodeFromCurrentSpace(DynamoViewModel vm, string guidString)
+        public NodeModel NodeFromCurrentSpace(DynamoViewModel vm, string guidString)
         {
             Guid guid = Guid.Empty;
             Guid.TryParse(guidString, out guid);
             return NodeFromCurrentSpace(vm, guid);
         }
 
-        public dynNodeModel NodeFromCurrentSpace(DynamoViewModel vm, Guid guid)
+        public NodeModel NodeFromCurrentSpace(DynamoViewModel vm, Guid guid)
         {
             return vm.CurrentSpace.Nodes.FirstOrDefault((node) => node.GUID == guid);
         }
 
-        public dynWatch GetWatchNodeFromCurrentSpace(DynamoViewModel vm, string guidString)
+        public Watch GetWatchNodeFromCurrentSpace(DynamoViewModel vm, string guidString)
         {
             var nodeToWatch = NodeFromCurrentSpace(vm, guidString);
             Assert.NotNull(nodeToWatch);
-            Assert.IsAssignableFrom(typeof(dynWatch), nodeToWatch);
-            return (dynWatch)nodeToWatch;
+            Assert.IsAssignableFrom(typeof(Watch), nodeToWatch);
+            return (Watch)nodeToWatch;
         }
 
         public double GetDoubleFromFSchemeValue(FScheme.Value value)
@@ -136,25 +136,16 @@ namespace Dynamo.Tests
         public void CanDiscoverDependenciesForFunctionDefinitionOpenFromFile()
         {
             var vm = controller.DynamoViewModel;
-            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\dynamo_elements_samples\working\custom_node_dep_test\");
-
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "RootNode.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "SecondLevelNode1.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "SecondLevelNode2.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "ThirdLevelCustomNodeB1.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "ThirdLevelCustomNodeB2.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "ThirdLevelCustomNodeB3.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "ThirdLevelCustomNodeA1.dyf")) != null);
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "ThirdLevelCustomNodeA2.dyf")) != null);
+            var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\core\custom_node_dep_test\");
 
             string openPath = Path.Combine(examplePath, "custom_node_dep_test.dyn");
             controller.DynamoModel.Open(openPath);
             var rootNode = NodeFromCurrentSpace(vm, "333ed3ad-c786-4064-8203-e79ce7cb109f");
 
             Assert.NotNull(rootNode);
-            Assert.IsAssignableFrom(typeof(dynFunction), rootNode);
+            Assert.IsAssignableFrom(typeof(Function), rootNode);
 
-            var funcRootNode = rootNode as dynFunction;
+            var funcRootNode = rootNode as Function;
 
             var dirDeps = funcRootNode.Definition.DirectDependencies;
             Assert.AreEqual(2, dirDeps.Count() );

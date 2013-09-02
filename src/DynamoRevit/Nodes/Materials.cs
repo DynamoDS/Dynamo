@@ -9,7 +9,7 @@ namespace Dynamo.Nodes
     [NodeName("Get Material By Name")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
     [NodeDescription("Get a material from the active Revit document by name.")]
-    public class Material : dynNodeWithOneOutput
+    public class Material : NodeWithOneOutput
     {
         public Material()
         {
@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
             {
                 foundMat = (Autodesk.Revit.DB.Material)fec.ToElements().First(x => x.Name == matName);
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 throw new Exception("A material with that name could not be found.");
             }
