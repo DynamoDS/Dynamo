@@ -28,7 +28,7 @@ namespace Dynamo.ViewModels
     /// Interaction logic for dynControl.xaml
     /// </summary>
     
-    public partial class dynNodeViewModel : dynViewModelBase
+    public partial class NodeViewModel : ViewModelBase
     {
         #region delegates
         public delegate void SetToolTipDelegate(string message);
@@ -37,11 +37,11 @@ namespace Dynamo.ViewModels
 
         #region private members
 
-        ObservableCollection<dynPortViewModel> inPorts = new ObservableCollection<dynPortViewModel>();
-        ObservableCollection<dynPortViewModel> outPorts = new ObservableCollection<dynPortViewModel>();
+        ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
+        ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
         
-        dynNodeModel nodeLogic;
-        public dynNodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; }}
+        NodeModel nodeLogic;
+        public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; }}
         
         private bool isFullyConnected = false;
         
@@ -69,7 +69,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public dynNodeModel NodeLogic
+        public NodeModel NodeLogic
         {
             get { return nodeLogic; }
         }
@@ -79,7 +79,7 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.ToolTipText; }
         }
         
-        public ObservableCollection<dynPortViewModel> InPorts
+        public ObservableCollection<PortViewModel> InPorts
         {
             get { return inPorts; }
             set
@@ -89,7 +89,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public ObservableCollection<dynPortViewModel> OutPorts
+        public ObservableCollection<PortViewModel> OutPorts
         {
             get { return outPorts; }
             set
@@ -117,68 +117,8 @@ namespace Dynamo.ViewModels
                 {
                     return "Not available in custom nodes";
                 }
-                return BuildValueString(nodeLogic.OldValue, 0, 3, 0, 2).TrimEnd('\n');
+                return NodeModel.BuildValueString(nodeLogic.OldValue, 0, 3, 0, 2).TrimEnd('\n');
             }
-        }
-
-        public static string BuildValueString(FScheme.Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth )
-        {
-            if (eIn == null)
-                return "<null>";
-
-            string accString = String.Concat(Enumerable.Repeat("  ", currentDepth));
-
-            if ( maxDepth == currentDepth || currentListIndex == maxListIndex ) 
-            {
-                accString += "...\n";
-                return accString;
-            }
-            
-            if (eIn.IsContainer)
-            {
-                var str = (eIn as FScheme.Value.Container).Item != null
-                    ? (eIn as FScheme.Value.Container).Item.ToString()
-                    : "null";
-
-                accString += str;
-            }
-            else if (eIn.IsFunction)
-            {
-                accString += "<function>";
-            }
-            else if (eIn.IsList)
-            {
-                accString += "List\n";
-
-                var list = (eIn as FScheme.Value.List).Item;
-
-                // build all elements of sub list
-                foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
-                {
-
-                    if (e.Index > maxListIndex)
-                    {
-                        break;
-                    }
-                    accString += BuildValueString(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth );
-                }
-            }
-            else if (eIn.IsNumber)
-            {
-                accString += (eIn as FScheme.Value.Number).Item.ToString();
-            }
-            else if (eIn.IsString)
-            {
-                accString += "\"" + (eIn as FScheme.Value.String).Item + "\"";
-            }
-            else if (eIn.IsSymbol)
-            {
-                accString += "<" + (eIn as FScheme.Value.Symbol).Item + ">";
-            }
-
-            accString += "\n";
-
-            return accString;
         }
 
         public ElementState State
@@ -304,7 +244,7 @@ namespace Dynamo.ViewModels
 
         #region constructors
 
-        public dynNodeViewModel(dynNodeModel logic)
+        public NodeViewModel(NodeModel logic)
         {
             nodeLogic = logic;
 
@@ -327,7 +267,7 @@ namespace Dynamo.ViewModels
 
         void Controller_RequestNodeSelect(object sender, EventArgs e)
         {
-            dynModelBase n = (e as ModelEventArgs).Model;
+            ModelBase n = (e as ModelEventArgs).Model;
 
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(n);
@@ -342,12 +282,12 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in nodeLogic.InPorts)
             {
-                InPorts.Add(new dynPortViewModel(item as dynPortModel, nodeLogic));
+                InPorts.Add(new PortViewModel(item as PortModel, nodeLogic));
             }
 
             foreach (var item in nodeLogic.OutPorts)
             {
-                OutPorts.Add(new dynPortViewModel(item as dynPortModel, nodeLogic));
+                OutPorts.Add(new PortViewModel(item as PortModel, nodeLogic));
             }
         }
 
@@ -492,7 +432,7 @@ namespace Dynamo.ViewModels
 
         private void ViewCustomNodeWorkspace(object parameter)
         {
-            var f = (nodeLogic as dynFunction);
+            var f = (nodeLogic as Function);
             if(f!= null)
                 dynSettings.Controller.DynamoViewModel.ViewCustomNodeWorkspace(f.Definition);
         }
@@ -531,7 +471,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    InPorts.Add(new dynPortViewModel(item as dynPortModel,nodeLogic));
+                    InPorts.Add(new PortViewModel(item as PortModel,nodeLogic));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -555,7 +495,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    OutPorts.Add(new dynPortViewModel(item as dynPortModel, nodeLogic));
+                    OutPorts.Add(new PortViewModel(item as PortModel, nodeLogic));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -661,8 +601,8 @@ namespace Dynamo.ViewModels
 
     public class NodeHelpEventArgs : EventArgs
     {
-        public dynNodeModel Model { get; set; }
-        public NodeHelpEventArgs(dynNodeModel model)
+        public NodeModel Model { get; set; }
+        public NodeHelpEventArgs(NodeModel model)
         {
             Model = model;
         }

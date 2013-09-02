@@ -2,7 +2,7 @@
 
 namespace Dynamo.ViewModels
 {
-    public partial class dynConnectorViewModel
+    public partial class ConnectorViewModel
     {
         private DelegateCommand _connectCommand;
         private DelegateCommand _redrawCommand;

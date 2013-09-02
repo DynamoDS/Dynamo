@@ -7,9 +7,9 @@ namespace Dynamo.Nodes
     [NodeName("Domain")]
     [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
     [NodeDescription("Create a domain specifying the Minimum and Maximum UVs.")]
-    public class dynDomain : dynNodeWithOneOutput
+    public class Domain : NodeWithOneOutput
     {
-        public dynDomain()
+        public Domain()
         {
             InPortData.Add(new PortData("min", "The minimum of the domain.", typeof(FScheme.Value.Number)));
             InPortData.Add(new PortData("max", "The maximum of the domain.", typeof(FScheme.Value.Number)));

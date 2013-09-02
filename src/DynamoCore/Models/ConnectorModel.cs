@@ -21,7 +21,7 @@ namespace Dynamo.Models
 
     public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
 
-    public class dynConnectorModel: dynModelBase
+    public class ConnectorModel: ModelBase
     {
 
         #region properties
@@ -34,16 +34,16 @@ namespace Dynamo.Models
                 Connected(this, e);
         }
 
-        dynPortModel pStart;
-        dynPortModel pEnd;
+        PortModel pStart;
+        PortModel pEnd;
 
-        public dynPortModel Start
+        public PortModel Start
         {
             get { return pStart; }
             set { pStart = value; }
         }
 
-        public dynPortModel End
+        public PortModel End
         {
             get { return pEnd; }
             set
@@ -67,25 +67,25 @@ namespace Dynamo.Models
         /// <param name="endIndex"></param>
         /// <param name="portType"></param>
         /// <returns>The valid connector model or null if the connector is invalid</returns>
-        public static dynConnectorModel Make(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType)
+        public static ConnectorModel Make(NodeModel start, NodeModel end, int startIndex, int endIndex, int portType)
         {
             if (start != null && end != null && start != end && startIndex >= 0
                 && endIndex >= 0 && start.OutPorts.Count > startIndex && end.InPorts.Count > endIndex )
             {
-                return new dynConnectorModel(start, end, startIndex, endIndex, portType);
+                return new ConnectorModel(start, end, startIndex, endIndex, portType);
             }
             
             return null;
 
         }
 
-        private dynConnectorModel(dynNodeModel start, dynNodeModel end, int startIndex, int endIndex, int portType )
+        private ConnectorModel(NodeModel start, NodeModel end, int startIndex, int endIndex, int portType )
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
             pStart = start.OutPorts[startIndex];
 
-            dynPortModel endPort = null;
+            PortModel endPort = null;
 
             if (portType == 0)
                 endPort = end.InPorts[endIndex];
@@ -98,7 +98,7 @@ namespace Dynamo.Models
 
         #endregion
         
-        public bool Connect(dynPortModel p)
+        public bool Connect(PortModel p)
         {
             //test if the port that you are connecting too is not the start port or the end port
             //of the current connector
@@ -132,7 +132,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        public void Disconnect(dynPortModel p)
+        public void Disconnect(PortModel p)
         {
             if (p.Equals(pStart))
             {

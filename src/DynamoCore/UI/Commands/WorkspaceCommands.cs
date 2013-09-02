@@ -2,7 +2,7 @@
 
 namespace Dynamo.ViewModels
 {
-    public partial class dynWorkspaceViewModel
+    public partial class WorkspaceViewModel
     {
         private DelegateCommand _hideCommand;
         private DelegateCommand _crossSelectCommand;

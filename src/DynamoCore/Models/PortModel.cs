@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Models
 {
@@ -12,7 +13,7 @@ namespace Dynamo.Models
     public delegate void PortDisconnectedHandler(object sender, EventArgs e);
     public enum PortType { INPUT, OUTPUT };
 
-    public class dynPortModel : dynModelBase
+    public class PortModel : ModelBase
     {
         #region events
 
@@ -35,11 +36,11 @@ namespace Dynamo.Models
         #region private fields
         Point center;
         bool isConnected;
-        dynNodeModel owner;
+        NodeModel owner;
         int index;
         PortType portType;
         string name;
-        ObservableCollection<dynConnectorModel> connectors = new ObservableCollection<dynConnectorModel>();
+        ObservableCollection<ConnectorModel> connectors = new ObservableCollection<ConnectorModel>();
         private bool _usingDefaultValue;
         private bool _defaultValueEnabled;
 
@@ -47,7 +48,7 @@ namespace Dynamo.Models
 
         #region public members
 
-        public ObservableCollection<dynConnectorModel> Connectors
+        public ObservableCollection<ConnectorModel> Connectors
         {
             get { return connectors; }
             set { connectors = value; }
@@ -70,7 +71,7 @@ namespace Dynamo.Models
             set { portType = value; }
         }
 
-        public dynNodeModel Owner
+        public NodeModel Owner
         {
             get { return owner; }
             set
@@ -111,6 +112,20 @@ namespace Dynamo.Models
                     {
                         return Owner.OutPortData[index].ToolTipString;
                     }
+                }
+                return "";
+            }
+        }
+
+        public string DefaultValueTip
+        {
+            get
+            {
+                if (PortType == PortType.INPUT && Owner != null)
+                {
+                    var port = Owner.InPortData[index];
+                    if (port.HasDefaultValue)
+                        return FScheme.print(port.DefaultValue);
                 }
                 return "";
             }
@@ -161,7 +176,7 @@ namespace Dynamo.Models
 
         #endregion
 
-        public dynPortModel(int index, PortType portType, dynNodeModel owner, string name)
+        public PortModel(int index, PortType portType, NodeModel owner, string name)
         {
             Index = index;
             IsConnected = false;
@@ -172,7 +187,7 @@ namespace Dynamo.Models
             DefaultValueEnabled = false;
         }
 
-        public void Connect(dynConnectorModel connector)
+        public void Connect(ConnectorModel connector)
         {
             connectors.Add(connector);
 
@@ -182,7 +197,7 @@ namespace Dynamo.Models
             IsConnected = true;
         }
 
-        public void Disconnect(dynConnectorModel connector)
+        public void Disconnect(ConnectorModel connector)
         {
             //throw the event for a connection
             OnPortDisconnected(EventArgs.Empty);
