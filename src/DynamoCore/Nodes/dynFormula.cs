@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
                     if (value != null)
                     {
                         DisableReporting();
-                        processFormula();
+                        ProcessFormula();
                         RaisePropertyChanged("FormulaString");
                         RequiresRecalc = true;
                         EnableReporting();
@@ -52,16 +52,16 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            dynEl.InnerText = FormulaString;
+            nodeElement.InnerText = FormulaString;
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
-            if (elNode.Attributes != null)
+            if (nodeElement.Attributes != null)
             {
-                var formulaAttr = elNode.Attributes["formula"];
+                var formulaAttr = nodeElement.Attributes["formula"];
                 if (formulaAttr != null)
                 {
                     FormulaString = formulaAttr.Value;
@@ -69,21 +69,21 @@ namespace Dynamo.Nodes
                 }
             }
             
-            FormulaString = elNode.InnerText;
+            FormulaString = nodeElement.InnerText;
         }
 
-        private static HashSet<string> RESERVED_FUNC_NAMES = new HashSet<string> { 
+        private static readonly HashSet<string> ReservedFuncNames = new HashSet<string> { 
             "abs", "acos", "asin", "atan", "ceiling", "cos",
             "exp", "floor", "ieeeremainder", "log", "log10",
             "max", "min", "pow", "round", "sign", "sin", "sqrt",
             "tan", "truncate", "in", "if"
         };
 
-        private static HashSet<string> RESERVED_PARAM_NAMES = new HashSet<string> {
+        private static readonly HashSet<string> ReservedParamNames = new HashSet<string> {
             "pi", "π"
         };
 
-        private void processFormula()
+        private void ProcessFormula()
         {
             Expression e;
             try
@@ -107,7 +107,7 @@ namespace Dynamo.Nodes
 
             e.EvaluateFunction += delegate(string name, FunctionArgs args)
             {
-                if (!paramSet.Contains(name) && !RESERVED_FUNC_NAMES.Contains(name))
+                if (!paramSet.Contains(name) && !ReservedFuncNames.Contains(name))
                 {
                     paramSet.Add(name);
                     parameters.Add(Tuple.Create(name, typeof(Value.Function)));
@@ -123,7 +123,7 @@ namespace Dynamo.Nodes
 
             e.EvaluateParameter += delegate(string name, ParameterArgs args)
             {
-                if (!paramSet.Contains(name) && !RESERVED_PARAM_NAMES.Contains(name))
+                if (!paramSet.Contains(name) && !ReservedParamNames.Contains(name))
                 {
                     paramSet.Add(name);
                     parameters.Add(Tuple.Create(name, typeof(Value.Number)));
@@ -146,6 +146,7 @@ namespace Dynamo.Nodes
             }
 
             RegisterInputs();
+            ValidateConnections();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
