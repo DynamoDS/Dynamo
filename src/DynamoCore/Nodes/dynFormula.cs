@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 using System.Xml;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
@@ -54,7 +55,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.InnerText = FormulaString;
+            var formStringNode = xmlDoc.CreateElement("FormulaText");
+            formStringNode.InnerText = FormulaString;
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -68,8 +70,11 @@ namespace Dynamo.Nodes
                     return;
                 }
             }
-            
-            FormulaString = nodeElement.InnerText;
+
+            var formStringNode = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(childNode => childNode.Name == "FormulaText");
+            FormulaString = formStringNode != null 
+                ? formStringNode.InnerText 
+                : nodeElement.InnerText;
         }
 
         private static readonly HashSet<string> ReservedFuncNames = new HashSet<string> { 
