@@ -6,7 +6,7 @@
     
     <!--Workspaces-->
     
-    <Color x:Key="WorkspaceBackgroundHome">#ff8c00</Color>
+    <Color x:Key="WorkspaceBackgroundHome">#DCDCDC</Color>
     <Color x:Key="WorkspaceBackgroundCustom">#FFFFDC</Color>
     <SolidColorBrush Color="#757575" x:Key="WorkspaceTabHeaderTextBrush"></SolidColorBrush>
     <SolidColorBrush Color="{StaticResource WorkspaceBackgroundHome}" x:Key="WorkspaceBackgroundHomeBrush"></SolidColorBrush>
@@ -24,14 +24,14 @@
     
     <!--Nodes-->
     
-    <Color x:Key="red1" R="255" G="255" B="255" A="255"></Color>
-    <Color x:Key="red2" R="255" G="255" B="255" A="255"></Color>
-    <Color x:Key="green1" R="255" G="255" B="255" A="255" ></Color>
-    <Color x:Key="green2" R="255" G="255" B="255" A="255" ></Color>
-    <Color x:Key="orange1" R="255" G="255" B="255" A="255" ></Color>
-    <Color x:Key="orange2" R="255" G="255" B="255" A="255" ></Color>
-    <Color x:Key="gray1" R="255" G="255" B="255" A="255" ></Color>
-    <Color x:Key="gray2" R="128" G="128" B="128" A="255" ></Color>
+    <Color x:Key="red1" R="255" G="64" B="64" A="255"></Color>
+    <Color x:Key="red2" R="205" G="51" B="51" A="255"></Color>
+    <Color x:Key="green1" R="193" G="255" B="193" A="255" ></Color>
+    <Color x:Key="green2" R="155" G="250" B="155" A="255" ></Color>
+    <Color x:Key="orange1" R="255" G="207" B="98" A="255" ></Color>
+    <Color x:Key="orange2" R="235" G="187" B="78" A="255" ></Color>
+    <Color x:Key="gray1" R="220" G="220" B="220" A="255" ></Color>
+    <Color x:Key="gray2" R="192" G="192" B="192" A="255" ></Color>
 
     <LinearGradientBrush x:Key="nodeActiveBrush">
         <LinearGradientBrush.StartPoint>
