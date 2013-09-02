@@ -57,6 +57,7 @@ namespace Dynamo.Nodes
         {
             var formStringNode = xmlDoc.CreateElement("FormulaText");
             formStringNode.InnerText = FormulaString;
+            nodeElement.AppendChild(formStringNode);
         }
 
         protected override void LoadNode(XmlNode nodeElement)
