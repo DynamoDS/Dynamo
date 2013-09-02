@@ -138,9 +138,8 @@ namespace Dynamo.Models
     /// <summary>
     /// The Dynamo model.
     /// </summary>
-    public class DynamoModel:ModelBase
+    public class DynamoModel : ModelBase
     {
-
         #region properties and fields
 
         public event EventHandler RequestLayoutUpdate;
@@ -377,6 +376,7 @@ namespace Dynamo.Models
             var funcDef = manager.GetFunctionDefinition(info.Guid);
             var ws = funcDef.Workspace;
             ws.Zoom = workspaceHeader.Zoom;
+            ws.HasUnsavedChanges = false;
 
             if (!this.Workspaces.Contains(ws))
             {
@@ -391,7 +391,6 @@ namespace Dynamo.Models
         
         internal bool OpenDefinition( string xmlPath )
         {
-
             var workspaceInfo = WorkspaceHeader.FromPath(xmlPath);
 
             if (workspaceInfo == null)
@@ -911,6 +910,7 @@ namespace Dynamo.Models
                 CleanWorkbench();
                 return false;
             }
+            CurrentSpace.HasUnsavedChanges = false;
             return true;
         }
 

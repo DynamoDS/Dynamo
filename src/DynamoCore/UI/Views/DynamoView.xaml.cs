@@ -181,14 +181,14 @@ namespace Dynamo.Controls
             var dialogText = "";
             if (e.Workspace is FuncWorkspace)
             {
-                dialogText = "You have unsaved changes to custom node workspace " + e.Workspace.Name +
-                             "\n\n Would you like to save your changes?";
+                dialogText = "You have unsaved changes to custom node workspace: \"" + e.Workspace.Name +
+                             "\"\n\n Would you like to save your changes?";
             }
             else // homeworkspace
             {
                 if (string.IsNullOrEmpty(e.Workspace.FilePath))
                 {
-                    dialogText = "You haven't saved your changes to the Home workspace. " +
+                    dialogText = "You have unsaved changes to the Home workspace." +
                                  "\n\n Would you like to save your changes?";
                 }
                 else
