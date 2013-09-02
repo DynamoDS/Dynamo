@@ -427,7 +427,7 @@ namespace Dynamo.Models
                 if (_identifier == null)
                 {
                     _identifier = new IdentifierNode();
-                    _identifier.Name = dynAstBuilder.StringConstants.kVarPrefix + GUID.ToString().Replace("-", string.Empty);
+                    _identifier.Name = AstBuilder.StringConstants.kVarPrefix + GUID.ToString().Replace("-", string.Empty);
                 }
                 return _identifier;
             }
@@ -754,7 +754,7 @@ namespace Dynamo.Models
             return nodes[outPort];
         }
 
-        protected virtual AssociativeNode CompileToAstNodeInternal(dynAstBuilder builder, 
+        protected virtual AssociativeNode CompileToAstNodeInternal(AstBuilder builder, 
                                                                    List<AssociativeNode> inputAstNodes)
         {
             // For any dyn node which doesn't override this function, we treat
@@ -763,7 +763,7 @@ namespace Dynamo.Models
             return builder.BuildEvaluator(this, inputAstNodes);
         }
 
-        public AssociativeNode CompileToAstNode(dynAstBuilder builder)
+        public AssociativeNode CompileToAstNode(AstBuilder builder)
         {
             if (!RequiresRecalc || builder.ContainsAstNodes(GUID))
             {
@@ -777,7 +777,7 @@ namespace Dynamo.Models
             List<AssociativeNode> inputAstNodes = new List<AssociativeNode>();
             for (int index = 0; index < InPortData.Count; ++index)
             {
-                Tuple<int, dynNodeModel> input;
+                Tuple<int, NodeModel> input;
                 if (!TryGetInput(index, out input))
                 {
                     isPartiallyApplied = true;

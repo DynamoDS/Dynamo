@@ -15,14 +15,14 @@ using ProtoCore.Utils;
 
 namespace Dynamo.DSEngine
 {
-    public class dynNodeEvalutor
+    public class NodeEvaluator
     {
-        private dynNodeWithOneOutput _node;
+        private NodeWithOneOutput _node;
 
-        public dynNodeEvalutor(dynNodeModel node)
+        public NodeEvaluator(NodeModel node)
         {
-            Debug.Assert(node is dynNodeWithOneOutput);
-            _node = node as dynNodeWithOneOutput;
+            Debug.Assert(node is NodeWithOneOutput);
+            _node = node as NodeWithOneOutput;
         }
 
         public object Evaluate(List<object> objs)
@@ -60,12 +60,12 @@ namespace Dynamo.DSEngine
     /// A linked list of list. The node can be accessed throuh a key. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class dynLinkedListOfList<Key, T>: IEnumerable<List<T>>
+    internal class LinkedListOfList<Key, T>: IEnumerable<List<T>>
     {
         private Dictionary<Key, LinkedListNode<List<T>>> NodeMap; 
         private LinkedList<List<T>> NodeList;
 
-        public dynLinkedListOfList()
+        public LinkedListOfList()
         {
             NodeMap = new Dictionary<Key, LinkedListNode<List<T>>>();
             NodeList = new LinkedList<List<T>>();
@@ -110,11 +110,11 @@ namespace Dynamo.DSEngine
         }
     }
 
-    public class dynAstBuilder
+    public class AstBuilder
     {
         public Dictionary<string, object> EvalContext;
-        private dynLinkedListOfList<Guid, AssociativeNode> AstNodes;
-        private dynLinkedListOfList<Guid, String> Sources;
+        private LinkedListOfList<Guid, AssociativeNode> AstNodes;
+        private LinkedListOfList<Guid, System.String> Sources;
 
         internal class StringConstants
         {
@@ -136,11 +136,11 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public dynAstBuilder()
+        public AstBuilder()
         {
             EvalContext = new Dictionary<string, object>();
-            AstNodes = new dynLinkedListOfList<Guid, AssociativeNode>();
-            Sources = new dynLinkedListOfList<Guid, string>();
+            AstNodes = new LinkedListOfList<Guid, AssociativeNode>();
+            Sources = new LinkedListOfList<Guid, string>();
         }
 
         public void AddNode(Guid dynamoNodeId, AssociativeNode astNode)
@@ -252,17 +252,17 @@ namespace Dynamo.DSEngine
         /// And create a function call to func_guid().
         /// 
         /// </summary>
-        /// <param name="dynNode"></param>
+        /// <param name="node"></param>
         /// <param name="inputAstNodes"></param>
         /// <returns></returns>
-        public FunctionCallNode BuildEvaluator(dynNodeModel dynNode, 
+        public FunctionCallNode BuildEvaluator(NodeModel node, 
                                                List<AssociativeNode> inputAstNodes)
         {
             // Here we'll create a function defintion which redirect 
             // DesignScript function call back to the node's own implementation 
             // of Evaluate().
             string evaluator = NamingUtil.NewUniqueName(StringConstants.kEvalFunctionPrefix);
-            this.EvalContext.Add(evaluator, new dynNodeEvalutor(dynNode));
+            this.EvalContext.Add(evaluator, new NodeEvaluator(node));
 
             List<VarDeclNode> arguments = new List<VarDeclNode>();
             for (int i = 0; i < inputAstNodes.Count; ++i)
@@ -304,13 +304,13 @@ namespace Dynamo.DSEngine
             evalFunc.Singnature = new ArgumentSignatureNode();
             evalFunc.Singnature.Arguments = arguments;
             evalFunc.FunctionBody = funcBody;
-            AddNode(dynNode.GUID, evalFunc);
+            AddNode(node.GUID, evalFunc);
 
             // Now make a call to this wrapper function
             return BuildFunctionCall(evalFunc.Name, inputAstNodes);
         }
 
-        public void BuildEvaluation(dynNodeModel dynNode, 
+        public void BuildEvaluation(NodeModel node, 
                                     AssociativeNode rhs, 
                                     bool isPartial = false)
         {
@@ -323,15 +323,15 @@ namespace Dynamo.DSEngine
                 {
                     // create a function definition for it
                     var newFunc = BuildPartialFunction(funcCall);
-                    AddNode(dynNode.GUID, newFunc);
+                    AddNode(node.GUID, newFunc);
 
                     // create a function pointer for this node
                     rhs = BuildIdentifier(newFunc.Name);
                 }
             }
 
-            var assignment = BuildAssignment(dynNode.AstIdentifier, rhs);
-            AddNode(dynNode.GUID, assignment);
+            var assignment = BuildAssignment(node.AstIdentifier, rhs);
+            AddNode(node.GUID, assignment);
         }
     }
 }
