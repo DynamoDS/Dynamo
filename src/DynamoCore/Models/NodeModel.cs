@@ -427,7 +427,7 @@ namespace Dynamo.Models
                 if (_identifier == null)
                 {
                     _identifier = new IdentifierNode();
-                    _identifier.Name = AstBuilder.StringConstants.kVarPrefix + GUID.ToString().Replace("-", string.Empty);
+                    _identifier.Name = _identifier.Value = AstBuilder.StringConstants.kVarPrefix + GUID.ToString().Replace("-", string.Empty);
                 }
                 return _identifier;
             }
