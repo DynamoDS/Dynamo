@@ -13,7 +13,6 @@ namespace Dynamo.Nodes.Search
 
         public abstract ObservableCollection<BrowserItem> Items { get; set; }
 
-
         /// <summary>
         ///     If this is a leaf and visible, add to items, otherwise, recurse on children
         /// </summary>
@@ -60,7 +59,7 @@ namespace Dynamo.Nodes.Search
         ///     Adds an element as a child of this one, while updating its parent and oldparent field
         /// </summary>
         /// <param name="elem">The element in question</param>
-        public void AddChild(BrowserInternalElement elem)
+        internal void AddChild(BrowserInternalElement elem)
         {
 
             elem.OldParent = elem.Parent;

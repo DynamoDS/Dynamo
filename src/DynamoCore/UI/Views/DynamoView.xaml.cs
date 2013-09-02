@@ -33,6 +33,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
+using String = System.String;
 
 namespace Dynamo.Controls
 {
@@ -54,6 +55,21 @@ namespace Dynamo.Controls
         public bool ConsoleShowing
         {
             get { return LogScroller.Height > 0; }
+        }
+
+        public static Application Start()
+        {
+            var controller = DynamoController.MakeSandbox();
+            var app = new Application();
+
+            //create the view
+            var ui = new DynamoView();
+            ui.DataContext = controller.DynamoViewModel;
+            controller.UIDispatcher = ui.Dispatcher;
+
+            app.Run(ui);
+
+            return app;
         }
 
         public DynamoView()
@@ -84,10 +100,13 @@ namespace Dynamo.Controls
                                                                      _timer.Elapsed));
             LoadSamplesMenu();
 
-            //SEARCH
+            #region Search initialization
+
             var search = new SearchView {DataContext = dynSettings.Controller.SearchViewModel};
             sidebarGrid.Children.Add(search);
             dynSettings.Controller.SearchViewModel.Visible = true;
+
+            #endregion
 
             //PACKAGE MANAGER
             dynSettings.PackageManagerClient.ShowPackagePublishUIRequested += _vm_RequestShowPackageManagerPublish;
@@ -117,6 +136,7 @@ namespace Dynamo.Controls
                 _pubPkgView = new PackageManagerPublishView(model);
                 _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
                 _pubPkgView.Show();
+                _pubPkgView.Owner = this;
             }
 
             _pubPkgView.Focus();
@@ -131,6 +151,7 @@ namespace Dynamo.Controls
                 _searchPkgsView = new PackageManagerSearchView(pms);
                 _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
                 _searchPkgsView.Show();
+                _searchPkgsView.Owner = this;
             }
              _searchPkgsView.Focus();
         }
@@ -143,6 +164,8 @@ namespace Dynamo.Controls
                 _installedPkgsView = new InstalledPackagesView();
                 _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
                 _installedPkgsView.Show();
+                _installedPkgsView.Owner = this;
+                
             }
             _installedPkgsView.Focus();
         }
@@ -228,13 +251,13 @@ namespace Dynamo.Controls
 
                 // connectors are most often within the bounding box of the nodes and notes
 
-                foreach (dynNodeModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Nodes)
+                foreach (NodeModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Nodes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                foreach (dynNoteModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Notes)
+                foreach (NoteModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Notes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
@@ -296,10 +319,11 @@ namespace Dynamo.Controls
             {
                 //var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
                 var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories)
-                    {
-                        nameBox = {Text = e.Name},
-                        categoryBox = {Text = e.Category}
-                    };
+                {
+                    nameBox = { Text = e.Name },
+                    categoryBox = { Text = e.Category },
+                    DescriptionInput = { Text = e.Description }
+                };
 
                 if (dialog.ShowDialog() != true)
                 {
@@ -325,7 +349,7 @@ namespace Dynamo.Controls
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
-                else if (e.Category.Equals(""))
+                else if (dialog.Category.Equals(""))
                 {
                     error = "You must enter a new category or choose one from the existing categories.";
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
@@ -385,7 +409,7 @@ namespace Dynamo.Controls
 
             int workspace_index = _vm.CurrentWorkspaceIndex;
 
-            dynWorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
+            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
             view_model.WatchEscapeIsDown = true;
         }
@@ -397,7 +421,7 @@ namespace Dynamo.Controls
 
             int workspace_index = _vm.CurrentWorkspaceIndex;
 
-            dynWorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
+            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
             view_model.WatchEscapeIsDown = false;
         }
@@ -408,7 +432,7 @@ namespace Dynamo.Controls
             //and trigger the command
             string id = id_tb.Text;
             int workspace_index = _vm.CurrentWorkspaceIndex;
-            dynWorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
+            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
             if (view_model.FindByIdCommand.CanExecute(id))
                 view_model.FindByIdCommand.Execute(id);
         }

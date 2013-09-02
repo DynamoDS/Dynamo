@@ -11,6 +11,12 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.Practices.Prism;
 using NUnit.Framework;
+using CurveByPoints = Autodesk.Revit.DB.CurveByPoints;
+using DividedSurface = Autodesk.Revit.DB.DividedSurface;
+using ModelCurve = Autodesk.Revit.DB.ModelCurve;
+using Plane = Autodesk.Revit.DB.Plane;
+using SketchPlane = Autodesk.Revit.DB.SketchPlane;
+using Transaction = Autodesk.Revit.DB.Transaction;
 using Value = Dynamo.FScheme.Value;
 
 namespace DynamoRevitTests
@@ -205,10 +211,10 @@ namespace DynamoRevitTests
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection);
+            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
             Assert.AreEqual(1, selectionNodes.Count());
 
-            ((dynCurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
+            ((CurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
 
             dynSettings.Controller.RunExpression(true);
         }
@@ -225,10 +231,10 @@ namespace DynamoRevitTests
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection);
+            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
             Assert.AreEqual(1, selectionNodes.Count());
 
-            ((dynCurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
+            ((CurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
 
             dynSettings.Controller.RunExpression(true);
         }
@@ -248,11 +254,11 @@ namespace DynamoRevitTests
             model.Open(testPath);
 
             //get the two selection nodes in the sample
-            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection);
+            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
             Assert.AreEqual(2, selectionNodes.Count());
 
-            ((dynCurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
-            ((dynCurvesBySelection)selectionNodes.ElementAt(1)).SelectedElement = mc2;
+            ((CurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
+            ((CurvesBySelection)selectionNodes.ElementAt(1)).SelectedElement = mc2;
 
             dynSettings.Controller.RunExpression(true);
         }
@@ -272,9 +278,9 @@ namespace DynamoRevitTests
             model.Open(testPath);
 
             //populate the selection nodes in the sample
-            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection);
-            ((dynCurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
-            ((dynCurvesBySelection)selectionNodes.ElementAt(1)).SelectedElement = mc2;
+            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
+            ((CurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
+            ((CurvesBySelection)selectionNodes.ElementAt(1)).SelectedElement = mc2;
 
             dynSettings.Controller.RunExpression(true);
         }
@@ -515,7 +521,7 @@ namespace DynamoRevitTests
                 }
             }
 
-            dynFamilyTypeSelector typeSelNode = (dynFamilyTypeSelector)dynSettings.Controller.DynamoModel.Nodes.First();
+            FamilyTypeSelector typeSelNode = (FamilyTypeSelector)dynSettings.Controller.DynamoModel.Nodes.First();
             Assert.AreEqual(typeSelNode.Items.Count, count);
 
             //assert that the selected index is correct
@@ -541,23 +547,23 @@ namespace DynamoRevitTests
             var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(CurveElement));
 
-            //verify one model curve created
+            //verify five model curves created
             int count = fec.ToElements().Count;
             Assert.IsInstanceOf(typeof(ModelCurve), fec.ToElements().First());
-            Assert.AreEqual(1, count);
+            Assert.AreEqual(5, count);
 
             ElementId id = fec.ToElements().First().Id;
 
             //update any number node and verify 
             //that the element gets updated not recreated
-            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynDoubleInput);
-            var node = doubleNodes.First() as dynDoubleInput;
+            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is DoubleInput);
+            var node = doubleNodes.First() as DoubleInput;
 
             Assert.IsNotNull(node);
 
             node.Value = node.Value + .1;
             dynSettings.Controller.RunExpression(true);
-            Assert.AreEqual(1, fec.ToElements().Count);
+            Assert.AreEqual(5, fec.ToElements().Count);
 
             Assert.AreEqual(id.IntegerValue, fec.ToElements().First().Id.IntegerValue);
         }
@@ -576,21 +582,24 @@ namespace DynamoRevitTests
             FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(CurveElement));
 
-            //verify one model curve created
+            //verify five model curves created
             int count = fec.ToElements().Count;
             Assert.IsInstanceOf(typeof(ModelCurve), fec.ToElements().First());
             Assert.IsTrue(((ModelCurve)fec.ToElements().First()).IsReferenceLine);
-            Assert.AreEqual(1, count);
+            Assert.AreEqual(5, count);
 
             ElementId id = fec.ToElements().First().Id;
 
             //update any number node and verify 
             //that the element gets updated not recreated
-            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynBasicInteractive<double>);
-            dynBasicInteractive<double> node = doubleNodes.First() as dynBasicInteractive<double>;
+            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is DoubleInput);
+            var node = doubleNodes.First() as DoubleInput;
+
+            Assert.IsNotNull(node);
+
             node.Value = node.Value + .1;
             dynSettings.Controller.RunExpression(true);
-            Assert.AreEqual(1, fec.ToElements().Count);
+            Assert.AreEqual(5, fec.ToElements().Count);
 
             Assert.AreEqual(id.IntegerValue, fec.ToElements().First().Id.IntegerValue);
         }
@@ -641,14 +650,14 @@ namespace DynamoRevitTests
                 _trans.Commit();
             }
 
-            var ptSelectNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynPointBySelection);
+            var ptSelectNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is PointBySelection);
             if (!ptSelectNodes.Any())
                 Assert.Fail("Could not find point selection nodes in dynamo graph.");
 
-            ((dynPointBySelection)ptSelectNodes.ElementAt(0)).SelectedElement = p1;
-            ((dynPointBySelection)ptSelectNodes.ElementAt(1)).SelectedElement = p2;
-            ((dynPointBySelection)ptSelectNodes.ElementAt(2)).SelectedElement = p3;
-            ((dynPointBySelection)ptSelectNodes.ElementAt(3)).SelectedElement = p4;
+            ((PointBySelection)ptSelectNodes.ElementAt(0)).SelectedElement = p1;
+            ((PointBySelection)ptSelectNodes.ElementAt(1)).SelectedElement = p2;
+            ((PointBySelection)ptSelectNodes.ElementAt(2)).SelectedElement = p3;
+            ((PointBySelection)ptSelectNodes.ElementAt(3)).SelectedElement = p4;
 
             dynSettings.Controller.RunExpression(true);
 
@@ -661,9 +670,9 @@ namespace DynamoRevitTests
             Assert.IsTrue(mc.IsReferenceLine);
 
             //now flip the switch for creating a reference curve
-            var boolNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynBoolSelector).First();
+            var boolNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is BoolSelector).First();
 
-            ((dynBasicInteractive<bool>)boolNode).Value = false;
+            ((BasicInteractive<bool>)boolNode).Value = false;
 
             dynSettings.Controller.RunExpression(true);
             Assert.AreEqual(fec.ToElements().Count(), 1);
@@ -695,9 +704,9 @@ namespace DynamoRevitTests
             args = FSharpList<Value>.Cons(Value.NewContainer(rp), args);
 
             //find the XYZFromReferencePoint node
-            var node = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynXYZFromReferencePoint).First();
+            var node = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is XyzFromReferencePoint).First();
 
-            Value v = ((dynNodeWithOneOutput)node).Evaluate(args);
+            Value v = ((NodeWithOneOutput)node).Evaluate(args);
             Assert.IsInstanceOf(typeof(XYZ), ((Value.Container)v).Item);
         }
 
@@ -723,7 +732,7 @@ namespace DynamoRevitTests
             //now change one of the number inputs and rerun
             //verify that there are still only two reference points in
             //the model
-            var node = dynSettings.Controller.DynamoModel.Nodes.OfType<dynDoubleInput>().First();
+            var node = dynSettings.Controller.DynamoModel.Nodes.OfType<DoubleInput>().First();
             node.Value = "12.0";
 
             dynSettings.Controller.RunExpression(true);
@@ -746,7 +755,7 @@ namespace DynamoRevitTests
             dynSettings.Controller.RunExpression(true);
 
             var blendNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateBlendGeometry).First();
-            dynSolidBase nodeAsSolidBase = (dynSolidBase)blendNode;
+            SolidBase nodeAsSolidBase = (SolidBase)blendNode;
             Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
             double volumeMin = 3700000.0;
             double volumeMax = 3900000.0;
@@ -767,7 +776,7 @@ namespace DynamoRevitTests
             dynSettings.Controller.RunExpression(true);
 
             var revolveNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateRevolvedGeometry).First();
-            dynSolidBase nodeAsSolidBase = (dynSolidBase)revolveNode;
+            SolidBase nodeAsSolidBase = (SolidBase)revolveNode;
             Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
             double volumeMin = 13300.0;
             double volumeMax = 13550.0;
@@ -788,7 +797,7 @@ namespace DynamoRevitTests
             dynSettings.Controller.RunExpression(true);
 
             var sweepNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateSweptGeometry).First();
-            dynSolidBase nodeAsSolidBase = (dynSolidBase)sweepNode;
+            SolidBase nodeAsSolidBase = (SolidBase)sweepNode;
             Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
             double volumeMin = 11800.0;
             double volumeMax = 12150.0;
@@ -811,8 +820,8 @@ namespace DynamoRevitTests
                  model.Open(testPath);
                  dynSettings.Controller.RunExpression(true);
 
-                 var skeletonNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynSkinCurveLoops).First();
-                 dynSolidBase nodeAsSolidBase = (dynSolidBase)skeletonNode;
+                 var skeletonNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is SkinCurveLoops).First();
+                 SolidBase nodeAsSolidBase = (SolidBase)skeletonNode;
                  Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
                  double volumeMin = 82500.0;
                  double volumeMax = 84500.0;
@@ -834,7 +843,7 @@ namespace DynamoRevitTests
             dynSettings.Controller.RunExpression(true);
 
             var extrudeNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateExtrusionGeometry).First();
-            dynSolidBase nodeAsSolidBase = (dynSolidBase)extrudeNode;
+            SolidBase nodeAsSolidBase = (SolidBase)extrudeNode;
             Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
             double volumeMin = 3850;
             double volumeMax = 4050;
@@ -859,8 +868,8 @@ namespace DynamoRevitTests
 
             //the .dyn has the slider set at 5. let's make sure that
             //if you set the slider to something else before running, that it get the correct number
-            var slider = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynDoubleSliderInput).First();
-            ((dynBasicInteractive<double>)slider).Value = 1;
+            var slider = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is DoubleSliderInput).First();
+            ((BasicInteractive<double>)slider).Value = 1;
 
             dynSettings.Controller.RunExpression(true);
 
@@ -869,7 +878,7 @@ namespace DynamoRevitTests
             Assert.AreEqual(1, acs.Count());
 
             //change the number slider
-            ((dynBasicInteractive<double>)slider).Value = 3;
+            ((BasicInteractive<double>)slider).Value = 3;
 
             dynSettings.Controller.RunExpression(true);
             acs = GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
@@ -903,8 +912,8 @@ namespace DynamoRevitTests
             Assert.IsNotNull(dynRevitSettings.Doc.Document);
 
             //update the double node so the graph reevaluates
-            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynBasicInteractive<double>);
-            dynBasicInteractive<double> node = doubleNodes.First() as dynBasicInteractive<double>;
+            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is BasicInteractive<double>);
+            BasicInteractive<double> node = doubleNodes.First() as BasicInteractive<double>;
             node.Value = node.Value + .1;
 
             //run the expression again
@@ -931,7 +940,7 @@ namespace DynamoRevitTests
 
             model.Open(testPath);
 
-            var xyzNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynXYZ).First();
+            var xyzNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is Xyz).First();
             Assert.IsNotNull(xyzNode);
 
             //test the first lacing
@@ -992,7 +1001,7 @@ namespace DynamoRevitTests
             Assert.AreEqual(5, ds.VSpacingRule.Number);
 
             //can we change the number of divisions
-            var numNode = dynSettings.Controller.DynamoModel.Nodes.OfType<dynDoubleInput>().First();
+            var numNode = dynSettings.Controller.DynamoModel.Nodes.OfType<DoubleInput>().First();
             numNode.Value = "10";
             dynSettings.Controller.RunExpression(true);
 
@@ -1159,6 +1168,18 @@ namespace DynamoRevitTests
             var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\SanityCheck.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.Throws(typeof(AssertionException), () => dynSettings.Controller.RunExpression(true));
+        }
+
+        [Test]
+        public void Length()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Length.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);

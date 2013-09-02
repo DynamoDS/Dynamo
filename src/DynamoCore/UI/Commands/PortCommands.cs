@@ -2,7 +2,7 @@
 
 namespace Dynamo.ViewModels
 {
-    public partial class dynPortViewModel
+    public partial class PortViewModel
     {
         //private DelegateCommand _setCenterCommand;
         private DelegateCommand _connectCommand;
