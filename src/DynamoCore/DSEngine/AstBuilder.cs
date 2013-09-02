@@ -153,6 +153,28 @@ namespace Dynamo.DSEngine
             return AstNodes.Contains(dynamoNodeId);
         }
 
+        public string GenerateSourceCode()
+        {
+            List<AssociativeNode> allAstNodes = new List<AssociativeNode>();
+            foreach (var item in AstNodes)
+            {
+                allAstNodes.AddRange(item);
+            }
+            ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(allAstNodes);
+            return codegen.GenerateCode();
+        }
+
+        public BinaryExpressionNode BuildBinaryExpression(AssociativeNode lhs,
+                                                          AssociativeNode rhs,
+                                                          Operator op)
+        {
+            BinaryExpressionNode node = new BinaryExpressionNode();
+            node.LeftNode = lhs;
+            node.RightNode = rhs;
+            node.Optr = op;
+            return node;
+        }
+
         public FunctionCallNode BuildFunctionCall(string function, 
                                                   List<AssociativeNode> arguments)
         {
@@ -189,6 +211,19 @@ namespace Dynamo.DSEngine
             return assignment;
         }
 
+        protected VarDeclNode BuildParamNode(string paramName)
+        {
+            VarDeclNode param = new VarDeclNode();
+            param.NameNode = BuildIdentifier(paramName);
+
+            ProtoCore.Type type = new ProtoCore.Type();
+            type.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
+            type.Name = "var";
+            param.ArgumentType = type;
+
+            return param;
+        }
+
         /// <summary>
         /// Create a function defintion for a partially applied function call. 
         /// E.g.
@@ -212,8 +247,7 @@ namespace Dynamo.DSEngine
             {
                 if (func.FormalArguments[i] == null)
                 {
-                    VarDeclNode param = new VarDeclNode();
-                    param.NameNode = BuildIdentifier(StringConstants.kParamPrefix + paramPostfix);
+                    VarDeclNode param = BuildParamNode(StringConstants.kParamPrefix + paramPostfix);
                     partialArgs.Add(param);
 
                     func.FormalArguments[i] = param.NameNode;
@@ -232,6 +266,52 @@ namespace Dynamo.DSEngine
                 var lhs = BuildIdentifier(ProtoCore.DSDefinitions.Kw.kw_return);
                 var rhs = BuildFunctionCall(func.Function.Name, func.FormalArguments);
                 var returnStmt = BuildAssignment(lhs, rhs);
+                funcBody.Body.Add(returnStmt);
+            }
+
+            FunctionDefinitionNode partialFunc = new FunctionDefinitionNode();
+            partialFunc.IsExternLib = false;
+            partialFunc.IsDNI = false;
+            partialFunc.ExternLibName = null;
+            partialFunc.Name = NamingUtil.NewUniqueName(StringConstants.kFunctionPrefix);
+            partialFunc.Singnature = new ArgumentSignatureNode();
+            partialFunc.Singnature.Arguments = partialArgs;
+            partialFunc.FunctionBody = funcBody;
+
+            return partialFunc;
+        }
+
+        public FunctionDefinitionNode BuildPartilFunctionForBinaryOp(BinaryExpressionNode expr)
+        {
+            List<VarDeclNode> partialArgs = new List<VarDeclNode>();
+            int paramPostfix = 0;
+
+            if (expr.LeftNode == null)
+            {
+                VarDeclNode param = BuildParamNode(StringConstants.kParamPrefix + paramPostfix);
+                partialArgs.Add(param);
+                expr.LeftNode = param.NameNode;
+                paramPostfix++;
+            }
+
+            if (expr.RightNode == null)
+            {
+                VarDeclNode param = BuildParamNode(StringConstants.kParamPrefix + paramPostfix);
+                partialArgs.Add(param);
+                expr.RightNode = param.NameNode;
+                paramPostfix++;
+            }
+
+            // It is not a partial function call. 
+            if (paramPostfix == 0)
+            {
+                return null;
+            }
+
+            CodeBlockNode funcBody = new CodeBlockNode();
+            {
+                var lhs = BuildIdentifier(ProtoCore.DSDefinitions.Kw.kw_return);
+                var returnStmt = BuildAssignment(lhs, expr);
                 funcBody.Body.Add(returnStmt);
             }
 
@@ -274,9 +354,7 @@ namespace Dynamo.DSEngine
             List<VarDeclNode> arguments = new List<VarDeclNode>();
             for (int i = 0; i < inputAstNodes.Count; ++i)
             {
-                VarDeclNode argument = new VarDeclNode();
-                string argumentName = StringConstants.kParamPrefix + i;
-                argument.NameNode = BuildIdentifier(argumentName);
+                VarDeclNode argument = BuildParamNode(StringConstants.kParamPrefix + i);
                 arguments.Add(argument);
             }
 
@@ -325,15 +403,28 @@ namespace Dynamo.DSEngine
             // definition and function pointer.
             if (isPartial)
             {
-                FunctionCallNode funcCall = rhs as FunctionCallNode;
-                if (funcCall != null)
+                if (rhs is FunctionCallNode)
                 {
+                    FunctionCallNode funcCall = rhs as FunctionCallNode;
                     // create a function definition for it
                     var newFunc = BuildPartialFunction(funcCall);
                     AddNode(node.GUID, newFunc);
 
                     // create a function pointer for this node
                     rhs = BuildIdentifier(newFunc.Name);
+                }
+                else if (rhs is BinaryExpressionNode)
+                {
+                    BinaryExpressionNode expr = rhs as BinaryExpressionNode;
+                    if (expr.Optr == Operator.add ||
+                        expr.Optr == Operator.sub ||
+                        expr.Optr == Operator.mul ||
+                        expr.Optr == Operator.div)
+                    {
+                        var newFunc = BuildPartilFunctionForBinaryOp(expr);
+                        AddNode(node.GUID, newFunc);
+                        rhs = BuildIdentifier(newFunc.Name);
+                    }
                 }
             }
 
