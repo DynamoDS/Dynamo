@@ -62,10 +62,10 @@ namespace Dynamo.Nodes
     [NodeName("Open Excel Workbook")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Opens an Excel file and returns the Workbook inside.  If the filename does not exist, returns null.")]
-    public class dynReadExcelFile : dynFileReaderBase
+    public class ReadExcelFile : FileReaderBase
     {
 
-        public dynReadExcelFile()
+        public ReadExcelFile()
         {
             OutPortData.Add(new PortData("workbook", "The workbook opened from the file", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
@@ -97,10 +97,10 @@ namespace Dynamo.Nodes
     [NodeName("Get Worksheets From Excel Workbook")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Get the list of Worksheets from an Excel Workbook.")]
-    public class dynGetWorksheetsFromExcelWorkbook : dynNodeWithOneOutput
+    public class GetWorksheetsFromExcelWorkbook : NodeWithOneOutput
     {
 
-        public dynGetWorksheetsFromExcelWorkbook()
+        public GetWorksheetsFromExcelWorkbook()
         {
             InPortData.Add(new PortData("workbook", "The excel workbook", typeof(FScheme.Value.Container)));
             OutPortData.Add(new PortData("worksheets", "A list of worksheets", typeof(FScheme.Value.List)));
@@ -120,10 +120,10 @@ namespace Dynamo.Nodes
     [NodeName("Get Excel Worksheet By Name")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Gets the first Worksheet in an Excel Workbook with the given name.")]
-    public class dynGetExcelWorksheetByName : dynNodeWithOneOutput
+    public class GetExcelWorksheetByName : NodeWithOneOutput
     {
 
-        public dynGetExcelWorksheetByName()
+        public GetExcelWorksheetByName()
         {
             InPortData.Add(new PortData("workbook", "The excel workbook", typeof(FScheme.Value.Container)));
             InPortData.Add(new PortData("name", "Name of the worksheet to get", typeof(FScheme.Value.Number)));
@@ -145,10 +145,10 @@ namespace Dynamo.Nodes
     [NodeName("Get Data From Excel Worksheet")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Get the non-empty range of Cell data from an Excel Worksheet.")]
-    public class dynGetDataFromExcelWorksheet : dynNodeWithOneOutput
+    public class GetDataFromExcelWorksheet : NodeWithOneOutput
     {
 
-        public dynGetDataFromExcelWorksheet()
+        public GetDataFromExcelWorksheet()
         {
             InPortData.Add(new PortData("worksheet", "The excel workbook", typeof(FScheme.Value.Container)));
             OutPortData.Add(new PortData("worksheet", "The worksheet with the given name", typeof(FScheme.Value.Container)));
@@ -191,10 +191,10 @@ namespace Dynamo.Nodes
     [NodeName("Write Data To Excel Worksheet")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Write data to a Cell of an Excel Worksheet.")]
-    public class dynWriteDataToExcelWorksheet : dynNodeWithOneOutput
+    public class WriteDataToExcelWorksheet : NodeWithOneOutput
     {
 
-        public dynWriteDataToExcelWorksheet()
+        public WriteDataToExcelWorksheet()
         {
             InPortData.Add(new PortData("worksheet", "The Excel Worksheet to write to.", typeof(FScheme.Value.Container)));
             InPortData.Add(new PortData("start row", "Row index to insert data.", typeof(FScheme.Value.Number)));
@@ -268,10 +268,10 @@ namespace Dynamo.Nodes
     [NodeName("Add Excel Worksheet To Workbook")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Add a new Worksheet to a Workbook with a given name.")]
-    public class dynAddExcelWorksheetToWorkbook : dynNodeWithOneOutput
+    public class AddExcelWorksheetToWorkbook : NodeWithOneOutput
     {
 
-        public dynAddExcelWorksheetToWorkbook()
+        public AddExcelWorksheetToWorkbook()
         {
             InPortData.Add(new PortData("workbook", "The Excel Worksheet to write to", typeof(FScheme.Value.Container)));
             InPortData.Add(new PortData("name", "Name of new Worksheet to add", typeof(FScheme.Value.String)));
@@ -297,10 +297,10 @@ namespace Dynamo.Nodes
     [NodeName("New Excel Workbook")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Create a new Excel Workbook object.")]
-    public class dynNewExcelWorkbook : dynNodeWithOneOutput
+    public class NewExcelWorkbook : NodeWithOneOutput
     {
 
-        public dynNewExcelWorkbook()
+        public NewExcelWorkbook()
         {
             OutPortData.Add(new PortData("workbook", "The new Excel Workbook ", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
@@ -317,10 +317,10 @@ namespace Dynamo.Nodes
     [NodeName("Save Excel Workbook As")]
     [NodeCategory(BuiltinNodeCategories.IO_FILE)]
     [NodeDescription("Write an Excel Workbook to a file with the given filename.")]
-    public class dynSaveAsExcelWorkbook : dynNodeWithOneOutput
+    public class SaveAsExcelWorkbook : NodeWithOneOutput
     {
 
-        public dynSaveAsExcelWorkbook()
+        public SaveAsExcelWorkbook()
         {
             InPortData.Add(new PortData("workbook", "The Excel Workbook to save", typeof(FScheme.Value.Container)));
             InPortData.Add(new PortData("filename", "Filename to save the Workbook to", typeof(FScheme.Value.String)));

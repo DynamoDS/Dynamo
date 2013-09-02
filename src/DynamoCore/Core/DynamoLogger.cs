@@ -122,7 +122,7 @@ namespace Dynamo
         /// Log some node info
         /// </summary>
         /// <param name="node"></param>
-        public void Log(dynNodeModel node)
+        public void Log(NodeModel node)
         {
             string exp = node.PrintExpression();
             Log("> " + exp, LogLevel.Console);

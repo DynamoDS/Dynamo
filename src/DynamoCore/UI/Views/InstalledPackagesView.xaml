@@ -92,7 +92,6 @@
                                         <Button Name="MakeNewVersionButton" Command="{Binding Path=PublishNewPackageVersionCommand}" Margin="3" ToolTip="Publish a new version of this package, assuming it has already been published" Content="Publish Version..." Style="{DynamicResource ResourceKey=SBadgeButton}" />
                                     
                                     </StackPanel>
-
                                 
                                     
                                 <Border BorderThickness="0,1,0,0" Visibility="{Binding Path=TypesVisibleInManager, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">

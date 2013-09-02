@@ -35,7 +35,7 @@ using TextBox = System.Windows.Controls.TextBox;
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class dynSelectionBase : dynNodeWithOneOutput
+    public abstract class SelectionBase : NodeWithOneOutput
     {
         private bool _canSelect = true;
         protected string _selectButtonContent;
@@ -114,7 +114,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public abstract string SelectionText { get; set; }
 
-        protected dynSelectionBase(PortData outPortData)
+        protected SelectionBase(PortData outPortData)
         {
             OutPortData.Add(outPortData);
             RegisterAllPorts();
@@ -241,11 +241,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class dynElementSelectionBase : dynSelectionBase
+    public abstract class ElementSelectionBase : SelectionBase
     {
         protected Func<string, Element> _selectionAction;
 
-        protected dynElementSelectionBase(PortData outPortData) : base(outPortData){}
+        protected ElementSelectionBase(PortData outPortData) : base(outPortData){}
 
         /// <summary>
         /// Callback for when the "Select" button has been clicked.
@@ -270,12 +270,12 @@ namespace Dynamo.Nodes
     }
 
     [IsInteractive(true)]
-    public abstract class dynReferenceSelectionBase : dynSelectionBase
+    public abstract class ReferenceSelectionBase : SelectionBase
     {
         protected Func<string, Reference> _selectionAction;
         protected Reference _reference;
 
-        protected dynReferenceSelectionBase(PortData outPortData):base(outPortData){}
+        protected ReferenceSelectionBase(PortData outPortData):base(outPortData){}
 
         /// <summary>
         /// Callback for when the "Select" button has been clicked.
@@ -302,7 +302,7 @@ namespace Dynamo.Nodes
     }
 
     [IsInteractive(true)]
-    public abstract class dynMultipleElementSelectionBase : dynNodeWithOneOutput
+    public abstract class MultipleElementSelectionBase : NodeWithOneOutput
     {
         private TextBlock _tb;
         private Button _selectButton;
@@ -328,7 +328,7 @@ namespace Dynamo.Nodes
 
         public abstract string SelectionText { get; set; }
 
-        protected dynMultipleElementSelectionBase(PortData outData)
+        protected MultipleElementSelectionBase(PortData outData)
         {
             OutPortData.Add(outData);
             RegisterAllPorts();
@@ -519,9 +519,9 @@ namespace Dynamo.Nodes
     [NodeName("Select Family Instance")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a family instance from the document.")]
-    public class dynFamilyInstanceCreatorSelection : dynElementSelectionBase
+    public class FamilyInstanceCreatorSelection : ElementSelectionBase
     {
-        public dynFamilyInstanceCreatorSelection()
+        public FamilyInstanceCreatorSelection()
             : base(
                 new PortData(
                     "fi", "Family instances created by this operation.", typeof (Value.Container)))
@@ -568,11 +568,11 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a all families on a divided surface by picking the underlying form.")]
     [NodeSearchTags("Curtain Panel", "Divided", "surface", "component", "family")]
-    public class dynDividedSurfaceBySelection : dynElementSelectionBase
+    public class DividedSurfaceBySelection : ElementSelectionBase
     {
         private Value _data;
 
-        public dynDividedSurfaceBySelection()
+        public DividedSurfaceBySelection()
             : base(
                 new PortData(
                     "fi", "The divided surface family instances", typeof (Value.Container)))
@@ -595,7 +595,7 @@ namespace Dynamo.Nodes
 
             foreach (Reference r in dsd.GetReferencesWithDividedSurfaces())
             {
-                DividedSurface ds = dsd.GetDividedSurfaceForReference(r);
+                Autodesk.Revit.DB.DividedSurface ds = dsd.GetDividedSurfaceForReference(r);
 
                 var gn = new GridNode();
 
@@ -682,11 +682,11 @@ namespace Dynamo.Nodes
     [NodeName("Select Face")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a face from the document.")]
-    public class dynFormElementBySelection : dynReferenceSelectionBase, IDrawable
+    public class FormElementBySelection : ReferenceSelectionBase, IDrawable
     {
         public RenderDescription RenderDescription { get; set; }
 
-        public dynFormElementBySelection()
+        public FormElementBySelection()
             : base(new PortData("face", "The face", typeof (Value.Container)))
         {
             _selectionMessage = "Select a face.";
@@ -786,7 +786,7 @@ namespace Dynamo.Nodes
             var face =
                 (Autodesk.Revit.DB.Face)dynRevitSettings.Doc.Document.GetElement(_reference).GetGeometryObjectFromReference(_reference);
 
-            dynRevitTransactionNode.DrawFace(RenderDescription, face);
+            RevitTransactionNode.DrawFace(RenderDescription, face);
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
@@ -812,11 +812,11 @@ namespace Dynamo.Nodes
     [NodeName("Select Edge")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select an edge from the document.")]
-    public class dynEdgeOnElementBySelection : dynReferenceSelectionBase, IDrawable
+    public class EdgeOnElementBySelection : ReferenceSelectionBase, IDrawable
     {
         public RenderDescription RenderDescription { get; set; }
 
-        public dynEdgeOnElementBySelection()
+        public EdgeOnElementBySelection()
             : base(new PortData("edge", "The edge", typeof (Value.Container)))
         {
             _selectionMessage = "Select an edge.";
@@ -875,7 +875,7 @@ namespace Dynamo.Nodes
             var edge =
                 (Edge)dynRevitSettings.Doc.Document.GetElement(_reference).GetGeometryObjectFromReference(_reference);
 
-            dynRevitTransactionNode.DrawGeometryElement(RenderDescription, edge);
+            RevitTransactionNode.DrawGeometryElement(RenderDescription, edge);
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
@@ -901,9 +901,9 @@ namespace Dynamo.Nodes
     [NodeName("Select Curve")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a curve from the document.")] //or set of curves in the future
-    public class dynCurvesBySelection : dynElementSelectionBase, IDrawable
+    public class CurvesBySelection : ElementSelectionBase, IDrawable
     {
-        public dynCurvesBySelection()
+        public CurvesBySelection()
             : base(new PortData("curve", "The curve", typeof (Value.Container)))
         {
             _selectionMessage = "Select a curve.";
@@ -987,7 +987,7 @@ namespace Dynamo.Nodes
             if (ce == null)
                 return;
 
-            dynRevitTransactionNode.DrawCurve(RenderDescription, ce.GeometryCurve);
+            RevitTransactionNode.DrawCurve(RenderDescription, ce.GeometryCurve);
         }
 
         #endregion
@@ -996,9 +996,9 @@ namespace Dynamo.Nodes
     [NodeName("Select Elements")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Box select a collection of Revit Elements from the document.")]
-    public class dynMultipleCurvesBySelection : dynMultipleElementSelectionBase
+    public class MultipleCurvesBySelection : MultipleElementSelectionBase
     {
-        public dynMultipleCurvesBySelection()
+        public MultipleCurvesBySelection()
             : base(new PortData("Elements", "The Elements", typeof(Value.Container))) { }
 
         protected override void OnSelectClick()
@@ -1018,7 +1018,7 @@ namespace Dynamo.Nodes
         private static string formatSelectionText(IEnumerable<Element> elements)
         {
             return elements.Any() 
-                ? String.Join(" ", elements.Select(x => x.Id.ToString())) 
+                ? System.String.Join(" ", elements.Select(x => x.Id.ToString())) 
                 : "Nothing Selected";
         }
 
@@ -1041,9 +1041,9 @@ namespace Dynamo.Nodes
     [NodeName("Select Point")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a reference point from the document.")]
-    public class dynPointBySelection : dynElementSelectionBase
+    public class PointBySelection : ElementSelectionBase
     {
-        public dynPointBySelection() :
+        public PointBySelection() :
             base(new PortData("pt", "The point", typeof (Value.Container)))
         {
             _selectionMessage = "Select a reference point.";
@@ -1090,9 +1090,9 @@ namespace Dynamo.Nodes
     [NodeName("Select Level")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a level from the document.")]
-    public class dynLevelBySelection : dynElementSelectionBase
+    public class LevelBySelection : ElementSelectionBase
     {
-        public dynLevelBySelection() :
+        public LevelBySelection() :
             base(new PortData("lvl", "The selected level", typeof (Value.Container)))
         {
             _selectionMessage = "Select a level.";
@@ -1139,9 +1139,9 @@ namespace Dynamo.Nodes
     [NodeName("Select Model Element")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a model element from the document.")]
-    public class dynModelElementSelection : dynElementSelectionBase
+    public class ModelElementSelection : ElementSelectionBase
     {
-        public dynModelElementSelection()
+        public ModelElementSelection()
             : base(
                 new PortData(
                     "me", "Model element reference created by this operation.",
@@ -1177,7 +1177,7 @@ namespace Dynamo.Nodes
     [NodeName("Select XYZ on element")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a XYZ location on model face or edge of the element.")]
-    public class dynXYZBySelection : dynReferenceSelectionBase, IDrawable
+    public class XyzBySelection : ReferenceSelectionBase, IDrawable
     {
         private Reference old_refXyz;
         private double _param0;
@@ -1186,7 +1186,7 @@ namespace Dynamo.Nodes
 
         public RenderDescription RenderDescription { get; set; }
 
-        public dynXYZBySelection() :
+        public XyzBySelection() :
             base(new PortData("XYZ", "The XYZ location on element", typeof (Value.Container)))
         {
             _selectionMessage = "Select a XYZ location on face or edge of the element.";
@@ -1405,7 +1405,7 @@ namespace Dynamo.Nodes
 
             XYZ thisXYZ = _reference.GlobalPoint;
 
-            dynRevitTransactionNode.DrawXYZ(RenderDescription, thisXYZ);
+            RevitTransactionNode.DrawXYZ(RenderDescription, thisXYZ);
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)

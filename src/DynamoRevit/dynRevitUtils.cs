@@ -18,6 +18,10 @@ using Microsoft.FSharp.Collections;
 using Document = Autodesk.Revit.Creation.Document;
 using Expression = Dynamo.FScheme.Expression;
 using Face = Autodesk.Revit.DB.Face;
+using ModelCurve = Autodesk.Revit.DB.ModelCurve;
+using Plane = Autodesk.Revit.DB.Plane;
+using ReferencePlane = Autodesk.Revit.DB.ReferencePlane;
+using SketchPlane = Autodesk.Revit.DB.SketchPlane;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Utilities
@@ -31,7 +35,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="node"></param>
         /// <param name="result"></param>
-        public static void StoreElements(dynRevitTransactionNode node, List<object> results)
+        public static void StoreElements(RevitTransactionNode node, List<object> results)
         {
             foreach (object result in results)
             {
@@ -101,7 +105,7 @@ namespace Dynamo.Utilities
         /// <param name="mi">The method info for the method.</param>
         /// <param name="return_type">The expected return type from the method.</param>
         /// <returns></returns>
-        public static Value InvokeAPIMethod(dynRevitTransactionNode node, FSharpList<Value> args, Type api_base_type, ParameterInfo[] pi, MethodBase mi, Type return_type)
+        public static Value InvokeAPIMethod(RevitTransactionNode node, FSharpList<Value> args, Type api_base_type, ParameterInfo[] pi, MethodBase mi, Type return_type)
         {
             //if any argument are a list, honor the lacing strategy
             //compile a list of parameter lists to be used in our method invocation

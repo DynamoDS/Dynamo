@@ -9,7 +9,7 @@ namespace Dynamo.Nodes
     [NodeName("Get Material By Name")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
     [NodeDescription("Get a material from the active Revit document by name.")]
-    public class Material : dynNodeWithOneOutput
+    public class Material : NodeWithOneOutput
     {
         public Material()
         {

@@ -2,7 +2,7 @@
 
 namespace Dynamo.ViewModels
 {
-    public abstract class dynViewModelBase : NotificationObject
+    public abstract class ViewModelBase : NotificationObject
     {
 
     }

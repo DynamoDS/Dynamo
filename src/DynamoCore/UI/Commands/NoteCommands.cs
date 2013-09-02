@@ -2,7 +2,7 @@
 
 namespace Dynamo.ViewModels
 {
-    public partial class dynNoteViewModel
+    public partial class NoteViewModel
     {
         private DelegateCommand _selectCommand;
         public DelegateCommand SelectCommand
