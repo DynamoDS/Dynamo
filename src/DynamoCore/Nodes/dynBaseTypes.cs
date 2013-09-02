@@ -31,6 +31,8 @@ using Microsoft.FSharp.Core;
 using RestSharp.Contrib;
 using Value = Dynamo.FScheme.Value;
 using System.Globalization;
+using ProtoCore.AST.AssociativeAST;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Nodes
 {
@@ -2945,10 +2947,29 @@ namespace Dynamo.Nodes
                 : FScheme.Value.NewList(Utils.SequenceToFSharpList(_parsed.Select(x => x.GetFSchemeValue(paramDict))));
         }
 
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, 
+                                                                    List<AssociativeNode> inputAstNodes)
+        {
+            var paramDict = InPortData.Select(x => x.NickName)
+                .Zip(inputAstNodes, Tuple.Create)
+                .ToDictionary(x => x.Item1, x => x.Item2);
+
+            if (_parsed.Count == 1)
+            {
+                return _parsed[0].GetAstNode(paramDict);
+            }
+            else
+            {
+                List<AssociativeNode> nodes = _parsed.Select(x => x.GetAstNode(paramDict)).ToList();
+                return builder.BuildExprList(nodes);
+            }
+        }
+
         public interface IDoubleSequence
         {
             Value GetFSchemeValue(Dictionary<string, double> idLookup);
             IEnumerable<double> GetValue(Dictionary<string, double> idLookup);
+            AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup);
         }
 
         private class OneNumber : IDoubleSequence
@@ -2973,6 +2994,18 @@ namespace Dynamo.Nodes
             public IEnumerable<double> GetValue(Dictionary<string, double> idLookup)
             {
                 yield return _result ?? _token.GetValue(idLookup);
+            }
+
+            public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
+            {
+                if (_result == null)
+                {
+                    return _token.GetAstNode(idLookup);
+                }
+                else
+                {
+                    return new DoubleNode { value = _result.GetValueOrDefault().ToString() };
+                }
             }
         }
 
@@ -3034,6 +3067,16 @@ namespace Dynamo.Nodes
                     yield return start;
                     start += step;
                 }
+            }
+
+            public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
+            {
+                RangeExprNode rangeExpr = new RangeExprNode();
+                rangeExpr.FromNode = _start.GetAstNode(idLookup);
+                rangeExpr.ToNode = _step.GetAstNode(idLookup);
+                rangeExpr.StepNode = _step.GetAstNode(idLookup);
+                rangeExpr.stepoperator = ProtoCore.DSASM.RangeStepOperator.stepsize;
+                return rangeExpr;
             }
         }
 
@@ -3097,6 +3140,21 @@ namespace Dynamo.Nodes
                     ? FScheme.Range(start, step, end) 
                     : FScheme.Range(end, step, start).Reverse();
             }
+
+            protected virtual ProtoCore.DSASM.RangeStepOperator GetRangeExpressionOperator()
+            {
+                return ProtoCore.DSASM.RangeStepOperator.stepsize;
+            }
+
+            public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
+            {
+                RangeExprNode rangeExpr = new RangeExprNode();
+                rangeExpr.FromNode = _start.GetAstNode(idLookup);
+                rangeExpr.ToNode = _end.GetAstNode(idLookup);
+                rangeExpr.StepNode = _step.GetAstNode(idLookup);
+                rangeExpr.stepoperator = GetRangeExpressionOperator();
+                return rangeExpr;
+            }
         }
 
         private class CountRange : Range
@@ -3117,6 +3175,11 @@ namespace Dynamo.Nodes
                     c *= -1;
 
                 return base.Process(start, Math.Abs(start - end) / c, end);
+            }
+
+            protected override ProtoCore.DSASM.RangeStepOperator GetRangeExpressionOperator()
+            {
+                return ProtoCore.DSASM.RangeStepOperator.num;
             }
         }
 
@@ -3152,11 +3215,17 @@ namespace Dynamo.Nodes
 
                 return base.Process(start, Math.Abs(dist) / stepnum, end);
             }
+
+            protected override ProtoCore.DSASM.RangeStepOperator GetRangeExpressionOperator()
+            {
+                return ProtoCore.DSASM.RangeStepOperator.approxsize;
+            }
         }
 
         interface IDoubleInputToken
         {
             double GetValue(Dictionary<string, double> idLookup);
+            AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup);
         }
 
         private struct IdentifierToken : IDoubleInputToken
@@ -3169,6 +3238,11 @@ namespace Dynamo.Nodes
             }
 
             public double GetValue(Dictionary<string, double> idLookup)
+            {
+                return idLookup[_id];
+            }
+
+            public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
             {
                 return idLookup[_id];
             }
@@ -3186,6 +3260,11 @@ namespace Dynamo.Nodes
             public double GetValue(Dictionary<string, double> idLookup)
             {
                 return _d;
+            }
+
+            public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
+            {
+                return new DoubleNode { value = _d.ToString() };
             }
         }
     }
