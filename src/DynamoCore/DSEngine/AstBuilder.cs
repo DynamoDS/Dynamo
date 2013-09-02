@@ -171,6 +171,13 @@ namespace Dynamo.DSEngine
             return identifier;
         }
 
+        public ExprListNode BuildExprList(List<AssociativeNode> nodes)
+        {
+            ExprListNode exprList = new ExprListNode();
+            exprList.list = nodes;
+            return exprList;
+        }
+
         public BinaryExpressionNode BuildAssignment(AssociativeNode lhs, 
                                                     AssociativeNode rhs)
         {
