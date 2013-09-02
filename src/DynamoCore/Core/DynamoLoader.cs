@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Dynamo.Commands;
 using Dynamo.Models;
-using Dynamo.Search;
 using Dynamo.Controls;
 using System.Reflection;
 using System.IO;
-using Dynamo.Nodes;
 using System.Windows.Controls;
-using Dynamo.Utilities;
 using System.Windows;
-using System.Diagnostics;
-using Dynamo.ViewModels;
+using String = System.String;
 
 namespace Dynamo.Utilities
 {
@@ -127,7 +121,7 @@ namespace Dynamo.Utilities
         {
             return t.Namespace == "Dynamo.Nodes" &&
                    !t.IsAbstract &&
-                   t.IsSubclassOf(typeof(dynNodeModel));
+                   t.IsSubclassOf(typeof(NodeModel));
         }
 
         /// <summary>
@@ -357,7 +351,6 @@ namespace Dynamo.Utilities
 
             var customNodeLoader = dynSettings.CustomNodeManager;
             var searchViewModel = dynSettings.Controller.SearchViewModel;
-
             var loadedNodes = customNodeLoader.UpdateSearchPath();
 
             // add nodes to search
@@ -374,7 +367,7 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Load Custom Nodes from the CUstomNodeLoader search path and update searcht
+        ///     Load Custom Nodes from the CustomNodeLoader search path and update search
         /// </summary>
         public static List<CustomNodeInfo> LoadCustomNodes(string path)
         {

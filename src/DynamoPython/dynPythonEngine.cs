@@ -10,6 +10,7 @@ using Dynamo.Utilities;
 using IronPython.Hosting;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
+using Python = IronPython.Hosting.Python;
 
 namespace DynamoPython
 {

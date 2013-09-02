@@ -5,14 +5,14 @@ using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
-    public partial class dynNoteViewModel: dynViewModelBase
+    public partial class NoteViewModel: ViewModelBase
     {
 
         #region Properties
         
-        private dynNoteModel _model;
+        private NoteModel _model;
 
-        public dynNoteModel Model
+        public NoteModel Model
         {
             get { return _model; }
             set 
@@ -85,7 +85,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public dynNoteViewModel(dynNoteModel model)
+        public NoteViewModel(NoteModel model)
         {
             _model = model;
             model.PropertyChanged += note_PropertyChanged;

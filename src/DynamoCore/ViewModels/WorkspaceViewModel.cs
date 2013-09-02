@@ -19,13 +19,13 @@ namespace Dynamo.ViewModels
     public delegate void ViewEventHandler(object sender, EventArgs e);
     public delegate void ZoomEventHandler(object sender, EventArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
-    public delegate void WorkspacePropertyEditHandler(dynWorkspaceModel workspace );
+    public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace );
 
-    public partial class dynWorkspaceViewModel: dynViewModelBase
+    public partial class WorkspaceViewModel: ViewModelBase
     {
         #region Properties and Fields
         
-        public dynWorkspaceModel _model;
+        public WorkspaceModel _model;
         private bool _isConnecting = false;
         private bool _canFindNodesFromElements = false;
 
@@ -115,12 +115,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        ObservableCollection<dynConnectorViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
+        ObservableCollection<ConnectorViewModel> _connectors = new ObservableCollection<ConnectorViewModel>();
         private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();
-        ObservableCollection<dynNodeViewModel> _nodes = new ObservableCollection<dynNodeViewModel>();
-        ObservableCollection<dynNoteViewModel> _notes = new ObservableCollection<dynNoteViewModel>();
+        ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
+        ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
 
-        public ObservableCollection<dynConnectorViewModel> Connectors
+        public ObservableCollection<ConnectorViewModel> Connectors
         {
             get { return _connectors; }
             set { 
@@ -128,7 +128,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Connectors");
             }
         }
-        public ObservableCollection<dynNodeViewModel> Nodes
+        public ObservableCollection<NodeViewModel> Nodes
         {
             get { return _nodes; }
             set
@@ -137,7 +137,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Nodes");
             }
         }
-        public ObservableCollection<dynNoteViewModel> Notes
+        public ObservableCollection<NoteViewModel> Notes
         {
             get { return _notes; }
             set
@@ -182,8 +182,8 @@ namespace Dynamo.ViewModels
             get { return dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing; }
         }
 
-        private dynConnectorViewModel activeConnector;
-        public dynConnectorViewModel ActiveConnector
+        private ConnectorViewModel activeConnector;
+        public ConnectorViewModel ActiveConnector
         {
             get { return activeConnector; }
             set
@@ -254,7 +254,7 @@ namespace Dynamo.ViewModels
             get { return _model.HasUnsavedChanges; }
         }
 
-        public dynWorkspaceModel Model
+        public WorkspaceModel Model
         {
             get { return _model; }
         }
@@ -288,7 +288,7 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public dynWorkspaceViewModel(dynWorkspaceModel model, DynamoViewModel vm)
+        public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel vm)
         {
             _model = model;
 
@@ -325,7 +325,7 @@ namespace Dynamo.ViewModels
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
                     {
-                        var viewModel = new dynConnectorViewModel(item as dynConnectorModel);
+                        var viewModel = new ConnectorViewModel(item as ConnectorModel);
                         _connectors.Add(viewModel);
                     }
                     break;
@@ -349,7 +349,7 @@ namespace Dynamo.ViewModels
                     foreach (var item in e.NewItems)
                     {
                         //add a corresponding note
-                        var viewModel = new dynNoteViewModel(item as dynNoteModel);
+                        var viewModel = new NoteViewModel(item as NoteModel);
                         _notes.Add(viewModel);
                     }
                     break;
@@ -372,10 +372,10 @@ namespace Dynamo.ViewModels
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
                     {
-                        if (item != null && item is dynNodeModel)
+                        if (item != null && item is NodeModel)
                         {
-                            var node = item as dynNodeModel;
-                            _nodes.Add(new dynNodeViewModel(node));
+                            var node = item as NodeModel;
+                            _nodes.Add(new NodeViewModel(node));
                             
                             //submit the node for rendering
                             if(node is IDrawable)
@@ -389,7 +389,7 @@ namespace Dynamo.ViewModels
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
-                        var node = item as dynNodeModel;
+                        var node = item as NodeModel;
                         _nodes.Remove(_nodes.First(x => x.NodeLogic == item));
 
                         //remove the node from rendering
@@ -628,7 +628,7 @@ namespace Dynamo.ViewModels
         {
             var rect = (Rect)parameters;
 
-            foreach (dynNodeModel n in Model.Nodes)
+            foreach (NodeModel n in Model.Nodes)
             {
                 double x0 = n.X;
                 double y0 = n.Y;
@@ -668,7 +668,7 @@ namespace Dynamo.ViewModels
         {
             var rect = (Rect)parameters;
 
-            foreach (dynNodeModel n in Model.Nodes)
+            foreach (NodeModel n in Model.Nodes)
             {
                 double x0 = n.X;
                 double y0 = n.Y;
@@ -721,8 +721,8 @@ namespace Dynamo.ViewModels
         private void CreateNodeFromSelection(object parameter)
         {
             CollapseNodes(
-                DynamoSelection.Instance.Selection.Where(x => x is dynNodeModel)
-                    .Select(x => (x as dynNodeModel)));
+                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
+                    .Select(x => (x as NodeModel)));
         }
 
         //private void NodeFromSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -737,7 +737,7 @@ namespace Dynamo.ViewModels
 
         private bool CanCreateNodeFromSelection(object parameter)
         {
-            if (DynamoSelection.Instance.Selection.Count(x => x is dynNodeModel) > 1)
+            if (DynamoSelection.Instance.Selection.Count(x => x is NodeModel) > 1)
             {
                 return true;
             }
@@ -780,7 +780,7 @@ namespace Dynamo.ViewModels
             try
             {
                 var function =
-                    (dynFunction)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynFunction && ((dynFunction)x).Definition.FunctionId.ToString() == id.ToString());
+                    (Function)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Function && ((Function)x).Definition.FunctionId.ToString() == id.ToString());
 
                 if (function != null)
                 {
@@ -825,7 +825,7 @@ namespace Dynamo.ViewModels
         ///     places the newly created symbol (defining a lambda) in the Controller's FScheme Environment.  
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
-        internal void CollapseNodes(IEnumerable<dynNodeModel> selectedNodes)
+        internal void CollapseNodes(IEnumerable<NodeModel> selectedNodes)
         {
             NodeCollapser.Collapse(selectedNodes, dynSettings.Controller.DynamoViewModel.CurrentSpace);
         }
@@ -838,8 +838,8 @@ namespace Dynamo.ViewModels
 
     public class ViewModelEventArgs:EventArgs
     {
-        public dynNodeViewModel ViewModel { get; set; }
-        public ViewModelEventArgs(dynNodeViewModel vm)
+        public NodeViewModel ViewModel { get; set; }
+        public ViewModelEventArgs(NodeViewModel vm)
         {
             ViewModel = vm;
         }

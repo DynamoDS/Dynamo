@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.Selection;
@@ -587,7 +588,7 @@ namespace Dynamo.Tests
 
             sumData.Add("x", 400.0);
             sumData.Add("y", 100.0);
-            sumData.Add("name", "Dynamo.Nodes.dynAddition");
+            sumData.Add("name", "Dynamo.Nodes.Addition");
 
             numData1.Add("x", 100.0);
             numData1.Add("y", 100.0);
@@ -600,7 +601,7 @@ namespace Dynamo.Tests
             var watch = new Dictionary<string, object>();
             watch.Add("x", 100.0);
             watch.Add("y", 300.0);
-            watch.Add("name", "Dynamo.Nodes.dynWatch");
+            watch.Add("name", "Dynamo.Nodes.Watch");
 
             model.CreateNode(sumData);
             model.CreateNode(numData1);
@@ -614,9 +615,9 @@ namespace Dynamo.Tests
             //dynSettings.Bench.Dispatcher.Invoke(
             //    new Action(delegate { controller.Bench.UpdateLayout(); }), DispatcherPriority.Render, null);
 
-            var num1 = controller.DynamoViewModel.Model.Nodes[1] as dynDoubleInput;
+            var num1 = controller.DynamoViewModel.Model.Nodes[1] as DoubleInput;
             num1.Value = "2";
-            var num2 = controller.DynamoViewModel.Model.Nodes[2] as dynDoubleInput;
+            var num2 = controller.DynamoViewModel.Model.Nodes[2] as DoubleInput;
             num2.Value = "2";
 
             var cd1 = new Dictionary<string, object>();
@@ -649,9 +650,9 @@ namespace Dynamo.Tests
 
             Thread.Sleep(250);
 
-            Assert.AreEqual(controller.DynamoViewModel.Model.Nodes[3] is dynWatch, true);
+            Assert.AreEqual(controller.DynamoViewModel.Model.Nodes[3] is Watch, true);
 
-            var w = (dynWatch)controller.DynamoViewModel.Model.Nodes[3];
+            var w = (Watch)controller.DynamoViewModel.Model.Nodes[3];
             double val = 0.0;
             Assert.AreEqual(true, Utils.Convert(w.OldValue, ref val) );
             Assert.AreEqual(4.0, val);

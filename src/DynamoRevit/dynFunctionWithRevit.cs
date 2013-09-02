@@ -12,15 +12,15 @@ using Autodesk.Revit.DB;
 
 namespace Dynamo.Nodes
 {
-    public class dynFunctionWithRevit : dynFunction
+    public class FunctionWithRevit : Function
     {
         internal ElementsContainer ElementsContainer = new ElementsContainer();
 
-        protected internal dynFunctionWithRevit(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition functionDefinition)
+        protected internal FunctionWithRevit(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition functionDefinition)
             : base(inputs, outputs, functionDefinition)
         { }
 
-        public dynFunctionWithRevit() { }
+        public FunctionWithRevit() { }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
@@ -102,7 +102,7 @@ namespace Dynamo.Nodes
                             }
                         }
                     }
-                    var rNode = Definition.Workspace.Nodes.FirstOrDefault(x => x.GUID == nodeId) as dynRevitTransactionNode;
+                    var rNode = Definition.Workspace.Nodes.FirstOrDefault(x => x.GUID == nodeId) as RevitTransactionNode;
                     if (rNode != null)
                         rNode.RegisterAllElementsDeleteHook();
                 }

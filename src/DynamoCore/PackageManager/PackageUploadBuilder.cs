@@ -90,12 +90,14 @@ namespace Dynamo.PackageManager
 
         private static void RemapCustomNodeFilePaths( IEnumerable<string> filePaths, string dyfRoot )
         {
-            filePaths
+
+            var defList= filePaths
                 .Where(x => x.EndsWith(".dyf"))
                 .Select( path => dynSettings.CustomNodeManager.GuidFromPath(path))
                 .Select( guid => dynSettings.CustomNodeManager.GetFunctionDefinition(guid) )
-                .ToList()
-                .ForEach( func =>
+                .ToList();
+                
+            defList.ForEach( func =>
                     {
                         var newPath = Path.Combine(dyfRoot, Path.GetFileName(func.Workspace.FilePath));
                         func.Workspace.FilePath = newPath;

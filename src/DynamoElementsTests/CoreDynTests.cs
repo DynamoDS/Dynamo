@@ -11,6 +11,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using NUnit.Framework;
+using String = System.String;
 
 namespace Dynamo.Tests
 {
@@ -96,7 +97,7 @@ namespace Dynamo.Tests
 
         #region utility methods
 
-        public dynNodeModel NodeFromCurrentSpace(DynamoModel model, string guidString)
+        public NodeModel NodeFromCurrentSpace(DynamoModel model, string guidString)
         {
             Guid guid = Guid.Empty;
             Guid.TryParse(guidString, out guid);
@@ -109,22 +110,22 @@ namespace Dynamo.Tests
             return Path.Combine(directory.Parent.Parent.FullName, "test");
         }
  
-        public dynNodeModel NodeFromCurrentSpace(DynamoModel model, Guid guid)
+        public NodeModel NodeFromCurrentSpace(DynamoModel model, Guid guid)
         {
             return model.CurrentSpace.Nodes.FirstOrDefault((node) => node.GUID == guid);
         }
 
-        public dynWatch GetWatchNodeFromCurrentSpace(DynamoModel model, string guidString)
+        public Watch GetWatchNodeFromCurrentSpace(DynamoModel model, string guidString)
         {
             var nodeToWatch = NodeFromCurrentSpace(model, guidString);
             Assert.NotNull(nodeToWatch);
-            Assert.IsAssignableFrom(typeof(dynWatch), nodeToWatch);
-            return (dynWatch)nodeToWatch;
+            Assert.IsAssignableFrom(typeof(Watch), nodeToWatch);
+            return (Watch)nodeToWatch;
         }
 
-        public dynWatch GetFirstWatchNodeFromCurrentSpace(DynamoModel model)
+        public Watch GetFirstWatchNodeFromCurrentSpace(DynamoModel model)
         {
-            return (dynWatch) model.CurrentSpace.Nodes.FirstOrDefault(x => x is dynWatch);
+            return (Watch) model.CurrentSpace.Nodes.FirstOrDefault(x => x is Watch);
         }
 
         public double GetDoubleFromFSchemeValue(FScheme.Value value)
@@ -159,8 +160,8 @@ namespace Dynamo.Tests
             // check an input value
             var node1 = NodeFromCurrentSpace(model, "51ed7fed-99fa-46c3-a03c-2c076f2d0538");
             Assert.NotNull(node1);
-            Assert.IsAssignableFrom(typeof(dynDoubleInput), node1);
-            Assert.AreEqual("2", ((dynDoubleInput)node1).Value);
+            Assert.IsAssignableFrom(typeof(DoubleInput), node1);
+            Assert.AreEqual("2", ((DoubleInput)node1).Value);
             
             // run the expression
             //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
@@ -624,7 +625,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "StringInputTest.dyn");
             model.Open(openPath);
 
-            var strNode = (dynStringInput)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynStringInput);
+            var strNode = (StringInput)dynSettings.Controller.DynamoModel.Nodes.First(x => x is StringInput);
             const string expected =
                 "A node\twith tabs, and\r\ncarriage returns,\r\nand !@#$%^&* characters, and also something \"in quotes\".";
 
@@ -643,12 +644,12 @@ namespace Dynamo.Tests
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = (dynWatch)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynWatch);
+            var watch = (Watch)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Watch);
             FSharpList<FScheme.Value> listWatchVal = GetListFromFSchemeValue(watch.GetValue(0));
             Assert.AreEqual(5, listWatchVal.Length);
 
             //change the value of the list
-            var numNode = (dynDoubleInput) controller.DynamoModel.Nodes.Last(x => x is dynDoubleInput);
+            var numNode = (DoubleInput) controller.DynamoModel.Nodes.Last(x => x is DoubleInput);
             numNode.Value = "3";
             dynSettings.Controller.RunExpression(null);
             Thread.Sleep(300);
@@ -675,7 +676,7 @@ namespace Dynamo.Tests
             //Slicing by 5 should return 6 lists, the last containing one element
             var list = Utils.SequenceToFSharpList(Enumerable.Range(0, 21).Select(x => FScheme.Value.NewNumber(x)));
 
-            var sliceNode = (dynSlice)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynSlice);
+            var sliceNode = (Slice)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Slice);
             var args = FSharpList<FScheme.Value>.Empty;
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
@@ -731,7 +732,7 @@ namespace Dynamo.Tests
             var data = new Dictionary<string, object> {{"name", "Diagonal Left List"}};
             model.CreateNode(data);
 
-            var leftNode = (dynDiagonalLeftList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynDiagonalLeftList);
+            var leftNode = (DiagonalLeftList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is DiagonalLeftList);
             var args = FSharpList<FScheme.Value>.Empty;
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
@@ -756,7 +757,7 @@ namespace Dynamo.Tests
             data = new Dictionary<string, object> {{"name", "Diagonal Right List"}};
             model.CreateNode(data);
 
-            var rightNode = (dynDiagonalRightList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is dynDiagonalRightList);
+            var rightNode = (DiagonalRightList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is DiagonalRightList);
             args = FSharpList<FScheme.Value>.Empty;
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
@@ -775,7 +776,7 @@ namespace Dynamo.Tests
             model.Open(openPath);
 
             //set the path to the image file
-            var pathNode = (dynStringFilename)model.Nodes.First(x => x is dynStringFilename);
+            var pathNode = (StringFilename)model.Nodes.First(x => x is StringFilename);
             pathNode.Value = Path.Combine(examplePath,"honey-badger.jpg");
 
             dynSettings.Controller.RunExpression(null);

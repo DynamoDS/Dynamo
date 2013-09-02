@@ -31,12 +31,12 @@ namespace Dynamo.Nodes
     [NodeName("Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Manages connection to an Arduino microcontroller.")]
-    public partial class dynArduino : dynNodeWithOneOutput
+    public partial class Arduino : NodeWithOneOutput
     {
         SerialPort port;
         System.Windows.Controls.MenuItem comItem;
 
-        public dynArduino()
+        public Arduino()
         {
             InPortData.Add(new PortData("exec", "Execution Interval", typeof(object)));
             OutPortData.Add(new PortData("arduino", "Serial port for later read/write", typeof(Value.Container)));
@@ -168,14 +168,14 @@ namespace Dynamo.Nodes
     [NodeName("Read Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Reads values from an Arduino microcontroller.")]
-    public class dynArduinoRead : dynNodeWithOneOutput
+    public class ArduinoRead : NodeWithOneOutput
     {
         SerialPort port;
         int range;
         List<string> serialLine = new List<string>();
 
 
-        public dynArduinoRead()
+        public ArduinoRead()
         {
             InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
             InPortData.Add(new PortData("range", "Number of lines to read", typeof(double)));
@@ -256,11 +256,11 @@ namespace Dynamo.Nodes
     [NodeName("Write Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Writes values to an Arduino microcontroller.")]
-    public class dynArduinoWrite : dynNodeWithOneOutput
+    public class ArduinoWrite : NodeWithOneOutput
     {
         SerialPort port;
 
-        public dynArduinoWrite()
+        public ArduinoWrite()
         {
             InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
             InPortData.Add(new PortData("text", "Text to be written", typeof(string)));
