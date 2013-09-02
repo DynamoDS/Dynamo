@@ -194,21 +194,21 @@ namespace Dynamo
                 }
             }
 
-            protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+            protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("ID");
                 
                 outEl.SetAttribute("value", Symbol);
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
 
                 outEl = xmlDoc.CreateElement("Name");
                 outEl.SetAttribute("value", NickName);
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
 
                 outEl = xmlDoc.CreateElement("Description");
                 outEl.SetAttribute("value", Description);
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
 
                 outEl = xmlDoc.CreateElement("Inputs");
                 foreach (var input in InPortData.Select(x => x.NickName))
@@ -217,7 +217,7 @@ namespace Dynamo
                     inputEl.SetAttribute("value", input);
                     outEl.AppendChild(inputEl);
                 }
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
 
                 outEl = xmlDoc.CreateElement("Outputs");
                 foreach (var output in OutPortData.Select(x => x.NickName))
@@ -226,12 +226,12 @@ namespace Dynamo
                     outputEl.SetAttribute("value", output);
                     outEl.AppendChild(outputEl);
                 }
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
             }
 
-            protected override void LoadNode(XmlNode elNode)
+            protected override void LoadNode(XmlNode nodeElement)
             {
-                foreach (XmlNode subNode in elNode.ChildNodes)
+                foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name.Equals("Name"))
                     {
@@ -239,7 +239,7 @@ namespace Dynamo
                     }
                 }
 
-                foreach (XmlNode subNode in elNode.ChildNodes)
+                foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name.Equals("ID"))
                     {
@@ -290,7 +290,7 @@ namespace Dynamo
                     }
                 }
 
-                foreach (XmlNode subNode in elNode.ChildNodes)
+                foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name.Equals("Outputs"))
                     {
@@ -360,7 +360,7 @@ namespace Dynamo
                 }
                 catch
                 {
-                    funId = GuidUtility.Create(GuidUtility.UrlNamespace, elNode.Attributes["nickname"].Value);
+                    funId = GuidUtility.Create(GuidUtility.UrlNamespace, nodeElement.Attributes["nickname"].Value);
                     Symbol = funId.ToString();
                 }
 
@@ -426,17 +426,17 @@ namespace Dynamo
                 }
             }
 
-            protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+            protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("Symbol");
                 outEl.SetAttribute("value", Symbol);
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
             }
 
-            protected override void LoadNode(XmlNode elNode)
+            protected override void LoadNode(XmlNode nodeElement)
             {
-                foreach (XmlNode subNode in elNode.ChildNodes)
+                foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name == "Symbol")
                     {
@@ -497,17 +497,17 @@ namespace Dynamo
                 return result[outPort];
             }
 
-            protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+            protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("Symbol");
                 outEl.SetAttribute("value", InputSymbol);
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
             }
 
-            protected override void LoadNode(XmlNode elNode)
+            protected override void LoadNode(XmlNode nodeElement)
             {
-                foreach (XmlNode subNode in elNode.ChildNodes)
+                foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name == "Symbol")
                     {
