@@ -9,7 +9,7 @@ namespace Dynamo.Core
 {
     class UndoRedoRecorder
     {
-        internal UndoRedoRecorder(dynWorkspaceModel workspace)
+        internal UndoRedoRecorder(WorkspaceModel workspace)
         {
             // An UndoRedoRecorder is a singleton with respect to its owning 
             // workspace. The recorder needs access to the workspace because 
@@ -46,9 +46,9 @@ namespace Dynamo.Core
         // Three primary methods for the recorder to record a model before 
         // it is deleted or modified; or right after the model is created.
         // 
-        internal void RecordCreationForUndo(dynModelBase model) { }
-        internal void RecordDeletionForUndo(dynModelBase model) { }
-        internal void RecordModificationForUndo(dynModelBase model)
+        internal void RecordCreationForUndo(ModelBase model) { }
+        internal void RecordDeletionForUndo(ModelBase model) { }
+        internal void RecordModificationForUndo(ModelBase model)
         {
             // Omitted: Ensure this model has not been recorded in the 
             // current group so far (we don't want to double record it).
@@ -76,7 +76,7 @@ namespace Dynamo.Core
         internal void Undo() { }
         internal void Redo() { }
 
-        private dynWorkspaceModel owningWorkspace = null;
+        private WorkspaceModel owningWorkspace = null;
         private XmlDocument document = new XmlDocument();
         private XmlElement currentGroup = null;
         private List<XmlElement> undoStack = null;
