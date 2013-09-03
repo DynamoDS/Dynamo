@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -57,7 +58,7 @@ namespace Dynamo.Controls
             get { return LogScroller.Height > 0; }
         }
 
-        public static Application Start()
+        public static Application MakeSandboxAndRun()
         {
             var controller = DynamoController.MakeSandbox();
             var app = new Application();
@@ -109,9 +110,9 @@ namespace Dynamo.Controls
             #endregion
 
             //PACKAGE MANAGER
-            dynSettings.PackageManagerClient.ShowPackagePublishUIRequested += _vm_RequestShowPackageManagerPublish;
-            _vm.RequestShowInstalledPackages += new EventHandler(_vm_RequestShowInstalledPackages);
-            _vm.RequestShowPacakageManagerSearch += new EventHandler(_vm_RequestShowPackageManagerSearch);
+            _vm.RequestPackagePublishDialog += _vm_RequestRequestPackageManagerPublish;
+            _vm.RequestManagePackagesDialog += new EventHandler(_vm_RequestShowInstalledPackages);
+            _vm.RequestPackageManagerSearchDialog += new EventHandler(_vm_RequestShowPackageManagerSearch);
 
             //FUNCTION NAME PROMPT
             _vm.Model.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
@@ -129,14 +130,15 @@ namespace Dynamo.Controls
         }
         
         private PackageManagerPublishView _pubPkgView;
-        void _vm_RequestShowPackageManagerPublish(PublishPackageViewModel model)
+        void _vm_RequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
             if (_pubPkgView == null)
             {
                 _pubPkgView = new PackageManagerPublishView(model);
                 _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
                 _pubPkgView.Show();
-                if (_pubPkgView.IsLoaded) _pubPkgView.Owner = this;
+               
+                if (_pubPkgView.IsLoaded && this.IsLoaded) _pubPkgView.Owner = this;
             }
 
             _pubPkgView.Focus();
@@ -151,7 +153,8 @@ namespace Dynamo.Controls
                 _searchPkgsView = new PackageManagerSearchView(pms);
                 _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
                 _searchPkgsView.Show();
-                if (_searchPkgsView.IsLoaded) _searchPkgsView.Owner = this;
+
+                 if (_searchPkgsView.IsLoaded && this.IsLoaded) _searchPkgsView.Owner = this;
             }
              _searchPkgsView.Focus();
         }
@@ -164,8 +167,8 @@ namespace Dynamo.Controls
                 _installedPkgsView = new InstalledPackagesView();
                 _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
                 _installedPkgsView.Show();
-                if (_installedPkgsView.IsLoaded) _installedPkgsView.Owner = this;
-                
+
+                if (_installedPkgsView.IsLoaded && this.IsLoaded)  _installedPkgsView.Owner = this;
             }
             _installedPkgsView.Focus();
         }
