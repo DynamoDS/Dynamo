@@ -416,10 +416,7 @@ namespace Dynamo.DSEngine
                 else if (rhs is BinaryExpressionNode)
                 {
                     BinaryExpressionNode expr = rhs as BinaryExpressionNode;
-                    if (expr.Optr == Operator.add ||
-                        expr.Optr == Operator.sub ||
-                        expr.Optr == Operator.mul ||
-                        expr.Optr == Operator.div)
+                    if (expr.Optr != Operator.assign)
                     {
                         var newFunc = BuildPartilFunctionForBinaryOp(expr);
                         AddNode(node.GUID, newFunc);
