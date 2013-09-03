@@ -646,7 +646,13 @@ namespace Dynamo.Models
                 double cy = 0;
                 double zoom = 1.0;
 
-                foreach (XmlNode node in xmlDoc.GetElementsByTagName("Workspace"))
+                // handle legacy workspace nodes called dynWorkspace
+                // and new workspaces without the dyn prefix
+                XmlNodeList workspaceNodes = xmlDoc.GetElementsByTagName("Workspace");
+                if (workspaceNodes.Count == 0)
+                    workspaceNodes = xmlDoc.GetElementsByTagName("dynWorkspace");
+
+                foreach (XmlNode node in workspaceNodes)
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
@@ -677,6 +683,13 @@ namespace Dynamo.Models
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
                 XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Notes");
+
+                if (elNodes.Count == 0)
+                    elNodes = xmlDoc.GetElementsByTagName("dynElements");
+                if (cNodes.Count == 0)
+                    cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
+                if (nNodes.Count == 0)
+                    nNodes = xmlDoc.GetElementsByTagName("dynNotes");
 
                 XmlNode elNodesList = elNodes[0];
                 XmlNode cNodesList = cNodes[0];
