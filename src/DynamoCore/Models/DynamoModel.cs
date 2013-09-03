@@ -50,7 +50,7 @@ namespace Dynamo.Models
                 string id = "";
 
                 // load the header
-                foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
+                foreach (XmlNode node in xmlDoc.GetElementsByTagName("Workspace"))
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
@@ -646,7 +646,7 @@ namespace Dynamo.Models
                 double cy = 0;
                 double zoom = 1.0;
 
-                foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
+                foreach (XmlNode node in xmlDoc.GetElementsByTagName("Workspace"))
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
@@ -674,9 +674,9 @@ namespace Dynamo.Models
                 var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == CurrentSpace);
                 vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 
-                XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
-                XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
-                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("dynNotes");
+                XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
+                XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
+                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Notes");
 
                 XmlNode elNodesList = elNodes[0];
                 XmlNode cNodesList = cNodes[0];
