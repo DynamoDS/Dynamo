@@ -620,13 +620,13 @@ namespace Dynamo.Nodes
         }
     }
 
-    public partial class Function : NodeWithOneOutput
+    public partial class Function
     {
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
 
-            nodeUI.MouseDoubleClick += new System.Windows.Input.MouseButtonEventHandler(ui_MouseDoubleClick);
+            nodeUI.MouseDoubleClick += ui_MouseDoubleClick;
         }
 
         void ui_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
