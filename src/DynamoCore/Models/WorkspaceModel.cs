@@ -409,7 +409,7 @@ namespace Dynamo.Models
                 var xmlDoc = new XmlDocument();
                 xmlDoc.CreateXmlDeclaration("1.0", null, null);
 
-                var root = xmlDoc.CreateElement("dynWorkspace"); //write the root element
+                var root = xmlDoc.CreateElement("Workspace"); //write the root element
                 root.SetAttribute("X", workSpace.X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", workSpace.Y.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("zoom", workSpace.Zoom.ToString(CultureInfo.InvariantCulture));
@@ -436,7 +436,7 @@ namespace Dynamo.Models
 
                 xmlDoc.AppendChild(root);
 
-                var elementList = xmlDoc.CreateElement("dynElements");
+                var elementList = xmlDoc.CreateElement("Elements");
                 //write the root element
                 root.AppendChild(elementList);
 
@@ -461,7 +461,7 @@ namespace Dynamo.Models
                 }
 
                 //write only the output connectors
-                var connectorList = xmlDoc.CreateElement("dynConnectors");
+                var connectorList = xmlDoc.CreateElement("Connectors");
                 //write the root element
                 root.AppendChild(connectorList);
 
@@ -487,7 +487,7 @@ namespace Dynamo.Models
                 }
 
                 //save the notes
-                var noteList = xmlDoc.CreateElement("dynNotes"); //write the root element
+                var noteList = xmlDoc.CreateElement("Notes"); //write the root element
                 root.AppendChild(noteList);
                 foreach (var n in workSpace.Notes)
                 {

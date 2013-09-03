@@ -254,13 +254,13 @@ namespace Dynamo.Controls
 
                 // connectors are most often within the bounding box of the nodes and notes
 
-                foreach (NodeModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Nodes)
+                foreach (NodeModel n in dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                foreach (NoteModel n in dynSettings.Controller.DynamoModel.CurrentSpace.Notes)
+                foreach (NoteModel n in dynSettings.Controller.DynamoModel.CurrentWorkspace.Notes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
