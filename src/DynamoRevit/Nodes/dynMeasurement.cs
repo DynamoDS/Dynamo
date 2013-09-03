@@ -367,16 +367,16 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
-            dynEl.AppendChild(outEl);
+            nodeElement.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 // this node now stores a double, having previously stored a measure type
                 // by checking for the measure type as well we allow for loading of older files.
