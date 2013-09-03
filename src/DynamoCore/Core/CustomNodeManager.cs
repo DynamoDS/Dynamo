@@ -606,7 +606,7 @@ namespace Dynamo.Utilities
                 xmlDoc.Load(path);
 
                 // load the header
-                foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
+                foreach (XmlNode node in xmlDoc.GetElementsByTagName("Workspace"))
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
@@ -702,7 +702,7 @@ namespace Dynamo.Utilities
                 string id = "";
 
                 // load the header
-                foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
+                foreach (XmlNode node in xmlDoc.GetElementsByTagName("Workspace"))
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
@@ -761,9 +761,9 @@ namespace Dynamo.Utilities
                 // set the node as loaded
                 this.loadedNodes.Add(def.FunctionId, def);
 
-                XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
-                XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
-                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("dynNotes");
+                XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
+                XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
+                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Notes");
 
                 XmlNode elNodesList = elNodes[0];
                 XmlNode cNodesList = cNodes[0];
