@@ -25,6 +25,7 @@ using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
@@ -33,7 +34,6 @@ namespace Dynamo.PackageManager
 {
 
     public delegate void AuthenticationRequestHandler(PackageManagerClient sender);
-    public delegate void ShowPackagePublishUIHandler(PublishPackageViewModel publishViewModel);
 
     /// <summary>
     ///     A thin wrapper on the Greg rest client for performing IO with
@@ -49,8 +49,6 @@ namespace Dynamo.PackageManager
 
         #region Properties
 
-        public event AuthenticationRequestHandler AuthenticationRequested;
-        public event ShowPackagePublishUIHandler ShowPackagePublishUIRequested;
 
         /// <summary>
         ///     Client property
@@ -77,18 +75,6 @@ namespace Dynamo.PackageManager
         {
             Client = new Client(null, "http://54.225.121.251"); // initialize authenticator later
             IsLoggedIn = false;
-        }
-
-        public void OnAuthenticationRequested()
-        {
-            if (AuthenticationRequested != null)
-                AuthenticationRequested(this);
-        }
-
-        public void OnShowPackagePublishUIRequested(PublishPackageViewModel vm)
-        {
-            if (ShowPackagePublishUIRequested != null)
-                ShowPackagePublishUIRequested(vm);
         }
 
         internal List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
@@ -183,7 +169,7 @@ namespace Dynamo.PackageManager
 
                 var newPkgVm = new PublishPackageViewModel(dynSettings.PackageManagerClient);
                 newPkgVm.FunctionDefinitions = fs;
-                dynSettings.PackageManagerClient.OnShowPackagePublishUIRequested(newPkgVm);
+                dynSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
             }
             else
             {
@@ -194,7 +180,7 @@ namespace Dynamo.PackageManager
 
         public PackageUploadHandle Publish( Package l, List<string> files, bool isNewVersion )
         {
-            OnAuthenticationRequested();
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
 
             int maxRetries = 5;
             int count = 0;

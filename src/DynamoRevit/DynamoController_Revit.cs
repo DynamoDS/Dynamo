@@ -42,7 +42,7 @@ namespace Dynamo
             Predicate<NodeModel> manualTransactionPredicate = node => node is Transaction;
             CheckManualTransaction = new PredicateTraverser(manualTransactionPredicate);
 
-            dynSettings.PackageManagerClient.AuthenticationRequested += RegisterSingleSignOn;
+            dynSettings.Controller.DynamoViewModel.RequestAuthentication += RegisterSingleSignOn;
 
             AddPythonBindings();
             AddWatchNodeHandler();

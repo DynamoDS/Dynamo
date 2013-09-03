@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Forms;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
@@ -18,27 +19,43 @@ namespace Dynamo.ViewModels
 {
 
     public delegate void WorkspaceSaveEventHandler(object sender, WorkspaceSaveEventArgs e);
+    public delegate void RequestPackagePublishDialogHandler(PublishPackageViewModel publishViewModel);
 
     public class DynamoViewModel:ViewModelBase
     {
         #region events
 
-        public event EventHandler RequestShowInstalledPackages;
-        public virtual void OnRequestShowInstalledPackages(Object sender, EventArgs e)
+
+        public event EventHandler RequestManagePackagesDialog;
+        public virtual void OnRequestManagePackagesDialog(Object sender, EventArgs e)
         {
-            if (RequestShowInstalledPackages != null)
+            if (RequestManagePackagesDialog != null)
             {
-                RequestShowInstalledPackages(this, e);
+                RequestManagePackagesDialog(this, e);
             }
         }
 
-        public event EventHandler RequestShowPacakageManagerSearch;
-        public virtual void OnRequestShowPackageManagerSearch(Object sender, EventArgs e)
+        public event RequestPackagePublishDialogHandler RequestPackagePublishDialog;
+        public void OnRequestPackagePublishDialog(PublishPackageViewModel vm)
         {
-            if (RequestShowPacakageManagerSearch != null)
+            if (RequestPackagePublishDialog != null)
+                RequestPackagePublishDialog(vm);
+        }
+
+        public event EventHandler RequestPackageManagerSearchDialog;
+        public virtual void OnRequestPackageManagerSearchDialog(Object sender, EventArgs e)
+        {
+            if (RequestPackageManagerSearchDialog != null)
             {
-                RequestShowPacakageManagerSearch(this, e);
+                RequestPackageManagerSearchDialog(this, e);
             }
+        }
+
+        public event AuthenticationRequestHandler RequestAuthentication;
+        public void OnRequestAuthentication()
+        {
+            if (RequestAuthentication != null)
+                RequestAuthentication(dynSettings.PackageManagerClient);
         }
 
         public event ImageSaveEventHandler RequestSaveImage;
@@ -591,7 +608,7 @@ namespace Dynamo.ViewModels
 
         private void ShowPackageManagerSearch(object parameters)
         {
-            OnRequestShowPackageManagerSearch(this, EventArgs.Empty);
+            OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
         }
 
         private bool CanShowPackageManagerSearch(object parameters)
@@ -601,7 +618,7 @@ namespace Dynamo.ViewModels
 
         private void ShowInstalledPackages(object parameters)
         {
-            OnRequestShowInstalledPackages(this, EventArgs.Empty);
+            OnRequestManagePackagesDialog(this, EventArgs.Empty);
         }
 
         private bool CanShowInstalledPackages(object parameters)
