@@ -239,6 +239,11 @@ namespace Dynamo.Nodes
         {
             return args[0];
         }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return inputAstNodes.Count > 0 ? inputAstNodes[0] : null;
+        }
     }
 
     #region Functions
@@ -1788,6 +1793,13 @@ namespace Dynamo.Nodes
             preBuilt[this] = result;
             return result[outPort];
         }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildBinaryExpression(inputAstNodes[0],
+                                                 inputAstNodes[1],
+                                                 ProtoCore.DSASM.Operator.and);
+        }
     }
 
     [NodeName("Or")]
@@ -1849,6 +1861,13 @@ namespace Dynamo.Nodes
             preBuilt[this] = result;
             return result[outPort];
         }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildBinaryExpression(inputAstNodes[0],
+                                                 inputAstNodes[1],
+                                                 ProtoCore.DSASM.Operator.or);
+        }
     }
 
     [NodeName("Xor")]
@@ -1879,7 +1898,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("!a", "result", typeof(bool)));
             RegisterAllPorts();
         }
-
     }
 
     #endregion
@@ -2780,6 +2798,11 @@ namespace Dynamo.Nodes
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             dynEl.AppendChild(outEl);
         }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return new DoubleNode { value = Value.ToString() };
+        }
     }
 
     public abstract class Bool : BasicInteractive<bool>
@@ -2787,6 +2810,11 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             return FScheme.Value.NewNumber(Value ? 1 : 0);
+        }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return new BooleanNode { value = Value ? "true" : "false" };
         }
     }
 
@@ -2800,6 +2828,11 @@ namespace Dynamo.Nodes
         public override string PrintExpression()
         {
             return "\"" + base.PrintExpression() + "\"";
+        }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return new ProtoCore.AST.AssociativeAST.StringNode { value = Value }; 
         }
     }
 
