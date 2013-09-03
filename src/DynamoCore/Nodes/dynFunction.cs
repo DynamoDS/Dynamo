@@ -401,6 +401,8 @@ namespace Dynamo
                 InPortData.Add(new PortData("", "", typeof(object)));
 
                 RegisterAllPorts();
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
 
             public override bool RequiresRecalc
@@ -443,6 +445,8 @@ namespace Dynamo
                         Symbol = subNode.Attributes[0].Value;
                     }
                 }
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
         }
 
@@ -460,6 +464,8 @@ namespace Dynamo
                 OutPortData.Add(new PortData("", "Symbol", typeof(object)));
 
                 RegisterAllPorts();
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
 
             public override bool RequiresRecalc
@@ -514,6 +520,8 @@ namespace Dynamo
                         InputSymbol = subNode.Attributes[0].Value;
                     }
                 }
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
         }
 
