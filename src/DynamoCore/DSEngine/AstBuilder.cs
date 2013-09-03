@@ -185,6 +185,15 @@ namespace Dynamo.DSEngine
             return funcCall;
         }
 
+        public FunctionDotCallNode BuildFunctionDotCall(string thisobj,
+                                                        string function,
+                                                        List<AssociativeNode> arguments)
+        {
+            FunctionCallNode funcCall = BuildFunctionCall(function, arguments);
+            IdentifierNode lhs = BuildIdentifier(thisobj);
+            return CoreUtils.GenerateCallDotNode(lhs, funcCall);
+        }
+
         public IdentifierNode BuildIdentifier(string name)
         {
             IdentifierNode identifier = new IdentifierNode();
@@ -198,6 +207,16 @@ namespace Dynamo.DSEngine
             ExprListNode exprList = new ExprListNode();
             exprList.list = nodes;
             return exprList;
+        }
+
+        public ExprListNode BuildExprList(List<string> exprs)
+        {
+            List<AssociativeNode> nodes = new List<AssociativeNode>();
+            foreach (var item in exprs)
+            {
+                nodes.Add(BuildIdentifier(item)); 
+            }
+            return BuildExprList(nodes);
         }
 
         public BinaryExpressionNode BuildAssignment(AssociativeNode lhs, 

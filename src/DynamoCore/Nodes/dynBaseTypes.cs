@@ -2054,6 +2054,11 @@ namespace Dynamo.Nodes
 
             return Value.NewNumber(x % y);
         }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildFunctionDotCall("Math", "DivRem", inputAstNodes);
+        }
     }
 
     [NodeName("Power")]
@@ -2078,6 +2083,11 @@ namespace Dynamo.Nodes
 
             return Value.NewNumber(Math.Pow(x,y));
         }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildFunctionDotCall("Math", "Pow", inputAstNodes);
+        }
     }
 
     [NodeName("Round")]
@@ -2098,6 +2108,11 @@ namespace Dynamo.Nodes
             return Value.NewNumber(
                Math.Round(((Value.Number)args[0]).Item)
             );
+        }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildFunctionDotCall("Math", "Round", inputAstNodes);
         }
     }
 
@@ -2121,6 +2136,11 @@ namespace Dynamo.Nodes
                Math.Floor(((Value.Number)args[0]).Item)
             );
         }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildFunctionDotCall("Math", "Floor", inputAstNodes);
+        }
     }
 
     [NodeName("Ceiling")]
@@ -2142,6 +2162,11 @@ namespace Dynamo.Nodes
             return Value.NewNumber(
                Math.Ceiling(((Value.Number)args[0]).Item)
             );
+        }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildFunctionDotCall("Math", "Ceiling", inputAstNodes);
         }
     }
 
@@ -2193,6 +2218,11 @@ namespace Dynamo.Nodes
         {
             return Value.NewNumber(random.NextDouble());
         }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildFunctionDotCall("Math", "Rand", inputAstNodes);
+        }
     }
 
     [NodeName("e")]
@@ -2228,6 +2258,11 @@ namespace Dynamo.Nodes
             }
             return result[outPort];
         }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildExprList(new List<string> { "Math", "E" });
+        }
     }
 
     [NodeName("Pi")]
@@ -2262,6 +2297,11 @@ namespace Dynamo.Nodes
                 preBuilt[this] = result;
             }
             return result[outPort];
+        }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildExprList(new List<string> { "Math", "PI" });
         }
     }
 
@@ -2334,6 +2374,11 @@ namespace Dynamo.Nodes
                 return Value.NewNumber(Math.Sin(theta));
             }
         }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildFunctionDotCall("Math", "Sin", inputAstNodes);
+        }
     }
 
     [NodeName("Cosine")]
@@ -2370,6 +2415,11 @@ namespace Dynamo.Nodes
                 return Value.NewNumber(Math.Cos(theta));
             }
         }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildFunctionDotCall("Math", "Cos", inputAstNodes);
+        }
     }
 
     [NodeName("Tangent")]
@@ -2405,6 +2455,11 @@ namespace Dynamo.Nodes
                 double theta = ((Value.Number)input).Item;
                 return Value.NewNumber(Math.Tan(theta));
             }
+        }
+
+        protected override AssociativeNode CompileToAstNodeInternal(AstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.BuildFunctionDotCall("Math", "Tan", inputAstNodes);
         }
     }
 
