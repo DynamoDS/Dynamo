@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Tests;
 
 namespace Dynamo
 {
-    class PackageManagerTests
+    class PackageManagerTests : DynamoUnitTest
     {
     }
 }
