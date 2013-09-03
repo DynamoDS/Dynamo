@@ -294,7 +294,7 @@ namespace Dynamo.Tests
         {
             var nodeName = "TheNode";
             var catName = "TheCat";
-            AssertAddAndRemoveCustomNode(search, nodeName, catName);
+            AssertAddAndRemoveCustomNode(_search, nodeName, catName);
         }
 
         [Test]
@@ -302,7 +302,7 @@ namespace Dynamo.Tests
         {
             var nodeName = "TheNode";
             var catName = "TheCat.TheInnerCat";
-            AssertAddAndRemoveCustomNode(search, nodeName, catName);
+            AssertAddAndRemoveCustomNode(_search, nodeName, catName);
         }
         #endregion
 
@@ -340,12 +340,12 @@ namespace Dynamo.Tests
         [Test]
         public void CanAddCategory()
         {
-            var root = search.TryAddRootCategory("Peter");
+            var root = _search.TryAddRootCategory("Peter");
             var leafCat = new BrowserInternalElement("Boyer", root);
             root.Items.Add(leafCat);
 
             Assert.Contains( leafCat, root.Items );
-            Assert.Contains( root, search.BrowserRootCategories );
+            Assert.Contains(root, _search.BrowserRootCategories);
             
         }
 
@@ -353,8 +353,8 @@ namespace Dynamo.Tests
         [Test]
         public void CanAddCategoryWithDelimiters()
         {
-            search.AddCategory("Peter.Boyer");
-            Assert.IsTrue(search.ContainsCategory("Peter.Boyer"));
+            _search.AddCategory("Peter.Boyer");
+            Assert.IsTrue(_search.ContainsCategory("Peter.Boyer"));
         }
 
         #endregion
@@ -364,26 +364,26 @@ namespace Dynamo.Tests
         [Test]
         public void CanRemoveRootCategoryWithInternalElements()
         {
-            var root = (BrowserRootElement) search.TryAddRootCategory("Peter");
+            var root = (BrowserRootElement)_search.TryAddRootCategory("Peter");
             var leafCat = new BrowserInternalElement("Boyer", root);
             root.Items.Add(leafCat);
 
             Assert.Contains( leafCat, root.Items );
-            Assert.Contains( root, search.BrowserRootCategories );
+            Assert.Contains(root, _search.BrowserRootCategories);
 
-            search.RemoveCategory("Peter");
-            Assert.False( search.BrowserRootCategories.Contains(root) );
+            _search.RemoveCategory("Peter");
+            Assert.False(_search.BrowserRootCategories.Contains(root));
         }
 
         [Test]
         public void CanRemoveCategoryWithDelimiters()
         {
-            search.AddCategory("Peter.Boyer");
+            _search.AddCategory("Peter.Boyer");
 
-            Assert.IsTrue(search.ContainsCategory("Peter.Boyer"));
+            Assert.IsTrue(_search.ContainsCategory("Peter.Boyer"));
 
-            search.RemoveCategory("Peter.Boyer");
-            Assert.IsNull( search.GetCategoryByName("Peter.Boyer") );
+            _search.RemoveCategory("Peter.Boyer");
+            Assert.IsNull(_search.GetCategoryByName("Peter.Boyer"));
 
         }
 
@@ -405,38 +405,38 @@ namespace Dynamo.Tests
         [Test]
         public void CanTryToRemoveElementFromSearchWithNonexistentName()
         {
-            search.RemoveNodeAndEmptyParentCategory("NonExistentName");
+            _search.RemoveNodeAndEmptyParentCategory("NonExistentName");
 
-            search.SearchAndUpdateResultsSync("NonExistentName");
-            Assert.AreEqual(0, search.SearchResults.Count);
+            _search.SearchAndUpdateResultsSync("NonExistentName");
+            Assert.AreEqual(0, _search.SearchResults.Count);
         }
 
         [Test]
         public void CanRemoveElementCustomNodeByNameWithNestedCategory()
         {
-            search.Add("Peter", "Turnip.Greens", "A description", System.Guid.NewGuid());
+            _search.Add("Peter", "Turnip.Greens", "A description", System.Guid.NewGuid());
 
-            search.SearchAndUpdateResultsSync("Peter");
-            Assert.AreEqual(1, search.SearchResults.Count);
+            _search.SearchAndUpdateResultsSync("Peter");
+            Assert.AreEqual(1, _search.SearchResults.Count);
 
-            search.RemoveNodeAndEmptyParentCategory("Peter");
-            search.SearchAndUpdateResultsSync("Peter");
+            _search.RemoveNodeAndEmptyParentCategory("Peter");
+            _search.SearchAndUpdateResultsSync("Peter");
 
-            Assert.AreEqual(0, search.SearchResults.Count);
+            Assert.AreEqual(0, _search.SearchResults.Count);
         }
 
         [Test]
         public void CanRemoveElementCustomNodeByNameWithSingleCategory()
         {
-            search.Add("Peter", "Greens", "A description", System.Guid.NewGuid());
+            _search.Add("Peter", "Greens", "A description", System.Guid.NewGuid());
 
-            search.SearchAndUpdateResultsSync("Peter");
-            Assert.AreEqual(1, search.SearchResults.Count);
+            _search.SearchAndUpdateResultsSync("Peter");
+            Assert.AreEqual(1, _search.SearchResults.Count);
 
-            search.RemoveNodeAndEmptyParentCategory("Peter");
-            search.SearchAndUpdateResultsSync("Peter");
+            _search.RemoveNodeAndEmptyParentCategory("Peter");
+            _search.SearchAndUpdateResultsSync("Peter");
 
-            Assert.AreEqual(0, search.SearchResults.Count);
+            Assert.AreEqual(0, _search.SearchResults.Count);
         }
 
         #endregion
