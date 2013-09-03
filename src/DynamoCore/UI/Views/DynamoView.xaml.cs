@@ -110,7 +110,7 @@ namespace Dynamo.Controls
             #endregion
 
             //PACKAGE MANAGER
-            _vm.RequestPackagePublishDialog += VmRequestRequestPackageManagerPublish;
+            _vm.RequestPackagePublishDialog += _vm_RequestRequestPackageManagerPublish;
             _vm.RequestManagePackagesDialog += new EventHandler(_vm_RequestShowInstalledPackages);
             _vm.RequestPackageManagerSearchDialog += new EventHandler(_vm_RequestShowPackageManagerSearch);
 
@@ -130,7 +130,7 @@ namespace Dynamo.Controls
         }
         
         private PackageManagerPublishView _pubPkgView;
-        void VmRequestRequestPackageManagerPublish(PublishPackageViewModel model)
+        void _vm_RequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
             if (_pubPkgView == null)
             {
