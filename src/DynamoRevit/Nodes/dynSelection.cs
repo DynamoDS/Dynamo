@@ -207,20 +207,20 @@ namespace Dynamo.Nodes
             return Value.NewContainer(SelectedElement);
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElement != null)
             {
                 XmlElement outEl = xmlDoc.CreateElement("instance");
                 outEl.SetAttribute("id", SelectedElement.UniqueId);
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
             }
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals("instance"))
                 {
@@ -477,7 +477,7 @@ namespace Dynamo.Nodes
             return Value.NewList(Utils.SequenceToFSharpList(els));
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElements != null)
@@ -486,14 +486,14 @@ namespace Dynamo.Nodes
                 {
                     XmlElement outEl = xmlDoc.CreateElement("instance");
                     outEl.SetAttribute("id", selectedElement.UniqueId);
-                    dynEl.AppendChild(outEl);
+                    nodeElement.AppendChild(outEl);
                 }
             }
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals("instance"))
                 {
@@ -789,19 +789,19 @@ namespace Dynamo.Nodes
             RevitTransactionNode.DrawFace(RenderDescription, face);
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             if(_reference != null)
-                dynEl.SetAttribute(
+                nodeElement.SetAttribute(
                     "faceRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
             try
             {
                 _reference = Reference.ParseFromStableRepresentation(
-                    dynRevitSettings.Doc.Document, elNode.Attributes["faceRef"].Value);
+                    dynRevitSettings.Doc.Document, nodeElement.Attributes["faceRef"].Value);
                 if (_reference != null)
                     SelectedElement = dynRevitSettings.Doc.Document.GetElement(_reference.ElementId);
             }
@@ -878,19 +878,19 @@ namespace Dynamo.Nodes
             RevitTransactionNode.DrawGeometryElement(RenderDescription, edge);
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             if(_reference != null)
-                dynEl.SetAttribute(
+                nodeElement.SetAttribute(
                     "edgeRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
             try
             {
                 _reference = Reference.ParseFromStableRepresentation(
-                    dynRevitSettings.Doc.Document, elNode.Attributes["edgeRef"].Value);
+                    dynRevitSettings.Doc.Document, nodeElement.Attributes["edgeRef"].Value);
                 if (_reference != null)
                     SelectedElement = dynRevitSettings.Doc.Document.GetElement(_reference.ElementId);
             }
@@ -944,9 +944,9 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals("instance"))
                 {
@@ -1408,26 +1408,26 @@ namespace Dynamo.Nodes
             RevitTransactionNode.DrawXYZ(RenderDescription, thisXYZ);
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             if(_reference != null)
-                dynEl.SetAttribute(
+                nodeElement.SetAttribute(
                     "refXYZ", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
-                dynEl.SetAttribute("refXYZparam0", _param0.ToString(CultureInfo.InvariantCulture));
-                dynEl.SetAttribute("refXYZparam1", _param1.ToString(CultureInfo.InvariantCulture));
+                nodeElement.SetAttribute("refXYZparam0", _param0.ToString(CultureInfo.InvariantCulture));
+                nodeElement.SetAttribute("refXYZparam1", _param1.ToString(CultureInfo.InvariantCulture));
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
             try
             {
                 _reference = Reference.ParseFromStableRepresentation(
-                    dynRevitSettings.Doc.Document, elNode.Attributes["refXYZ"].Value);
+                    dynRevitSettings.Doc.Document, nodeElement.Attributes["refXYZ"].Value);
                 if (_reference != null)
                     SelectedElement = dynRevitSettings.Doc.Document.GetElement(
                         _reference.ElementId);
-                _param0 = Convert.ToDouble(elNode.Attributes["refXYZparam0"].Value);
-                _param1 = Convert.ToDouble(elNode.Attributes["refXYZparam1"].Value);
+                _param0 = Convert.ToDouble(nodeElement.Attributes["refXYZparam0"].Value);
+                _param1 = Convert.ToDouble(nodeElement.Attributes["refXYZparam1"].Value);
                 old_refXyz = _reference;
                 _init = true;
             }

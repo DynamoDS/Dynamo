@@ -821,5 +821,28 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(oldVal.Print() == newVal.Print());
         }
+
+        [Test]
+        public void Formula()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\formula");
+
+            model.Open(Path.Combine(exPath, "formula-test.dyn"));
+
+            var watches = new[]
+            {
+                "2a8f6086-dd36-49f6-b9c1-dfd5dbc683ea", 
+                "226f0d3a-7578-46f8-9f60-9fc24dd82c48",
+                "af0ccd4f-9fae-4f66-85eb-e5d58eb15fd8"
+            }.Select(guid => GetWatchNodeFromCurrentSpace(model, guid));
+
+            dynSettings.Controller.RunExpression(null);
+
+            foreach (var watch in watches)
+            {
+                Assert.AreEqual((watch.OldValue as FScheme.Value.Number).Item, 19);   
+            }
+        }
     }
 }
