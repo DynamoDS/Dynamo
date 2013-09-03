@@ -136,7 +136,7 @@ namespace Dynamo.Controls
                 _pubPkgView = new PackageManagerPublishView(model);
                 _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
                 _pubPkgView.Show();
-                _pubPkgView.Owner = this;
+                if (_pubPkgView.IsLoaded) _pubPkgView.Owner = this;
             }
 
             _pubPkgView.Focus();
@@ -151,7 +151,7 @@ namespace Dynamo.Controls
                 _searchPkgsView = new PackageManagerSearchView(pms);
                 _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
                 _searchPkgsView.Show();
-                _searchPkgsView.Owner = this;
+                if (_searchPkgsView.IsLoaded) _searchPkgsView.Owner = this;
             }
              _searchPkgsView.Focus();
         }
@@ -164,7 +164,7 @@ namespace Dynamo.Controls
                 _installedPkgsView = new InstalledPackagesView();
                 _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
                 _installedPkgsView.Show();
-                _installedPkgsView.Owner = this;
+                if (_installedPkgsView.IsLoaded) _installedPkgsView.Owner = this;
                 
             }
             _installedPkgsView.Focus();
