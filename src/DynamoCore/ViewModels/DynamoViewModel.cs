@@ -588,17 +588,17 @@ namespace Dynamo.ViewModels
 
         private void PublishCurrentWorkspace(object parameters)
         {
-            dynSettings.PackageManagerClient.PublishCurrentWorkspace(parameters);
+            dynSettings.PackageManagerClient.PublishCurrentWorkspace();
         }
 
         private bool CanPublishCurrentWorkspace(object parameters)
         {
-            return dynSettings.PackageManagerClient.CanPublishCurrentWorkspace(parameters);
+            return dynSettings.PackageManagerClient.CanPublishCurrentWorkspace();
         }
 
         private void PublishSelectedNodes(object parameters)
         {
-            dynSettings.PackageManagerClient.PublishSelectedNode(parameters);
+            dynSettings.PackageManagerClient.PublishSelectedNode();
         }
 
         private bool CanPublishSelectedNodes(object parameters)

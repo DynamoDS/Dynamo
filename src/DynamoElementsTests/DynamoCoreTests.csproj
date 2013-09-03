@@ -58,6 +58,7 @@
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreUserInterfaceTests.cs" />
     <Compile Include="CoreDynTests.cs" />
+    <Compile Include="PackageManagerUserInterfaceTests.cs" />
     <Compile Include="StringTests.cs" />
     <Compile Include="PackageDependencyTests.cs" />
     <Compile Include="PackageManagerTests.cs" />
