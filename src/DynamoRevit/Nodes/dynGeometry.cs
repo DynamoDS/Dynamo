@@ -2019,16 +2019,16 @@ namespace Dynamo.Nodes
 
         public enum BooleanOperationOptions {Union, Intersect, Difference};
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            dynEl.SetAttribute("index", this.combo.SelectedIndex.ToString());
+            nodeElement.SetAttribute("index", this.combo.SelectedIndex.ToString());
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
             try
             {
-                selectedItem = Convert.ToInt32(elNode.Attributes["index"].Value);
+                selectedItem = Convert.ToInt32(nodeElement.Attributes["index"].Value);
                 if (combo != null)
                     combo.SelectedIndex = selectedItem;
             }

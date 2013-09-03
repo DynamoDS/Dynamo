@@ -274,10 +274,10 @@ namespace Dynamo.Nodes
             return Value.NewContainer(f);
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            dynEl.SetAttribute("FormId", _formId.ToString());
-            dynEl.SetAttribute("PreferSurfaceForOneLoop", _preferSurfaceForOneLoop.ToString());
+            nodeElement.SetAttribute("FormId", _formId.ToString());
+            nodeElement.SetAttribute("PreferSurfaceForOneLoop", _preferSurfaceForOneLoop.ToString());
 
             System.String mapAsString = "";
 
@@ -292,21 +292,21 @@ namespace Dynamo.Nodes
                     mapAsString = mapAsString + keyId.ToString() + "=" + valueId.ToString() + ";";
                 }
             }
-            dynEl.SetAttribute("FormCurveToReferenceCurveMap", mapAsString);
+            nodeElement.SetAttribute("FormCurveToReferenceCurveMap", mapAsString);
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
             try
             {
-                _formId = new ElementId(Convert.ToInt32(elNode.Attributes["FormId"].Value));
-                var thisIsSurface = elNode.Attributes["PreferSurfaceForOneLoop"];
+                _formId = new ElementId(Convert.ToInt32(nodeElement.Attributes["FormId"].Value));
+                var thisIsSurface = nodeElement.Attributes["PreferSurfaceForOneLoop"];
                 if (thisIsSurface != null)
                    _preferSurfaceForOneLoop = Convert.ToBoolean(thisIsSurface.Value);
                 else //used to be able to make only surface, so init to more likely value
                    _preferSurfaceForOneLoop = true;
 
-                string mapAsString = elNode.Attributes["FormCurveToReferenceCurveMap"].Value;
+                string mapAsString = nodeElement.Attributes["FormCurveToReferenceCurveMap"].Value;
                 _sformCurveToReferenceCurveMap = new Dictionary<ElementId,ElementId>();
                 if (mapAsString != "")
                 {

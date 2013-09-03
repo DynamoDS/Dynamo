@@ -192,28 +192,28 @@ namespace Dynamo.Nodes
             return Value.NewContainer(((Parameter)Items[SelectedIndex].Item).Definition);
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             if (this.storedId != null)
             {
                 XmlElement outEl = xmlDoc.CreateElement("familyid");
                 outEl.SetAttribute("value", this.storedId.IntegerValue.ToString(CultureInfo.InvariantCulture));
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
 
                 XmlElement param = xmlDoc.CreateElement("index");
                 param.SetAttribute("value", SelectedIndex.ToString(CultureInfo.InvariantCulture));
-                dynEl.AppendChild(param);
+                nodeElement.AppendChild(param);
             }
 
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
             var doc = dynRevitSettings.Doc.Document;
 
             int index = -1;
 
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals("familyid"))
                 {
