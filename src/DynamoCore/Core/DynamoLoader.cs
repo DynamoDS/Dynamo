@@ -61,9 +61,11 @@ namespace Dynamo.Utilities
                 catch { }
             }
 
-            IEnumerable<string> allDynamoAssemblyPaths = Directory.GetFiles(location, "*.dll");
-
-            allDynamoAssemblyPaths = SearchPaths.Select(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)).Aggregate(allDynamoAssemblyPaths, (current, dlls) => current.Concat(dlls));
+            IEnumerable<string> allDynamoAssemblyPaths = 
+                SearchPaths.Select(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly))
+                           .Aggregate(
+                                Directory.GetFiles(location, "*.dll") as IEnumerable<string>, 
+                                Enumerable.Concat);
 
             var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
             {
