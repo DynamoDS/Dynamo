@@ -35,7 +35,8 @@ namespace Dynamo.Utilities
 
             var newNodeWorkspace = new FuncWorkspace(args.Name, args.Category, args.Description, 0, 0)
             {
-                WatchChanges = false
+                WatchChanges = false,
+                HasUnsavedChanges = true
             };
 
             var newNodeDefinition = new FunctionDefinition(Guid.NewGuid())
@@ -460,6 +461,7 @@ namespace Dynamo.Utilities
 
             // save and load the definition from file
             dynSettings.Controller.DynamoModel.SaveFunction(newNodeDefinition, false, true, true);
+            dynSettings.Controller.DynamoModel.Workspaces.Add(newNodeWorkspace);
             //var customNodeInfo = new CustomNodeInfo(newNodeDefinition.FunctionId, args.Name, args.Category, args.Description, null);
             //dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(newNodeDefinition.FunctionId, newNodeDefinition);
             //dynSettings.Controller.CustomNodeManager.SetNodeInfo(customNodeInfo);
