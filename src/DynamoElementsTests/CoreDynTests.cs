@@ -126,7 +126,8 @@ namespace Dynamo.Tests
             dynSettings.Controller.RunExpression(null);
 
             // wait for the expression to complete
-            Thread.Sleep(500);
+            while (Controller.Running)
+                Thread.Sleep(100);
 
             // [[0,3,6], [2,5,4], [0,5,8]]
 
@@ -136,10 +137,10 @@ namespace Dynamo.Tests
 
             var expected = new List<List<double>>
             {
-                    new List<double> {0, 3, 6},
-                    new List<double> {1, 4, 7},
-                    new List<double> {2, 5, 8},
-                };
+                new List<double> {0, 3, 6},
+                new List<double> {1, 4, 7},
+                new List<double> {2, 5, 8},
+            };
 
             // 50 elements between -1 and 1
             Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode.OldValue);
