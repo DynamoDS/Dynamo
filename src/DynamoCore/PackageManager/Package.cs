@@ -50,6 +50,9 @@ namespace Dynamo.PackageManager
         private string _versionName = "";
         public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
 
+        private string _engineVersion = "";
+        public string EngineVersion { get { return _engineVersion; } set { _engineVersion = value; RaisePropertyChanged("EngineVersion"); } }
+
         private string _license = "";
         public string License { get { return _license; } set { _license = value; RaisePropertyChanged("License"); } }
 
@@ -120,6 +123,7 @@ namespace Dynamo.PackageManager
                 pkg.Keywords = body.keywords;
                 pkg.VersionName = body.version;
                 pkg.License = body.license;
+                pkg.EngineVersion = body.engine_version;
                 pkg.Contents = body.contents;
                 body.dependencies.ToList().ForEach(pkg.Dependencies.Add);
 
