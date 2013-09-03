@@ -226,8 +226,8 @@ namespace Dynamo
             
             FSchemeEnvironment = env;
 
-            DynamoViewModel.Model.CurrentSpace.X = 0;
-            DynamoViewModel.Model.CurrentSpace.Y = 0;
+            DynamoViewModel.Model.CurrentWorkspace.X = 0;
+            DynamoViewModel.Model.CurrentWorkspace.Y = 0;
 
             DynamoLogger.Instance.Log(String.Format(
                 "Dynamo -- Build {0}",
