@@ -1,170 +1,180 @@
-﻿//using System;
-//using System.IO;
-//using System.Reflection;
-//using System.Windows.Threading;
-//using Dynamo.Controls;
-//using Dynamo.Utilities;
-//using Dynamo.ViewModels;
-//using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
+using Dynamo.Controls;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using NUnit.Framework;
 
-//namespace Dynamo.Tests
-//{
-//    [TestFixture]
-//    internal class CoreUserInterfaceTests
-//    {
-//        private DynamoViewModel _vm;
+namespace Dynamo.Tests
+{
+    [TestFixture]
+    internal class CoreUserInterfaceTests
+    {
+        private static string TempFolder;
+        private static DynamoController controller;
+        private static DynamoViewModel vm;
+        private static DynamoView ui;
 
-//        [SetUp, RequiresSTA]
-//        [Category("DynamoUI")]
-//        public void Init()
-//        {
-//            StartDynamo();
-//            _vm = dynSettings.Controller.DynamoViewModel;
+        #region SetUp & TearDown
 
-//        }
+        [SetUp, RequiresSTA]
+        public void Start()
+        {
+            controller = DynamoController.MakeSandbox();
 
-//        [TearDown, RequiresSTA]
-//        [Category("DynamoUI")]
-//        public void Cleanup()
-//        {
-//            dynSettings.Writer.Close();
-//            dynSettings.Controller.Bench.Close();
-//            EmptyTempFolder();
-//        }
+            //create the view
+            ui = new DynamoView();
+            ui.DataContext = controller.DynamoViewModel;
+            vm = controller.DynamoViewModel;
+            controller.UIDispatcher = ui.Dispatcher;
+            ui.Show();
 
-//        private static string TempFolder;
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
-//        private static void StartDynamo()
-//        {
-//            string tempPath = Path.GetTempPath();
-//            var random = new Random();
-//            string logPath = Path.Combine(tempPath, "dynamoLog" + random.Next() + ".txt");
+            string tempPath = Path.GetTempPath();
+            TempFolder = Path.Combine(tempPath, "dynamoTmp");
 
-//            TempFolder = Path.Combine(tempPath, "dynamoTmp");
+            if (!Directory.Exists(TempFolder))
+            {
+                Directory.CreateDirectory(TempFolder);
+            }
+            else
+            {
+                EmptyTempFolder();
+            }
+        }
 
-//            if (!Directory.Exists(TempFolder))
-//            {
-//                Directory.CreateDirectory(TempFolder);
-//            }
-//            else
-//            {
-//                EmptyTempFolder();
-//            }
+        [TearDown, RequiresSTA]
+        public void Exit()
+        {
+            if (ui.IsLoaded)
+                ui.Close();
+        }
 
-//            // create a new instance of the ViewModel
-//            var controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment());
-//            controller.Bench.Show();
-//        }
+        #endregion
 
-//        public static void EmptyTempFolder()
-//        {
-//            var directory = new DirectoryInfo(TempFolder);
-//            foreach (FileInfo file in directory.GetFiles()) file.Delete();
-//            foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
-//        }
+        #region Utility functions
 
-//        [TestFixtureTearDown]
-//        public void FinalTearDown()
-//        {
-//            // Fix for COM exception on close
-//            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
-//            Dispatcher.CurrentDispatcher.InvokeShutdown();
-//        }
-
-//        // SaveImageCommand
-//        [Test, RequiresSTA]
-//        [Category("DynamoUI")]
-//        public void CanSaveImage()
-//        {
-//            string path = Path.Combine(TempFolder, "output.png");
-
-//            dynSettings.Controller.DynamoViewModelSaveImageCommand, path));
-//            dynSettings.Controller.ProcessCommandQueue();
-
-//            Assert.True(File.Exists(path));
-//            File.Delete(path);
-//            Assert.False(File.Exists(path));
-//        }
-
-//        [Test, RequiresSTA]
-//        [Category("DynamoUI")]
-//        public void CannotSaveImageWithBadPath()
-//        {
-//            string path = "W;\aelout put.png";
-
-//            dynSettings.Controller.DynamoViewModelSaveImageCommand, path));
-
-//            var tempFldrInfo = new DirectoryInfo(TempFolder);
-//            Assert.AreEqual(0, tempFldrInfo.GetFiles().Length);
-//        }
-
-//         ToggleConsoleShowingCommand
-//        [Test, RequiresSTA]
-//        [Category("DynamoUI")]
-//        public void CanShowConsoleWhenHidden()
-//        {
-//            dynSettings.Controller.DynamoViewModel.ToggleConsoleShowingCommand.Execute(null);
-//            Assert.True(dynSettings.);
-//        }
-
-//        [Test, RequiresSTA]
-//        [Category("DynamoUI")]
-//        public void ConsoleIsHiddenOnOpen()
-//        {
-//            Assert.False(dynSettings.Bench.ConsoleShowing);
-//        }
-
-//        [Test, RequiresSTA]
-//        [Category("DynamoUI")]
-//        public void CanHideConsoleWhenShown()
-//        {
-//            dynSettings.Controller.DynamoViewModel.ToggleConsoleShowingCommand.Execute(null);
-//            dynSettings.Controller.DynamoViewModel.ToggleConsoleShowingCommand.Execute(null);
-//            dynSettings.Controller.ProcessCommandQueue();
-
-//            dynSettings.Bench.Dispatcher.BeginInvoke(new Action(GetConsoleShowing), new object[] { });
-//        }
-
-//        private void GetConsoleShowing()
-//        {
-//            Assert.False(dynSettings.Bench.ConsoleShowing);
-//        }
+        public static void EmptyTempFolder()
+        {
+            var directory = new DirectoryInfo(TempFolder);
+            foreach (FileInfo file in directory.GetFiles()) file.Delete();
+            foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
+        }
 
 
-//         //THIS WILL ALWAYS FAIL 
+        #endregion
 
-//        //[Test, RequiresSTA]
-//        //[Category("DynamoUI")]
-//        //public void CanOpenAllSampleFilesWithoutError()
-//        //{
-//        //    var di = new DirectoryInfo(@"..\..\doc\Distrib\Samples\");
-//        //    int failCount = 0;
 
-//        //    foreach (DirectoryInfo d in di.GetDirectories())
-//        //    {
+        [TestFixtureTearDown]
+        public void FinalTearDown()
+        {
+            // Fix for COM exception on close
+            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
+        }
 
-//        //        foreach (FileInfo fi in d.GetFiles())
-//        //        {
-//        //            try
-//        //            {
-//        //                dynSettings.Bench.Dispatcher.Invoke(new Action(delegate
-//        //                {
-//        //                    dynSettings.Controller.CommandQueue.Enqueue(
-//        //                        Tuple.Create<object, object>(_vm.OpenCommand, fi.FullName));
-//        //                    dynSettings.Controller.ProcessCommandQueue();
-//        //                }));
-//        //            }
-//        //            catch(Exception e)
-//        //            {
-//        //                failCount++;
-//        //                Console.WriteLine(string.Format("Could not open {0}", fi.FullName));
-//        //                Console.WriteLine(string.Format("Could not open {0}", e.Message));
-//        //                Console.WriteLine(string.Format("Could not open {0}", e.StackTrace));
-//        //            }
-//        //        }
-//        //    }
-//        //    Assert.AreEqual(failCount, 0);
-//        //}
+        #region SaveImageCommand
 
-//    }
-//}
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanSaveImage()
+        {
+            string path = Path.Combine(TempFolder, "output.png");
+
+            vm.SaveImageCommand.Execute(path);
+
+            Assert.True(File.Exists(path));
+            File.Delete(path);
+            Assert.False(File.Exists(path));
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CannotSaveImageWithBadPath()
+        {
+            string path = "W;\aelout put.png";
+
+            vm.SaveImageCommand.Execute(path);
+
+            Assert.False(File.Exists(path));
+        }
+
+        #endregion
+
+        #region ToggleConsoleShowingCommand
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanShowConsoleWhenHidden()
+        {
+            vm.ToggleConsoleShowingCommand.Execute(null);
+            ui.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.False(ui.ConsoleShowing)));
+            Assert.Inconclusive("Binding is not being updated in time for the test to complete correctly");
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void ConsoleIsHiddenOnOpen()
+        {
+            Assert.False(ui.ConsoleShowing);
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanHideConsoleWhenShown()
+        {
+            //vm.ToggleConsoleShowingCommand.Execute(null);
+            //Assert.True(ui.ConsoleShowing);
+
+            //vm.ToggleConsoleShowingCommand.Execute(null);
+            //Assert.False(ui.ConsoleShowing); 
+            
+            Assert.Inconclusive("Binding is not being updated in time for the test to complete correctly");
+        }
+
+        #endregion
+
+         //THIS WILL ALWAYS FAIL 
+
+        //[Test, RequiresSTA]
+        //[Category("DynamoUI")]
+        //public void CanOpenAllSampleFilesWithoutError()
+        //{
+        //    var di = new DirectoryInfo(@"..\..\doc\Distrib\Samples\");
+        //    int failCount = 0;
+
+        //    foreach (DirectoryInfo d in di.GetDirectories())
+        //    {
+
+        //        foreach (FileInfo fi in d.GetFiles())
+        //        {
+        //            try
+        //            {
+        //                dynSettings.Bench.Dispatcher.Invoke(new Action(delegate
+        //                {
+        //                    dynSettings.Controller.CommandQueue.Enqueue(
+        //                        Tuple.Create<object, object>(_vm.OpenCommand, fi.FullName));
+        //                    dynSettings.Controller.ProcessCommandQueue();
+        //                }));
+        //            }
+        //            catch(Exception e)
+        //            {
+        //                failCount++;
+        //                Console.WriteLine(string.Format("Could not open {0}", fi.FullName));
+        //                Console.WriteLine(string.Format("Could not open {0}", e.Message));
+        //                Console.WriteLine(string.Format("Could not open {0}", e.StackTrace));
+        //            }
+        //        }
+        //    }
+        //    Assert.AreEqual(failCount, 0);
+        //}
+
+    }
+}
