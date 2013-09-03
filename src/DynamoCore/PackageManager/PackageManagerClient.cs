@@ -95,7 +95,7 @@ namespace Dynamo.PackageManager
             
         }
 
-        public void PublishCurrentWorkspace(object m)
+        public void PublishCurrentWorkspace()
         {
             var currentFunDef =
                 dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(dynSettings.Controller.DynamoViewModel.CurrentSpace);
@@ -111,12 +111,12 @@ namespace Dynamo.PackageManager
 
         }
 
-        public bool CanPublishCurrentWorkspace(object m)
+        public bool CanPublishCurrentWorkspace()
         {
             return dynSettings.Controller.DynamoViewModel.CurrentSpace is FuncWorkspace;
         }
 
-        public void PublishSelectedNode(object m)
+        public void PublishSelectedNode()
         {
             var nodeList = DynamoSelection.Instance.Selection
                                 .Where(x => x is Function)
