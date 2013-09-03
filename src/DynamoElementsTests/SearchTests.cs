@@ -269,42 +269,40 @@ namespace Dynamo.Tests
         /// <summary>
         /// Helper method for custom node adding and removing
         /// </summary>
-        public void AssertAddAndRemoveCustomNode(SearchViewModel model, string nodeName, string catName, string descr = "Bla",
+        public void AssertAddAndRemoveCustomNode(SearchViewModel search, string nodeName, string catName, string descr = "Bla",
                                                  string path = "Bla")
         {
             var dummyInfo = new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, descr, path);
 
-            model.Add(dummyInfo);
+            search.Add(dummyInfo);
 
-            model.SearchAndUpdateResultsSync(nodeName);
-            Assert.AreNotEqual(0, model.SearchResults.Count);
-            Assert.AreEqual(model.SearchResults[0].Name, nodeName);
-            Assert.IsTrue(model.ContainsCategory(catName));
+            search.SearchAndUpdateResultsSync(nodeName);
+            Assert.AreNotEqual(0, search.SearchResults.Count);
+            Assert.AreEqual(search.SearchResults[0].Name, nodeName);
+            Assert.IsTrue(search.ContainsCategory(catName));
 
-            model.RemoveNodeAndEmptyParentCategory(nodeName);
-            model.SearchAndUpdateResultsSync(nodeName);
+            search.RemoveNodeAndEmptyParentCategory(nodeName);
+            search.SearchAndUpdateResultsSync(nodeName);
 
-            Assert.AreEqual(0, model.SearchResults.Count);
-            Assert.IsFalse(model.ContainsCategory(catName));
+            Assert.AreEqual(0, search.SearchResults.Count);
+            Assert.IsFalse(search.ContainsCategory(catName));
 
         }
 
         [Test]
         public void CanAddCustomNodeWithSinglyNestedCategoryValidInput()
         {
-            var model = new SearchViewModel();
             var nodeName = "TheNode";
             var catName = "TheCat";
-            AssertAddAndRemoveCustomNode(model, nodeName, catName);
+            AssertAddAndRemoveCustomNode(_search, nodeName, catName);
         }
 
         [Test]
         public void CanAddCustomNodeWithDoublyNestedCategoryValidInput()
         {
-            var model = new SearchViewModel();
             var nodeName = "TheNode";
             var catName = "TheCat.TheInnerCat";
-            AssertAddAndRemoveCustomNode(model, nodeName, catName);
+            AssertAddAndRemoveCustomNode(_search, nodeName, catName);
         }
         #endregion
 
@@ -342,13 +340,12 @@ namespace Dynamo.Tests
         [Test]
         public void CanAddCategory()
         {
-            var model = new SearchViewModel();
-            var root = model.TryAddRootCategory("Peter");
+            var root = _search.TryAddRootCategory("Peter");
             var leafCat = new BrowserInternalElement("Boyer", root);
             root.Items.Add(leafCat);
 
             Assert.Contains( leafCat, root.Items );
-            Assert.Contains( root, model.BrowserRootCategories );
+            Assert.Contains(root, _search.BrowserRootCategories);
             
         }
 
@@ -356,11 +353,8 @@ namespace Dynamo.Tests
         [Test]
         public void CanAddCategoryWithDelimiters()
         {
-            var model = new SearchViewModel();
-            model.AddCategory("Peter.Boyer");
-
-            model.RemoveCategory("Peter.Boyer");
-
+            _search.AddCategory("Peter.Boyer");
+            Assert.IsTrue(_search.ContainsCategory("Peter.Boyer"));
         }
 
         #endregion
@@ -370,39 +364,37 @@ namespace Dynamo.Tests
         [Test]
         public void CanRemoveRootCategoryWithInternalElements()
         {
-            var model = new SearchViewModel();
-            var root = (BrowserRootElement) model.TryAddRootCategory("Peter");
+            var root = (BrowserRootElement)_search.TryAddRootCategory("Peter");
             var leafCat = new BrowserInternalElement("Boyer", root);
             root.Items.Add(leafCat);
 
             Assert.Contains( leafCat, root.Items );
-            Assert.Contains( root, model.BrowserRootCategories );
+            Assert.Contains(root, _search.BrowserRootCategories);
 
-            model.RemoveCategory("Peter");
-            Assert.False( model.BrowserRootCategories.Contains(root) );
+            _search.RemoveCategory("Peter");
+            Assert.False(_search.BrowserRootCategories.Contains(root));
         }
 
         [Test]
         public void CanRemoveCategoryWithDelimiters()
         {
-            var model = new SearchViewModel();
-            var cat = model.AddCategory("Peter.Boyer");
+            _search.AddCategory("Peter.Boyer");
 
-            Assert.IsTrue(model.ContainsCategory("Peter.Boyer"));
+            Assert.IsTrue(_search.ContainsCategory("Peter.Boyer"));
 
-            model.RemoveCategory("Peter.Boyer");
-            Assert.IsNull( model.GetCategoryByName("Peter.Boyer") );
+            _search.RemoveCategory("Peter.Boyer");
+            Assert.IsNull(_search.GetCategoryByName("Peter.Boyer"));
 
         }
 
         [Test]
         public void CanRunRemoveCategoryIfCategoryDoesntExist()
         {
-            var model = new SearchViewModel();
-            var cat = model.AddCategory("Peter.Boyer");
+            var search = new SearchViewModel();
+            search.AddCategory("Peter.Boyer");
 
-            model.RemoveCategory("Peter.Rabbit");
-            Assert.IsNull(model.GetCategoryByName("Peter.Rabbit"));
+            search.RemoveCategory("Peter.Rabbit");
+            Assert.IsNull(search.GetCategoryByName("Peter.Rabbit"));
 
         }
 
@@ -413,41 +405,38 @@ namespace Dynamo.Tests
         [Test]
         public void CanTryToRemoveElementFromSearchWithNonexistentName()
         {
-            var model = new SearchViewModel();
-            model.RemoveNodeAndEmptyParentCategory("NonExistentName");
+            _search.RemoveNodeAndEmptyParentCategory("NonExistentName");
 
-            model.SearchAndUpdateResultsSync("NonExistentName");
-            Assert.AreEqual(0, model.SearchResults.Count);
+            _search.SearchAndUpdateResultsSync("NonExistentName");
+            Assert.AreEqual(0, _search.SearchResults.Count);
         }
 
         [Test]
         public void CanRemoveElementCustomNodeByNameWithNestedCategory()
         {
-            var model = new SearchViewModel();
-            model.Add("Peter", "Turnip.Greens", "A description", System.Guid.NewGuid());
+            _search.Add("Peter", "Turnip.Greens", "A description", System.Guid.NewGuid());
 
-            model.SearchAndUpdateResultsSync("Peter");
-            Assert.AreEqual(1, model.SearchResults.Count);
+            _search.SearchAndUpdateResultsSync("Peter");
+            Assert.AreEqual(1, _search.SearchResults.Count);
 
-            model.RemoveNodeAndEmptyParentCategory("Peter");
-            model.SearchAndUpdateResultsSync("Peter");
+            _search.RemoveNodeAndEmptyParentCategory("Peter");
+            _search.SearchAndUpdateResultsSync("Peter");
 
-            Assert.AreEqual(0, model.SearchResults.Count);
+            Assert.AreEqual(0, _search.SearchResults.Count);
         }
 
         [Test]
         public void CanRemoveElementCustomNodeByNameWithSingleCategory()
         {
-            var model = new SearchViewModel();
-            model.Add("Peter", "Greens", "A description", System.Guid.NewGuid());
+            _search.Add("Peter", "Greens", "A description", System.Guid.NewGuid());
 
-            model.SearchAndUpdateResultsSync("Peter");
-            Assert.AreEqual(1, model.SearchResults.Count);
+            _search.SearchAndUpdateResultsSync("Peter");
+            Assert.AreEqual(1, _search.SearchResults.Count);
 
-            model.RemoveNodeAndEmptyParentCategory("Peter");
-            model.SearchAndUpdateResultsSync("Peter");
+            _search.RemoveNodeAndEmptyParentCategory("Peter");
+            _search.SearchAndUpdateResultsSync("Peter");
 
-            Assert.AreEqual(0, model.SearchResults.Count);
+            Assert.AreEqual(0, _search.SearchResults.Count);
         }
 
         #endregion
