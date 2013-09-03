@@ -1,0 +1,20 @@
+<dynWorkspace X="14" Y="103" zoom="1" Description="Rounds a number to a specified precision" Category="CAAD_RWTH.Math" Name="Round To Precision" ID="630cb121-e3ef-4167-bdea-8fd505954e5f">
+  <dynElements>
+    <Dynamo.Nodes.dynFormula type="Dynamo.Nodes.dynFormula" guid="a24b11b5-b0c4-4790-aaa6-5a67f71d98a8" nickname="Formula" x="139" y="112" isVisible="true" isUpstreamVisible="true" lacing="Longest" formula="Round(a/b,0)*b" />
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="90b277c1-5599-4c7d-872b-eed9bcada76d" nickname="Input" x="3" y="92" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Number" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="9f2b0114-afb9-402f-a60c-d77a9b42466c" nickname="Input" x="2" y="157" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Precision" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynOutput type="Dynamo.Nodes.dynOutput" guid="59e3c3e2-a022-4402-ab9c-d7c0ac0e02a6" nickname="Output" x="341.527895027265" y="112" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="round" />
+    </Dynamo.Nodes.dynOutput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="a24b11b5-b0c4-4790-aaa6-5a67f71d98a8" start_index="0" end="59e3c3e2-a022-4402-ab9c-d7c0ac0e02a6" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="90b277c1-5599-4c7d-872b-eed9bcada76d" start_index="0" end="a24b11b5-b0c4-4790-aaa6-5a67f71d98a8" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="9f2b0114-afb9-402f-a60c-d77a9b42466c" start_index="0" end="a24b11b5-b0c4-4790-aaa6-5a67f71d98a8" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>
