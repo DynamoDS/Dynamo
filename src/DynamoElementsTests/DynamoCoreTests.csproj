@@ -58,12 +58,14 @@
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreUserInterfaceTests.cs" />
     <Compile Include="CoreDynTests.cs" />
+    <Compile Include="DynamoUnitTest.cs" />
     <Compile Include="StringTests.cs" />
     <Compile Include="PackageDependencyTests.cs" />
     <Compile Include="PackageManagerTests.cs" />
     <Compile Include="SearchTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsTests.cs" />
+    <Compile Include="TestExtensions.cs" />
     <Compile Include="UnitsOfMeasureTests.cs" />
   </ItemGroup>
   <ItemGroup>
