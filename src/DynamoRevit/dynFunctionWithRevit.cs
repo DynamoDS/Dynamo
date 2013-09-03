@@ -30,9 +30,9 @@ namespace Dynamo.Nodes
             return result;
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            base.SaveNode(xmlDoc, dynEl, context);
+            base.SaveNode(xmlDoc, nodeElement, context);
 
             if (context == SaveContext.Copy)
                 return;
@@ -60,17 +60,17 @@ namespace Dynamo.Nodes
                     outEl.AppendChild(runEl);
                 }
 
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
             }
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
-            base.LoadNode(elNode);
+            base.LoadNode(nodeElement);
 
             ElementsContainer.Clear();
 
-            foreach (XmlNode node in elNode.ChildNodes)
+            foreach (XmlNode node in nodeElement.ChildNodes)
             {
                 if (node.Name == "InnerNode")
                 {
