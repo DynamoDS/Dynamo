@@ -407,7 +407,7 @@ namespace Dynamo.Utilities
             //Connect outputs to new node
             foreach (var output in outputs)
             {
-                //Node to be connected to in CurrentSpace
+                //Node to be connected to in CurrentWorkspace
                 NodeModel outputSenderNode = output.Item1;
 
                 //Port to be connected to on outPutNode_outer
