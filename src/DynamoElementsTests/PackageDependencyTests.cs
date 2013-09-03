@@ -19,133 +19,17 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    internal class PackageDependencyTests
+    internal class PackageDependencyTests : DynamoUnitTest
     {
-        #region startup and shutdown
-
-        [SetUp]
-        public void Init()
-        {
-            StartDynamo();
-        }
-
-        [TearDown]
-        public void Cleanup()
-        {
-            try
-            {
-                DynamoLogger.Instance.FinishLogging();
-                controller.ShutDown();
-
-                EmptyTempFolder();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        private static DynamoController controller;
-        private static string TempFolder;
-        private static string ExecutingDirectory { get; set; }
-
-        private static void StartDynamo()
-        {
-            try
-            {
-                ExecutingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string tempPath = Path.GetTempPath();
-
-                TempFolder = Path.Combine(tempPath, "dynamoTmp");
-
-                if (!Directory.Exists(TempFolder))
-                {
-                    Directory.CreateDirectory(TempFolder);
-                }
-                else
-                {
-                    EmptyTempFolder();
-                }
-
-                DynamoLogger.Instance.StartLogging();
-
-                //create a new instance of the ViewModel
-                controller = new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        public static void EmptyTempFolder()
-        {
-            try
-            {
-                var directory = new DirectoryInfo(TempFolder);
-                foreach (FileInfo file in directory.GetFiles()) file.Delete();
-                foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        #endregion
-
-        #region utility methods
-
-        public NodeModel NodeFromCurrentSpace(DynamoViewModel vm, string guidString)
-        {
-            Guid guid = Guid.Empty;
-            Guid.TryParse(guidString, out guid);
-            return NodeFromCurrentSpace(vm, guid);
-        }
-
-        public NodeModel NodeFromCurrentSpace(DynamoViewModel vm, Guid guid)
-        {
-            return vm.CurrentSpace.Nodes.FirstOrDefault((node) => node.GUID == guid);
-        }
-
-        public Watch GetWatchNodeFromCurrentSpace(DynamoViewModel vm, string guidString)
-        {
-            var nodeToWatch = NodeFromCurrentSpace(vm, guidString);
-            Assert.NotNull(nodeToWatch);
-            Assert.IsAssignableFrom(typeof(Watch), nodeToWatch);
-            return (Watch)nodeToWatch;
-        }
-
-        public double GetDoubleFromFSchemeValue(FScheme.Value value)
-        {
-            var doubleWatchVal = 0.0;
-            Assert.AreEqual(true, Dynamo.FSchemeInterop.Utils.Convert(value, ref doubleWatchVal));
-            return doubleWatchVal;
-        }
-
-        public FSharpList<FScheme.Value> GetListFromFSchemeValue(FScheme.Value value)
-        {
-            FSharpList<FScheme.Value> listWatchVal = null;
-            Assert.AreEqual(true, Dynamo.FSchemeInterop.Utils.Convert(value, ref listWatchVal));
-            return listWatchVal;
-        }
-
-        #endregion
-
         [Test]
         public void CanDiscoverDependenciesForFunctionDefinitionOpenFromFile()
         {
-            var vm = controller.DynamoViewModel;
+            var vm = Controller.DynamoViewModel;
             var examplePath = Path.Combine(ExecutingDirectory, @"..\..\test\core\custom_node_dep_test\");
 
             string openPath = Path.Combine(examplePath, "custom_node_dep_test.dyn");
-            controller.DynamoModel.Open(openPath);
-            var rootNode = NodeFromCurrentSpace(vm, "333ed3ad-c786-4064-8203-e79ce7cb109f");
-
-            Assert.NotNull(rootNode);
-            Assert.IsAssignableFrom(typeof(Function), rootNode);
-
-            var funcRootNode = rootNode as Function;
+            Controller.DynamoModel.Open(openPath);
+            var funcRootNode = vm.CurrentSpace.NodeFromWorkspace<Function>("333ed3ad-c786-4064-8203-e79ce7cb109f");
 
             var dirDeps = funcRootNode.Definition.DirectDependencies;
             Assert.AreEqual(2, dirDeps.Count() );
@@ -161,6 +45,5 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, packageRoot.Items[0].Items.Count);
             Assert.AreEqual(3, packageRoot.Items[1].Items.Count);
         }
-
     }
 }
