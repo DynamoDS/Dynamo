@@ -242,7 +242,7 @@ namespace Dynamo.PackageManager
             var vm = PublishPackageViewModel.FromLocalPackage(this);
             vm.IsNewVersion = true;
 
-            dynSettings.PackageManagerClient.OnShowPackagePublishUIRequested(vm);
+            dynSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(vm);
         }
 
         private bool CanPublishNewPackageVersion()
@@ -256,7 +256,7 @@ namespace Dynamo.PackageManager
             var vm = PublishPackageViewModel.FromLocalPackage(this);
             vm.IsNewVersion = false;
 
-            dynSettings.PackageManagerClient.OnShowPackagePublishUIRequested(vm);
+            dynSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(vm);
         }
 
         private bool CanPublishNewPackage()
