@@ -68,7 +68,7 @@ namespace Dynamo.ViewModels
         //{
         //    get
         //    {
-        //        if(dynSettings.Controller.DynamoViewModel.CurrentSpace.Notes.Contains(_model))
+        //        if(dynSettings.Controller.DynamoViewModel.CurrentWorkspace.Notes.Contains(_model))
         //            return true;
         //        return false;
         //    }
@@ -144,7 +144,7 @@ namespace Dynamo.ViewModels
         {
             //switch (e.PropertyName)
             //{
-                //case "CurrentSpace":
+                //case "CurrentWorkspace":
                 //    RaisePropertyChanged("NoteVisibility");
                 //    break;
             //}

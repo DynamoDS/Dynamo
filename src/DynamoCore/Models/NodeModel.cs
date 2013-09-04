@@ -1278,7 +1278,7 @@ namespace Dynamo.Models
             while (inport.Connectors.Any())
             {
                 var connector = inport.Connectors[0];
-                dynSettings.Controller.DynamoModel.CurrentSpace.Connectors.Remove(connector);
+                dynSettings.Controller.DynamoModel.CurrentWorkspace.Connectors.Remove(connector);
                 connector.NotifyConnectedPortsOfDeletion();
             }
         }
