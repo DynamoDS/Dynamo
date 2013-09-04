@@ -1,7 +1,15 @@
 SET cwd=%0\..
 echo %cwd%
-robocopy %cwd%\..\..\bin\AnyCPU\%1 %cwd%\temp\bin *.dll -XF *Tests.dll
-robocopy %cwd%\..\..\bin\AnyCPU\%1 %cwd%\temp\bin *.exe
+
+set OPT_CONFIGURATION=Release
+IF /I "%1"=="Debug" set OPT_CONFIGURATION=Debug
+
+set OPT_Platform=AnyCPU
+IF /I "%2"=="x64" set OPT_Platform=x64
+IF /I "%2"=="x86" set OPT_Platform=x86
+
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin *.dll -XF *Tests.dll
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin *.exe
 robocopy %cwd%\..\..\ %cwd%\Extra README.md
 cd %cwd%\Extra
 del README.txt
