@@ -107,8 +107,8 @@ def main():
 		os.remove(journal)
 
 	print 'cleaning results files...'
-	for result in results:
-		os.remove(result)
+	# for result in results:
+	# 	os.remove(result)
 
 	end_time = time.time()
 	ellapsed = end_time-start_time
