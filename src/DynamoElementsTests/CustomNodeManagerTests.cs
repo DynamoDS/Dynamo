@@ -86,11 +86,9 @@ namespace Dynamo
 
         //private bool GetDefinitionFromPath(Guid funcDefGuid, out FunctionDefinition def)
       
-
         //public void OnGetDefinitionFromPath(FunctionDefinition def)
 
         //public static FScheme.Expression CompileFunction(FunctionDefinition definition)
-
 
         //public static FScheme.Expression CompileFunction(FunctionDefinition definition, out IEnumerable<string> inputNames, out IEnumerable<string> outputNames)
        
