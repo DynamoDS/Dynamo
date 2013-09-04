@@ -139,6 +139,7 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
