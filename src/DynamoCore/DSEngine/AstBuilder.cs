@@ -15,21 +15,28 @@ using ProtoCore.Utils;
 
 namespace Dynamo.DSEngine
 {
+    /// <summary>
+    /// If a Dynamo node doesn't override CompileToAstNodeInternal(), we 
+    /// register an instance of NodeEvaluator in DesignScript's context so that 
+    /// when the Dynamo node is evaluated, NodeEvaluator.Evaluate() will be 
+    /// inovked.  
+    ///
+    /// This class won't be needed if we completely repalce FScheme evaluation 
+    /// engine with DesignScript engine.
+    /// </summary>
     public class NodeEvaluator
     {
-        private NodeWithOneOutput _node;
+        private NodeWithOneOutput node;
 
-        public NodeEvaluator(NodeModel node)
+        public NodeEvaluator(NodeModel dynNode)
         {
-            Debug.Assert(node is NodeWithOneOutput);
-            _node = node as NodeWithOneOutput;
+            Debug.Assert(dynNode is NodeWithOneOutput);
+            node = dynNode as NodeWithOneOutput;
         }
 
         public object Evaluate(List<object> objs)
         {
             // TODO: we need to do marhsalling and unmarhslling here.
-            //
-            // The input could be normal object as well as FScheme.Value.
             //
             // The output should be converted to FScheme.Value and will be 
             // marshalled or unmarshalled (depend on it is an input of custom
@@ -41,7 +48,7 @@ namespace Dynamo.DSEngine
             // And assume that returns a double value. 
             List<FScheme.Value> args = objs.Select(obj => FScheme.Value.NewNumber(Convert.ToDouble(obj))).ToList();
             FSharpList<FScheme.Value> fargs = Utils.SequenceToFSharpList<FScheme.Value>(args);
-            FScheme.Value result = _node.Evaluate(fargs);
+            FScheme.Value result = node.Evaluate(fargs);
 
             if (result.IsNumber)
             {
@@ -57,64 +64,71 @@ namespace Dynamo.DSEngine
     }
 
     /// <summary>
-    /// A linked list of list. The node can be accessed throuh a key. 
+    /// A linked list of list (each node in linked list is a list), and node 
+    /// can be accessed through a key. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
     internal class LinkedListOfList<Key, T>: IEnumerable<List<T>>
     {
-        private Dictionary<Key, LinkedListNode<List<T>>> NodeMap; 
-        private LinkedList<List<T>> NodeList;
+        private Dictionary<Key, LinkedListNode<List<T>>> map; 
+        private LinkedList<List<T>> list;
 
         public LinkedListOfList()
         {
-            NodeMap = new Dictionary<Key, LinkedListNode<List<T>>>();
-            NodeList = new LinkedList<List<T>>();
+            map = new Dictionary<Key, LinkedListNode<List<T>>>();
+            list = new LinkedList<List<T>>();
         }
 
         public void AddItem(Key key, T item)
         {
-            LinkedListNode<List<T>> node;
-            if (!NodeMap.TryGetValue(key, out node))
+            LinkedListNode<List<T>> listNode;
+            if (!map.TryGetValue(key, out listNode))
             {
-                node = new LinkedListNode<List<T>>(new List<T>());
-                NodeList.AddLast(node);
-                NodeMap[key] = node;
+                listNode = new LinkedListNode<List<T>>(new List<T>());
+                list.AddLast(listNode);
+                map[key] = listNode;
             }
-            node.Value.Add(item);
+            listNode.Value.Add(item);
         }
 
         public bool Contains(Key key)
         {
-            return NodeMap.ContainsKey(key); 
+            return map.ContainsKey(key); 
         }
 
         public List<T> GetItems(Key key)
         {
-            LinkedListNode<List<T>> node;
-            if (!NodeMap.TryGetValue(key, out node))
+            LinkedListNode<List<T>> listNode;
+            if (!map.TryGetValue(key, out listNode))
             {
                 return null;
             }
 
-            return node.Value;
+            return listNode.Value;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return NodeList.GetEnumerator();
+            return list.GetEnumerator();
         }
 
         IEnumerator<List<T>> IEnumerable<List<T>>.GetEnumerator()
         {
-            return NodeList.GetEnumerator();
+            return list.GetEnumerator();
         }
     }
 
+    /// <summary>
+    /// AstBuilder is a helper class to create different kinds of DesignScript 
+    /// node like function call, expression, and so on.
+    /// 
+    /// Internally it keeps a mapping between Dynamo node and the corresponding
+    /// DesignScript AST nodes. 
+    /// </summary>
     public class AstBuilder
     {
-        public Dictionary<string, object> EvalContext;
-        private LinkedListOfList<Guid, AssociativeNode> AstNodes;
-        private LinkedListOfList<Guid, System.String> Sources;
+        public Dictionary<string, object> evalContext;
+        private LinkedListOfList<Guid, AssociativeNode> astNodes;
 
         internal class StringConstants
         {
@@ -138,25 +152,34 @@ namespace Dynamo.DSEngine
 
         public AstBuilder()
         {
-            EvalContext = new Dictionary<string, object>();
-            AstNodes = new LinkedListOfList<Guid, AssociativeNode>();
-            Sources = new LinkedListOfList<Guid, string>();
+            evalContext = new Dictionary<string, object>();
+            astNodes = new LinkedListOfList<Guid, AssociativeNode>();
         }
 
         public void AddNode(Guid dynamoNodeId, AssociativeNode astNode)
         {
-            AstNodes.AddItem(dynamoNodeId, astNode);
+            astNodes.AddItem(dynamoNodeId, astNode);
         }
 
+        /// <summary>
+        /// If AstBuilder has generated AST node for this Dynamo node
+        /// </summary>
+        /// <param name="dynamoNodeId"></param>
+        /// <returns></returns>
         public bool ContainsAstNodes(Guid dynamoNodeId)
         {
-            return AstNodes.Contains(dynamoNodeId);
+            return astNodes.Contains(dynamoNodeId);
         }
 
+        /// <summary>
+        /// Generate DesignScript source code from AST nodes that have been 
+        /// generated.
+        /// </summary>
+        /// <returns></returns>
         public string GenerateSourceCode()
         {
             List<AssociativeNode> allAstNodes = new List<AssociativeNode>();
-            foreach (var item in AstNodes)
+            foreach (var item in astNodes)
             {
                 allAstNodes.AddRange(item);
             }
@@ -311,7 +334,14 @@ namespace Dynamo.DSEngine
             return partialFunc;
         }
 
-        public FunctionDefinitionNode BuildPartilFunctionForBinaryOp(BinaryExpressionNode expr)
+        /// <summary>
+        /// Binary expression in DesignScript internally will be converted to
+        /// a function call, so need to create a function defintion together
+        /// with a function call if any operand is missing in binary expression.
+        /// </summary>
+        /// <param name="expr"></param>
+        /// <returns></returns>
+        protected FunctionDefinitionNode BuildPartilFunctionForBinaryOp(BinaryExpressionNode expr)
         {
             List<VarDeclNode> partialArgs = new List<VarDeclNode>();
             int paramPostfix = 0;
@@ -379,7 +409,7 @@ namespace Dynamo.DSEngine
             // DesignScript function call back to the node's own implementation 
             // of Evaluate().
             string evaluator = NamingUtil.NewUniqueName(StringConstants.kEvalFunctionPrefix);
-            this.EvalContext.Add(evaluator, new NodeEvaluator(node));
+            this.evalContext.Add(evaluator, new NodeEvaluator(node));
 
             List<VarDeclNode> arguments = new List<VarDeclNode>();
             for (int i = 0; i < inputAstNodes.Count; ++i)
