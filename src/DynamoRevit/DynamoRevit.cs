@@ -239,6 +239,7 @@ namespace Dynamo.Applications
 
                         dynamoView.Show();
 
+                        dynamoView.Dispatcher.UnhandledException -= DispatcherOnUnhandledException; 
                         dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException; 
                         dynamoView.Closing += dynamoView_Closing;
                         dynamoView.Closed += dynamoView_Closed;
@@ -270,23 +271,17 @@ namespace Dynamo.Applications
         /// <param name="args">Info about the exception</param>
         private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
         {
+            args.Handled = true;
 
             // only handle a single crash per Dynamo sesh, this should be reset in the initial command
             if (handledCrash)
             {
-                args.Handled = true;
                 return;
             }
 
             handledCrash = true;
 
             var exceptionMessage = args.Exception.Message;
-            //var stackTrace = args.Exception.StackTrace;
-
-            //var prompt = new CrashPrompt(exceptionMessage + "\n\n" + stackTrace);
-            //prompt.ShowDialog();
-
-            dynSettings.Controller.OnRequestsCrashPrompt(this, args);
 
             try
             {
@@ -300,8 +295,8 @@ namespace Dynamo.Applications
 
             try
             {
+                dynSettings.Controller.OnRequestsCrashPrompt(this, args);
                 dynSettings.Controller.DynamoViewModel.Exit(false); // don't allow cancellation
-                dynSettings.Controller.ReportABug(null);
             }
             catch
             {
@@ -309,7 +304,6 @@ namespace Dynamo.Applications
             }
             finally
             {
-                
                 args.Handled = true;
             }
             
