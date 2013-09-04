@@ -2,8 +2,6 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <RevitAsmPath>C:\Program Files\Autodesk\Vasari Beta 3</RevitAsmPath>
-    <RevitAsmPath Condition="Exists('C:\Program Files\Autodesk\Revit Architecture 2013\Program')">C:\Program Files\Autodesk\Revit Architecture 2013\Program</RevitAsmPath>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -108,11 +106,6 @@
       <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>$(RevitAsmPath)\RevitAPI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>$(RevitAsmPath)\RevitAPIUI.dll</HintPath>
       <HintPath>C:\Program Files\Autodesk\Revit Architecture 2014\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
