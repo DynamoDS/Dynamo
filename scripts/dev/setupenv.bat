@@ -6,9 +6,8 @@ set OPT_CONFIGURATION=Debug
 IF /I "%1"=="Release" set OPT_CONFIGURATION=Release
 set OPT_Platform=%2
 
-
 REM ################################################################################
-REM Begin Machine specific configurations- Change this to match the location on your machine
+REM Begin Machine specific configurations
 
 set GIT_ROOT=%cd%\..\..
 set NunitPath=%GIT_ROOT%\extern\NUnit\
