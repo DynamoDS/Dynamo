@@ -42,7 +42,7 @@ namespace Dynamo
             Predicate<NodeModel> manualTransactionPredicate = node => node is Transaction;
             CheckManualTransaction = new PredicateTraverser(manualTransactionPredicate);
 
-            dynSettings.PackageManagerClient.AuthenticationRequested += RegisterSingleSignOn;
+            dynSettings.Controller.DynamoViewModel.RequestAuthentication += RegisterSingleSignOn;
 
             AddPythonBindings();
             AddWatchNodeHandler();
@@ -98,7 +98,7 @@ namespace Dynamo
         void FindNodesFromSelection()
         {
             var selectedIds = dynRevitSettings.Doc.Selection.Elements.Cast<Element>().Select(x => x.Id);
-            var transNodes = dynSettings.Controller.DynamoModel.CurrentSpace.Nodes.OfType<RevitTransactionNode>();
+            var transNodes = dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes.OfType<RevitTransactionNode>();
             var foundNodes = transNodes.Where(x => x.AllElements.Intersect(selectedIds).Any()).ToList();
 
             if (foundNodes.Any())

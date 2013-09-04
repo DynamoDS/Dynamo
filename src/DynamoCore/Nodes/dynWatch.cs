@@ -161,6 +161,12 @@ namespace Dynamo.Nodes
 
             WatchNode node = null;
             
+            if (eIn == null)
+            {
+                node = new WatchNode("null");
+                return node;
+            }
+
             if (eIn.IsContainer)
             {
                 if ((eIn as Value.Container).Item != null)

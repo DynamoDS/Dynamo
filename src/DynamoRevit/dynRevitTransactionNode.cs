@@ -72,7 +72,7 @@ namespace Dynamo.Revit
             RegisterAllElementsDeleteHook();
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             //Don't copy over stored references
             if (context == SaveContext.Copy)
@@ -96,11 +96,11 @@ namespace Dynamo.Revit
                         outEl.AppendChild(elementStore);
                     }
                 }
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
             }
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
             var del = new DynElementUpdateDelegate(onDeleted);
 
@@ -108,7 +108,7 @@ namespace Dynamo.Revit
 
             var sb = new StringBuilder();
             
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name == "Run")
                 {
