@@ -4,7 +4,7 @@
     <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" nickname="Watch" x="669" y="318.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="62873736-eccd-4d4f-b452-a58c5b6a90f9" nickname="Read Text File" x="276" y="299.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="5315a1dc-17e5-4a88-973b-71592116a05a" nickname="File Path" x="32" y="278.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="..\..\test\core\string\TestStringLength_fromFile.txt" />
+      <System.String value="..\..\..\test\core\string\TestStringLength_fromFile.txt" />
     </Dynamo.Nodes.dynStringFilename>
   </dynElements>
   <dynConnectors>
