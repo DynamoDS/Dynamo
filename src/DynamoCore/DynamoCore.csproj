@@ -119,7 +119,6 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
