@@ -482,9 +482,9 @@ namespace Dynamo.Models
         /// LoadNode() in order to read the data back when loaded.
         /// </summary>
         /// <param name="xmlDoc">The XmlDocument representing the whole workspace containing this Element.</param>
-        /// <param name="dynEl">The XmlElement representing this Element.</param>
+        /// <param name="nodeElement">The XmlElement representing this Element.</param>
         /// <param name="context">Why is this being called?</param>
-        protected virtual void SaveNode(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl, SaveContext context)
+        protected virtual void SaveNode(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement nodeElement, SaveContext context)
         {
 
         }
@@ -507,8 +507,8 @@ namespace Dynamo.Models
         /// Override this to implement loading of custom data for your Element. If overridden, you should also override
         /// SaveNode() in order to write the data when saved.
         /// </summary>
-        /// <param name="elNode">The XmlNode representing this Element.</param>
-        protected virtual void LoadNode(System.Xml.XmlNode elNode)
+        /// <param name="nodeElement">The XmlNode representing this Element.</param>
+        protected virtual void LoadNode(System.Xml.XmlNode nodeElement)
         {
 
         }
@@ -1278,7 +1278,7 @@ namespace Dynamo.Models
             while (inport.Connectors.Any())
             {
                 var connector = inport.Connectors[0];
-                dynSettings.Controller.DynamoModel.CurrentSpace.Connectors.Remove(connector);
+                dynSettings.Controller.DynamoModel.CurrentWorkspace.Connectors.Remove(connector);
                 connector.NotifyConnectedPortsOfDeletion();
             }
         }

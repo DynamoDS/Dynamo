@@ -50,7 +50,7 @@ namespace Dynamo.Models
                 string id = "";
 
                 // load the header
-                foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
+                foreach (XmlNode node in xmlDoc.GetElementsByTagName("Workspace"))
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
@@ -138,9 +138,8 @@ namespace Dynamo.Models
     /// <summary>
     /// The Dynamo model.
     /// </summary>
-    public class DynamoModel:ModelBase
+    public class DynamoModel : ModelBase
     {
-
         #region properties and fields
 
         public event EventHandler RequestLayoutUpdate;
@@ -180,7 +179,7 @@ namespace Dynamo.Models
         /// </summary>
         public event NodeHandler NodeDeleted;
 
-        public WorkspaceModel CurrentSpace
+        public WorkspaceModel CurrentWorkspace
         {
             get { return _cspace; }
             internal set
@@ -189,7 +188,7 @@ namespace Dynamo.Models
                     _cspace.IsCurrentSpace = false;
                 _cspace = value;
                 _cspace.IsCurrentSpace = true;
-                RaisePropertyChanged("CurrentSpace");
+                RaisePropertyChanged("CurrentWorkspace");
             }
         }
 
@@ -209,7 +208,7 @@ namespace Dynamo.Models
 
         public List<NodeModel> Nodes
         {
-            get { return CurrentSpace.Nodes.ToList(); }
+            get { return CurrentWorkspace.Nodes.ToList(); }
         }
 
         
@@ -273,9 +272,9 @@ namespace Dynamo.Models
             }
 
             // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(vm.Model.CurrentSpace.FilePath))
+            if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FilePath))
             {
-                var fi = new FileInfo(vm.Model.CurrentSpace.FilePath);
+                var fi = new FileInfo(vm.Model.CurrentWorkspace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
             else // use the samples directory, if it exists
@@ -377,6 +376,7 @@ namespace Dynamo.Models
             var funcDef = manager.GetFunctionDefinition(info.Guid);
             var ws = funcDef.Workspace;
             ws.Zoom = workspaceHeader.Zoom;
+            ws.HasUnsavedChanges = false;
 
             if (!this.Workspaces.Contains(ws))
             {
@@ -386,12 +386,11 @@ namespace Dynamo.Models
             var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == ws);
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspaceHeader.X, workspaceHeader.Y)));
 
-            this.CurrentSpace = ws;
+            this.CurrentWorkspace = ws;
         }   
         
         internal bool OpenDefinition( string xmlPath )
         {
-
             var workspaceInfo = WorkspaceHeader.FromPath(xmlPath);
 
             if (workspaceInfo == null)
@@ -421,7 +420,7 @@ namespace Dynamo.Models
 
         public void HideWorkspace(WorkspaceModel workspace)
         {
-            this.CurrentSpace = _workSpaces[0];  // go home
+            this.CurrentWorkspace = _workSpaces[0];  // go home
             _workSpaces.Remove(workspace);
             OnWorkspaceHidden(workspace);
             _hiddenWorkspaces.Add(workspace);
@@ -452,11 +451,11 @@ namespace Dynamo.Models
                 //var newHomespace = new HomeWorkspace();
                 //this.Workspaces[0] = newHomespace;
                 //this.HomeSpace = newHomespace;
-                //this.CurrentSpace = newHomespace;
+                //this.CurrentWorkspace = newHomespace;
 
                 this.AddHomeWorkspace();
                 _cspace = this.HomeSpace;
-                this.CurrentSpace = this.HomeSpace;
+                this.CurrentWorkspace = this.HomeSpace;
                 this.Workspaces.RemoveAt(1);
             }
         }
@@ -490,8 +489,8 @@ namespace Dynamo.Models
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
         internal void ViewHomeWorkspace()
         {
-            CurrentSpace = HomeSpace;
-            CurrentSpace.OnDisplayed();
+            CurrentWorkspace = HomeSpace;
+            CurrentWorkspace.OnDisplayed();
         }
 
         /// <summary>
@@ -609,9 +608,9 @@ namespace Dynamo.Models
                 }
             }
 
-            CurrentSpace.Connectors.Clear();
-            CurrentSpace.Nodes.Clear();
-            CurrentSpace.Notes.Clear();
+            CurrentWorkspace.Connectors.Clear();
+            CurrentWorkspace.Nodes.Clear();
+            CurrentWorkspace.Notes.Clear();
         }
 
         /// <summary>
@@ -647,7 +646,13 @@ namespace Dynamo.Models
                 double cy = 0;
                 double zoom = 1.0;
 
-                foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
+                // handle legacy workspace nodes called dynWorkspace
+                // and new workspaces without the dyn prefix
+                XmlNodeList workspaceNodes = xmlDoc.GetElementsByTagName("Workspace");
+                if (workspaceNodes.Count == 0)
+                    workspaceNodes = xmlDoc.GetElementsByTagName("dynWorkspace");
+
+                foreach (XmlNode node in workspaceNodes)
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
@@ -668,16 +673,23 @@ namespace Dynamo.Models
 
                 //set the zoom and offsets and trigger events
                 //to get the view to position iteself
-                CurrentSpace.X = cx;
-                CurrentSpace.Y = cy;
-                CurrentSpace.Zoom = zoom;
+                CurrentWorkspace.X = cx;
+                CurrentWorkspace.Y = cy;
+                CurrentWorkspace.Zoom = zoom;
 
-                var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == CurrentSpace);
+                var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == CurrentWorkspace);
                 vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 
-                XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
-                XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
-                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("dynNotes");
+                XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
+                XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
+                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Notes");
+
+                if (elNodes.Count == 0)
+                    elNodes = xmlDoc.GetElementsByTagName("dynElements");
+                if (cNodes.Count == 0)
+                    cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
+                if (nNodes.Count == 0)
+                    nNodes = xmlDoc.GetElementsByTagName("dynNotes");
 
                 XmlNode elNodesList = elNodes[0];
                 XmlNode cNodesList = cNodes[0];
@@ -779,10 +791,10 @@ namespace Dynamo.Models
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
                     NodeModel el = CreateNodeInstance(t, nickname, guid);
-                    el.WorkSpace = CurrentSpace;
+                    el.WorkSpace = CurrentWorkspace;
                     el.Load(elNode);
 
-                    CurrentSpace.Nodes.Add(el);
+                    CurrentWorkspace.Nodes.Add(el);
 
                     el.X = x;
                     el.Y = y;
@@ -802,7 +814,7 @@ namespace Dynamo.Models
 
                     el.DisableReporting();
 
-                    if (CurrentSpace == HomeSpace)
+                    if (CurrentWorkspace == HomeSpace)
                         el.SaveResult = true;
                 }
 
@@ -857,7 +869,7 @@ namespace Dynamo.Models
                     Stopwatch addTimer = new Stopwatch();
                     addTimer.Start();
                     if (newConnector != null)
-                        CurrentSpace.Connectors.Add(newConnector);
+                        CurrentWorkspace.Connectors.Add(newConnector);
                     addTimer.Stop();
                     Debug.WriteLine(string.Format("{0} elapsed for add connector to collection.", addTimer.Elapsed));
 
@@ -884,7 +896,7 @@ namespace Dynamo.Models
                         paramDict.Add("x", x);
                         paramDict.Add("y", y);
                         paramDict.Add("text", text);
-                        paramDict.Add("workspace", CurrentSpace);
+                        paramDict.Add("workspace", CurrentWorkspace);
                         
                         AddNote(paramDict);
                     }
@@ -894,7 +906,7 @@ namespace Dynamo.Models
 
                 DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
 
-                foreach (NodeModel e in CurrentSpace.Nodes)
+                foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
 
                 #endregion
@@ -911,6 +923,7 @@ namespace Dynamo.Models
                 CleanWorkbench();
                 return false;
             }
+            CurrentWorkspace.HasUnsavedChanges = false;
             return true;
         }
 
@@ -943,14 +956,14 @@ namespace Dynamo.Models
 
             if (display)
             {
-                if (CurrentSpace != HomeSpace)
+                if (CurrentWorkspace != HomeSpace)
                 {
-                    var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(CurrentSpace);
+                    var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(CurrentWorkspace);
                     if (def != null)
                         SaveFunction(def, false, true, true);
                 }
 
-                CurrentSpace = workSpace;
+                CurrentWorkspace = workSpace;
             }
 
             return functionDefinition;
@@ -1095,7 +1108,7 @@ namespace Dynamo.Models
                 n.GUID = (Guid)id;
 
             n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
-            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? CurrentSpace : (WorkspaceModel)inputs["workspace"];
+            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? CurrentWorkspace : (WorkspaceModel)inputs["workspace"];
 
             ws.Notes.Add(n);
 
@@ -1215,8 +1228,8 @@ namespace Dynamo.Models
                 startGuid = nodeLookup.TryGetValue(c.Start.Owner.GUID, out startGuid) ? startGuid : c.Start.Owner.GUID;
                 endGuid = nodeLookup.TryGetValue(c.End.Owner.GUID, out endGuid) ? endGuid : c.End.Owner.GUID;
 
-                var startNode = CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == startGuid);
-                var endNode = CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == endGuid);
+                var startNode = CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == startGuid);
+                var endNode = CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == endGuid);
 
                 // do not form connector if the end nodes are null
                 if (startNode == null || endNode == null)
@@ -1225,7 +1238,7 @@ namespace Dynamo.Models
                 }
 
                 //don't let users paste connectors between workspaces
-                if (startNode.WorkSpace != CurrentSpace)
+                if (startNode.WorkSpace != CurrentWorkspace)
                 {
                     continue;
                 }
@@ -1249,7 +1262,7 @@ namespace Dynamo.Models
             {
                 var newGUID = Guid.NewGuid();
 
-                var sameSpace = CurrentSpace.Notes.Any(x => x.GUID == note.GUID);
+                var sameSpace = CurrentWorkspace.Notes.Any(x => x.GUID == note.GUID);
                 var newX = sameSpace ? note.X + 20 : note.X;
                 var newY = sameSpace ? note.Y + 20 : note.Y;
 
@@ -1263,12 +1276,12 @@ namespace Dynamo.Models
 
                 AddNote(noteData);
 
-                AddToSelection(CurrentSpace.Notes.FirstOrDefault(x => x.GUID == newGUID));
+                AddToSelection(CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == newGUID));
             }
 
             foreach (var de in nodeLookup)
             {
-                AddToSelection(CurrentSpace.Nodes.FirstOrDefault(x => x.GUID == de.Value));
+                AddToSelection(CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == de.Value));
             }
         }
 
@@ -1361,14 +1374,14 @@ namespace Dynamo.Models
                 return null;
             }
 
-            if ((node is Symbol || node is Output) && CurrentSpace is HomeWorkspace)
+            if ((node is Symbol || node is Output) && CurrentWorkspace is HomeWorkspace)
             {
                 dynSettings.Controller.DynamoModel.WriteToLog("Cannot place dynSymbol or dynOutput in HomeWorkspace");
                 return null;
             }
 
-            CurrentSpace.Nodes.Add(node);
-            node.WorkSpace = CurrentSpace;
+            CurrentWorkspace.Nodes.Add(node);
+            node.WorkSpace = CurrentWorkspace;
 
             //if we've received a value in the dictionary
             //try to set the value on the node
@@ -1392,7 +1405,7 @@ namespace Dynamo.Models
 
             node.EnableInteraction();
 
-            if (CurrentSpace == HomeSpace)
+            if (CurrentWorkspace == HomeSpace)
             {
                 node.SaveResult = true;
             }
@@ -1493,7 +1506,7 @@ namespace Dynamo.Models
                 var c = ConnectorModel.Make(start, end, startIndex, endIndex, 0);
 
                 if (c != null)
-                    CurrentSpace.Connectors.Add(c);
+                    CurrentWorkspace.Connectors.Add(c);
             }
             catch (Exception e)
             {
@@ -1516,12 +1529,12 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     Save the current workspace to a specific file path, if the path is null or empty, does nothing.
-        ///     If successful, the CurrentSpace.FilePath field is updated as a side effect
+        ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
         /// </summary>
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
-            this.SaveAs(path, CurrentSpace);
+            this.SaveAs(path, CurrentWorkspace);
         }
 
         /// <summary>
@@ -1548,7 +1561,7 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     Save to a specific file path, if the path is null or empty, does nothing.
-        ///     If successful, the CurrentSpace.FilePath field is updated as a side effect
+        ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
         /// </summary>
         /// <param name="path">The path to save to</param>
         /// <param name="workspace">The workspace to save</param>
@@ -1583,13 +1596,13 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Attempts to save an element, assuming that the CurrentSpace.FilePath 
+        ///     Attempts to save an element, assuming that the CurrentWorkspace.FilePath 
         ///     field is already  populated with a path has a filename associated with it. 
         /// </summary>
         public void Save(object parameter)
         {
-            if (!String.IsNullOrEmpty(CurrentSpace.FilePath))
-                SaveAs(CurrentSpace.FilePath);
+            if (!String.IsNullOrEmpty(CurrentWorkspace.FilePath))
+                SaveAs(CurrentWorkspace.FilePath);
         }
 
         internal bool CanSave(object parameter)
@@ -1649,7 +1662,7 @@ namespace Dynamo.Models
         public void DeleteNote(NoteModel note)
         {
             DynamoSelection.Instance.Selection.Remove(note);
-            CurrentSpace.Notes.Remove(note);
+            CurrentWorkspace.Notes.Remove(note);
         }
 
         private void DeleteNodeAndItsConnectors(NodeModel node)
@@ -1657,7 +1670,7 @@ namespace Dynamo.Models
             foreach (var conn in node.AllConnectors().ToList())
             {
                 conn.NotifyConnectedPortsOfDeletion();
-                dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Connectors.Remove(conn);
+                dynSettings.Controller.DynamoViewModel.Model.CurrentWorkspace.Connectors.Remove(conn);
             }
 
             node.DisableReporting();
@@ -1687,10 +1700,10 @@ namespace Dynamo.Models
         public void RefactorCustomNode(object parameter)
         {
             //Bench.workspaceLabel.Content = Bench.editNameBox.Text;
-            var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(CurrentSpace);
+            var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(CurrentWorkspace);
 
             //TODO: UI Refactor - Is this the right data for refactor?
-            var info = new CustomNodeInfo(def.FunctionId, editName, CurrentSpace.Category, CurrentSpace.Description, CurrentSpace.FilePath);
+            var info = new CustomNodeInfo(def.FunctionId, editName, CurrentWorkspace.Category, CurrentWorkspace.Description, CurrentWorkspace.FilePath);
 
             dynSettings.Controller.SearchViewModel.Refactor(info);
 
@@ -1706,16 +1719,16 @@ namespace Dynamo.Models
                         node.Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(Guid.Parse(node.Symbol));
                     }
 
-                    if (!node.Definition.Workspace.Name.Equals(CurrentSpace.Name))
+                    if (!node.Definition.Workspace.Name.Equals(CurrentWorkspace.Name))
                         continue;
 
                     //Rename nickname only if it's still referring to the old name
-                    if (node.NickName.Equals(CurrentSpace.Name))
+                    if (node.NickName.Equals(CurrentWorkspace.Name))
                         node.NickName = editName;
                 }
             }
 
-            dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(CurrentSpace.Name);
+            dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(CurrentWorkspace.Name);
 
             //TODO: Delete old stored definition
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -1723,7 +1736,7 @@ namespace Dynamo.Models
 
             if (Directory.Exists(pluginsPath))
             {
-                string oldpath = Path.Combine(pluginsPath, CurrentSpace.Name + ".dyf");
+                string oldpath = Path.Combine(pluginsPath, CurrentWorkspace.Name + ".dyf");
                 if (File.Exists(oldpath))
                 {
                     string newpath = dynSettings.FormatFileName(
@@ -1734,7 +1747,7 @@ namespace Dynamo.Models
                 }
             }
 
-            (CurrentSpace).Name = editName;
+            (CurrentWorkspace).Name = editName;
 
             SaveFunction(def);
         }
@@ -1755,8 +1768,8 @@ namespace Dynamo.Models
             CleanWorkbench();
 
             //don't save the file path
-            CurrentSpace.FilePath = "";
-            CurrentSpace.HasUnsavedChanges = false;
+            CurrentWorkspace.FilePath = "";
+            CurrentWorkspace.HasUnsavedChanges = false;
 
             //clear the renderables
             dynSettings.Controller.RenderDescriptions.Clear();
@@ -1781,7 +1794,7 @@ namespace Dynamo.Models
 
         internal bool CanGoHome(object parameter)
         {
-            return CurrentSpace != HomeSpace;
+            return CurrentWorkspace != HomeSpace;
         }
 
         /// <summary>
@@ -1837,12 +1850,12 @@ namespace Dynamo.Models
                 List<Type> catTypes = de.Value as List<Type>;
 
                 //add the name of the category here
-                //AddNote(de.Key.ToString(), x, y, ViewModel.CurrentSpace);
+                //AddNote(de.Key.ToString(), x, y, ViewModel.CurrentWorkspace);
                 Dictionary<string, object> paramDict = new Dictionary<string, object>();
                 paramDict.Add("x", x);
                 paramDict.Add("y", y);
                 paramDict.Add("text", de.Key.ToString());
-                paramDict.Add("workspace", CurrentSpace);
+                paramDict.Add("workspace", CurrentWorkspace);
 
                 if (CanAddNote(paramDict))
                     AddNote(paramDict);
@@ -1856,7 +1869,7 @@ namespace Dynamo.Models
                     NodeNameAttribute elNameAttrib = attribs[0] as NodeNameAttribute;
                     NodeModel el = CreateInstanceAndAddNodeToWorkspace(
                            t, elNameAttrib.Name, Guid.NewGuid(), x, y,
-                           CurrentSpace
+                           CurrentWorkspace
                         );
 
                     if (el == null) continue;

@@ -24,16 +24,16 @@ namespace Dynamo.Nodes
             Items = arr;
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            dynEl.SetAttribute("index", this.SelectedIndex.ToString());
+            nodeElement.SetAttribute("index", this.SelectedIndex.ToString());
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
             try
             {
-                this.SelectedIndex = Convert.ToInt32(elNode.Attributes["index"].Value);
+                this.SelectedIndex = Convert.ToInt32(nodeElement.Attributes["index"].Value);
             }
             catch { }
         }

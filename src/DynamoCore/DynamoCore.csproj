@@ -168,9 +168,6 @@ limitations under the License.
     <Compile Include="ViewModels\PackageItemViewModel.cs" />
     <Compile Include="ViewModels\PackageItemLeafViewModel.cs" />
     <Compile Include="ViewModels\PackageItemRootViewModel.cs" />
-    <Compile Include="UI\Views\PackageManagerDownloadView.xaml.cs">
-      <DependentUpon>PackageManagerDownloadView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Views\PackageManagerPublishView.xaml.cs">
       <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
     </Compile>
@@ -352,10 +349,6 @@ limitations under the License.
     <Page Include="UI\Prompts\CrashPrompt.xaml">
     </Page>
     <Page Include="UI\Views\InstalledPackagesView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Views\PackageManagerDownloadView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -36,7 +36,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
-        internal void LoadPackages()
+        public void LoadPackages()
         {
             this.ScanAllPackageDirectories();
             LocalPackages.ToList().ForEach( (pkg) => pkg.Load() );
