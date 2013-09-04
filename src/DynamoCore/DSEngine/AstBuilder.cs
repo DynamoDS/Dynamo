@@ -164,6 +164,15 @@ namespace Dynamo.DSEngine
             return codegen.GenerateCode();
         }
 
+        public UnaryExpressionNode BuildUnaryExpression(AssociativeNode expression,
+                                                        UnaryOperator uop)
+        {
+            UnaryExpressionNode node = new UnaryExpressionNode();
+            node.Expression = expression;
+            node.Operator = uop;
+            return node;
+        }
+
         public BinaryExpressionNode BuildBinaryExpression(AssociativeNode lhs,
                                                           AssociativeNode rhs,
                                                           Operator op)
@@ -175,23 +184,25 @@ namespace Dynamo.DSEngine
             return node;
         }
 
-        public FunctionCallNode BuildFunctionCall(string function, 
+        public AssociativeNode BuildFunctionCall(string function, 
                                                   List<AssociativeNode> arguments)
         {
+            string[] dotcalls = function.Split('.');
+            string functionName = dotcalls[dotcalls.Length - 1];
+
             FunctionCallNode funcCall = new FunctionCallNode();
-            funcCall.Function = BuildIdentifier(function);
+            funcCall.Function = BuildIdentifier(functionName);
             funcCall.FormalArguments = arguments;
-
-            return funcCall;
-        }
-
-        public FunctionDotCallNode BuildFunctionDotCall(string thisobj,
-                                                        string function,
-                                                        List<AssociativeNode> arguments)
-        {
-            FunctionCallNode funcCall = BuildFunctionCall(function, arguments);
-            IdentifierNode lhs = BuildIdentifier(thisobj);
-            return CoreUtils.GenerateCallDotNode(lhs, funcCall);
+ 
+            if (dotcalls.Length == 1)
+            {
+               return funcCall;
+            }
+            else 
+            {
+                IdentifierNode lhs = BuildIdentifier(dotcalls[0]);
+                return CoreUtils.GenerateCallDotNode(lhs, funcCall);
+            }
         }
 
         public IdentifierNode BuildIdentifier(string name)
@@ -391,7 +402,7 @@ namespace Dynamo.DSEngine
                 evaluateArgs.Add(argsVar);
 
                 IdentifierNode evalInstance = BuildIdentifier(evaluator);
-                FunctionCallNode eval = BuildFunctionCall(StringConstants.kEvalFunction, evaluateArgs);
+                FunctionCallNode eval = BuildFunctionCall(StringConstants.kEvalFunction, evaluateArgs) as FunctionCallNode;
                 FunctionDotCallNode evalCall = CoreUtils.GenerateCallDotNode(evalInstance, eval, null);
 
                 IdentifierNode ret = BuildIdentifier(ProtoCore.DSDefinitions.Kw.kw_return);
@@ -411,7 +422,7 @@ namespace Dynamo.DSEngine
             AddNode(node.GUID, evalFunc);
 
             // Now make a call to this wrapper function
-            return BuildFunctionCall(evalFunc.Name, inputAstNodes);
+            return BuildFunctionCall(evalFunc.Name, inputAstNodes)  as FunctionCallNode;
         }
 
         public void BuildEvaluation(NodeModel node, 
