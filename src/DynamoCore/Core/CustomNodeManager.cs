@@ -806,21 +806,6 @@ namespace Dynamo.Utilities
 
                     string typeName = typeAttrib.Value;
 
-                    // older files will have nodes in the Dynamo.Elements namespace
-                    if (typeName.StartsWith("Dynamo.Elements."))
-                    {
-                        typeName = "Dynamo.Nodes." + typeName.Remove(0, 16);
-                    }
-
-                    // older files will have nodes that are prefixed with dyn
-                    if (typeName.Remove(0, 13).StartsWith("dyn"))
-                        typeName = "Dynamo.Nodes." + typeName.Remove(0, 13).Remove(0, 3);
-
-                    // older files will have nodes that use XYZ and UV
-                    // instead of Xyz and Uv
-                    typeName = typeName.Replace("XYZ", "Xyz");
-                    typeName = typeName.Replace("UV", "Uv");
-
                     //test the GUID to confirm that it is non-zero
                     //if it is zero, then we have to fix it
                     //this will break the connectors, but it won't keep
@@ -844,47 +829,15 @@ namespace Dynamo.Utilities
                     if (isUpstreamVisAttrib != null)
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
-                    //Type t = Type.GetType(typeName);
-                    TypeLoadData tData;
-                    Type t;
-
-                    if (!controller.BuiltInTypesByName.TryGetValue(typeName, out tData))
+                    typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
+                    System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+                    if (null == type)
                     {
-                        //try and get a system type by this name
-                        t = Type.GetType(typeName);
-
-                        //if we still can't find the type, try the also known as attributes
-                        if (t == null)
-                        {
-                            //try to get the also known as values
-                            foreach (KeyValuePair<string, TypeLoadData> kvp in controller.BuiltInTypesByName)
-                            {
-                                var akaAttribs = kvp.Value.Type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), false);
-                                if (akaAttribs.Any())
-                                {
-                                    if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
-                                    {
-                                        DynamoLogger.Instance.Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key, typeName));
-                                        t = kvp.Value.Type;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (t == null)
-                        {
-                            DynamoLogger.Instance.Log("Could not load node of type: " + typeName);
-                            DynamoLogger.Instance.Log("Loading will continue but nodes might be missing from your workflow.");
-
-                            //return false;
-                            badNodes.Add(guid);
-                            continue;
-                        }
+                        badNodes.Add(guid);
+                        continue;
                     }
-                    else
-                        t = tData.Type;
 
-                    NodeModel el = dynSettings.Controller.DynamoModel.CreateNodeInstance(t, nickname, guid);
+                    NodeModel el = dynSettings.Controller.DynamoModel.CreateNodeInstance(type, nickname, guid);
 
                     if (lacingAttrib != null)
                     {
