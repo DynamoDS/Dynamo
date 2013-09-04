@@ -276,10 +276,10 @@ namespace Dynamo
                             RegisterAllPorts();
                             State = ElementState.ERROR;
 
-                            var user_msg = "Failed to load custom node: " + NickName +
+                            var userMsg = "Failed to load custom node: " + NickName +
                                            ".  Replacing with proxy custom node.";
 
-                            DynamoLogger.Instance.Log(user_msg);
+                            DynamoLogger.Instance.Log(userMsg);
 
                             // tell custom node loader, but don't provide path, forcing user to resave explicitly
                             dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
@@ -394,13 +394,13 @@ namespace Dynamo
         [IsInteractive(false)]
         public partial class Output : NodeModel
         {
-            private string symbol = "";
-
             public Output()
             {
                 InPortData.Add(new PortData("", "", typeof(object)));
 
                 RegisterAllPorts();
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
 
             public override bool RequiresRecalc
@@ -412,15 +412,16 @@ namespace Dynamo
                 set { }
             }
 
+            private string _symbol = "";
             public string Symbol
             {
                 get
                 {
-                    return symbol;
+                    return _symbol;
                 }
                 set
                 {
-                    symbol = value;
+                    _symbol = value;
                     ReportModification();
                     RaisePropertyChanged("Symbol");
                 }
@@ -443,6 +444,8 @@ namespace Dynamo
                         Symbol = subNode.Attributes[0].Value;
                     }
                 }
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
         }
 
@@ -453,13 +456,13 @@ namespace Dynamo
         [IsInteractive(false)]
         public partial class Symbol : NodeModel
         {
-            private string _inputSymbol = "";
-
             public Symbol()
             {
                 OutPortData.Add(new PortData("", "Symbol", typeof(object)));
 
                 RegisterAllPorts();
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
 
             public override bool RequiresRecalc
@@ -471,6 +474,7 @@ namespace Dynamo
                 set { }
             }
 
+            private string _inputSymbol = "";
             public string InputSymbol
             {
                 get
@@ -514,6 +518,8 @@ namespace Dynamo
                         InputSymbol = subNode.Attributes[0].Value;
                     }
                 }
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
         }
 
@@ -588,7 +594,7 @@ namespace Dynamo
 
         private IEnumerable<FunctionDefinition> findAllDependencies(HashSet<FunctionDefinition> dependencySet)
         {
-            var query = this.DirectDependencies.Where(def => !dependencySet.Contains(def));
+            var query = DirectDependencies.Where(def => !dependencySet.Contains(def));
 
             foreach (var definition in query)
             {
@@ -601,17 +607,11 @@ namespace Dynamo
 
         private IEnumerable<FunctionDefinition> findDirectDependencies()
         {
-            var query = Workspace.Nodes
-                                 .Where(node => node is Function)
-                                 .Select(node => (node as Function).Definition)
-                                 .Where((def) => def != this)
-                                 .Distinct();
-
-            foreach (var definition in query)
-            {
-                yield return definition;
-            }
+            return Workspace.Nodes
+                            .OfType<Function>()
+                            .Select(node => node.Definition)
+                            .Where(def => def != this)
+                            .Distinct();
         }
-
     }
 }
