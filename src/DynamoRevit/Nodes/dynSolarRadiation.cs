@@ -295,20 +295,20 @@ namespace Dynamo.Nodes
                 throw new Exception("SANITY CHECK FAILED");
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (this.PickedSunAndShadowSettings != null)
             {
                 XmlElement outEl = xmlDoc.CreateElement("instance");
                 outEl.SetAttribute("id", this.PickedSunAndShadowSettings.Id.ToString());
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
             }
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals("instance"))
                 {

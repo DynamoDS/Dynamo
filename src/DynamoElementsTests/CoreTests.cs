@@ -66,7 +66,7 @@ namespace Dynamo.Tests
                 DynamoLogger.Instance.StartLogging();
 
                 //create a new instance of the ViewModel
-                controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE);
+                controller = new DynamoController(new ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE);
             }
             catch (Exception ex)
             {
@@ -557,7 +557,7 @@ namespace Dynamo.Tests
             //    //DynamoCommands.ProcessCommandQueue();
             //    model.CreateNode(sumData);
 
-            //    Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            //    Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentWorkspace.Nodes.Count);
 
             //    DynamoSelection.Instance.Selection.Add();
             //    controller.OnRequestSelect(null, new ModelEventArgs( controller.DynamoViewModel.Model.Nodes[i], null) );

@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Dynamo.Utilities;
 
 namespace Dynamo.Nodes.Prompts
 {
@@ -33,6 +34,11 @@ namespace Dynamo.Nodes.Prompts
         private void Continue_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void PostOnGithub_Click(object sender, RoutedEventArgs e)
+        {
+            dynSettings.Controller.ReportABug(null);
         }
 
     }
