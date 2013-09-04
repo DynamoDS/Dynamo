@@ -583,7 +583,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Ignore]
         public void Filter_Complex()
         {
             var model = dynSettings.Controller.DynamoModel;
