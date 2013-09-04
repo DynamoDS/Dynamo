@@ -28,15 +28,13 @@ def main():
 	# search for .dyn and .txt files NON-RECURSIVELY
 	os.chdir(testsPath)
 	testDyns = glob.glob("*.dyn")
-	testJournals = glob.glob("*.txt")
+	model_types = ['*.rfa', '*.rvt']
+	models = []
+	for files in model_types:
+		models.extend(glob.glob(files))
 
-	# testDyns = [os.path.join(dirpath, f)
-	# 	for dirpath, dirnames, files in os.walk(testsPath)
-	# 	for f in fnmatch.filter(files, '*.dyn')]
-
-	# testJournals = [os.path.join(dirpath, f)
- #    	for dirpath, dirnames, files in os.walk(testsPath)
- #    	for f in fnmatch.filter(files, '*.txt')]
+	print 'Generating journal files...'
+	testJournals = generate_journal_files(testDyns, models)
 
 	print '{0} dyn files with {1} journals'.format(len(testDyns), len(testJournals))
 
@@ -74,9 +72,6 @@ def main():
 			run_cmd( ['Revit', os.path.abspath(journal)] )
 
 	# aggregate results
-	# results = [os.path.join(dirpath, f)
- #    	for dirpath, dirnames, files in os.walk(testsPath)
- #    	for f in fnmatch.filter(files, '*_result.xml')]
 	results = glob.glob('*_result.xml')
 
 	passCount = 0
@@ -107,19 +102,11 @@ def main():
 
 	# cleanup results files and journals created during testing
 	print 'cleaning journal files...'
-	# runJournals = [os.path.join(dirpath, f)
- #    	for dirpath, dirnames, files in os.walk(testsPath)
- #    	for f in fnmatch.filter(files, 'journal.*')]
- 	runJournals = glob.glob('journal.*')
-
+ 	runJournals = glob.glob('*.txt')
 	for journal in runJournals:
 		os.remove(journal)
 
 	print 'cleaning results files...'
-	# results = [os.path.join(dirpath, f)
- #    	for dirpath, dirnames, files in os.walk(testsPath)
- #    	for f in fnmatch.filter(files, '*_result.xml')]
-
 	for result in results:
 		os.remove(result)
 
@@ -171,6 +158,48 @@ def send_email( subject, text, receiver, sender ):
 	   print ("Successfully sent email to " + receiver)
 	except SMTPException:
 	   print ("Error: unable to send email to " + receiver)
+
+def generate_journal_files(dynamo_files, revit_files):
+	
+	journals = []
+
+	testPath = os.getcwd()
+
+	# change into the template path and 
+	# read the template file
+	os.chdir(os.path.abspath("./template"))
+	template = glob.glob("DynamoTemplate.txt")[0]
+	s =''
+	with open(template, 'r') as templateFile:
+		s = string.Template(templateFile.read())
+	templateFile.closed
+
+	# change back to the test directory
+	os.chdir(os.path.abspath(testPath))
+
+	# for each dynamo file, generate a journal
+	# file with the same name
+	for dynFile in dynamo_files:
+		base = os.path.splitext(os.path.basename(dynFile))[0]
+		base_path = os.path.splitext(dynFile)[0]
+		
+		# find the matching rfa or rvt file
+		# if none is found, pass in empty.rfa
+		model_name = 'empty.rfa'
+		for model in revit_files:
+			model_base = os.path.splitext(model)[0]
+			if model_base == base:
+				model_name = model
+		content = s.substitute(test_name = base, file_name = model_name)
+
+		# save the content to a file
+		journal = base + ".txt"
+		with open(journal, 'w') as f:
+			f.write(content)
+		f.closed
+		journals.append(journal)
+
+	return journals
 
 if __name__ == "__main__":
 	main()
