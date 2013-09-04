@@ -56,8 +56,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string openPath = Path.Combine(directory, @"..\..\test\core\multiplicationAndAdd\multiplicationAndAdd.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\multiplicationAndAdd\multiplicationAndAdd.dyn");
             model.Open(openPath);
 
             Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
@@ -626,8 +625,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string openPath = Path.Combine(directory, @"..\..\test\core\nodeLocationTest.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\nodeLocationTest.dyn");
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-AR");
             //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.OpenCommand, openPath));
