@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using Dynamo.FSchemeInterop;
-using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 using String = System.String;
@@ -16,134 +12,8 @@ using String = System.String;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    internal class CoreDynTests
+    internal class CoreDynTests : DynamoUnitTest
     {
-
-        #region startup and shutdown
-
-        [SetUp]
-        public void Init()
-        {
-            StartDynamo();
-        }
-
-        [TearDown]
-        public void Cleanup()
-        {
-            try
-            {
-                DynamoLogger.Instance.FinishLogging();
-                controller.ShutDown();
-
-                EmptyTempFolder();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        private static DynamoController controller;
-        private static string TempFolder;
-        private static string ExecutingDirectory { get; set; }
-
-        private static void StartDynamo()
-        {
-            try
-            {
-                ExecutingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string tempPath = Path.GetTempPath();
-
-                TempFolder = Path.Combine(tempPath, "dynamoTmp");
-
-                if (!Directory.Exists(TempFolder))
-                {
-                    Directory.CreateDirectory(TempFolder);
-                }
-                else
-                {
-                    EmptyTempFolder();
-                }
-
-                DynamoLogger.Instance.StartLogging();
-
-                //create a new instance of the ViewModel
-                controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE)
-                {
-                    Testing = true
-                };
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        public static void EmptyTempFolder()
-        {
-            try
-            {
-                var directory = new DirectoryInfo(TempFolder);
-                foreach (FileInfo file in directory.GetFiles()) file.Delete();
-                foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        #endregion
-
-        #region utility methods
-
-        public NodeModel NodeFromCurrentSpace(DynamoModel model, string guidString)
-        {
-            Guid guid = Guid.Empty;
-            Guid.TryParse(guidString, out guid);
-            return NodeFromCurrentSpace(model, guid);
-        }
-
-        public string GetTestDirectory()
-        {
-            var directory = new DirectoryInfo(ExecutingDirectory);
-            return Path.Combine(directory.Parent.Parent.FullName, "test");
-        }
- 
-        public NodeModel NodeFromCurrentSpace(DynamoModel model, Guid guid)
-        {
-            return model.CurrentSpace.Nodes.FirstOrDefault((node) => node.GUID == guid);
-        }
-
-        public Watch GetWatchNodeFromCurrentSpace(DynamoModel model, string guidString)
-        {
-            var nodeToWatch = NodeFromCurrentSpace(model, guidString);
-            Assert.NotNull(nodeToWatch);
-            Assert.IsAssignableFrom(typeof(Watch), nodeToWatch);
-            return (Watch)nodeToWatch;
-        }
-
-        public Watch GetFirstWatchNodeFromCurrentSpace(DynamoModel model)
-        {
-            return (Watch) model.CurrentSpace.Nodes.FirstOrDefault(x => x is Watch);
-        }
-
-        public double GetDoubleFromFSchemeValue(FScheme.Value value)
-        {
-            var doubleWatchVal = 0.0;
-            Assert.AreEqual(true, FSchemeInterop.Utils.Convert(value, ref doubleWatchVal));
-            return doubleWatchVal;
-        }
-
-        public FSharpList<FScheme.Value> GetListFromFSchemeValue(FScheme.Value value)
-        {
-            FSharpList<FScheme.Value> listWatchVal = null;
-            Assert.AreEqual(true, FSchemeInterop.Utils.Convert(value, ref listWatchVal));
-            return listWatchVal;
-        }
-
-        #endregion
-
         [Test]
         public void AddSubtractMapReduceFilterBasic()
         {
@@ -154,11 +24,11 @@ namespace Dynamo.Tests
 
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(28, model.CurrentSpace.Connectors.Count);
-            Assert.AreEqual(28, model.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(28, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(28, model.CurrentWorkspace.Nodes.Count);
 
             // check an input value
-            var node1 = NodeFromCurrentSpace(model, "51ed7fed-99fa-46c3-a03c-2c076f2d0538");
+            var node1 = model.CurrentWorkspace.NodeFromWorkspace("51ed7fed-99fa-46c3-a03c-2c076f2d0538");
             Assert.NotNull(node1);
             Assert.IsAssignableFrom(typeof(DoubleInput), node1);
             Assert.AreEqual("2", ((DoubleInput)node1).Value);
@@ -173,46 +43,46 @@ namespace Dynamo.Tests
             // check the output values are correctly computed
 
             // add-subtract -3.0
-            var watch = GetWatchNodeFromCurrentSpace(model, "4a2363b6-ef64-44f5-be64-18832586e574");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4a2363b6-ef64-44f5-be64-18832586e574");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(-3.0, doubleWatchVal);
 
             // map - list of three 6's 
-            watch = GetWatchNodeFromCurrentSpace(model,  "fcad8d7a-1c9f-4604-a03b-53393e36ea0b");
-            FSharpList<FScheme.Value> listWatchVal = GetListFromFSchemeValue(watch.GetValue(0));
+            watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("fcad8d7a-1c9f-4604-a03b-53393e36ea0b");
+            FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
             Assert.AreEqual(3, listWatchVal.Length);
-            Assert.AreEqual(6, GetDoubleFromFSchemeValue(listWatchVal[0]));
-            Assert.AreEqual(6, GetDoubleFromFSchemeValue(listWatchVal[1]));
-            Assert.AreEqual(6, GetDoubleFromFSchemeValue(listWatchVal[2]));
+            Assert.AreEqual(6, listWatchVal[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(6, listWatchVal[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(6, listWatchVal[2].GetDoubleFromFSchemeValue());
 
             // reduce - 6.0
-            watch = GetWatchNodeFromCurrentSpace(model, "e892c469-47e6-4006-baea-ec4afea5a04e");
-            doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("e892c469-47e6-4006-baea-ec4afea5a04e");
+            doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(6.0, doubleWatchVal);
 
             // filter - list of 6-10
-            watch = GetWatchNodeFromCurrentSpace(model, "41279a88-2f0b-4bd3-bef1-1be693df5c7e");
-            listWatchVal = GetListFromFSchemeValue(watch.GetValue(0));
+            watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("41279a88-2f0b-4bd3-bef1-1be693df5c7e");
+            listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
             Assert.AreEqual(5, listWatchVal.Length);
-            Assert.AreEqual(6, GetDoubleFromFSchemeValue(listWatchVal[0]));
-            Assert.AreEqual(7, GetDoubleFromFSchemeValue(listWatchVal[1]));
-            Assert.AreEqual(8, GetDoubleFromFSchemeValue(listWatchVal[2]));
-            Assert.AreEqual(9, GetDoubleFromFSchemeValue(listWatchVal[3]));
-            Assert.AreEqual(10, GetDoubleFromFSchemeValue(listWatchVal[4]));
+            Assert.AreEqual(6, listWatchVal[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(7, listWatchVal[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(8, listWatchVal[2].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(9, listWatchVal[3].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(10, listWatchVal[4].GetDoubleFromFSchemeValue());
 
         }
 
         [Test]
         public void Sequence()
         {
-            var model = controller.DynamoModel;
+            var model = Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\sequence\sequence.dyn");
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(5, model.CurrentSpace.Connectors.Count);
-            Assert.AreEqual(5, model.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -221,7 +91,7 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            var watchNode = GetFirstWatchNodeFromCurrentSpace(model);
+            var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Assert.IsNotNull(watchNode);
 
             // 50 elements between -1 and 1
@@ -242,34 +112,35 @@ namespace Dynamo.Tests
         [Test]
         public void CombineWithCustomNodes()
         {
-            var model = controller.DynamoModel;
+            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine\");
 
             string openPath = Path.Combine(examplePath, "combine-with-three.dyn");
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(13, model.CurrentSpace.Connectors.Count);
-            Assert.AreEqual(10, model.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
             // wait for the expression to complete
-            Thread.Sleep(500);
+            while (Controller.Running)
+                Thread.Sleep(100);
 
             // [[0,3,6], [2,5,4], [0,5,8]]
 
             // check the output values are correctly computed
-            var watchNode = GetFirstWatchNodeFromCurrentSpace(model);
+            var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Assert.IsNotNull(watchNode);
 
-            var expected = new List<List<double>>()
-                {
-                    new List<double>() {0, 3, 6},
-                    new List<double>() {1, 4, 7},
-                    new List<double>() {2, 5, 8},
-                };
+            var expected = new List<List<double>>
+            {
+                new List<double> {0, 3, 6},
+                new List<double> {1, 4, 7},
+                new List<double> {2, 5, 8},
+            };
 
             // 50 elements between -1 and 1
             Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode.OldValue);
@@ -279,7 +150,7 @@ namespace Dynamo.Tests
             int i = 0;
             foreach (var innerList in outerList)
             {
-                var fList = GetListFromFSchemeValue(innerList);
+                var fList = innerList.GetListFromFSchemeValue();
                 int j = 0;
                 foreach (var ele in fList)
                 {
@@ -295,7 +166,7 @@ namespace Dynamo.Tests
         [Test]
         public void ReduceAndRecursion()
         {
-            var model = controller.DynamoModel;
+            var model = Controller.DynamoModel;
 
             var examplePath = Path.Combine(GetTestDirectory(), @"core\reduce_and_recursion\");
 
@@ -303,8 +174,8 @@ namespace Dynamo.Tests
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(13, model.CurrentSpace.Connectors.Count);
-            Assert.AreEqual(11, model.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -313,16 +184,16 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            var watch = GetWatchNodeFromCurrentSpace(model, "157557d2-2452-413a-9944-1df3df793cee");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("157557d2-2452-413a-9944-1df3df793cee");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(doubleWatchVal, 15.0, 0.001);
 
-            var watch2 = GetWatchNodeFromCurrentSpace(model, "068dd555-a5d5-4f11-af05-e4fa0cc015c9");
-            var doubleWatchVal1 = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("068dd555-a5d5-4f11-af05-e4fa0cc015c9");
+            var doubleWatchVal1 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(doubleWatchVal1, 15.0, 0.001);
 
-            var watch3 = GetWatchNodeFromCurrentSpace(model, "1aca382d-ca81-4955-a6c1-0f549df19fd7");
-            var doubleWatchVal2 = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch3 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1aca382d-ca81-4955-a6c1-0f549df19fd7");
+            var doubleWatchVal2 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(doubleWatchVal2, 15.0, 0.001);
 
         }
@@ -330,17 +201,17 @@ namespace Dynamo.Tests
         [Test]
         public void FilterWithCustomNode()
         {
-            var model = controller.DynamoModel;
+            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\filter\");
 
-            Assert.IsTrue(controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf")) != null);
+            Assert.IsTrue(Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf")) != null);
 
             string openPath = Path.Combine(examplePath, "filter-example.dyn");
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(6, model.CurrentSpace.Connectors.Count);
-            Assert.AreEqual(6, model.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -349,7 +220,7 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            var watchNode = GetFirstWatchNodeFromCurrentSpace(model);
+            var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Assert.IsNotNull(watchNode);
 
             // odd numbers between 0 and 5
@@ -371,15 +242,15 @@ namespace Dynamo.Tests
         [Test]
         public void Sorting()
         {
-            var model = controller.DynamoModel;
+            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\sorting\");
 
             string openPath = Path.Combine(examplePath, "sorting.dyn");
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(10, model.CurrentSpace.Connectors.Count);
-            Assert.AreEqual(11, model.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -388,8 +259,8 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            var watchNode1 = GetWatchNodeFromCurrentSpace(model, "d8ee9c7c-c456-4a38-a5d8-07eca624ebfe");
-            var watchNode2 = GetWatchNodeFromCurrentSpace(model, "c966ac1d-5caa-4cfe-bb0c-f6db9e5697c4");
+            var watchNode1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("d8ee9c7c-c456-4a38-a5d8-07eca624ebfe");
+            var watchNode2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("c966ac1d-5caa-4cfe-bb0c-f6db9e5697c4");
             Assert.IsNotNull(watchNode1);
             Assert.IsNotNull(watchNode2);
 
@@ -404,9 +275,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, list1.Count);
             Assert.AreEqual(5, list2.Count);
 
-            var values = new List<string>(){"aaaaa", "bbb", "aa", "c", "dddd"};
+            var values = new List<string> {"aaaaa", "bbb", "aa", "c", "dddd"};
 
-            values.Sort((e1, e2) => String.Compare(e1, e2));
+            values.Sort(String.Compare);
             for (var i = 0; i < 5; i++)
             {
                 Assert.AreEqual(list1[i], values[i]);
@@ -423,90 +294,90 @@ namespace Dynamo.Tests
         [Test]
         public void Add()
         {
-            var model = controller.DynamoModel;
+            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Add.dyn");
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "4c5889ac-7b91-4fb5-aaad-a2128b533279");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4c5889ac-7b91-4fb5-aaad-a2128b533279");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(4.0, doubleWatchVal);
         }
 
         [Test]
         public void Subtract()
         {
-            var model = controller.DynamoModel;
+            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Subtract.dyn");
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "a574df4e-2dff-4c06-bbb6-e9467060085f");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("a574df4e-2dff-4c06-bbb6-e9467060085f");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(0.0, doubleWatchVal);
         }
 
         [Test]
         public void Multiply()
         {
-            var model = controller.DynamoModel;
+            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Multiply.dyn");
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "4c650bcc-9f18-4d23-a769-34845fd50fab");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4c650bcc-9f18-4d23-a769-34845fd50fab");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(4.0, doubleWatchVal);
         }
 
         [Test]
         public void Divide()
         {
-            var model = controller.DynamoModel;
+            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Divide.dyn");
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "4c650bcc-9f18-4d23-a769-34845fd50fab");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4c650bcc-9f18-4d23-a769-34845fd50fab");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(1.0, doubleWatchVal);
         }
 
         [Test]
         public void Modulo()
         {
-            var model = controller.DynamoModel;
+            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Modulo.dyn");
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "4a780dfb-74b1-453a-86ef-2f4a5c46792e");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4a780dfb-74b1-453a-86ef-2f4a5c46792e");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(0.0, doubleWatchVal);
         }
 
         [Test]
         public void Ceiling()
         {
-            var model = controller.DynamoModel;
+            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Ceiling.dyn");
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "97e58c7f-9082-4980-997a-d290cf8055e1");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("97e58c7f-9082-4980-997a-d290cf8055e1");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();  
             Assert.AreEqual(2.0, doubleWatchVal);
         }
 
@@ -520,8 +391,8 @@ namespace Dynamo.Tests
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "fb52d286-ebcc-449c-989e-e4ea94831125");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("fb52d286-ebcc-449c-989e-e4ea94831125");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(1.0, doubleWatchVal);
         }
 
@@ -535,8 +406,8 @@ namespace Dynamo.Tests
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "6a7b150e-f053-4b29-b672-007aa1acde24");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("6a7b150e-f053-4b29-b672-007aa1acde24");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(4.0, doubleWatchVal);
         }
 
@@ -550,8 +421,8 @@ namespace Dynamo.Tests
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "430e086e-8cf0-4e89-abba-69dc1cd94058");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("430e086e-8cf0-4e89-abba-69dc1cd94058");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(1.0, doubleWatchVal);
         }
 
@@ -565,8 +436,8 @@ namespace Dynamo.Tests
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "4d9fb747-2e90-4571-9c8f-7d59ad14a939");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4d9fb747-2e90-4571-9c8f-7d59ad14a939");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(1.0, doubleWatchVal);
         }
 
@@ -580,8 +451,8 @@ namespace Dynamo.Tests
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "4d9fb747-2e90-4571-9c8f-7d59ad14a939");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4d9fb747-2e90-4571-9c8f-7d59ad14a939");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(-1.0, doubleWatchVal);
         }
 
@@ -596,7 +467,7 @@ namespace Dynamo.Tests
 
                     model.Open(openPath);
 
-                    Assert.AreEqual(dynSettings.Controller.DynamoModel.CurrentSpace.Nodes.Count, 11);
+                    Assert.AreEqual(dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes.Count, 11);
 
                     dynSettings.Controller.RunExpression(null);
                 });
@@ -612,8 +483,8 @@ namespace Dynamo.Tests
             model.Open(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "4d9fb747-2e90-4571-9c8f-7d59ad14a939");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4d9fb747-2e90-4571-9c8f-7d59ad14a939");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(0.0, doubleWatchVal, 0.00001);
         }
 
@@ -645,16 +516,16 @@ namespace Dynamo.Tests
             dynSettings.Controller.RunExpression(null);
 
             var watch = (Watch)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Watch);
-            FSharpList<FScheme.Value> listWatchVal = GetListFromFSchemeValue(watch.GetValue(0));
+            FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
             Assert.AreEqual(5, listWatchVal.Length);
 
             //change the value of the list
-            var numNode = (DoubleInput) controller.DynamoModel.Nodes.Last(x => x is DoubleInput);
+            var numNode = (DoubleInput) Controller.DynamoModel.Nodes.Last(x => x is DoubleInput);
             numNode.Value = "3";
             dynSettings.Controller.RunExpression(null);
             Thread.Sleep(300);
 
-            listWatchVal = GetListFromFSchemeValue(watch.GetValue(0));
+            listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
             Assert.AreEqual(3, listWatchVal.Length);
 
             //test the negative case to make sure it throws an error
@@ -781,8 +652,8 @@ namespace Dynamo.Tests
 
             dynSettings.Controller.RunExpression(null);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "4744f516-c6b5-421c-b7f1-1731610667bb");
-            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4744f516-c6b5-421c-b7f1-1731610667bb");
+            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(25, doubleWatchVal, 0.00001);
         }
 
@@ -795,7 +666,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "take-every-default.dyn");
             model.Open(openPath);
 
-            var watch = GetWatchNodeFromCurrentSpace(model, "360f3b50-5f27-460a-a57a-bb6338064d98");
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("360f3b50-5f27-460a-a57a-bb6338064d98");
 
             // Run once
             dynSettings.Controller.RunExpression(null);
@@ -835,7 +706,7 @@ namespace Dynamo.Tests
                 "2a8f6086-dd36-49f6-b9c1-dfd5dbc683ea", 
                 "226f0d3a-7578-46f8-9f60-9fc24dd82c48",
                 "af0ccd4f-9fae-4f66-85eb-e5d58eb15fd8"
-            }.Select(guid => GetWatchNodeFromCurrentSpace(model, guid));
+            }.Select(guid => model.CurrentWorkspace.NodeFromWorkspace<Watch>(guid));
 
             dynSettings.Controller.RunExpression(null);
 

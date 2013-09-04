@@ -1,0 +1,18 @@
+<dynWorkspace X="0" Y="0" zoom="1" Description="Gets the lowest value from a list" Category="CAAD_RWTH.Lists" Name="Get Lowest" ID="4703cc7a-5731-408a-8b55-532e7a7a1dc8">
+  <dynElements>
+    <Dynamo.Nodes.dynSort type="Dynamo.Nodes.dynSort" guid="70aab9c8-2c10-4ece-835a-67d9945dd6a8" nickname="Sort" x="131" y="23.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynFirst type="Dynamo.Nodes.dynFirst" guid="8f0d2fd1-83f9-4bc3-b32a-d04893b95d67" nickname="First of List" x="302" y="24" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="0f97ee5a-1ea7-45c4-ba0f-557c9480af4c" nickname="Input" x="22" y="24" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynOutput type="Dynamo.Nodes.dynOutput" guid="b63fb6b8-75a2-464e-803c-0cb9781ea051" nickname="Output" x="461" y="24" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="lowest" />
+    </Dynamo.Nodes.dynOutput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="70aab9c8-2c10-4ece-835a-67d9945dd6a8" start_index="0" end="8f0d2fd1-83f9-4bc3-b32a-d04893b95d67" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="8f0d2fd1-83f9-4bc3-b32a-d04893b95d67" start_index="0" end="b63fb6b8-75a2-464e-803c-0cb9781ea051" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="0f97ee5a-1ea7-45c4-ba0f-557c9480af4c" start_index="0" end="70aab9c8-2c10-4ece-835a-67d9945dd6a8" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>
