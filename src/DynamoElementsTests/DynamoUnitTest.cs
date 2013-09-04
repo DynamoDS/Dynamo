@@ -15,7 +15,7 @@ namespace Dynamo.Tests
 
         #region startup and shutdown
 
-        private string _tempFolder;
+        protected string TempFolder { get; private set; }
 
         [SetUp]
         public void Init()
@@ -46,11 +46,11 @@ namespace Dynamo.Tests
                 ExecutingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 string tempPath = Path.GetTempPath();
 
-                _tempFolder = Path.Combine(tempPath, "dynamoTmp");
+                TempFolder = Path.Combine(tempPath, "dynamoTmp");
 
-                if (!Directory.Exists(_tempFolder))
+                if (!Directory.Exists(TempFolder))
                 {
-                    Directory.CreateDirectory(_tempFolder);
+                    Directory.CreateDirectory(TempFolder);
                 }
                 else
                 {
@@ -75,7 +75,7 @@ namespace Dynamo.Tests
         {
             try
             {
-                var directory = new DirectoryInfo(_tempFolder);
+                var directory = new DirectoryInfo(TempFolder);
                 foreach (FileInfo file in directory.GetFiles()) file.Delete();
                 foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
             }
