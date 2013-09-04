@@ -728,59 +728,13 @@ namespace Dynamo.Models
                     double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
                     double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
-                    // older files will have nodes in the Dynamo.Elements namespace
-                    if (typeName.StartsWith("Dynamo.Elements."))
+                    typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
+                    System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+                    if (null == type)
                     {
-                        typeName = "Dynamo.Nodes." + typeName.Remove(0, 16);
+                        badNodes.Add(guid);
+                        continue;
                     }
-
-                    // older files will have nodes that are prefixed with dyn
-                    if (typeName.Remove(0, 13).StartsWith("dyn"))
-                        typeName = "Dynamo.Nodes." + typeName.Remove(0, 13).Remove(0, 3);
-
-                    // older files will have nodes that use XYZ and UV
-                    // instead of Xyz and Uv
-                    typeName = typeName.Replace("XYZ", "Xyz");
-                    typeName = typeName.Replace("UV", "Uv");
-
-                    TypeLoadData tData;
-                    Type t;
-
-                    if (!dynSettings.Controller.BuiltInTypesByName.TryGetValue(typeName, out tData))
-                    {
-                        //try and get a system type by this name
-                        t = Type.GetType(typeName);
-
-                        //if we still can't find the type, try the also known as attributes
-                        if (t == null)
-                        {
-                            //try to get the also known as values
-                            foreach (KeyValuePair<string, TypeLoadData> kvp in dynSettings.Controller.BuiltInTypesByName)
-                            {
-                                var akaAttribs = kvp.Value.Type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), false);
-                                if (akaAttribs.Count() > 0)
-                                {
-                                    if ((akaAttribs[0] as AlsoKnownAsAttribute).Values.Contains(typeName))
-                                    {
-                                        DynamoLogger.Instance.Log(string.Format("Found matching node for {0} also known as {1}", kvp.Key, typeName));
-                                        t = kvp.Value.Type;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (t == null)
-                        {
-                            DynamoLogger.Instance.Log("Could not load node of type: " + typeName);
-                            DynamoLogger.Instance.Log("Loading will continue but nodes might be missing from your workflow.");
-
-                            //return false;
-                            badNodes.Add(guid);
-                            continue;
-                        }
-                    }
-                    else
-                        t = tData.Type;
 
                     bool isVisible = true;
                     if (isVisAttrib != null)
@@ -790,7 +744,7 @@ namespace Dynamo.Models
                     if (isUpstreamVisAttrib != null)
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
-                    NodeModel el = CreateNodeInstance(t, nickname, guid);
+                    NodeModel el = CreateNodeInstance(type, nickname, guid);
                     el.WorkSpace = CurrentWorkspace;
                     el.Load(elNode);
 
