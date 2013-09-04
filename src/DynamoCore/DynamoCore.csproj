@@ -84,6 +84,10 @@ limitations under the License.
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Windows.Shell, Version=3.0.50506.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\Microsoft.Windows.Shell\Microsoft.Windows.Shell.dll</HintPath>
+    </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>
     </Reference>
