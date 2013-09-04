@@ -55,6 +55,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamoListTests.cs" />
+    <Compile Include="DynamoCoreTests.cs" />
+    <Compile Include="DynamoCoreUITests.cs" />
+    <Compile Include="DynamoSampleTests.cs" />
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />
     <Compile Include="DynamoUnitTest.cs" />

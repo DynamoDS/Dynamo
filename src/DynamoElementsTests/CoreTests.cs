@@ -14,6 +14,8 @@ using Dynamo.Utilities;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using NUnit.Framework;
+using Dynamo.Models;
+using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Tests
 {
@@ -88,6 +90,53 @@ namespace Dynamo.Tests
             }
         }
 
+        #region utility methods
+
+        public double ConvertToDouble(dynNodeModel node)
+        {
+            //dynDoubleInput n = node as dynDoubleInput;
+            Assert.AreNotEqual(null, node);
+            Assert.AreNotEqual(null, node.OldValue);
+            Assert.AreEqual(true, node.OldValue.IsNumber);
+            return (node.OldValue as FScheme.Value.Number).Item;
+        }
+
+        public dynNodeModel NodeFromCurrentSpace(DynamoViewModel vm, string guidString)
+        {
+            Guid guid = Guid.Empty;
+            Guid.TryParse(guidString, out guid);
+            return NodeFromCurrentSpace(vm, guid);
+        }
+
+        public dynNodeModel NodeFromCurrentSpace(DynamoViewModel vm, Guid guid)
+        {
+            return vm.CurrentSpace.Nodes.FirstOrDefault((node) => node.GUID == guid);
+        }
+
+        public dynWatch GetWatchNodeFromCurrentSpace(DynamoViewModel vm, string guidString)
+        {
+            var nodeToWatch = NodeFromCurrentSpace(vm, guidString);
+            Assert.NotNull(nodeToWatch);
+            Assert.IsAssignableFrom(typeof(dynWatch), nodeToWatch);
+            return (dynWatch)nodeToWatch;
+        }
+
+        public double GetDoubleFromFSchemeValue(FScheme.Value value)
+        {
+            var doubleWatchVal = 0.0;
+            Assert.AreEqual(true, FSchemeInterop.Utils.Convert(value, ref doubleWatchVal));
+            return doubleWatchVal;
+        }
+
+        public FSharpList<FScheme.Value> GetListFromFSchemeValue(FScheme.Value value)
+        {
+            FSharpList<FScheme.Value> listWatchVal = null;
+            Assert.AreEqual(true, FSchemeInterop.Utils.Convert(value, ref listWatchVal));
+            return listWatchVal;
+        }
+
+        #endregion
+
         // TODO: create set of sample files with no Revit dependencies
         //[Test]
         //public void CanOpenAllSampleFilesWithoutError()
@@ -142,7 +191,7 @@ namespace Dynamo.Tests
             sumData.Add("name", "Add");
             model.CreateNode(sumData);
 
-            Assert.AreEqual(controller.DynamoViewModel.CurrentSpace.Nodes.Count, 1);
+            Assert.AreEqual(controller.DynamoModel.CurrentSpace.Nodes.Count, 1);
         }
 
         [Test]
@@ -750,6 +799,131 @@ namespace Dynamo.Tests
             degrees = Convert.ToDouble(converter.Convert(3.14159, typeof(string), null, new System.Globalization.CultureInfo("en-US")));
             Assert.AreEqual(180.0, degrees, 0.01);
         }
+
+#if false
+
+        [Test]
+        public void AdditionOfTwoArray()
+        {
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string openPath = Path.Combine(directory, @"..\..\test\dynamo_elements_samples\working\trial\AdditionOfTwoArray.dyn");
+            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.OpenCommand, openPath));
+            controller.ProcessCommandQueue();
+
+            //var vm = controller.DynamoViewModel;
+
+            //controller.RunCommand(vm.RunExpressionCommand);
+
+            //var node1 = NodeFromCurrentSpace(vm, "75a16152-334d-49f1-af4b-82718b3c6dd1");
+            //dynAddition n = node1 as dynAddition;
+            //Assert.AreEqual(0.0, (n.OldValue as FScheme.Value.Number).Item);
+
+            Assert.AreEqual(4, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(3, controller.DynamoViewModel.CurrentSpace.Connectors.Count);
+
+        }
+
+        [Test]
+        public void Logic_Comparison_Test()
+        {
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string openPath = Path.Combine(directory, @"..\..\test\dynamo_elements_samples\working\trial\LogicComparisonTest.dyn");
+            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.OpenCommand, openPath));
+            controller.ProcessCommandQueue();
+
+            var vm = controller.DynamoViewModel;
+
+            // check an input value of Slider node
+            var node1 = NodeFromCurrentSpace(vm, "7ecd2ad1-830c-4610-a37e-426a40bc9cc4");
+            Assert.NotNull(node1);
+            Assert.IsAssignableFrom(typeof(dynDoubleSliderInput), node1);
+            Assert.AreEqual(9.0, ((dynDoubleSliderInput)node1).Value);
+
+            // run the expression
+            controller.RunCommand(vm.RunExpressionCommand);
+
+            // wait for the expression to complete
+            Thread.Sleep(500);
+
+            // check an input value of number node
+            var node2 = NodeFromCurrentSpace(vm, "33f2f9bb-2033-44f8-bf5f-abf1bf29778b");
+            Assert.AreEqual(9.0, ConvertToDouble(node2));
+            Assert.IsTrue(node2.IsVisible);
+
+            // check the output value of less than node.
+            var node3 = NodeFromCurrentSpace(vm, "2c8997c1-6e91-4072-bc12-8de9f1be68b1");
+            dynLessThan n = node3 as dynLessThan;
+            Assert.AreEqual(0.0, (n.OldValue as FScheme.Value.Number).Item);
+
+            // Check watch value for all operations
+            var watch = GetWatchNodeFromCurrentSpace(vm, "a0350fe2-ec68-4a39-820a-8594fc98a9cb");
+            var doubleWatchVal = GetDoubleFromFSchemeValue(watch.GetValue(0));
+            Assert.AreEqual(0.0, doubleWatchVal);
+
+            var watch1 = GetWatchNodeFromCurrentSpace(vm, "381f050e-bf88-447a-9197-aa7059ba3e25");
+            var doubleWatchVal1 = GetDoubleFromFSchemeValue(watch1.GetValue(0));
+            Assert.AreEqual(1.0, doubleWatchVal1);
+
+            var watch2 = GetWatchNodeFromCurrentSpace(vm, "b4b72295-7e3a-4257-a162-27313f8367ac");
+            var doubleWatchVal2 = GetDoubleFromFSchemeValue(watch2.GetValue(0));
+            Assert.AreEqual(0.0, doubleWatchVal2);
+
+            var watch3 = GetWatchNodeFromCurrentSpace(vm, "d7c2cdcd-7229-4327-8aa7-a6892dd01cd7");
+            var doubleWatchVal3 = GetDoubleFromFSchemeValue(watch3.GetValue(0));
+            Assert.AreEqual(1.0, doubleWatchVal3);
+
+            var watch4 = GetWatchNodeFromCurrentSpace(vm, "a3310e87-90ff-4ec9-95b8-96091434f905");
+            var doubleWatchVal4 = GetDoubleFromFSchemeValue(watch4.GetValue(0));
+            Assert.AreEqual(1.0, doubleWatchVal4);
+
+            // check number of nodes and connectors
+            Assert.AreEqual(12, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(15, controller.DynamoViewModel.CurrentSpace.Connectors.Count);
+
+        }
+
+        [Test]
+        public void AdditionTest()
+        {
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string openPath = Path.Combine(directory, @"..\..\test\dynamo_elements_samples\working\trial\AdditionTest.dyn");
+            controller.CommandQueue.Enqueue(Tuple.Create<object, object>(controller.DynamoViewModel.OpenCommand, openPath));
+            controller.ProcessCommandQueue();
+
+            var vm = controller.DynamoViewModel;
+            controller.RunCommand(vm.RunExpressionCommand);
+
+            // wait for the expression to complete
+            Thread.Sleep(500);
+
+            // check an input value of number node
+            var node1 = NodeFromCurrentSpace(vm, "9f330501-79c4-4ed6-b4b6-957775d8d3cc");
+            //dynDoubleInput n = node1 as dynDoubleInput;
+            //Assert.AreEqual(10.0, (n.OldValue as FScheme.Value.Number).Item);
+            //Another way of writing verification points...
+            Assert.AreEqual(10.0, ConvertToDouble(node1));
+            Assert.IsTrue(node1.IsVisible);
+
+            // check an input value of number node
+            var node2 = NodeFromCurrentSpace(vm, "a12cbcf0-6ffc-4bc4-ab15-44cdef2b3799");
+            dynDoubleInput n1 = node2 as dynDoubleInput;
+            Assert.AreEqual(20.0, (n1.OldValue as FScheme.Value.Number).Item);
+
+            // check the output value of Add node.
+            var node3 = NodeFromCurrentSpace(vm, "a897df66-c910-4dd2-9960-bdbbb787caf8");
+            //dynAddition n2 = node3 as dynAddition;
+            //Assert.AreEqual(30.0, (n2.OldValue as FScheme.Value.Number).Item);
+
+            Assert.AreEqual(30.0, ConvertToDouble(node3));
+            Assert.IsTrue(node3.IsVisible);
+
+            // check number of nodes and connectors
+            Assert.AreEqual(3, controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(2, controller.DynamoViewModel.CurrentSpace.Connectors.Count);
+
+        }
+
+#endif // Both "CommandQueue" and "ProcessCommandQueue" no longer available.
 
         //// CancelRunCommand
 
