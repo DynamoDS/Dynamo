@@ -187,8 +187,33 @@ namespace Dynamo.DSEngine
             return codegen.GenerateCode();
         }
 
-        public UnaryExpressionNode BuildUnaryExpression(AssociativeNode expression,
-                                                        UnaryOperator uop)
+        public static IntNode BuildIntNode(int value)
+        {
+            IntNode node = new IntNode();
+            node.value = value.ToString();
+            return node;
+        }
+
+        public static DoubleNode BuildDoubleNode(double value)
+        {
+            DoubleNode node = new DoubleNode();
+            node.value = value.ToString();
+            return node;
+        }
+
+        public static StringNode BuildStringNode(string str)
+        {
+            return new StringNode { value = str };
+        }
+
+        public static BooleanNode BuildBooleanNode(bool value)
+        {
+            string strValue = value ? "true" : "false";
+            return new BooleanNode { value = strValue };
+        }
+
+        public static UnaryExpressionNode BuildUnaryExpression(AssociativeNode expression,
+                                                               UnaryOperator uop)
         {
             UnaryExpressionNode node = new UnaryExpressionNode();
             node.Expression = expression;
@@ -196,9 +221,9 @@ namespace Dynamo.DSEngine
             return node;
         }
 
-        public BinaryExpressionNode BuildBinaryExpression(AssociativeNode lhs,
-                                                          AssociativeNode rhs,
-                                                          Operator op)
+        public static BinaryExpressionNode BuildBinaryExpression(AssociativeNode lhs,
+                                                                 AssociativeNode rhs,
+                                                                 Operator op)
         {
             BinaryExpressionNode node = new BinaryExpressionNode();
             node.LeftNode = lhs;
@@ -207,8 +232,8 @@ namespace Dynamo.DSEngine
             return node;
         }
 
-        public AssociativeNode BuildFunctionCall(string function, 
-                                                  List<AssociativeNode> arguments)
+        public static AssociativeNode BuildFunctionCall(string function, 
+                                                        List<AssociativeNode> arguments)
         {
             string[] dotcalls = function.Split('.');
             string functionName = dotcalls[dotcalls.Length - 1];
@@ -228,7 +253,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public IdentifierNode BuildIdentifier(string name)
+        public static IdentifierNode BuildIdentifier(string name)
         {
             IdentifierNode identifier = new IdentifierNode();
             identifier.Name = identifier.Value = name;
@@ -236,14 +261,14 @@ namespace Dynamo.DSEngine
             return identifier;
         }
 
-        public ExprListNode BuildExprList(List<AssociativeNode> nodes)
+        public static ExprListNode BuildExprList(List<AssociativeNode> nodes)
         {
             ExprListNode exprList = new ExprListNode();
             exprList.list = nodes;
             return exprList;
         }
 
-        public ExprListNode BuildExprList(List<string> exprs)
+        public static ExprListNode BuildExprList(List<string> exprs)
         {
             List<AssociativeNode> nodes = new List<AssociativeNode>();
             foreach (var item in exprs)
@@ -253,8 +278,8 @@ namespace Dynamo.DSEngine
             return BuildExprList(nodes);
         }
 
-        public BinaryExpressionNode BuildAssignment(AssociativeNode lhs, 
-                                                    AssociativeNode rhs)
+        public static BinaryExpressionNode BuildAssignment(AssociativeNode lhs, 
+                                                           AssociativeNode rhs)
         {
             BinaryExpressionNode assignment = new BinaryExpressionNode();
             assignment.LeftNode = lhs;
@@ -264,7 +289,7 @@ namespace Dynamo.DSEngine
             return assignment;
         }
 
-        protected VarDeclNode BuildParamNode(string paramName)
+        public static VarDeclNode BuildParamNode(string paramName)
         {
             VarDeclNode param = new VarDeclNode();
             param.NameNode = BuildIdentifier(paramName);
@@ -291,7 +316,7 @@ namespace Dynamo.DSEngine
         /// <param name="func"></param>
         /// </param>
         /// <returns></returns>
-        public FunctionDefinitionNode BuildPartialFunction(FunctionCallNode func)
+        public static FunctionDefinitionNode BuildPartialFunction(FunctionCallNode func)
         {
             List<VarDeclNode> partialArgs = new List<VarDeclNode>();
             int paramPostfix = 0;
@@ -341,7 +366,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="expr"></param>
         /// <returns></returns>
-        protected FunctionDefinitionNode BuildPartilFunctionForBinaryOp(BinaryExpressionNode expr)
+        public static FunctionDefinitionNode BuildPartilFunctionForBinaryOp(BinaryExpressionNode expr)
         {
             List<VarDeclNode> partialArgs = new List<VarDeclNode>();
             int paramPostfix = 0;
@@ -399,17 +424,19 @@ namespace Dynamo.DSEngine
         /// And create a function call to func_guid().
         /// 
         /// </summary>
+        /// <param name="bulder"></param>
         /// <param name="node"></param>
         /// <param name="inputAstNodes"></param>
         /// <returns></returns>
-        public FunctionCallNode BuildEvaluator(NodeModel node, 
-                                               List<AssociativeNode> inputAstNodes)
+        public static FunctionCallNode BuildEvaluator(AstBuilder builder,
+                                                      NodeModel node, 
+                                                      List<AssociativeNode> inputAstNodes)
         {
             // Here we'll create a function defintion which redirect 
             // DesignScript function call back to the node's own implementation 
             // of Evaluate().
             string evaluator = NamingUtil.NewUniqueName(StringConstants.kEvalFunctionPrefix);
-            this.evalContext.Add(evaluator, new NodeEvaluator(node));
+            builder.evalContext.Add(evaluator, new NodeEvaluator(node));
 
             List<VarDeclNode> arguments = new List<VarDeclNode>();
             for (int i = 0; i < inputAstNodes.Count; ++i)
@@ -449,7 +476,7 @@ namespace Dynamo.DSEngine
             evalFunc.Singnature = new ArgumentSignatureNode();
             evalFunc.Singnature.Arguments = arguments;
             evalFunc.FunctionBody = funcBody;
-            AddNode(node.GUID, evalFunc);
+            builder.AddNode(node.GUID, evalFunc);
 
             // Now make a call to this wrapper function
             return BuildFunctionCall(evalFunc.Name, inputAstNodes)  as FunctionCallNode;
