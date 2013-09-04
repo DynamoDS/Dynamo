@@ -16,7 +16,7 @@ namespace DynamoSandbox
 
             try
             {
-                DynamoView.Start();
+                DynamoView.MakeSandboxAndRun();
             }
             catch (Exception e)
             {
