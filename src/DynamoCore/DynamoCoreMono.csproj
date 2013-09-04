@@ -105,10 +105,10 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="nunit.core">
-      <HintPath>$(NunitPath)nunit.core.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>$(NunitPath)nunit.framework.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>

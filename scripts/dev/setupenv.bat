@@ -10,9 +10,9 @@ REM ############################################################################
 REM Begin Machine specific configurations
 
 set GIT_ROOT=%cd%\..\..
-set NunitPath=%GIT_ROOT%\extern\NUnit\
+set NunitPath=%GIT_ROOT%\extern\NUnit
 set OutputPath=%GIT_ROOT%\src\bin\%2\%OPT_CONFIGURATION%
-set REVITAPI=C:\Program Files\Autodesk\Revit Architecture 2014\
+set REVITAPI=C:\Program Files\Autodesk\Revit Architecture 2014
 
 REM End Machine specific configurations
 REM ################################################################################
