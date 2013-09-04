@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Threading;
+using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
@@ -313,7 +314,16 @@ namespace Dynamo
 
             //Mark the topmost as dirty/clean
             foreach (NodeModel topMost in topElements)
+            {
+                /*
+                AstBuilder builder = new AstBuilder();
+                topMost.CompileToAstNode(builder);
+                string sourceCode = builder.GenerateSourceCode();
+                Console.WriteLine(sourceCode);
+                */
+
                 topMost.MarkDirty();
+            }
 
             try
             {
