@@ -51,6 +51,14 @@ namespace Dynamo.Tests
             return doubleWatchVal;
         }
 
+        public static string getStringFromFSchemeValue(this FScheme.Value value)
+        {
+            string stringValue = string.Empty;
+            Assert.AreEqual(true, FSchemeInterop.Utils.Convert(value, ref stringValue));
+            return stringValue;
+        }
+
+
         public static FSharpList<FScheme.Value> GetListFromFSchemeValue(this FScheme.Value value)
         {
             FSharpList<FScheme.Value> listWatchVal = null;
