@@ -14,33 +14,10 @@ using String = System.String;
 
 namespace Dynamo.Tests
 {
-
-
     [TestFixture]
     class StringTests : DynamoUnitTest
     {
-        #region helping Methods
-
-        private string getStringFromFSchemeValue(FScheme.Value value)
-        {
-            string stringValue = string.Empty;
-            Assert.AreEqual(true, FSchemeInterop.Utils.Convert(value, ref stringValue));
-            return stringValue;
-        }
-
-        private new string GetTestDirectory()
-        {
-            return Path.Combine(base.GetTestDirectory(), "core", "string");
-        }
-
-
-        #endregion
-
-        #region Test Properties
-
-        string localDynamoStringTestFloder { get { return GetTestDirectory();}}
-
-        #endregion
+        string localDynamoStringTestFloder { get { return Path.Combine(GetTestDirectory(), "core", "string");}}
 
         #region concat string test cases
 
@@ -371,9 +348,9 @@ namespace Dynamo.Tests
             String expected3 = "tomorrow";
 
             FSharpList<FScheme.Value> splitedStrings = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(expected1, getStringFromFSchemeValue(splitedStrings[0]));
-            Assert.AreEqual(expected2, getStringFromFSchemeValue(splitedStrings[1]));
-            Assert.AreEqual(expected3, getStringFromFSchemeValue(splitedStrings[2]));
+            Assert.AreEqual(expected1, splitedStrings[0].getStringFromFSchemeValue());
+            Assert.AreEqual(expected2, splitedStrings[1].getStringFromFSchemeValue());
+            Assert.AreEqual(expected3, splitedStrings[2].getStringFromFSchemeValue());
         }
 
         [Test]
@@ -390,8 +367,8 @@ namespace Dynamo.Tests
             String expected2 = "2";
 
             FSharpList<FScheme.Value> splitedStrings = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(expected1, getStringFromFSchemeValue(splitedStrings[0]));
-            Assert.AreEqual(expected2, getStringFromFSchemeValue(splitedStrings[1]));
+            Assert.AreEqual(expected1, splitedStrings[0].getStringFromFSchemeValue());
+            Assert.AreEqual(expected2, splitedStrings[1].getStringFromFSchemeValue());
         }
 
         [Test]
@@ -421,8 +398,8 @@ namespace Dynamo.Tests
             String expected2 = "yesterday";
 
             FSharpList<FScheme.Value> splitedStrings = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(expected1, getStringFromFSchemeValue(splitedStrings[0]));
-            Assert.AreEqual(expected2, getStringFromFSchemeValue(splitedStrings[1]));
+            Assert.AreEqual(expected1, splitedStrings[0].getStringFromFSchemeValue());
+            Assert.AreEqual(expected2, splitedStrings[1].getStringFromFSchemeValue());
         }
 
         #endregion
@@ -670,8 +647,8 @@ namespace Dynamo.Tests
             var watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
             var watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("77a8c84b-b5bb-46f1-a550-7b3d5441c0a1");
 
-            String actual1 = getStringFromFSchemeValue(watch1.GetValue(0));
-            String actual2 = getStringFromFSchemeValue(watch2.GetValue(0));
+            String actual1 = watch1.GetValue(0).getStringFromFSchemeValue();
+            String actual2 = watch2.GetValue(0).getStringFromFSchemeValue();
             
             String expected1 = "RAINY DAY";
             String expected2 = "rainy day";
@@ -728,8 +705,8 @@ namespace Dynamo.Tests
 
             FSharpList<FScheme.Value> resultList = watch.GetValue(0).GetListFromFSchemeValue();
 
-            String actual1 = getStringFromFSchemeValue(resultList[0]);
-            String actual2 = getStringFromFSchemeValue(resultList[1]);
+            String actual1 = resultList[0].getStringFromFSchemeValue();
+            String actual2 = resultList[1].getStringFromFSchemeValue();
 
             String expected1 = "1\n";
             String expected2 = "2\n";
