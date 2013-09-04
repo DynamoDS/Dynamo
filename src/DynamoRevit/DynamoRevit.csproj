@@ -186,9 +186,6 @@
     </Compile>
     <Compile Include="Views\Partials.cs" />
     <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
-    <Compile Include="Views\DynamoRevitTestResultsView.xaml.cs">
-      <DependentUpon>DynamoRevitTestResultsView.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="NUnitResultTypes.xsd">
@@ -240,12 +237,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="addins\DynamoForVasari.addin" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Views\DynamoRevitTestResultsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

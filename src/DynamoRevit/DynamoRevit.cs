@@ -25,15 +25,10 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
-using System.Collections.ObjectModel;
-using System.Windows.Data;
-using System.Windows.Media;
 using System.Linq;
 using System.Windows.Threading;
 using System.Xml.Serialization;
 using Dynamo.NUnit.Tests;
-using Microsoft.Practices.Prism.ViewModel;
-
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
@@ -42,18 +37,14 @@ using Autodesk.Revit.UI;
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
-using Dynamo.UI.Commands;
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
 using Dynamo.FSchemeInterop;
 
-
 #if DEBUG
 using NUnit.Core;
 using NUnit.Core.Filters;
-using NUnit.Framework;
-using NUnit.Util;
 #endif
 
 namespace Dynamo.Applications
@@ -347,7 +338,6 @@ namespace Dynamo.Applications
     {
         private UIDocument m_doc;
         private UIApplication m_revit;
-        public DynamoRevitTestRunner Results{get;set;}
         private resultType testResult;
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
@@ -385,11 +375,6 @@ namespace Dynamo.Applications
                 //avoid threading issues when testing.
                 dynamoController.Testing = true;
 
-                //execute the tests
-                Results = new DynamoRevitTestRunner();
-                //var resultsView = new DynamoRevitTestResultsView();
-                //resultsView.DataContext = Results;
-
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
                 string assLocation = Assembly.GetExecutingAssembly().Location;
                 var fi = new FileInfo(assLocation);
@@ -424,8 +409,6 @@ namespace Dynamo.Applications
                 //        Results.Results.Add(new DynamoRevitTest(t as TestMethod));
                 //}
 
-                //resultsView.ShowDialog();
-
                 InitializeResults();
 
                 var cases = testResult.testsuite.results.Items.ToList();
@@ -438,10 +421,6 @@ namespace Dynamo.Applications
                     TestMethod t = FindTestByName(fixture, dataMap["dynamoTestName"]);
                     if (t != null)
                     {
-                        //var dynTest = new DynamoRevitTest(t as TestMethod);
-                        //dynTest.Run(null);
-                        //dynTest.Save();
-
                         TestFilter filter = new NameFilter(t.TestName);
                         var result = (t as TestMethod).Run(new TestListener(), filter);
 
@@ -488,7 +467,7 @@ namespace Dynamo.Applications
             //read the existing results and add to them
             string resultsDir = Path.GetDirectoryName(dynRevitSettings.Doc.Document.PathName);
             string resultPath = Path.Combine(resultsDir,
-                                              "DynamoTestResults.xml");
+                                              "DynamoRevitTestResults.xml");
 
             if (File.Exists(resultPath))
             {
@@ -521,7 +500,7 @@ namespace Dynamo.Applications
         {
             string resultsDir = Path.GetDirectoryName(dynRevitSettings.Doc.Document.PathName);
             string resultPath = Path.Combine(resultsDir,
-                                              "DynamoTestResults.xml");
+                                              "DynamoRevitTestResults.xml");
 
             //write to the file
             var x = new XmlSerializer(typeof(resultType));
@@ -582,129 +561,6 @@ namespace Dynamo.Applications
         }
     }
 
-    public delegate void TestStartedHandler(object sender, EventArgs e);
-
-    public delegate void TestCompletedHandler(object sender, EventArgs e);
-
-    /// <summary>
-    /// A wrapper to an NUnit test.
-    /// </summary>
-    public class DynamoRevitTest:NotificationObject
-    {
-        public event TestStartedHandler TestStarted;
-        protected virtual void OnTestStarted(EventArgs e)
-        {
-            if (TestStarted != null)
-                TestStarted(this, e);
-        }
-
-        public event TestCompletedHandler TestCompleted;
-        protected virtual void OnTestCompleted(EventArgs e)
-        {
-            if (TestCompleted != null)
-                TestCompleted(this, e);
-        }
-
-        DynamoRevitTestResultType _resultType;
-        private string _message;
-        private TestMethod _test;
-        private readonly RevitTestEventListener _listener;
-        private string _testName="";
-
-        [XmlIgnore]
-        public DelegateCommand RunCommand { get; set; }
-
-        public DynamoRevitTestResultType ResultType 
-        {
-            get { return _resultType; }
-            set
-            {
-                _resultType = value;
-                RaisePropertyChanged("ResultType");
-            }
-        }
-        
-        public string Message
-        {
-            get { return _message; }
-            set
-            {
-                _message = value;
-                RaisePropertyChanged("Message");
-            }
-        }
-
-        [XmlAttribute]
-        public string TestName
-        {
-            get { return _testName; }
-            set { _testName = value; }
-        }
-
-        [XmlIgnoreAttribute]
-        public TestMethod Test
-        {
-            get { return _test; } 
-            set { _test = value; }
-        }
-
-        public DynamoRevitTest()
-        {
-        }
-
-        public DynamoRevitTest(TestMethod test)
-        {
-            _test = test;
-            _listener = new RevitTestEventListener(this);
-            RunCommand = new DelegateCommand(Run, CanRun);
-            _resultType = DynamoRevitTestResultType.Unknown;
-            _testName = _test.TestName.Name;
-        }
-
-        public void Run(object parameter)
-        {
-            OnTestStarted(EventArgs.Empty);
-
-            Debug.WriteLine(string.Format("Running test {0}", _test.TestName));
-            try
-            {
-                TestName testName = _test.TestName;
-                TestFilter filter = new NameFilter(testName);
-                TestResult result = _test.Run(_listener, filter);
-                var summ = new ResultSummarizer(result);
-                Assert.AreEqual(1, summ.ResultCount);
-            }
-            catch (Exception e)
-            {
-                DynamoLogger.Instance.Log(e.Message);
-                DynamoLogger.Instance.Log(string.Format("Failed to run test : {0}", _test.TestName));
-            }
-
-            OnTestCompleted(EventArgs.Empty);
-        }
-
-        public bool CanRun(object parameter)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// Serialize the result of this test to a file.
-        /// Test results are saved in the same directory as the current model.
-        /// </summary>
-        public void Save(resultType testResult)
-        {
-            var x = new XmlSerializer(this.GetType());
-            string resultsDir = Path.GetDirectoryName(dynRevitSettings.Doc.Document.PathName);
-                string resultsPath = Path.Combine(resultsDir,
-                                                  string.Format("{0}_result.xml", this.TestName));
-            using (TextWriter tw = new StreamWriter(resultsPath))
-            {
-                x.Serialize(tw, this);
-            }
-        }
-    }
-
     public class TestListener : EventListener
     {
         public TestListener() { }
@@ -719,206 +575,7 @@ namespace Dynamo.Applications
         public void TestOutput(TestOutput testOutput) { }
     }
 
-    //http://sqa.stackexchange.com/questions/2880/nunit-global-error-method-event-for-handling-exceptions
-    /// <summary>
-    /// Listens for test events and logs information
-    /// </summary>
-    public class RevitTestEventListener : EventListener
-    {
-        readonly DynamoRevitTest _dynamoRevitTest;
-
-        public RevitTestEventListener(DynamoRevitTest test)
-        {
-            _dynamoRevitTest = test;
-        }
-        public void RunStarted(string name, int testCount) {}
-        public void RunFinished(TestResult result) { }
-        public void RunFinished(Exception exception) { }
-        public void TestStarted(TestName testName) 
-        {
-            DynamoLogger.Instance.Log(string.Format("Starting test {0}", testName.Name));
-        }
-        public void TestFinished(TestResult result) 
-        {
-            if (result.Executed && result.IsFailure)
-            {
-                DynamoLogger.Instance.Log(string.Format("Test FAILED : {0}", result.Message));
-                _dynamoRevitTest.ResultType = DynamoRevitTestResultType.Fail;
-            }
-            else if (result.Executed && result.IsSuccess)
-            {
-                DynamoLogger.Instance.Log("Test PASS");
-                _dynamoRevitTest.ResultType = DynamoRevitTestResultType.Pass;
-            }
-            else if (result.Executed && result.IsError)
-            {
-                DynamoLogger.Instance.Log("Test ERROR");
-                _dynamoRevitTest.ResultType = DynamoRevitTestResultType.Error;
-            }
-            else if (result.Executed && result.ResultState == ResultState.Inconclusive)
-            {
-                DynamoLogger.Instance.Log("Test INCONCLUSIVE");
-                _dynamoRevitTest.ResultType = DynamoRevitTestResultType.Inconclusive;
-            }
-            _dynamoRevitTest.Message = result.Message;
-        }
-        public void SuiteStarted(TestName testName) { }
-        public void SuiteFinished(TestResult result) { }
-        public void UnhandledException(Exception exception) 
-        {
-            DynamoLogger.Instance.Log(exception.Message);
-            _dynamoRevitTest.Message = exception.Message;
-        }
-        public void TestOutput(TestOutput testOutput) { }
-    }
-
-    public class DynamoRevitTestRunner:NotificationObject
-    {
-        ObservableCollection<DynamoRevitTest> _tests;
-
-        public ObservableCollection<DynamoRevitTest> Results
-        {
-            get { return _tests; }
-            set
-            {
-                _tests = value;
-            }
-        }
-        
-        public DelegateCommand RunAllCommand { get; set; }
-
-        public DelegateCommand SaveCommand { get; set; }
-
-        public Stopwatch Timer { get; set; }
-
-        public string TestSummary
-        {
-            get
-            {
-                var results = (IEnumerable<DynamoRevitTest>)Results;
-                var list = new List<DynamoRevitTest>(results);
-
-                int failCount = list.Count(x => x.ResultType == DynamoRevitTestResultType.Fail);
-                int passCount = list.Count(x => x.ResultType == DynamoRevitTestResultType.Pass);
-                int errorCount = list.Count(x => x.ResultType == DynamoRevitTestResultType.Error);
-                int exceptionCount = list.Count(x => x.ResultType == DynamoRevitTestResultType.Exception);
-                int runCount = list.Count(x => x.ResultType != DynamoRevitTestResultType.Unknown);
-
-                return (string.Format("{0} tests run. {1} passed. {2} failed. {3} exceptions. {4} total time ellapsed.",
-                    new object[] { runCount, passCount, failCount, exceptionCount, Timer.Elapsed.ToString() }));
-            }
-        }
-
-        public DynamoRevitTestRunner() 
-        {
-            _tests = new ObservableCollection<DynamoRevitTest>();
-            _tests.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_results_CollectionChanged);
-            Timer = new Stopwatch();
-            RunAllCommand = new DelegateCommand(RunAllTests, CanRunAllTests);
-            SaveCommand = new DelegateCommand(Save, CanSave);
-        }
-
-        void _results_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            foreach (DynamoRevitTest t in e.NewItems)
-            {
-                t.TestStarted += new TestStartedHandler(t_TestStarted);
-                t.TestCompleted += new TestCompletedHandler(t_TestCompleted);
-            }
-            RaisePropertyChanged("Results");
-        }
-
-        void t_TestStarted(object sender, EventArgs e)
-        {
-            if (!Timer.IsRunning)
-            {
-                Timer.Start();
-            }
-        }
-
-        void t_TestCompleted(object sender, EventArgs e)
-        {
-            Timer.Stop();
-            RaisePropertyChanged("TestSummary");
-        }
-
-        public void RunAllTests(object parameter)
-        {
-            Timer.Reset();
-
-            foreach (DynamoRevitTest t in _tests)
-            {
-                t.Run(null);
-                RaisePropertyChanged("TestSummary");
-            }
-
-            Save(null);
-        }
-
-        public bool CanRunAllTests(object parameter)
-        {
-            return true;
-        }
-
-        public void Save(object parameter)
-        {
-            try
-            {
-                //serialize the test results to a file
-                var x = new System.Xml.Serialization.XmlSerializer(Results.GetType());
-                string resultsDir = Path.GetDirectoryName(DynamoLogger.Instance.LogPath);
-                string resultsPath = Path.Combine(resultsDir,
-                                                  string.Format("dynamoRevitTests_{0}.xml", Guid.NewGuid().ToString()));
-                using (TextWriter tw = new StreamWriter(resultsPath))
-                {
-                    x.Serialize(tw, Results);
-                }
-            }
-            catch(Exception e)
-            {
-                Debug.WriteLine(e.Message);   
-            }
-        }
-
-        public bool CanSave(object parameter)
-        {
-            return true;
-        }
-    }
-
 #endif
-
-    public enum DynamoRevitTestResultType { Pass, Fail, Error, Exception, Unknown, Inconclusive }
-
-    public class ResultTypeToColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            DynamoRevitTestResultType resultType = (DynamoRevitTestResultType)value;
-            switch (resultType)
-            {
-                case DynamoRevitTestResultType.Pass:
-                    return new SolidColorBrush(System.Windows.Media.Color.FromRgb(0,255,0));
-                case DynamoRevitTestResultType.Fail:
-                    return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255,0,0));
-                case DynamoRevitTestResultType.Error:
-                    return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 160, 0));
-                case DynamoRevitTestResultType.Inconclusive:
-                    return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 160, 0));
-                case DynamoRevitTestResultType.Exception:
-                    return new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 0, 0));
-                case DynamoRevitTestResultType.Unknown:
-                    return new SolidColorBrush(Colors.LightGray);
-            }
-
-            return System.Drawing.Color.Gray;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return null;
-        }
-    }
 
     internal class WindowHandle : IWin32Window
     {
