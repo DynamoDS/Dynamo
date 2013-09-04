@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Resources;
@@ -30,6 +31,7 @@ using System.Windows.Media;
 using System.Linq;
 using System.Windows.Threading;
 using System.Xml.Serialization;
+using Dynamo.NUnit.Tests;
 using Microsoft.Practices.Prism.ViewModel;
 
 using Autodesk.Revit.Attributes;
@@ -346,6 +348,7 @@ namespace Dynamo.Applications
         private UIDocument m_doc;
         private UIApplication m_revit;
         public DynamoRevitTestRunner Results{get;set;}
+        private resultType testResult;
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
@@ -423,6 +426,10 @@ namespace Dynamo.Applications
 
                 //resultsView.ShowDialog();
 
+                InitializeResults();
+
+                var cases = testResult.testsuite.results.Items.ToList();
+
                 //for testing
                 //if the journal file contains data
                 bool canReadData = (0 < dataMap.Count) ? true : false;
@@ -431,21 +438,105 @@ namespace Dynamo.Applications
                     TestMethod t = FindTestByName(fixture, dataMap["dynamoTestName"]);
                     if (t != null)
                     {
-                        var dynTest = new DynamoRevitTest(t as TestMethod);
-                        dynTest.Run(null);
-                        dynTest.Save();
+                        //var dynTest = new DynamoRevitTest(t as TestMethod);
+                        //dynTest.Run(null);
+                        //dynTest.Save();
+
+                        TestFilter filter = new NameFilter(t.TestName);
+                        var result = (t as TestMethod).Run(new TestListener(), filter);
+
+                        var testCase = new testcaseType();
+                        testCase.name = t.TestName.Name;
+                        testCase.executed = result.Executed.ToString();
+                        testCase.success = result.IsSuccess.ToString();
+                        testCase.asserts = result.AssertCount.ToString(CultureInfo.InvariantCulture);
+                        testCase.time = result.Time.ToString(CultureInfo.InvariantCulture);
+
+                        if (result.IsFailure)
+                        {
+                            var fail = new failureType();
+                            fail.message = result.Message;
+                            fail.stacktrace = result.StackTrace;
+                            testCase.Item = fail;
+                        }
+
+                        cases.Add(testCase);
                     }
                 }
+
+                testResult.testsuite.results.Items = cases.ToArray();
+
+                SaveResults();
+
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine(ex.StackTrace);
                 return Result.Failed;
             }
 
             return Result.Succeeded;
         }
 
+        /// <summary>
+        /// Sets up an NUNit ResultsType object or deserializing and existing one.
+        /// </summary>
+        private void InitializeResults()
+        {
+            //read the existing results and add to them
+            string resultsDir = Path.GetDirectoryName(dynRevitSettings.Doc.Document.PathName);
+            string resultPath = Path.Combine(resultsDir,
+                                              "DynamoTestResults.xml");
+
+            if (File.Exists(resultPath))
+            {
+                //read from the file
+                var x = new XmlSerializer(typeof (resultType));
+                using (var sr = new StreamReader(resultPath))
+                {
+                    testResult = (resultType)x.Deserialize(sr);
+                }
+            }
+            else
+            {
+                //create one result to dump everything into
+                testResult = new resultType();
+                testResult.name = Assembly.GetExecutingAssembly().Location;
+
+                var suite = new testsuiteType();
+                suite.name = "DynamoRevitTests";
+                suite.description = "Dynamo tests on Revit.";
+                testResult.testsuite = suite;
+                testResult.testsuite.results = new resultsType();
+                testResult.testsuite.results.Items = new object[]{};
+            }
+        }
+
+        /// <summary>
+        /// Serializes the results to an NUnit compatible xml file.
+        /// </summary>
+        private void SaveResults()
+        {
+            string resultsDir = Path.GetDirectoryName(dynRevitSettings.Doc.Document.PathName);
+            string resultPath = Path.Combine(resultsDir,
+                                              "DynamoTestResults.xml");
+
+            //write to the file
+            var x = new XmlSerializer(typeof(resultType));
+            using (var tw = new StreamWriter(resultPath))
+            {
+                x.Serialize(tw, testResult);
+            }
+        }
+        
+        /// <summary>
+        /// Find an NUnit test fixture by name.
+        /// </summary>
+        /// <param name="fixture"></param>
+        /// <param name="suite"></param>
+        /// <param name="name"></param>
         private void FindFixtureByName(out TestFixture fixture, TestSuite suite, string name)
         {
             foreach (TestSuite innerSuite in suite.Tests)
@@ -468,7 +559,13 @@ namespace Dynamo.Applications
 
             fixture = null;
         }
-    
+        
+        /// <summary>
+        /// Find an NUnit test method within a given fixture by name.
+        /// </summary>
+        /// <param name="fixture"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         private TestMethod FindTestByName(TestFixture fixture, string name)
         {
             foreach (var t in fixture.Tests)
@@ -595,7 +692,7 @@ namespace Dynamo.Applications
         /// Serialize the result of this test to a file.
         /// Test results are saved in the same directory as the current model.
         /// </summary>
-        public void Save()
+        public void Save(resultType testResult)
         {
             var x = new XmlSerializer(this.GetType());
             string resultsDir = Path.GetDirectoryName(dynRevitSettings.Doc.Document.PathName);
@@ -606,6 +703,20 @@ namespace Dynamo.Applications
                 x.Serialize(tw, this);
             }
         }
+    }
+
+    public class TestListener : EventListener
+    {
+        public TestListener() { }
+        public void RunStarted(string name, int testCount) { }
+        public void RunFinished(TestResult result) { }
+        public void RunFinished(Exception exception) { }
+        public void TestStarted(TestName testName){}
+        public void TestFinished(TestResult result){}
+        public void SuiteStarted(TestName testName) { }
+        public void SuiteFinished(TestResult result) { }
+        public void UnhandledException(Exception exception){}
+        public void TestOutput(TestOutput testOutput) { }
     }
 
     //http://sqa.stackexchange.com/questions/2880/nunit-global-error-method-event-for-handling-exceptions
