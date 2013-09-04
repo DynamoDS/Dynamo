@@ -300,7 +300,7 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "CurrentSpace":
+                case "CurrentWorkspace":
                     RaisePropertyChanged("NodeVisibility");
                     break;
                     

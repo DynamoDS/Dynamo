@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"GetLowest","version":"0.1.2","description":"Gets the lowest value from a list","group":"CAAD_RWTH","keywords":["lowest","list"],"dependencies":[],"license":"MIT","contents":"Get Lowest - Gets the lowest value from a list","engine_version":"0.5.2.10107","engine_metadata":"","engine":"dynamo"}
