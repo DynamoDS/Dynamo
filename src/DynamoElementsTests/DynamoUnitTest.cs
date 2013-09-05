@@ -92,7 +92,7 @@ namespace Dynamo.Tests
         public string GetTestDirectory()
         {
             var directory = new DirectoryInfo(ExecutingDirectory);
-            return Path.Combine(directory.Parent.Parent.FullName, "test");
+            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
         }
 
         #endregion

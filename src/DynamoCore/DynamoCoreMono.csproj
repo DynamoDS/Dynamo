@@ -92,10 +92,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="FScheme">
-      <HintPath>..\..\bin\Debug\FScheme.dll</HintPath>
+      <HintPath>$(OutputPath)FScheme.dll</HintPath>
     </Reference>
     <Reference Include="FSchemeInterop">
-      <HintPath>..\..\bin\Debug\FSchemeInterop.dll</HintPath>
+      <HintPath>$(OutputPath)FSchemeInterop.dll</HintPath>
     </Reference>
     <Reference Include="Greg">
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
@@ -105,10 +105,10 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="nunit.core">
-      <HintPath>..\..\extern\NUnit\nunit.core.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>

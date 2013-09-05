@@ -1,0 +1,8 @@
+'
+Dim Jrn
+Set Jrn = CrsJournalScript
+Jrn.Command "StartupPage" , "Open this project , ID_FILE_MRU_FIRST"
+Jrn.Data "MRUFileName"  , "$file_name"
+Jrn.RibbonEvent "Execute external command:CustomCtrl_%CustomCtrl_%Add-Ins%Visual Programming%Test:Dynamo.Applications.DynamoRevitTester"
+Jrn.Data "APIStringStringMapJournalData"  , 1, "dynamoTestName", "$test_name"
+Jrn.Command "SystemMenu" , "Quit the application; prompts to save projects , ID_APP_EXIT"
