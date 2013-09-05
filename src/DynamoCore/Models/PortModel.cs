@@ -238,10 +238,13 @@ namespace Dynamo.Models
 
         protected override void DeserializeCore(XmlNode xmlNode)
         {
+<<<<<<< HEAD
             XmlElement element = xmlNode as XmlElement;
             XmlElementHelper helper = new XmlElementHelper(element);
             this.index = helper.ReadInteger("index");
             this._usingDefaultValue = helper.ReadBoolean("default");
+=======
+>>>>>>> 1. Introduced "Serialize/Deserialize" methods (and their protected virtual Core methods) to "ModelBase" class
         }
 
         #endregion

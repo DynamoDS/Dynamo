@@ -1860,11 +1860,14 @@ namespace Dynamo.Models
             return true;
         }
 
+<<<<<<< HEAD
         internal NodeModel GetNodeFromCurrentSpace(System.Guid guid)
         {
             return CurrentWorkspace.Nodes.First((x) => (x.GUID == guid));
         }
 
+=======
+>>>>>>> 1. Introduced "Serialize/Deserialize" methods (and their protected virtual Core methods) to "ModelBase" class
         #region Serialization/Deserialization Methods
 
         protected override XmlNode SerializeCore(XmlDocument xmlDocument)
