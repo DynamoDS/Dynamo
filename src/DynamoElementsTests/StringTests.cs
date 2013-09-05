@@ -14,30 +14,10 @@ using String = System.String;
 
 namespace Dynamo.Tests
 {
-
-
     [TestFixture]
     class StringTests : DynamoUnitTest
     {
-        #region helping Methods
-
-        private string getStringFromFSchemeValue(FScheme.Value value)
-        {
-            string stringValue = string.Empty;
-            Assert.AreEqual(true, FSchemeInterop.Utils.Convert(value, ref stringValue));
-            return stringValue;
-        }
-
-        private new string GetTestDirectory()
-        {
-            return Path.Combine(base.GetTestDirectory(), "core", "string");
-        }
-
-        #endregion
-
-        #region Test Properties
-
-        #endregion
+        string localDynamoStringTestFloder { get { return Path.Combine(GetTestDirectory(), "core", "string");}}
 
         #region concat string test cases
 
@@ -45,7 +25,7 @@ namespace Dynamo.Tests
         public void TestConcatStringNormalInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestConcatString_normal.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_normal.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -61,7 +41,7 @@ namespace Dynamo.Tests
         public void TestConcatStringEmptyInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestConcatString_emptyString.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_emptyString.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -77,7 +57,7 @@ namespace Dynamo.Tests
         public void TestConcatStringFileInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestConcatString_fromFile.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_fromFile.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -93,7 +73,7 @@ namespace Dynamo.Tests
         public void TestConcatStringFunctionInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestConcatString_fromFunction.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_fromFunction.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -109,7 +89,7 @@ namespace Dynamo.Tests
         public void TestConcatStringInvalidInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestConcatString_invalidInput.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_invalidInput.dyn");
 
             model.Open(testFilePath);
 
@@ -127,7 +107,7 @@ namespace Dynamo.Tests
         public void TestSubStringEmptyInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestSubstring_emptyString.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_emptyString.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -143,7 +123,7 @@ namespace Dynamo.Tests
         public void TestSubStringFileInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestSubstring_fromFile.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_fromFile.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -159,7 +139,7 @@ namespace Dynamo.Tests
         public void TestSubStringFunctionInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestSubstring_fromFunction.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_fromFunction.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -175,7 +155,7 @@ namespace Dynamo.Tests
         public void TestSubStringInvalidInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestSubstring_invalidInput.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_invalidInput.dyn");
 
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
@@ -188,7 +168,7 @@ namespace Dynamo.Tests
         public void TestSubStringNormalInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestSubstring_normal.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_normal.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -208,7 +188,7 @@ namespace Dynamo.Tests
         public void TestJoinStringEmptyInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestJoinString_emptyString.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_emptyString.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -224,7 +204,7 @@ namespace Dynamo.Tests
         public void TestJoinStringFileInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestJoinString_fromFile.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_fromFile.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -240,7 +220,7 @@ namespace Dynamo.Tests
         public void TestJoinStringInvalidInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestJoinString_invalidInput.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_invalidInput.dyn");
 
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
@@ -253,7 +233,7 @@ namespace Dynamo.Tests
         public void TestJoinStringNormalInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestJoinString_normal.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_normal.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -273,7 +253,7 @@ namespace Dynamo.Tests
         public void TestNumberToStringFunctionInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestNumberToString_fromFunction.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestNumberToString_fromFunction.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -289,7 +269,7 @@ namespace Dynamo.Tests
         public void TestNumberToStringInvalidInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestNumberToString_invalidInput.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestNumberToString_invalidInput.dyn");
 
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
@@ -302,7 +282,7 @@ namespace Dynamo.Tests
         public void TestNumberToStringNormalInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestNumberToString_normal.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestNumberToString_normal.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -341,7 +321,7 @@ namespace Dynamo.Tests
         public void TestSplitStringEmptyInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestSplitString_emptyString.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_emptyString.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -357,7 +337,7 @@ namespace Dynamo.Tests
         public void TestSplitStringFileInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestSplitString_fromFile.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_fromFile.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -368,16 +348,16 @@ namespace Dynamo.Tests
             String expected3 = "tomorrow";
 
             FSharpList<FScheme.Value> splitedStrings = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(expected1, getStringFromFSchemeValue(splitedStrings[0]));
-            Assert.AreEqual(expected2, getStringFromFSchemeValue(splitedStrings[1]));
-            Assert.AreEqual(expected3, getStringFromFSchemeValue(splitedStrings[2]));
+            Assert.AreEqual(expected1, splitedStrings[0].getStringFromFSchemeValue());
+            Assert.AreEqual(expected2, splitedStrings[1].getStringFromFSchemeValue());
+            Assert.AreEqual(expected3, splitedStrings[2].getStringFromFSchemeValue());
         }
 
         [Test]
         public void TestSplitStringFunctionInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestSplitString_fromFunction.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_fromFunction.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -387,15 +367,15 @@ namespace Dynamo.Tests
             String expected2 = "2";
 
             FSharpList<FScheme.Value> splitedStrings = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(expected1, getStringFromFSchemeValue(splitedStrings[0]));
-            Assert.AreEqual(expected2, getStringFromFSchemeValue(splitedStrings[1]));
+            Assert.AreEqual(expected1, splitedStrings[0].getStringFromFSchemeValue());
+            Assert.AreEqual(expected2, splitedStrings[1].getStringFromFSchemeValue());
         }
 
         [Test]
         public void TestSplitStringInvalidInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestSplitString_invalidInput.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_invalidInput.dyn");
 
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
@@ -408,7 +388,7 @@ namespace Dynamo.Tests
         public void TestSplitStringNormalInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestSplitString_normal.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_normal.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -418,8 +398,8 @@ namespace Dynamo.Tests
             String expected2 = "yesterday";
 
             FSharpList<FScheme.Value> splitedStrings = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(expected1, getStringFromFSchemeValue(splitedStrings[0]));
-            Assert.AreEqual(expected2, getStringFromFSchemeValue(splitedStrings[1]));
+            Assert.AreEqual(expected1, splitedStrings[0].getStringFromFSchemeValue());
+            Assert.AreEqual(expected2, splitedStrings[1].getStringFromFSchemeValue());
         }
 
         #endregion
@@ -430,7 +410,7 @@ namespace Dynamo.Tests
         public void TestStringLengthEmptyInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringLength_emptyString.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_emptyString.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -445,7 +425,7 @@ namespace Dynamo.Tests
         public void TestStringLengthFileInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringLength_fromFile.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_fromFile.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -461,7 +441,7 @@ namespace Dynamo.Tests
         public void TestStringLengthFunctionInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringLength_fromFunction.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_fromFunction.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -477,7 +457,7 @@ namespace Dynamo.Tests
         public void TestStringLengthInvalidInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringLength_invalidInput.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_invalidInput.dyn");
 
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
@@ -490,7 +470,7 @@ namespace Dynamo.Tests
         public void TestStringLengthNormalInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringLength_normal.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_normal.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -510,7 +490,7 @@ namespace Dynamo.Tests
         public void TestStringToNumberEmptyInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringToNumber_empltyString.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_empltyString.dyn");
 
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
@@ -523,7 +503,7 @@ namespace Dynamo.Tests
         public void TestStringToNumberFileInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringToNumber_fromFile.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_fromFile.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -538,7 +518,7 @@ namespace Dynamo.Tests
         public void TestStringToNumberFunctionInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringToNumber_fromFunction.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_fromFunction.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -553,7 +533,7 @@ namespace Dynamo.Tests
         public void TestStringToNumberInvalidInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringToNumber_invalidInput.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_invalidInput.dyn");
 
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
@@ -566,7 +546,7 @@ namespace Dynamo.Tests
         public void TestStringToNumberNormalInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringToNumber_normal.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_normal.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -599,7 +579,7 @@ namespace Dynamo.Tests
         public void TestStringCaseEmptyInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringCase_emptyString.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_emptyString.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -615,7 +595,7 @@ namespace Dynamo.Tests
         public void TestStringCaseFileInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringCase_fromFile.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_fromFile.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -631,7 +611,7 @@ namespace Dynamo.Tests
         public void TestStringCaseFunctionInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringCase_fromFunction.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_fromFunction.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -647,7 +627,7 @@ namespace Dynamo.Tests
         public void TestStringCaseInvalidInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringCase_invalidInput.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_invalidInput.dyn");
 
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
@@ -660,15 +640,15 @@ namespace Dynamo.Tests
         public void TestStringCaseNormalInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestStringCase_normal.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_normal.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
             var watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
             var watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("77a8c84b-b5bb-46f1-a550-7b3d5441c0a1");
 
-            String actual1 = getStringFromFSchemeValue(watch1.GetValue(0));
-            String actual2 = getStringFromFSchemeValue(watch2.GetValue(0));
+            String actual1 = watch1.GetValue(0).getStringFromFSchemeValue();
+            String actual2 = watch2.GetValue(0).getStringFromFSchemeValue();
             
             String expected1 = "RAINY DAY";
             String expected2 = "rainy day";
@@ -685,7 +665,7 @@ namespace Dynamo.Tests
         public void TestToStringEmptyInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestToString_emptyString.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestToString_emptyString.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -701,7 +681,7 @@ namespace Dynamo.Tests
         public void TestToStringFileInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestToString_fromFile.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestToString_fromFile.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -717,7 +697,7 @@ namespace Dynamo.Tests
         public void TestToStringFunctionInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestToString_fromFunction.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestToString_fromFunction.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -725,8 +705,8 @@ namespace Dynamo.Tests
 
             FSharpList<FScheme.Value> resultList = watch.GetValue(0).GetListFromFSchemeValue();
 
-            String actual1 = getStringFromFSchemeValue(resultList[0]);
-            String actual2 = getStringFromFSchemeValue(resultList[1]);
+            String actual1 = resultList[0].getStringFromFSchemeValue();
+            String actual2 = resultList[1].getStringFromFSchemeValue();
 
             String expected1 = "1\n";
             String expected2 = "2\n";
@@ -738,7 +718,7 @@ namespace Dynamo.Tests
         public void TestToStringNormalInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(GetTestDirectory(), "TestToString_normal.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestToString_normal.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
