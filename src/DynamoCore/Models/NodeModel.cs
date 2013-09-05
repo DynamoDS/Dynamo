@@ -1551,6 +1551,40 @@ namespace Dynamo.Models
             ValidateConnections();
             IsSelected = false;
         }
+
+        #endregion
+
+        #region Serialization/Deserialization Methods
+
+        protected override XmlNode SerializeCore(XmlDocument xmlDocument)
+        {
+            string typeName = this.GetType().ToString();
+            XmlElement element = xmlDocument.CreateElement(typeName);
+            XmlElementHelper helper = new XmlElementHelper(element);
+
+            // Set the type attribute
+            helper.SetAttribute("type", typeName);
+            helper.SetAttribute("guid", this.GUID);
+            helper.SetAttribute("nickname", this.NickName);
+            helper.SetAttribute("x", this.X);
+            helper.SetAttribute("y", this.Y);
+            helper.SetAttribute("isVisible", this.IsVisible);
+            helper.SetAttribute("isUpstreamVisible", this.IsUpstreamVisible);
+            helper.SetAttribute("lacing", this.ArgumentLacing.ToString());
+
+            foreach (var port in inPorts)
+            {
+                if (port.UsingDefaultValue)
+                    element.AppendChild(port.Serialize(xmlDocument));
+            }
+
+            return element; // Derived classes can choose to populate further.
+        }
+
+        protected override void DeserializeCore(XmlNode xmlNode)
+        {
+        }
+
         #endregion
     }
 
