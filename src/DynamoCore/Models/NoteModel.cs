@@ -39,14 +39,20 @@ namespace Dynamo.Models
         protected override void DeserializeCore(XmlNode xmlNode)
         {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 1. Implemented "DeserializeCore" method for ConnectorModel, NodeModel, NoteModel and PortModel
             XmlElement element = xmlNode as XmlElement;
             XmlElementHelper helper = new XmlElementHelper(element);
 
             this.Text = helper.ReadString("text", "New Note");
             this.X = helper.ReadDouble("x", 0.0);
             this.Y = helper.ReadDouble("y", 0.0);
+<<<<<<< HEAD
 =======
 >>>>>>> 1. Introduced "Serialize/Deserialize" methods (and their protected virtual Core methods) to "ModelBase" class
+=======
+>>>>>>> 1. Implemented "DeserializeCore" method for ConnectorModel, NodeModel, NoteModel and PortModel
         }
 
         #endregion
