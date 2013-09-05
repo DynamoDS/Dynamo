@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Dynamo.CS.props" />
+  </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -26,7 +29,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
@@ -36,7 +39,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\</OutputPath>
+    <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
@@ -83,17 +86,17 @@
       <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core">
-      <HintPath>..\..\extern\NUnit\nunit.core.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core.interfaces">
-      <HintPath>..\..\extern\NUnit\nunit.core.interfaces.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.core.interfaces.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="nunit.util">
-      <HintPath>..\..\extern\NUnit\nunit.util.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.util.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -106,11 +109,11 @@
       <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2014\RevitAPI.dll</HintPath>
+      <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2014\RevitAPIUI.dll</HintPath>
+      <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -162,6 +165,9 @@
     <Compile Include="Nodes\dynViews.cs" />
     <Compile Include="IdlePromise.cs" />
     <Compile Include="Nodes\Materials.cs" />
+    <Compile Include="NUnitResultTypes.cs">
+      <DependentUpon>NUnitResultTypes.xsd</DependentUpon>
+    </Compile>
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\dynParticle.cs" />
     <Compile Include="ParticleSystem\dynParticleSpring.cs" />
@@ -180,11 +186,11 @@
     </Compile>
     <Compile Include="Views\Partials.cs" />
     <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
-    <Compile Include="Views\DynamoRevitTestResultsView.xaml.cs">
-      <DependentUpon>DynamoRevitTestResultsView.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="NUnitResultTypes.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Resources\Nodes_32_32.png" />
   </ItemGroup>
   <ItemGroup>
@@ -231,12 +237,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="addins\DynamoForVasari.addin" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Views\DynamoRevitTestResultsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
