@@ -2,9 +2,11 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Serialization;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Dynamo.Models;
+using Dynamo.NUnit.Tests;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -53,11 +55,11 @@ namespace DynamoRevitTests
             //get the test path
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
-            string testsLoc = Path.Combine(assDir, @"..\..\test\revit\");
+            string testsLoc = Path.Combine(assDir, @"..\..\..\test\revit\");
             _testPath = Path.GetFullPath(testsLoc);
 
             //get the samples path
-            string samplesLoc = Path.Combine(assDir, @"..\..\doc\distrib\Samples\");
+            string samplesLoc = Path.Combine(assDir, @"..\..\..\doc\distrib\Samples\");
             _samplesPath = Path.GetFullPath(samplesLoc);
 
             //set the custom node loader search path
@@ -1358,6 +1360,34 @@ namespace DynamoRevitTests
 
                 _trans.Commit();
             }
+        }
+    }
+
+    [TestFixture]
+    internal class DynamoRevitUnitTests
+    {
+        [Test]
+        public void CanWriteNUnitStyleResults()
+        {
+            //read the existing results and add to them
+            var resultPath = Path.GetTempFileName();
+
+            //create one result to dump everything into
+            var result = new resultType();
+            result.name = Assembly.GetExecutingAssembly().Location;
+            result.total = 0;
+            result.failures = 0;
+            result.notrun = 0;
+            result.testsuite = new testsuiteType();
+
+            //write to the file
+            var x = new XmlSerializer(typeof(resultType));
+            using (var tw = new StreamWriter(resultPath))
+            {
+                x.Serialize(tw, result);
+            }
+
+            Assert.IsTrue(File.Exists(resultPath));
         }
     }
 }
