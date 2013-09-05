@@ -66,7 +66,9 @@ namespace Dynamo.Models
                 DispatchedToUI(this, e);
         }
 
+        // TODO(Ben): Move this up to ModelBase (it makes sense for connector as well).
         public WorkspaceModel WorkSpace;
+
         public ObservableCollection<PortData> InPortData { get; private set; }
         public ObservableCollection<PortData> OutPortData { get; private set; }
         readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
@@ -1583,6 +1585,45 @@ namespace Dynamo.Models
 
         protected override void DeserializeCore(XmlNode xmlNode)
         {
+            XmlElement element = xmlNode as XmlElement;
+            XmlElementHelper helper = new XmlElementHelper(element);
+
+            this.GUID = helper.ReadGuid("guid", Guid.NewGuid());
+
+            // Resolve node nick name.
+            string nickName = helper.ReadString("nickname", string.Empty);
+            if (!string.IsNullOrEmpty(nickName))
+                this.nickName = nickName;
+            else
+            {
+                System.Type type = this.GetType();
+                var attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), true);
+                NodeNameAttribute attrib = attribs[0] as NodeNameAttribute;
+                if (null != attrib)
+                    this.nickName = attrib.Name;
+            }
+
+            this.X = helper.ReadDouble("x", 0.0);
+            this.Y = helper.ReadDouble("y", 0.0);
+            this.isVisible = helper.ReadBoolean("isVisible", true);
+            this.isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
+            this.argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
+
+            // TODO(Ben): This needs validation...
+            inPorts.Clear();
+            foreach (XmlNode childNode in element.ChildNodes)
+            {
+                // TODO(Ben): We need another constructor that takes owner 
+                // since we are going to repopulate the internal data members 
+                // through ModelBase.Deserialize method.
+                // 
+                PortModel portModel = null; // new PortModel();
+                portModel.Deserialize(childNode);
+                inPorts.Add(portModel);
+            }
+
+            // TODO(Ben): We need to raise property change events 
+            // here for those data members we directly changed.
         }
 
         #endregion

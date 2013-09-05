@@ -174,15 +174,35 @@ namespace Dynamo.Models
             helper.SetAttribute("start_index", this.Start.Index);
             helper.SetAttribute("end", this.End.Owner.GUID);
             helper.SetAttribute("end_index", this.End.Index);
-
-            if (this.End.PortType == PortType.INPUT)
-                helper.SetAttribute("portType", "0");
+            helper.SetAttribute("portType", ((int) this.End.PortType));
 
             return connector;
         }
 
         protected override void DeserializeCore(XmlNode xmlNode)
         {
+            XmlElement element = xmlNode as XmlElement;
+            XmlElementHelper helper = new XmlElementHelper(element);
+
+            // Restore some information from the node attributes.
+            Guid startNodeId = helper.ReadGuid("start");
+            int startIndex = helper.ReadInteger("start_index");
+            Guid endNodeId = helper.ReadGuid("end");
+            int endIndex = helper.ReadInteger("end_index");
+            PortType portType = ((PortType)helper.ReadInteger("portType"));
+
+            // Get to the start and end nodes that this connector connects to.
+            DynamoModel dynamoModel = dynSettings.Controller.DynamoModel;
+            NodeModel startNode = dynamoModel.GetNodeFromCurrentSpace(startNodeId);
+            NodeModel endNode = dynamoModel.GetNodeFromCurrentSpace(endNodeId);
+
+            pStart = startNode.OutPorts[startIndex];
+            PortModel endPort = null;
+            if (portType == PortType.INPUT)
+                endPort = endNode.InPorts[endIndex];
+
+            pStart.Connect(this);
+            this.Connect(endPort);
         }
 
         #endregion
