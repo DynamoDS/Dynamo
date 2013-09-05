@@ -318,8 +318,7 @@ namespace Dynamo
                 /*
                 AstBuilder builder = new AstBuilder();
                 topMost.CompileToAstNode(builder);
-                string sourceCode = builder.GenerateSourceCode();
-                Console.WriteLine(sourceCode);
+                builder.Execute();
                 */
 
                 topMost.MarkDirty();
