@@ -1,0 +1,16 @@
+<dynWorkspace X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <dynElements>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="789c1592-b64c-4a97-8f1a-8cef3d0cc2d0" nickname="Watch" x="911.995147705078" y="338.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynEmpty type="Dynamo.Nodes.dynEmpty" guid="5b239946-a18e-42f7-a811-f315548cbcd1" nickname="Empty List" x="509.995147705078" y="339.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynFlattenListAmt type="Dynamo.Nodes.dynFlattenListAmt" guid="4cc4e5f0-4338-43bb-911e-d7c10ea2b53c" nickname="Flatten" x="707.995147705078" y="361.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="da9b5936-bd6a-433f-a813-97b60e5f3bb0" nickname="Number" x="519.995147705078" y="416.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.dynDoubleInput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="5b239946-a18e-42f7-a811-f315548cbcd1" start_index="0" end="4cc4e5f0-4338-43bb-911e-d7c10ea2b53c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="4cc4e5f0-4338-43bb-911e-d7c10ea2b53c" start_index="0" end="789c1592-b64c-4a97-8f1a-8cef3d0cc2d0" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="da9b5936-bd6a-433f-a813-97b60e5f3bb0" start_index="0" end="4cc4e5f0-4338-43bb-911e-d7c10ea2b53c" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>
