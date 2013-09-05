@@ -435,6 +435,9 @@ namespace Dynamo.Applications
                         var currAsserts = Convert.ToInt16(testResult.testsuite.asserts);
                         testResult.testsuite.asserts = (currAsserts + result.AssertCount).ToString();
 
+                        var currCount = Convert.ToInt16(testResult.total);
+                        testResult.total = (currCount + 1);
+
                         if (result.IsFailure)
                         {
                             var fail = new failureType();
@@ -496,7 +499,8 @@ namespace Dynamo.Applications
                 testResult.testsuite = suite;
                 testResult.testsuite.results = new resultsType();
                 testResult.testsuite.results.Items = new object[]{};
-
+                testResult.date = DateTime.Now.Date.ToString(CultureInfo.InvariantCulture);
+                testResult.time = DateTime.Now.TimeOfDay.ToString();
             }
         }
 
