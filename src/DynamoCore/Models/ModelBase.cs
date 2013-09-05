@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Xml;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -136,6 +137,24 @@ namespace Dynamo.Models
         {
             IsSelected = false;
         }
+
+        #region Serialization/Deserialization Methods
+
+        public XmlNode Serialize(XmlDocument xmlDocument)
+        {
+            return this.SerializeCore(xmlDocument);
+        }
+
+        public void Deserialize(XmlNode xmlNode)
+        {
+            this.DeserializeCore(xmlNode);
+        }
+
+        protected abstract XmlNode SerializeCore(XmlDocument xmlDocument);
+        protected abstract void DeserializeCore(XmlNode xmlNode);
+
+        #endregion
+
     }
 
     public interface ILocatable
