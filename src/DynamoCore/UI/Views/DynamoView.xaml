@@ -146,6 +146,15 @@
               Grid.ColumnSpan="3"
               Height="27">
 
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF6F6F6" Offset="0.25"/>
+                    <GradientStop Color="#FFEAE8E8" Offset="0.25"/>
+                    <GradientStop Color="#FFDCD9D9" Offset="0.8"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
