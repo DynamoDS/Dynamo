@@ -8,10 +8,15 @@ using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Microsoft.FSharp.Collections;
+using ProtoCore;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using ProtoCore.DSASM.Mirror;
+using ProtoCore.Lang;
 using ProtoCore.Utils;
+using ProtoFFI;
+using ProtoScript.Runners;
 
 namespace Dynamo.DSEngine
 {
@@ -107,6 +112,11 @@ namespace Dynamo.DSEngine
             return listNode.Value;
         }
 
+        public List<Key> GetKeys()
+        {
+            return new List<Key>(map.Keys);
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return list.GetEnumerator();
@@ -172,11 +182,10 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Generate DesignScript source code from AST nodes that have been 
-        /// generated.
+        /// Dump DesignScript code from AST nodes. 
         /// </summary>
         /// <returns></returns>
-        public string GenerateSourceCode()
+        public string DumpCode()
         {
             List<AssociativeNode> allAstNodes = new List<AssociativeNode>();
             foreach (var item in astNodes)
@@ -185,6 +194,37 @@ namespace Dynamo.DSEngine
             }
             ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(allAstNodes);
             return codegen.GenerateCode();
+        }
+
+        public void Execute()
+        {
+            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
+            ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
+            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
+            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
+            core.Options.Verbose = true;
+            core.RuntimeStatus.MessageHandler = new ConsoleOutputStream(); 
+            DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
+            DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
+            CLRModuleType.ClearTypes();
+
+            List<AssociativeNode> allAstNodes = new List<AssociativeNode>();
+            foreach (var item in astNodes)
+            {
+                allAstNodes.AddRange(item);
+            }
+            ExecutionMirror mirror = runner.Execute(allAstNodes, core);
+
+            DynamoLogger logger = DynamoLogger.Instance;
+            List<Guid> keys = astNodes.GetKeys();
+            foreach (var guid in keys)
+            {
+                string varname = StringConstants.kVarPrefix + guid.ToString().Replace("-", string.Empty);
+                Obj o = mirror.GetValue(varname);
+                string value = mirror.GetStringValue(o.DsasmValue, core.Heap, 0, true);
+                logger.Log(varname + "=" + value);
+            }
         }
 
         public static IntNode BuildIntNode(int value)
