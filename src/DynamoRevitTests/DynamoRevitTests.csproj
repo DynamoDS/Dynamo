@@ -63,6 +63,11 @@
     </Reference>
     <Reference Include="RevitAPIUI">
       <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
+      <HintPath>..\..\..\..\Users\t_phuot\Desktop\RevitAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>..\..\..\..\Users\t_phuot\Desktop\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
