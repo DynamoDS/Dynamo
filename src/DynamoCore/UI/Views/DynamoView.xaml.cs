@@ -382,16 +382,19 @@ namespace Dynamo.Controls
             e.Success = true;
         }
 
-        private void WindowClosing(object sender, CancelEventArgs  e)
+        private void WindowClosing(object sender, CancelEventArgs e)
         {
             if (_vm.exitInvoked)
                 return;
 
             var res = _vm.AskUserToSaveWorkspacesOrCancel();
             if (!res)
+            {
                 e.Cancel = true;
+                return;
+            }
 
-
+            dynSettings.Controller.ShutDown();
         }
 
         private void WindowClosed(object sender, EventArgs e)
