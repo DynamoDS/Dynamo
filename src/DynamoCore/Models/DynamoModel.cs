@@ -1860,6 +1860,11 @@ namespace Dynamo.Models
             return true;
         }
 
+        internal NodeModel GetNodeFromCurrentSpace(System.Guid guid)
+        {
+            return CurrentWorkspace.Nodes.First((x) => (x.GUID == guid));
+        }
+
         #region Serialization/Deserialization Methods
 
         protected override XmlNode SerializeCore(XmlDocument xmlDocument)
