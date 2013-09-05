@@ -217,14 +217,17 @@ namespace Dynamo.Controls
             if (result == MessageBoxResult.Yes)
             {
                 _vm.ShowSaveDialogIfNeededAndSave(e.Workspace);
+                e.Success = true;
             }
             else if (result == MessageBoxResult.Cancel)
             {
                 //return false;
                 e.Success = false;
             }
-            //return true;
-            e.Success = true;
+            else
+            {
+                e.Success = true;
+            }
         }
 
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
