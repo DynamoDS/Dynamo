@@ -27,6 +27,7 @@ using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Linq;
 using System.Windows.Threading;
+using System.Xml;
 using System.Xml.Serialization;
 using Dynamo.NUnit.Tests;
 using Autodesk.Revit.Attributes;
@@ -544,10 +545,11 @@ namespace Dynamo.Applications
 
             //write to the file
             var x = new XmlSerializer(typeof(resultType));
-            var ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
-            using (var tw = new StreamWriter(resultPath))
+            using (var tw = XmlWriter.Create(resultPath, new XmlWriterSettings(){Indent = true}))
             {
+                tw.WriteComment("This file represents the results of running a test suite");
+                var ns = new XmlSerializerNamespaces();
+                ns.Add("", "");
                 x.Serialize(tw, testResult, ns);
             }
         }
