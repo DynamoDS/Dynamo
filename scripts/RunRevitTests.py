@@ -80,9 +80,10 @@ def main():
 	# copy the results file to the build directory
 	# and delete the original
 	print 'copy the results file...'
-	build_dir = os.path.abspath("../../bin/AnyCPU/Debug")
+	# final_dir = os.path.abspath("../../bin/AnyCPU/Debug")
+	final_dir = os.path.abspath("../../")
 	results_start = glob.glob("DynamoRevitTestResults.xml")[0]
-	result_final = os.path.join(build_dir, os.path.basename(results_start))
+	result_final = os.path.join(final_dir, os.path.basename(results_start))
 
 	if os.path.exists(result_final):
 		os.remove(result_final)
