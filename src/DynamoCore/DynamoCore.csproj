@@ -84,6 +84,10 @@ limitations under the License.
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Windows.Shell, Version=3.0.50506.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\Microsoft.Windows.Shell\Microsoft.Windows.Shell.dll</HintPath>
+    </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>
     </Reference>
@@ -162,7 +166,11 @@ limitations under the License.
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\NoteModel.cs" />
     <Compile Include="Models\PortModel.cs" />
+    <Compile Include="UI\Controls\TitleBarButtons.xaml.cs">
+      <DependentUpon>TitleBarButtons.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\dynTextBox.cs" />
+    <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\WatchViewModel.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
@@ -369,6 +377,14 @@ limitations under the License.
     <Resource Include="UI\Images\search_24.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Controls\StyleDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Controls\TitleBarButtons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Prompts\CrashPrompt.xaml">
     </Page>
     <Page Include="UI\Views\InstalledPackagesView.xaml">
@@ -456,6 +472,61 @@ limitations under the License.
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\closetab_hover.png" />
+    <Resource Include="UI\Images\closetab_normal.png" />
+    <Resource Include="UI\Images\closewindow_hover.png" />
+    <Resource Include="UI\Images\closewindow_normal.png" />
+    <Resource Include="UI\Images\collapsestate_hover.png" />
+    <Resource Include="UI\Images\collapsestate_normal.png" />
+    <Resource Include="UI\Images\expandstate_hover.png" />
+    <Resource Include="UI\Images\expandstate_normal.png" />
+    <Resource Include="UI\Images\fitview_disabled.png" />
+    <Resource Include="UI\Images\fitview_hover.png" />
+    <Resource Include="UI\Images\fitview_normal.png" />
+    <Resource Include="UI\Images\librarycollapse_hover.png" />
+    <Resource Include="UI\Images\librarycollapse_normal.png" />
+    <Resource Include="UI\Images\maximizewindow_hover.png" />
+    <Resource Include="UI\Images\maximizewindow_normal.png" />
+    <Resource Include="UI\Images\minimizewindow_hover.png" />
+    <Resource Include="UI\Images\minimizewindow_normal.png" />
+    <Resource Include="UI\Images\new_disabled.png" />
+    <Resource Include="UI\Images\new_hover.png" />
+    <Resource Include="UI\Images\new_normal.png" />
+    <Resource Include="UI\Images\open_disabled.png" />
+    <Resource Include="UI\Images\open_hover.png" />
+    <Resource Include="UI\Images\open_normal.png" />
+    <Resource Include="UI\Images\pause_disabled.png" />
+    <Resource Include="UI\Images\pause_hover.png" />
+    <Resource Include="UI\Images\pause_normal.png" />
+    <Resource Include="UI\Images\redo_disabled.png" />
+    <Resource Include="UI\Images\redo_hover.png" />
+    <Resource Include="UI\Images\redo_normal.png" />
+    <Resource Include="UI\Images\restorewindow_hover.png" />
+    <Resource Include="UI\Images\restorewindow_normal.png" />
+    <Resource Include="UI\Images\run_disabled.png" />
+    <Resource Include="UI\Images\run_hover.png" />
+    <Resource Include="UI\Images\run_normal.png" />
+    <Resource Include="UI\Images\save_disabled.png" />
+    <Resource Include="UI\Images\save_hover.png" />
+    <Resource Include="UI\Images\save_normal.png" />
+    <Resource Include="UI\Images\searchcancel_hover.png" />
+    <Resource Include="UI\Images\searchcancel_normal.png" />
+    <Resource Include="UI\Images\search_hover.png" />
+    <Resource Include="UI\Images\search_normal.png" />
+    <Resource Include="UI\Images\sendfeedback_disabled.png" />
+    <Resource Include="UI\Images\sendfeedback_hover.png" />
+    <Resource Include="UI\Images\sendfeedback_normal.png" />
+    <Resource Include="UI\Images\undo_disabled.png" />
+    <Resource Include="UI\Images\undo_hover.png" />
+    <Resource Include="UI\Images\undo_normal.png" />
+    <Resource Include="UI\Images\zoomin_disabled.png" />
+    <Resource Include="UI\Images\zoomin_hover.png" />
+    <Resource Include="UI\Images\zoomin_normal.png" />
+    <Resource Include="UI\Images\zoomout_disabled.png" />
+    <Resource Include="UI\Images\zoomout_hover.png" />
+    <Resource Include="UI\Images\zoomout_normal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
