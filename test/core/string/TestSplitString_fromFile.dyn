@@ -6,7 +6,7 @@
       <System.String value="." />
     </Dynamo.Nodes.dynStringInput>
     <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="f0b48a0a-7005-4abf-b022-ab0e449a1f57" nickname="File Path" x="52" y="188.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="..\..\test\core\string\TestSplitString_fromFile.txt" />
+      <System.String value="..\..\..\test\core\string\TestSplitString_fromFile.txt" />
     </Dynamo.Nodes.dynStringFilename>
     <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="1e22484d-225d-461f-9eca-e32eac2bf159" nickname="Read Text File" x="310" y="230.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </dynElements>
