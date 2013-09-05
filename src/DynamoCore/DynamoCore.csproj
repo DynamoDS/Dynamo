@@ -170,6 +170,7 @@ limitations under the License.
       <DependentUpon>TitleBarButtons.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\dynTextBox.cs" />
+    <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\WatchViewModel.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />

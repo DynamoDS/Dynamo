@@ -72,6 +72,7 @@
     <Compile Include="TestExtensions.cs" />
     <Compile Include="UnitsOfMeasureTests.cs" />
     <Compile Include="UtilityTests.cs" />
+    <Compile Include="XmlHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
