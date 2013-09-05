@@ -18,7 +18,7 @@ namespace Dynamo.Tests
         public void TestExcel()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TestExcelGetDataWorksheet.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TestExcelGetDataWorksheet.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -41,7 +41,7 @@ namespace Dynamo.Tests
         public void TestCombineNode_ListNumberRange()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TestCombineNode_ListNumberRange.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TestCombineNode_ListNumberRange.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -85,7 +85,7 @@ namespace Dynamo.Tests
         public void TestCombineNode_EdgeCase()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\CombineNode_EdgeCase.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\CombineNode_EdgeCase.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -111,7 +111,7 @@ namespace Dynamo.Tests
         public void TestTrueForAny()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TrueForAny.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TrueForAny.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -131,7 +131,7 @@ namespace Dynamo.Tests
         public void TestTrueForAll()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TrueForAll.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TrueForAll.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -151,7 +151,7 @@ namespace Dynamo.Tests
         public void TestSplitList()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\SplitList_NumberSequence.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_NumberSequence.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -173,7 +173,7 @@ namespace Dynamo.Tests
         public void TestAddToList()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TestAddToList.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TestAddToList.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -201,7 +201,7 @@ namespace Dynamo.Tests
         public void TestTakeFromList()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TestTakeFromList.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TestTakeFromList.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -229,7 +229,7 @@ namespace Dynamo.Tests
         public void TestDropFromList()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TestDropFromList.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TestDropFromList.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -257,7 +257,7 @@ namespace Dynamo.Tests
         public void TestShiftIndeces()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TestShiftIndeces.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TestShiftIndeces.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -291,7 +291,7 @@ namespace Dynamo.Tests
         public void TestGetFromList()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TestGetFromList.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TestGetFromList.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -317,7 +317,7 @@ namespace Dynamo.Tests
         public void TestRemoveFromList()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TestRemoveFromList.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TestRemoveFromList.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -344,7 +344,7 @@ namespace Dynamo.Tests
         public void TestDropEveryNth()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TestDropEveryNth.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TestDropEveryNth.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -373,7 +373,7 @@ namespace Dynamo.Tests
         public void TestTakeEveryNth()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TestTakeEveryNth.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TestTakeEveryNth.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -400,7 +400,7 @@ namespace Dynamo.Tests
         public void TestIsEmptyList()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TestEmpty.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TestEmpty.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
@@ -426,7 +426,7 @@ namespace Dynamo.Tests
         public void TestSplitList_edge()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string openPath = Path.Combine(@"C:\Users\t_phuot\Desktop\DynamoTestCases\TestSplitList.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TestSplitList.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.RunExpression(null);
