@@ -1859,6 +1859,26 @@ namespace Dynamo.Models
         {
             return true;
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override XmlNode SerializeCore(XmlDocument xmlDocument)
+        {
+            // I don't think anyone is serializing/deserializing DynamoModel 
+            // directly. If that is not the case, please let me know and I'll 
+            // fix it.
+            throw new NotImplementedException();
+        }
+
+        protected override void DeserializeCore(XmlNode xmlNode)
+        {
+            // I don't think anyone is serializing/deserializing DynamoModel 
+            // directly. If that is not the case, please let me know and I'll 
+            // fix it.
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 
     public class PointEventArgs : EventArgs

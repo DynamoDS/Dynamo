@@ -14,6 +14,8 @@
 
 using System;
 using System.Diagnostics;
+using System.Xml;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -160,6 +162,30 @@ namespace Dynamo.Models
             }
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override XmlNode SerializeCore(XmlDocument xmlDocument)
+        {
+            string elementName = this.GetType().ToString();
+            XmlElement connector = xmlDocument.CreateElement(elementName);
+            XmlElementHelper helper = new XmlElementHelper(connector);
+
+            helper.SetAttribute("start", this.Start.Owner.GUID);
+            helper.SetAttribute("start_index", this.Start.Index);
+            helper.SetAttribute("end", this.End.Owner.GUID);
+            helper.SetAttribute("end_index", this.End.Index);
+
+            if (this.End.PortType == PortType.INPUT)
+                helper.SetAttribute("portType", "0");
+
+            return connector;
+        }
+
+        protected override void DeserializeCore(XmlNode xmlNode)
+        {
+        }
+
+        #endregion
     }
 
     public class InvalidPortException : ApplicationException
