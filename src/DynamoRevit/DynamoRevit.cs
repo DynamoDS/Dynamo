@@ -515,6 +515,7 @@ namespace Dynamo.Applications
                 suite.time = "0.0";
                 suite.type = "TestFixture";
                 suite.result = "Success";
+                suite.executed = "True";
 
                 testResult.testsuite = suite;
                 testResult.testsuite.results = new resultsType();
