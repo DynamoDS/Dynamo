@@ -17,27 +17,7 @@ namespace Dynamo.Tests
     [TestFixture]
     class StringTests : DynamoUnitTest
     {
-        #region helping Methods
-
-        private string getStringFromFSchemeValue(FScheme.Value value)
-        {
-            string stringValue = string.Empty;
-            Assert.AreEqual(true, FSchemeInterop.Utils.Convert(value, ref stringValue));
-            return stringValue;
-        }
-
-        private new string GetTestDirectory()
-        {
-            return Path.Combine(base.GetTestDirectory(), "core", "string");
-        }
-
-        #endregion
-
-        #region Test Properties
-
         string localDynamoStringTestFloder { get { return Path.Combine(GetTestDirectory(), "core", "string");}}
-
-        #endregion
 
         #region concat string test cases
 

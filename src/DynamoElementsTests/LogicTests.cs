@@ -106,7 +106,7 @@ namespace Dynamo.Tests
         public void testEqualStringInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(logicTestFolder, "testEqualNumberInput.dyn");
+            string testFilePath = Path.Combine(logicTestFolder, "testEqualStringInput.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -120,7 +120,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult1, actualResult1);
             Assert.AreEqual(expectedResult2, actualResult2);
         }
-
 
         [Test]
         public void testGreaterThanInvalidInput()
@@ -276,9 +275,9 @@ namespace Dynamo.Tests
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
-            Watch watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("fd0fc05c-299c-48f6-9aba-42f2448c72ee");
-            Watch watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("e3bd792e-5f7d-4326-b10f-6096c7092d79");
-            Watch watch3 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("84ea405b-4f66-4b7f-9054-74cc7f686adb");
+            Watch watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("05e8d59e-e183-4c20-a37f-03b6e97e465a");
+            Watch watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("8e37eefc-8555-417c-a2af-bf75e6d986db");
+            Watch watch3 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("90bb3906-b6fe-4be5-b3cb-a97d92409a70");
 
             double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
             double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
@@ -290,5 +289,28 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult2, actualResult2);
             Assert.AreEqual(expectedResult3, actualResult3);
         }
+
+        //[Test]
+        //public void testAndNumberInput()
+        //{
+        //    DynamoModel model = Controller.DynamoModel;
+        //    string testFilePath = Path.Combine(logicTestFolder, "testAndNumberInput.dyn");
+
+        //    model.Open(testFilePath);
+        //    dynSettings.Controller.RunExpression(null);
+        //    Watch watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("49723f58-2a48-4cf8-815d-899bf3691938");
+        //    Watch watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("cfd23808-b7da-46f5-acb7-ffe9bd80da53");
+        //    Watch watch3 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("0643bd3b-8d20-4300-aa96-1c1789b90303");
+
+        //    double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
+        //    double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
+        //    double actualResult3 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
+        //    double expectedResult1 = 1;
+        //    double expectedResult2 = 1;
+        //    double expectedResult3 = 0;
+        //    Assert.AreEqual(expectedResult1, actualResult1);
+        //    Assert.AreEqual(expectedResult2, actualResult2);
+        //    Assert.AreEqual(expectedResult3, actualResult3);
+        //}
     }
 }
