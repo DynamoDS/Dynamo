@@ -53,8 +53,6 @@ namespace Dynamo
             //allow the showing of elements in context
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
-
-            
         }
 
         /// <summary>
@@ -81,8 +79,7 @@ namespace Dynamo
         /// </summary>
         /// <returns>The SSONet assembly</returns>
         public Assembly LoadSSONet()
-        {            
-
+        {
             // get the location of RevitAPI assembly.  SSONet is in the same directory.
             var revitAPIAss = Assembly.GetAssembly(typeof(Autodesk.Revit.DB.XYZ)); // any type loaded from RevitAPI
             var revitAPIDir = Path.GetDirectoryName(revitAPIAss.Location);
@@ -514,6 +511,12 @@ namespace Dynamo
             }
             else
                 cleanup();
+        }
+
+        public override void ShutDown()
+        {
+            base.ShutDown();
+            Updater.UnRegisterAllChangeHooks();
         }
 
         protected override void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)

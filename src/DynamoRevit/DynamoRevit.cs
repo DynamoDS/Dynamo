@@ -54,7 +54,7 @@ namespace Dynamo.Applications
     public class DynamoRevitApp : IExternalApplication
     {
         private static readonly string m_AssemblyName = Assembly.GetExecutingAssembly().Location;
-        public static DynamoUpdater updater;
+        public static DynamoUpdater Updater;
         private static ResourceManager res;
         public static ExecutionEnvironment env;
 
@@ -98,9 +98,9 @@ namespace Dynamo.Applications
 
                 IdlePromise.RegisterIdle(application);
 
-                updater = new DynamoUpdater(application.ActiveAddInId, application.ControlledApplication);
-                if (!UpdaterRegistry.IsUpdaterRegistered(updater.GetUpdaterId()))
-                    UpdaterRegistry.RegisterUpdater(updater);
+                Updater = new DynamoUpdater(application.ActiveAddInId, application.ControlledApplication);
+                if (!UpdaterRegistry.IsUpdaterRegistered(Updater.GetUpdaterId()))
+                    UpdaterRegistry.RegisterUpdater(Updater);
 
                 var SpatialFieldFilter = new ElementClassFilter(typeof (SpatialFieldManager));
                 var familyFilter = new ElementClassFilter(typeof (FamilyInstance));
@@ -117,9 +117,9 @@ namespace Dynamo.Applications
 
                 ElementFilter filter = new LogicalOrFilter(filterList);
 
-                UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
-                UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
-                UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
+                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
+                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
+                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
 
                 env = new ExecutionEnvironment();
                 //EnsureApplicationResources();
@@ -135,7 +135,7 @@ namespace Dynamo.Applications
 
         public Result OnShutdown(UIControlledApplication application)
         {
-            UpdaterRegistry.UnregisterUpdater(updater.GetUpdaterId());
+            UpdaterRegistry.UnregisterUpdater(Updater.GetUpdaterId());
 
             //if(Application.Current != null)
             //    Application.Current.Shutdown();
@@ -211,7 +211,7 @@ namespace Dynamo.Applications
                         if (context == "Vasari")
                             context = "Vasari 2014";
 
-                        dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
+                        dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
                         
 
                         dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
@@ -369,7 +369,7 @@ namespace Dynamo.Applications
                 Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
                 string context = r.Replace(m_revit.Application.VersionName, "");
 
-                var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
+                var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
 
                 //flag to run evalauation synchronously, helps to 
                 //avoid threading issues when testing.

@@ -929,6 +929,8 @@ namespace Dynamo.ViewModels
             //request the UI to close its window
             OnRequestClose(this, EventArgs.Empty);
 
+            dynSettings.Controller.ShutDown();
+
             DynamoLogger.Instance.FinishLogging();
         }
 
