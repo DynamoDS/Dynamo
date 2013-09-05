@@ -1,0 +1,13 @@
+'
+Dim Jrn
+Set Jrn = CrsJournalScript
+
+name = "ENTER_FILE_NAME_HERE.rfa"
+short_name = Left(Left(name,Len(name)-4),10)
+
+
+Jrn.Command "StartupPage" , "Open this project , ID_FILE_MRU_FIRST"
+Jrn.Data "MRUFileName"  , name
+Jrn.RibbonEvent "Execute external command:CustomCtrl_%CustomCtrl_%Add-Ins%Visual Programming%Test:Dynamo.Applications.DynamoRevitTester"
+Jrn.Data "APIStringStringMapJournalData"  , 1, "dynamoTestName", short_name
+Jrn.Command "SystemMenu" , "Quit the application; prompts to save projects , ID_APP_EXIT"
