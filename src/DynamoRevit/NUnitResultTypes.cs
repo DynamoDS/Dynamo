@@ -222,6 +222,8 @@ namespace Dynamo.NUnit.Tests {
 
         private string resultField;
 
+        private string executedField;
+
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayItemAttribute("category", IsNullable=false)]
         public categoryType[] categories {
@@ -323,6 +325,20 @@ namespace Dynamo.NUnit.Tests {
             set
             {
                 this.resultField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string executed
+        {
+            get
+            {
+                return this.executedField;
+            }
+            set
+            {
+                this.executedField = value;
             }
         }
     }
