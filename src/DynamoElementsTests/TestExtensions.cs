@@ -57,5 +57,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(true, Utils.Convert(value, ref listWatchVal));
             return listWatchVal;
         }
+
+        public static string GetStringFromFSchemeValue(this FScheme.Value value)
+        {
+            string stringValue = string.Empty;
+            Assert.AreEqual(true, FSchemeInterop.Utils.Convert(value, ref stringValue));
+            return stringValue;
+        }
+
     }
 }
