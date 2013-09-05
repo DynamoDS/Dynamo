@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />
+    <Compile Include="ListTests.cs" />
     <Compile Include="DynamoUnitTest.cs" />
     <Compile Include="StringTests.cs" />
     <Compile Include="PackageDependencyTests.cs" />
