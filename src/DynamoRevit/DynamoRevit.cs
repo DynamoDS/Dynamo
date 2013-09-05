@@ -430,6 +430,10 @@ namespace Dynamo.Applications
                         testCase.success = result.IsSuccess.ToString();
                         testCase.asserts = result.AssertCount.ToString(CultureInfo.InvariantCulture);
                         testCase.time = result.Time.ToString(CultureInfo.InvariantCulture);
+                        testResult.testsuite.success = true.ToString();
+
+                        var currAsserts = Convert.ToInt16(testResult.testsuite.asserts);
+                        testResult.testsuite.asserts = (currAsserts + result.AssertCount).ToString();
 
                         if (result.IsFailure)
                         {
@@ -437,6 +441,7 @@ namespace Dynamo.Applications
                             fail.message = result.Message;
                             fail.stacktrace = result.StackTrace;
                             testCase.Item = fail;
+                            testResult.testsuite.success = false.ToString();
                         }
 
                         cases.Add(testCase);
@@ -487,9 +492,11 @@ namespace Dynamo.Applications
                 var suite = new testsuiteType();
                 suite.name = "DynamoRevitTests";
                 suite.description = "Dynamo tests on Revit.";
+                suite.time = "0.0";
                 testResult.testsuite = suite;
                 testResult.testsuite.results = new resultsType();
                 testResult.testsuite.results.Items = new object[]{};
+
             }
         }
 
