@@ -180,6 +180,14 @@ namespace Dynamo
             _updateDict[type].Remove(e);
         }
 
+        public void UnRegisterAllChangeHooks()
+        {
+            foreach (var hookDict in _updateDict.Values)
+            {
+                hookDict.Clear();
+            }
+        }
+
         public void Execute(UpdaterData data)
         {
             processUpdates(
