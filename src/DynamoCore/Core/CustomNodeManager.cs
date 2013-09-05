@@ -1063,7 +1063,7 @@ namespace Dynamo.Utilities
                     if (topNode is Function && (topNode as Function).Definition == definition)
                     {
                         topMost.Add(Tuple.Create(0, topNode));
-                        outNames.Add("");
+                        outNames.Add("∞");
                         continue;
                     }
 
