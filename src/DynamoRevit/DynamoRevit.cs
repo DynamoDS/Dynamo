@@ -520,8 +520,8 @@ namespace Dynamo.Applications
                 testResult.testsuite.results = new resultsType();
                 testResult.testsuite.results.Items = new object[]{};
 
-                testResult.date = DateTime.Now.Date.ToString(CultureInfo.InvariantCulture);
-                testResult.time = DateTime.Now.TimeOfDay.ToString();
+                testResult.date = DateTime.Now.ToString("yyyy-MM-dd");
+                testResult.time = DateTime.Now.ToString("HH:mm:ss");
                 testResult.failures = 0;
                 testResult.ignored = 0;
                 testResult.notrun = 0;
@@ -543,9 +543,11 @@ namespace Dynamo.Applications
 
             //write to the file
             var x = new XmlSerializer(typeof(resultType));
+            var ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
             using (var tw = new StreamWriter(resultPath))
             {
-                x.Serialize(tw, testResult);
+                x.Serialize(tw, testResult, ns);
             }
         }
         
