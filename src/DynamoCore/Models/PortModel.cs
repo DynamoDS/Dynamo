@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Xml;
 using Dynamo.FSchemeInterop;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -222,6 +224,23 @@ namespace Dynamo.Models
             foreach (var c in connectors.ToList())
                 c.NotifyConnectedPortsOfDeletion();
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override XmlNode SerializeCore(XmlDocument xmlDocument)
+        {
+            XmlElement portInfo = xmlDocument.CreateElement("PortInfo");
+            XmlElementHelper helper = new XmlElementHelper(portInfo);
+            helper.SetAttribute("index", this.Index);
+            helper.SetAttribute("default", this.UsingDefaultValue);
+            return portInfo;
+        }
+
+        protected override void DeserializeCore(XmlNode xmlNode)
+        {
+        }
+
+        #endregion
     }
 
     public class PortData
