@@ -452,7 +452,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Sort-With")]
+    [NodeName("Sort With Comparitor")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Returns a sorted list, using the given comparitor.")]
     public class SortWith : BuiltinFunction
@@ -473,7 +473,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Sort-By")]
+    [NodeName("Sort By Key")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Returns a sorted list, using the given key mapper. The key mapper must return either all numbers or all strings.")]
     public class SortBy : BuiltinFunction
@@ -511,7 +511,7 @@ namespace Dynamo.Nodes
 
     [NodeName("List Minimum")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Returns the minimum value of a list, using the given key mapper. The key mapper must return either all numbers or all strings.")]
+    [NodeDescription("Returns the minimum value of a list, using the given key mapper. For all elements in the list, the key mapper must return either all numbers or all strings.")]
     public class ListMin : BuiltinFunction
     {
         public ListMin() 
@@ -527,7 +527,7 @@ namespace Dynamo.Nodes
 
     [NodeName("List Maximum")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Returns the maximum value of a list, using the given key mapper. The key mapper must return either all numbers or all strings.")]
+    [NodeDescription("Returns the maximum value of a list, using the given key mapper. For all elements in the list, the key mapper must return either all numbers or all strings.")]
     public class ListMax : BuiltinFunction
     {
         public ListMax()
