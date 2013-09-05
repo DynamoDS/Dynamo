@@ -250,7 +250,7 @@ namespace Dynamo
 
         #endregion
 
-        public void ShutDown()
+        public virtual void ShutDown()
         {
             dynSettings.Controller = null;
             Selection.DynamoSelection.Instance.ClearSelection();
