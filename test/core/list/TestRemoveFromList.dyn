@@ -1,0 +1,28 @@
+<dynWorkspace X="0" Y="0" zoom="1.1" Description="" Category="" Name="Home">
+  <dynElements>
+    <Dynamo.Nodes.dynNumberRange type="Dynamo.Nodes.dynNumberRange" guid="d223a746-757f-4212-b2bb-9406e6c1feb4" nickname="Number Range" x="307.8" y="296.52" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="310dc80a-349f-4e30-9319-dd1edc71eb53" nickname="Number" x="123.8" y="229.32" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2000000000.000" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="9605ee13-8dec-48d2-ba24-adaaf232ef0b" nickname="Number" x="98.9999999999999" y="334.12" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2000000100.000" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="9b5f59a8-43ad-4388-9f1d-c141cc7afc83" nickname="Number" x="143" y="426.12" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="3f446186-1bc9-42b0-bf4f-826d9e1bfb73" nickname="Number" x="364.6" y="171.72" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="99" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="8fc7ce00-182e-4ad0-ae0a-9d0058d2f0f3" nickname="Watch" x="810.2" y="333.174545454545" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynRemoveFromList type="Dynamo.Nodes.dynRemoveFromList" guid="d5d3cf0e-1ed5-49c9-904d-8929d0c0fffd" nickname="Remove From List" x="574.909090909091" y="303.549090909091" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Models.dynConnectorModel start="d223a746-757f-4212-b2bb-9406e6c1feb4" start_index="0" end="d5d3cf0e-1ed5-49c9-904d-8929d0c0fffd" end_index="1" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="310dc80a-349f-4e30-9319-dd1edc71eb53" start_index="0" end="d223a746-757f-4212-b2bb-9406e6c1feb4" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="9605ee13-8dec-48d2-ba24-adaaf232ef0b" start_index="0" end="d223a746-757f-4212-b2bb-9406e6c1feb4" end_index="1" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="9b5f59a8-43ad-4388-9f1d-c141cc7afc83" start_index="0" end="d223a746-757f-4212-b2bb-9406e6c1feb4" end_index="2" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="3f446186-1bc9-42b0-bf4f-826d9e1bfb73" start_index="0" end="d5d3cf0e-1ed5-49c9-904d-8929d0c0fffd" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="d5d3cf0e-1ed5-49c9-904d-8929d0c0fffd" start_index="0" end="8fc7ce00-182e-4ad0-ae0a-9d0058d2f0f3" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

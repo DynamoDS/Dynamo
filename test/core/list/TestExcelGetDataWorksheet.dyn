@@ -1,0 +1,22 @@
+<dynWorkspace X="-4.36904761904702" Y="115.952380952381" zoom="0.7" Description="" Category="" Name="Home">
+  <dynElements>
+    <Dynamo.Nodes.dynGetExcelWorksheetByName type="Dynamo.Nodes.dynGetExcelWorksheetByName" guid="32758a26-ef68-4f1e-9b7c-e6f9a580b86d" nickname="Get Excel Worksheet By Name" x="510.250432900431" y="232.923621933622" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynGetDataFromExcelWorksheet type="Dynamo.Nodes.dynGetDataFromExcelWorksheet" guid="3a5fab77-731a-4489-aefe-b906bfa339b7" nickname="Get Data From Excel Worksheet" x="706.02821067821" y="107.368066378066" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynReadExcelFile type="Dynamo.Nodes.dynReadExcelFile" guid="f996de9d-f0e8-43e6-95b1-833e34af2700" nickname="Open Excel Workbook" x="329.139321789321" y="230.145844155844" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="3df34ac7-6180-45fc-a5fe-c14f87482a9d" nickname="String" x="106" y="213.812510822511" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="C:\Users\t_phuot\Desktop\Testing.xlsx" />
+    </Dynamo.Nodes.dynStringInput>
+    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="b19b3685-36a8-4326-ac35-c3a3c0b63567" nickname="String" x="388.139321789321" y="311.145844155844" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="Sheet1" />
+    </Dynamo.Nodes.dynStringInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="0be2e8a3-3eae-48c6-b789-79c3978f9417" nickname="Watch" x="878.250432900432" y="260.812510822511" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Models.dynConnectorModel start="32758a26-ef68-4f1e-9b7c-e6f9a580b86d" start_index="0" end="3a5fab77-731a-4489-aefe-b906bfa339b7" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="3a5fab77-731a-4489-aefe-b906bfa339b7" start_index="0" end="0be2e8a3-3eae-48c6-b789-79c3978f9417" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="f996de9d-f0e8-43e6-95b1-833e34af2700" start_index="0" end="32758a26-ef68-4f1e-9b7c-e6f9a580b86d" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="3df34ac7-6180-45fc-a5fe-c14f87482a9d" start_index="0" end="f996de9d-f0e8-43e6-95b1-833e34af2700" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="b19b3685-36a8-4326-ac35-c3a3c0b63567" start_index="0" end="32758a26-ef68-4f1e-9b7c-e6f9a580b86d" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>
