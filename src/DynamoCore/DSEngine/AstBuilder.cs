@@ -13,6 +13,7 @@ using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.DSASM.Mirror;
+using ProtoCore.Exceptions;
 using ProtoCore.Lang;
 using ProtoCore.Utils;
 using ProtoFFI;
@@ -181,8 +182,9 @@ namespace Dynamo.DSEngine
             return astNodes.Contains(dynamoNodeId);
         }
 
+#if DEBUG
         /// <summary>
-        /// Dump DesignScript code from AST nodes. 
+        /// Dump DesignScript code from AST nodes, just for testing
         /// </summary>
         /// <returns></returns>
         public string DumpCode()
@@ -196,6 +198,9 @@ namespace Dynamo.DSEngine
             return codegen.GenerateCode();
         }
 
+        /// <summary>
+        /// Execute AST nodes, just for testing. 
+        /// </summary>
         public void Execute()
         {
             ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
@@ -214,17 +219,30 @@ namespace Dynamo.DSEngine
             {
                 allAstNodes.AddRange(item);
             }
-            ExecutionMirror mirror = runner.Execute(allAstNodes, core);
 
             DynamoLogger logger = DynamoLogger.Instance;
-            List<Guid> keys = astNodes.GetKeys();
-            foreach (var guid in keys)
+            try
             {
-                string varname = StringConstants.kVarPrefix + guid.ToString().Replace("-", string.Empty);
-                Obj o = mirror.GetValue(varname);
-                string value = mirror.GetStringValue(o.DsasmValue, core.Heap, 0, true);
-                logger.Log(varname + "=" + value);
+                ExecutionMirror mirror = runner.Execute(allAstNodes, core);
+                List<Guid> keys = astNodes.GetKeys();
+                foreach (var guid in keys)
+                {
+                    string varname = StringConstants.kVarPrefix + guid.ToString().Replace("-", string.Empty);
+                    Obj o = mirror.GetValue(varname);
+                    string value = mirror.GetStringValue(o.DsasmValue, core.Heap, 0, true);
+                    logger.Log(varname + "=" + value);
+                }
             }
+            catch (CompileErrorsOccured e)
+            {
+                logger.Log(e.Message);
+            }
+        }
+#endif
+
+        public static NullNode BuildNullNode()
+        {
+            return new NullNode();
         }
 
         public static IntNode BuildIntNode(int value)
@@ -270,6 +288,17 @@ namespace Dynamo.DSEngine
             node.RightNode = rhs;
             node.Optr = op;
             return node;
+        }
+
+        public static InlineConditionalNode BuildConditionalNode(AssociativeNode condition,
+                                                                 AssociativeNode trueExpr,
+                                                                 AssociativeNode falseExpr)
+        {
+            InlineConditionalNode cond = new InlineConditionalNode();
+            cond.ConditionExpression = condition;
+            cond.TrueExpression = trueExpr;
+            cond.FalseExpression = falseExpr;
+            return cond;
         }
 
         public static AssociativeNode BuildFunctionCall(string function, 
