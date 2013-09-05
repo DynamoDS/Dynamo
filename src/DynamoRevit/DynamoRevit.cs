@@ -424,6 +424,9 @@ namespace Dynamo.Applications
                         TestFilter filter = new NameFilter(t.TestName);
                         var result = (t as TestMethod).Run(new TestListener(), filter);
 
+                        //result types
+                        //Ignored, Failure, NotRunnable, Error, Success
+
                         var testCase = new testcaseType();
                         testCase.name = t.TestName.Name;
                         testCase.executed = result.Executed.ToString();
@@ -438,15 +441,29 @@ namespace Dynamo.Applications
                         var currCount = Convert.ToInt16(testResult.total);
                         testResult.total = (currCount + 1);
 
-                        if (result.IsFailure)
+                        if (result.IsSuccess)
+                        {
+                            testCase.result = "Success";
+                        }
+                        else if (result.IsFailure)
                         {
                             var fail = new failureType();
                             fail.message = result.Message;
                             fail.stacktrace = result.StackTrace;
                             testCase.Item = fail;
+                            testCase.result = "Failure";
                             testResult.testsuite.success = false.ToString();
+                            testResult.testsuite.result = "Failure";
+                        }
+                        else if (result.IsError)
+                        {
+                            var errCount = Convert.ToInt16(testResult.errors);
+                            testResult.errors = (errCount + 1);
+                            testCase.result = "Error";
+                            testResult.testsuite.result = "Failure";
                         }
 
+                        
                         cases.Add(testCase);
                     }
                 }
@@ -496,11 +513,22 @@ namespace Dynamo.Applications
                 suite.name = "DynamoRevitTests";
                 suite.description = "Dynamo tests on Revit.";
                 suite.time = "0.0";
+                suite.type = "TestFixture";
+                suite.result = "Success";
+
                 testResult.testsuite = suite;
                 testResult.testsuite.results = new resultsType();
                 testResult.testsuite.results.Items = new object[]{};
+
                 testResult.date = DateTime.Now.Date.ToString(CultureInfo.InvariantCulture);
                 testResult.time = DateTime.Now.TimeOfDay.ToString();
+                testResult.failures = 0;
+                testResult.ignored = 0;
+                testResult.notrun = 0;
+                testResult.errors = 0;
+                testResult.skipped = 0;
+                testResult.inconclusive = 0;
+                testResult.invalid = 0;
             }
         }
 
