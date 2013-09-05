@@ -238,6 +238,10 @@ namespace Dynamo.Models
 
         protected override void DeserializeCore(XmlNode xmlNode)
         {
+            XmlElement element = xmlNode as XmlElement;
+            XmlElementHelper helper = new XmlElementHelper(element);
+            this.index = helper.ReadInteger("index");
+            this._usingDefaultValue = helper.ReadBoolean("default");
         }
 
         #endregion
