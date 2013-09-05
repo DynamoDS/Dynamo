@@ -3959,6 +3959,13 @@ namespace Dynamo.Nodes
         {
             return Value.NewString(string.Concat(args.Cast<Value.String>().Select(x => x.Item)));
         }
+
+        protected override AssociativeNode CompileToAstNodeInternal(List<AssociativeNode> inputAstNodes)
+        {
+            return AstBuilder.BuildBinaryExpression(inputAstNodes[0],
+                                                    inputAstNodes[1],
+                                                    ProtoCore.DSASM.Operator.add);
+        }
     }
 
     [NodeName("String to Number")]
