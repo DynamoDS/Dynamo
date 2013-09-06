@@ -427,6 +427,8 @@ The Data is Base64 encoded. For example, the data field above ('MTMxMjQxLjY3MzAy
 The UserID is randomly generated when the application is first run. The SessionID is randomly generated each time Dynamo is opened.
 
 
+
+
 ## Third Party Licenses ##
 
 ###Avalon Edit###
