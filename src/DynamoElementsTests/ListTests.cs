@@ -1296,5 +1296,207 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region LaceShortest test cases
+
+        [Test]
+        public void LaceShortest_Simple()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_Simple.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // wait for the expression to complete
+            Thread.Sleep(500);
+
+            // Element from the Reverse list
+            var reverse = model.CurrentWorkspace.NodeFromWorkspace<Reverse>("c3d629f7-76a0-40bc-bf39-da45d8b8ea7a");
+            FSharpList<FScheme.Value> listReverseValue = reverse.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(2, listReverseValue.Length);
+            Assert.AreEqual(4, listReverseValue[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(2, listReverseValue[1].GetDoubleFromFSchemeValue());
+
+            // Elements from the Combine list
+            var combine = model.CurrentWorkspace.NodeFromWorkspace<Combine>("cc23b43e-3709-4ed1-bedb-f903e4ea7d75");
+            FSharpList<FScheme.Value> listCombineValue = combine.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(2, listCombineValue.Length);
+            Assert.AreEqual(-0.5, listCombineValue[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(-1, listCombineValue[1].GetDoubleFromFSchemeValue());
+
+            // Elements from first LaceShortest list
+            var shortest = model.CurrentWorkspace.NodeFromWorkspace<LaceShortest>("10005d3c-3bbf-4690-b658-37b11c8402b1");
+            FSharpList<FScheme.Value> listShotestValue = shortest.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(2, listShotestValue.Length);
+            Assert.AreEqual(2, listShotestValue[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(4, listShotestValue[1].GetDoubleFromFSchemeValue());
+
+            // Elements from second LaceShortest list
+            var shortest1 = model.CurrentWorkspace.NodeFromWorkspace<LaceShortest>("ce7bf465-0f93-4e5a-8bc9-9960cd077f25");
+            FSharpList<FScheme.Value> listShotestValue1 = shortest1.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(2, listShotestValue1.Length);
+            Assert.AreEqual(-4, listShotestValue1[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(-4, listShotestValue1[1].GetDoubleFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void LaceShortest_NegativeInput()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_NegativeInput.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.Throws<AssertionException>(() =>
+            {
+                dynSettings.Controller.RunExpression(null);
+            });
+
+        }
+
+        [Test]
+        public void LaceShortest_StringInput()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_StringInput.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // wait for the expression to complete
+            Thread.Sleep(500);
+
+            // Element from the Reverse list
+            var reverse = model.CurrentWorkspace.NodeFromWorkspace<ConcatStrings>("1c4c75ff-735d-4431-9df3-2b187c469b3a");
+            string actual = reverse.GetValue(0).getStringFromFSchemeValue();
+            string expected = "1Design";
+            Assert.AreEqual(expected, actual);
+
+            // Elements from first LaceShortest list
+            var shortest = model.CurrentWorkspace.NodeFromWorkspace<LaceShortest>("10005d3c-3bbf-4690-b658-37b11c8402b1");
+            FSharpList<FScheme.Value> listShotestValue = shortest.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(3, listShotestValue.Length);
+            Assert.AreEqual(1, listShotestValue[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(1, listShotestValue[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(1, listShotestValue[2].GetDoubleFromFSchemeValue());
+
+            // Elements from second LaceShortest list
+            var shortest1 = model.CurrentWorkspace.NodeFromWorkspace<LaceShortest>("c19f09a1-6132-4c9c-8f37-5f138e1a3067");
+            FSharpList<FScheme.Value> listShotestValue1 = shortest1.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(3, listShotestValue1.Length);
+            Assert.AreEqual("Dynamo", listShotestValue1[0].getStringFromFSchemeValue());
+            Assert.AreEqual("Design", listShotestValue1[1].getStringFromFSchemeValue());
+            Assert.AreEqual("Script", listShotestValue1[2].getStringFromFSchemeValue());
+
+        }
+
+        #endregion
+
+        #region LaceLongest test cases
+
+        [Test]
+        public void LaceLongest_Simple()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceLongest_Simple.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // wait for the expression to complete
+            Thread.Sleep(500);
+
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("5da40769-ffc8-408b-94bb-8c5dff31132e");
+
+            FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild1 = actual[0].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild2 = actual[1].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild3 = actual[2].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild4 = actual[3].GetListFromFSchemeValue();
+
+            Assert.AreEqual(4, actual.Length);
+
+            Assert.AreEqual(1, actualChild1.Length);
+            Assert.AreEqual(2, actualChild1[0].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(1, actualChild2.Length);
+            Assert.AreEqual(8, actualChild2[0].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(1, actualChild3.Length);
+            Assert.AreEqual(14, actualChild3[0].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(1, actualChild4.Length);
+            Assert.AreEqual(19, actualChild4[0].GetDoubleFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void LaceLongest_Negative()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceLongest_Negative.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.Throws<AssertionException>(() =>
+            {
+                dynSettings.Controller.RunExpression(null);
+            });
+
+        }
+
+        [Test]
+        public void LaceLongest_ListWith10000Element()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceLongest_ListWith10000Element.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // wait for the expression to complete
+            Thread.Sleep(500);
+
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<LaceLongest>("25daa241-d8a4-4e74-aec1-6068358babf7");
+            FSharpList<FScheme.Value> listWatchValue = watch.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(10000, listWatchValue.Length);
+            Assert.AreEqual(2001, listWatchValue[1000].GetDoubleFromFSchemeValue());
+
+        }
+
+        #endregion
     }
 }
