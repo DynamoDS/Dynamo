@@ -816,5 +816,95 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, childList1.Length);
             Assert.AreEqual(5, childList5[0].GetDoubleFromFSchemeValue());
         }
+
+        [Test]
+        public void TestIntegration1()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(listTestFolder, "testIntegration1.dyn");
+            model.Open(testFilePath);
+            dynSettings.Controller.RunExpression(null);
+
+            Watch watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("a0836407-13ab-4e2b-b9c4-36cd19af7512");
+            Watch watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("0019b762-5721-472a-baaa-7628a911eb42");
+            Watch watch3 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("229a1783-0cfa-4ba2-8de2-383a54cb596d");
+            Watch watch4 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("8b5c7a91-dd2a-4264-b7cf-10f97cca1474");
+
+            Assert.AreEqual(1, watch1.GetValue(0).GetDoubleFromFSchemeValue());
+            Assert.AreEqual(0, watch2.GetValue(0).GetDoubleFromFSchemeValue());
+
+            FSharpList<FScheme.Value> list1 = watch3.GetValue(0).GetListFromFSchemeValue();
+            double list1ExpectedLength = 9;
+            double list1ActualLength = list1.Length;
+            Assert.AreEqual(list1ExpectedLength, list1ActualLength);
+            Assert.AreEqual(1, list1[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(1, list1[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(1, list1[2].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(0, list1[3].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(0, list1[4].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(0, list1[5].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(99999999999999, list1[6].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(99999999999999, list1[7].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(99999999999999, list1[8].GetDoubleFromFSchemeValue());
+
+            FSharpList<FScheme.Value> list2 = watch4.GetValue(0).GetListFromFSchemeValue();
+            double list2ExpectedLength = 3;
+            double list2ActualLength = list2.Length;
+            Assert.AreEqual(list2ExpectedLength, list2ActualLength);
+
+            FSharpList<FScheme.Value> sublist1 = list2[0].GetListFromFSchemeValue();
+            double sublist1ExpectedLength = 3;
+            double sublist1Actuallength = sublist1.Length;
+            Assert.AreEqual(sublist1ExpectedLength, sublist1Actuallength);
+            Assert.AreEqual(1, sublist1[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(1, sublist1[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(1, sublist1[2].GetDoubleFromFSchemeValue());
+
+            FSharpList<FScheme.Value> sublist2 = list2[1].GetListFromFSchemeValue();
+            double sublist2ExpectedLength = 3;
+            double sublist2Actuallength = sublist2.Length;
+            Assert.AreEqual(sublist2ExpectedLength, sublist2Actuallength);
+            Assert.AreEqual(0, sublist2[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(0, sublist2[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(0, sublist2[2].GetDoubleFromFSchemeValue());
+
+            FSharpList<FScheme.Value> sublist3 = list2[2].GetListFromFSchemeValue();
+            double sublist3ExpectedLength = 3;
+            double sublist3Actuallength = sublist3.Length;
+            Assert.AreEqual(sublist3ExpectedLength, sublist3Actuallength);
+            Assert.AreEqual(99999999999999, sublist3[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(99999999999999, sublist3[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(99999999999999, sublist3[2].GetDoubleFromFSchemeValue());
+        }
+
+        [Test]
+        public void TestIntegration2()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(listTestFolder, "testIntegration2.dyn");
+            model.Open(testFilePath);
+            dynSettings.Controller.RunExpression(null);
+
+            Watch watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("7bf98862-a2bb-44fd-8ea4-5f59dd477325");
+            Watch watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("620f0f63-a9fc-4197-9082-6acbeeb9c07e");
+
+            FSharpList<FScheme.Value> list1 = watch1.GetValue(0).GetListFromFSchemeValue();
+            double list1ExpectedLength = 3;
+            double list1ActualLength = list1.Length;
+            Assert.AreEqual(list1ExpectedLength, list1ActualLength);
+            Assert.AreEqual("often", list1[0].getStringFromFSchemeValue());
+            Assert.AreEqual("sometimes", list1[1].getStringFromFSchemeValue());
+            Assert.AreEqual("often", list1[2].getStringFromFSchemeValue());
+
+            FSharpList<FScheme.Value> list2 = watch2.GetValue(0).GetListFromFSchemeValue();
+            double list2ExpectedLength = 5;
+            double list2ActualLength = list2.Length;
+            Assert.AreEqual(list2ExpectedLength, list2ActualLength);
+            Assert.AreEqual("sometimes", list2[0].getStringFromFSchemeValue());
+            Assert.AreEqual("often", list2[1].getStringFromFSchemeValue());
+            Assert.AreEqual("often", list2[2].getStringFromFSchemeValue());
+            Assert.AreEqual("sometimes", list2[3].getStringFromFSchemeValue());
+            Assert.AreEqual("often", list2[4].getStringFromFSchemeValue());
+        }
     }
 }
