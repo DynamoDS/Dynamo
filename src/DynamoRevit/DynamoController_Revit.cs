@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -332,7 +333,7 @@ namespace Dynamo
                     dynRevitSettings.Doc.ShowElements(element);
                 };
 
-                node.Link = id.ToString();
+                node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
             }
 
             #endregion
