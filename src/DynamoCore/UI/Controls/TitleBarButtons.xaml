@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="25" d:DesignWidth="78">
     <UserControl.Resources>
-        <ResourceDictionary Source="StyleDictionary.xaml">
+        <ResourceDictionary Source="/DynamoCore;component/UI/Themes/StyleDictionary.xaml">
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
