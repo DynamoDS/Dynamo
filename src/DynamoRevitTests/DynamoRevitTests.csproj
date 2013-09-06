@@ -75,9 +75,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\DynamoRevit\NUnitResultTypes.cs">
-      <Link>NUnitResultTypes.cs</Link>
-    </Compile>
     <Compile Include="DynamoRevitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
