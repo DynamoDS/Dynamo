@@ -217,14 +217,17 @@ namespace Dynamo.Controls
             if (result == MessageBoxResult.Yes)
             {
                 _vm.ShowSaveDialogIfNeededAndSave(e.Workspace);
+                e.Success = true;
             }
             else if (result == MessageBoxResult.Cancel)
             {
                 //return false;
                 e.Success = false;
             }
-            //return true;
-            e.Success = true;
+            else
+            {
+                e.Success = true;
+            }
         }
 
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -382,16 +385,19 @@ namespace Dynamo.Controls
             e.Success = true;
         }
 
-        private void WindowClosing(object sender, CancelEventArgs  e)
+        private void WindowClosing(object sender, CancelEventArgs e)
         {
             if (_vm.exitInvoked)
                 return;
 
             var res = _vm.AskUserToSaveWorkspacesOrCancel();
             if (!res)
+            {
                 e.Cancel = true;
+                return;
+            }
 
-
+            dynSettings.Controller.ShutDown();
         }
 
         private void WindowClosed(object sender, EventArgs e)

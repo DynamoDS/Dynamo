@@ -27,6 +27,7 @@ using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Linq;
 using System.Windows.Threading;
+using System.Xml;
 using System.Xml.Serialization;
 using Dynamo.NUnit.Tests;
 using Autodesk.Revit.Attributes;
@@ -54,7 +55,7 @@ namespace Dynamo.Applications
     public class DynamoRevitApp : IExternalApplication
     {
         private static readonly string m_AssemblyName = Assembly.GetExecutingAssembly().Location;
-        public static DynamoUpdater updater;
+        public static DynamoUpdater Updater;
         private static ResourceManager res;
         public static ExecutionEnvironment env;
 
@@ -98,9 +99,9 @@ namespace Dynamo.Applications
 
                 IdlePromise.RegisterIdle(application);
 
-                updater = new DynamoUpdater(application.ActiveAddInId, application.ControlledApplication);
-                if (!UpdaterRegistry.IsUpdaterRegistered(updater.GetUpdaterId()))
-                    UpdaterRegistry.RegisterUpdater(updater);
+                Updater = new DynamoUpdater(application.ActiveAddInId, application.ControlledApplication);
+                if (!UpdaterRegistry.IsUpdaterRegistered(Updater.GetUpdaterId()))
+                    UpdaterRegistry.RegisterUpdater(Updater);
 
                 var SpatialFieldFilter = new ElementClassFilter(typeof (SpatialFieldManager));
                 var familyFilter = new ElementClassFilter(typeof (FamilyInstance));
@@ -117,9 +118,9 @@ namespace Dynamo.Applications
 
                 ElementFilter filter = new LogicalOrFilter(filterList);
 
-                UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
-                UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
-                UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
+                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
+                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
+                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
 
                 env = new ExecutionEnvironment();
                 //EnsureApplicationResources();
@@ -135,7 +136,7 @@ namespace Dynamo.Applications
 
         public Result OnShutdown(UIControlledApplication application)
         {
-            UpdaterRegistry.UnregisterUpdater(updater.GetUpdaterId());
+            UpdaterRegistry.UnregisterUpdater(Updater.GetUpdaterId());
 
             //if(Application.Current != null)
             //    Application.Current.Shutdown();
@@ -211,7 +212,7 @@ namespace Dynamo.Applications
                         if (context == "Vasari")
                             context = "Vasari 2014";
 
-                        dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
+                        dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
                         
 
                         dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
@@ -369,7 +370,7 @@ namespace Dynamo.Applications
                 Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
                 string context = r.Replace(m_revit.Application.VersionName, "");
 
-                var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater, typeof(DynamoRevitViewModel), context);
+                var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
 
                 //flag to run evalauation synchronously, helps to 
                 //avoid threading issues when testing.
@@ -424,21 +425,46 @@ namespace Dynamo.Applications
                         TestFilter filter = new NameFilter(t.TestName);
                         var result = (t as TestMethod).Run(new TestListener(), filter);
 
+                        //result types
+                        //Ignored, Failure, NotRunnable, Error, Success
+
                         var testCase = new testcaseType();
                         testCase.name = t.TestName.Name;
                         testCase.executed = result.Executed.ToString();
                         testCase.success = result.IsSuccess.ToString();
                         testCase.asserts = result.AssertCount.ToString(CultureInfo.InvariantCulture);
                         testCase.time = result.Time.ToString(CultureInfo.InvariantCulture);
+                        testResult.testsuite.success = true.ToString();
 
-                        if (result.IsFailure)
+                        var currAsserts = Convert.ToInt16(testResult.testsuite.asserts);
+                        testResult.testsuite.asserts = (currAsserts + result.AssertCount).ToString();
+
+                        var currCount = Convert.ToInt16(testResult.total);
+                        testResult.total = (currCount + 1);
+
+                        if (result.IsSuccess)
+                        {
+                            testCase.result = "Success";
+                        }
+                        else if (result.IsFailure)
                         {
                             var fail = new failureType();
                             fail.message = result.Message;
                             fail.stacktrace = result.StackTrace;
                             testCase.Item = fail;
+                            testCase.result = "Failure";
+                            testResult.testsuite.success = false.ToString();
+                            testResult.testsuite.result = "Failure";
+                        }
+                        else if (result.IsError)
+                        {
+                            var errCount = Convert.ToInt16(testResult.errors);
+                            testResult.errors = (errCount + 1);
+                            testCase.result = "Error";
+                            testResult.testsuite.result = "Failure";
                         }
 
+                        
                         cases.Add(testCase);
                     }
                 }
@@ -487,9 +513,24 @@ namespace Dynamo.Applications
                 var suite = new testsuiteType();
                 suite.name = "DynamoRevitTests";
                 suite.description = "Dynamo tests on Revit.";
+                suite.time = "0.0";
+                suite.type = "TestFixture";
+                suite.result = "Success";
+                suite.executed = "True";
+
                 testResult.testsuite = suite;
                 testResult.testsuite.results = new resultsType();
                 testResult.testsuite.results.Items = new object[]{};
+
+                testResult.date = DateTime.Now.ToString("yyyy-MM-dd");
+                testResult.time = DateTime.Now.ToString("HH:mm:ss");
+                testResult.failures = 0;
+                testResult.ignored = 0;
+                testResult.notrun = 0;
+                testResult.errors = 0;
+                testResult.skipped = 0;
+                testResult.inconclusive = 0;
+                testResult.invalid = 0;
             }
         }
 
@@ -504,9 +545,12 @@ namespace Dynamo.Applications
 
             //write to the file
             var x = new XmlSerializer(typeof(resultType));
-            using (var tw = new StreamWriter(resultPath))
+            using (var tw = XmlWriter.Create(resultPath, new XmlWriterSettings(){Indent = true}))
             {
-                x.Serialize(tw, testResult);
+                tw.WriteComment("This file represents the results of running a test suite");
+                var ns = new XmlSerializerNamespaces();
+                ns.Add("", "");
+                x.Serialize(tw, testResult, ns);
             }
         }
         
