@@ -12,45 +12,52 @@
              BorderBrush="Black"
              MaxHeight="300">
     <UserControl.Resources>
-        <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
-            <Setter Property="Padding" Value="1"/>
-            <Setter Property="Background" Value="PaleGreen" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border Name="border" Background="{TemplateBinding Background}">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
+                <Setter Property="Padding" Value="1"/>
+                <Setter Property="Background" Value="PaleGreen" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Name="border" Background="{TemplateBinding Background}">
+                                <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                       Margin="{TemplateBinding Padding}"
                                       RecognizesAccessKey="True"
                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="content" Property="RenderTransform" >
-                                    <Setter.Value>
-                                        <ScaleTransform ScaleX="1.1" ScaleY="1.1" />
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="content" Property="RenderTransform" >
-                                    <Setter.Value>
-                                        <ScaleTransform ScaleX=".95" ScaleY=".95" />
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style TargetType="{x:Type TreeViewItem}">
-            <Setter Property="IsExpanded" Value="{Binding IsNodeExpanded}">
-            </Setter>
-        </Style>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="content" Property="RenderTransform" >
+                                        <Setter.Value>
+                                            <ScaleTransform ScaleX="1.1" ScaleY="1.1" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="content" Property="RenderTransform" >
+                                        <Setter.Value>
+                                            <ScaleTransform ScaleX=".95" ScaleY=".95" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                                <Trigger Property="IsFocused" Value="True">
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="{x:Type TreeViewItem}">
+                <Setter Property="IsExpanded" Value="{Binding IsNodeExpanded}">
+                </Setter>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <TreeView Name="treeView1"
@@ -73,7 +80,7 @@
                                     VerticalAlignment="Center" 
                                     Click="Button_Click"
                                     Padding="4,2,4,2"
-                                    Visibility="{Binding Path=Link, TargetNullValue=Hidden}"
+                                    Visibility="{Binding Path=Link, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                                     Style="{StaticResource BorderlessButton}"/>
                     </StackPanel>
                 </HierarchicalDataTemplate>

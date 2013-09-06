@@ -36,6 +36,17 @@ namespace Dynamo.NUnit.Tests {
         private string dateField;
         
         private string timeField;
+
+        //added for compliance with jenkins reader
+        private decimal errorsField;
+
+        private decimal inconclusiveField;
+
+        private decimal ignoredField;
+
+        private decimal skippedField;
+
+        private decimal invalidField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("test-suite")]
@@ -113,6 +124,76 @@ namespace Dynamo.NUnit.Tests {
                 this.timeField = value;
             }
         }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public decimal errors
+        {
+            get
+            {
+                return this.errorsField;
+            }
+            set
+            {
+                this.errorsField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public decimal inconclusive
+        {
+            get
+            {
+                return this.inconclusiveField;
+            }
+            set
+            {
+                this.inconclusiveField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public decimal ignored
+        {
+            get
+            {
+                return this.ignoredField;
+            }
+            set
+            {
+                this.ignoredField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public decimal skipped
+        {
+            get
+            {
+                return this.skippedField;
+            }
+            set
+            {
+                this.skippedField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public decimal invalid
+        {
+            get
+            {
+                return this.invalidField;
+            }
+            set
+            {
+                this.invalidField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -136,7 +217,13 @@ namespace Dynamo.NUnit.Tests {
         private string timeField;
         
         private string assertsField;
-        
+
+        private string typeField;
+
+        private string resultField;
+
+        private string executedField;
+
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayItemAttribute("category", IsNullable=false)]
         public categoryType[] categories {
@@ -210,6 +297,48 @@ namespace Dynamo.NUnit.Tests {
             }
             set {
                 this.assertsField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string type
+        {
+            get
+            {
+                return this.typeField;
+            }
+            set
+            {
+                this.typeField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string result
+        {
+            get
+            {
+                return this.resultField;
+            }
+            set
+            {
+                this.resultField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string executed
+        {
+            get
+            {
+                return this.executedField;
+            }
+            set
+            {
+                this.executedField = value;
             }
         }
     }
@@ -311,6 +440,8 @@ namespace Dynamo.NUnit.Tests {
         private string executedField;
         
         private string assertsField;
+
+        private string resultField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayItemAttribute("category", IsNullable=false)]
@@ -398,6 +529,20 @@ namespace Dynamo.NUnit.Tests {
             }
             set {
                 this.assertsField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string result
+        {
+            get
+            {
+                return this.resultField;
+            }
+            set
+            {
+                this.resultField = value;
             }
         }
     }
