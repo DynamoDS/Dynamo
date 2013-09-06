@@ -15,9 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <ImportGroup Label="PropertySheets">	
-	<Import Project="$(SolutionDir)Dynamo.CS.props" />
-</ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Dynamo.CS.props" />
+  </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -111,7 +111,7 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
     </Reference>
-     <Reference Include="ProtoInterface">
+    <Reference Include="ProtoInterface">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
     </Reference>
@@ -377,7 +377,7 @@ limitations under the License.
     <Resource Include="UI\Images\search_24.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Controls\StyleDictionary.xaml">
+    <Page Include="UI\Themes\StyleDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -527,6 +527,9 @@ limitations under the License.
     <Resource Include="UI\Images\zoomout_disabled.png" />
     <Resource Include="UI\Images\zoomout_hover.png" />
     <Resource Include="UI\Images\zoomout_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\click_background.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

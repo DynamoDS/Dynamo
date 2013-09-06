@@ -36,6 +36,7 @@ using Dynamo.ViewModels;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using String = System.String;
 using Dynamo.UI.Controls;
+using System.Collections.ObjectModel;
 
 namespace Dynamo.Controls
 {
@@ -56,6 +57,12 @@ namespace Dynamo.Controls
 
         // Reference to titlebar
         private TitleBarButtons titleBarButtons;
+
+        private ObservableCollection<ShortcutBarItem> shortcutBarItems;
+        public ObservableCollection<ShortcutBarItem> ShortcutBarItems
+        {
+            get { return shortcutBarItems; }
+        }
 
         public bool ConsoleShowing
         {
@@ -82,11 +89,69 @@ namespace Dynamo.Controls
             _timer = new Stopwatch();
             _timer.Start();
 
+            InitializeShortcutBar();
+
             InitializeComponent();
 
             this.Loaded += dynBench_Activated;
         }
 
+        void InitializeShortcutBar()
+        {
+            shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
+
+            DynamoViewModel viewModel = dynSettings.Controller.DynamoViewModel;
+
+            ShortcutBarItem newScriptButton = new ShortcutBarItem();
+            newScriptButton.ShortcutToolTip = "New [Ctrl + N]";
+            newScriptButton.ShortcutCommand = viewModel.NewHomeWorkspaceCommand;
+            newScriptButton.ImgNormalSource = "/DynamoCore;component/UI/Images/new_normal.png";
+            newScriptButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/new_disabled.png";
+            newScriptButton.ImgHoverSource = "/DynamoCore;component/UI/Images/new_hover.png";
+
+            ShortcutBarItem openScriptButton = new ShortcutBarItem();
+            openScriptButton.ShortcutToolTip = "Open [Ctrl + O]";
+            openScriptButton.ShortcutCommand = viewModel.ShowOpenDialogAndOpenResultCommand;
+            openScriptButton.ImgNormalSource = "/DynamoCore;component/UI/Images/open_normal.png";
+            openScriptButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/open_disabled.png";
+            openScriptButton.ImgHoverSource = "/DynamoCore;component/UI/Images/open_hover.png";
+
+            ShortcutBarItem saveButton = new ShortcutBarItem();
+            saveButton.ShortcutToolTip = "Save [Ctrl + S]";
+            saveButton.ShortcutCommand = viewModel.ShowSaveDialogIfNeededAndSaveResultCommand;
+            saveButton.ImgNormalSource = "/DynamoCore;component/UI/Images/save_normal.png";
+            saveButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/save_disabled.png";
+            saveButton.ImgHoverSource = "/DynamoCore;component/UI/Images/save_hover.png";
+
+            // PLACEHOLDER FOR FUTURE SHORTCUT
+            //ShortcutBarItem undoButton = new ShortcutBarItem();
+            //undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
+            //undoButton.ShortcutCommand = viewModel.; // Function implementation in progress
+            //undoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/undo_normal.png";
+            //undoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/undo_disabled.png";
+            //undoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/undo_hover.png";
+
+            //ShortcutBarItem redoButton = new ShortcutBarItem();
+            //redoButton.ShortcutToolTip = "Redo [Ctrl + Y]";
+            //redoButton.ShortcutCommand = viewModel.; // Function implementation in progress
+            //redoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
+            //redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
+            //redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
+
+            //ShortcutBarItem runButton = new ShortcutBarItem();
+            //runButton.ShortcutToolTip = "Run [Ctrl + R]";
+            //runButton.ShortcutCommand = viewModel.; // Function implementation in progress
+            //runButton.ImgNormalSource = "/DynamoCore;component/UI/Images/run_normal.png";
+            //runButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/run_disabled.png";
+            //runButton.ImgHoverSource = "/DynamoCore;component/UI/Images/run_hover.png";
+
+            shortcutBarItems.Add(newScriptButton);
+            shortcutBarItems.Add(openScriptButton);
+            shortcutBarItems.Add(saveButton);
+            //shortcutBarItems.Add(undoButton);
+            //shortcutBarItems.Add(redoButton);
+            //shortcutBarItems.Add(runButton);
+        }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
         {
@@ -564,6 +629,49 @@ namespace Dynamo.Controls
 
                 _vm.OpenCommand.Execute(path);
             }
+        }
+    }
+
+    public partial class ShortcutBarItem
+    {
+        private string shortcutToolTip;
+        private string imgNormalSource;
+        private string imgHoverSource;
+        private string imgDisabledSource;
+        private ICommand shortcutCommand;
+
+        public ICommand ShortcutCommand
+        {
+            get { return shortcutCommand; }
+            set { shortcutCommand = value; }
+        }
+
+
+        public string ImgDisabledSource
+        {
+            get { return imgDisabledSource; }
+            set { imgDisabledSource = value; }
+        }
+
+
+        public string ImgHoverSource
+        {
+            get { return imgHoverSource; }
+            set { imgHoverSource = value; }
+        }
+
+
+        public string ImgNormalSource
+        {
+            get { return imgNormalSource; }
+            set { imgNormalSource = value; }
+        }
+
+
+        public string ShortcutToolTip
+        {
+            get { return shortcutToolTip; }
+            set { shortcutToolTip = value; }
         }
     }
 }
