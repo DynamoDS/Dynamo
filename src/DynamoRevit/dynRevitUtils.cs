@@ -395,37 +395,98 @@ namespace Dynamo.Utilities
             var p1 = c.Evaluate(0.5, true);
             var p2 = c.Evaluate(1, true);
 
-            var v1 = p1 - p0;
-            var v2 = p2 - p0;
-            var norm = v1.CrossProduct(v2).Normalize();
+            //var v1 = p1 - p0;
+            //var v2 = p2 - p0;
+            //var norm = v1.CrossProduct(v2).Normalize();
 
-            //Normal can be zero length in the case of a straight line
-            //or a curve whose three parameter points as measured above
-            //happen to lie along the same line. In this case, project
-            //the last point down to a plane and use the projected vector
-            //and one of the vectors from above to calculate a normal.
-            if (norm.IsZeroLength())
-            {
-                if (p0.Z == p2.Z)
-                {
-                    norm = XYZ.BasisZ;
-                }
-                else
-                {
-                    var p3 = new XYZ(p2.X, p2.Y, p0.Z);
-                    var v3 = p3 - p0;
-                    norm = v1.CrossProduct(v3);
-                }
-            }
+            ////Normal can be zero length in the case of a straight line
+            ////or a curve whose three parameter points as measured above
+            ////happen to lie along the same line. In this case, project
+            ////the last point down to a plane and use the projected vector
+            ////and one of the vectors from above to calculate a normal.
+            //if (norm.IsZeroLength())
+            //{
+            //    if (p0.Z == p2.Z)
+            //    {
+            //        norm = XYZ.BasisZ;
+            //    }
+            //    else
+            //    {
+            //        var p3 = new XYZ(p2.X, p2.Y, p0.Z);
+            //        var v3 = p3 - p0;
+            //        norm = v1.CrossProduct(v3);
+            //    }
+            //}
 
-            var curvePlane = new Plane(norm, p0);
+            //var curvePlane = new Plane(norm, p0);
+
+            XYZ meanPt;
+            List<XYZ> orderedEigenvectors;
+            BestFitLine.PrincipalComponentsAnalysis(new List<XYZ>(){p0,p1,p2}, out meanPt, out orderedEigenvectors);
+            var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
+            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
 
             SketchPlane sp = null;
             sp = dynRevitSettings.Doc.Document.IsFamilyDocument ? 
-                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(curvePlane) : 
-                dynRevitSettings.Doc.Document.Create.NewSketchPlane(curvePlane);
+                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) : 
+                dynRevitSettings.Doc.Document.Create.NewSketchPlane(plane);
 
             return sp;
+        }
+
+        public static Curve FlattenCurveOnPlane(Curve c, out Plane plane)
+        {
+            XYZ meanPt = null;
+            List<XYZ> orderedEigenvectors;
+            XYZ normal;
+
+            if (c is Autodesk.Revit.DB.HermiteSpline)
+            {
+                var hs = c as Autodesk.Revit.DB.HermiteSpline;
+                BestFitLine.PrincipalComponentsAnalysis(hs.ControlPoints.ToList(), out meanPt, out orderedEigenvectors);
+                normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
+                plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
+
+                var projPoints = new List<XYZ>();
+                foreach (var pt in hs.ControlPoints)
+                {
+                    var proj = pt - (pt - plane.Origin).DotProduct(plane.Normal) * plane.Normal;
+                    projPoints.Add(proj);
+                }
+
+                return dynRevitSettings.Revit.Application.Create.NewHermiteSpline(projPoints, false);
+            }
+
+            if (c is Autodesk.Revit.DB.NurbSpline)
+            {
+                var ns = c as Autodesk.Revit.DB.NurbSpline;
+                BestFitLine.PrincipalComponentsAnalysis(ns.CtrlPoints.ToList(), out meanPt, out orderedEigenvectors);
+                normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
+                plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
+
+                var projPoints = new List<XYZ>();
+                foreach (var pt in ns.CtrlPoints)
+                {
+                    var proj = pt - (pt - plane.Origin).DotProduct(plane.Normal) * plane.Normal;
+                    projPoints.Add(proj);
+                }
+
+                return dynRevitSettings.Revit.Application.Create.NewNurbSpline(projPoints,ns.Weights,ns.Knots,ns.Degree,ns.isClosed,ns.isRational);
+            }
+
+            if (c is CylindricalHelix)
+            {
+                throw new Exception("Cylindrical helices are not supported.");
+            }
+
+            var p0 = c.Evaluate(0, true);
+            var p1 = c.Evaluate(0.5, true);
+            var p2 = c.Evaluate(1, true);
+            BestFitLine.PrincipalComponentsAnalysis(new List<XYZ>(){p0,p1,p2}, out meanPt, out orderedEigenvectors);
+            normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
+            plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
+
+            return c;
         }
     }
 
