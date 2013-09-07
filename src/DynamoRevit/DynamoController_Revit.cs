@@ -537,7 +537,7 @@ namespace Dynamo
                 //If we don't need to be in the idle thread...
                 if (noIdleThread || Testing)
                 {
-                    DynamoLogger.Instance.Log("Running expression in evaluation thread...");
+                    //DynamoLogger.Instance.Log("Running expression in evaluation thread...");
                     TransMode = TransactionMode.Manual; //Manual transaction control
 
                     if (Testing)
@@ -548,7 +548,7 @@ namespace Dynamo
                 }
                 else //otherwise...
                 {
-                    DynamoLogger.Instance.Log("Running expression in Revit's Idle thread...");
+                    //DynamoLogger.Instance.Log("Running expression in Revit's Idle thread...");
                     TransMode = TransactionMode.Automatic; //Automatic transaction control
 
                     Debug.WriteLine("Adding a run to the idle stack.");

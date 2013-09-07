@@ -48,42 +48,31 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var c = (Curve)((Value.Container)args[0]).Item;
-            var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
+
+            Autodesk.Revit.DB.Plane plane;
+            c = dynRevitUtils.FlattenCurveOnPlane(c, out plane);
+            Autodesk.Revit.DB.SketchPlane sp = null;
+            sp = dynRevitSettings.Doc.Document.IsFamilyDocument ?
+                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) :
+                dynRevitSettings.Doc.Document.Create.NewSketchPlane(plane);
 
             Autodesk.Revit.DB.ModelCurve mc;
+            mc = this.UIDocument.Document.IsFamilyDocument
+                ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+                : this.UIDocument.Document.Create.NewModelCurve(c, sp);
 
             if (this.Elements.Any())
             {
                 Element e;
                 if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.ModelCurve), out e))
                 {
-                    mc = e as Autodesk.Revit.DB.ModelCurve;
-                    mc.SketchPlane = sp;
-                    
-                    if (!mc.GeometryCurve.IsBound && c.IsBound)
-                    {
-                        c = c.Clone();
-                        c.MakeUnbound();
-                    }
-                    mc.GeometryCurve = c;
-
+                    dynRevitSettings.Doc.Document.Delete(e.Id);
                 }
-                else
-                {
-                    mc = this.UIDocument.Document.IsFamilyDocument
-                       ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                       : this.UIDocument.Document.Create.NewModelCurve(c, sp);
-                    this.Elements[0] = mc.Id;
-                    mc.SketchPlane = sp;
-                }
+                this.Elements[0] = mc.Id;
             }
             else
             {
-                mc = this.UIDocument.Document.IsFamilyDocument
-                   ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                   : this.UIDocument.Document.Create.NewModelCurve(c, sp);
                 this.Elements.Add(mc.Id);
-                mc.SketchPlane = sp;
             }
 
             return Value.NewContainer(mc);
