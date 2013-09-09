@@ -38,10 +38,13 @@
           <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <StackPanel FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="2" >
-            <StackPanel Name="titleBarButtonsGrid"  shell:WindowChrome.IsHitTestVisibleInChrome="True">
+        <Border FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="#333" BorderThickness="0,0,0,1" Background="#444">
+        </Border>
+        
+        <Grid FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
+            <StackPanel Margin="0,5,0,0" Name="titleBarButtonsGrid" FlowDirection="LeftToRight" shell:WindowChrome.IsHitTestVisibleInChrome="True">
             </StackPanel>
-        </StackPanel>
+        </Grid>
 
         <Border Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1">
 
