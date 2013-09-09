@@ -817,11 +817,17 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, childList5[0].GetDoubleFromFSchemeValue());
         }
 
+        /// <summary>
+        /// This test uses nodes:
+        ///     String, List, Watch
+        ///     Repeat, Flatten, First of List, List Length, Is Empty List
+        /// "Flatten" take output of "Repeat" as input.
+        /// </summary>
         [Test]
-        public void TestIntegration1()
+        public void TestIntegrationOfRepeatAndFlattenList()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "testIntegration1.dyn");
+            string testFilePath = Path.Combine(listTestFolder, "TestIntegrationRepeatAndFlattenList.dyn");
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
 
@@ -877,11 +883,17 @@ namespace Dynamo.Tests
             Assert.AreEqual(99999999999999, sublist3[2].GetDoubleFromFSchemeValue());
         }
 
+        /// <summary>
+        /// This test uses nodes:
+        ///     String, List, Watch
+        ///     Concatenate List, Flatten Completely, Rest of List
+        /// "Flatten Completety" and "Rest of List" take output of "Concatenate String" as input.
+        /// </summary>
         [Test]
-        public void TestIntegration2()
+        public void TestIntegrationConcatAndFlattenCompletelyList()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "testIntegration2.dyn");
+            string testFilePath = Path.Combine(listTestFolder, "TestIntegrationConcatAndFlattenCompletelyList.dyn");
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
 

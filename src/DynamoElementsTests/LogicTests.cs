@@ -290,11 +290,17 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult3, actualResult3);
         }
 
+        /// <summary>
+        /// Test case uses nodes:
+        ///     Number, Watch
+        ///     Less Than, Greater Than, Equal, Less Than or Equal, Greater Than or Equal
+        /// "Less Than", "Greater Than", "Less Than or Equal" output is the input for other comparison nodes
+        /// </summary>
         [Test]
-        public void testIntegeration()
+        public void testIntegerationOfComparisonNodes()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(logicTestFolder, "testIntegration1.dyn");
+            string testFilePath = Path.Combine(logicTestFolder, "testIntegerationComparisonNodes.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -471,11 +477,18 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult3, actualResult3);
         }
 
+        /// <summary>
+        /// Test case uses nodes:
+        ///     Number, Watch
+        ///     And, Or
+        ///     Less Than, Greater Than
+        /// The output of "Less Than", "Greater Than" nodes become input for "And", "Or" nodes
+        /// </summary>
         [Test]
-        public void testIntegeration2()
+        public void testIntegrationOfConditionalNodes()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(logicTestFolder, "testIntegration2.dyn");
+            string testFilePath = Path.Combine(logicTestFolder, "testIntegrationConditionalNodes.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
@@ -502,11 +515,16 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult5, actualResult5);
         }
 
+        /// <summary>
+        /// Test case uses nodes:
+        ///     Number, Watch
+        ///     And, Or, Xor, Not, If
+        /// </summary>
         [Test]
-        public void testIntegeration3()
+        public void testIntegrationOfConditionalAndComparisonNodes()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(logicTestFolder, "testIntegration3.dyn");
+            string testFilePath = Path.Combine(logicTestFolder, "testIntegrationConditionalAndComparisonNodes.dyn");
 
             model.Open(testFilePath);
             dynSettings.Controller.RunExpression(null);
