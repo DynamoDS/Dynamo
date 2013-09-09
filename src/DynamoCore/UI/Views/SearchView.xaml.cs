@@ -42,25 +42,13 @@ namespace Dynamo.Search
 
             SearchTextBox.IsVisibleChanged += delegate
             {
-                DynamoCommands.SearchCommand.Execute(null);
-                Keyboard.Focus(this.SearchTextBox);
-                var view = WPF.FindUpVisualTree<DynamoView>(this);
-                SearchTextBox.InputBindings.AddRange(view.InputBindings);
-            };
-
-            SearchTextBox.GotKeyboardFocus += delegate
-            {
-                if (SearchTextBox.Text == "Search...")
+                if (SearchTextBox.IsVisible)
                 {
-                    SearchTextBox.Text = "";
+                    DynamoCommands.SearchCommand.Execute(null);
+                    Keyboard.Focus(this.SearchTextBox);
+                    var view = WPF.FindUpVisualTree<DynamoView>(this);
+                    SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
-
-                SearchTextBox.Foreground = Brushes.White;
-            };
-
-            SearchTextBox.LostKeyboardFocus += delegate
-            {
-                SearchTextBox.Foreground = Brushes.Gray;
             };
         }
 

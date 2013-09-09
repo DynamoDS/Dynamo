@@ -15,9 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <ImportGroup Label="PropertySheets">	
-	<Import Project="$(SolutionDir)Dynamo.CS.props" />
-</ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Dynamo.CS.props" />
+  </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -111,7 +111,7 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
     </Reference>
-     <Reference Include="ProtoInterface">
+    <Reference Include="ProtoInterface">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
     </Reference>
@@ -461,17 +461,6 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="VBIDE">
-      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>5</VersionMajor>
-      <VersionMinor>3</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\closetab_hover.png" />
