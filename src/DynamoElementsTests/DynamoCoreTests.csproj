@@ -61,6 +61,7 @@
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />
     <Compile Include="CustomNodeTests.cs" />
+    <Compile Include="FileReading.cs" />
     <Compile Include="ListTests.cs" />
     <Compile Include="DynamoUnitTest.cs" />
     <Compile Include="LogicTests.cs" />
