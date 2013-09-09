@@ -100,8 +100,9 @@ namespace Dynamo.Utilities
                         allLoadedAssemblies[assembly.GetName().Name] = assembly;
                         LoadNodesFromAssembly(assembly);
                     }
-                    catch
+                    catch(Exception e)
                     {
+                        DynamoLogger.Instance.Log(e);
                     }
                 }
             }
