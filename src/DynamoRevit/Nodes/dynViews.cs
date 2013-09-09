@@ -54,7 +54,7 @@ namespace Dynamo.Nodes
             ViewDrafting vd = null;
             string viewName = ((Value.String)args[0]).Item;
 
-            if (Elements.Any())
+            if (this.Elements.Any())
             {
                 Element e;
                 if (dynUtils.TryGetElement(this.Elements[0], typeof(ViewDrafting), out e))
@@ -64,13 +64,13 @@ namespace Dynamo.Nodes
                 else
                 {
                     vd = dynRevitSettings.Doc.Document.Create.NewViewDrafting();
-                    Elements[0] = vd.Id;
+                    this.Elements[0] = vd.Id;
                 }
             }
             else
             {
-                vd = vd = dynRevitSettings.Doc.Document.Create.NewViewDrafting();
-                Elements.Add(vd.Id);
+                vd = dynRevitSettings.Doc.Document.Create.NewViewDrafting();
+                this.Elements.Add(vd.Id);
             }
 
             //rename the view
