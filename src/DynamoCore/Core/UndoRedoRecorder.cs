@@ -104,6 +104,9 @@ namespace Dynamo.Core
             if (null == currentActionGroup)
                 throw new InvalidOperationException("No open group to end");
 
+            // If there wasn't anything recorded between BeginActionGroup and 
+            // the corresponding EndActionGroup method, then the action group 
+            // is discarded.
             if (currentActionGroup.HasChildNodes)
                 undoStack.Push(currentActionGroup);
 
