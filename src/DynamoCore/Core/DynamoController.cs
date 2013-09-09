@@ -64,6 +64,8 @@ namespace Dynamo
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
+        private readonly Dictionary<string, object> builtInFunctions = new Dictionary<String, object>();
+
         private bool testing = false;
 
         public CustomNodeManager CustomNodeManager { get; internal set; }
@@ -98,6 +100,11 @@ namespace Dynamo
         public Dictionary<string, TypeLoadData> BuiltInTypesByName
         {
             get { return builtinTypesByTypeName; }
+        }
+
+        public Dictionary<string, object> BuiltInFunctions
+        {
+            get { return builtInFunctions; }
         }
 
         public ExecutionEnvironment FSchemeEnvironment { get; private set; }
@@ -316,7 +323,7 @@ namespace Dynamo
             foreach (NodeModel topMost in topElements)
             {
                 /*
-                AstBuilder builder = new AstBuilder();
+                AstBuilder builder = AstBuilder.Instance;
                 topMost.CompileToAstNode(builder);
                 builder.Execute();
                 */
