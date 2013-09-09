@@ -18,6 +18,7 @@ using Microsoft.Practices.Prism;
 using NUnit.Framework;
 using Enum = System.Enum;
 using String = System.String;
+using ProtoCore.DSASM;
 
 namespace Dynamo.Models
 {
@@ -1397,7 +1398,12 @@ namespace Dynamo.Models
         {
             NodeModel result;
 
-            if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
+            if (dynSettings.Controller.BuiltInFunctions.ContainsKey(name))
+            {
+                var method = dynSettings.Controller.BuiltInFunctions[name];
+                result = new DSFunction(method as ProcedureNode);
+            }
+            else if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
             {
                 TypeLoadData tld = dynSettings.Controller.BuiltInTypesByName[name];
 
