@@ -977,7 +977,10 @@ namespace Dynamo.ViewModels
 
         public void Search(object parameter)
         {
-            dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
+            if (dynSettings.Controller != null)
+            {
+                dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
+            }
         }
 
         internal bool CanSearch(object parameter)
