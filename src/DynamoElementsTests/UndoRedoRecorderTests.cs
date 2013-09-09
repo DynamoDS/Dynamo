@@ -36,6 +36,9 @@ namespace Dynamo.Tests
         internal int Identifier { get; private set; }
         internal int Radius { get; private set; }
 
+        internal const string RadiusName = "Radius";
+        internal const string IdName = "Id";
+
         #endregion
 
         #region Serialization/Deserialization Methods
@@ -46,8 +49,8 @@ namespace Dynamo.Tests
             XmlElement element = xmlDocument.CreateElement(typeName);
             XmlElementHelper helper = new XmlElementHelper(element);
 
-            helper.SetAttribute("Radius", this.Radius);
-            helper.SetAttribute("Id", this.Identifier);
+            helper.SetAttribute(DummyModel.RadiusName, this.Radius);
+            helper.SetAttribute(DummyModel.IdName, this.Identifier);
             return element;
         }
 
@@ -55,8 +58,8 @@ namespace Dynamo.Tests
         {
             XmlElement element = xmlNode as XmlElement;
             XmlElementHelper helper = new XmlElementHelper(element);
-            this.Radius = helper.ReadInteger("Radius");
-            this.Identifier = helper.ReadInteger("Id");
+            this.Radius = helper.ReadInteger(DummyModel.RadiusName);
+            this.Identifier = helper.ReadInteger(DummyModel.IdName);
         }
 
         #endregion
@@ -77,26 +80,32 @@ namespace Dynamo.Tests
         internal void AddModel(DummyModel model)
         {
             models.Add(model);
+            undoRecorder.BeginActionGroup();
             undoRecorder.RecordCreationForUndo(model);
+            undoRecorder.EndActionGroup();
         }
 
         internal void ModifyModel(int identifier)
         {
             DummyModel model = GetModel(identifier);
+            undoRecorder.BeginActionGroup();
             undoRecorder.RecordModificationForUndo(model);
+            undoRecorder.EndActionGroup();
             model.DoubleRadius();
         }
 
         internal void RemoveModel(int identifier)
         {
             DummyModel model = GetModel(identifier);
+            undoRecorder.BeginActionGroup();
             undoRecorder.RecordDeletionForUndo(model);
+            undoRecorder.EndActionGroup();
             models.Remove(model);
         }
 
         internal DummyModel GetModel(int identifier)
         {
-            return models.First((x) => (x.Identifier == identifier));
+            return models.Find((x)=>(x.Identifier == identifier));
         }
 
         internal UndoRedoRecorder Recorder { get { return undoRecorder; } }
@@ -108,14 +117,14 @@ namespace Dynamo.Tests
         public void DeleteModel(XmlElement modelData)
         {
             XmlElementHelper helper = new XmlElementHelper(modelData);
-            int identifier = helper.ReadInteger("id");
+            int identifier = helper.ReadInteger(DummyModel.IdName);
             models.RemoveAll((x) => (x.Identifier == identifier));
         }
 
         public void ReloadModel(XmlElement modelData)
         {
             XmlElementHelper helper = new XmlElementHelper(modelData);
-            int identifier = helper.ReadInteger("id");
+            int identifier = helper.ReadInteger(DummyModel.IdName);
             DummyModel model = models.First((x) => (x.Identifier == identifier));
             model.Deserialize(modelData as XmlNode);
         }
@@ -164,6 +173,75 @@ namespace Dynamo.Tests
             {
                 UndoRedoRecorder temp = new UndoRedoRecorder(null);
             });
+        }
+
+        [Test]
+        public void TestBeginActionGroup00()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                recorder.BeginActionGroup();
+                recorder.BeginActionGroup(); // Exception.
+            });
+        }
+
+        [Test]
+        public void TestBeginActionGroup01()
+        {
+            recorder.BeginActionGroup();
+            recorder.EndActionGroup();
+            recorder.BeginActionGroup();
+            recorder.EndActionGroup(); // Successful.
+        }
+
+        [Test]
+        public void TestEndActionGroup00()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                recorder.EndActionGroup(); // Without begin.
+            });
+        }
+
+        [Test]
+        public void TestEndActionGroup01()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                recorder.BeginActionGroup();
+                recorder.EndActionGroup();
+                recorder.EndActionGroup(); // Without begin.
+            });
+        }
+
+        [Test]
+        public void TestCreationUndoRedo()
+        {
+            // Ensure the recorder is in its default states.
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            // Add a model into workspace, make sure it exists.
+            workspace.AddModel(new DummyModel(1, 10));
+            Assert.AreNotEqual(null, workspace.GetModel(1));
+
+            // Make sure we can now undo.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            recorder.Undo(); // Undo the creation.
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            // Make sure the creation has been undone.
+            Assert.AreEqual(null, workspace.GetModel(1));
+
+            recorder.Redo(); // Redo the creation.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            // Make sure the creation has been redone.
+            Assert.AreNotEqual(null, workspace.GetModel(1));
         }
     }
 }
