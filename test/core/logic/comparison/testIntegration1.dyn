@@ -1,4 +1,4 @@
-<Workspace X="-159.555555555556" Y="-229.44" zoom="0.8" Description="" Category="" Name="Home">
+<Workspace X="-101.555555555556" Y="-178.44" zoom="0.8" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.LessThan type="Dynamo.Nodes.LessThan" guid="f53b4bdb-7f84-402d-92fc-9e9f52e0f8ce" nickname="Less Than" x="484" y="353.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.LessThanEquals type="Dynamo.Nodes.LessThanEquals" guid="dd9b243c-83de-4052-91e0-6def99f3b6a3" nickname="Less Than Or Equal" x="397" y="565.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
@@ -6,7 +6,7 @@
     <Dynamo.Nodes.GreaterThanEquals type="Dynamo.Nodes.GreaterThanEquals" guid="32c9cc51-5e76-434b-9a85-cd4faf1a6f16" nickname="Greater Than Or Equal" x="554" y="580.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.Equal type="Dynamo.Nodes.Equal" guid="c5867c21-b77d-435d-b26d-d28ae4a31883" nickname="Equal" x="734" y="486.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c5386d23-6ea2-4952-a0de-9f43559a8f25" nickname="Number" x="201.75" y="428.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="100" />
+      <System.Double value="99999999999999.000" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="dc1ddea3-d5b8-4eb3-9bff-3c2e42160f85" nickname="Number" x="200.25" y="506.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="50" />
