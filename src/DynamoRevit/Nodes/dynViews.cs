@@ -130,8 +130,9 @@ namespace Dynamo.Nodes
                         view.SetOrientation(orient);
                         view.SaveOrientationAndLock();
                     }
-                    if (view.Name != null && view.Name != name)
-                        view.Name = CreateUniqueViewName(name);
+
+                    if (!view.Name.Equals(name))
+                        view.Name = ViewBase.CreateUniqueViewName(name);
                 }
                 else
                 {
