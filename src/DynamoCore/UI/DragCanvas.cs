@@ -47,6 +47,9 @@ namespace Dynamo.Controls
         //true if we're ignoring clicks
         public bool ignoreClick;
 
+        // The owning workspace for this DragCanvas
+        public Dynamo.Views.dynWorkspaceView owningWorkspace = null;
+
         #endregion // Data
 
         #region Attached Properties
@@ -335,6 +338,20 @@ namespace Dynamo.Controls
                         Debug.WriteLine(string.Format("ResetCursorLocation point x:{0} y:{0}", this.origCursorLocation.X, this.origCursorLocation.Y));
 
                         this.isDragInProgress = true;
+
+                        if (null != this.owningWorkspace)
+                        {
+                            // This is where we attempt to store all the models in undo recorder 
+                            // before they are modified (i.e. being dragged around the canvas).
+                            List<ModelBase> models = DynamoSelection.Instance.Selection.
+                                Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
+
+                            WorkspaceModel workspaceModel = owningWorkspace.ViewModel.Model;
+                            workspaceModel.RecordModelsForModification(models);
+                            DynamoController controller = Dynamo.Utilities.dynSettings.Controller;
+                            controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                            controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+                        }
 
                         e.Handled = true;
                         return;

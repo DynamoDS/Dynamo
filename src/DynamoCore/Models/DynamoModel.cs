@@ -1079,6 +1079,9 @@ namespace Dynamo.Models
         {
             if (null != _cspace)
                 _cspace.Undo();
+
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         internal bool CanUndo(object parameters)
@@ -1090,6 +1093,9 @@ namespace Dynamo.Models
         {
             if (null != _cspace)
                 _cspace.Redo();
+
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         internal bool CanRedo(object parameters)
