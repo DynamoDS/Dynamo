@@ -12,10 +12,11 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
+using Dynamo.Core;
 
 namespace Dynamo.Models
 {
-    public abstract class WorkspaceModel : NotificationObject, ILocatable
+    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient
     {
         #region Properties
 
@@ -214,7 +215,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool CanUndo
         {
-            get { return false; }
+            get { return ((null == undoRecorder) ? false : undoRecorder.CanUndo); }
         }
 
         /// <summary>
@@ -222,7 +223,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool CanRedo
         {
-            get { return false; }
+            get { return ((null == undoRecorder) ? false : undoRecorder.CanRedo); }
         }
 
         #endregion
@@ -270,7 +271,7 @@ namespace Dynamo.Models
             LastSaved = DateTime.Now;
 
             WorkspaceSaved += OnWorkspaceSaved;
-
+            undoRecorder = new UndoRedoRecorder(this);
         }
 
         public bool WatchChanges
@@ -352,13 +353,104 @@ namespace Dynamo.Models
             Nodes.ToList().ForEach(x => x.EnableReporting());
         }
 
-        public void Undo()
+        #region Undo/Redo Supporting Methods
+
+        private UndoRedoRecorder undoRecorder = null;
+
+        internal void Undo()
+        {
+            if (null != undoRecorder)
+                undoRecorder.Undo();
+        }
+
+        internal void Redo()
+        {
+            if (null != undoRecorder)
+                undoRecorder.Redo();
+        }
+
+        /// <summary>
+        /// TODO(Ben): This method is exposed this way for external codes (e.g. 
+        /// the DragCanvas) to record models before they are modified. This is 
+        /// by no means ideal. The ideal case of course is for ALL codes that 
+        /// end up modifying models to be folded back into WorkspaceViewModel in 
+        /// the form of commands. These commands then internally record those
+        /// affected models before updating them. We need this method to be gone
+        /// sooner than later.
+        /// </summary>
+        /// <param name="models">The models to be recorded for undo.</param>
+        /// 
+        internal void RecordModelsForModification(List<ModelBase> models)
+        {
+            if (null == undoRecorder)
+                return;
+            if (null == models || (models.Count <= 0))
+                return;
+
+            undoRecorder.BeginActionGroup();
+            {
+                foreach (ModelBase model in models)
+                    undoRecorder.RecordModificationForUndo(model);
+            }
+            undoRecorder.EndActionGroup();
+        }
+
+        #endregion
+
+        #region IUndoRedoRecorderClient Members
+
+        public void DeleteModel(XmlElement modelData)
         {
         }
 
-        public void Redo()
+        public void ReloadModel(XmlElement modelData)
+        {
+            ModelBase model = GetModelInternal(modelData);
+            model.Deserialize(modelData);
+        }
+
+        public void CreateModel(XmlElement modelData)
         {
         }
+
+        public ModelBase GetModelForElement(XmlElement modelData)
+        {
+            return GetModelInternal(modelData);
+        }
+
+        private ModelBase GetModelInternal(XmlElement modelData)
+        {
+            // TODO(Ben): This may or may not be true, but I guess we should be 
+            // using "System.Type" (given the "type" information in "modelData"),
+            // and determine the matching category (e.g. is this a Node, or a 
+            // Connector?) instead of checking in each and every collections we
+            // have in the workspace.
+            // 
+            // System.Type type = System.Type.GetType(helper.ReadString("type"));
+            // if (typeof(Dynamo.Models.NodeModel).IsAssignableFrom(type))
+            //     return Nodes.First((x) => (x.GUID == modelGuid));
+
+            XmlElementHelper helper = new XmlElementHelper(modelData);
+            Guid modelGuid = helper.ReadGuid("guid");
+
+            ModelBase foundModel = null;
+            if (null == foundModel && (Connectors.Count > 0))
+                foundModel = Connectors.First((x) => x.GUID == modelGuid);
+
+            if (null == foundModel && (Nodes.Count > 0))
+                foundModel = Nodes.First((x) => (x.GUID == modelGuid));
+
+            if (null == foundModel && (Notes.Count > 0))
+                foundModel = Notes.First((x) => (x.GUID == modelGuid));
+
+            if (null != foundModel)
+                return foundModel;
+
+            throw new ArgumentException(string.Format(
+                "Unhandled model type: {0}", helper.ReadString("type")));
+        }
+
+        #endregion
 
         public virtual void Modified()
         {
