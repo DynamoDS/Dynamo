@@ -8,21 +8,23 @@
         xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:commands="clr-namespace:Dynamo.UI.Commands"
         xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell"
         x:Name="_this"
-        Height="768" Width="1024"
+        Height="768" 
+        Width="1024"
         Closing="WindowClosing" 
         Closed="WindowClosed" 
         StateChanged="WindowChanged"
         MinHeight="600" 
         MinWidth="800" 
         Title="Dynamo"
+        ResizeMode="CanResizeWithGrip"
         AllowsTransparency="False" 
         KeyDown="DynamoView_KeyDown"
-        KeyUp="DynamoView_KeyUp" >
+        KeyUp="DynamoView_KeyUp">
 
     <Window.CommandBindings>
         
     </Window.CommandBindings>
-    
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -119,14 +121,14 @@
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="27"
                             GlassFrameThickness="0,0,0,1"
-                            CornerRadius="0"
+                            CornerRadius="2"
                             ResizeBorderThickness="5" />
     </shell:WindowChrome.WindowChrome>
 
     <Grid Name="mainGrid" FocusManager.IsFocusScope="True">
         
         <Grid.RowDefinitions>
-            <RowDefinition Height="27"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Name="consoleRow" Height="{Binding ConsoleShowing, Converter={StaticResource BoolToConsoleHeightConverter}}"/>
@@ -143,25 +145,21 @@
         <Grid Name="titleBarGrid" 
               Grid.Row="0"
               Grid.Column="0"
-              Grid.ColumnSpan="3"
-              Height="27">
+              Grid.ColumnSpan="3">
 
             <Grid.Background>
-                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                    <GradientStop Color="#FFF6F6F6" Offset="0.25"/>
-                    <GradientStop Color="#FFEAE8E8" Offset="0.25"/>
-                    <GradientStop Color="#FFDCD9D9" Offset="0.8"/>
-                    <GradientStop Color="White" Offset="1"/>
+                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#F0F0F0" Offset="0.0" />
+                    <GradientStop Color="#CCC" Offset="1.0" />
                 </LinearGradientBrush>
             </Grid.Background>
-
+            
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" 
-              VerticalAlignment="Center" Height="27" Name="menu1" FontFamily="Arial" Padding="3">
+            <Menu IsMainMenu="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" Name="menu1" Foreground="#333" Padding="6,8,0,3" Background="Transparent" BorderThickness="0">
 
                 <MenuItem Header="_File" Name="fileMenu" Focusable="False" shell:WindowChrome.IsHitTestVisibleInChrome="True">
 
@@ -305,6 +303,7 @@
             <!--Titlebar buttons-->
             <Grid Name="titleBarButtonsGrid" Grid.Column="1" shell:WindowChrome.IsHitTestVisibleInChrome="True">
             </Grid>
+            
         </Grid>
 
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 

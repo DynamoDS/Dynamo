@@ -38,9 +38,9 @@ namespace Dynamo.Tests
 
             var expected = new List<List<double>>
             {
-                new List<double> {0, 3, 6},
-                new List<double> {1, 4, 7},
-                new List<double> {2, 5, 8},
+                new List<double> { 0, 3, 6 },
+                new List<double> { 1, 4, 7 },
+                new List<double> { 2, 5, 8 },
             };
 
             // 50 elements between -1 and 1
@@ -85,15 +85,21 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("157557d2-2452-413a-9944-1df3df793cee");
+            var watch =
+                model.CurrentWorkspace.NodeFromWorkspace<Watch>(
+                    "157557d2-2452-413a-9944-1df3df793cee");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(doubleWatchVal, 15.0, 0.001);
 
-            var watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("068dd555-a5d5-4f11-af05-e4fa0cc015c9");
+            var watch2 =
+                model.CurrentWorkspace.NodeFromWorkspace<Watch>(
+                    "068dd555-a5d5-4f11-af05-e4fa0cc015c9");
             var doubleWatchVal1 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(doubleWatchVal1, 15.0, 0.001);
 
-            var watch3 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1aca382d-ca81-4955-a6c1-0f549df19fd7");
+            var watch3 =
+                model.CurrentWorkspace.NodeFromWorkspace<Watch>(
+                    "1aca382d-ca81-4955-a6c1-0f549df19fd7");
             var doubleWatchVal2 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
             Assert.AreEqual(doubleWatchVal2, 15.0, 0.001);
 
@@ -105,7 +111,9 @@ namespace Dynamo.Tests
             var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\filter\");
 
-            Assert.IsTrue(Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf")) != null);
+            Assert.IsTrue(
+                Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf"))
+                != null);
 
             string openPath = Path.Combine(examplePath, "filter-example.dyn");
             model.Open(openPath);
@@ -130,13 +138,59 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(3, list.Count());
             var count = 1;
-            list.ToList().ForEach(x =>
-            {
-                Assert.IsAssignableFrom(typeof(FScheme.Value.Number), x);
-                var val = (x as FScheme.Value.Number).Item;
-                Assert.AreEqual(count, val, 0.0001);
-                count += 2;
-            });
+            list.ToList().ForEach(
+                x =>
+                {
+                    Assert.IsAssignableFrom(typeof(FScheme.Value.Number), x);
+                    var val = (x as FScheme.Value.Number).Item;
+                    Assert.AreEqual(count, val, 0.0001);
+                    count += 2;
+                });
+        }
+
+        /// <summary>
+        /// Run an infinite loop for 10 seconds to confirm that it doesn't stack overflow
+        /// </summary>
+        [Test]
+        public void TailCallOptimization()
+        {
+            Assert.Inconclusive();
+        }
+
+        /// <summary>
+        /// Run a custom node, change parameter/output/function names, run again to verify consistency
+        /// </summary>
+        [Test]
+        public void RenameConsistency()
+        {
+            Assert.Inconclusive();
+        }
+
+        /// <summary>
+        /// Confirm that a custom node with multiple outputs evaluates successfully.
+        /// </summary>
+        [Test]
+        public void MultipleOutputs()
+        {
+            Assert.Inconclusive();   
+        }
+
+        /// <summary>
+        /// Modification of a recursive custom node results in UI updating for all instances.
+        /// </summary>
+        [Test]
+        public void ModificationUITesting()
+        {
+            // var homeNode = custom node instance in the home workspace
+            // var recNode = recursive custom node instance in the custom node workspace
+              
+            // change input/output names in the custom node definition, make sure instances were updated
+            // change name of the custom node, make sure instances were updated
+            // increase amount of inputs/outputs, make sure instances were updated
+            // decrease amount of inputs/outputs
+            //      make sure instances were updated
+            //      make sure any connectors attached to removed ports were deleted
+            Assert.Inconclusive();
         }
     }
 }
