@@ -40,6 +40,18 @@ namespace Dynamo.Core
         /// <param name="modelData">The xml data from which the corresponding 
         /// model can be re-created from.</param>
         void CreateModel(XmlElement modelData);
+
+        /// <summary>
+        /// UndoRedoRecorder calls this method to retrieve the up-to-date 
+        /// instance of the model before any undo/redo operation modifies the 
+        /// model. The up-to-date information of the model is important so that
+        /// an undo operation can be redone (repopulated with the up-to-date 
+        /// data before the undo operation happens).
+        /// </summary>
+        /// <param name="modelData">The xml data representing the model which 
+        /// UndoRedoRecorder requires for serialization purposes.</param>
+        /// <returns>Returns the model that modelData corresponds to.</returns>
+        ModelBase GetModelForElement(XmlElement modelData);
     }
 
     public class UndoRedoRecorder
@@ -49,7 +61,9 @@ namespace Dynamo.Core
         private const string CreationAction = "Creation";
         private const string ModificationAction = "Modification";
         private const string DeletionAction = "Deletion";
+
         private const string UserAction = "UserAction";
+        private const string ActionGroup = "ActionGroup";
 
         private IUndoRedoRecorderClient undoClient = null;
         private XmlDocument document = new XmlDocument();
@@ -91,7 +105,7 @@ namespace Dynamo.Core
         public void BeginActionGroup()
         {
             EnsureValidRecorderStates();
-            currentActionGroup = document.CreateElement("UndoGroup");
+            currentActionGroup = document.CreateElement(ActionGroup);
         }
 
         /// <summary>
@@ -125,7 +139,6 @@ namespace Dynamo.Core
             // be carried out when user performs a redo action.
             // 
             XmlElement topMostAction = PopActionGroupFromUndoStack();
-            PushActionGroupOnRedoStack(topMostAction);
             UndoActionGroup(topMostAction); // Perform the actual undo activities.
         }
 
@@ -138,7 +151,6 @@ namespace Dynamo.Core
 
             // Top-most group gets moved from redo stack to undo stack.
             XmlElement topMostAction = PopActionGroupFromRedoStack();
-            PushActionGroupOnUndoStack(topMostAction);
             RedoActionGroup(topMostAction); // Perform the actual redo activities.
         }
 
@@ -154,7 +166,8 @@ namespace Dynamo.Core
         /// <param name="model">The model to be recorded.</param>
         public void RecordCreationForUndo(ModelBase model)
         {
-            RecordForUndoInternal(model, UndoRedoRecorder.CreationAction);
+            RecordActionInternal(this.currentActionGroup,
+                model, UndoRedoRecorder.CreationAction);
         }
 
         /// <summary>
@@ -166,7 +179,8 @@ namespace Dynamo.Core
         /// <param name="model">The model to be recorded.</param>
         public void RecordDeletionForUndo(ModelBase model)
         {
-            RecordForUndoInternal(model, UndoRedoRecorder.DeletionAction);
+            RecordActionInternal(this.currentActionGroup,
+                model, UndoRedoRecorder.DeletionAction);
         }
 
         /// <summary>
@@ -178,7 +192,8 @@ namespace Dynamo.Core
         /// <param name="model">The model to be recorded.</param>
         public void RecordModificationForUndo(ModelBase model)
         {
-            RecordForUndoInternal(model, UndoRedoRecorder.ModificationAction);
+            RecordActionInternal(this.currentActionGroup,
+                model, UndoRedoRecorder.ModificationAction);
         }
 
         #endregion
@@ -215,19 +230,19 @@ namespace Dynamo.Core
         /// recorded twice (when a node is deleted, its connections are being 
         /// recorded for undo).
         /// </summary>
+        /// <param name="group">The action group to check against.</param>
         /// <param name="model">The model to check against.</param>
         /// <returns>Returns true if the model has already been recorded in the
         /// current action group, or false otherwise.</returns>
-        private bool IsRecordedInActionGroup(ModelBase model)
+        private bool IsRecordedInActionGroup(XmlElement group, ModelBase model)
         {
-            if (null == this.currentActionGroup)
-            {
-                throw new InvalidOperationException("'IsRecordedInActionGroup' "
-                    + "method cannot be called when there is no opened group");
-            }
+            if (null == group)
+                throw new ArgumentNullException("group");
+            if (null == model)
+                throw new ArgumentNullException("model");
 
             System.Guid guid = model.GUID;
-            foreach (XmlNode childNode in currentActionGroup.ChildNodes)
+            foreach (XmlNode childNode in group.ChildNodes)
             {
                 XmlAttribute guidAttribute = childNode.Attributes["guid"];
                 if (guid == Guid.Parse(guidAttribute.Value))
@@ -266,70 +281,85 @@ namespace Dynamo.Core
             return redoStack.Pop();
         }
 
-        private void PushActionGroupOnUndoStack(XmlElement actionGroup)
+        private void RecordActionInternal(XmlElement group, ModelBase model, string action)
         {
-            undoStack.Push(actionGroup);
-        }
-
-        private void PushActionGroupOnRedoStack(XmlElement actionGroup)
-        {
-            redoStack.Push(actionGroup);
-        }
-
-        private void RecordForUndoInternal(ModelBase model, string action)
-        {
-            if (IsRecordedInActionGroup(model))
+            if (IsRecordedInActionGroup(group, model))
                 return;
 
             // Serialize the affected model into xml representation
             // and store it under the current action group.
             XmlNode childNode = model.Serialize(this.document);
             SetNodeAction(childNode, action);
-            currentActionGroup.AppendChild(childNode);
+            group.AppendChild(childNode);
         }
 
         private void UndoActionGroup(XmlElement actionGroup)
         {
+            // This is the action group where all the undone actions are added.
+            XmlElement newGroup = document.CreateElement(ActionGroup);
+
             foreach (XmlNode action in actionGroup.ChildNodes)
             {
+                XmlElement element = action as XmlElement;
                 XmlAttribute actionAttribute = action.Attributes[UserAction];
                 switch (actionAttribute.Value)
                 {
+                    // Before undo takes place (to delete the model), the most 
+                    // up-to-date model is retrieved and serialized into the 
+                    // redo action group so that it can properly be redone later.
                     case UndoRedoRecorder.CreationAction:
-                        undoClient.DeleteModel(action as XmlElement);
+                        ModelBase toBeDeleted = undoClient.GetModelForElement(element);
+                        RecordActionInternal(newGroup, toBeDeleted, actionAttribute.Value);
+                        undoClient.DeleteModel(element);
                         break;
 
                     case UndoRedoRecorder.ModificationAction:
-                        undoClient.ReloadModel(action as XmlElement);
+                        ModelBase toBeUpdated = undoClient.GetModelForElement(element);
+                        RecordActionInternal(newGroup, toBeUpdated, actionAttribute.Value);
+                        undoClient.ReloadModel(element);
                         break;
 
                     case UndoRedoRecorder.DeletionAction:
-                        undoClient.CreateModel(action as XmlElement);
+                        newGroup.AppendChild(element);
+                        undoClient.CreateModel(element);
                         break;
                 }
             }
+
+            this.redoStack.Push(newGroup); // Place the states on the redo-stack.
         }
 
         private void RedoActionGroup(XmlElement actionGroup)
         {
+            // This is the action group where all the redone actions are added.
+            XmlElement newGroup = document.CreateElement(ActionGroup);
+
             foreach (XmlNode action in actionGroup.ChildNodes)
             {
+                XmlElement element = action as XmlElement;
                 XmlAttribute actionAttribute = action.Attributes[UserAction];
                 switch (actionAttribute.Value)
                 {
                     case UndoRedoRecorder.CreationAction:
-                        undoClient.CreateModel(action as XmlElement);
+                        newGroup.AppendChild(element);
+                        undoClient.CreateModel(element);
                         break;
 
                     case UndoRedoRecorder.ModificationAction:
-                        undoClient.ReloadModel(action as XmlElement);
+                        ModelBase toBeUpdated = undoClient.GetModelForElement(element);
+                        RecordActionInternal(newGroup, toBeUpdated, actionAttribute.Value);
+                        undoClient.ReloadModel(element);
                         break;
 
                     case UndoRedoRecorder.DeletionAction:
-                        undoClient.DeleteModel(action as XmlElement);
+                        ModelBase toBeDeleted = undoClient.GetModelForElement(element);
+                        RecordActionInternal(newGroup, toBeDeleted, actionAttribute.Value);
+                        undoClient.DeleteModel(element);
                         break;
                 }
             }
+
+            this.undoStack.Push(newGroup);
         }
 
         #endregion
