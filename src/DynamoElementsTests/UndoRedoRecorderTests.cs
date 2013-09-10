@@ -304,7 +304,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestModificationUndoRedo()
+        public void TestModificationUndoRedo00()
         {
             // Ensure the recorder is in its default states.
             Assert.AreEqual(false, recorder.CanUndo);
@@ -347,6 +347,45 @@ namespace Dynamo.Tests
             DummyModel redone = workspace.GetModel(1);
             Assert.AreNotEqual(null, redone);
             Assert.AreEqual(20, redone.Radius);
+        }
+
+        [Test]
+        public void TestModificationUndoRedo01()
+        {
+            // Add a model into workspace, make sure it exists.
+            workspace.AddModel(new DummyModel(1, 10));
+            DummyModel model = workspace.GetModel(1);
+            Assert.AreEqual(10, model.Radius);
+
+            workspace.ModifyModel(1); // Double radius to 20.
+            Assert.AreEqual(20, workspace.GetModel(1).Radius);
+
+            workspace.ModifyModel(1); // Double radius to 40.
+            Assert.AreEqual(40, workspace.GetModel(1).Radius);
+
+            recorder.Undo(); // Should go back to 20.
+            Assert.AreEqual(20, workspace.GetModel(1).Radius);
+
+            recorder.Redo(); // Should go back to 40.
+            Assert.AreEqual(40, workspace.GetModel(1).Radius);
+
+            recorder.Undo(); // Should go back to 20.
+            Assert.AreEqual(20, workspace.GetModel(1).Radius);
+
+            recorder.Undo(); // Should go back to 10.
+            Assert.AreEqual(10, workspace.GetModel(1).Radius);
+
+            recorder.Redo(); // Should go back to 20.
+            Assert.AreEqual(20, workspace.GetModel(1).Radius);
+
+            recorder.Undo(); // Should go back to 10.
+            Assert.AreEqual(10, workspace.GetModel(1).Radius);
+
+            recorder.Undo(); // Should undo creation.
+            Assert.AreEqual(null, workspace.GetModel(1));
+
+            recorder.Redo(); // Should redo creation.
+            Assert.AreEqual(10, workspace.GetModel(1).Radius);
         }
     }
 }
