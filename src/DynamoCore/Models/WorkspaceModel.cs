@@ -209,6 +209,22 @@ namespace Dynamo.Models
             get { return new Rect(_x, _y, _width, _height); }
         }
 
+        /// <summary>
+        ///     Determine if undo operation is currently possible.
+        /// </summary>
+        public bool CanUndo
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        ///     Determine if redo operation is currently possible.
+        /// </summary>
+        public bool CanRedo
+        {
+            get { return false; }
+        }
+
         #endregion
 
         public delegate void WorkspaceSavedEvent(WorkspaceModel model);
@@ -334,6 +350,14 @@ namespace Dynamo.Models
         public void EnableReporting()
         {
             Nodes.ToList().ForEach(x => x.EnableReporting());
+        }
+
+        public void Undo()
+        {
+        }
+
+        public void Redo()
+        {
         }
 
         public virtual void Modified()
