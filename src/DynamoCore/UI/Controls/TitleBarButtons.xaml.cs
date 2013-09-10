@@ -20,9 +20,9 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class TitleBarButtons : UserControl
     {
-        DynamoView dynamoView = null;
+        Window dynamoView = null;
 
-        public TitleBarButtons(DynamoView dynamoView)
+        public TitleBarButtons(Window dynamoView)
         {
             InitializeComponent();
             this.dynamoView = dynamoView;
