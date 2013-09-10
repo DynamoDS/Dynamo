@@ -10,6 +10,10 @@ using ProtoCore.DSASM;
 
 namespace Dynamo.Nodes
 {
+    /// <summary>
+    /// DesignScript function node. All functions from DesignScript share the
+    /// same function node but internally have different procedure node.
+    /// </summary>
     [NodeName("Function Node")]
     [NodeDescription("DesignScript Builtin Functions")]
     [IsInteractive(false)]

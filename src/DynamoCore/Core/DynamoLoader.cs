@@ -108,14 +108,14 @@ namespace Dynamo.Utilities
                 }
             }
 
-            LoadBuiltInFunctions();
+            LoadDSBuiltInFunctions();
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
             #endregion
 
         }
 
-        private static void LoadBuiltInFunctions()
+        private static void LoadDSBuiltInFunctions()
         {
             GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> {"Math.dll" });
             List<ProcedureNode> builtInMethods = GraphToDSCompiler.GraphUtilities.BuiltInMethods;
