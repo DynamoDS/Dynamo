@@ -1864,7 +1864,7 @@ namespace Dynamo.Models
         {
             return CurrentWorkspace.Nodes.First((x) => (x.GUID == guid));
         }
-        
+
         #region Serialization/Deserialization Methods
 
         protected override XmlNode SerializeCore(XmlDocument xmlDocument)

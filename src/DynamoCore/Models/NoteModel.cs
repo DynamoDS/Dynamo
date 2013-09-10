@@ -40,8 +40,11 @@ namespace Dynamo.Models
         {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 1. Implemented "DeserializeCore" method for ConnectorModel, NodeModel, NoteModel and PortModel
+=======
+>>>>>>> 0ec60307b125247975cda643848129644fee1dce
             XmlElement element = xmlNode as XmlElement;
             XmlElementHelper helper = new XmlElementHelper(element);
 
@@ -49,10 +52,13 @@ namespace Dynamo.Models
             this.X = helper.ReadDouble("x", 0.0);
             this.Y = helper.ReadDouble("y", 0.0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 1. Introduced "Serialize/Deserialize" methods (and their protected virtual Core methods) to "ModelBase" class
 =======
 >>>>>>> 1. Implemented "DeserializeCore" method for ConnectorModel, NodeModel, NoteModel and PortModel
+=======
+>>>>>>> 0ec60307b125247975cda643848129644fee1dce
         }
 
         #endregion
