@@ -8,16 +8,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{09EC17AF-24D2-4542-A913-0C27AE345C18}</ProjectGuid>
+    <ProjectGuid>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DSCoreNodesTests</RootNamespace>
-    <AssemblyName>DSCoreNodesTests</AssemblyName>
+    <RootNamespace>DynamoUtilities</RootNamespace>
+    <AssemblyName>DynamoUtilities</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,13 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LibGNet">
-      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -53,19 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GeometryTests.cs" />
+    <Compile Include="AssemblyHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DSCoreNodes\DSCoreNodes.csproj">
-      <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
-      <Name>DSCoreNodes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
-      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
-      <Name>DynamoUtilities</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
