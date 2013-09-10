@@ -1601,13 +1601,6 @@ namespace Dynamo.Models
 
         protected override void DeserializeCore(XmlNode xmlNode)
         {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1. Implemented "DeserializeCore" method for ConnectorModel, NodeModel, NoteModel and PortModel
-=======
->>>>>>> 0ec60307b125247975cda643848129644fee1dce
             XmlElement element = xmlNode as XmlElement;
             XmlElementHelper helper = new XmlElementHelper(element);
 
@@ -1647,14 +1640,6 @@ namespace Dynamo.Models
 
             // TODO(Ben): We need to raise property change events 
             // here for those data members we directly changed.
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1. Introduced "Serialize/Deserialize" methods (and their protected virtual Core methods) to "ModelBase" class
-=======
->>>>>>> 1. Implemented "DeserializeCore" method for ConnectorModel, NodeModel, NoteModel and PortModel
-=======
->>>>>>> 0ec60307b125247975cda643848129644fee1dce
         }
 
         #endregion
