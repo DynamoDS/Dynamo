@@ -14,12 +14,12 @@
             </ResourceDictionary>
         </Window.Resources>
         
-    <shell:WindowChrome.WindowChrome>
+    <!--<shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="27"
                             GlassFrameThickness="0,0,0,1"
                             CornerRadius="2"
                             ResizeBorderThickness="5" />
-    </shell:WindowChrome.WindowChrome>
+    </shell:WindowChrome.WindowChrome>-->
         
     <Grid Background="Black" Margin="0">
 
@@ -29,13 +29,13 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Border FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="0" BorderBrush="#333" BorderThickness="0,0,0,1" Height="30" Background="#444">
+        <!--<Border FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="0" BorderBrush="#333" BorderThickness="0,0,0,1" Height="30" Background="#444">
         </Border>
 
         <Grid FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
             <StackPanel Margin="0,5,0,0" Name="titleBarButtonsGrid" FlowDirection="LeftToRight" shell:WindowChrome.IsHitTestVisibleInChrome="True">
             </StackPanel>
-        </Grid>
+        </Grid>-->
 
         <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="ScrollView" VerticalAlignment="Stretch" Focusable="False"
                       VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" >
