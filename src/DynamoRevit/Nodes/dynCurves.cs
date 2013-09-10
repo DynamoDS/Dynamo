@@ -13,12 +13,9 @@
 //limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Autodesk.Revit.DB;
-using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -48,54 +45,31 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var c = (Curve)((Value.Container)args[0]).Item;
-            var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
+
+            Autodesk.Revit.DB.Plane plane;
+            c = dynRevitUtils.FlattenCurveOnPlane(c, out plane);
+            Autodesk.Revit.DB.SketchPlane sp = null;
+            sp = dynRevitSettings.Doc.Document.IsFamilyDocument ?
+                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) :
+                dynRevitSettings.Doc.Document.Create.NewSketchPlane(plane);
 
             Autodesk.Revit.DB.ModelCurve mc;
-            XYZ spOrigin = sp.Plane.Origin;
-            XYZ modelOrigin = XYZ.Zero;
-            Transform trf = Transform.get_Translation(spOrigin);
-            //trf =  trf.Multiply(Transform.get_Rotation(spOrigin,XYZ.BasisZ,spOrigin.AngleOnPlaneTo(XYZ.BasisY,spOrigin)));
-            //Curve ct = c.get_Transformed(trf);
-
-
-            // http://wikihelp.autodesk.com/Revit/enu/2013/Help/00006-API_Developer's_Guide/0074-Revit_Ge74/0114-Sketchin114/0117-ModelCur117
-            // The SetPlaneAndCurve() method and the Curve and SketchPlane property setters are used in different situations.
-            // When the new Curve lies in the same SketchPlane, or the new SketchPlane lies on the same planar face with the old SketchPlane, use the Curve or SketchPlane property setters.
-            // If new Curve does not lay in the same SketchPlane, or the new SketchPlane does not lay on the same planar face with the old SketchPlane, you must simultaneously change the Curve value and the SketchPlane value using SetPlaneAndCurve() to avoid internal data inconsistency.
-
+            mc = this.UIDocument.Document.IsFamilyDocument
+                ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+                : this.UIDocument.Document.Create.NewModelCurve(c, sp);
 
             if (this.Elements.Any())
             {
                 Element e;
                 if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.ModelCurve), out e))
                 {
-                    mc = e as Autodesk.Revit.DB.ModelCurve;
-                    mc.SketchPlane = sp;
-
-                    if (!mc.GeometryCurve.IsBound && c.IsBound)
-                    {
-                        c = c.Clone();
-                        c.MakeUnbound();
-                    }
-                    mc.GeometryCurve = c;
-
+                    dynRevitSettings.Doc.Document.Delete(e.Id);
                 }
-                else
-                {
-                    mc = this.UIDocument.Document.IsFamilyDocument
-                       ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                       : this.UIDocument.Document.Create.NewModelCurve(c, sp);
-                    this.Elements[0] = mc.Id;
-                    mc.SketchPlane = sp;
-                }
+                this.Elements[0] = mc.Id;
             }
             else
             {
-                mc = this.UIDocument.Document.IsFamilyDocument
-                   ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                   : this.UIDocument.Document.Create.NewModelCurve(c, sp);
                 this.Elements.Add(mc.Id);
-                mc.SketchPlane = sp;
             }
 
             return Value.NewContainer(mc);
@@ -118,56 +92,34 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var c = (Curve)((Value.Container)args[0]).Item;
-            var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
+
+            Autodesk.Revit.DB.Plane plane;
+            c = dynRevitUtils.FlattenCurveOnPlane(c, out plane);
+            Autodesk.Revit.DB.SketchPlane sp = null;
+            sp = dynRevitSettings.Doc.Document.IsFamilyDocument ?
+                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) :
+                dynRevitSettings.Doc.Document.Create.NewSketchPlane(plane);
 
             Autodesk.Revit.DB.ModelCurve mc;
-            XYZ spOrigin = sp.Plane.Origin;
-            XYZ modelOrigin = XYZ.Zero;
-            Transform trf = Transform.get_Translation(spOrigin);
-            //trf =  trf.Multiply(Transform.get_Rotation(spOrigin,XYZ.BasisZ,spOrigin.AngleOnPlaneTo(XYZ.BasisY,spOrigin)));
-            //Curve ct = c.get_Transformed(trf);
+            mc = this.UIDocument.Document.IsFamilyDocument
+                ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+                : this.UIDocument.Document.Create.NewModelCurve(c, sp);
 
-
-            // http://wikihelp.autodesk.com/Revit/enu/2013/Help/00006-API_Developer's_Guide/0074-Revit_Ge74/0114-Sketchin114/0117-ModelCur117
-            // The SetPlaneAndCurve() method and the Curve and SketchPlane property setters are used in different situations.
-            // When the new Curve lies in the same SketchPlane, or the new SketchPlane lies on the same planar face with the old SketchPlane, use the Curve or SketchPlane property setters.
-            // If new Curve does not lay in the same SketchPlane, or the new SketchPlane does not lay on the same planar face with the old SketchPlane, you must simultaneously change the Curve value and the SketchPlane value using SetPlaneAndCurve() to avoid internal data inconsistency.
-
+            mc.ChangeToReferenceLine();
 
             if (this.Elements.Any())
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(Autodesk.Revit.DB.ModelCurve), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.ModelCurve), out e))
                 {
-                    mc = e as Autodesk.Revit.DB.ModelCurve;
-                    mc.SketchPlane = sp;
-
-                    if (!mc.GeometryCurve.IsBound && c.IsBound)
-                    {
-                        c = c.Clone();
-                        c.MakeUnbound();
-                    }
-                    mc.GeometryCurve = c;
+                    dynRevitSettings.Doc.Document.Delete(e.Id);
                 }
-                else
-                {
-                    mc = this.UIDocument.Document.IsFamilyDocument
-                       ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                       : this.UIDocument.Document.Create.NewModelCurve(c, sp);
-                    this.Elements[0] = mc.Id;
-                    mc.SketchPlane = sp;
-                }
+                this.Elements[0] = mc.Id;
             }
             else
             {
-                mc = this.UIDocument.Document.IsFamilyDocument
-                   ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                   : this.UIDocument.Document.Create.NewModelCurve(c, sp);
                 this.Elements.Add(mc.Id);
-                mc.SketchPlane = sp;
             }
-
-            mc.ChangeToReferenceLine();
 
             return Value.NewContainer(mc);
         }

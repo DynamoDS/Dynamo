@@ -1352,11 +1352,11 @@ namespace Dynamo.Models
             }
         }
 
-        private void RemovePort(PortModel inport)
+        private void DestroyConnectors(PortModel port)
         {
-            while (inport.Connectors.Any())
+            while (port.Connectors.Any())
             {
-                var connector = inport.Connectors[0];
+                var connector = port.Connectors[0];
                 dynSettings.Controller.DynamoModel.CurrentWorkspace.Connectors.Remove(connector);
                 connector.NotifyConnectedPortsOfDeletion();
             }
@@ -1387,7 +1387,7 @@ namespace Dynamo.Models
             if (inPorts.Count > count)
             {
                 foreach (var inport in inPorts.Skip(count))
-                    RemovePort(inport);
+                    DestroyConnectors(inport);
 
                 for (int i = inPorts.Count - 1; i >= count; i--)
                     inPorts.RemoveAt(i);
@@ -1419,7 +1419,7 @@ namespace Dynamo.Models
             if (outPorts.Count > count)
             {
                 foreach (var outport in outPorts.Skip(count))
-                    RemovePort(outport);
+                    DestroyConnectors(outport);
 
                 for (int i = outPorts.Count - 1; i >= count; i--)
                     outPorts.RemoveAt(i);

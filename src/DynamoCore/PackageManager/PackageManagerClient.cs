@@ -275,10 +275,10 @@ namespace Dynamo.PackageManager
             set { _downloads = value; }
         }
 
-        internal void ClearInstalled()
+        internal void ClearCompletedDownloads()
         {
             foreach (
-                var ele in Downloads.Where((x) => x.DownloadState == PackageDownloadHandle.State.Installed).ToList())
+                var ele in Downloads.Where((x) => x.DownloadState == PackageDownloadHandle.State.Installed || x.DownloadState == PackageDownloadHandle.State.Error ).ToList())
             {
                 Downloads.Remove(ele);
             }
