@@ -162,7 +162,7 @@ namespace Dynamo.Applications
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
 
             //When a user double-clicks the Dynamo icon, we need to make
             //sure that we don't create another instance of Dynamo.
@@ -258,22 +258,6 @@ namespace Dynamo.Applications
         }
 
         /// <summary>
-        /// Attempts to resolve an assembly from the dll directory
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        internal static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
-            string assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
-            if (!File.Exists(assemblyPath)) 
-                return null;
-            Assembly assembly = Assembly.LoadFrom(assemblyPath);
-            return assembly;
-        }
-
-        /// <summary>
         /// A method to deal with unhandle exceptions.  Executes right before Revit crashes.
         /// Dynamo is still valid at this time, but further work may cause corruption.  Here, 
         /// we run the ExitCommand, allowing the user to save all of their work.  Then, we send them
@@ -361,7 +345,7 @@ namespace Dynamo.Applications
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-            AppDomain.CurrentDomain.AssemblyResolve += DynamoRevit.CurrentDomain_AssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
 
             DynamoLogger.Instance.StartLogging();
 
