@@ -313,6 +313,11 @@ limitations under the License.
       <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
       <Name>DSCoreNodes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
+      <Name>DynamoUtilities</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
       <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
       <Name>FSchemeInterop</Name>

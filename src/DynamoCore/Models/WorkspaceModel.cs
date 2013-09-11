@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Xml;
 using System.Globalization;
@@ -408,8 +409,8 @@ namespace Dynamo.Models
                 //create the xml document
                 var xmlDoc = new XmlDocument();
                 xmlDoc.CreateXmlDeclaration("1.0", null, null);
-
                 var root = xmlDoc.CreateElement("Workspace"); //write the root element
+                root.SetAttribute("Version", AssemblyHelper.GetDynamoVersion());
                 root.SetAttribute("X", workSpace.X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", workSpace.Y.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("zoom", workSpace.Zoom.ToString(CultureInfo.InvariantCulture));
