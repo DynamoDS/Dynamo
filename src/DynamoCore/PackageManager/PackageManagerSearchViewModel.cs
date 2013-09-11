@@ -36,8 +36,6 @@ namespace Dynamo.PackageManager
             {
                 _SearchText = value;
                 RaisePropertyChanged("SearchText");
-                //DynamoCommands.Search.Execute(null);
-                dynSettings.Controller.SearchViewModel.Search(null);
             }
         }
 
@@ -85,6 +83,17 @@ namespace Dynamo.PackageManager
         public bool HasNoResults
         {
             get { return this.SearchResults.Count == 0; }
+        }
+
+        public string _SearchState;
+        public string SearchState
+        {
+            get { return _SearchState; }
+            set
+            {
+                _SearchState = value;
+                RaisePropertyChanged("SearchState");
+            }
         }
 
         /// <summary>
@@ -154,7 +163,6 @@ namespace Dynamo.PackageManager
         private void SearchResultsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
             this.RaisePropertyChanged("HasNoResults");
-
         } 
 
         public void ClearCompleted()
@@ -178,17 +186,21 @@ namespace Dynamo.PackageManager
         internal void SearchAndUpdateResults(string query)
         {
             this.SearchText = query;
+            this.SearchState = "Searching...";
+            SearchResults.Clear();
             Task<List<PackageManagerSearchElement>>.Factory.StartNew(() => Search(query)
 
             ).ContinueWith((t) =>
-            {
+                {
                 lock (SearchResults)
                 {
-
-                    SearchResults.Clear();
                     foreach (var result in t.Result)
                     {
                         SearchResults.Add(result);
+                    }
+                    lock (SearchState)
+                    {
+                        this.SearchState = HasNoResults ? "Search returned no results." : "";
                     }
                 }
             }
