@@ -449,6 +449,7 @@ namespace Dynamo.ViewModels
         {
             PublishSelectedNodesCommand.RaiseCanExecuteChanged();
             AlignSelectedCommand.RaiseCanExecuteChanged();
+            DeleteCommand.RaiseCanExecuteChanged();
         }
 
         void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -868,12 +869,12 @@ namespace Dynamo.ViewModels
         public void AlignSelected(object param)
         {
             //this.CurrentSpaceViewModel.AlignSelectedCommand.Execute(param);
-            this.CurrentSpaceViewModel.AlignSelected(param.ToString());
+            this.CurrentSpaceViewModel.AlignSelectedCommand.Execute(param.ToString());
         }
 
         internal bool CanAlignSelected(object param)
         {
-            return true;
+            return this.CurrentSpaceViewModel.AlignSelectedCommand.CanExecute(param);
         }
 
         /// <summary>
