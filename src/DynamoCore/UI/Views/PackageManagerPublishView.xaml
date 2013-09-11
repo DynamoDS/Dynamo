@@ -3,18 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI" xmlns:local="clr-namespace:Dynamo.PackageManager"
-        xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell"
+        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI" xmlns:local="clr-namespace:Dynamo.PackageManager"        
         mc:Ignorable="d" 
              Height="590" Width="700" ResizeMode="CanResizeWithGrip" Name="PublishInfoControl" Title="Publish a Dynamo Package" Visibility="Visible">
-
-    <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome CaptionHeight="27"
-                            GlassFrameThickness="0,0,0,1"
-                            CornerRadius="2"
-                            ResizeBorderThickness="5" />
-    </shell:WindowChrome.WindowChrome>
-    
+   
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

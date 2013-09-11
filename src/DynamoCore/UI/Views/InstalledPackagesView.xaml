@@ -1,7 +1,6 @@
 ﻿    <Window x:Class="Dynamo.PackageManager.UI.InstalledPackagesView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell"
             Title="Installed Packages" Height="450" Width="550" Background="#555" MinWidth="550" MaxWidth="550" >
 
         <Window.Resources>
@@ -13,13 +12,6 @@
                 </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
         </Window.Resources>
-        
-    <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome CaptionHeight="27"
-                            GlassFrameThickness="0,0,0,1"
-                            CornerRadius="2"
-                            ResizeBorderThickness="5" />
-    </shell:WindowChrome.WindowChrome>
         
     <Grid Background="Black" Margin="0">
 
