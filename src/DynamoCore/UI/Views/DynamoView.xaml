@@ -586,7 +586,9 @@
                       FontSize="11" VerticalAlignment="Center" Foreground="Gray"
                       IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
                       Content="Debug" VerticalContentAlignment="Center"/>
-            
+            <TextBlock Text="{Binding Path=WarningText}" FontStyle="Italic" FontSize="10" 
+                       VerticalAlignment="Center" HorizontalAlignment="right" TextTrimming="WordEllipsis"
+                       Width="400" Foreground="Tomato" ></TextBlock>
         </WrapPanel>
 
         <Canvas HorizontalAlignment="Stretch"
