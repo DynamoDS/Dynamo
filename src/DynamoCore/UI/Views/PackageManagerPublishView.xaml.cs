@@ -12,7 +12,7 @@ namespace Dynamo.PackageManager
     /// </summary>
     public partial class PackageManagerPublishView : Window
     {
-        private TitleBarButtons titleBarButtons;
+        //private TitleBarButtons titleBarButtons;
 
         public PackageManagerPublishView(PublishPackageViewModel packageViewModel)
         {
@@ -26,11 +26,11 @@ namespace Dynamo.PackageManager
 
             InitializeComponent();
 
-            if (titleBarButtons == null)
-            {
-                titleBarButtons = new TitleBarButtons(this);
-                titleBarButtonsGrid.Children.Add(titleBarButtons);
-            }
+            //if (titleBarButtons == null)
+            //{
+            //    titleBarButtons = new TitleBarButtons(this);
+            //    titleBarButtonsGrid.Children.Add(titleBarButtons);
+            //}
 
         }
 
