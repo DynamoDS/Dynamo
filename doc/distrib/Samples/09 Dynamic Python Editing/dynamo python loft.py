@@ -23,11 +23,12 @@ app = __revit__.Application
 scale = IN
 # *scale
 
-if DynStoredElements.Count>0:
-     count = 0
-     for eID in DynStoredElements:
-          e = doc.get_Element(DynStoredElements[count])
-          doc.Delete(e)
+if __persistent__.ContainsKey("elements"):
+    for eID in __persistent__["elements"]:
+        e = doc.get_Element(eID)
+        doc.Delete(e)
+else:
+		__persistent__["elements"] = []
 
 refarr = ReferenceArray()
 refarrarr = ReferenceArrayArray()
@@ -79,5 +80,5 @@ refarrarr.Append(refarr3)
  
 #create Loft
 loft = doc.FamilyCreate.NewLoftForm(True, refarrarr)
-DynStoredElements.Add(loft.Id)
+__persistent__["elements"].Add(loft.Id)
 OUT = loft
