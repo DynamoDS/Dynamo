@@ -405,7 +405,7 @@ namespace Dynamo.Models
 
         public void ReloadModel(XmlElement modelData)
         {
-            ModelBase model = GetModelInternal(modelData);
+            ModelBase model = GetModelForElement(modelData);
             model.Deserialize(modelData);
         }
 
@@ -414,11 +414,6 @@ namespace Dynamo.Models
         }
 
         public ModelBase GetModelForElement(XmlElement modelData)
-        {
-            return GetModelInternal(modelData);
-        }
-
-        private ModelBase GetModelInternal(XmlElement modelData)
         {
             // TODO(Ben): This may or may not be true, but I guess we should be 
             // using "System.Type" (given the "type" information in "modelData"),
@@ -433,6 +428,16 @@ namespace Dynamo.Models
             XmlElementHelper helper = new XmlElementHelper(modelData);
             Guid modelGuid = helper.ReadGuid("guid");
 
+            ModelBase foundModel = GetModelInternal(modelGuid);
+            if (null != foundModel)
+                return foundModel;
+
+            throw new ArgumentException(string.Format(
+                "Unhandled model type: {0}", helper.ReadString("type")));
+        }
+
+        internal ModelBase GetModelInternal(Guid modelGuid)
+        {
             ModelBase foundModel = null;
             if (null == foundModel && (Connectors.Count > 0))
                 foundModel = Connectors.First((x) => x.GUID == modelGuid);
@@ -443,11 +448,7 @@ namespace Dynamo.Models
             if (null == foundModel && (Notes.Count > 0))
                 foundModel = Notes.First((x) => (x.GUID == modelGuid));
 
-            if (null != foundModel)
-                return foundModel;
-
-            throw new ArgumentException(string.Format(
-                "Unhandled model type: {0}", helper.ReadString("type")));
+            return foundModel;
         }
 
         #endregion
