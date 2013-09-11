@@ -161,7 +161,7 @@ namespace Dynamo.Nodes
 
             pts.Add(pt);
 
-            outPuts[_xyzPort] = Value.NewContainer(xyz);
+            outPuts[_xyzPort] = Value.NewContainer(pt);
             outPuts[_uvPort] = Value.NewContainer(uv);
             outPuts[_dPort] = Value.NewNumber(d);
             outPuts[_edgePort] = Value.NewContainer(e);
