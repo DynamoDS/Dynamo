@@ -1596,75 +1596,9 @@ namespace Dynamo.Models
             return true;
         }
 
-        /// <summary>
-        /// Delete ISelectable objects.
-        /// </summary>
-        /// <param name="parameters">The objects to delete.</param>
-        public void Delete(object parameters)
-        {
-            //if you get an object in the parameters, just delete that object
-            if (parameters != null)
-            {
-                var note = parameters as NoteModel;
-                var node = parameters as NodeModel;
-
-                if (node != null)
-                {
-                    DeleteNodeAndItsConnectors(node);
-                }
-                else if (note != null)
-                {
-                    DeleteNote(note);
-                }
-            }
-            else
-            {
-                for (int i = DynamoSelection.Instance.Selection.Count - 1; i >= 0; i--)
-                {
-                    var note = DynamoSelection.Instance.Selection[i] as NoteModel;
-                    var node = DynamoSelection.Instance.Selection[i] as NodeModel;
-
-                    if (node != null)
-                    {
-                        DeleteNodeAndItsConnectors(node);
-                    }
-                    else if (note != null)
-                    {
-                        DeleteNote(note);
-                    }
-                }
-            }
-        }
-
         internal bool CanDelete(object parameters)
         {
             return DynamoSelection.Instance.Selection.Count > 0;
-        }
-
-        /// <summary>
-        /// Delete a note.
-        /// </summary>
-        /// <param name="note">The note to delete.</param>
-        public void DeleteNote(NoteModel note)
-        {
-            DynamoSelection.Instance.Selection.Remove(note);
-            CurrentWorkspace.Notes.Remove(note);
-        }
-
-        private void DeleteNodeAndItsConnectors(NodeModel node)
-        {
-            foreach (var conn in node.AllConnectors().ToList())
-            {
-                conn.NotifyConnectedPortsOfDeletion();
-                dynSettings.Controller.DynamoViewModel.Model.CurrentWorkspace.Connectors.Remove(conn);
-            }
-
-            node.DisableReporting();
-            node.Destroy();
-            node.Cleanup();
-            DynamoSelection.Instance.Selection.Remove(node);
-            node.WorkSpace.Nodes.Remove(node);
-            OnNodeDeleted(node);
         }
 
         /// <summary>
@@ -1767,6 +1701,46 @@ namespace Dynamo.Models
         internal bool CanClear(object parameter)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Call this method to delete a given ModelBase, or all the models 
+        /// in the current selection set within the current active workspace.
+        /// </summary>
+        /// <param name="parameters">An instance of ModelBase to be deleted 
+        /// from the current workspace. If this parameter is null, then all 
+        /// the selected nodes will be deleted.</param>
+        public void Delete(object parameters)
+        {
+            if (null == this._cspace)
+                return;
+
+            List<ModelBase> modelsToDelete = new List<ModelBase>();
+
+            if (null != parameters) // Something is specified in parameters.
+            {
+                if (parameters is ModelBase)
+                    modelsToDelete.Add(parameters as ModelBase);
+            }
+            else
+            {
+                // When 'parameters' is 'null', then it means all selected models.
+                foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
+                {
+                    if (selectable is ModelBase)
+                        modelsToDelete.Add(selectable as ModelBase);
+                }
+            }
+
+            this._cspace.RecordAndDeleteModels(modelsToDelete);
+
+            var selection = DynamoSelection.Instance.Selection;
+            foreach (ModelBase model in modelsToDelete)
+            {
+                selection.Remove(model); // Remove from selection set.
+                if (model is NodeModel)
+                    OnNodeDeleted(model as NodeModel);
+            }
         }
 
         /// <summary>
