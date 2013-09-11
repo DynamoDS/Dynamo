@@ -88,7 +88,7 @@
                                 Modifiers="Control"
                                 Command="{Binding Path=DataContext.HomeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Up"
-                                Modifiers="Control+Shift"
+                                Modifiers="Control+Alt"
                                 Command="{Binding Path=DataContext.ToggleConsoleShowingCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="F4"
                 Modifiers="Alt"
@@ -232,20 +232,20 @@
 
                 <MenuItem Header="_View" Name="viewMenu" Focusable="False">
 
-                    <MenuItem Header="_Zoom" Name="zoomMenu">
+                    <MenuItem Header="_Zoom" Name="zoomMenu" Focusable="False">
                         <MenuItem  Header="Zoom In (Mouse wheel down)"  Command="{Binding ZoomInCommand}" InputGestureText="Ctrl + ="/>
                         <MenuItem  Header="Zoom Out (Mouse wheel up)" Command="{Binding ZoomOutCommand}" InputGestureText="Ctrl + -"/>
                     </MenuItem>
 
-                    <MenuItem Header="_Pan" Name="panMenu">
-                        <MenuItem  Header="Pan Left (Mouse wheel drag left)"  Command="{Binding PanCommand}" CommandParameter="Left" InputGestureText="Ctrl + Shift + Left"/>
-                        <MenuItem  Header="Pan Right (Mouse wheel drag right)" Command="{Binding PanCommand}" CommandParameter="Right" InputGestureText="Ctrl + Shift + Right"/>
-                        <MenuItem  Header="Pan Up (Mouse wheel drag up)"  Command="{Binding PanCommand}" CommandParameter="Up" InputGestureText="Ctrl + Shift + Up"/>
-                        <MenuItem  Header="Pan Down (Mouse wheel drag down)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Ctrl + Shift + Down"/>
+                    <MenuItem Header="_Pan" Name="panMenu" Focusable="False">
+                        <MenuItem  Header="Pan Left (Mouse wheel drag left)"  Command="{Binding PanCommand}" CommandParameter="Left" InputGestureText="Ctrl + Shift + Left" Focusable="False"/>
+                        <MenuItem  Header="Pan Right (Mouse wheel drag right)" Command="{Binding PanCommand}" CommandParameter="Right" InputGestureText="Ctrl + Shift + Right" Focusable="False"/>
+                        <MenuItem  Header="Pan Up (Mouse wheel drag up)"  Command="{Binding PanCommand}" CommandParameter="Up" InputGestureText="Ctrl + Shift + Up" Focusable="False"/>
+                        <MenuItem  Header="Pan Down (Mouse wheel drag down)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Ctrl + Shift + Down" Focusable="False"/>
                     </MenuItem>
 
                     <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                          Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
+                          Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Alt+Up" Focusable="False"/>
                     
                     <MenuItem Header="_Connectors" Name="connectorMenu">
                     
