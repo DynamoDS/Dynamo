@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
     [NodeName("Drafting View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
     [NodeDescription("Creates a drafting view.")]
-    public class DraftingView: NodeWithOneOutput
+    public class DraftingView: RevitTransactionNodeWithOneOutput
     {
         public DraftingView()
         {
@@ -45,53 +45,37 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("v", "Drafting View", typeof(Value.Container)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-
             ViewDrafting vd = null;
             string viewName = ((Value.String)args[0]).Item;
 
-            if (!string.IsNullOrEmpty(viewName))
+            if (this.Elements.Any())
             {
-                //if we've already found the view
-                //and it's the same one, get out
-                if (vd != null && vd.Name == viewName)
+                Element e;
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(ViewDrafting), out e))
                 {
-                    return Value.NewContainer(vd);
-                }
-
-                FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-                fec.OfClass(typeof(ViewDrafting));
-
-                IList<Element> els = fec.ToElements();
-
-                var vds = from v in els
-                            where ((ViewDrafting)v).Name == viewName
-                            select v;
-
-                if (vds.Count() == 0)
-                {
-                    try
-                    {
-                        //create the view
-                        vd = dynRevitSettings.Doc.Document.Create.NewViewDrafting();
-                        if (vd != null)
-                        {
-                            vd.Name = viewName;
-                        }
-                    }
-                    catch
-                    {
-                        DynamoLogger.Instance.Log(string.Format("Could not create view: {0}", viewName));
-                    }
+                    vd = (ViewDrafting)e;
                 }
                 else
                 {
-                    vd = vds.First() as ViewDrafting;
+                    vd = dynRevitSettings.Doc.Document.Create.NewViewDrafting();
+                    this.Elements[0] = vd.Id;
                 }
             }
+            else
+            {
+                vd = dynRevitSettings.Doc.Document.Create.NewViewDrafting();
+                this.Elements.Add(vd.Id);
+            }
+
+            //rename the view
+            if(!vd.Name.Equals(viewName))
+                 vd.Name = ViewBase.CreateUniqueViewName(viewName);
 
             return Value.NewContainer(vd);
         }
@@ -146,8 +130,9 @@ namespace Dynamo.Nodes
                         view.SetOrientation(orient);
                         view.SaveOrientationAndLock();
                     }
-                    if (view.Name != null && view.Name != name)
-                        view.Name = CreateUniqueViewName(name);
+
+                    if (!view.Name.Equals(name))
+                        view.Name = ViewBase.CreateUniqueViewName(name);
                 }
                 else
                 {
@@ -188,7 +173,9 @@ namespace Dynamo.Nodes
         }
     
         /// <summary>
-        /// Determines whether a view with the provided name already exists. Increment
+        /// Determines whether a view with the provided name already exists.
+        /// If a view exists with the provided name, and new view is created with
+        /// an incremented name. Otherwise, the original view name is returned.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -198,7 +185,10 @@ namespace Dynamo.Nodes
             bool found = false;
 
             var collector = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-            collector.OfClass(typeof(View3D));
+            collector.OfClass(typeof(View));
+
+            if (collector.ToElements().Count(x=>x.Name == name) == 0)
+                return name;
 
             int count = 0;
             while (!found)

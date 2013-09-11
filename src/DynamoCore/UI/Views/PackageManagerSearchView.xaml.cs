@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
-using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
@@ -12,8 +11,6 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class PackageManagerSearchView : Window
     {
-        //private TitleBarButtons titleBarButtons;
-
         public PackageManagerSearchView(PackageManagerSearchViewModel pm)
         {
 

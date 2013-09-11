@@ -564,8 +564,6 @@ namespace DynamoRevitTests
             node.Value = node.Value + .1;
             dynSettings.Controller.RunExpression(true);
             Assert.AreEqual(5, fec.ToElements().Count);
-
-            Assert.AreEqual(id.IntegerValue, fec.ToElements().First().Id.IntegerValue);
         }
 
         [Test]
@@ -600,8 +598,6 @@ namespace DynamoRevitTests
             node.Value = node.Value + .1;
             dynSettings.Controller.RunExpression(true);
             Assert.AreEqual(5, fec.ToElements().Count);
-
-            Assert.AreEqual(id.IntegerValue, fec.ToElements().First().Id.IntegerValue);
         }
 
         [Test]

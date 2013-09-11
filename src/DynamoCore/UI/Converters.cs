@@ -964,17 +964,26 @@ namespace Dynamo.Controls
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            //source -> target
+            //units are stored internally as culturally invariant, so we need to convert them back
             double dbl;
-            if (double.TryParse(value as string, out dbl))
+            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
             {
-                return base.Convert(dbl, targetType, parameter, culture);
+                return(dbl.ToString("0.000", CultureInfo.CurrentCulture));
             }
             return value ?? "";
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value;
+            //target -> source
+            //units are entered as culture-specific, so we need to store them as invariant
+            double dbl;
+            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            {
+                return dbl;
+            }
+            return value ?? "";
         }
     }
 

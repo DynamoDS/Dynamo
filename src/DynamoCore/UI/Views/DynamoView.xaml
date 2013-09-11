@@ -6,17 +6,15 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib" 
         xmlns:models="clr-namespace:Dynamo.Models"
         xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:commands="clr-namespace:Dynamo.UI.Commands"
-        xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell"
         x:Name="_this"
         Height="768" 
         Width="1024"
         Closing="WindowClosing" 
         Closed="WindowClosed" 
-        StateChanged="WindowChanged"
         MinHeight="600" 
         MinWidth="800" 
         Title="Dynamo"
-        ResizeMode="CanResizeWithGrip"
+        ResizeMode="CanResize"
         AllowsTransparency="False" 
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp">
@@ -117,14 +115,7 @@
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         
     </Window.InputBindings>
-
-    <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome CaptionHeight="27"
-                            GlassFrameThickness="0,0,0,1"
-                            CornerRadius="2"
-                            ResizeBorderThickness="5" />
-    </shell:WindowChrome.WindowChrome>
-
+    
     <Grid Name="mainGrid" FocusManager.IsFocusScope="True">
         
         <Grid.RowDefinitions>
@@ -161,7 +152,7 @@
 
             <Menu IsMainMenu="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" Name="menu1" Foreground="#333" Padding="6,8,0,3" Background="Transparent" BorderThickness="0">
 
-                <MenuItem Header="_File" Name="fileMenu" Focusable="False" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                <MenuItem Header="_File" Name="fileMenu" Focusable="False">
 
                     <MenuItem Header="_New" Name="newMenu">
                         <MenuItem Header="_Home Workspace..." Command="{Binding NewHomeWorkspaceCommand}"  Name="newHomeWorkspace" InputGestureText="Ctrl+N">
@@ -209,7 +200,7 @@
                     <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt+F4"/>
                 </MenuItem>
 
-                <MenuItem Header="_Edit" Name="editMenu" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                <MenuItem Header="_Edit" Name="editMenu">
                     <MenuItem Focusable="False" Header="_Copy" Command="{Binding CopyCommand}" Name="copy" InputGestureText="Ctrl+C"/>
                     <MenuItem Focusable="False" Header="_Paste" Command="{Binding PasteCommand}"  Name="paste" InputGestureText="Ctrl+V"/>
                     <Separator/>
@@ -229,7 +220,7 @@
                     </MenuItem>
                 </MenuItem>
 
-                <MenuItem Header="_View" Name="viewMenu" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                <MenuItem Header="_View" Name="viewMenu">
 
                     <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
                           IsChecked="{Binding Path=FullscreenWatchShowing}"
@@ -272,7 +263,7 @@
 
                 </MenuItem>
 
-                <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
                             <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path=DataContext.GoToWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
@@ -280,14 +271,14 @@
                     </MenuItem.ItemTemplate>
                 </MenuItem>
 
-                <MenuItem Focusable="False" Header="_Packages" Name="PackageManagerMenu" IsEnabled="True" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                <MenuItem Focusable="False" Header="_Packages" Name="PackageManagerMenu" IsEnabled="True">
                     <MenuItem Focusable="False" Header="_Browse Online for Packages..." Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
                     <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMInstalled" />
                     <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />
                     <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />
                 </MenuItem>
 
-                <MenuItem Header="Help" Focusable="False" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                <MenuItem Header="Help" Focusable="False">
                     <!--<MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>-->
                     <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
                         <MenuItem.Icon>
@@ -301,7 +292,7 @@
             </Menu>
 
             <!--Titlebar buttons-->
-            <Grid Name="titleBarButtonsGrid" Grid.Column="1" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+            <Grid Name="titleBarButtonsGrid" Grid.Column="1">
             </Grid>
             
         </Grid>
