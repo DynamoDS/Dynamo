@@ -513,7 +513,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            string menuValue = "Preview Background";
+            string menuValue = "Showing Background 3D Preview";
             if ((bool)value == true)
                 return menuValue;
             else
