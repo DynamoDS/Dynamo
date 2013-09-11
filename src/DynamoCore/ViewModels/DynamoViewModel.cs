@@ -159,6 +159,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand PublishSelectedNodesCommand { get; set; }
 
         public DelegateCommand PanCommand { get; set; }
+        public DelegateCommand ZoomInCommand { get; set; }
+        public DelegateCommand ZoomOutCommand { get; set; }
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -435,6 +437,8 @@ namespace Dynamo.ViewModels
             SelectNeighborsCommand = new DelegateCommand(SelectNeighbors, CanSelectNeighbors);
             ClearLogCommand = new DelegateCommand(dynSettings.Controller.ClearLog, dynSettings.Controller.CanClearLog);
             PanCommand = new DelegateCommand(Pan, CanPan);
+            ZoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
+            ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -1136,6 +1140,26 @@ namespace Dynamo.ViewModels
         internal bool CanPan(object parameter)
         {
             return true;
+        }
+
+        public void ZoomIn(object parameter)
+        {
+            CurrentSpaceViewModel.ZoomInCommand.Execute(parameter);
+        }
+
+        internal bool CanZoomIn(object parameter)
+        {
+            return CurrentSpaceViewModel.ZoomInCommand.CanExecute(parameter);
+        }
+
+        public void ZoomOut(object parameter)
+        {
+            CurrentSpaceViewModel.ZoomOutCommand.Execute(parameter);
+        }
+
+        internal bool CanZoomOut(object parameter)
+        {
+            return CurrentSpaceViewModel.ZoomOutCommand.CanExecute(parameter);
         }
     }
 
