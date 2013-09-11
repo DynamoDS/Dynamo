@@ -1398,10 +1398,10 @@ namespace Dynamo.Models
         {
             NodeModel result;
 
-            if (dynSettings.Controller.BuiltInFunctions.ContainsKey(name))
+            if (dynSettings.Controller.DSBuiltInFunctions.ContainsKey(name))
             {
-                var method = dynSettings.Controller.BuiltInFunctions[name];
-                result = new DSFunction(method as ProcedureNode);
+                var functionData  = dynSettings.Controller.DSBuiltInFunctions[name];
+                result = new DSFunction(functionData as DSFunctionDescritpion);
             }
             else if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
             {
