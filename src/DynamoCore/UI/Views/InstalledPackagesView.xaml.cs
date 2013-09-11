@@ -21,7 +21,7 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class InstalledPackagesView : Window
     {
-        private TitleBarButtons titleBarButtons;
+        //private TitleBarButtons titleBarButtons;
 
         public InstalledPackagesView()
         {
@@ -33,11 +33,11 @@ namespace Dynamo.PackageManager.UI
             this.DataContext = dynSettings.PackageLoader;
             InitializeComponent();
 
-            if (titleBarButtons == null)
-            {
-                titleBarButtons = new TitleBarButtons(this);
-                titleBarButtonsGrid.Children.Add(titleBarButtons);
-            }
+            //if (titleBarButtons == null)
+            //{
+            //    titleBarButtons = new TitleBarButtons(this);
+            //    titleBarButtonsGrid.Children.Add(titleBarButtons);
+            //}
 
         }
 
