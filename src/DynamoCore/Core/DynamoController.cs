@@ -64,7 +64,7 @@ namespace Dynamo
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
-        private readonly Dictionary<string, object> builtInFunctions = new Dictionary<String, object>();
+        private readonly Dictionary<string, object> dsBuiltInFunctions = new Dictionary<String, object>();
 
         private bool testing = false;
 
@@ -102,9 +102,9 @@ namespace Dynamo
             get { return builtinTypesByTypeName; }
         }
 
-        public Dictionary<string, object> BuiltInFunctions
+        public Dictionary<string, object> DSBuiltInFunctions
         {
-            get { return builtInFunctions; }
+            get { return dsBuiltInFunctions; }
         }
 
         public ExecutionEnvironment FSchemeEnvironment { get; private set; }

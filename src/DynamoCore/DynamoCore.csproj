@@ -151,6 +151,7 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DSEngine\AstBuilder.cs" />
+    <Compile Include="DSEngine\DSUtil.cs" />
     <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
