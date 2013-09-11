@@ -7,13 +7,13 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract partial class dynEnum : dynNodeWithOneOutput
+    public abstract partial class Enum : NodeWithOneOutput
     {
 
         public int SelectedIndex { get; set; }
         public Array Items { get; set; }
 
-        public dynEnum()
+        public Enum()
         {
             Items = new string[] {""};
             SelectedIndex = 0;
@@ -24,25 +24,25 @@ namespace Dynamo.Nodes
             Items = arr;
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            dynEl.SetAttribute("index", this.SelectedIndex.ToString());
+            nodeElement.SetAttribute("index", this.SelectedIndex.ToString());
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
             try
             {
-                this.SelectedIndex = Convert.ToInt32(elNode.Attributes["index"].Value);
+                this.SelectedIndex = Convert.ToInt32(nodeElement.Attributes["index"].Value);
             }
             catch { }
         }
     }
 
     [IsInteractive(true)]
-    public abstract class dynEnumAsInt : dynEnum
+    public abstract class EnumAsInt : Enum
     {
-        public dynEnumAsInt()
+        public EnumAsInt()
         {
             OutPortData.Add(new PortData("Int", "The index of the enum", typeof(Value.Number)));
 
@@ -65,9 +65,9 @@ namespace Dynamo.Nodes
     }
 
     [IsInteractive(true)]
-    public abstract class dynEnumAsString : dynEnum
+    public abstract class EnumAsString : Enum
     {
-        public dynEnumAsString()
+        public EnumAsString()
         {
             OutPortData.Add(new PortData("String", "The enum as a string", typeof(Value.String)));
 

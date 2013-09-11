@@ -27,9 +27,9 @@ namespace Dynamo.Nodes
     [NodeName("Web Request")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Fetches data from the web using a URL.")]
-    public class dynWebRequest : dynNodeWithOneOutput
+    public class WebRequest : NodeWithOneOutput
     {
-        public dynWebRequest()
+        public WebRequest()
         {
             InPortData.Add(new PortData("url", "A URL to query.", typeof(Value.String)));
             OutPortData.Add(new PortData("str", "The string returned from the web request.", typeof(Value.String)));
@@ -42,7 +42,7 @@ namespace Dynamo.Nodes
 
             //send a webrequest to the URL
             // Initialize the WebRequest.
-            WebRequest myRequest = WebRequest.Create(url);
+            System.Net.WebRequest myRequest = System.Net.WebRequest.Create(url);
 
             // Return the response. 
             WebResponse myResponse = myRequest.GetResponse();
@@ -68,9 +68,9 @@ namespace Dynamo.Nodes
     [NodeName("UDP Listener")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Listens for data from the web using a UDP port")]
-    public class dynUDPListener : dynNodeWithOneOutput
+    public class UdpListener : NodeWithOneOutput
     {
-        public dynUDPListener()
+        public UdpListener()
         {
             InPortData.Add(new PortData("exec", "Execution Interval", typeof(Value.Number)));
             InPortData.Add(new PortData("udp port", "A UDP port to listen to.", typeof(object)));

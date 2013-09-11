@@ -13,6 +13,63 @@ using Dynamo.PackageManager;
 
 namespace Dynamo.Controls
 {
+    public class TooltipLengthTruncater : IValueConverter
+    {
+        private const int MaxChars = 100;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var tooltip = value as string;
+            if (tooltip != null && tooltip.Length > MaxChars)
+            {
+                var trimIndex = tooltip.LastIndexOf(' ', MaxChars - 5);
+                return tooltip.Remove(trimIndex > 0 ? trimIndex : MaxChars - 5) + " ...";
+            } 
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class PackageSearchStateToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+                              CultureInfo culture)
+        {
+            if (value is PackageManagerSearchViewModel.PackageSearchState)
+            {
+                var st = (PackageManagerSearchViewModel.PackageSearchState) value;
+
+                if (st == PackageManagerSearchViewModel.PackageSearchState.NORESULTS)
+                {
+                    return "Search returned no results!";
+                }
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.RESULTS)
+                {
+                    return "";
+                }
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.SEARCHING)
+                {
+                    return "Searching...";
+                }
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.SYNCING)
+                {
+                    return "Synchronizing package list with server...";
+                }
+            }
+
+            return "Unknown";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PackageUploadStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -24,15 +81,15 @@ namespace Dynamo.Controls
 
                 if (st == PackageUploadHandle.State.Compressing)
                 {
-                    return "Compressing";
+                    return "Compressing...";
                 }
                 else if (st == PackageUploadHandle.State.Copying)
                 {
-                    return "Copying";
+                    return "Copying...";
                 }
                 else if (st == PackageUploadHandle.State.Error)
                 {
-                    return "Error";
+                    return "Error!";
                 }
                 else if (st == PackageUploadHandle.State.Ready)
                 {
@@ -44,7 +101,7 @@ namespace Dynamo.Controls
                 }
                 else if (st == PackageUploadHandle.State.Uploading)
                 {
-                    return "Uploading";
+                    return "Uploading...";
                 }
 
             }
@@ -203,13 +260,13 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
-            if (value is dynWorkspaceViewModel)
+            if (value is WorkspaceViewModel)
             {
-                var val = (value as dynWorkspaceViewModel).Model.GetType();
+                var val = (value as WorkspaceViewModel).Model.GetType();
                 return val;
             }
 
-            if (value is dynWorkspaceModel)
+            if (value is WorkspaceModel)
             {
                 return value.GetType();
             }
@@ -356,7 +413,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            ObservableCollection<dynPortViewModel> ports = (ObservableCollection<dynPortViewModel>)value;
+            ObservableCollection<PortViewModel> ports = (ObservableCollection<PortViewModel>)value;
             return Math.Max(30, ports.Count * 20 + 10); //spacing for inputs + title space + bottom space
         }
 
@@ -456,7 +513,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            string menuValue = "Preview Background";
+            string menuValue = "Showing Background 3D Preview";
             if ((bool)value == true)
                 return menuValue;
             else
@@ -907,17 +964,26 @@ namespace Dynamo.Controls
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            //source -> target
+            //units are stored internally as culturally invariant, so we need to convert them back
             double dbl;
-            if (double.TryParse(value as string, out dbl))
+            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
             {
-                return base.Convert(dbl, targetType, parameter, culture);
+                return(dbl.ToString("0.000", CultureInfo.CurrentCulture));
             }
             return value ?? "";
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value;
+            //target -> source
+            //units are entered as culture-specific, so we need to store them as invariant
+            double dbl;
+            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            {
+                return dbl;
+            }
+            return value ?? "";
         }
     }
 

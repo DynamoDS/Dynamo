@@ -18,9 +18,9 @@ namespace Dynamo.Nodes
     [NodeName("Loft Form")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
-    public class dynLoftForm : dynRevitTransactionNodeWithOneOutput
+    public class LoftForm : RevitTransactionNodeWithOneOutput
     {
-        public dynLoftForm()
+        public LoftForm()
         {
             InPortData.Add(new PortData("solid/void", "Indicates if the Form is Solid or Void. Use True for solid and false for void.", typeof(Value.Number)));
             InPortData.Add(new PortData("list", "A list of profiles for the Loft Form. The recommended way is to use list of Planar Ref Curve Chains, list of lists and list of curves are supported for legacy graphs.", typeof(Value.List)));
@@ -141,7 +141,7 @@ namespace Dynamo.Nodes
                 foreach (var modelCurveArray in modelCurveArrays)
                 {
                     var refArr = new ReferenceArray();
-                    foreach (ModelCurve modelCurve in modelCurveArray)
+                    foreach (Autodesk.Revit.DB.ModelCurve modelCurve in modelCurveArray)
                     {
                         refArr.Append(modelCurve.GeometryCurve.Reference);
                     }
@@ -274,12 +274,12 @@ namespace Dynamo.Nodes
             return Value.NewContainer(f);
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            dynEl.SetAttribute("FormId", _formId.ToString());
-            dynEl.SetAttribute("PreferSurfaceForOneLoop", _preferSurfaceForOneLoop.ToString());
+            nodeElement.SetAttribute("FormId", _formId.ToString());
+            nodeElement.SetAttribute("PreferSurfaceForOneLoop", _preferSurfaceForOneLoop.ToString());
 
-            String mapAsString = "";
+            System.String mapAsString = "";
 
             if (_sformCurveToReferenceCurveMap != null)
             {
@@ -292,21 +292,21 @@ namespace Dynamo.Nodes
                     mapAsString = mapAsString + keyId.ToString() + "=" + valueId.ToString() + ";";
                 }
             }
-            dynEl.SetAttribute("FormCurveToReferenceCurveMap", mapAsString);
+            nodeElement.SetAttribute("FormCurveToReferenceCurveMap", mapAsString);
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
             try
             {
-                _formId = new ElementId(Convert.ToInt32(elNode.Attributes["FormId"].Value));
-                var thisIsSurface = elNode.Attributes["PreferSurfaceForOneLoop"];
+                _formId = new ElementId(Convert.ToInt32(nodeElement.Attributes["FormId"].Value));
+                var thisIsSurface = nodeElement.Attributes["PreferSurfaceForOneLoop"];
                 if (thisIsSurface != null)
                    _preferSurfaceForOneLoop = Convert.ToBoolean(thisIsSurface.Value);
                 else //used to be able to make only surface, so init to more likely value
                    _preferSurfaceForOneLoop = true;
 
-                string mapAsString = elNode.Attributes["FormCurveToReferenceCurveMap"].Value;
+                string mapAsString = nodeElement.Attributes["FormCurveToReferenceCurveMap"].Value;
                 _sformCurveToReferenceCurveMap = new Dictionary<ElementId,ElementId>();
                 if (mapAsString != "")
                 {
@@ -338,11 +338,11 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates a free form <FreeFormElement.Create>")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
-    public class dynFreeForm : dynRevitTransactionNodeWithOneOutput
+    public class FreeForm : RevitTransactionNodeWithOneOutput
     {
         public static Dictionary <ElementId, Solid> freeFormSolids = null;
         public static Dictionary <ElementId, ElementId> previouslyDeletedFreeForms = null;
-        public dynFreeForm()
+        public FreeForm()
         {
             InPortData.Add(new PortData("solid", "solid to use for Freeform", typeof(object)));
 
@@ -379,7 +379,7 @@ namespace Dynamo.Nodes
             if (FreeFormType != null)
             {
                 MethodInfo[] freeFormMethods = FreeFormType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-                String nameOfMethodCreate = "Create";
+                System.String nameOfMethodCreate = "Create";
                 foreach (MethodInfo m in freeFormMethods)
                 {
                     if (m.Name == nameOfMethodCreate)
@@ -423,9 +423,9 @@ namespace Dynamo.Nodes
     [NodeName("Ref Curve Chain")]
     [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
     [NodeDescription("Creates continuous chain of reference curves ")]
-    public class dynPlanarRefCurveChain : dynRevitTransactionNodeWithOneOutput
+    public class PlanarRefCurveChain : RevitTransactionNodeWithOneOutput
     {
-        public dynPlanarRefCurveChain()
+        public PlanarRefCurveChain()
         {
             InPortData.Add(new PortData("list", "A list of ref curves to make one planar chain", typeof(Value.List)));
 
@@ -437,9 +437,9 @@ namespace Dynamo.Nodes
         {
             var doc = dynRevitSettings.Doc;
             var refCurveList = ((Value.List)args[0]).Item.Select(
-               x => ( ((Value.Container)x).Item is ModelCurve ?
-                   ((ModelCurve)((Value.Container)x).Item)
-                   : (ModelCurve)(
+               x => ( ((Value.Container)x).Item is Autodesk.Revit.DB.ModelCurve ?
+                   ((Autodesk.Revit.DB.ModelCurve)((Value.Container)x).Item)
+                   : (Autodesk.Revit.DB.ModelCurve)(
                                       doc.Document.GetElement( 
                                              ((Reference) ((Value.Container)x).Item).ElementId)
                                                              )

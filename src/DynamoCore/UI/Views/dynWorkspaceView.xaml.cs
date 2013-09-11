@@ -24,12 +24,12 @@ namespace Dynamo.Views
         private bool isWindowSelecting;
         private Point mouseDownPos;
         private Dynamo.Controls.DragCanvas WorkBench = null;
-        public dynWorkspaceViewModel ViewModel
+        public WorkspaceViewModel ViewModel
         {
             get
             {
-                if (this.DataContext is dynWorkspaceViewModel)
-                    return this.DataContext as dynWorkspaceViewModel;
+                if (this.DataContext is WorkspaceViewModel)
+                    return this.DataContext as WorkspaceViewModel;
                 else
                     return null;
             }
@@ -74,7 +74,7 @@ namespace Dynamo.Views
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
         }
 
-        private void VmOnWorkspacePropertyEditRequested(dynWorkspaceModel workspace)
+        private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
         {
 
             // copy these strings
@@ -87,24 +87,23 @@ namespace Dynamo.Views
                     Name = newName,
                     Description = newDescription,
                     Category = newCategory
+
                 };
 
-            dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, new FunctionNamePromptEventArgs());
-            // show the dialog
-            //if (dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newName, ref newCategory,
-            //                                                                    ref newDescription, true))
+            dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
+
             if(args.Success)
             {
 
                 if (workspace is FuncWorkspace)
                 {
-                    var id = dynSettings.CustomNodeManager.GetGuidFromName(workspace.Name);
-                    dynSettings.CustomNodeManager.Refactor(id, newName, newCategory, newDescription);
+                    var def = dynSettings.CustomNodeManager.GetDefinitionFromWorkspace(workspace);
+                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.Name, args.Category, args.Description);
                 }
 
-                workspace.Name = newName;
-                workspace.Description = newDescription;
-                workspace.Category = newCategory;
+                workspace.Name = args.Name;
+                workspace.Description = args.Description;
+                workspace.Category = args.Category;
                 // workspace.Author = "";
 
             }
@@ -112,17 +111,11 @@ namespace Dynamo.Views
 
         public void WorkspacePropertyEditClick(object sender, RoutedEventArgs routedEventArgs)
         {
-            var vm = DataContext as dynWorkspaceViewModel;
+            var vm = DataContext as WorkspaceViewModel;
             if (vm != null)
             {
                 vm.OnWorkspacePropertyEditRequested();
             }
-        }
-
-        public void WorkspacePublishClick(object sender, RoutedEventArgs routedEventArgs)
-        {
-            
-
         }
 
         void selectionCanvas_Loaded(object sender, RoutedEventArgs e)
@@ -148,7 +141,7 @@ namespace Dynamo.Views
         {
             double x = 0;
             double y = 0;
-            dynModelBase node = (e as ModelEventArgs).Model;
+            ModelBase node = (e as ModelEventArgs).Model;
             Dictionary<string, object> data = (e as ModelEventArgs).Data;
 
             x = outerCanvas.ActualWidth / 2.0;
@@ -212,13 +205,13 @@ namespace Dynamo.Views
         void zoomBorder_MouseMove(object sender, MouseEventArgs e)
         {
             if(e.MiddleButton == MouseButtonState.Pressed)
-                (DataContext as dynWorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
+                (DataContext as WorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
         }
 
         void zoomBorder_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (e.MiddleButton == MouseButtonState.Pressed)
-                (DataContext as dynWorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
+                (DataContext as WorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
         }
 
         void vm_CurrentOffsetChanged(object sender, EventArgs e)
@@ -250,9 +243,9 @@ namespace Dynamo.Views
 
         private void DynWorkspaceView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            dynWorkspaceViewModel vm = (DataContext as dynWorkspaceViewModel);
+            WorkspaceViewModel vm = (DataContext as WorkspaceViewModel);
 
-            if (!(DataContext as dynWorkspaceViewModel).IsConnecting)
+            if (!(DataContext as WorkspaceViewModel).IsConnecting)
             {
                 #region window selection
 
@@ -300,7 +293,7 @@ namespace Dynamo.Views
         {
             //Debug.WriteLine("Starting mouse up.");
 
-            dynWorkspaceViewModel vm = (DataContext as dynWorkspaceViewModel);
+            WorkspaceViewModel vm = (DataContext as WorkspaceViewModel);
 
             if (e.ChangedButton == MouseButton.Left)
             {
@@ -326,7 +319,7 @@ namespace Dynamo.Views
 
         private void DynWorkspaceView_OnMouseMove(object sender, MouseEventArgs e)
         {
-            var vm = (DataContext as dynWorkspaceViewModel);
+            var vm = (DataContext as WorkspaceViewModel);
 
             //Canvas.SetLeft(debugPt, e.GetPosition(dynSettings.Workbench).X - debugPt.Width/2);
             //Canvas.SetTop(debugPt, e.GetPosition(dynSettings.Workbench).Y - debugPt.Height / 2);
@@ -412,7 +405,7 @@ namespace Dynamo.Views
             this.Dispatcher.BeginInvoke((Action) delegate
                 {
 
-                    var vm = (DataContext as dynWorkspaceViewModel);
+                    var vm = (DataContext as WorkspaceViewModel);
 
                     var n = (e as ModelEventArgs).Model;
 

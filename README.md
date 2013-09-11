@@ -1,7 +1,7 @@
 #Dynamo: Visual Programming for BIM#
 
 ## Description ##
-The intent of this project is to provide a visual interface for building interesting parametric functionality on top of that already offered by Revit. Dynamo aims to be accessable both to the non-programmer and the programmer alike with the ability to visually script behavior and define your own nodes, but also the ability to write functionality using Python or by compiling .net code into dlls that can be linked at run time.
+Dynamo extends the parametric functionality of Autodesk Revit. Dynamo aims to be accessible to both non-programmers and the programmers alike with the ability to visually script behavior, define custom nodes, and script using Python.
 
 ## Contributors ##
 
@@ -10,19 +10,69 @@ The intent of this project is to provide a visual interface for building interes
 * [Peter Boyer](https://github.com/pboyer): UX and UI overhaul, main developer.
 * [Lev Lipkin](https://github.com/LevL): Revit node designer, Revit interaction specialist.
 * [Matt Jezyk](https://github.com/tatlin): Node designer and overall design input.
-* [Zach Kron](https://github.com/kronz): UX and node design input.
+* [Zach Kron](https://github.com/kronz): Project management and requirements gathering.
+* [Luke Church](https://github.com/lukechurch): Software Architecture
 * Lillian Smith: Useful feedback and use cases.
 * [Tom Vollaro](https://github.com/tvollaro): Useful feedback and use cases.
 
 
-Dynamo has been developed based on feedback from several parties inlcuding Buro Happold Engineers, Autodesk, and students and faculty at the USC School of Architecture.
+Dynamo has been developed based on feedback from several parties including Arup, KPF, Buro Happold, Autodesk, and students and faculty at the USC School of Architecture.
 
 
 ## Running Dynamo ##
 
-The current version will run on top of Revit 2013, Revit 2014, Project Vasari Beta 2, and Project Vasari Beta 3. 
+The current version will run on top of Revit 2013, Revit 2014, and Project Vasari Beta 3. 
 
 ## Releases ##
+
+###0.6.0###
+
+September 2013
+
+Fixes
+- Nodes properly save/load port state
+- Build sublists now uses same sematics as Number node
+- Better descriptions for boolean logic nodes
+- Fixed bug for equal distance on curve node for closed curves
+- Fixed List To CSV to allow for non-string data
+- Performance improvement for Combine node
+- Nodes properly save/load port state
+- Fixed cultural variaces issues with number node
+- Number sequence and range fixes
+- Better descriptions for boolean logic nodes
+- Length node fixes
+- Best Fit Plane fixes
+- Legacy custom node loading fixes
+- Watch node performance improvements
+- Installer now installs for all users
+- Better output ports for intersection nodes
+- Excel nodes improvements
+
+
+New
+- Package Manager: share custom nodes online
+- Can now use material parameters (Get Material by Name node)
+- Get and Remove From List nodes now can use ranges of indices
+- Color Range node
+- Intersection nodes return more granular results
+- Adaptive Component By Face and By Curve nodes 
+- Default values for some nodes
+- Root finding nodes
+- Convert anything to a String (To String node)
+- Is XYZ Zero Length & XYZ Length nodes
+- New Slice List node (get a sublist from a given list)
+- Custom nodes differentiated from built in nodes in search
+- Domain node (specify a domain by Min and Max)
+- For Each node
+- Multithreading nodes
+- Nodes to perform explicit lacing (Lace Shortest, Longest, Cartesian)
+- Divided Surface Selection node (returns a list of hosted components)
+- Add basic instrumentation infrastructure to report usage
+- Allow writing a range of data to excel
+- Face Face intersection node
+- Default value capability for ports
+- UI Refinement
+
 
 ###0.5.3###
 
@@ -365,6 +415,20 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+## Instrumentation ##
+Dynamo now contains an instrumentation system. This anonymously reports usage data to the Dynamo team that will be used to enhance the usability the product. Aggregated summaries of the data will be shared back with the Dynamo community.
+
+An example of the data communicated is:
+
+"DateTime: 2013-08-22 19:17:21, AppIdent: Dynamo, Tag: Heartbeat-Uptime-s, Data: MTMxMjQxLjY3MzAyMDg=, Priority: Info, SessionID: 3fd39f21-1c3f-4cf3-8cdd-f46ca5dde636, UserID: 2ac95f29-a912-49a8-8fb5-e2d287683d94"
+
+The Data is Base64 encoded. For example, the data field above ('MTMxMjQxLjY3MzAyMDg=') decodes to: '131241.6730208' This represents the number of seconds that the instance of Dynamo has been running. 
+
+The UserID is randomly generated when the application is first run. The SessionID is randomly generated each time Dynamo is opened.
+
+
+
 
 ## Third Party Licenses ##
 

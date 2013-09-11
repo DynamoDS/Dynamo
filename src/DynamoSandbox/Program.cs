@@ -16,16 +16,7 @@ namespace DynamoSandbox
 
             try
             {
-                var controller = new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE);
-
-                var app = new Application();
-
-                //create the view
-                var ui = new DynamoView();
-                ui.DataContext = controller.DynamoViewModel;
-                controller.UIDispatcher = ui.Dispatcher;
-
-                app.Run(ui);
+                DynamoView.MakeSandboxAndRun();
             }
             catch (Exception e)
             {

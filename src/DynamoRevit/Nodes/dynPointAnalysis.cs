@@ -30,7 +30,7 @@ namespace Dynamo.Nodes
     [NodeName("Best Fit Line")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Determine the best fit line for a set of points.  This line minimizes the sum of the distances between the line and the point set.")]
-    internal class dynBestFitLine : dynNodeModel
+    internal class BestFitLine : NodeModel
     {
         private readonly PortData _axisPort = new PortData(
             "axis", "A normalized vector representing the axis of the best fit line.",
@@ -39,7 +39,7 @@ namespace Dynamo.Nodes
         private readonly PortData _avgPort = new PortData(
             "avg", "The average (mean) of the point list.", typeof(Value.Container));
 
-        public dynBestFitLine()
+        public BestFitLine()
         {
             InPortData.Add(new PortData("XYZs", "A List of XYZ's.", typeof (Value.List)));
             OutPortData.Add(_axisPort);
@@ -109,7 +109,7 @@ namespace Dynamo.Nodes
     [NodeName("Best Fit Plane")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Determine the best fit plane for a set of points.  This line minimizes the sum of the distances between the line and the point set.")]
-    internal class dynBestFitPlane : dynNodeModel
+    internal class BestFitPlane : NodeModel
     {
         private readonly PortData _normalPort = new PortData(
             "normal", "A normalized vector representing the axis of the best fit line.",
@@ -118,9 +118,13 @@ namespace Dynamo.Nodes
         private readonly PortData _originPort = new PortData(
             "origin", "The average (mean) of the point list.", typeof(Value.Container));
 
-        public dynBestFitPlane()
+        private readonly PortData _planePort = new PortData(
+    "plane", "The plane representing the output.", typeof(Value.Container));
+
+        public BestFitPlane()
         {
             InPortData.Add(new PortData("XYZs", "A List of XYZ's.", typeof(Value.List)));
+            OutPortData.Add(_planePort);
             OutPortData.Add(_normalPort);
             OutPortData.Add(_originPort);
 
@@ -135,15 +139,19 @@ namespace Dynamo.Nodes
             if (pts.Length < 3)
                 throw new Exception("3 or more XYZs are necessary to form the best fit plane.");
 
-            var ptList = dynBestFitLine.AsGenericList<XYZ>(pts);
+            var ptList = BestFitLine.AsGenericList<XYZ>(pts);
             XYZ meanPt;
             List<XYZ> orderedEigenvectors;
-            dynBestFitLine.PrincipalComponentsAnalysis(ptList, out meanPt, out orderedEigenvectors );
+            BestFitLine.PrincipalComponentsAnalysis(ptList, out meanPt, out orderedEigenvectors );
 
             var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
 
+            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
+
+            outPuts[_planePort] = Value.NewContainer(plane);
             outPuts[_normalPort] = Value.NewContainer(normal);
             outPuts[_originPort] = Value.NewContainer(meanPt);
+            
         }
     }
 }

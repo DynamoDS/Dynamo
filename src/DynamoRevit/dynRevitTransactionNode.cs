@@ -20,7 +20,7 @@ using HelixToolkit.Wpf;
 
 namespace Dynamo.Revit
 {
-    public abstract partial class dynRevitTransactionNode : dynNodeModel, IDrawable
+    public abstract partial class RevitTransactionNode : NodeModel, IDrawable
     {
         protected object DrawableObject = null;
         protected Func<object, RenderDescription> DrawMethod = null;
@@ -66,13 +66,13 @@ namespace Dynamo.Revit
 
         public RenderDescription RenderDescription { get; set; }
 
-        protected dynRevitTransactionNode()
+        protected RevitTransactionNode()
         {
             ArgumentLacing = LacingStrategy.Longest;
             RegisterAllElementsDeleteHook();
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             //Don't copy over stored references
             if (context == SaveContext.Copy)
@@ -96,11 +96,11 @@ namespace Dynamo.Revit
                         outEl.AppendChild(elementStore);
                     }
                 }
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
             }
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
             var del = new DynElementUpdateDelegate(onDeleted);
 
@@ -108,7 +108,7 @@ namespace Dynamo.Revit
 
             var sb = new StringBuilder();
             
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name == "Run")
                 {
@@ -631,7 +631,7 @@ namespace Dynamo.Revit
         }
     }
 
-    public abstract class dynRevitTransactionNodeWithOneOutput : dynRevitTransactionNode
+    public abstract class RevitTransactionNodeWithOneOutput : RevitTransactionNode
     {
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
@@ -649,7 +649,7 @@ namespace Dynamo.Revit
             /// Registers the given element id with the DMU such that any change in the element will
             /// trigger a workspace modification event (dynamic running and saving).
             /// </summary>
-            public static void RegisterEvalOnModified(this dynNodeModel node, ElementId id, Action modAction=null, Action delAction=null)
+            public static void RegisterEvalOnModified(this NodeModel node, ElementId id, Action modAction=null, Action delAction=null)
             {
                 var u = dynRevitSettings.Controller.Updater;
                 u.RegisterChangeHook(
@@ -668,7 +668,7 @@ namespace Dynamo.Revit
             /// Unregisters the given element id with the DMU. Should not be called unless it has already
             /// been registered with RegisterEvalOnModified
             /// </summary>
-            public static void UnregisterEvalOnModified(this dynNodeModel node, ElementId id)
+            public static void UnregisterEvalOnModified(this NodeModel node, ElementId id)
             {
                 var u = dynRevitSettings.Controller.Updater;
                 u.UnRegisterChangeHook(
@@ -694,7 +694,7 @@ namespace Dynamo.Revit
                 };
             }
 
-            static DynElementUpdateDelegate ReEvalOnModified(dynNodeModel node, Action modifiedAction)
+            static DynElementUpdateDelegate ReEvalOnModified(NodeModel node, Action modifiedAction)
             {
                 return delegate
                 {
