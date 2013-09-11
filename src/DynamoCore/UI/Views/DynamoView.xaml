@@ -141,7 +141,7 @@
             <Grid.Background>
                 <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
                     <GradientStop Color="#F0F0F0" Offset="0.0" />
-                    <GradientStop Color="#CCC" Offset="1.0" />
+                    <GradientStop Color="#EEE" Offset="1.0" />
                 </LinearGradientBrush>
             </Grid.Background>
             
@@ -150,7 +150,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Menu IsMainMenu="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" Name="menu1" Foreground="#333" Padding="6,8,0,3" Background="Transparent" BorderThickness="0">
+            <Menu IsMainMenu="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" Name="menu1" Foreground="#333" Padding="6,0,0,0" Background="Transparent" BorderThickness="0">
 
                 <MenuItem Header="_File" Name="fileMenu" Focusable="False">
 
