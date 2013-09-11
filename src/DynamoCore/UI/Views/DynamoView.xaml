@@ -221,7 +221,7 @@
                     <!--<MenuItem Focusable="False" Header="_Select Neighbors" Command="{Binding Path=ExpandSelectionCommand}"  Name="expandSelect" InputGestureText="Tab"/>-->
                     <MenuItem  Header="_Align Selection"  Name="Align">
                         <MenuItem  Header="_X Average"  Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalCenter" Focusable="False"/>
-                        <MenuItem  Header="_Left" Command="{Binding .AlignSelectedCommand}" CommandParameter="HorizontalLeft" Focusable="False"/>
+                        <MenuItem  Header="_Left" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalLeft" Focusable="False"/>
                         <MenuItem  Header="_Right" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalRight" Focusable="False"/>
                         <MenuItem  Header="_Y Average" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalCenter" Focusable="False"/>
                         <MenuItem  Header="_Top" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalTop" Focusable="False"/>
@@ -281,7 +281,7 @@
                     <MenuItem Focusable="False" Header="_Find Node By Id" IsCheckable="False" Name="FindNodeById">
                         <WrapPanel HorizontalAlignment="Stretch">
                             <TextBox Name="id_tb" Width="100"></TextBox>
-                            <Button Content="Find" Name="id_butt" Click="Id_butt_OnClick"></Button>
+                            <Button Content="Find" Width="70" Name="id_butt" Click="Id_butt_OnClick"></Button>
                         </WrapPanel>
                     </MenuItem>
 
@@ -298,7 +298,7 @@
                 </MenuItem>
 
                 <MenuItem Focusable="False" Header="_Packages" Name="PackageManagerMenu" IsEnabled="True">
-                    <MenuItem Focusable="False" Header="_Browse Online for Packages..." Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
+                    <MenuItem Focusable="False" Header="_Search for a Package..." Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
                     <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMInstalled" />
                     <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />
                     <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />
