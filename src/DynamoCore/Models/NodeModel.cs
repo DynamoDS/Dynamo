@@ -1630,17 +1630,17 @@ namespace Dynamo.Models
             this.isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             this.argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
 
-            // TODO(Ben): This needs validation...
-            inPorts.Clear();
+            int index = 0;
             foreach (XmlNode childNode in element.ChildNodes)
             {
-                // TODO(Ben): We need another constructor that takes owner 
-                // since we are going to repopulate the internal data members 
-                // through ModelBase.Deserialize method.
+                // TODO(Ben): We may or may not need to recreate/destroy port
+                // models here should there be changes in number of ports across
+                // undo boundaries (e.g. this can happen when user changes the 
+                // type of a node which takes fewer/more inputs than previously
+                // does).
                 // 
-                PortModel portModel = null; // new PortModel();
+                PortModel portModel = inPorts[index++];
                 portModel.Deserialize(childNode);
-                inPorts.Add(portModel);
             }
 
             // TODO(Ben): We need to raise property change events 
