@@ -766,7 +766,6 @@ namespace Dynamo.Models
             }
 
             builder.ClearAstNodes(GUID);
-            bool isPartiallyApplied = false;
 
             // Recursively compile its inputs to ast nodes and add intermediate
             // nodes to builder
@@ -776,7 +775,6 @@ namespace Dynamo.Models
                 Tuple<int, NodeModel> input;
                 if (!TryGetInput(index, out input))
                 {
-                    isPartiallyApplied = true;
                     inputAstNodes.Add(null);
                 }
                 else
@@ -791,15 +789,7 @@ namespace Dynamo.Models
             //
             //     AstIdentifier = ...;
             var rhs = BuildAstNode(builder, inputAstNodes);
-            if (rhs == null)
-            {
-                // For any dyn node which doesn't override this function, we treat
-                // them as custom nodes, therefore their evaluation is based on f#
-                // evaluation engine. This is done through evalutor.
-                rhs = builder.BuildEvaluator(this, inputAstNodes);
-            }
-            builder.BuildEvaluation(this, rhs, isPartiallyApplied);
-
+            builder.BuildEvaluation(this, rhs);
             return AstIdentifier;
         }
 

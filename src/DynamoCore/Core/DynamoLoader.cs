@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows;
 using String = System.String;
 using ProtoCore.DSASM;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
 {
@@ -117,21 +118,18 @@ namespace Dynamo.Utilities
 
         private static void LoadDSBuiltInFunctions()
         {
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> {"Math.dll" });
-            List<ProcedureNode> builtInMethods = GraphToDSCompiler.GraphUtilities.BuiltInMethods;
             var searchViewModel = dynSettings.Controller.SearchViewModel;
             var controller = dynSettings.Controller;
 
-            foreach (var method in builtInMethods)
+            foreach (var method in DSUtil.Instance.DSBuiltInMethods)
             {
-                searchViewModel.Add("BuiltIn Functions", method.name, "", new List<String> { }, true);
-
-                if (!controller.BuiltInFunctions.ContainsKey(method.name))
+                searchViewModel.Add("BuiltIn Functions", method.DisplayName, "", new List<String> { }, true);
+                if (!controller.DSBuiltInFunctions.ContainsKey(method.DisplayName))
                 {
-                    controller.BuiltInFunctions.Add(method.name, method);
+                    controller.DSBuiltInFunctions.Add(method.DisplayName, method);
                 }
             }
-        }
+       }
 
         /// <summary>
         ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
