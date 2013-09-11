@@ -210,7 +210,7 @@
                     <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt+F4"/>
                 </MenuItem>
 
-                <MenuItem Header="_Edit" Name="editMenu">
+                <MenuItem Header="_Edit" Name="editMenu" Focusable="False">
                     <MenuItem Focusable="False" Header="_Copy" Command="{Binding CopyCommand}" Name="copy" InputGestureText="Ctrl+C"/>
                     <MenuItem Focusable="False" Header="_Paste" Command="{Binding PasteCommand}"  Name="paste" InputGestureText="Ctrl+V"/>
                     <Separator/>
@@ -230,38 +230,42 @@
                     </MenuItem>
                 </MenuItem>
 
-                <MenuItem Header="_View" Name="viewMenu">
+                <MenuItem Header="_View" Name="viewMenu" Focusable="False">
 
-                    <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
+       
+                    <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                          Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
+
+                    <MenuItem Header="_Connectors" Name="connectorMenu">
+                    
+                        <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
+                            <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" 
+                                  IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
+                                  Command="{Binding SetConnectorTypeCommand}" CommandParameter="BEZIER" Header="Curves"/>
+
+                            <MenuItem Name="settings_plines" IsCheckable="True" 
+
+                                  IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
+                                  Command="{Binding SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
+                        </MenuItem>
+
+                        <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem"
+                              IsChecked="{Binding Path=IsShowingConnectors}" 
+                              Command="{Binding ShowHideConnectorsCommand}">
+                        </MenuItem>
+
+                    </MenuItem>
+
+                    <MenuItem Header="_Background 3D Preview" Name="background3dMenu">
+                        <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
                           IsChecked="{Binding Path=FullscreenWatchShowing}"
                           Command="{Binding ToggleFullscreenWatchShowingCommand}" />
 
-                    <MenuItem Header="Navigate Background"
+                        <MenuItem Header="Navigate Background 3D Preview"
                           IsEnabled="{Binding Path=FullscreenWatchShowing}"
                           IsChecked="{Binding Path=CanNavigateBackground}"
                           InputGestureText="Ctrl+G"
                           Command="{Binding ToggleCanNavigateBackgroundCommand}" />
-
-                    <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                          Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
-
-                    <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
-                        <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" 
-                              IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
-                              Command="{Binding SetConnectorTypeCommand}" CommandParameter="BEZIER" Header="Curves"/>
-
-                        <MenuItem Name="settings_plines" IsCheckable="True" 
-
-                              IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
-                              Command="{Binding SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
-                    </MenuItem>
-
-                    <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem"
-                          IsChecked="{Binding Path=IsShowingConnectors}" 
-                          Command="{Binding ShowHideConnectorsCommand}">
-                    </MenuItem>
-
-                    <MenuItem Focusable="False" Header="_Go Home" IsCheckable="False" Name="GoHome" Command="{Binding GoHomeCommand}">
                     </MenuItem>
 
                     <MenuItem Focusable="False" Header="_Find Node By Id" IsCheckable="False" Name="FindNodeById">
@@ -282,7 +286,7 @@
                 </MenuItem>
 
                 <MenuItem Focusable="False" Header="_Packages" Name="PackageManagerMenu" IsEnabled="True">
-                    <MenuItem Focusable="False" Header="_Search Online For Packages..." Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
+                    <MenuItem Focusable="False" Header="_Browse Online for Packages..." Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
                     <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMInstalled" />
                     <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />
                     <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />
