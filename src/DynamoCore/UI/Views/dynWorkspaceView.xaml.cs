@@ -198,7 +198,7 @@ namespace Dynamo.Views
 
         void vm_StopDragging(object sender, EventArgs e)
         {
-            WorkBench.isDragInProgress = false;
+            WorkBench.CancelDragOperation();
             WorkBench.ignoreClick = true;
         }
 
