@@ -395,12 +395,67 @@ namespace Dynamo.Models
             undoRecorder.EndActionGroup();
         }
 
+        internal void RecordAndDeleteModels(List<ModelBase> models)
+        {
+            if (null == models || (models.Count <= 0))
+                return; // There's nothing for deletion.
+
+            this.undoRecorder.BeginActionGroup(); // Start a new action group.
+
+            foreach (ModelBase model in models)
+            {
+                // Take a snapshot of the model before it goes away.
+                this.undoRecorder.RecordDeletionForUndo(model);
+
+                if (model is NoteModel)
+                    this.Notes.Remove(model as NoteModel);
+                else if (model is NodeModel)
+                {
+                    // Just to make sure we don't end up deleting nodes from 
+                    // another workspace (potentially two issues: the node was 
+                    // having its "Workspace" pointing to another workspace, 
+                    // or the selection set was not quite set up properly.
+                    // 
+                    NodeModel node = model as NodeModel;
+                    System.Diagnostics.Debug.Assert(this == node.WorkSpace);
+
+                    foreach (var conn in node.AllConnectors().ToList())
+                    {
+                        conn.NotifyConnectedPortsOfDeletion();
+                        this.Connectors.Remove(conn);
+                        this.undoRecorder.RecordDeletionForUndo(conn);
+                    }
+
+                    node.DisableReporting();
+                    node.Destroy();
+                    node.Cleanup();
+                    node.WorkSpace.Nodes.Remove(node);
+                }
+            }
+
+            this.undoRecorder.EndActionGroup(); // Conclude the deletion.
+        }
+
         #endregion
 
         #region IUndoRedoRecorderClient Members
 
         public void DeleteModel(XmlElement modelData)
         {
+            ModelBase model = GetModelForElement(modelData);
+
+            if (model is NoteModel)
+                this.Notes.Remove(model as NoteModel);
+            else if (model is ConnectorModel)
+                this.Connectors.Remove(model as ConnectorModel);
+            else if (model is NodeModel)
+                this.Nodes.Remove(model as NodeModel);
+            else
+            {
+                // If it gets here we obviously need to handle it.
+                throw new InvalidOperationException(string.Format(
+                    "Unhandled type: {0}", model.GetType().ToString()));
+            }
         }
 
         public void ReloadModel(XmlElement modelData)
@@ -411,6 +466,35 @@ namespace Dynamo.Models
 
         public void CreateModel(XmlElement modelData)
         {
+            XmlElementHelper helper = new XmlElementHelper(modelData);
+            string typeName = helper.ReadString("type", String.Empty);
+            if (string.IsNullOrEmpty(typeName))
+            {
+                // If there wasn't a "type" attribute, then we fall-back onto 
+                // the name of the XmlElement itself, which is usually the type 
+                // name.
+                typeName = modelData.Name;
+                if (string.IsNullOrEmpty(typeName))
+                {
+                    string guid = helper.ReadString("guid");
+                    throw new InvalidOperationException(
+                        string.Format("No type information: {0}", guid));
+                }
+            }
+
+            if (typeName.StartsWith("Dynamo.Nodes"))
+            {
+                DynamoModel dynamo = dynSettings.Controller.DynamoViewModel.Model;
+                NodeModel nodeModel = dynamo.CreateNode(typeName);
+                nodeModel.Deserialize(modelData);
+                Nodes.Add(nodeModel);
+            }
+            else if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
+            {
+                ConnectorModel connector = ConnectorModel.Make();
+                connector.Deserialize(modelData);
+                Connectors.Add(connector);
+            }
         }
 
         public ModelBase GetModelForElement(XmlElement modelData)
@@ -440,13 +524,13 @@ namespace Dynamo.Models
         {
             ModelBase foundModel = null;
             if (null == foundModel && (Connectors.Count > 0))
-                foundModel = Connectors.First((x) => x.GUID == modelGuid);
+                foundModel = Connectors.FirstOrDefault((x) => x.GUID == modelGuid);
 
             if (null == foundModel && (Nodes.Count > 0))
-                foundModel = Nodes.First((x) => (x.GUID == modelGuid));
+                foundModel = Nodes.FirstOrDefault((x) => (x.GUID == modelGuid));
 
             if (null == foundModel && (Notes.Count > 0))
-                foundModel = Notes.First((x) => (x.GUID == modelGuid));
+                foundModel = Notes.FirstOrDefault((x) => (x.GUID == modelGuid));
 
             return foundModel;
         }
