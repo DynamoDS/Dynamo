@@ -8,12 +8,12 @@
         mc:Ignorable="d" 
              Height="590" Width="700" ResizeMode="CanResizeWithGrip" Name="PublishInfoControl" Title="Publish a Dynamo Package" Visibility="Visible">
 
-    <shell:WindowChrome.WindowChrome>
+    <!--<shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="27"
                             GlassFrameThickness="0,0,0,1"
                             CornerRadius="2"
                             ResizeBorderThickness="5" />
-    </shell:WindowChrome.WindowChrome>
+    </shell:WindowChrome.WindowChrome>-->
     
     <Window.Resources>
         <ResourceDictionary>
@@ -38,13 +38,13 @@
           <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Border FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="#333" BorderThickness="0,0,0,1" Background="#444">
+        <!--<Border FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="#333" BorderThickness="0,0,0,1" Background="#444">
         </Border>
         
         <Grid FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
             <StackPanel Margin="0,5,0,0" Name="titleBarButtonsGrid" FlowDirection="LeftToRight" shell:WindowChrome.IsHitTestVisibleInChrome="True">
             </StackPanel>
-        </Grid>
+        </Grid>-->
 
         <Border Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1">
 
