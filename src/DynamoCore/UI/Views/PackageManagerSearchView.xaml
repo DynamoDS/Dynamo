@@ -44,23 +44,27 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-
+            
+            
             <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" Text="Search Returned No Results" TextAlignment="Center" Margin="20" Visibility="{Binding Path=HasNoResults, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
             <Grid Name="RSearchBoxStackPanel" Grid.Row="0">
                 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
                 <TextBox Grid.Column="0" Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,10,5,10" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText, Mode=TwoWay}">
+                       IsEnabled="True" KeyUp="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText, Mode=TwoWay}">
                 </TextBox>
 
                 <TextBlock Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" 
                            Foreground="#666" 
                            IsHitTestVisible="False"
-                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search Packages Online...</TextBlock>
+                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search...</TextBlock>
+
+                <Button Width="80" Grid.Column="1" Click="ButtonBase_OnClick" Style="{DynamicResource ResourceKey=SImageButton}" Padding="10,0,10,0" Tag="..\Images\search_24.png" >Search</Button>
 
             </Grid>
 

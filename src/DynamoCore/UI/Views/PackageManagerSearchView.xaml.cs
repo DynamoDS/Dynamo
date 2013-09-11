@@ -31,9 +31,14 @@ namespace Dynamo.PackageManager.UI
             //}
         }
 
-        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void SearchTextBox_TextChanged(object sender, KeyEventArgs e)
         {
-            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(((TextBox)sender).Text);
+            (this.DataContext as PackageManagerSearchViewModel).SearchText = this.SearchTextBox.Text;
+
+            if (e.Key == Key.Enter)
+            {
+                (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults();
+            }
         }
 
         private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -41,5 +46,9 @@ namespace Dynamo.PackageManager.UI
             ((PackageManagerSearchViewModel)DataContext).ExecuteSelected();
         }
 
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults();
+        }
     }
 }
