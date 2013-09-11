@@ -2,9 +2,24 @@
 #Nathan Miller, 2012, The Proving Ground 
 #http://nmillerarch.blogspot.com
 
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
 import math
-app = __revit__.Application
+
 doc = __revit__.ActiveUIDocument.Document
+app = __revit__.Application
 
 # The __persistent__ dictionary gives you a persistent
 # dictionary between runs.  Here we use it to store elements

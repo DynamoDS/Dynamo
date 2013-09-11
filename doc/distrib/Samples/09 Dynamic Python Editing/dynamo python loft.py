@@ -1,11 +1,28 @@
 # adapted from Nathan Miller's Proving Ground Blog
 # http://theprovingground.wikidot.com/revit-api-py-forms
 
-scale = IN
-# *scale
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+import math
 
 doc = __revit__.ActiveUIDocument.Document
 app = __revit__.Application
+
+scale = IN
+# *scale
+
 if DynStoredElements.Count>0:
      count = 0
      for eID in DynStoredElements:
