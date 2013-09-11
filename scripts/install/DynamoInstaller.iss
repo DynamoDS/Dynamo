@@ -40,7 +40,7 @@ Name: "custom"; Description: "Custom installation"; Flags: iscustom
 [Dirs]
 Name: "{app}\definitions"
 Name: "{app}\samples"
-Name: "{app}\dll
+Name: "{app}\dll"
 
 [Components]
 Name: "DynamoCore"; Description: "Dynamo Core Functionality"; Types: full compact custom; Flags: fixed
