@@ -103,18 +103,28 @@
                     Command="{Binding Path=DataContext.LayoutAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         
         <KeyBinding Key="Left"
+                    Modifiers="Shift"
                     CommandParameter="Left"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Right"
+                    Modifiers="Shift"
                     CommandParameter="Right"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Up"
+                    Modifiers="Shift"
                     CommandParameter="Up"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Down"
+                    Modifiers="Shift"
                     CommandParameter="Down"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-        
+        <KeyBinding Key="Up"
+                    Modifiers="Alt"
+                    Command="{Binding Path=DataContext.ZoomInCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="Down"
+                    Modifiers="Alt"
+                    Command="{Binding Path=DataContext.ZoomOutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+
     </Window.InputBindings>
 
     <Grid Name="mainGrid" FocusManager.IsFocusScope="True">
