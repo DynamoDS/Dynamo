@@ -98,6 +98,15 @@ namespace Dynamo.Models
             Debug.WriteLine(string.Format("{0} elapsed for constructing connector.", sw.Elapsed));
         }
 
+        public static ConnectorModel Make()
+        {
+            return new ConnectorModel();
+        }
+
+        private ConnectorModel()
+        {
+        }
+
         #endregion
         
         public bool Connect(PortModel p)
@@ -170,6 +179,7 @@ namespace Dynamo.Models
             XmlElement connector = xmlDocument.CreateElement(elementName);
             XmlElementHelper helper = new XmlElementHelper(connector);
 
+            helper.SetAttribute("guid", this.GUID);
             helper.SetAttribute("start", this.Start.Owner.GUID);
             helper.SetAttribute("start_index", this.Start.Index);
             helper.SetAttribute("end", this.End.Owner.GUID);
@@ -185,6 +195,7 @@ namespace Dynamo.Models
             XmlElementHelper helper = new XmlElementHelper(element);
 
             // Restore some information from the node attributes.
+            this.GUID = helper.ReadGuid("guid", this.GUID);
             Guid startNodeId = helper.ReadGuid("start");
             int startIndex = helper.ReadInteger("start_index");
             Guid endNodeId = helper.ReadGuid("end");
