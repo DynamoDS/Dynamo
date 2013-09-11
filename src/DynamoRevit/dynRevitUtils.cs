@@ -381,15 +381,17 @@ namespace Dynamo.Utilities
             }
         }
 
-        public static SketchPlane GetSketchPlaneFromCurve(Curve c)
+        public static Plane GetPlaneFromCurve(Curve c)
         {
             //cases to handle
             //straight line - normal will be inconclusive
-            
+
             //find the plane of the curve and generate a sketch plane
-            var p0 = c.Evaluate(0, true);
-            var p1 = c.Evaluate(0.5, true);
-            var p2 = c.Evaluate(1, true);
+            double period = c.IsBound ? 0.0 : (c.IsCyclic ? c.Period : 1.0);
+
+            var p0 = c.IsBound ? c.Evaluate(0.0, true) : c.Evaluate(0.0, false);
+            var p1 = c.IsBound ? c.Evaluate(0.5, true) : c.Evaluate(0.25 * period, false);
+            var p2 = c.IsBound ? c.Evaluate(1.0, true) : c.Evaluate(0.5 * period, false);
 
             var v1 = p1 - p0;
             var v2 = p2 - p0;
@@ -414,7 +416,12 @@ namespace Dynamo.Utilities
                 }
             }
 
-            var curvePlane = new Plane(norm, p0);
+            return new Plane(norm, p0);
+        }
+
+        public static SketchPlane GetSketchPlaneFromCurve(Curve c)
+        {
+            var curvePlane = GetPlaneFromCurve(c);
 
             SketchPlane sp = null;
             sp = dynRevitSettings.Doc.Document.IsFamilyDocument ? 
