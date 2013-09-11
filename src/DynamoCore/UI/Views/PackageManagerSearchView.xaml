@@ -44,9 +44,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
-            
-            <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" Text="Search Returned No Results" TextAlignment="Center" Margin="20" Visibility="{Binding Path=HasNoResults, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+            <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" Text="{Binding Path=SearchState}" TextAlignment="Center" Margin="20" Visibility="{Binding Path=SearchState, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
 
             <Grid Name="RSearchBoxStackPanel" Grid.Row="0">
                 
@@ -64,7 +63,7 @@
                            IsHitTestVisible="False"
                            Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search...</TextBlock>
 
-                <Button Width="80" Grid.Column="1" Click="ButtonBase_OnClick" Style="{DynamicResource ResourceKey=SImageButton}" Padding="10,0,10,0" Tag="..\Images\search_24.png" >Search</Button>
+                <Button Width="80" Grid.Column="1" Click="ButtonBase_OnClick" Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\search_24.png" >Search</Button>
 
             </Grid>
 
