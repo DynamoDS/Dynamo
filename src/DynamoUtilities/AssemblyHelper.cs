@@ -23,11 +23,10 @@ namespace Dynamo.Utilities
             return assembly;
         }
 
-        public static string GetDynamoVersion()
+        public static Version GetDynamoVersion()
         {
             var assembly = Assembly.GetCallingAssembly();
-            var versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-            return versionInfo.FileVersion;
+            return assembly.GetName().Version;
         }
     }
 }

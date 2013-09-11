@@ -125,6 +125,7 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DSEngine\AstBuilder.cs" />
+    <Compile Include="Models\Migration.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />

@@ -163,6 +163,7 @@ namespace Dynamo.Models
         public string UnlockLoadPath { get; set; }
         private WorkspaceModel _cspace;
         internal string editName = "";
+        private List<Migration> _migrations = new List<Migration>();
 
         /// <summary>
         /// Event called when a workspace is hidden
@@ -211,9 +212,6 @@ namespace Dynamo.Models
             get { return CurrentWorkspace.Nodes.ToList(); }
         }
 
-        
-
-
         public static bool RunEnabled { get; set; }
 
         public static bool RunInDebug { get; set; }
@@ -239,7 +237,38 @@ namespace Dynamo.Models
         /// </summary>
         public event CleanupHandler CleaningUp;
 
+        internal List<Migration> Migrations
+        {
+            get { return _migrations; }
+            set { _migrations = value; }
+        }
+
         #endregion
+
+        public DynamoModel()
+        {
+            Migrations.Add(new Migration(new Version("0.5.3.0"), new Action(Migrate_0_5_3_to_0_6_0)));
+        }
+
+        /// <summary>
+        /// Run every migration for a model version before current.
+        /// </summary>
+        public void ProcessMigrations()
+        {
+            var migrations =
+                Migrations.Where(x => x.Version < HomeSpace.WorkspaceVersion || x.Version == null)
+                          .OrderBy(x => x.Version);
+            
+            foreach (var migration in migrations)
+            {
+                migration.Upgrade.Invoke();
+            }
+        }
+
+        private void Migrate_0_5_3_to_0_6_0()
+        {
+            DynamoLogger.Instance.Log("Applying model migration from 0.5.3.x to 0.6.0.x", LogLevel.Console);
+        }
 
         public virtual void OnCleanup(EventArgs e)
         {
@@ -365,8 +394,6 @@ namespace Dynamo.Models
         {
             return true;
         }
-
-
 
         internal void OpenCustomNodeAndFocus( WorkspaceHeader workspaceHeader )
         {
@@ -543,7 +570,6 @@ namespace Dynamo.Models
             }
         }
 
-
         /// <summary>
         ///     Create a build-in node from a type object in a given workspace.
         /// </summary>
@@ -645,6 +671,7 @@ namespace Dynamo.Models
                 double cx = 0;
                 double cy = 0;
                 double zoom = 1.0;
+                string version = "";
 
                 // handle legacy workspace nodes called dynWorkspace
                 // and new workspaces without the dyn prefix
@@ -667,6 +694,10 @@ namespace Dynamo.Models
                         else if (att.Name.Equals("zoom"))
                         {
                             zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                        }
+                        else if (att.Name.Equals("Version"))
+                        {
+                            version = att.Value;
                         }
                     }
                 }
@@ -862,6 +893,10 @@ namespace Dynamo.Models
 
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
+
+                if(!string.IsNullOrEmpty(version))
+                    CurrentWorkspace.WorkspaceVersion = new Version(version);
+                dynSettings.Controller.DynamoModel.ProcessMigrations();
 
                 #endregion
 
