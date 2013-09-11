@@ -17,18 +17,9 @@ namespace Dynamo.PackageManager.UI
         public PackageManagerSearchView(PackageManagerSearchViewModel pm)
         {
 
-            //this.Owner = dynSettings.Bench;
-            this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
             this.DataContext = pm;
             InitializeComponent();
 
-            //if (titleBarButtons == null)
-            //{
-            //    titleBarButtons = new TitleBarButtons(this);
-            //    titleBarButtonsGrid.Children.Add(titleBarButtons);
-            //}
         }
 
         private void SearchTextBox_TextChanged(object sender, KeyEventArgs e)
