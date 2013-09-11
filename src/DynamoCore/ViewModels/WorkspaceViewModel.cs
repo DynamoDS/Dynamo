@@ -744,6 +744,28 @@ namespace Dynamo.ViewModels
             return false;
         }
 
+        private double _zoomIncrement = 0.05;
+
+        private void ZoomIn(object o)
+        {
+            _model.Zoom += _zoomIncrement;
+        }
+
+        private bool CanZoomIn(object o)
+        {
+            return true;
+        }
+
+        private void ZoomOut(object o)
+        {
+            _model.Zoom -= _zoomIncrement;
+        }
+
+        private bool CanZoomOut(object o)
+        {
+            return true;
+        }
+
         private void SetZoom(object zoom)
         {
             _model.Zoom = Convert.ToDouble(zoom); ;
