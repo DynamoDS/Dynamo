@@ -1120,14 +1120,6 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override AssociativeNode AstIdentifier
-        {
-            get
-            {
-                return AstBuilder.ExprConstants.EmptyList;
-            }
-        }
-
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
@@ -2256,7 +2248,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return AstBuilder.ExprConstants.E;
+                return AstFactory.BuildDoubleNode(Math.E);
             }
         }
 
@@ -2299,7 +2291,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return AstBuilder.ExprConstants.PI;
+                return AstFactory.BuildDoubleNode(Math.PI);
             }
         }
 
@@ -2342,7 +2334,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return AstBuilder.ExprConstants.TwoPI;
+                return AstFactory.BuildDoubleNode(Math.PI * 2);
             }
         }
 
@@ -3078,7 +3070,7 @@ namespace Dynamo.Nodes
             else
             {
                 List<AssociativeNode> nodes = _parsed.Select(x => x.GetAstNode(paramDict)).ToList();
-                return AstBuilder.BuildExprList(nodes);
+                return AstFactory.BuildExprList(nodes);
             }
         }
 
@@ -3381,7 +3373,7 @@ namespace Dynamo.Nodes
 
             public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
             {
-                return AstBuilder.BuildDoubleNode(_d);
+                return AstFactory.BuildDoubleNode(_d);
             }
         }
     }

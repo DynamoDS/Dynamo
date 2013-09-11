@@ -11,6 +11,40 @@ using ProtoCore.DSASM;
 namespace Dynamo.Nodes
 {
     /// <summary>
+    /// Description about a DesignScript function. 
+    /// 
+    /// TODO: More information may be needed. 
+    /// </summary>
+    public class DSFunctionDescritpion
+    {
+        private string functionName = string.Empty;
+        private string displayName = string.Empty;
+        private List<string> argumentNames = new List<string>();
+
+        public string Name
+        {
+            get { return functionName; }
+        }
+
+        public string DisplayName
+        {
+            get { return displayName;  }
+        }
+        
+        public List<string> ArgumentNames
+        {
+            get { return argumentNames; }
+        }
+
+        public DSFunctionDescritpion(string name, string displayName, List<string> argumentNames)
+        {
+            this.functionName = name;
+            this.displayName = displayName;
+            this.argumentNames = argumentNames;
+        }
+    }
+
+    /// <summary>
     /// DesignScript function node. All functions from DesignScript share the
     /// same function node but internally have different procedure node.
     /// </summary>
@@ -20,30 +54,32 @@ namespace Dynamo.Nodes
     [NodeSearchableAttribute(false)]
     public class DSFunction : NodeModel
     {
-        private ProcedureNode procedure;
+        private DSFunctionDescritpion functionData; 
 
         public string FunctionName
         {
             get
             {
-                return procedure.name;
+                return functionData.Name;
             }
         }
 
-        public DSFunction(ProcedureNode dsProcedure)
+        public DSFunction(DSFunctionDescritpion functionData)
         {
-            procedure = dsProcedure;
-            foreach (var arg in procedure.argInfoList)
+            this.functionData = functionData;
+
+            foreach (var arg in this.functionData.ArgumentNames)
             {
-                InPortData.Add(new PortData(arg.Name, "parameter", typeof(object)));
+                InPortData.Add(new PortData(arg, "parameter", typeof(object)));
             }
-            OutPortData.Add(new PortData("", "Object inspected", typeof(object)));
+            OutPortData.Add(new PortData("", "return value", typeof(object)));
             RegisterAllPorts();
 
-            NickName = procedure.name;
+            NickName = functionData.DisplayName;
         }
 
-        protected override AssociativeNode BuildAstNode(DSEngine.IAstBuilder builder, List<ProtoCore.AST.AssociativeAST.AssociativeNode> inputs)
+        protected override AssociativeNode BuildAstNode(DSEngine.IAstBuilder builder, 
+                                                        List<ProtoCore.AST.AssociativeAST.AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
         }
