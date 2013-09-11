@@ -12,15 +12,15 @@ using Autodesk.Revit.DB;
 
 namespace Dynamo.Nodes
 {
-    public class dynFunctionWithRevit : dynFunction
+    public class FunctionWithRevit : Function
     {
         internal ElementsContainer ElementsContainer = new ElementsContainer();
 
-        protected internal dynFunctionWithRevit(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition functionDefinition)
+        protected internal FunctionWithRevit(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition functionDefinition)
             : base(inputs, outputs, functionDefinition)
         { }
 
-        public dynFunctionWithRevit() { }
+        public FunctionWithRevit() { }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
@@ -30,9 +30,9 @@ namespace Dynamo.Nodes
             return result;
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            base.SaveNode(xmlDoc, dynEl, context);
+            base.SaveNode(xmlDoc, nodeElement, context);
 
             if (context == SaveContext.Copy)
                 return;
@@ -60,17 +60,17 @@ namespace Dynamo.Nodes
                     outEl.AppendChild(runEl);
                 }
 
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
             }
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
-            base.LoadNode(elNode);
+            base.LoadNode(nodeElement);
 
             ElementsContainer.Clear();
 
-            foreach (XmlNode node in elNode.ChildNodes)
+            foreach (XmlNode node in nodeElement.ChildNodes)
             {
                 if (node.Name == "InnerNode")
                 {
@@ -102,7 +102,7 @@ namespace Dynamo.Nodes
                             }
                         }
                     }
-                    var rNode = Definition.Workspace.Nodes.FirstOrDefault(x => x.GUID == nodeId) as dynRevitTransactionNode;
+                    var rNode = Definition.Workspace.Nodes.FirstOrDefault(x => x.GUID == nodeId) as RevitTransactionNode;
                     if (rNode != null)
                         rNode.RegisterAllElementsDeleteHook();
                 }

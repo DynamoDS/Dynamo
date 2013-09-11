@@ -28,9 +28,9 @@ namespace Dynamo.Nodes
     [NodeName("Color Brightness")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Calculates a color's brightness.")]
-    class dynColorBrightness : dynNodeWithOneOutput
+    class ColorBrightness : NodeWithOneOutput
     {
-        public dynColorBrightness()
+        public ColorBrightness()
         {
             InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
             OutPortData.Add(new PortData("mag", "The magnitude of the color vector", typeof(Value.Number)));
@@ -42,7 +42,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var c = (Color)((Value.Container)args[0]).Item;
+            var c = (System.Drawing.Color)((Value.Container)args[0]).Item;
 
             return Value.NewNumber(c.GetBrightness());
         } 
@@ -51,9 +51,9 @@ namespace Dynamo.Nodes
     [NodeName("Color Saturation")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Calculates a color's saturation.")]
-    class dynColorSaturation : dynNodeWithOneOutput
+    class ColorSaturation : NodeWithOneOutput
     {
-        public dynColorSaturation()
+        public ColorSaturation()
         {
             InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
             OutPortData.Add(new PortData("sat", "The saturation of the color as a number between 0 and 1", typeof(Value.Number)));
@@ -65,7 +65,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var c = (Color)((Value.Container)args[0]).Item;
+            var c = (System.Drawing.Color)((Value.Container)args[0]).Item;
 
             return Value.NewNumber(c.GetSaturation());
         }
@@ -75,9 +75,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Make a color from its alpha, red, green, and blue components.")]
     [NodeSearchTags("argb")]
-    class dynColor : dynNodeWithOneOutput
+    class Color : NodeWithOneOutput
     {
-        public dynColor()
+        public Color()
         {
             InPortData.Add(new PortData("A", "The alpha part of the color between 0 and 255", typeof(Value.Number)));
             InPortData.Add(new PortData("R", "The red part of the color between 0 and 255", typeof(Value.Number)));
@@ -97,7 +97,7 @@ namespace Dynamo.Nodes
             var g = (int) Math.Round(((Value.Number)args[2]).Item);
             var b = (int) Math.Round(((Value.Number)args[3]).Item);
 
-            return Value.NewContainer(Color.FromArgb(a, r, g, b));
+            return Value.NewContainer(System.Drawing.Color.FromArgb(a, r, g, b));
         }
     }
 
@@ -105,7 +105,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Separate a color into its alpha, red, green, and blue components.")]
     [NodeSearchTags("argb")]
-    class dynColorComponents : dynNodeModel
+    class ColorComponents : NodeModel
     {
         private readonly PortData _alphaOut = new PortData(
             "A", "The alpha part of the color between 0 and 255", typeof(Value.Number));
@@ -119,7 +119,7 @@ namespace Dynamo.Nodes
         private readonly PortData _blueOut = new PortData(
             "B", "The blue part of the color between 0 and 255", typeof(Value.Number));
 
-        public dynColorComponents()
+        public ColorComponents()
         {
             InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
             OutPortData.Add(_alphaOut);
@@ -134,7 +134,7 @@ namespace Dynamo.Nodes
 
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            var c = (Color)((Value.Container)args[0]).Item;
+            var c = (System.Drawing.Color)((Value.Container)args[0]).Item;
 
             outPuts[_alphaOut] = Value.NewNumber(c.A);
             outPuts[_redOut] = Value.NewNumber(c.R);
@@ -146,9 +146,9 @@ namespace Dynamo.Nodes
     [NodeName("Color Hue")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Calculates a color's hue.")]
-    class dynColorHue : dynNodeWithOneOutput
+    class ColorHue : NodeWithOneOutput
     {
-        public dynColorHue()
+        public ColorHue()
         {
             InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
             OutPortData.Add(new PortData("hue", "The hue of the color as a number between 0 and 1", typeof(Value.Number)));
@@ -160,7 +160,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var c = (Color)((Value.Container)args[0]).Item;
+            var c = (System.Drawing.Color)((Value.Container)args[0]).Item;
 
             return Value.NewNumber(c.GetHue());
         }
@@ -168,9 +168,9 @@ namespace Dynamo.Nodes
 
     public class ColorRangeEventArgs : EventArgs
     {
-        Color Start { get; set; }
-        Color End { get; set; }
-        public ColorRangeEventArgs(Color start, Color end)
+        System.Drawing.Color Start { get; set; }
+        System.Drawing.Color End { get; set; }
+        public ColorRangeEventArgs(System.Drawing.Color start, System.Drawing.Color end)
         {
             Start = start;
             End = end;
@@ -180,10 +180,10 @@ namespace Dynamo.Nodes
     [NodeName("Color Range")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Get a color given a color range.")]
-    class dynColorRange : dynNodeWithOneOutput
+    class ColorRange : NodeWithOneOutput
     {
-        private Color _start;
-        private Color _end;
+        private System.Drawing.Color _start;
+        private System.Drawing.Color _end;
 
         public event EventHandler RequestChangeColorRange;
         protected virtual void OnRequestChangeColorRange(object sender, EventArgs e)
@@ -192,7 +192,7 @@ namespace Dynamo.Nodes
                 RequestChangeColorRange(sender, e);
         }
 
-        public dynColorRange()
+        public ColorRange()
         {
             InPortData.Add(new PortData("start", "The start color.", typeof(Value.Container)));
             InPortData.Add(new PortData("end", "The end color.", typeof(Value.Container)));
@@ -202,14 +202,14 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
 
-            _start = Color.Blue;
-            _end = Color.Red;
+            _start = System.Drawing.Color.Blue;
+            _end = System.Drawing.Color.Red;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            _start = (Color)((Value.Container)args[0]).Item;
-            _end = (Color)((Value.Container)args[1]).Item;
+            _start = (System.Drawing.Color)((Value.Container)args[0]).Item;
+            _end = (System.Drawing.Color)((Value.Container)args[1]).Item;
             var value = ((Value.Number)args[2]).Item;
 
             if (value > 1.0 || value < 0.0)
@@ -221,7 +221,7 @@ namespace Dynamo.Nodes
             var selGreen = (int)(_start.G + (_end.G - _start.G)*value);
             var selBlue = (int)(_start.B + (_end.B - _start.B)*value);
 
-            var returnColor = Color.FromArgb(selRed, selGreen, selBlue);
+            var returnColor = System.Drawing.Color.FromArgb(selRed, selGreen, selBlue);
             return Value.NewContainer(returnColor);
         }
 
@@ -252,7 +252,7 @@ namespace Dynamo.Nodes
         }
 
         //http://gaggerostechnicalnotes.blogspot.com/2012/01/wpf-colors-scale.html
-        private WriteableBitmap CompleteColorScale(Color start, Color end)
+        private WriteableBitmap CompleteColorScale(System.Drawing.Color start, System.Drawing.Color end)
         {
             //var drawPlane = new System.Windows.Controls.Image();
 

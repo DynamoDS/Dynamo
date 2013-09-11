@@ -34,7 +34,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("Visualize the output of node. ")]
     [NodeSearchTags("print", "output", "display")]
-    public partial class dynWatch: dynNodeWithOneOutput
+    public partial class Watch: NodeWithOneOutput
     {
 
         public WatchTree watchTree;
@@ -99,7 +99,7 @@ namespace Dynamo.Nodes
             handlerManager.handlers.Remove(h);
         }
 
-        public dynWatch()
+        public Watch()
         {
             InPortData.Add(new PortData("", "Node to evaluate.", typeof(object)));
             OutPortData.Add(new PortData("", "Watch contents.", typeof(object)));
@@ -108,7 +108,7 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
 
-            foreach (dynPortModel p in InPorts)
+            foreach (PortModel p in InPorts)
             {
                 p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
             }
@@ -161,6 +161,12 @@ namespace Dynamo.Nodes
 
             WatchNode node = null;
             
+            if (eIn == null)
+            {
+                node = new WatchNode("null");
+                return node;
+            }
+
             if (eIn.IsContainer)
             {
                 if ((eIn as Value.Container).Item != null)

@@ -1,0 +1,18 @@
+<dynWorkspace X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <dynElements>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="cc16be22-af85-4626-b759-4a82e10bf1b0" nickname="Watch" x="717" y="254.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynConcatStrings type="Dynamo.Nodes.dynConcatStrings" guid="eb4d8a34-5437-4064-ad52-db5c58a95451" nickname="Concat Strings" x="459" y="251.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="cda85fc3-3191-4dec-b484-68bc5bc159b9" nickname="String" x="231" y="202.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="" />
+    </Dynamo.Nodes.dynStringInput>
+    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="2f34b765-4705-4bc0-8520-bf57b37197ef" nickname="String" x="226" y="310.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="" />
+    </Dynamo.Nodes.dynStringInput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Models.dynConnectorModel start="eb4d8a34-5437-4064-ad52-db5c58a95451" start_index="0" end="cc16be22-af85-4626-b759-4a82e10bf1b0" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="cda85fc3-3191-4dec-b484-68bc5bc159b9" start_index="0" end="eb4d8a34-5437-4064-ad52-db5c58a95451" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="2f34b765-4705-4bc0-8520-bf57b37197ef" start_index="0" end="eb4d8a34-5437-4064-ad52-db5c58a95451" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

@@ -311,7 +311,7 @@ let private parse = stringToSyntax >> List.map (syntaxToExpression macroEnv)
 let rec print = function
     | List(Dummy(_)::_) -> "" // don't print accumulated statement dummy values
     | List(list)        -> "(" + String.Join(" ", List.map print list) + ")"
-    | String(s)         -> s
+    | String(s)         -> "\"" + s + "\""
     | Symbol(s)         -> s
     | Number(n)         -> n.ToString()
     | Container(o)      -> sprintf "#<object:\"%s\">" <| o.ToString()

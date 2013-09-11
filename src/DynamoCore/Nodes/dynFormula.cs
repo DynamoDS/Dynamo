@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 using System.Xml;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
@@ -16,26 +18,26 @@ namespace Dynamo.Nodes
     [NodeDescription("Design and compute mathematical expressions. Uses NCalc Syntax: http://ncalc.codeplex.com.")]
     [NodeSearchTags("Equation", "Arithmetic")]
     [IsInteractive(true)]
-    public partial class dynFormula : dynMathBase
+    public partial class Formula : MathBase
     {
-        private string _formula = "";
-        public string Formula
+        private string _formulaString = "";
+        public string FormulaString
         {
             get
             {
-                return _formula;
+                return _formulaString;
             }
 
             set
             {
-                if (_formula == null || !_formula.Equals(value))
+                if (_formulaString == null || !_formulaString.Equals(value))
                 {
-                    _formula = value;
+                    _formulaString = value;
                     if (value != null)
                     {
                         DisableReporting();
-                        processFormula();
-                        RaisePropertyChanged("Formula");
+                        ProcessFormula();
+                        RaisePropertyChanged("FormulaString");
                         RequiresRecalc = true;
                         EnableReporting();
                         if (WorkSpace != null)
@@ -45,39 +47,54 @@ namespace Dynamo.Nodes
             }
         }
 
-        public dynFormula()
+        public Formula()
         {
             OutPortData.Add(new PortData("", "Result of math computation", typeof(Value.Number)));
             RegisterAllPorts();
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            dynEl.SetAttribute("formula", Formula);
+            var formStringNode = xmlDoc.CreateElement("FormulaText");
+            formStringNode.InnerText = FormulaString;
+            nodeElement.AppendChild(formStringNode);
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
-            Formula = elNode.Attributes["formula"].Value ?? "";
+            if (nodeElement.Attributes != null)
+            {
+                var formulaAttr = nodeElement.Attributes["formula"];
+                if (formulaAttr != null)
+                {
+                    FormulaString = formulaAttr.Value;
+                    return;
+                }
+            }
+
+            var formStringNode = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(childNode => childNode.Name == "FormulaText");
+            FormulaString = formStringNode != null 
+                ? formStringNode.InnerText 
+                : nodeElement.InnerText;
         }
 
-        private static HashSet<string> RESERVED_FUNC_NAMES = new HashSet<string> { 
+        private static readonly HashSet<string> ReservedFuncNames = new HashSet<string> { 
             "abs", "acos", "asin", "atan", "ceiling", "cos",
             "exp", "floor", "ieeeremainder", "log", "log10",
             "max", "min", "pow", "round", "sign", "sin", "sqrt",
             "tan", "truncate", "in", "if"
         };
 
-        private static HashSet<string> RESERVED_PARAM_NAMES = new HashSet<string> {
+        private static readonly HashSet<string> ReservedParamNames = new HashSet<string> {
             "pi", "π"
         };
 
-        private void processFormula()
+        private void ProcessFormula()
         {
             Expression e;
             try
             {
-                e = new Expression(Formula.ToLower(), EvaluateOptions.IgnoreCase);
+                e = new Expression(FormulaString.ToLower(), EvaluateOptions.IgnoreCase);
             }
             catch (Exception ex)
             {
@@ -96,7 +113,7 @@ namespace Dynamo.Nodes
 
             e.EvaluateFunction += delegate(string name, FunctionArgs args)
             {
-                if (!paramSet.Contains(name) && !RESERVED_FUNC_NAMES.Contains(name))
+                if (!paramSet.Contains(name) && !ReservedFuncNames.Contains(name))
                 {
                     paramSet.Add(name);
                     parameters.Add(Tuple.Create(name, typeof(Value.Function)));
@@ -112,7 +129,7 @@ namespace Dynamo.Nodes
 
             e.EvaluateParameter += delegate(string name, ParameterArgs args)
             {
-                if (!paramSet.Contains(name) && !RESERVED_PARAM_NAMES.Contains(name))
+                if (!paramSet.Contains(name) && !ReservedParamNames.Contains(name))
                 {
                     paramSet.Add(name);
                     parameters.Add(Tuple.Create(name, typeof(Value.Number)));
@@ -135,11 +152,12 @@ namespace Dynamo.Nodes
             }
 
             RegisterInputs();
+            ValidateConnections();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var e = new Expression(Formula.ToLower(), EvaluateOptions.IgnoreCase);
+            var e = new Expression(FormulaString.ToLower(), EvaluateOptions.IgnoreCase);
 
             e.Parameters["pi"] = 3.14159265358979;
 

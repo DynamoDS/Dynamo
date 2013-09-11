@@ -15,6 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Dynamo.CS.props" />
+  </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -36,11 +39,14 @@ limitations under the License.
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
+  <PropertyGroup>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -50,7 +56,7 @@ limitations under the License.
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\</OutputPath>
+    <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -66,11 +72,6 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\greg\Ionic.Zip.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -81,17 +82,29 @@ limitations under the License.
       <HintPath>..\..\extern\Newtonsoft.json\Newtonsoft.Json.dll</HintPath>
       <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.core, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\NUnit\nunit.core.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoCore">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoImperative">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoImperative.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoAssociative">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoAssociative.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoScript">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoScript.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -99,7 +112,6 @@ limitations under the License.
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -112,11 +124,13 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DSEngine\AstBuilder.cs" />
+    <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
     <Compile Include="UI\Commands\Commands.cs" />
-    <Compile Include="DynamoLogger.cs" />
-    <Compile Include="DynamoSelection.cs" />
+    <Compile Include="Core\DynamoLogger.cs" />
+    <Compile Include="Core\DynamoSelection.cs" />
     <Compile Include="Nodes\dynMultithreading.cs" />
     <Compile Include="Nodes\dynOptimize.cs" />
     <Compile Include="Services\Heartbeat.cs" />
@@ -125,12 +139,13 @@ limitations under the License.
     <Compile Include="PackageManager\Package.cs" />
     <Compile Include="PackageManager\PackageUploadBuilder.cs" />
     <Compile Include="PackageManager\PackageUploadHandle.cs" />
-    <Compile Include="SettingsManager.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Models\DynamoModel.cs" />
-    <Compile Include="Models\dynModelBase.cs" />
-    <Compile Include="Models\dynNoteModel.cs" />
-    <Compile Include="Models\dynPortModel.cs" />
+    <Compile Include="Models\ModelBase.cs" />
+    <Compile Include="Models\NoteModel.cs" />
+    <Compile Include="Models\PortModel.cs" />
+    <Compile Include="UI\dynTextBox.cs" />
+    <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\WatchViewModel.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
@@ -159,9 +174,6 @@ limitations under the License.
     <Compile Include="ViewModels\PackageItemViewModel.cs" />
     <Compile Include="ViewModels\PackageItemLeafViewModel.cs" />
     <Compile Include="ViewModels\PackageItemRootViewModel.cs" />
-    <Compile Include="UI\Views\PackageManagerDownloadView.xaml.cs">
-      <DependentUpon>PackageManagerDownloadView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Views\PackageManagerPublishView.xaml.cs">
       <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
     </Compile>
@@ -230,22 +242,22 @@ limitations under the License.
     </Compile>
     <Compile Include="Search\SearchElements\TopSearchElement.cs" />
     <Compile Include="Nodes\dynFormula.cs" />
-    <Compile Include="Units.cs" />
+    <Compile Include="Core\Units.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
     <Compile Include="ViewModels\DynamoViewModel.cs" />
-    <Compile Include="ViewModels\dynConnectorViewModel.cs" />
-    <Compile Include="ViewModels\dynNodeViewModel.cs" />
-    <Compile Include="ViewModels\dynNoteViewModel.cs" />
-    <Compile Include="ViewModels\dynPortViewModel.cs" />
-    <Compile Include="ViewModels\dynViewModelBase.cs" />
-    <Compile Include="ViewModels\dynWorkspaceViewModel.cs" />
-    <Compile Include="CustomNodeManager.cs" />
-    <Compile Include="DynamoLoader.cs" />
-    <Compile Include="NodeCollapser.cs" />
+    <Compile Include="ViewModels\ConnectorViewModel.cs" />
+    <Compile Include="ViewModels\NodeViewModel.cs" />
+    <Compile Include="ViewModels\NoteViewModel.cs" />
+    <Compile Include="ViewModels\PortViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="ViewModels\WorkspaceViewModel.cs" />
+    <Compile Include="Core\CustomNodeManager.cs" />
+    <Compile Include="Core\DynamoLoader.cs" />
+    <Compile Include="Core\NodeCollapser.cs" />
     <Compile Include="Search\SearchElements\CommandElement.cs" />
-    <Compile Include="DynamoController.cs" />
+    <Compile Include="Core\DynamoController.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="Interfaces\dynIDrawable.cs" />
@@ -263,12 +275,12 @@ limitations under the License.
     <Compile Include="Nodes\dynTimer.cs" />
     <Compile Include="Nodes\dynBaseTypes.cs" />
     <Compile Include="Nodes\dynCommunication.cs" />
-    <Compile Include="Models\dynConnectorModel.cs" />
+    <Compile Include="Models\ConnectorModel.cs" />
     <Compile Include="Nodes\dynFiles.cs" />
     <Compile Include="Nodes\dynFunction.cs" />
-    <Compile Include="Models\dynNodeModel.cs" />
-    <Compile Include="dynSettings.cs" />
-    <Compile Include="Models\dynWorkspaceModel.cs" />
+    <Compile Include="Models\NodeModel.cs" />
+    <Compile Include="Core\dynSettings.cs" />
+    <Compile Include="Models\WorkspaceModel.cs" />
     <Compile Include="Nodes\dynWatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -297,6 +309,10 @@ limitations under the License.
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DSCoreNodes\DSCoreNodes.csproj">
+      <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
+      <Name>DSCoreNodes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
       <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
       <Name>FSchemeInterop</Name>
@@ -339,10 +355,6 @@ limitations under the License.
     <Page Include="UI\Prompts\CrashPrompt.xaml">
     </Page>
     <Page Include="UI\Views\InstalledPackagesView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Views\PackageManagerDownloadView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -418,15 +430,59 @@ limitations under the License.
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="VBIDE">
-      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>5</VersionMajor>
-      <VersionMinor>3</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
+    <Resource Include="UI\Images\closetab_hover.png" />
+    <Resource Include="UI\Images\closetab_normal.png" />
+    <Resource Include="UI\Images\closewindow_hover.png" />
+    <Resource Include="UI\Images\closewindow_normal.png" />
+    <Resource Include="UI\Images\collapsestate_hover.png" />
+    <Resource Include="UI\Images\collapsestate_normal.png" />
+    <Resource Include="UI\Images\expandstate_hover.png" />
+    <Resource Include="UI\Images\expandstate_normal.png" />
+    <Resource Include="UI\Images\fitview_disabled.png" />
+    <Resource Include="UI\Images\fitview_hover.png" />
+    <Resource Include="UI\Images\fitview_normal.png" />
+    <Resource Include="UI\Images\librarycollapse_hover.png" />
+    <Resource Include="UI\Images\librarycollapse_normal.png" />
+    <Resource Include="UI\Images\maximizewindow_hover.png" />
+    <Resource Include="UI\Images\maximizewindow_normal.png" />
+    <Resource Include="UI\Images\minimizewindow_hover.png" />
+    <Resource Include="UI\Images\minimizewindow_normal.png" />
+    <Resource Include="UI\Images\new_disabled.png" />
+    <Resource Include="UI\Images\new_hover.png" />
+    <Resource Include="UI\Images\new_normal.png" />
+    <Resource Include="UI\Images\open_disabled.png" />
+    <Resource Include="UI\Images\open_hover.png" />
+    <Resource Include="UI\Images\open_normal.png" />
+    <Resource Include="UI\Images\pause_disabled.png" />
+    <Resource Include="UI\Images\pause_hover.png" />
+    <Resource Include="UI\Images\pause_normal.png" />
+    <Resource Include="UI\Images\redo_disabled.png" />
+    <Resource Include="UI\Images\redo_hover.png" />
+    <Resource Include="UI\Images\redo_normal.png" />
+    <Resource Include="UI\Images\restorewindow_hover.png" />
+    <Resource Include="UI\Images\restorewindow_normal.png" />
+    <Resource Include="UI\Images\run_disabled.png" />
+    <Resource Include="UI\Images\run_hover.png" />
+    <Resource Include="UI\Images\run_normal.png" />
+    <Resource Include="UI\Images\save_disabled.png" />
+    <Resource Include="UI\Images\save_hover.png" />
+    <Resource Include="UI\Images\save_normal.png" />
+    <Resource Include="UI\Images\searchcancel_hover.png" />
+    <Resource Include="UI\Images\searchcancel_normal.png" />
+    <Resource Include="UI\Images\search_hover.png" />
+    <Resource Include="UI\Images\search_normal.png" />
+    <Resource Include="UI\Images\sendfeedback_disabled.png" />
+    <Resource Include="UI\Images\sendfeedback_hover.png" />
+    <Resource Include="UI\Images\sendfeedback_normal.png" />
+    <Resource Include="UI\Images\undo_disabled.png" />
+    <Resource Include="UI\Images\undo_hover.png" />
+    <Resource Include="UI\Images\undo_normal.png" />
+    <Resource Include="UI\Images\zoomin_disabled.png" />
+    <Resource Include="UI\Images\zoomin_hover.png" />
+    <Resource Include="UI\Images\zoomin_normal.png" />
+    <Resource Include="UI\Images\zoomout_disabled.png" />
+    <Resource Include="UI\Images\zoomout_hover.png" />
+    <Resource Include="UI\Images\zoomout_normal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

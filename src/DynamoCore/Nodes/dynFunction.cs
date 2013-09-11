@@ -28,9 +28,9 @@ namespace Dynamo
     {
         [NodeDescription("A node with customized internal functionality.")]
         [IsInteractive(false)]
-        public partial class dynFunction : dynNodeWithOneOutput
+        public partial class Function : NodeWithOneOutput
         {
-            protected internal dynFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition def)
+            protected internal Function(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition def)
             {
                 _def = def;
 
@@ -46,7 +46,7 @@ namespace Dynamo
                 ArgumentLacing = LacingStrategy.Disabled;
             }
 
-            public dynFunction()
+            public Function()
             {
 
             }
@@ -124,6 +124,7 @@ namespace Dynamo
                             //Recursion detection start.
                             Definition.RequiresRecalc = false;
 
+                            //TODO: move this to RequiresRecalc property of FunctionDefinition?
                             foreach (var dep in Definition.Dependencies)
                                 dep.RequiresRecalc = false;
                         }
@@ -193,21 +194,21 @@ namespace Dynamo
                 }
             }
 
-            protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+            protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("ID");
                 
                 outEl.SetAttribute("value", Symbol);
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
 
                 outEl = xmlDoc.CreateElement("Name");
                 outEl.SetAttribute("value", NickName);
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
 
                 outEl = xmlDoc.CreateElement("Description");
                 outEl.SetAttribute("value", Description);
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
 
                 outEl = xmlDoc.CreateElement("Inputs");
                 foreach (var input in InPortData.Select(x => x.NickName))
@@ -216,7 +217,7 @@ namespace Dynamo
                     inputEl.SetAttribute("value", input);
                     outEl.AppendChild(inputEl);
                 }
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
 
                 outEl = xmlDoc.CreateElement("Outputs");
                 foreach (var output in OutPortData.Select(x => x.NickName))
@@ -225,12 +226,12 @@ namespace Dynamo
                     outputEl.SetAttribute("value", output);
                     outEl.AppendChild(outputEl);
                 }
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
             }
 
-            protected override void LoadNode(XmlNode elNode)
+            protected override void LoadNode(XmlNode nodeElement)
             {
-                foreach (XmlNode subNode in elNode.ChildNodes)
+                foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name.Equals("Name"))
                     {
@@ -238,7 +239,7 @@ namespace Dynamo
                     }
                 }
 
-                foreach (XmlNode subNode in elNode.ChildNodes)
+                foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name.Equals("ID"))
                     {
@@ -250,7 +251,16 @@ namespace Dynamo
                         // if the dyf does not exist on the search path...
                         if (!dynSettings.Controller.CustomNodeManager.Contains(funcId))
                         {
-                            
+                            var manager = dynSettings.Controller.CustomNodeManager;
+
+                            // if there is a node with this name, use it instead
+                            if (manager.Contains(this.NickName))
+                            {
+                                var guid = manager.GetGuidFromName(this.NickName);
+                                this.Symbol = guid.ToString();
+                                continue;
+                            }
+
                             var proxyDef = new FunctionDefinition(funcId)
                             {
                                 Workspace =
@@ -266,10 +276,10 @@ namespace Dynamo
                             RegisterAllPorts();
                             State = ElementState.ERROR;
 
-                            var user_msg = "Failed to load custom node: " + NickName +
+                            var userMsg = "Failed to load custom node: " + NickName +
                                            ".  Replacing with proxy custom node.";
 
-                            DynamoLogger.Instance.Log(user_msg);
+                            DynamoLogger.Instance.Log(userMsg);
 
                             // tell custom node loader, but don't provide path, forcing user to resave explicitly
                             dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
@@ -280,7 +290,7 @@ namespace Dynamo
                     }
                 }
 
-                foreach (XmlNode subNode in elNode.ChildNodes)
+                foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name.Equals("Outputs"))
                     {
@@ -341,7 +351,7 @@ namespace Dynamo
                 ArgumentLacing = LacingStrategy.Disabled;
 
                 // we've found a custom node, we need to attempt to load its guid.  
-                // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
+                // if it doesn't exist (i.e. its a legacy node), we need to assign it one
                 // deterministically
                 Guid funId;
                 try
@@ -350,7 +360,7 @@ namespace Dynamo
                 }
                 catch
                 {
-                    funId = GuidUtility.Create(GuidUtility.UrlNamespace, elNode.Attributes["nickname"].Value);
+                    funId = GuidUtility.Create(GuidUtility.UrlNamespace, nodeElement.Attributes["nickname"].Value);
                     Symbol = funId.ToString();
                 }
 
@@ -382,15 +392,15 @@ namespace Dynamo
         [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
         [NodeDescription("A function output")]
         [IsInteractive(false)]
-        public partial class dynOutput : dynNodeModel
+        public partial class Output : NodeModel
         {
-            private string symbol = "";
-
-            public dynOutput()
+            public Output()
             {
                 InPortData.Add(new PortData("", "", typeof(object)));
 
                 RegisterAllPorts();
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
 
             public override bool RequiresRecalc
@@ -402,36 +412,40 @@ namespace Dynamo
                 set { }
             }
 
+            private string _symbol = "";
             public string Symbol
             {
                 get
                 {
-                    return symbol;
+                    return _symbol;
                 }
                 set
                 {
-                    symbol = value;
+                    _symbol = value;
+                    ReportModification();
                     RaisePropertyChanged("Symbol");
                 }
             }
 
-            protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+            protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("Symbol");
                 outEl.SetAttribute("value", Symbol);
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
             }
 
-            protected override void LoadNode(XmlNode elNode)
+            protected override void LoadNode(XmlNode nodeElement)
             {
-                foreach (XmlNode subNode in elNode.ChildNodes)
+                foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name == "Symbol")
                     {
                         Symbol = subNode.Attributes[0].Value;
                     }
                 }
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
         }
 
@@ -440,16 +454,15 @@ namespace Dynamo
         [NodeDescription("A function parameter")]
         [NodeSearchTags("variable", "argument", "parameter")]
         [IsInteractive(false)]
-        public partial class dynSymbol : dynNodeModel
+        public partial class Symbol : NodeModel
         {
-            
-            private string symbol = "";
-
-            public dynSymbol()
+            public Symbol()
             {
                 OutPortData.Add(new PortData("", "Symbol", typeof(object)));
 
                 RegisterAllPorts();
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
 
             public override bool RequiresRecalc
@@ -461,23 +474,22 @@ namespace Dynamo
                 set { }
             }
 
-            //MVVM: removed direct set of tb.text
-            public string Symbol
+            private string _inputSymbol = "";
+            public string InputSymbol
             {
                 get
                 {
-                    //return tb.Text;
-                    return symbol;
+                    return _inputSymbol;
                 }
                 set
                 {
-                    //tb.Text = value;
-                    symbol = value;
-                    RaisePropertyChanged("Symbol");
+                    _inputSymbol = value;
+                    ReportModification();
+                    RaisePropertyChanged("InputSymbol");
                 }
             }
 
-            protected internal override INode Build(Dictionary<dynNodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+            protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
             {
                 Dictionary<int, INode> result;
                 if (!preBuilt.TryGetValue(this, out result))
@@ -489,23 +501,25 @@ namespace Dynamo
                 return result[outPort];
             }
 
-            protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+            protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("Symbol");
-                outEl.SetAttribute("value", Symbol);
-                dynEl.AppendChild(outEl);
+                outEl.SetAttribute("value", InputSymbol);
+                nodeElement.AppendChild(outEl);
             }
 
-            protected override void LoadNode(XmlNode elNode)
+            protected override void LoadNode(XmlNode nodeElement)
             {
-                foreach (XmlNode subNode in elNode.ChildNodes)
+                foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name == "Symbol")
                     {
-                        Symbol = subNode.Attributes[0].Value;
+                        InputSymbol = subNode.Attributes[0].Value;
                     }
                 }
+
+                ArgumentLacing = LacingStrategy.Disabled;
             }
         }
 
@@ -550,9 +564,10 @@ namespace Dynamo
         }
 
         public Guid FunctionId { get; private set; }
-        public dynWorkspaceModel Workspace { get; internal set; }
-        public List<Tuple<int, dynNodeModel>> OutPortMappings { get; internal set; }
-        public List<Tuple<int, dynNodeModel>> InPortMappings { get; internal set; }
+        public FuncWorkspace Workspace { get; internal set; }
+        public List<Tuple<int, NodeModel>> OutPortMappings { get; internal set; }
+        public List<Tuple<int, NodeModel>> InPortMappings { get; internal set; }
+
         public bool RequiresRecalc { get; internal set; }
 
         /// <summary>
@@ -579,7 +594,7 @@ namespace Dynamo
 
         private IEnumerable<FunctionDefinition> findAllDependencies(HashSet<FunctionDefinition> dependencySet)
         {
-            var query = this.DirectDependencies.Where(def => !dependencySet.Contains(def));
+            var query = DirectDependencies.Where(def => !dependencySet.Contains(def));
 
             foreach (var definition in query)
             {
@@ -592,17 +607,11 @@ namespace Dynamo
 
         private IEnumerable<FunctionDefinition> findDirectDependencies()
         {
-            var query = Workspace.Nodes
-                                 .Where(node => node is dynFunction)
-                                 .Select(node => (node as dynFunction).Definition)
-                                 .Where((def) => def != this)
-                                 .Distinct();
-
-            foreach (var definition in query)
-            {
-                yield return definition;
-            }
+            return Workspace.Nodes
+                            .OfType<Function>()
+                            .Select(node => node.Definition)
+                            .Where(def => def != this)
+                            .Distinct();
         }
-
     }
 }

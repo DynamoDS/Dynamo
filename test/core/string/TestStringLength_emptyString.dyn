@@ -1,0 +1,14 @@
+<dynWorkspace X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <dynElements>
+    <Dynamo.Nodes.dynStringLen type="Dynamo.Nodes.dynStringLen" guid="5cdd53ee-c7a2-4629-bcaa-2e9216172739" nickname="String Length" x="446" y="313.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" nickname="Watch" x="669" y="318.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="fc5751bd-597b-43e8-9ac2-00258f443022" nickname="String" x="274" y="295.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="" />
+    </Dynamo.Nodes.dynStringInput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Models.dynConnectorModel start="5cdd53ee-c7a2-4629-bcaa-2e9216172739" start_index="0" end="f72f6210-b32f-4dc4-9b2a-61f0144a0109" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="fc5751bd-597b-43e8-9ac2-00258f443022" start_index="0" end="5cdd53ee-c7a2-4629-bcaa-2e9216172739" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

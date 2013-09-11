@@ -34,9 +34,9 @@ namespace Dynamo.Nodes
     [NodeName("Extract Solar Radiation Value")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SOLAR)]
     [NodeDescription("Extracts and computes the average solar radiation value based on a CSV file.")]
-    public class dynComputeSolarRadiationValue: dynNodeWithOneOutput
+    public class ComputeSolarRadiationValue: NodeWithOneOutput
     {
-        public dynComputeSolarRadiationValue()
+        public ComputeSolarRadiationValue()
         {
             InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(Value.String)));
             OutPortData.Add(new PortData("data", "The solar radiation computed data", typeof(Value.Number)));
@@ -72,9 +72,9 @@ namespace Dynamo.Nodes
     [NodeName("Analysis Results by Selection")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select an analysis result object from the document.")]
-    public class dynAnalysisResultsBySelection: dynNodeWithOneOutput
+    public class AnalysisResultsBySelection: NodeWithOneOutput
     {
-        public dynAnalysisResultsBySelection()
+        public AnalysisResultsBySelection()
         {
             OutPortData.Add(new PortData("ar", "Analysis Results referenced by this operation.", typeof(Value.Container)));
             RegisterAllPorts();
@@ -139,7 +139,7 @@ namespace Dynamo.Nodes
             {
                 if (PickedAnalysisResult.Id.IntegerValue == AnalysisResultID.IntegerValue) // sanity check
                 {
-                    SpatialFieldManager dmu_sfm = dynRevitSettings.SpatialFieldManagerUpdated as SpatialFieldManager;
+                    Autodesk.Revit.DB.Analysis.SpatialFieldManager dmu_sfm = dynRevitSettings.SpatialFieldManagerUpdated as Autodesk.Revit.DB.Analysis.SpatialFieldManager;
 
                     if (pickedAnalysisResult.Id.IntegerValue == dmu_sfm.Id.IntegerValue)
                     {
@@ -157,13 +157,13 @@ namespace Dynamo.Nodes
     [NodeName("SunPath Direction")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SOLAR)]
     [NodeDescription("Returns the current Sun Path direction.")]
-    public class dynSunPathDirection: dynNodeWithOneOutput
+    public class SunPathDirection: NodeWithOneOutput
     {
         System.Windows.Controls.TextBox tb;
         System.Windows.Controls.Button sunPathButt;
         Value data = Value.NewList(FSharpList<Value>.Empty);
 
-        public dynSunPathDirection()
+        public SunPathDirection()
         {
             OutPortData.Add(new PortData("XYZ", "XYZ", typeof(Value.Container)));
             RegisterAllPorts();  
@@ -295,20 +295,20 @@ namespace Dynamo.Nodes
                 throw new Exception("SANITY CHECK FAILED");
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (this.PickedSunAndShadowSettings != null)
             {
                 XmlElement outEl = xmlDoc.CreateElement("instance");
                 outEl.SetAttribute("id", this.PickedSunAndShadowSettings.Id.ToString());
-                dynEl.AppendChild(outEl);
+                nodeElement.AppendChild(outEl);
             }
         }
 
-        protected override void LoadNode(XmlNode elNode)
+        protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals("instance"))
                 {

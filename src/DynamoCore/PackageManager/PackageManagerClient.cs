@@ -25,6 +25,7 @@ using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
@@ -33,7 +34,6 @@ namespace Dynamo.PackageManager
 {
 
     public delegate void AuthenticationRequestHandler(PackageManagerClient sender);
-    public delegate void ShowPackagePublishUIHandler(PublishPackageViewModel publishViewModel);
 
     /// <summary>
     ///     A thin wrapper on the Greg rest client for performing IO with
@@ -49,8 +49,6 @@ namespace Dynamo.PackageManager
 
         #region Properties
 
-        public event AuthenticationRequestHandler AuthenticationRequested;
-        public event ShowPackagePublishUIHandler ShowPackagePublishUIRequested;
 
         /// <summary>
         ///     Client property
@@ -79,18 +77,6 @@ namespace Dynamo.PackageManager
             IsLoggedIn = false;
         }
 
-        public void OnAuthenticationRequested()
-        {
-            if (AuthenticationRequested != null)
-                AuthenticationRequested(this);
-        }
-
-        public void OnShowPackagePublishUIRequested(PublishPackageViewModel vm)
-        {
-            if (ShowPackagePublishUIRequested != null)
-                ShowPackagePublishUIRequested(vm);
-        }
-
         internal List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
         {
             try
@@ -109,7 +95,7 @@ namespace Dynamo.PackageManager
             
         }
 
-        public void PublishCurrentWorkspace(object m)
+        public void PublishCurrentWorkspace()
         {
             var currentFunDef =
                 dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(dynSettings.Controller.DynamoViewModel.CurrentSpace);
@@ -125,16 +111,16 @@ namespace Dynamo.PackageManager
 
         }
 
-        public bool CanPublishCurrentWorkspace(object m)
+        public bool CanPublishCurrentWorkspace()
         {
             return dynSettings.Controller.DynamoViewModel.CurrentSpace is FuncWorkspace;
         }
 
-        public void PublishSelectedNode(object m)
+        public void PublishSelectedNode()
         {
             var nodeList = DynamoSelection.Instance.Selection
-                                .Where(x => x is dynFunction)
-                                .Cast<dynFunction>()
+                                .Where(x => x is Function)
+                                .Cast<Function>()
                                 .Select(x => x.Definition.FunctionId)
                                 .ToList();
 
@@ -155,7 +141,7 @@ namespace Dynamo.PackageManager
         public bool CanPublishSelectedNode(object m)
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
-                   DynamoSelection.Instance.Selection.All(x => x is dynFunction);
+                   DynamoSelection.Instance.Selection.All(x => x is Function);
         }
 
         private void ShowNodePublishInfo(object funcDef)
@@ -183,7 +169,7 @@ namespace Dynamo.PackageManager
 
                 var newPkgVm = new PublishPackageViewModel(dynSettings.PackageManagerClient);
                 newPkgVm.FunctionDefinitions = fs;
-                dynSettings.PackageManagerClient.OnShowPackagePublishUIRequested(newPkgVm);
+                dynSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
             }
             else
             {
@@ -194,7 +180,7 @@ namespace Dynamo.PackageManager
 
         public PackageUploadHandle Publish( Package l, List<string> files, bool isNewVersion )
         {
-            OnAuthenticationRequested();
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
 
             int maxRetries = 5;
             int count = 0;
@@ -289,10 +275,10 @@ namespace Dynamo.PackageManager
             set { _downloads = value; }
         }
 
-        internal void ClearInstalled()
+        internal void ClearCompletedDownloads()
         {
             foreach (
-                var ele in Downloads.Where((x) => x.DownloadState == PackageDownloadHandle.State.Installed).ToList())
+                var ele in Downloads.Where((x) => x.DownloadState == PackageDownloadHandle.State.Installed || x.DownloadState == PackageDownloadHandle.State.Error ).ToList())
             {
                 Downloads.Remove(ele);
             }

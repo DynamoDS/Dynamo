@@ -24,12 +24,6 @@ namespace Dynamo.ViewModels
         #region Properties
 
         /// <summary>
-        ///     A helper dictionary to keep track of currently added 
-        ///     categories.
-        /// </summary>
-        private Dictionary<string, BrowserItem> _browserCategoryDict = new Dictionary<string, BrowserItem>();
-
-        /// <summary>
         ///     Indicates whether the node browser is visible or not
         /// </summary>
         private bool _browserVisibility = true;
@@ -56,7 +50,6 @@ namespace Dynamo.ViewModels
         ///     Specifies whether we are including Revit API elements in search.
         /// </value>
         public bool IncludeRevitApiElements;
-
         public bool IncludeRevitAPIElements
         {
             get { return IncludeRevitApiElements; }
@@ -287,22 +280,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public BrowserRootElement AddRootCategory(string name)
-        {
-            var ele = new BrowserRootElement(name, BrowserRootCategories);
-            BrowserRootCategories.Add(ele);
-            this._browserCategoryDict.Add(name, ele);
-            return ele;
-        }
-
-        /// <summary>
-        ///     Adds the Home Workspace to search.
-        /// </summary>
-        private void AddHomeToSearch()
-        {
-            SearchDictionary.Add(new WorkspaceSearchElement("Home", "Navigate to Home Workspace"), "Home");
-        }
-
         /// <summary>
         ///     If Revit API elements are shown, hides them.  Otherwise,
         ///     shows them.  Update search when done with either.
@@ -340,76 +317,134 @@ namespace Dynamo.ViewModels
 
         private const char CATEGORY_DELIMITER = '.';
 
-        /// <summary>
-        ///     Remove a specific category from browser and search
-        /// </summary>
-        /// <param name="categoryName">The category name, including delimiters</param>
-        public void RemoveCategory( string categoryName )
+        public void RemoveEmptyRootCategory(string categoryName)
         {
-            var splitCat = new List<string>();
-
             if (categoryName.Contains(CATEGORY_DELIMITER))
             {
-                splitCat = categoryName.Split(CATEGORY_DELIMITER).ToList();
+                RemoveEmptyCategory(categoryName);
+                return;
+            }
+
+            var cat = GetCategoryByName(categoryName);
+            if (cat == null)
+            {
+                return;
+            }
+
+            RemoveEmptyRootCategory((BrowserRootElement) cat);
+        }
+
+        public void RemoveEmptyRootCategory(BrowserRootElement rootEle)
+        {
+            if (!ContainsCategory(rootEle.Name))
+                return;
+            
+            BrowserRootCategories.Remove(rootEle);
+        }
+
+        /// <summary>
+        /// Remove and empty category from browser and search by name. Useful when a single item is removed.
+        /// </summary>
+        /// <param name="categoryName">The category name, including delimiters</param>
+        public void RemoveEmptyCategory( string categoryName )
+        {
+            var currentCat = GetCategoryByName(categoryName);
+            if (currentCat == null)
+            {
+                return;
+            }
+
+            RemoveEmptyCategory(currentCat);
+        }
+
+        /// <summary>
+        /// Remove an empty category from browser and search.  Useful when a single item is removed.
+        /// </summary>
+        /// <param name="ele"></param>
+        public void RemoveEmptyCategory(BrowserItem ele)
+        {
+            if (ele is BrowserRootElement && ele.Items.Count == 0)
+            {
+                RemoveEmptyRootCategory(ele as BrowserRootElement);
+                return;
+            }
+
+            if (ele is BrowserInternalElement && ele.Items.Count == 0)
+            {
+                var internalEle = ele as BrowserInternalElement;
+                
+                internalEle.Parent.Items.Remove(internalEle);
+                RemoveEmptyCategory(internalEle.Parent);
+            }
+        }
+
+        /// <summary>
+        /// Remove a category and all its children from the browser and search.  The category does not
+        /// have to be empty.
+        /// </summary>
+        /// <param name="categoryName"></param>
+        public void RemoveCategory(string categoryName)
+        {
+            var currentCat = GetCategoryByName(categoryName);
+            if (currentCat == null) return;
+
+            RemoveCategory(currentCat);
+            
+        }
+
+        /// <summary>
+        /// Remove a category and all its children from the browser and search.  The category does
+        /// not have to be empty.
+        /// </summary>
+        /// <param name="ele"></param>
+        public void RemoveCategory(BrowserItem ele)
+        {
+            var nodes = ele.Items.Where(x => x is NodeSearchElement)
+                           .Cast<NodeSearchElement>().ToList();
+
+            var cats = ele.Items.Where(x => x is BrowserInternalElement)
+                           .Cast<BrowserInternalElement>().ToList();
+
+            nodes.Select(x => x.Name).ToList().ForEach(RemoveNode);
+            cats.ToList().ForEach(RemoveCategory);
+
+            ele.Items.Clear();
+
+            if (ele is BrowserRootElement)
+            {
+                BrowserRootCategories.Remove(ele as BrowserRootElement);
+            }
+            else if (ele is BrowserInternalElement)
+            {
+                (ele as BrowserInternalElement).Parent.Items.Remove(ele);
+            }
+        }
+
+        /// <summary>
+        /// Split a category name into individual category names splitting be DEFAULT_DELIMITER
+        /// </summary>
+        /// <param name="categoryName">The name</param>
+        /// <returns>A list of output</returns>
+        public static List<string> SplitCategoryName(string categoryName)
+        {
+            if (System.String.IsNullOrEmpty(categoryName))
+                return new List<string>();
+
+            var splitCat = new List<string>();
+            if (categoryName.Contains(CATEGORY_DELIMITER))
+            {
+                splitCat =
+                    categoryName.Split(CATEGORY_DELIMITER)
+                                .Where(x => x != CATEGORY_DELIMITER.ToString() && !System.String.IsNullOrEmpty(x))
+                                .ToList();
             }
             else
             {
                 splitCat.Add(categoryName);
             }
 
-            var currentCat = (BrowserItem)BrowserRootCategories.FirstOrDefault((x) => x.Name == splitCat[0]);
-
-            if (currentCat == null)
-            {
-                return;
-            }
-
-            // if were looking to remove a root element, simply do that
-            if (splitCat.Count == 1)
-            {
-                BrowserRootCategories.Remove( (BrowserRootElement) currentCat);
-                return;
-            }
-
-            for (var i = 1; i < splitCat.Count; i++ ){
-                
-                var matchingCat = currentCat.Items.FirstOrDefault((x) => x.Name == splitCat[i]);
-
-                if (matchingCat == null || i == splitCat.Count-1)
-                {
-                    if (i == splitCat.Count - 1 && matchingCat == null)
-                    {
-                        break;
-                    }
-
-                    if (i == splitCat.Count - 1 && matchingCat != null)
-                    {
-                        currentCat = matchingCat;
-                    }
-
-                    // remove current cat from its siblings list
-                    if (currentCat is BrowserRootElement)
-                    {
-                        (currentCat as BrowserRootElement).Siblings.Remove((currentCat as BrowserRootElement));
-                    }
-                    else if (currentCat is BrowserInternalElement)
-                    {
-                        (currentCat as BrowserInternalElement).Siblings.Remove(currentCat);
-                    }
-                    break;
-                }
-
-                currentCat = matchingCat;
-
-            }
-
-            if (_browserCategoryDict.ContainsKey(categoryName))
-            {
-                _browserCategoryDict.Remove(categoryName);
-            }
-
-        }
-
+            return splitCat;
+        } 
 
         /// <summary>
         ///     Add a category, given a delimited name
@@ -418,63 +453,110 @@ namespace Dynamo.ViewModels
         /// <returns>The newly created item</returns>
         public BrowserItem AddCategory(string categoryName)
         {
-            // if already added, return immediately
-            if (_browserCategoryDict.ContainsKey(categoryName) )
+
+            if ( ContainsCategory(categoryName) )
             {
-                return _browserCategoryDict[categoryName];
+                return GetCategoryByName(categoryName);
             }
 
-            // otherwise split the categoryname
-            var splitCat = new List<string>();
-            if (categoryName.Contains(CATEGORY_DELIMITER))
+            if (!NodeCategories.ContainsKey(categoryName))
             {
-                splitCat = categoryName.Split(CATEGORY_DELIMITER).ToList();
+                NodeCategories.Add(categoryName, new CategorySearchElement(categoryName));
             }
-            else
-            {
-                splitCat.Add(categoryName);
-            }
+
+            // otherwise split the category name
+            var splitCat = SplitCategoryName(categoryName);
 
             // attempt to add root element
             if (splitCat.Count == 1)
             {
-                return this.AddRootCategory(categoryName);
+                return this.TryAddRootCategory(categoryName);
             }
 
-            var currentCatName = splitCat[0];
-
-            // attempt to add all other categoires
-            var currentCat = (BrowserItem) BrowserRootCategories.FirstOrDefault((x) => x.Name == splitCat[0]);
-            if (currentCat == null)
-            {
-                currentCat = AddRootCategory(splitCat[0]);
-            }            
+            // attempt to add root category
+            var currentCat = TryAddRootCategory(splitCat[0]);    
 
             for (var i = 1; i < splitCat.Count; i++)
             {
-                currentCatName = currentCatName + CATEGORY_DELIMITER + splitCat[i];
-
-                var tempCat = currentCat.Items.FirstOrDefault((x) => x.Name == splitCat[i]);
-                if (tempCat == null)
-                {
-                    tempCat = new BrowserInternalElement(splitCat[i], currentCat);
-                    currentCat.AddChild( (BrowserInternalElement) tempCat);
-                    _browserCategoryDict.Add(currentCatName, tempCat);
-                }
-
-                currentCat = tempCat;
-
+                currentCat = TryAddChildCategory(currentCat, splitCat[i]);
             }
 
             return currentCat;
 
         }
 
-        public bool ContainsCategory(string categoryName)
+        /// <summary>
+        /// Add a single category as a child of a category.  If the category already exists, just return that one.
+        /// </summary>
+        /// <param name="parent">The parent category </param>
+        /// <param name="childCategoryName">The name of the child category (can't be nested)</param>
+        /// <returns>The newly created category</returns>
+        public BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName)
         {
-            return _browserCategoryDict.ContainsKey(categoryName);
+            var newCategoryName = parent.Name + CATEGORY_DELIMITER + childCategoryName;
+            if (ContainsCategory(newCategoryName))
+            {
+                return GetCategoryByName(newCategoryName);
+            }
+
+            var tempCat = new BrowserInternalElement(childCategoryName, parent);
+            parent.AddChild(tempCat);
+
+            return tempCat;
         }
 
+        /// <summary>
+        ///     
+        /// </summary>
+        /// <returns>The newly added category or the existing one.</returns>
+        public BrowserItem TryAddRootCategory(string categoryName)
+        {
+            return ContainsCategory(categoryName) ? GetCategoryByName(categoryName) : AddRootCategory(categoryName);
+        }
+
+        /// <summary>
+        /// Add a root category, assuming it doesn't already exist
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private BrowserRootElement AddRootCategory(string name)
+        {
+            var ele = new BrowserRootElement(name, BrowserRootCategories);
+            BrowserRootCategories.Add(ele);
+            return ele;
+        }
+
+        /// <summary>
+        /// Determine whether a category exists in search
+        /// </summary>
+        /// <param name="categoryName"></param>
+        /// <returns></returns>
+        public bool ContainsCategory(string categoryName)
+        {
+            return GetCategoryByName(categoryName) != null;
+        }
+
+        public BrowserItem GetCategoryByName(string categoryName)
+        {
+            var split = SplitCategoryName(categoryName);
+            if (!split.Any())
+                return null;
+
+            var cat = (BrowserItem) BrowserRootCategories.FirstOrDefault(x => x.Name == split[0]);
+
+            foreach (var splitName in split.GetRange(1, split.Count - 1))
+            {
+                if (cat == null)
+                    return cat;
+                cat = TryGetSubCategory(cat, splitName);
+            }
+            return cat;
+        }
+
+        public BrowserItem TryGetSubCategory(BrowserItem category, string catName)
+        {
+            return category.Items.FirstOrDefault(x => x.Name == catName);
+        }
 
         /// <summary>
         ///     Asynchronously performs a search and updates the observable SearchResults property.
@@ -585,11 +667,6 @@ namespace Dynamo.ViewModels
         /// <param name="query"> The search query </param>
         public void SearchAndUpdateResultsSync(string query)
         {
-            //TODO - UI Refactor - Test "CanRemoveElementCustomNod..." fails here because ui is not visible and returns
-            // before search terms is added. Do we really need to test for visible?
-            //if (Visible != true)
-            //    return;
-
             var result = Search(query);
 
             SearchResults.Clear();
@@ -752,6 +829,7 @@ namespace Dynamo.ViewModels
 
             // create the node in search
             var nodeEle = new NodeSearchElement(name, description, functionId);
+            nodeEle.FullCategoryName = category;
 
             if (SearchDictionary.Contains(nodeEle))
                 return;
@@ -761,7 +839,7 @@ namespace Dynamo.ViewModels
 
             TryAddCategoryAndItem(category, nodeEle);
 
-            NodeCategories[category].NumElements++;
+            
 
         }
 
@@ -772,11 +850,6 @@ namespace Dynamo.ViewModels
         /// <param name="item">The item to add as a child of that category</param>
         public void TryAddCategoryAndItem( string category, BrowserInternalElement item )
         {
-
-            if (!NodeCategories.ContainsKey(category))
-            {
-                NodeCategories.Add(category, new CategorySearchElement(category));
-            }
 
             var cat = this.AddCategory(category);
             cat.AddChild(item);
@@ -861,52 +934,33 @@ namespace Dynamo.ViewModels
 
         }
 
-        public void Remove(string nodeName)
+        public void RemoveNode(string nodeName)
         {
-            // get the node, return if not found
-            var nodes = _browserLeaves.Where(x => x.Name == nodeName);
+            // remove from search dictionary
+            SearchDictionary.Remove((ele) => (ele).Name == nodeName);
+            SearchDictionary.Remove((ele) => (ele).Name.EndsWith("." + nodeName));
+
+            // remove from browser leaves
+            _browserLeaves.Where(x => x.Name == nodeName).ToList().ForEach(x => _browserLeaves.Remove(x));
+        }
+
+        /// <summary>
+        /// Removes a node from search and all empty parent categories
+        /// </summary>
+        /// <param name="nodeName">The name of the node</param>
+        public void RemoveNodeAndEmptyParentCategory(string nodeName)
+        {
+            var nodes = _browserLeaves.Where(x => x.Name == nodeName).ToList();
             if (!nodes.Any())
             {
                 return;
             }
 
-            // remove from search dictionary
-            SearchDictionary.Remove((ele) => (ele).Name == nodeName);
-            SearchDictionary.Remove((ele) => (ele).Name.EndsWith("." + nodeName) );
-
-            // remove from browser leaves
-            _browserLeaves.Where(x => x.Name == nodeName).ToList().ForEach(x => _browserLeaves.Remove(x));
-
-            // get the category if it doesn't exist, then remove it
             foreach (var node in nodes)
             {
-                var categoryName = ((SearchElementBase)node).FullCategoryName;
-                var parentCategoryName = ((BrowserInternalElement)node).Parent.Name;
-
-                if (!NodeCategories.ContainsKey(categoryName))
-                {
-                    return;
-                }
-
-                // first level category
-                var pcategory = NodeCategories[parentCategoryName];
-                pcategory.NumElements--;
-
-                if (pcategory.NumElements == 0)
-                {
-                    this.RemoveCategory(pcategory.Name);
-                }
-
-                // immediate category
-                var category = NodeCategories[categoryName];
-                category.NumElements--;
-
-                if (category.NumElements == 0)
-                {
-                    this.RemoveCategory(category.Name);
-                }
+                RemoveNode(nodeName);
+                RemoveEmptyCategory(node);
             }
-            
 
         }
 
@@ -917,13 +971,16 @@ namespace Dynamo.ViewModels
 
         internal void Refactor(CustomNodeInfo nodeInfo)
         {
-            this.Remove(nodeInfo.Name);
+            this.RemoveNodeAndEmptyParentCategory(nodeInfo.Name);
             this.Add(nodeInfo);
         }
 
         public void Search(object parameter)
         {
-            dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
+            if (dynSettings.Controller != null)
+            {
+                dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
+            }
         }
 
         internal bool CanSearch(object parameter)
@@ -933,8 +990,6 @@ namespace Dynamo.ViewModels
 
         internal void HideSearch(object parameter)
         {
-            //dynSettings.Controller.PackageManagerPublishViewModel.Visible = false;
-            //dynSettings.Controller.PackageManagerLoginViewModel.Visible = false;
             dynSettings.Controller.SearchViewModel.Visible = false;
         }
 

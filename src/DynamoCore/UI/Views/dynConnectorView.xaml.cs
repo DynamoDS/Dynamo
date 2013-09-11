@@ -7,7 +7,7 @@ namespace Dynamo.Nodes.Views
     /// <summary>
     /// Interaction logic for dynConnectorView.xaml
     /// </summary>
-    public partial class dynConnectorView : UserControl, IViewModelView<dynConnectorViewModel>
+    public partial class dynConnectorView : UserControl, IViewModelView<ConnectorViewModel>
     {
        
         public dynConnectorView()
@@ -24,19 +24,19 @@ namespace Dynamo.Nodes.Views
 
         private void Highlight(object sender, MouseEventArgs e)
         {
-            if (DataContext is dynConnectorViewModel)
+            if (DataContext is ConnectorViewModel)
                 ViewModel.HighlightCommand.Execute(null);
         }
 
         private void Unhighlight(object sender, MouseEventArgs e)
         {
-            if (DataContext is dynConnectorViewModel)
+            if (DataContext is ConnectorViewModel)
                 ViewModel.UnHighlightCommand.Execute(null);
         }
 
-        public dynConnectorViewModel ViewModel
+        public ConnectorViewModel ViewModel
         {
-            get { return (dynConnectorViewModel) DataContext; }
+            get { return (ConnectorViewModel) DataContext; }
         }
 
         void Connector_OnMouseDown(object sender, MouseEventArgs e)

@@ -13,12 +13,9 @@
 //limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Autodesk.Revit.DB;
-using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -35,9 +32,9 @@ namespace Dynamo.Nodes
     [NodeName("Model Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a model curve.")]
-    public class dynModelCurve : dynRevitTransactionNodeWithOneOutput
+    public class ModelCurve : RevitTransactionNodeWithOneOutput
     {
-        public dynModelCurve()
+        public ModelCurve()
         {
             InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Value.Container)));
             OutPortData.Add(new PortData("mc", "Model Curve", typeof(Value.Container)));
@@ -47,7 +44,7 @@ namespace Dynamo.Nodes
 
         static bool hasMethodSetCurve = true;
 
-        static public void setCurveMethod(ModelCurve mc, Curve c)
+        static public void setCurveMethod(Autodesk.Revit.DB.ModelCurve mc, Curve c)
         {
             bool foundMethod = false;
 
@@ -55,7 +52,7 @@ namespace Dynamo.Nodes
             {
                 Type CurveElementType = typeof(Autodesk.Revit.DB.CurveElement);
                 MethodInfo[] curveElementMethods = CurveElementType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-                String nameOfMethodSetCurve = "SetGeometryCurveOverridingJoins";
+                System.String nameOfMethodSetCurve = "SetGeometryCurveOverridingJoins";
 
                 foreach (MethodInfo m in curveElementMethods)
                 {
@@ -79,12 +76,12 @@ namespace Dynamo.Nodes
 
         static bool hasMethodResetSketchPlane = true;
         //returns unused sketch plane id
-        static public ElementId resetSketchPlaneMethod(ModelCurve mc, Curve c)
+        static public ElementId resetSketchPlaneMethod(Autodesk.Revit.DB.ModelCurve mc, Curve c, Autodesk.Revit.DB.Plane flattenedOnPlane)
         {
             //do we need to reset?
-            Plane newPlane = dynRevitUtils.GetPlaneFromCurve(c);
+            Autodesk.Revit.DB.Plane newPlane = flattenedOnPlane != null ? flattenedOnPlane : dynRevitUtils.GetPlaneFromCurve(c);
 
-            Plane curPlane = mc.SketchPlane.Plane;
+            Autodesk.Revit.DB.Plane curPlane = mc.SketchPlane.Plane;
 
             bool resetPlane = false;
  
@@ -97,7 +94,7 @@ namespace Dynamo.Nodes
                 if (dotSqNormalized < 1.0 - angleTol * angleTol)
                    resetPlane = true;
             }
-            SketchPlane sp = null;
+            Autodesk.Revit.DB.SketchPlane sp = null;
 
             if (!resetPlane)
             {
@@ -119,7 +116,7 @@ namespace Dynamo.Nodes
             {
                 Type CurveElementType = typeof(Autodesk.Revit.DB.CurveElement);
                 MethodInfo[] curveElementMethods = CurveElementType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-                String nameOfMethodSetCurve = "ResetSketchPlane";
+                System.String nameOfMethodSetCurve = "ResetSketchPlane";
 
                 foreach (MethodInfo m in curveElementMethods)
                 {
@@ -153,31 +150,19 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var c = (Curve)((Value.Container)args[0]).Item;
-            
-            //var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
 
-            ModelCurve mc;
-            //XYZ spOrigin = sp.Plane.Origin;
-            //XYZ modelOrigin = XYZ.Zero;
-            //Transform trf = Transform.get_Translation(spOrigin);
-            //trf =  trf.Multiply(Transform.get_Rotation(spOrigin,XYZ.BasisZ,spOrigin.AngleOnPlaneTo(XYZ.BasisY,spOrigin)));
-            //Curve ct = c.get_Transformed(trf);
-
-
-            // http://wikihelp.autodesk.com/Revit/enu/2013/Help/00006-API_Developer's_Guide/0074-Revit_Ge74/0114-Sketchin114/0117-ModelCur117
-            // The SetPlaneAndCurve() method and the Curve and SketchPlane property setters are used in different situations.
-            // When the new Curve lies in the same SketchPlane, or the new SketchPlane lies on the same planar face with the old SketchPlane, use the Curve or SketchPlane property setters.
-            // If new Curve does not lay in the same SketchPlane, or the new SketchPlane does not lay on the same planar face with the old SketchPlane, you must simultaneously change the Curve value and the SketchPlane value using SetPlaneAndCurve() to avoid internal data inconsistency.
-
+            Autodesk.Revit.DB.ModelCurve mc;
+            Autodesk.Revit.DB.Plane plane;
+            c = dynRevitUtils.FlattenCurveOnPlane(c, out plane);
 
             if (this.Elements.Any())
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(ModelCurve), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.ModelCurve), out e))
                 {
-                    mc = e as ModelCurve;
+                    mc = e as Autodesk.Revit.DB.ModelCurve;
 
-                    ElementId idSpUnused = dynModelCurve.resetSketchPlaneMethod(mc, c);
+                    ElementId idSpUnused = ModelCurve.resetSketchPlaneMethod(mc, c, plane);
 
                     if (idSpUnused != ElementId.InvalidElementId)
                     {
@@ -189,7 +174,7 @@ namespace Dynamo.Nodes
                         c = c.Clone();
                         c.MakeUnbound();
                     }
-                    dynModelCurve.setCurveMethod(mc, c); // mc.GeometryCurve = c;
+                    ModelCurve.setCurveMethod(mc, c); // mc.GeometryCurve = c;
 
                 }
                 else
@@ -204,7 +189,10 @@ namespace Dynamo.Nodes
                         //THIS BIZARRE as Revit could use different existing SP, so if Revit had found better plane  this sketch plane has no use
                         this.DeleteElement(sp.Id);
                     }
+
+                    dynRevitSettings.Doc.Document.Delete(e.Id);
                 }
+                this.Elements[0] = mc.Id;
             }
             else
             {
@@ -219,6 +207,7 @@ namespace Dynamo.Nodes
                     //found better plane
                     this.DeleteElement(sp.Id);
                 }
+                this.Elements.Add(mc.Id);
             }
 
             return Value.NewContainer(mc);
@@ -227,13 +216,13 @@ namespace Dynamo.Nodes
 
     [NodeName("Reference Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Creates a model curve.")]
-    public class dynReferenceCurve : dynRevitTransactionNodeWithOneOutput
+    [NodeDescription("Creates a reference curve.")]
+    public class ReferenceCurve : RevitTransactionNodeWithOneOutput
     {
-        public dynReferenceCurve()
+        public ReferenceCurve()
         {
             InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("mc", "Model Curve", typeof(Value.Container)));
+            OutPortData.Add(new PortData("rc", "Reference Curve", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -241,30 +230,19 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var c = (Curve)((Value.Container)args[0]).Item;
-            //var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
+            Autodesk.Revit.DB.ModelCurve mc;
 
-            ModelCurve mc;
-            //XYZ spOrigin = sp.Plane.Origin;
-            //XYZ modelOrigin = XYZ.Zero;
-            //Transform trf = Transform.get_Translation(spOrigin);
-            //trf =  trf.Multiply(Transform.get_Rotation(spOrigin,XYZ.BasisZ,spOrigin.AngleOnPlaneTo(XYZ.BasisY,spOrigin)));
-            //Curve ct = c.get_Transformed(trf);
-
-
-            // http://wikihelp.autodesk.com/Revit/enu/2013/Help/00006-API_Developer's_Guide/0074-Revit_Ge74/0114-Sketchin114/0117-ModelCur117
-            // The SetPlaneAndCurve() method and the Curve and SketchPlane property setters are used in different situations.
-            // When the new Curve lies in the same SketchPlane, or the new SketchPlane lies on the same planar face with the old SketchPlane, use the Curve or SketchPlane property setters.
-            // If new Curve does not lay in the same SketchPlane, or the new SketchPlane does not lay on the same planar face with the old SketchPlane, you must simultaneously change the Curve value and the SketchPlane value using SetPlaneAndCurve() to avoid internal data inconsistency.
-
+            Autodesk.Revit.DB.Plane plane;
+            c = dynRevitUtils.FlattenCurveOnPlane(c, out plane);
 
             if (this.Elements.Any())
             {
                 Element e;
                 if (dynUtils.TryGetElement(this.Elements[0],typeof(ModelCurve), out e))
                 {
-                    mc = e as ModelCurve;
+                    mc = e as Autodesk.Revit.DB.ModelCurve;
 
-                    ElementId idSpUnused = dynModelCurve.resetSketchPlaneMethod(mc, c);
+                    ElementId idSpUnused = ModelCurve.resetSketchPlaneMethod(mc, c, plane);
 
                     if (idSpUnused != ElementId.InvalidElementId)
                     {
@@ -277,7 +255,7 @@ namespace Dynamo.Nodes
                         c = c.Clone();
                         c.MakeUnbound();
                     }
-                    dynModelCurve.setCurveMethod(mc, c);  //mc.GeometryCurve = c;
+                    ModelCurve.setCurveMethod(mc, c);  //mc.GeometryCurve = c;
                 }
                 else
                 {
@@ -286,6 +264,7 @@ namespace Dynamo.Nodes
                     mc = this.UIDocument.Document.IsFamilyDocument
                        ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
                        : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+                    mc.ChangeToReferenceLine();
                     this.Elements[0] = mc.Id;
                     //mc.SketchPlane = sp;
                     if (mc.SketchPlane.Id != sp.Id)
@@ -293,7 +272,9 @@ namespace Dynamo.Nodes
                         //THIS BIZARRE as Revit could use different existing SP, so if Revit had found better plane  this sketch plane has no use
                         this.DeleteElement(sp.Id);
                     }
+                    dynRevitSettings.Doc.Document.Delete(e.Id);
                 }
+                this.Elements[0] = mc.Id;
             }
             else
             {
@@ -309,9 +290,8 @@ namespace Dynamo.Nodes
                     //found better plane
                     this.DeleteElement(sp.Id);
                 }
+                this.Elements.Add(mc.Id);
             }
-
-            mc.ChangeToReferenceLine();
 
             return Value.NewContainer(mc);
         }
@@ -320,12 +300,12 @@ namespace Dynamo.Nodes
     [NodeName("Curve By Points")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create a new Curve by Points by passing in a list of Reference Points")]
-    public class dynCurveByPoints : dynRevitTransactionNodeWithOneOutput
+    public class CurveByPoints : RevitTransactionNodeWithOneOutput
     {
         //Our eventual output.
-        CurveByPoints c;
+        Autodesk.Revit.DB.CurveByPoints c;
 
-        public dynCurveByPoints()
+        public CurveByPoints()
         {
             InPortData.Add(new PortData("refPts", "List of reference points", typeof(Value.List)));
             InPortData.Add(new PortData("isRef", "Boolean indicating whether the resulting curve is a reference curve.", typeof(Value.Number)));
@@ -354,9 +334,9 @@ namespace Dynamo.Nodes
             if (this.Elements.Any())
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(CurveByPoints), out e))
+                if (dynUtils.TryGetElement(this.Elements[0],typeof(Autodesk.Revit.DB.CurveByPoints), out e))
                 {
-                    c = e as CurveByPoints;
+                    c = e as Autodesk.Revit.DB.CurveByPoints;
                     c.SetPoints(refPtArr);
                 }
                 else
@@ -384,9 +364,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Create a new Curve by Points by passing in a geometry line in 3d space")]
     [AlsoKnownAsAttribute("Curve By Points By Line")]
-    public class dynCurveByPointsByLine : dynRevitTransactionNodeWithOneOutput
+    public class CurveByPointsByLine : RevitTransactionNodeWithOneOutput
     {
-        public dynCurveByPointsByLine()
+        public CurveByPointsByLine()
         {
             InPortData.Add(new PortData("curve", "geometry curve", typeof(Value.Container)));
             OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(Value.Container)));
@@ -397,7 +377,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             //Our eventual output.
-            CurveByPoints c = null;
+            Autodesk.Revit.DB.CurveByPoints c = null;
 
             var input = args[0];
 
@@ -411,10 +391,10 @@ namespace Dynamo.Nodes
                 Element e;
                 bool replaceElement = true;
                 //...try to get the first one...
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(CurveByPoints), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.CurveByPoints), out e))
                 {
                     //..and if we do, update it's position.
-                    c = e as CurveByPoints;
+                    c = e as Autodesk.Revit.DB.CurveByPoints;
 
                     ReferencePointArray existingPts = c.GetPoints();
 
@@ -542,7 +522,7 @@ namespace Dynamo.Nodes
 
         static bool foundCreateArcThroughPoints = true;
 
-        private CurveByPoints CreateCurveByPoints(CurveByPoints c, Curve gc, XYZ start, XYZ end)
+        private Autodesk.Revit.DB.CurveByPoints CreateCurveByPoints(Autodesk.Revit.DB.CurveByPoints c, Curve gc, XYZ start, XYZ end)
         {
             //Add the geometry curves start and end points to a ReferencePointArray.
             ReferencePointArray refPtArr = new ReferencePointArray();
@@ -558,7 +538,7 @@ namespace Dynamo.Nodes
             {
                 Type CurveByPointsUtilsType = typeof(Autodesk.Revit.DB.CurveByPointsUtils);
                 MethodInfo[] curveElementMethods = CurveByPointsUtilsType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-                String nameOfMethodSetCurve = "CreateArcThroughPoints";
+                System.String nameOfMethodSetCurve = "CreateArcThroughPoints";
                 bool foundMethod = false;
 
                 foreach (MethodInfo m in curveElementMethods)
@@ -578,7 +558,7 @@ namespace Dynamo.Nodes
                         argsM[3] = refMidPoint;
 
                         foundMethod = true;
-                        c = (CurveByPoints)m.Invoke(null, argsM);
+                        c = (Autodesk.Revit.DB.CurveByPoints)m.Invoke(null, argsM);
                         return c;
                     }
                 }
@@ -603,9 +583,9 @@ namespace Dynamo.Nodes
     [NodeName("Curve Reference")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Takes in a Model Curve or Geometry Curve, returns a Curve Reference")]
-    public class dynCurveRef : dynRevitTransactionNodeWithOneOutput
+    public class CurveRef : RevitTransactionNodeWithOneOutput
     {
-        public dynCurveRef()
+        public CurveRef()
         {
             InPortData.Add(new PortData("curve", "Model Curve Element or Geometry Curve", typeof(Value.Container)));
             OutPortData.Add(new PortData("curveRef", "Curve Reference", typeof(Value.Container)));
@@ -671,9 +651,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Takes in a model curve and extracts a geometry curve")]
     [NodeSearchTags("Convert", "Extract", "Geometry", "Curve", "Model", "Reference")]
-    public class dynCurveFromModelCurve : dynRevitTransactionNodeWithOneOutput
+    public class CurveFromModelCurve : RevitTransactionNodeWithOneOutput
     {
-        public dynCurveFromModelCurve()
+        public CurveFromModelCurve()
         {
             InPortData.Add(new PortData("mc", "Model Curve Element", typeof(Value.Container)));
             OutPortData.Add(new PortData("curve", "Curve", typeof(Value.Container)));
@@ -736,9 +716,9 @@ namespace Dynamo.Nodes
     [NodeName("Nurbs Spline Model Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Node to create a planar nurbs spline model curve.")]
-    public class dynModelCurveNurbSpline : dynRevitTransactionNodeWithOneOutput
+    public class ModelCurveNurbSpline : RevitTransactionNodeWithOneOutput
     {
-        public dynModelCurveNurbSpline()
+        public ModelCurveNurbSpline()
         {
             InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(Value.List)));
             OutPortData.Add(new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(Value.Container)));
@@ -763,11 +743,11 @@ namespace Dynamo.Nodes
             ModelNurbSpline c;
             Element e;
 
-            if (Elements.Any() && dynUtils.TryGetElement(Elements[0],typeof(ModelCurve), out e))
+            if (Elements.Any() && dynUtils.TryGetElement(Elements[0],typeof(Autodesk.Revit.DB.ModelCurve), out e))
             {
                 c = e as ModelNurbSpline;
 
-                dynModelCurve.setCurveMethod(c, ns); //c.GeometryCurve = ns;
+                ModelCurve.setCurveMethod(c, ns); //c.GeometryCurve = ns;
             }
             else
             {
@@ -783,8 +763,8 @@ namespace Dynamo.Nodes
                     norm = XYZ.BasisZ;
                 }
 
-                Plane p = new Plane(norm, t.Origin);
-                SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
+                Autodesk.Revit.DB.Plane p = new Autodesk.Revit.DB.Plane(norm, t.Origin);
+                Autodesk.Revit.DB.SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
                 //sps.Add(sp);
 
                 c = UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp) as ModelNurbSpline;
@@ -799,9 +779,9 @@ namespace Dynamo.Nodes
     [NodeName("Nurbs Spline")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Node to create a planar nurbs spline curve.")]
-    public class dynGeometryCurveNurbSpline : dynCurveBase
+    public class GeometryCurveNurbSpline : CurveBase
     {
-        public dynGeometryCurveNurbSpline()
+        public GeometryCurveNurbSpline()
         {
             InPortData.Add(new PortData("xyzs", "The xyzs from which to create the nurbs curve", typeof(Value.List)));
             OutPortData.Add(new PortData("cv", "The nurbs spline curve created by this operation.", typeof(Value.Container)));
@@ -977,9 +957,9 @@ namespace Dynamo.Nodes
     [NodeName("Curve Loop")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates Curve Loop")]
-    public class dynCurveLoop : dynCurveBase
+    public class CurveLoop : CurveBase
     {
-        public dynCurveLoop()
+        public CurveLoop()
         {
             InPortData.Add(new PortData("curves", "Geometry curves to make curve loop", typeof(Value.List)));
             OutPortData.Add(new PortData("CurveLoop", "CurveLoop", typeof(Value.Container)));
@@ -1045,7 +1025,7 @@ namespace Dynamo.Nodes
                 curvesWithFlip.Add(c);
             }
 
-            CurveLoop result = CurveLoop.Create(curvesWithFlip);
+            Autodesk.Revit.DB.CurveLoop result = Autodesk.Revit.DB.CurveLoop.Create(curvesWithFlip);
 
             foreach (Curve c in result)
             {
@@ -1059,9 +1039,9 @@ namespace Dynamo.Nodes
     [NodeName("Thicken Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates Curve Loop by thickening curve")]
-    public class dynThickenCurveLoop : dynCurveBase
+    public class ThickenCurveLoop : CurveBase
     {
-        public dynThickenCurveLoop()
+        public ThickenCurveLoop()
         {
             InPortData.Add(new PortData("Curve", "Curve to thicken, cannot be closed.", typeof(Value.Container)));
             InPortData.Add(new PortData("Thickness", "Thickness value.", typeof(Value.Number)));
@@ -1076,7 +1056,7 @@ namespace Dynamo.Nodes
             double thickness = ((Value.Number)args[1]).Item;
             XYZ normal = (XYZ)((Value.Container)args[2]).Item;
 
-            CurveLoop result = CurveLoop.CreateViaThicken(curve, thickness, normal);
+            Autodesk.Revit.DB.CurveLoop result = Autodesk.Revit.DB.CurveLoop.CreateViaThicken(curve, thickness, normal);
             if (result == null)
                 throw new Exception("Could not thicken curve");
 
@@ -1092,9 +1072,9 @@ namespace Dynamo.Nodes
     [NodeName("Curve Loop List")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates list of curves in the Curve Loop")]
-    public class dynListCurveLoop : dynRevitTransactionNodeWithOneOutput
+    public class ListCurveLoop : RevitTransactionNodeWithOneOutput
     {
-        public dynListCurveLoop()
+        public ListCurveLoop()
         {
             InPortData.Add(new PortData("CurveLoop", "Curve to thicken.", typeof(Value.Container)));
             OutPortData.Add(new PortData("Curve List", "List of curves in the curve loop.", typeof(Value.List)));
@@ -1103,7 +1083,7 @@ namespace Dynamo.Nodes
         }
         public override Value Evaluate(FSharpList<Value> args)
         {
-            CurveLoop curveLoop = (CurveLoop)((Value.Container)args[0]).Item;
+            Autodesk.Revit.DB.CurveLoop curveLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
 
             CurveLoopIterator CLiter = curveLoop.GetCurveLoopIterator();
 
@@ -1126,9 +1106,9 @@ namespace Dynamo.Nodes
     [NodeName("Offset Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates curve by offseting curve")]
-    public class dynOffsetCrv : dynCurveBase
+    public class OffsetCrv : CurveBase
     {
-        public dynOffsetCrv()
+        public OffsetCrv()
         {
             InPortData.Add(new PortData("Curve", "Curve to thicken, could not be closed.", typeof(Value.Container)));
             InPortData.Add(new PortData("Offset", "Offset value.", typeof(Value.Number)));
@@ -1143,7 +1123,7 @@ namespace Dynamo.Nodes
             double thickness = ((Value.Number)args[1]).Item;
             XYZ normal = (XYZ)((Value.Container)args[2]).Item;
 
-            CurveLoop thickenLoop = CurveLoop.CreateViaThicken(curve, thickness, normal);
+            Autodesk.Revit.DB.CurveLoop thickenLoop = Autodesk.Revit.DB.CurveLoop.CreateViaThicken(curve, thickness, normal);
 
             if (thickenLoop == null)
                 throw new Exception("Could not offset curve");
@@ -1171,9 +1151,9 @@ namespace Dynamo.Nodes
     [NodeName("Bound Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates Curve by bounding original by two points")]
-    public class dynBoundCurve : dynRevitTransactionNodeWithOneOutput
+    public class BoundCurve : RevitTransactionNodeWithOneOutput
     {
-        public dynBoundCurve()
+        public BoundCurve()
         {
             InPortData.Add(new PortData("Curve", "Curve to bound.", typeof(object)));
             InPortData.Add(new PortData("New Start Point", "Start point should be within bounded curve, anywhere on unbounded curve.", typeof(object)));
@@ -1197,7 +1177,7 @@ namespace Dynamo.Nodes
             double eParam = projectEnd.Parameter;
 
 
-            bool closed = dynXYZOnCurveOrEdge.curveIsReallyUnbound(curve);
+            bool closed = XyzOnCurveOrEdge.curveIsReallyUnbound(curve);
             if (closed)
             {
                 double period = curve.Period;
@@ -1224,9 +1204,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates bisector of two lines")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynBisector : dynRevitTransactionNodeWithOneOutput
+    public class Bisector : RevitTransactionNodeWithOneOutput
     {
-        public dynBisector()
+        public Bisector()
         {
             InPortData.Add(new PortData("line1", "First Line", typeof(Value.Container)));
             InPortData.Add(new PortData("line2", "Second Line", typeof(Value.Container)));
@@ -1243,7 +1223,7 @@ namespace Dynamo.Nodes
 
             MethodInfo[] lineInstanceMethods = LineType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
-            String nameOfMethodCreateBisector = "CreateBisector";
+            System.String nameOfMethodCreateBisector = "CreateBisector";
             Line result = null;
 
             foreach (MethodInfo m in lineInstanceMethods)
@@ -1267,9 +1247,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates best fit arc through points")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynBestFitArc : dynRevitTransactionNodeWithOneOutput
+    public class BestFitArc : RevitTransactionNodeWithOneOutput
     {
-        public dynBestFitArc()
+        public BestFitArc()
         {
             InPortData.Add(new PortData("points", "Points to Fit Arc Through", typeof(Value.List)));
             OutPortData.Add(new PortData("arc", "Best Fit Arc", typeof(Value.Container)));
@@ -1311,7 +1291,7 @@ namespace Dynamo.Nodes
 
             MethodInfo[] arcStaticMethods = ArcType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
-            String nameOfMethodCreateByFit = "CreateByFit";
+            System.String nameOfMethodCreateByFit = "CreateByFit";
             Arc result = null;
 
             foreach (MethodInfo m in arcStaticMethods)
@@ -1335,9 +1315,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Appoximates curve by sequence of tangent arcs.")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class dynApproximateByTangentArcs : dynRevitTransactionNodeWithOneOutput
+    public class ApproximateByTangentArcs : RevitTransactionNodeWithOneOutput
     {
-        public dynApproximateByTangentArcs()
+        public ApproximateByTangentArcs()
         {
             InPortData.Add(new PortData("curve", "Curve to Approximate by Tangent Arcs", typeof(Value.Container)));
             OutPortData.Add(new PortData("arcs", "List of Approximating Arcs", typeof(Value.List)));
@@ -1360,7 +1340,7 @@ namespace Dynamo.Nodes
 
             MethodInfo[] curveInstanceMethods = CurveType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
-            String nameOfMethodApproximateByTangentArcs = "ApproximateByTangentArcs";
+            System.String nameOfMethodApproximateByTangentArcs = "ApproximateByTangentArcs";
             List <Curve> resultArcs = null;
             var result = FSharpList<Value>.Empty;
 
@@ -1386,9 +1366,9 @@ namespace Dynamo.Nodes
     [NodeName("Equal Distanced XYZs On Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a list of equal distanced XYZs along a curve.")]
-    public class dynEqualDistXYZAlongCurve : dynXYZBase
+    public class EqualDistXyzAlongCurve : XyzBase
     {
-            public dynEqualDistXYZAlongCurve()
+            public EqualDistXyzAlongCurve()
             {
             InPortData.Add(new PortData("curve", "Curve", typeof(Value.Container)));
             InPortData.Add(new PortData("count", "Number", typeof(Value.Number))); // just divide equally for now, dont worry about spacing and starting point
@@ -1403,7 +1383,7 @@ namespace Dynamo.Nodes
             double xi;//, x0, xs;
             xi = ((Value.Number)args[1]).Item;// Number
             xi = Math.Round(xi);
-            if (xi < Double.Epsilon)
+            if (xi < System.Double.Epsilon)
                 throw new Exception("The point count must be larger than 0.");
 
             //x0 = ((Value.Number)args[2]).Item;// Starting Coord
@@ -1426,15 +1406,15 @@ namespace Dynamo.Nodes
 
             double t = 0.0;
 
-            XYZ startPoint  = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+            XYZ startPoint  = !XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
                 
             result = FSharpList<Value>.Cons(Value.NewContainer(startPoint), result);
             pts.Add(startPoint);
            
             t = 1.0;
-            XYZ endPoint = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+            XYZ endPoint = !XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
 
-            if (xi > 2.0 +  Double.Epsilon)
+            if (xi > 2.0 +  System.Double.Epsilon)
             {
                 int numParams = Convert.ToInt32(xi - 2.0);
 
@@ -1446,7 +1426,7 @@ namespace Dynamo.Nodes
                 }
 
                 int maxIterNum = 15;
-                bool bUnbound = dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef);
+                bool bUnbound = XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef);
 
                 int iterNum = 0;
                 for (; iterNum < maxIterNum; iterNum++)
@@ -1481,7 +1461,7 @@ namespace Dynamo.Nodes
                         if (bUnbound)
                             derivThis = derivThis.Multiply(crvRef.Period);
                         double distPrev = thisXYZ.DistanceTo(prevPoint);
-                        if (distPrev  > Double.Epsilon)
+                        if (distPrev  > System.Double.Epsilon)
                         {
                            double valDeriv = (thisXYZ - prevPoint).DotProduct(derivThis) / distPrev;
                            iterMat[iParam, iParam] += valDeriv;
@@ -1491,7 +1471,7 @@ namespace Dynamo.Nodes
                            }
                         }
                         double distNext = thisXYZ.DistanceTo(nextXYZ);
-                        if (distNext> Double.Epsilon)
+                        if (distNext> System.Double.Epsilon)
                         {
                             double valDeriv = (thisXYZ - nextXYZ).DotProduct(derivThis) / distNext;
 
@@ -1541,7 +1521,7 @@ namespace Dynamo.Nodes
                         for (int iParam = 0; iParam < numParams; iParam++)
                         {
                             t = curveParams[iParam];
-                            thisXYZ = !dynXYZOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+                            thisXYZ = !XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
                             result = FSharpList<Value>.Cons(Value.NewContainer(thisXYZ), result);
                             pts.Add(thisXYZ);
                         }
@@ -1554,7 +1534,7 @@ namespace Dynamo.Nodes
 
             }
 
-            if (xi > 1.0 + Double.Epsilon)
+            if (xi > 1.0 + System.Double.Epsilon)
             {
                 result = FSharpList<Value>.Cons(Value.NewContainer(endPoint), result);
                 pts.Add(endPoint);
