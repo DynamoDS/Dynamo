@@ -105,7 +105,8 @@ namespace Dynamo.ViewModels
         protected bool canRunDynamically = true;
         protected bool debug = false;
         protected bool dynamicRun = false;
-        
+        private string warningText = "This is dope.";
+
         private bool fullscreenWatchShowing = false;
         private bool canNavigateBackground = false;
 
@@ -366,6 +367,19 @@ namespace Dynamo.ViewModels
             }
         }
         
+        /// <summary>
+        /// Returns the last line of the log
+        /// </summary>
+        public string WarningText
+        {
+            get { return warningText; }
+            set 
+            { 
+                warningText = value;
+                RaisePropertyChanged("WarningText");
+            }
+        }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller)
@@ -464,6 +478,7 @@ namespace Dynamo.ViewModels
             {
                 case "LogText":
                     RaisePropertyChanged("LogText");
+                    RaisePropertyChanged("WarningText");
                     break;
             }
 
@@ -697,7 +712,6 @@ namespace Dynamo.ViewModels
         {
             return new Function(inputs, outputs, functionDefinition);
         }
-
 
         /// <summary>
         ///     Sets the load path
