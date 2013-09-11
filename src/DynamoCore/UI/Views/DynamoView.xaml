@@ -102,26 +102,26 @@
                     Command="{Binding Path=DataContext.LayoutAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         
         <KeyBinding Key="Left"
-                    Modifiers="Shift"
+                    Modifiers="Ctrl+Alt"
                     CommandParameter="Left"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Right"
-                    Modifiers="Shift"
+                    Modifiers="Ctrl+Alt"
                     CommandParameter="Right"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Up"
-                    Modifiers="Shift"
+                    Modifiers="Ctrl+Alt"
                     CommandParameter="Up"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Down"
-                    Modifiers="Shift"
+                    Modifiers="Ctrl+Alt"
                     CommandParameter="Down"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-        <KeyBinding Key="Up"
-                    Modifiers="Alt"
+        <KeyBinding Key="OemPlus"
+                    Modifiers="Ctrl"
                     Command="{Binding Path=DataContext.ZoomInCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-        <KeyBinding Key="Down"
-                    Modifiers="Alt"
+        <KeyBinding Key="OemMinus"
+                    Modifiers="Ctrl"
                     Command="{Binding Path=DataContext.ZoomOutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
     </Window.InputBindings>
@@ -232,10 +232,21 @@
 
                 <MenuItem Header="_View" Name="viewMenu" Focusable="False">
 
-       
+                    <MenuItem Header="_Zoom" Name="zoomMenu">
+                        <MenuItem  Header="Zoom In (Mouse wheel down)"  Command="{Binding ZoomInCommand}" InputGestureText="Ctrl + ="/>
+                        <MenuItem  Header="Zoom Out (Mouse wheel up)" Command="{Binding ZoomOutCommand}" InputGestureText="Ctrl + -"/>
+                    </MenuItem>
+
+                    <MenuItem Header="_Pan" Name="panMenu">
+                        <MenuItem  Header="Pan Left (Mouse wheel drag left)"  Command="{Binding PanCommand}" CommandParameter="Left" InputGestureText="Ctrl + Shift + Left"/>
+                        <MenuItem  Header="Pan Right (Mouse wheel drag right)" Command="{Binding PanCommand}" CommandParameter="Right" InputGestureText="Ctrl + Shift + Right"/>
+                        <MenuItem  Header="Pan Up (Mouse wheel drag up)"  Command="{Binding PanCommand}" CommandParameter="Up" InputGestureText="Ctrl + Shift + Up"/>
+                        <MenuItem  Header="Pan Down (Mouse wheel drag down)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Ctrl + Shift + Down"/>
+                    </MenuItem>
+
                     <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
                           Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
-
+                    
                     <MenuItem Header="_Connectors" Name="connectorMenu">
                     
                         <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
