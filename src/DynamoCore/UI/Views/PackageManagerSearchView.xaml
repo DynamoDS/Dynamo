@@ -1,15 +1,7 @@
 ﻿<Window x:Class="Dynamo.PackageManager.UI.PackageManagerSearchView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
         Title="Online Package Search" Name="PackageSearch"  Height="600" Width="480" MinWidth="480" MaxWidth="480">
-
-    <!--<shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome CaptionHeight="27"
-                            GlassFrameThickness="0,0,0,1"
-                            CornerRadius="2"
-                            ResizeBorderThickness="5" />
-    </shell:WindowChrome.WindowChrome>-->
     
     <Window.Resources>
         <ResourceDictionary>

@@ -11,7 +11,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Dynamo.Controls;
-using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
@@ -21,8 +20,6 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class InstalledPackagesView : Window
     {
-        //private TitleBarButtons titleBarButtons;
-
         public InstalledPackagesView()
         {
 
@@ -32,13 +29,6 @@ namespace Dynamo.PackageManager.UI
 
             this.DataContext = dynSettings.PackageLoader;
             InitializeComponent();
-
-            //if (titleBarButtons == null)
-            //{
-            //    titleBarButtons = new TitleBarButtons(this);
-            //    titleBarButtonsGrid.Children.Add(titleBarButtons);
-            //}
-
         }
 
         private void BrowseOnline_OnClick(object sender, RoutedEventArgs e)
