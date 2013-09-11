@@ -19,6 +19,14 @@ namespace Dynamo.PackageManager
 {
     public class PackageManagerSearchViewModel : NotificationObject
     {
+        public enum PackageSearchState
+        {
+            SYNCING,
+            SEARCHING,
+            NORESULTS,
+            RESULTS
+        };
+
         #region Properties & Fields
 
         /// <summary>
@@ -28,7 +36,6 @@ namespace Dynamo.PackageManager
         ///     This is the core UI for Dynamo, primarily used for logging.
         /// </value>
         public string _SearchText;
-
         public string SearchText
         {
             get { return _SearchText; }
@@ -85,13 +92,16 @@ namespace Dynamo.PackageManager
             get { return this.SearchResults.Count == 0; }
         }
 
-        public string _SearchState;
-        public string SearchState
+        /// <summary>
+        /// Gives the current state of search.
+        /// </summary>
+        public PackageSearchState _searchState;
+        public PackageSearchState SearchState
         {
-            get { return _SearchState; }
+            get { return _searchState; }
             set
             {
-                _SearchState = value;
+                _searchState = value;
                 RaisePropertyChanged("SearchState");
             }
         }
@@ -186,8 +196,9 @@ namespace Dynamo.PackageManager
         internal void SearchAndUpdateResults(string query)
         {
             this.SearchText = query;
-            this.SearchState = "Searching...";
+            this.SearchState = PackageSearchState.SEARCHING;
             SearchResults.Clear();
+
             Task<List<PackageManagerSearchElement>>.Factory.StartNew(() => Search(query)
 
             ).ContinueWith((t) =>
@@ -198,10 +209,7 @@ namespace Dynamo.PackageManager
                     {
                         SearchResults.Add(result);
                     }
-                    lock (SearchState)
-                    {
-                        this.SearchState = HasNoResults ? "Search returned no results." : "";
-                    }
+                    this.SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
                 }
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
