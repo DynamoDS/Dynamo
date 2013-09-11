@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -304,10 +305,18 @@ namespace Dynamo.Core
             // This is the action group where all the undone actions are added.
             XmlElement newGroup = document.CreateElement(ActionGroup);
 
-            foreach (XmlNode action in actionGroup.ChildNodes)
+            // A note on why we didn't use "foreach" here: As we iterate through
+            // each child node under "actionGroup", occassionally we may want to 
+            // appand that child node under "newGroup". This action causes the 
+            // child node to be removed, and "actionGroup.ChildNodes" to drop by
+            // one. This means that "actionGroup.ChildNodes" to be non-constant,
+            // something the loop cannot iterate over correctly. So here we use
+            // an index instead.
+            // 
+            for (int index = 0; index < actionGroup.ChildNodes.Count; index++)
             {
-                XmlElement element = action as XmlElement;
-                XmlAttribute actionAttribute = action.Attributes[UserAction];
+                XmlElement element = actionGroup.ChildNodes[index] as XmlElement;
+                XmlAttribute actionAttribute = element.Attributes[UserAction];
                 switch (actionAttribute.Value)
                 {
                     // Before undo takes place (to delete the model), the most 
@@ -328,6 +337,7 @@ namespace Dynamo.Core
                     case UndoRedoRecorder.DeletionAction:
                         newGroup.AppendChild(element);
                         undoClient.CreateModel(element);
+                        index = index - 1; // The size of 'ChildNodes' has shrunk.
                         break;
                 }
             }
@@ -340,15 +350,17 @@ namespace Dynamo.Core
             // This is the action group where all the redone actions are added.
             XmlElement newGroup = document.CreateElement(ActionGroup);
 
-            foreach (XmlNode action in actionGroup.ChildNodes)
+            // See "UndoActionGroup" above for details why "foreach" isn't used.
+            for (int index = 0; index < actionGroup.ChildNodes.Count; index++)
             {
-                XmlElement element = action as XmlElement;
-                XmlAttribute actionAttribute = action.Attributes[UserAction];
+                XmlElement element = actionGroup.ChildNodes[index] as XmlElement;
+                XmlAttribute actionAttribute = element.Attributes[UserAction];
                 switch (actionAttribute.Value)
                 {
                     case UndoRedoRecorder.CreationAction:
                         newGroup.AppendChild(element);
                         undoClient.CreateModel(element);
+                        index = index - 1; // The size of 'ChildNodes' has shrunk.
                         break;
 
                     case UndoRedoRecorder.ModificationAction:
