@@ -168,6 +168,8 @@ namespace Dynamo.Core
         {
             RecordActionInternal(this.currentActionGroup,
                 model, UndoRedoRecorder.CreationAction);
+
+            this.redoStack.Clear(); // Wipe out the redo-stack.
         }
 
         /// <summary>
@@ -181,6 +183,8 @@ namespace Dynamo.Core
         {
             RecordActionInternal(this.currentActionGroup,
                 model, UndoRedoRecorder.DeletionAction);
+
+            this.redoStack.Clear(); // Wipe out the redo-stack.
         }
 
         /// <summary>
@@ -194,6 +198,8 @@ namespace Dynamo.Core
         {
             RecordActionInternal(this.currentActionGroup,
                 model, UndoRedoRecorder.ModificationAction);
+
+            this.redoStack.Clear(); // Wipe out the redo-stack.
         }
 
         #endregion
