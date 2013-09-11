@@ -387,5 +387,67 @@ namespace Dynamo.Tests
             recorder.Redo(); // Should redo creation.
             Assert.AreEqual(10, workspace.GetModel(1).Radius);
         }
+
+        [Test]
+        public void TestRedoStackWipeOut()
+        {
+            // Add a model into workspace, make sure it exists.
+            workspace.AddModel(new DummyModel(1, 10));
+            DummyModel model = workspace.GetModel(1);
+            Assert.AreEqual(10, model.Radius);
+
+            // Only undo should be enabled.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            recorder.Undo(); // Undo creation.
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            // Scenario 1: Creating a new model while 
+            // redo-stack is non-empty wipes the redo stack out.
+            workspace.AddModel(new DummyModel(2, 10));
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo); // Redo stack wiped out.
+
+            workspace.ModifyModel(2); // Modify the model once.
+            Assert.AreEqual(20, workspace.GetModel(2).Radius);
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            workspace.ModifyModel(2); // Modify the model once more.
+            Assert.AreEqual(40, workspace.GetModel(2).Radius);
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            recorder.Undo(); // Undo the second modification.
+            Assert.AreEqual(20, workspace.GetModel(2).Radius);
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo); // We can now redo.
+
+            // Scenario 2: Modifying an existing model while 
+            // redo-stack is non-empty wipes the redo stack out.
+            workspace.ModifyModel(2); // Push another modification.
+            Assert.AreEqual(40, workspace.GetModel(2).Radius);
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo); // Redo stack wiped out.
+
+            workspace.RemoveModel(2); // Delete the model.
+            Assert.AreEqual(null, workspace.GetModel(2));
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            recorder.Undo(); // Undo deletion.
+            Assert.AreEqual(40, workspace.GetModel(2).Radius);
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo); // Redo stack is back.
+
+            // Scenario 3: Deleting an existing model while 
+            // redo-stack is non-empty wipes the redo stack out.
+            workspace.RemoveModel(2); // Delete the model again.
+            Assert.AreEqual(null, workspace.GetModel(2));
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo); // Redo stack wiped out.
+        }
     }
 }
