@@ -100,13 +100,10 @@ namespace Dynamo.Utilities
                         allLoadedAssemblies[assembly.GetName().Name] = assembly;
                         LoadNodesFromAssembly(assembly);
                     }
-<<<<<<< HEAD
                     catch (BadImageFormatException)
                     {
                         //swallow these warnings.
                     }
-=======
->>>>>>> 67ef415c4460554669069176e3e2ea8ddb06c9bd
                     catch(Exception e)
                     {
                         DynamoLogger.Instance.Log(e);
