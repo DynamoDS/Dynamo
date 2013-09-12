@@ -215,6 +215,9 @@ namespace Dynamo.ViewModels
                 // Cleanup
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = false;
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = null;
+
+                // Record the creation of connector in the undo recorder.
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Model.RecordNewConnector(newConnectorModel);
             }
         }
 

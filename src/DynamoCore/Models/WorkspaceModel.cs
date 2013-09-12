@@ -395,6 +395,16 @@ namespace Dynamo.Models
             undoRecorder.EndActionGroup();
         }
 
+        internal void RecordNewConnector(ConnectorModel connector)
+        {
+            if (null == connector)
+                return;
+
+            this.undoRecorder.BeginActionGroup();
+            this.undoRecorder.RecordCreationForUndo(connector);
+            this.undoRecorder.EndActionGroup();
+        }
+
         internal void RecordAndDeleteModels(List<ModelBase> models)
         {
             if (null == models || (models.Count <= 0))
