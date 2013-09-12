@@ -145,18 +145,24 @@ namespace Dynamo.Controls
         }
 
         private PackageManagerSearchView _searchPkgsView;
+        private PackageManagerSearchViewModel _pkgSearchVM;
         void _vm_RequestShowPackageManagerSearch(object s, EventArgs e)
         {
+            if (_pkgSearchVM == null)
+            {
+                _pkgSearchVM = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
+            }
+
             if (_searchPkgsView == null)
             {
-                var pms = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
-                _searchPkgsView = new PackageManagerSearchView(pms);
+                _searchPkgsView = new PackageManagerSearchView(_pkgSearchVM);
                 _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
                 _searchPkgsView.Show();
 
                  if (_searchPkgsView.IsLoaded && this.IsLoaded) _searchPkgsView.Owner = this;
             }
-             _searchPkgsView.Focus();
+            
+            _searchPkgsView.Focus();
         }
 
         private InstalledPackagesView _installedPkgsView;
