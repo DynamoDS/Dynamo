@@ -267,7 +267,7 @@ namespace Dynamo.Models
 
         private void Migrate_0_5_3_to_0_6_0()
         {
-            DynamoLogger.Instance.Log("Applying model migration from 0.5.3.x to 0.6.0.x", LogLevel.Console);
+            DynamoLogger.Instance.LogWarning("Applying model migration from 0.5.3.x to 0.6.0.x", WarningLevel.Mild);
         }
 
         public virtual void OnCleanup(EventArgs e)
