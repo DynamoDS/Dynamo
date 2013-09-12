@@ -20,7 +20,6 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class InstalledPackagesView : Window
     {
-
         public InstalledPackagesView()
         {
 
@@ -30,7 +29,6 @@ namespace Dynamo.PackageManager.UI
 
             this.DataContext = dynSettings.PackageLoader;
             InitializeComponent();
-
         }
 
         private void BrowseOnline_OnClick(object sender, RoutedEventArgs e)
