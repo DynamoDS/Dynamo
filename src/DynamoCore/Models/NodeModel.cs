@@ -1626,6 +1626,7 @@ namespace Dynamo.Models
 
             // TODO(Ben): We need to raise property change events 
             // here for those data members we directly changed.
+            RaisePropertyChanged("NickName");
         }
 
         #endregion
