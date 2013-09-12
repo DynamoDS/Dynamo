@@ -385,7 +385,7 @@ namespace Dynamo.Utilities
             }
         }
 
-        public static Plane GetPlaneFromCurve(Curve c)
+        public static Plane GetPlaneFromCurve(Curve c, bool planarOnly)
         {
             //cases to handle
             //straight line - normal will be inconclusive
@@ -396,6 +396,42 @@ namespace Dynamo.Utilities
             var p0 = c.IsBound ? c.Evaluate(0.0, true) : c.Evaluate(0.0, false);
             var p1 = c.IsBound ? c.Evaluate(0.5, true) : c.Evaluate(0.25 * period, false);
             var p2 = c.IsBound ? c.Evaluate(1.0, true) : c.Evaluate(0.5 * period, false);
+
+            if (c is Line)
+            {
+                var v1 = p1 - p0;
+                var v2 = p2 - p0;
+                var norm = v1.CrossProduct(v2).Normalize();
+
+                //keep old plane computations
+                if (p0.Z == p2.Z)
+                {
+                    norm = XYZ.BasisZ;
+                }
+                else
+                {
+                    var p3 = new XYZ(p2.X, p2.Y, p0.Z);
+                    var v3 = p3 - p0;
+                    norm = v1.CrossProduct(v3);
+                }
+
+                return new Plane(norm, p0);
+
+            }
+
+            Autodesk.Revit.DB.CurveLoop cLoop = new Autodesk.Revit.DB.CurveLoop();
+            cLoop.Append(c.Clone());
+            if (cLoop.HasPlane())
+            {
+                return cLoop.GetPlane();
+            }
+            if (planarOnly)
+                return null;
+
+            IList<XYZ> points = c.Tessellate();
+            List<XYZ> xyzs = new List<XYZ>();
+            for (int iPoint = 0; iPoint < points.Count; iPoint++)
+                xyzs.Add(points[iPoint]);
 
             //var v1 = p1 - p0;
             //var v2 = p2 - p0;
@@ -424,14 +460,14 @@ namespace Dynamo.Utilities
 
             XYZ meanPt;
             List<XYZ> orderedEigenvectors;
-            BestFitLine.PrincipalComponentsAnalysis(new List<XYZ>() { p0, p1, p2 }, out meanPt, out orderedEigenvectors);
+            BestFitLine.PrincipalComponentsAnalysis(xyzs, out meanPt, out orderedEigenvectors);
             var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
             var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
             return plane;
         }
         public static SketchPlane GetSketchPlaneFromCurve(Curve c)
         {
-            Plane plane = GetPlaneFromCurve(c);
+            Plane plane = GetPlaneFromCurve(c, false);
             SketchPlane sp = null;
             sp = dynRevitSettings.Doc.Document.IsFamilyDocument ? 
                 dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) : 
@@ -445,14 +481,14 @@ namespace Dynamo.Utilities
             XYZ meanPt = null;
             List<XYZ> orderedEigenvectors;
             XYZ normal;
+            plane = GetPlaneFromCurve(c, true);
+            if (plane != null)
+                return c;
 
             if (c is Autodesk.Revit.DB.HermiteSpline)
             {
                 var hs = c as Autodesk.Revit.DB.HermiteSpline;
-                BestFitLine.PrincipalComponentsAnalysis(hs.ControlPoints.ToList(), out meanPt, out orderedEigenvectors);
-                normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
-                plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
-
+                plane = GetPlaneFromCurve(c, false);
                 var projPoints = new List<XYZ>();
                 foreach (var pt in hs.ControlPoints)
                 {

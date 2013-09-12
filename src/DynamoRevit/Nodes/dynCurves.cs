@@ -79,7 +79,7 @@ namespace Dynamo.Nodes
         static public ElementId resetSketchPlaneMethod(Autodesk.Revit.DB.ModelCurve mc, Curve c, Autodesk.Revit.DB.Plane flattenedOnPlane)
         {
             //do we need to reset?
-            Autodesk.Revit.DB.Plane newPlane = flattenedOnPlane != null ? flattenedOnPlane : dynRevitUtils.GetPlaneFromCurve(c);
+            Autodesk.Revit.DB.Plane newPlane = flattenedOnPlane != null ? flattenedOnPlane : dynRevitUtils.GetPlaneFromCurve(c, false);
 
             Autodesk.Revit.DB.Plane curPlane = mc.SketchPlane.Plane;
 
@@ -116,15 +116,16 @@ namespace Dynamo.Nodes
             {
                 Type CurveElementType = typeof(Autodesk.Revit.DB.CurveElement);
                 MethodInfo[] curveElementMethods = CurveElementType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-                System.String nameOfMethodSetCurve = "ResetSketchPlane";
+                System.String nameOfMethodSetCurve = "ResetSketchPlaneAndCurve";
 
                 foreach (MethodInfo m in curveElementMethods)
                 {
                     if (m.Name == nameOfMethodSetCurve)
                     {
-                        object[] argsM = new object[1];
+                        object[] argsM = new object[2];
                         sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
                         argsM[0] = sp;
+                        argsM[1] = null; 
 
                         foundMethod = true;
                         m.Invoke(mc, argsM);
@@ -134,10 +135,12 @@ namespace Dynamo.Nodes
             }
             if (!foundMethod)
             {
-                sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
+                //sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
                 hasMethodResetSketchPlane = false;
-                //expect exception
-                mc.SketchPlane = sp;
+
+                //expect exception, so try to keep old plane?
+                //mc.SketchPlane = sp;
+                return ElementId.InvalidElementId;
             }
 
             if (sp != null && mc.SketchPlane.Id != sp.Id)
@@ -152,8 +155,11 @@ namespace Dynamo.Nodes
             var c = (Curve)((Value.Container)args[0]).Item;
 
             Autodesk.Revit.DB.ModelCurve mc;
-            Autodesk.Revit.DB.Plane plane;
-            c = dynRevitUtils.FlattenCurveOnPlane(c, out plane);
+            Autodesk.Revit.DB.Plane plane = dynRevitUtils.GetPlaneFromCurve(c, false);
+
+            //instead of changing Revit curve keep it "as is"
+            //user might have trouble modifying curve in Revit if it is off the sketch plane
+            //c = dynRevitUtils.FlattenCurveOnPlane(c, out plane);
 
             if (this.Elements.Any())
             {
@@ -189,8 +195,8 @@ namespace Dynamo.Nodes
                         //THIS BIZARRE as Revit could use different existing SP, so if Revit had found better plane  this sketch plane has no use
                         this.DeleteElement(sp.Id);
                     }
-
-                    dynRevitSettings.Doc.Document.Delete(e.Id);
+                    if (e != null && e.Id != mc.Id)
+                       dynRevitSettings.Doc.Document.Delete(e.Id);
                 }
                 this.Elements[0] = mc.Id;
             }
@@ -207,7 +213,6 @@ namespace Dynamo.Nodes
                     //found better plane
                     this.DeleteElement(sp.Id);
                 }
-                this.Elements.Add(mc.Id);
             }
 
             return Value.NewContainer(mc);
@@ -232,13 +237,16 @@ namespace Dynamo.Nodes
             var c = (Curve)((Value.Container)args[0]).Item;
             Autodesk.Revit.DB.ModelCurve mc;
 
-            Autodesk.Revit.DB.Plane plane;
-            c = dynRevitUtils.FlattenCurveOnPlane(c, out plane);
+            Autodesk.Revit.DB.Plane plane = dynRevitUtils.GetPlaneFromCurve(c, false);
+
+            //instead of changing Revit curve keep it "as is"
+            //user might have trouble modifying curve in Revit if it is off the sketch plane
+            //c = dynRevitUtils.FlattenCurveOnPlane(c, out plane);
 
             if (this.Elements.Any())
             {
                 Element e;
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(ModelCurve), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.ModelCurve), out e))
                 {
                     mc = e as Autodesk.Revit.DB.ModelCurve;
 
@@ -272,7 +280,8 @@ namespace Dynamo.Nodes
                         //THIS BIZARRE as Revit could use different existing SP, so if Revit had found better plane  this sketch plane has no use
                         this.DeleteElement(sp.Id);
                     }
-                    dynRevitSettings.Doc.Document.Delete(e.Id);
+                    if (e != null && e.Id != mc.Id)
+                        dynRevitSettings.Doc.Document.Delete(e.Id);
                 }
                 this.Elements[0] = mc.Id;
             }
@@ -284,13 +293,13 @@ namespace Dynamo.Nodes
                    ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
                    : this.UIDocument.Document.Create.NewModelCurve(c, sp);
                 this.Elements.Add(mc.Id);
+                mc.ChangeToReferenceLine();
                 //mc.SketchPlane = sp;
                 if (mc.SketchPlane.Id != sp.Id)
                 {
                     //found better plane
                     this.DeleteElement(sp.Id);
                 }
-                this.Elements.Add(mc.Id);
             }
 
             return Value.NewContainer(mc);

@@ -1193,7 +1193,47 @@ namespace DynamoRevitTests
             model.Open(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
+        
+        [Test]
+        public void CurveByPointsArc()
+        {
+            var model = dynSettings.Controller.DynamoModel;
 
+            string samplePath = Path.Combine(_testPath, @".\CurveByPointsArc.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(CurveElement));
+
+            Assert.AreEqual(fec.ToElements().Count(), 1);
+
+            CurveByPoints mc = (CurveByPoints)fec.ToElements().ElementAt(0);
+            Assert.IsTrue(mc.IsReferenceLine);
+        }
+        
+        [Test]
+        public void CurveByPointsEllipse()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\CurveByPointsArc.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            
+            
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(CurveElement));
+
+            Assert.AreEqual(fec.ToElements().Count(), 1);
+
+            CurveByPoints mc = (CurveByPoints)fec.ToElements().ElementAt(0);
+            Assert.IsTrue(mc.IsReferenceLine);
+        }
 
         /// <summary>
         /// Automated creation of regression test cases.
