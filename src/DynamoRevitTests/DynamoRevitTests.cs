@@ -1195,11 +1195,11 @@ namespace DynamoRevitTests
         }
         
         [Test]
-        public void CurveByPointsArc()
+        public void CurvebyPointsArc()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\CurveByPointsArc.dyn");
+            string samplePath = Path.Combine(_testPath, @".\CurvebyPointsArc.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -1211,15 +1211,14 @@ namespace DynamoRevitTests
             Assert.AreEqual(fec.ToElements().Count(), 1);
 
             CurveByPoints mc = (CurveByPoints)fec.ToElements().ElementAt(0);
-            Assert.IsTrue(mc.IsReferenceLine);
         }
         
         [Test]
-        public void CurveByPointsEllipse()
+        public void CurvebyPointsEllipse()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\CurveByPointsArc.dyn");
+            string samplePath = Path.Combine(_testPath, @".\CurvebyPointsEllipse.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -1232,7 +1231,6 @@ namespace DynamoRevitTests
             Assert.AreEqual(fec.ToElements().Count(), 1);
 
             CurveByPoints mc = (CurveByPoints)fec.ToElements().ElementAt(0);
-            Assert.IsTrue(mc.IsReferenceLine);
         }
 
         /// <summary>
