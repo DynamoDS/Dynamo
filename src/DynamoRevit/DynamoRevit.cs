@@ -198,8 +198,6 @@ namespace Dynamo.Applications
                     //get window handle
                     IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-                    //show the window
-
                     Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
                     string context = r.Replace(m_revit.Application.VersionName, "");
 
@@ -235,6 +233,7 @@ namespace Dynamo.Applications
                     dynamoView.Closing += dynamoView_Closing;
                     dynamoView.Closed += dynamoView_Closed;
 
+                    revit.Application.ViewActivated += new EventHandler<Autodesk.Revit.UI.Events.ViewActivatedEventArgs>(Application_ViewActivated);
                 });
             }
             catch (Exception ex)
@@ -250,6 +249,42 @@ namespace Dynamo.Applications
             }
 
             return Result.Succeeded;
+        }
+
+        /// <summary>
+        /// Handler for the ViewActivated event.
+        /// Used to query whether Dynamo can be run on the active view.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Application_ViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e)
+        {
+            if (dynSettings.Controller != null)
+            {
+                if (e.CurrentActiveView is View3D)
+                {
+                    var view = e.CurrentActiveView as View3D;
+                    if (view.IsPerspective)
+                    {
+                        //warn user that Dynamo can't be run in perspective 
+                        //and disable the run
+                        DynamoLogger.Instance.LogWarning(
+                            "Dynamo is not available in a perspective view. Please switch to another view to Run.", WarningLevel.Moderate);
+                        dynSettings.Controller.DynamoViewModel.RunEnabled = false;
+                    }
+                    else
+                    {
+                        //for any other type of 
+                        DynamoLogger.Instance.ResetWarning();
+                        dynSettings.Controller.DynamoViewModel.RunEnabled = true;
+                    }
+                }
+                else
+                {
+                    DynamoLogger.Instance.LogWarning(string.Format("Active view is now {0}", e.CurrentActiveView.Name), WarningLevel.Mild);
+                    dynSettings.Controller.DynamoViewModel.RunEnabled = true;
+                }
+            }
         }
 
         /// <summary>

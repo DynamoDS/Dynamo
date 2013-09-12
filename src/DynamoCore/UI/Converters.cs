@@ -1043,4 +1043,31 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    public sealed class WarningLevelToColorConverter:IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is WarningLevel)
+            {
+                var level = (WarningLevel) value;
+                switch (level)
+                {
+                    case WarningLevel.Mild:
+                        return new System.Windows.Media.SolidColorBrush(Colors.Gray);
+                    case WarningLevel.Moderate:
+                        return new System.Windows.Media.SolidColorBrush(Colors.Gold);
+                    case WarningLevel.Severe:
+                        return new System.Windows.Media.SolidColorBrush(Colors.Tomato);
+                }
+            }
+
+            return Colors.Gray;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
