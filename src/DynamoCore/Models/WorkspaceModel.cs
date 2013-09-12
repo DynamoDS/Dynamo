@@ -369,6 +369,12 @@ namespace Dynamo.Models
                 undoRecorder.Redo();
         }
 
+        internal void ClearUndoRecorder()
+        {
+            if (null != undoRecorder)
+                undoRecorder.Clear();
+        }
+
         /// <summary>
         /// TODO(Ben): This method is exposed this way for external codes (e.g. 
         /// the DragCanvas) to record models before they are modified. This is 
