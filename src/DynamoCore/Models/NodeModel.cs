@@ -1595,12 +1595,6 @@ namespace Dynamo.Models
             helper.SetAttribute("isUpstreamVisible", this.IsUpstreamVisible);
             helper.SetAttribute("lacing", this.ArgumentLacing.ToString());
 
-            foreach (var port in inPorts)
-            {
-                if (port.UsingDefaultValue)
-                    element.AppendChild(port.Serialize(xmlDocument));
-            }
-
             return element; // Derived classes can choose to populate further.
         }
 
@@ -1629,19 +1623,6 @@ namespace Dynamo.Models
             this.isVisible = helper.ReadBoolean("isVisible", true);
             this.isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             this.argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
-
-            int index = 0;
-            foreach (XmlNode childNode in element.ChildNodes)
-            {
-                // TODO(Ben): We may or may not need to recreate/destroy port
-                // models here should there be changes in number of ports across
-                // undo boundaries (e.g. this can happen when user changes the 
-                // type of a node which takes fewer/more inputs than previously
-                // does).
-                // 
-                PortModel portModel = inPorts[index++];
-                portModel.Deserialize(childNode);
-            }
 
             // TODO(Ben): We need to raise property change events 
             // here for those data members we directly changed.
