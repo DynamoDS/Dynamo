@@ -411,6 +411,17 @@ namespace Dynamo.Models
             this.undoRecorder.EndActionGroup();
         }
 
+        internal void RecordCreatedModels(List<ModelBase> models)
+        {
+            if (null == models || (models.Count <= 0))
+                return; // There's nothing for deletion.
+
+            this.undoRecorder.BeginActionGroup();
+            foreach (ModelBase model in models)
+                this.undoRecorder.RecordCreationForUndo(model);
+            this.undoRecorder.EndActionGroup();
+        }
+
         internal void RecordAndDeleteModels(List<ModelBase> models)
         {
             if (null == models || (models.Count <= 0))

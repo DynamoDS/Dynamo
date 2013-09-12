@@ -1032,40 +1032,7 @@ namespace Dynamo.Models
         /// <example>{"x":1234.0,"y":1234.0, "guid":1234-1234-...,"text":"the note's text","workspace":workspace </example>
         public void AddNote(object parameters)
         {
-
-            var inputs = parameters as Dictionary<string, object> ?? new Dictionary<string, object>();
-
-            // by default place note at center
-            var x = 0.0;
-            var y = 0.0;
-
-            if (inputs != null && inputs.ContainsKey("x"))
-                x = (double)inputs["x"];
-
-            if (inputs != null && inputs.ContainsKey("y"))
-
-                y = (double)inputs["y"];
-
-            var n = new NoteModel(x, y);
-
-            //if we have null parameters, the note is being added
-            //from the menu, center the view on the note
-
-            if (parameters == null)
-            {
-                inputs.Add("transformFromOuterCanvasCoordinates", true);
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new ModelEventArgs(n, inputs));
-            }
-
-            object id;
-            if (inputs.TryGetValue("guid", out id))
-                n.GUID = (Guid)id;
-
-            n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
-            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? CurrentWorkspace : (WorkspaceModel)inputs["workspace"];
-
-            ws.Notes.Add(n);
-
+            AddNoteInternal(parameters);
         }
 
         internal bool CanAddNote(object parameters)
@@ -1160,6 +1127,10 @@ namespace Dynamo.Models
             //old nodes and the guids of their pasted versions
             var nodeLookup = new Dictionary<Guid, Guid>();
 
+            //make a list of all newly created models so that their
+            //creations can be recorded in the undo recorder.
+            var createdModels = new List<ModelBase>();
+
             //clear the selection so we can put the
             //paste contents in
             DynamoSelection.Instance.Selection.RemoveAll();
@@ -1191,7 +1162,7 @@ namespace Dynamo.Models
                 nodeData.Add("data", dynEl);
 
                 //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(CreateNodeCommand, nodeData));
-                CreateNode(nodeData);
+                createdModels.Add(CreateNode_Internal(nodeData));
             }
 
             //process the command queue so we have 
@@ -1236,7 +1207,7 @@ namespace Dynamo.Models
                 connectionData.Add("port_end", c.End.Index);
 
                 //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(CreateConnectionCommand, connectionData));
-                CreateConnection(connectionData);
+                createdModels.Add(CreateConnectionInternal(connectionData));
             }
 
             //process the queue again to create the connectors
@@ -1260,8 +1231,9 @@ namespace Dynamo.Models
                     { "guid", newGUID }
                 };
 
-                AddNote(noteData);
+                createdModels.Add(AddNoteInternal(noteData));
 
+                // TODO: Why can't we just add "noteData" instead of doing a look-up?
                 AddToSelection(CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == newGUID));
             }
 
@@ -1269,6 +1241,9 @@ namespace Dynamo.Models
             {
                 AddToSelection(CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == de.Value));
             }
+
+            // Record models that are created as part of the command.
+            CurrentWorkspace.RecordCreatedModels(createdModels);
         }
 
         internal bool CanPaste(object parameters)
@@ -1480,25 +1455,7 @@ namespace Dynamo.Models
         /// <param name="parameters">A dictionary containing data about the connection.</param>
         public void CreateConnection(object parameters)
         {
-            try
-            {
-                Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
-
-                NodeModel start = (NodeModel)connectionData["start"];
-                NodeModel end = (NodeModel)connectionData["end"];
-                int startIndex = (int)connectionData["port_start"];
-                int endIndex = (int)connectionData["port_end"];
-
-                var c = ConnectorModel.Make(start, end, startIndex, endIndex, 0);
-
-                if (c != null)
-                    CurrentWorkspace.Connectors.Add(c);
-            }
-            catch (Exception e)
-            {
-                DynamoLogger.Instance.Log(e.Message);
-                DynamoLogger.Instance.Log(e);
-            }
+            CreateConnectionInternal(parameters);
         }
 
         internal bool CanCreateConnection(object parameters)
@@ -1870,6 +1827,74 @@ namespace Dynamo.Models
         {
             return true;
         }
+
+        #region Private Helper Methods
+
+        private ConnectorModel CreateConnectionInternal(object parameters)
+        {
+            try
+            {
+                Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
+
+                NodeModel start = (NodeModel)connectionData["start"];
+                NodeModel end = (NodeModel)connectionData["end"];
+                int startIndex = (int)connectionData["port_start"];
+                int endIndex = (int)connectionData["port_end"];
+
+                var c = ConnectorModel.Make(start, end, startIndex, endIndex, 0);
+
+                if (c != null)
+                    CurrentWorkspace.Connectors.Add(c);
+
+                return c;
+            }
+            catch (Exception e)
+            {
+                DynamoLogger.Instance.Log(e.Message);
+                DynamoLogger.Instance.Log(e);
+            }
+
+            return null;
+        }
+
+        private NoteModel AddNoteInternal(object parameters)
+        {
+            var inputs = parameters as Dictionary<string, object> ?? new Dictionary<string, object>();
+
+            // by default place note at center
+            var x = 0.0;
+            var y = 0.0;
+
+            if (inputs != null && inputs.ContainsKey("x"))
+                x = (double)inputs["x"];
+
+            if (inputs != null && inputs.ContainsKey("y"))
+
+                y = (double)inputs["y"];
+
+            var n = new NoteModel(x, y);
+
+            //if we have null parameters, the note is being added
+            //from the menu, center the view on the note
+
+            if (parameters == null)
+            {
+                inputs.Add("transformFromOuterCanvasCoordinates", true);
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new ModelEventArgs(n, inputs));
+            }
+
+            object id;
+            if (inputs.TryGetValue("guid", out id))
+                n.GUID = (Guid)id;
+
+            n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
+            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? CurrentWorkspace : (WorkspaceModel)inputs["workspace"];
+
+            ws.Notes.Add(n);
+            return n;
+        }
+
+        #endregion
 
         #region Serialization/Deserialization Methods
 
