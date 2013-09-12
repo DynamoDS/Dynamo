@@ -155,6 +155,19 @@ namespace Dynamo.Core
             RedoActionGroup(topMostAction); // Perform the actual redo activities.
         }
 
+        /// <summary>
+        /// Call this method to clear the internal undo/redo stacks, effectively
+        /// destroying all the recorded actions. This is desirable for example,
+        /// when the workspace is cleared to be used as a clean slate for future
+        /// works, causing recorded actions become irrelevant.
+        /// </summary>
+        public void Clear()
+        {
+            EnsureValidRecorderStates();
+            this.undoStack.Clear();
+            this.redoStack.Clear();
+        }
+
         #endregion
 
         #region Public Undo Recording Methods

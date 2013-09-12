@@ -449,5 +449,38 @@ namespace Dynamo.Tests
             Assert.AreEqual(true, recorder.CanUndo);
             Assert.AreEqual(false, recorder.CanRedo); // Redo stack wiped out.
         }
+
+        [Test]
+        public void TestClearingStacks00()
+        {
+            // Ensure the recorder is in its default states.
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            // Create two models and undo once (so both undo-redo are enabled).
+            workspace.AddModel(new DummyModel(1, 10));
+            workspace.AddModel(new DummyModel(2, 20));
+
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            recorder.Undo();
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            recorder.Clear(); // Clear recorded undo/redo actions.
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+        }
+
+        [Test]
+        public void TestClearingStacks01()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                recorder.BeginActionGroup();
+                recorder.Clear(); // Clearing with an open group.
+            });
+        }
     }
 }
