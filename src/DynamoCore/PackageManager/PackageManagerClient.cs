@@ -75,10 +75,12 @@ namespace Dynamo.PackageManager
 
         public bool Upvote(string packageId)
         {
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
             try
             {
                 var nv = new Greg.Requests.Upvote(packageId);
-                var pkgResponse = Client.ExecuteAndDeserializeWithContent<Greg.Responses.Response>(nv);
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
                 return pkgResponse.success;
             }
             catch
@@ -89,10 +91,12 @@ namespace Dynamo.PackageManager
 
         public bool Downvote(string packageId)
         {
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
             try
             {
                 var nv = new Greg.Requests.Downvote(packageId);
-                var pkgResponse = Client.ExecuteAndDeserializeWithContent<Greg.Responses.Response>(nv);
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
                 return pkgResponse.success;
             }
             catch
