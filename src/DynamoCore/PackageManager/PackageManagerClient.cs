@@ -49,7 +49,6 @@ namespace Dynamo.PackageManager
 
         #region Properties
 
-
         /// <summary>
         ///     Client property
         /// </summary>
@@ -68,16 +67,41 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        /// <summary>
-        ///     The class constructor.
-        /// </summary>
         public PackageManagerClient()
         {
             Client = new Client(null, "http://54.225.121.251"); // initialize authenticator later
             IsLoggedIn = false;
         }
 
-        internal List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
+        public bool Upvote(string packageId)
+        {
+            try
+            {
+                var nv = new Greg.Requests.Upvote(packageId);
+                var pkgResponse = Client.ExecuteAndDeserializeWithContent<Greg.Responses.Response>(nv);
+                return pkgResponse.success;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool Downvote(string packageId)
+        {
+            try
+            {
+                var nv = new Greg.Requests.Downvote(packageId);
+                var pkgResponse = Client.ExecuteAndDeserializeWithContent<Greg.Responses.Response>(nv);
+                return pkgResponse.success;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
         {
             try
             {
