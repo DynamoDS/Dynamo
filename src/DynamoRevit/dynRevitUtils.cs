@@ -476,14 +476,11 @@ namespace Dynamo.Utilities
             return sp;
         }
 
-        public static Curve FlattenCurveOnPlane(Curve c, out Plane plane)
+        public static Curve Flatten3dCurveOnPlane(Curve c, Plane plane)
         {
             XYZ meanPt = null;
             List<XYZ> orderedEigenvectors;
             XYZ normal;
-            plane = GetPlaneFromCurve(c, true);
-            if (plane != null)
-                return c;
 
             if (c is Autodesk.Revit.DB.HermiteSpline)
             {
@@ -515,13 +512,6 @@ namespace Dynamo.Utilities
 
                 return dynRevitSettings.Revit.Application.Create.NewNurbSpline(projPoints, ns.Weights, ns.Knots, ns.Degree, ns.isClosed, ns.isRational);
             }
-
-            var p0 = c.Evaluate(0, true);
-            var p1 = c.Evaluate(0.5, true);
-            var p2 = c.Evaluate(1, true);
-            BestFitLine.PrincipalComponentsAnalysis(new List<XYZ>() { p0, p1, p2 }, out meanPt, out orderedEigenvectors);
-            normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
-            plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
 
             return c;
         }

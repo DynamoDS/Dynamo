@@ -76,9 +76,10 @@ namespace Dynamo.Nodes
 
         static bool hasMethodResetSketchPlane = true;
         //returns unused sketch plane id
-        static public ElementId resetSketchPlaneMethod(Autodesk.Revit.DB.ModelCurve mc, Curve c, Autodesk.Revit.DB.Plane flattenedOnPlane)
+        static public ElementId resetSketchPlaneMethod(Autodesk.Revit.DB.ModelCurve mc, Curve c, Autodesk.Revit.DB.Plane flattenedOnPlane, out bool needsSketchPlaneReset)
         {
             //do we need to reset?
+            needsSketchPlaneReset = false;
             Autodesk.Revit.DB.Plane newPlane = flattenedOnPlane != null ? flattenedOnPlane : dynRevitUtils.GetPlaneFromCurve(c, false);
 
             Autodesk.Revit.DB.Plane curPlane = mc.SketchPlane.Plane;
@@ -137,7 +138,7 @@ namespace Dynamo.Nodes
             {
                 //sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
                 hasMethodResetSketchPlane = false;
-
+                needsSketchPlaneReset = true;
                 //expect exception, so try to keep old plane?
                 //mc.SketchPlane = sp;
                 return ElementId.InvalidElementId;
@@ -154,41 +155,59 @@ namespace Dynamo.Nodes
         {
             var c = (Curve)((Value.Container)args[0]).Item;
 
-            Autodesk.Revit.DB.ModelCurve mc;
+            Autodesk.Revit.DB.ModelCurve mc = null;
             Autodesk.Revit.DB.Plane plane = dynRevitUtils.GetPlaneFromCurve(c, false);
+
+            Curve flattenCurve = null;
 
             //instead of changing Revit curve keep it "as is"
             //user might have trouble modifying curve in Revit if it is off the sketch plane
-            //c = dynRevitUtils.FlattenCurveOnPlane(c, out plane);
 
             if (this.Elements.Any())
             {
                 Element e;
+                bool needsRemake = false;
                 if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.ModelCurve), out e))
                 {
                     mc = e as Autodesk.Revit.DB.ModelCurve;
 
-                    ElementId idSpUnused = ModelCurve.resetSketchPlaneMethod(mc, c, plane);
+                    ElementId idSpUnused = ModelCurve.resetSketchPlaneMethod(mc, c, plane, out needsRemake);
 
                     if (idSpUnused != ElementId.InvalidElementId)
                     {
                         this.DeleteElement(idSpUnused);
                     }
-
-                    if (!mc.GeometryCurve.IsBound && c.IsBound)
+                    if (!needsRemake)
                     {
-                        c = c.Clone();
-                        c.MakeUnbound();
+                        if (!mc.GeometryCurve.IsBound && c.IsBound)
+                        {
+                            c = c.Clone();
+                            c.MakeUnbound();
+                        }
+                        ModelCurve.setCurveMethod(mc, c); // mc.GeometryCurve = c;
                     }
-                    ModelCurve.setCurveMethod(mc, c); // mc.GeometryCurve = c;
 
                 }
                 else
+                    needsRemake = true;
+                if (needsRemake)
                 {
                     var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
-                    mc = this.UIDocument.Document.IsFamilyDocument
-                       ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                       : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+                    if (dynRevitUtils.GetPlaneFromCurve(c, true) == null)
+                    {
+                        flattenCurve = dynRevitUtils.Flatten3dCurveOnPlane(c, plane);
+                        mc = this.UIDocument.Document.IsFamilyDocument
+                             ? this.UIDocument.Document.FamilyCreate.NewModelCurve(flattenCurve, sp)
+                                : this.UIDocument.Document.Create.NewModelCurve(flattenCurve, sp);
+
+                        ModelCurve.setCurveMethod(mc, c);
+                    }
+                    else
+                    {
+                        mc = this.UIDocument.Document.IsFamilyDocument
+                           ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+                           : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+                    }
                     this.Elements[0] = mc.Id;
                     if (mc.SketchPlane.Id != sp.Id)
                     {
@@ -197,16 +216,28 @@ namespace Dynamo.Nodes
                     }
                     if (e != null && e.Id != mc.Id)
                        dynRevitSettings.Doc.Document.Delete(e.Id);
+                    this.Elements[0] = mc.Id;
                 }
-                this.Elements[0] = mc.Id;
             }
             else
             {
                 var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
 
-                mc = this.UIDocument.Document.IsFamilyDocument
-                   ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                   : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+                if (dynRevitUtils.GetPlaneFromCurve(c, true) == null)
+                {
+                    flattenCurve = dynRevitUtils.Flatten3dCurveOnPlane(c, plane);
+                    mc = this.UIDocument.Document.IsFamilyDocument
+                         ? this.UIDocument.Document.FamilyCreate.NewModelCurve(flattenCurve, sp)
+                            : this.UIDocument.Document.Create.NewModelCurve(flattenCurve, sp);
+
+                    ModelCurve.setCurveMethod(mc, c);
+                }
+                else
+                {
+                    mc = this.UIDocument.Document.IsFamilyDocument
+                       ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+                       : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+                }
                 this.Elements.Add(mc.Id);
                 if (mc.SketchPlane.Id != sp.Id)
                 {
@@ -235,41 +266,56 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var c = (Curve)((Value.Container)args[0]).Item;
-            Autodesk.Revit.DB.ModelCurve mc;
+            Autodesk.Revit.DB.ModelCurve mc = null;
 
+            Curve flattenCurve = null;
             Autodesk.Revit.DB.Plane plane = dynRevitUtils.GetPlaneFromCurve(c, false);
 
             //instead of changing Revit curve keep it "as is"
             //user might have trouble modifying curve in Revit if it is off the sketch plane
-            //c = dynRevitUtils.FlattenCurveOnPlane(c, out plane);
 
             if (this.Elements.Any())
             {
                 Element e;
+                bool needsRemake = false;
                 if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.ModelCurve), out e))
                 {
                     mc = e as Autodesk.Revit.DB.ModelCurve;
 
-                    ElementId idSpUnused = ModelCurve.resetSketchPlaneMethod(mc, c, plane);
+                    ElementId idSpUnused = ModelCurve.resetSketchPlaneMethod(mc, c, plane, out needsRemake);
 
                     if (idSpUnused != ElementId.InvalidElementId)
                     {
                         this.DeleteElement(idSpUnused);
                     }
                     //mc.SketchPlane = sp;
-
-                    if (!mc.GeometryCurve.IsBound && c.IsBound)
+                    if (!needsRemake)
                     {
-                        c = c.Clone();
-                        c.MakeUnbound();
+                        if (!mc.GeometryCurve.IsBound && c.IsBound)
+                        {
+                            c = c.Clone();
+                            c.MakeUnbound();
+                        }
+                        ModelCurve.setCurveMethod(mc, c);  //mc.GeometryCurve = c;
                     }
-                    ModelCurve.setCurveMethod(mc, c);  //mc.GeometryCurve = c;
                 }
                 else
+                    needsRemake = true;
+                if (needsRemake)
                 {
                     var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
 
-                    mc = this.UIDocument.Document.IsFamilyDocument
+                    if (dynRevitUtils.GetPlaneFromCurve(c, true) == null)
+                    {
+                        flattenCurve = dynRevitUtils.Flatten3dCurveOnPlane(c, plane);
+                        mc = this.UIDocument.Document.IsFamilyDocument
+                             ? this.UIDocument.Document.FamilyCreate.NewModelCurve(flattenCurve, sp)
+                                : this.UIDocument.Document.Create.NewModelCurve(flattenCurve, sp);
+
+                        ModelCurve.setCurveMethod(mc, c); 
+                    }
+                    else
+                        mc = this.UIDocument.Document.IsFamilyDocument
                        ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
                        : this.UIDocument.Document.Create.NewModelCurve(c, sp);
                     mc.ChangeToReferenceLine();
@@ -282,16 +328,28 @@ namespace Dynamo.Nodes
                     }
                     if (e != null && e.Id != mc.Id)
                         dynRevitSettings.Doc.Document.Delete(e.Id);
+                    this.Elements[0] = mc.Id;
                 }
-                this.Elements[0] = mc.Id;
             }
             else
             {
                 var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
 
-                mc = this.UIDocument.Document.IsFamilyDocument
-                   ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                   : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+                if (dynRevitUtils.GetPlaneFromCurve(c, true) == null)
+                {
+                    flattenCurve = dynRevitUtils.Flatten3dCurveOnPlane(c, plane);
+                    mc = this.UIDocument.Document.IsFamilyDocument
+                         ? this.UIDocument.Document.FamilyCreate.NewModelCurve(flattenCurve, sp)
+                            : this.UIDocument.Document.Create.NewModelCurve(flattenCurve, sp);
+
+                    ModelCurve.setCurveMethod(mc, c);
+                }
+                else
+                {
+                    mc = this.UIDocument.Document.IsFamilyDocument
+                       ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+                       : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+                }
                 this.Elements.Add(mc.Id);
                 mc.ChangeToReferenceLine();
                 //mc.SketchPlane = sp;
@@ -548,7 +606,7 @@ namespace Dynamo.Nodes
                 Type CurveByPointsUtilsType = typeof(Autodesk.Revit.DB.CurveByPointsUtils);
                 MethodInfo[] curveElementMethods = CurveByPointsUtilsType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
                 System.String nameOfMethodSetCurve = "CreateArcThroughPoints";
-                bool foundMethod = false;
+
 
                 foreach (MethodInfo m in curveElementMethods)
                 {
@@ -566,13 +624,15 @@ namespace Dynamo.Nodes
                         argsM[2] = refPointEnd;
                         argsM[3] = refMidPoint;
 
-                        foundMethod = true;
                         c = (Autodesk.Revit.DB.CurveByPoints)m.Invoke(null, argsM);
-                        return c;
+                        if (c != null && c.GeometryCurve.GetType() == typeof(Arc))
+                           return c;
+                        if (c != null)
+                            this.DeleteElement(c.Id);
+                        break;
                     }
                 }
-                if (!foundMethod)
-                   foundCreateArcThroughPoints = false;
+                foundCreateArcThroughPoints = false;
             }
             if (gc.GetType() != typeof(Line))
             {
