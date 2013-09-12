@@ -100,7 +100,7 @@ namespace Dynamo.Utilities
                         allLoadedAssemblies[assembly.GetName().Name] = assembly;
                         LoadNodesFromAssembly(assembly);
                     }
-                    catch (BadImageFormatException e)
+                    catch (BadImageFormatException)
                     {
                         //swallow these warnings.
                     }
