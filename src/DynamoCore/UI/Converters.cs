@@ -34,6 +34,42 @@ namespace Dynamo.Controls
         }
     }
 
+    public class PackageSearchStateToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+                              CultureInfo culture)
+        {
+            if (value is PackageManagerSearchViewModel.PackageSearchState)
+            {
+                var st = (PackageManagerSearchViewModel.PackageSearchState) value;
+
+                if (st == PackageManagerSearchViewModel.PackageSearchState.NORESULTS)
+                {
+                    return "Search returned no results!";
+                }
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.RESULTS)
+                {
+                    return "";
+                }
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.SEARCHING)
+                {
+                    return "Searching...";
+                }
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.SYNCING)
+                {
+                    return "Synchronizing package list with server...";
+                }
+            }
+
+            return "Unknown";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PackageUploadStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -45,15 +81,15 @@ namespace Dynamo.Controls
 
                 if (st == PackageUploadHandle.State.Compressing)
                 {
-                    return "Compressing";
+                    return "Compressing...";
                 }
                 else if (st == PackageUploadHandle.State.Copying)
                 {
-                    return "Copying";
+                    return "Copying...";
                 }
                 else if (st == PackageUploadHandle.State.Error)
                 {
-                    return "Error";
+                    return "Error!";
                 }
                 else if (st == PackageUploadHandle.State.Ready)
                 {
@@ -65,7 +101,7 @@ namespace Dynamo.Controls
                 }
                 else if (st == PackageUploadHandle.State.Uploading)
                 {
-                    return "Uploading";
+                    return "Uploading...";
                 }
 
             }
@@ -477,7 +513,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            string menuValue = "Preview Background";
+            string menuValue = "Showing Background 3D Preview";
             if ((bool)value == true)
                 return menuValue;
             else

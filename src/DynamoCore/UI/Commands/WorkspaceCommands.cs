@@ -11,6 +11,8 @@ namespace Dynamo.ViewModels
         private DelegateCommand _setCurrentOffsetCommand;
         private DelegateCommand _nodeFromSelectionCommand;
         private DelegateCommand _setZoomCommand;
+        private DelegateCommand _zoomInCommand;
+        private DelegateCommand _zoomOutCommand;
         private DelegateCommand _findByIdCommand;
         private DelegateCommand _alignSelectedCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
@@ -98,6 +100,28 @@ namespace Dynamo.ViewModels
                 if(_setZoomCommand == null)
                     _setZoomCommand = new DelegateCommand(SetZoom, CanSetZoom);
                 return _setZoomCommand;
+            }
+
+        }
+
+        public DelegateCommand ZoomInCommand
+        {
+            get
+            {
+                if (_zoomInCommand == null)
+                    _zoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
+                return _zoomInCommand;
+            }
+
+        }
+
+        public DelegateCommand ZoomOutCommand
+        {
+            get
+            {
+                if (_zoomOutCommand == null)
+                    _zoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
+                return _zoomOutCommand;
             }
 
         }

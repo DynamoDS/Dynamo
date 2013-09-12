@@ -37,27 +37,30 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" Text="Search Returned No Results" TextAlignment="Center" Margin="20" Visibility="{Binding Path=HasNoResults, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" TextAlignment="Center" Margin="20" Text="{Binding Path=SearchState, Converter={StaticResource PackageSearchStateToStringConverter}}"/>
 
             <Grid Name="RSearchBoxStackPanel" Grid.Row="0">
                 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
                 <TextBox Grid.Column="0" Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,10,5,10" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText, Mode=TwoWay}">
+                       IsEnabled="True" KeyUp="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText, Mode=TwoWay}">
                 </TextBox>
 
                 <TextBlock Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" 
                            Foreground="#666" 
                            IsHitTestVisible="False"
-                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search Packages Online...</TextBlock>
+                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search...</TextBlock>
+
+                <Button Width="80" Grid.Column="1" Click="ButtonBase_OnClick" Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\search_24.png" >Search</Button>
 
             </Grid>
 
             <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
-                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=RSearchBoxStackPanel}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" Grid.ZIndex ="0" >
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=RSearchBoxStackPanel}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" Grid.ZIndex ="0" >
 
                 <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" BorderThickness="0" Padding="0" Background="Black" SelectedIndex="{Binding Path=SelectedIndex}">
 
@@ -77,96 +80,97 @@
                     <ListBox.ItemTemplate >
 
                         <DataTemplate>
+                            <Border BorderBrush="#222" BorderThickness="0,0,0,1">
+                                <Border Name="ItemBG" BorderBrush="#444" BorderThickness="0,1,0,0">
 
-                            <Border Name="ItemBG" BorderBrush="#666" BorderThickness="0,1,0,0">
-
-                                <Border.Background>
-                                    <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                                        <GradientStop Color="#333" Offset="0.0" />
-                                        <GradientStop Color="#333" Offset="1.0" />
-                                    </LinearGradientBrush>
-                                </Border.Background>
+                                    <Border.Background>
+                                        <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                                            <GradientStop Color="#333" Offset="0.0" />
+                                            <GradientStop Color="#333" Offset="1.0" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
 
                                 
-                                 <StackPanel Width ="458" Name="SearchEle">
+                                     <StackPanel Width ="445" Name="SearchEle">
 
-                                    <StackPanel Orientation="Horizontal" Margin="10">
+                                        <StackPanel Orientation="Horizontal" Margin="10">
 
-                                        <Border Width="280" BorderThickness ="0,0,1,0" BorderBrush="#222" >
-                                            <StackPanel>
-                                                <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="AliceBlue" Margin="5,10,5,5"/>
-                                                <TextBlock FontSize="11" Margin="3" Foreground="#777" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="80"/>
-                                            </StackPanel>
-                                        </Border>
+                                            <Border Width="265" BorderThickness ="0,0,1,0" BorderBrush="#222" >
+                                                <StackPanel>
+                                                    <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="AliceBlue" Margin="5,10,5,5"/>
+                                                    <TextBlock FontSize="11" Margin="3" Foreground="#777" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="80"/>
+                                                </StackPanel>
+                                            </Border>
                                     
-                                         <Border>
-                                            <StackPanel Width="170" >
+                                             <Border>
+                                                <StackPanel Width="170" >
 
-                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
 
-                                                    <StackPanel Orientation="Horizontal" Margin="10,5,5,5" MinWidth="80">
-                                                        <TextBlock FontSize="10" FontWeight="Bold" Text="Downloads: " Foreground="Gray" />
-                                                        <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Downloads}" Foreground="Gray"  />
-                                                    </StackPanel>
-
-                                                    <StackPanel Orientation="Horizontal" Margin="5,5,5,5" >
-                                                        <TextBlock FontSize="10" FontWeight="Bold" Text="Votes: " Foreground="Gray"  />
-                                                        <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Votes}" Foreground="Gray"  />
-                                                    </StackPanel>
-
-                                                </StackPanel>
-                                                
-                                                <StackPanel Orientation="Horizontal" Margin="5,0,5,5">
-                                                    <Button Name="LatestButton" Width="90" ToolTip="Download latest version" HorizontalAlignment="Right" Content="⇓ Install" Command="{Binding Path=DownloadLatest}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                    <Button Name="ExpandButton" Width="60" ToolTip="See more package versions, maintainers, and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpanded}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                </StackPanel>
-
-                                            </StackPanel>
-                                         </Border>
-                                    </StackPanel>
-
-                                    <StackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
-
-                                        <StackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
-                                            <TextBlock FontSize="11" FontWeight="Bold" Text="Keywords: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
-                                            <TextBlock FontSize="11" Text="{Binding Path=Keywords}" Foreground="WhiteSmoke" />
-                                        </StackPanel>
-                                        
-                                        <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
-                                            <TextBlock FontSize="11" FontWeight="Bold" Text="Maintainers: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
-                                            <TextBlock FontSize="11" Text="{Binding Path=Maintainers}" Foreground="WhiteSmoke" />
-                                        </StackPanel>
-
-                                        <StackPanel Orientation="Horizontal" Margin="10,10,0,10">
-                                            <TextBlock FontSize="11" FontWeight="Bold" Text="Versions: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
-                                            <ListBox Name="Versions" ItemsSource="{Binding Path=Versions}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
-
-                                                <ListBox.ItemContainerStyle>
-                                                    <Style TargetType="ListBoxItem">
-                                                        <Style.Resources>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
-                                                        </Style.Resources>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>
-
-                                                <ListBox.ItemTemplate >
-                                                    <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
-                                                            <Button Name="DownloadVersionButton"  ToolTip="Install This Version" Content="⇓ Install" Command="{Binding Path=Item2}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                            <TextBlock Text="{Binding Path=Item1.created}" MinWidth="120" Margin="24,5,5,5"  Foreground="DarkGray" />
+                                                        <StackPanel Orientation="Horizontal" Margin="10,5,5,5" MinWidth="80">
+                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="Downloads: " Foreground="Gray" />
+                                                            <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Downloads}" Foreground="Gray"  />
                                                         </StackPanel>
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
 
-                                            </ListBox>
+                                                        <StackPanel Orientation="Horizontal" Margin="5,5,5,5" >
+                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="Votes: " Foreground="Gray"  />
+                                                            <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Votes}" Foreground="Gray"  />
+                                                        </StackPanel>
+
+                                                    </StackPanel>
+                                                
+                                                    <StackPanel Orientation="Horizontal" Margin="5,0,5,5">
+                                                        <Button Name="LatestButton" Width="90" ToolTip="Download latest version" HorizontalAlignment="Right" Content="⇓ Install" Command="{Binding Path=DownloadLatest}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                        <Button Name="ExpandButton" Width="60" ToolTip="See more package versions, maintainers, and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpanded}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                    </StackPanel>
+
+                                                </StackPanel>
+                                             </Border>
                                         </StackPanel>
+
+                                        <StackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
+
+                                            <StackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                                <TextBlock FontSize="11" FontWeight="Bold" Text="Keywords: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
+                                                <TextBlock FontSize="11" Text="{Binding Path=Keywords}" Foreground="WhiteSmoke" />
+                                            </StackPanel>
+                                        
+                                            <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
+                                                <TextBlock FontSize="11" FontWeight="Bold" Text="Maintainers: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
+                                                <TextBlock FontSize="11" Text="{Binding Path=Maintainers}" Foreground="WhiteSmoke" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Margin="10,10,0,10">
+                                                <TextBlock FontSize="11" FontWeight="Bold" Text="Versions: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
+                                                <ListBox Name="Versions" ItemsSource="{Binding Path=Versions}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+
+                                                    <ListBox.ItemContainerStyle>
+                                                        <Style TargetType="ListBoxItem">
+                                                            <Style.Resources>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                            </Style.Resources>
+                                                        </Style>
+                                                    </ListBox.ItemContainerStyle>
+
+                                                    <ListBox.ItemTemplate >
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
+                                                                <Button Name="DownloadVersionButton"  ToolTip="Install This Version" Content="⇓ Install" Command="{Binding Path=Item2}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                                <TextBlock Text="{Binding Path=Item1.created}" MinWidth="120" Margin="24,5,5,5"  Foreground="DarkGray" />
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+
+                                                </ListBox>
+                                            </StackPanel>
+                                        </StackPanel>
+
+
                                     </StackPanel>
-
-
-                                </StackPanel>
                                     
+                                </Border>
                             </Border>
 
                         </DataTemplate>
@@ -202,7 +206,7 @@
             </StackPanel>
 
             <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="ScrollView" VerticalAlignment="Stretch" Focusable="False"
-                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=RSearchBoxStackPanel}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0" >
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=RSearchBoxStackPanel}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0" >
 
                 <ListBox Name="DownloadsListBox" ItemsSource="{Binding Path=Downloads}" BorderThickness="0" Padding="0" Background="Black" >
 
@@ -228,14 +232,14 @@
 
                                 <StackPanel Orientation="Horizontal" Name="SearchEle" >
                                     
-                                    <StackPanel Width ="280" >
+                                    <StackPanel Width ="270" >
                                         
                                         <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" Foreground="White" Padding="5"/>
                                         <TextBlock FontSize="10" Name="error" Text="{Binding Path=ErrorString}" Foreground="White"  Padding="5"/>
 
                                     </StackPanel>
 
-                                    <StackPanel Width ="175"  >
+                                    <StackPanel Width ="172"  >
 
                                         <TextBlock FontSize="11" Name="downloadState" Text="{Binding Path=DownloadState, Converter={StaticResource PackageDownloadStateToStringConverter}}" Foreground="White" Padding="5"/>
                                         <TextBlock FontSize="11" Name="version" Text="{Binding Path=VersionName}" Foreground="White"  Padding="5"/>
