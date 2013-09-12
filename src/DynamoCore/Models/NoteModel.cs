@@ -30,6 +30,7 @@ namespace Dynamo.Models
             XmlElement noteElement = xmlDocument.CreateElement(typeName);
             XmlElementHelper helper = new XmlElementHelper(noteElement);
 
+            helper.SetAttribute("guid", this.GUID);
             helper.SetAttribute("text", this.Text);
             helper.SetAttribute("x", this.X);
             helper.SetAttribute("y", this.Y);
@@ -41,6 +42,7 @@ namespace Dynamo.Models
             XmlElement element = xmlNode as XmlElement;
             XmlElementHelper helper = new XmlElementHelper(element);
 
+            this.GUID = helper.ReadGuid("guid", this.GUID);
             this.Text = helper.ReadString("text", "New Note");
             this.X = helper.ReadDouble("x", 0.0);
             this.Y = helper.ReadDouble("y", 0.0);

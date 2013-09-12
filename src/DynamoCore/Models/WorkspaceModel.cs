@@ -495,6 +495,12 @@ namespace Dynamo.Models
                 connector.Deserialize(modelData);
                 Connectors.Add(connector);
             }
+            else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
+            {
+                NoteModel noteModel = new NoteModel(0.0, 0.0);
+                noteModel.Deserialize(modelData);
+                Notes.Add(noteModel);
+            }
         }
 
         public ModelBase GetModelForElement(XmlElement modelData)
