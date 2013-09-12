@@ -1060,10 +1060,8 @@ namespace Dynamo.Models
                 var evalDict = new Dictionary<PortData, Value>();
 
                 //run the evaluate method for each set of 
-                //arguments in the lace result. do these
-                //in reverse order so our cons comes out the right
-                //way around
-                foreach (var argList in lacedArgs.Reverse())
+                //arguments in the lace result.
+                foreach (var argList in lacedArgs)
                 {
                     evalDict.Clear();
 
@@ -1071,13 +1069,20 @@ namespace Dynamo.Models
                     OnEvaluate();
 
                     foreach (var data in OutPortData)
+                    {
                         evalResult[data] = FSharpList<Value>.Cons(evalDict[data], evalResult[data]);
+                    }    
                 }
 
                 //the result of evaluation will be a list. we split that result
                 //and send the results to the outputs
                 foreach (var data in OutPortData)
+                {
+                    //Reverse the evaluation results so they come out right way around
+                    evalResult[data] = Utils.SequenceToFSharpList(evalResult[data].Reverse());
                     outPuts[data] = Value.NewList(evalResult[data]);
+                }
+                    
             }
             else
             {

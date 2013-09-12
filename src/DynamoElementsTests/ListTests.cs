@@ -12,7 +12,6 @@ using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
-using Dynamo.Tests;
 using String = System.String;
 
 namespace Dynamo.Tests
@@ -21,8 +20,6 @@ namespace Dynamo.Tests
     class ListTests : DynamoUnitTest
     {
         string listTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "list"); } }
-
-        #region Build Sublists
 
         [Test]
         public void TestBuildSublistsEmptyInput()
@@ -90,10 +87,6 @@ namespace Dynamo.Tests
             Assert.AreEqual("d", actualChild2[0].getStringFromFSchemeValue());
         }
 
-        #endregion
-
-        #region Concatenate Lists
-
         [Test]
         public void TestConcatenateListsEmptyInput()
         {
@@ -142,10 +135,6 @@ namespace Dynamo.Tests
             Assert.AreEqual("a", actual[7].getStringFromFSchemeValue());
             Assert.AreEqual("b", actual[8].getStringFromFSchemeValue());
         }
-
-        #endregion
-
-        #region Diagonal Left
 
         [Test]
         public void TestDiagonalLeftListEmptyInput()
@@ -227,10 +216,6 @@ namespace Dynamo.Tests
             Assert.AreEqual("b", actualChild3[0].getStringFromFSchemeValue());
         }
 
-        #endregion
-
-        #region Diagonal Right
-
         [Test]
         public void TestDiagonalRightListEmptyInput()
         {
@@ -287,10 +272,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, actualChild4[0].GetDoubleFromFSchemeValue());
         }
 
-        #endregion
-
-        #region First of List
-
         [Test]
         public void TestFirstOfListEmptyInput()
         {
@@ -342,10 +323,6 @@ namespace Dynamo.Tests
             string expected = "a";
             Assert.AreEqual(expected, actual);
         }
-
-        #endregion
-
-        #region Is Empty List
 
         [Test]
         public void TestIsEmptyListEmptyInput()
@@ -401,12 +378,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(expected, actual);
         }
 
-        #endregion
-
-        #region List Length
-
         [Test]
-        public void TestListLengthEmptyInput()
+        public void TestStringLengthEmptyInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testListLength_emptyInput.dyn");
@@ -420,7 +393,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestListLengthInvalidInput()
+        public void TestStringLengthInvalidInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testListLength_invalidInput.dyn");
@@ -432,7 +405,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestListLengthNumberInput()
+        public void TestStringLengthNumberInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testListLength_numberInput.dyn");
@@ -446,7 +419,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestListLengthStringInput()
+        public void TestStringLengthStringInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testListLength_stringInput.dyn");
@@ -459,12 +432,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(expected, actual);
         }
 
-        #endregion
-
-        #region Partition List
-
         [Test]
-        public void TestPartitionListEmptyInput()
+        public void TestPartitionStringEmptyInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPartitionList_emptyInput.dyn");
@@ -478,7 +447,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestPartitionListInvalidInput()
+        public void TestPartitionStringInvalidInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPartitionList_invalidInput.dyn");
@@ -490,7 +459,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestPartitionListNumberInput()
+        public void TestPartitionStringNumberInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPartitionList_numberInput.dyn");
@@ -514,7 +483,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestPartitionListStringInput()
+        public void TestPartitionStringStringInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPartitionList_stringInput.dyn");
@@ -535,10 +504,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, childList2.Length);
             Assert.AreEqual("b", childList2[0].getStringFromFSchemeValue());
         }
-
-        #endregion
-
-        #region Flatten
 
         [Test]
         public void TestFlattenEmptyInput()
@@ -599,10 +564,6 @@ namespace Dynamo.Tests
             Assert.AreEqual("d", actual[5].getStringFromFSchemeValue());
         }
 
-        #endregion
-
-        #region Flatten Completely
-
         [Test]
         public void TestFlattenCompletlyEmptyInput()
         {
@@ -655,10 +616,6 @@ namespace Dynamo.Tests
             Assert.AreEqual("c", actual[11].getStringFromFSchemeValue());
             Assert.AreEqual("d", actual[12].getStringFromFSchemeValue());
         }
-
-        #endregion
-
-        #region Repeat
 
         [Test]
         public void TestRepeatEmptyInput()
@@ -743,10 +700,6 @@ namespace Dynamo.Tests
             Assert.AreEqual("d", childList4[1].getStringFromFSchemeValue());
         }
 
-        #endregion
-
-        #region Rest of List
-
         [Test]
         public void TestRestOfListEmptyInput()
         {
@@ -803,10 +756,6 @@ namespace Dynamo.Tests
             Assert.AreEqual("a", actual[1].getStringFromFSchemeValue());
             Assert.AreEqual("b", actual[2].getStringFromFSchemeValue());
         }
-
-        #endregion
-
-        #region Transpose
 
         [Test]
         public void TestTransposeEmptyInput()
@@ -870,8 +819,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, childList5[0].GetDoubleFromFSchemeValue());
         }
 
-        #endregion
-
         #region Sort Test Cases
 
         [Test]
@@ -888,9 +835,6 @@ namespace Dynamo.Tests
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
-
-            // wait for the expression to complete
-            Thread.Sleep(500);
 
             // fourth and last element in the list before sorting
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("de6bd134-55d1-4fb8-a605-1c486b5acb5f");
@@ -922,9 +866,6 @@ namespace Dynamo.Tests
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
-
-            // wait for the expression to complete
-            Thread.Sleep(500);
 
             // First and last element in the list before sorting
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("de6bd134-55d1-4fb8-a605-1c486b5acb5f");
@@ -976,9 +917,6 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            // wait for the expression to complete
-            Thread.Sleep(500);
-
             // First and last element in the list before sorting
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("aa64651f-29cb-4008-b199-ec2f4ab3a1f7");
             FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
@@ -1010,9 +948,6 @@ namespace Dynamo.Tests
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
-
-            // wait for the expression to complete
-            Thread.Sleep(500);
 
             // First and last element in the list before sorting
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("3cf42e26-c178-4cc4-81a5-38b1c7867f5e");
@@ -1047,9 +982,6 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            // wait for the expression to complete
-            Thread.Sleep(500);
-
             // First element in the list before Reversing
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("44505507-11d2-4792-b785-039304cadf89");
             FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
@@ -1072,9 +1004,6 @@ namespace Dynamo.Tests
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
-
-            // wait for the expression to complete
-            Thread.Sleep(500);
 
             // First element in the list before Reversing
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("44505507-11d2-4792-b785-039304cadf89");
@@ -1104,9 +1033,6 @@ namespace Dynamo.Tests
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
-
-            // wait for the expression to complete
-            Thread.Sleep(500);
 
             // First and last element in the list before Reversing
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("44505507-11d2-4792-b785-039304cadf89");
@@ -1139,9 +1065,6 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            // wait for the expression to complete
-            Thread.Sleep(500);
-
             // First and last element in the list before Reversing
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("44505507-11d2-4792-b785-039304cadf89");
             FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
@@ -1173,9 +1096,6 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            // wait for the expression to complete
-            Thread.Sleep(500);
-
             // First and last element in the list before Reversing
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1c9d53b6-b5e0-4282-9768-a6c53115aba4");
             FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
@@ -1206,9 +1126,6 @@ namespace Dynamo.Tests
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
-
-            // wait for the expression to complete
-            Thread.Sleep(500);
 
             // First and last element in the list before Reversing
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1c9d53b6-b5e0-4282-9768-a6c53115aba4");
@@ -1247,9 +1164,6 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            // wait for the expression to complete
-            Thread.Sleep(500);
-
             // First, Second and last element in the list before Filter
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("a54127b5-decb-4750-aaf3-1b895be73984");
             FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
@@ -1283,9 +1197,6 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            // wait for the expression to complete
-            Thread.Sleep(500);
-
             // First, second and last element in the list before Filter
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1327061f-b25d-4e91-9df7-a79850cb59e0");
             FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
@@ -1315,9 +1226,6 @@ namespace Dynamo.Tests
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
-
-            // wait for the expression to complete
-            Thread.Sleep(500);
 
             // First, second and last element in the first list after Filter
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("fce51e58-10e1-46b4-bc4c-756dfde00de7");
@@ -1364,9 +1272,6 @@ namespace Dynamo.Tests
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
-
-            // wait for the expression to complete
-            Thread.Sleep(500);
 
             // Element from the Reverse list
             var reverse = model.CurrentWorkspace.NodeFromWorkspace<Reverse>("c3d629f7-76a0-40bc-bf39-da45d8b8ea7a");
@@ -1432,9 +1337,6 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            // wait for the expression to complete
-            Thread.Sleep(500);
-
             // Element from the Reverse list
             var reverse = model.CurrentWorkspace.NodeFromWorkspace<ConcatStrings>("1c4c75ff-735d-4431-9df3-2b187c469b3a");
             string actual = reverse.GetValue(0).getStringFromFSchemeValue();
@@ -1477,9 +1379,6 @@ namespace Dynamo.Tests
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
-
-            // wait for the expression to complete
-            Thread.Sleep(500);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("5da40769-ffc8-408b-94bb-8c5dff31132e");
 
@@ -1539,9 +1438,6 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            // wait for the expression to complete
-            Thread.Sleep(500);
-
             var watch = model.CurrentWorkspace.NodeFromWorkspace<LaceLongest>("25daa241-d8a4-4e74-aec1-6068358babf7");
             FSharpList<FScheme.Value> listWatchValue = watch.GetValue(0).GetListFromFSchemeValue();
             Assert.AreEqual(10000, listWatchValue.Length);
@@ -1551,111 +1447,315 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Integration
+        #region FilterOut test cases
 
-        /// <summary>
-        /// This test uses nodes:
-        ///     String, List, Watch
-        ///     Repeat, Flatten, First of List, List Length, Is Empty List
-        /// "Flatten" take output of "Repeat" as input.
-        /// </summary>
         [Test]
-        public void TestIntegrationOfRepeatAndFlattenList()
+        public void FilterOut_SimpleTest()
         {
-            DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "TestIntegrationRepeatAndFlattenList.dyn");
-            model.Open(testFilePath);
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\FilterOut_SimpleTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            Watch watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("a0836407-13ab-4e2b-b9c4-36cd19af7512");
-            Watch watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("0019b762-5721-472a-baaa-7628a911eb42");
-            Watch watch3 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("229a1783-0cfa-4ba2-8de2-383a54cb596d");
-            Watch watch4 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("8b5c7a91-dd2a-4264-b7cf-10f97cca1474");
+            // Element from the Number node
+            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("b6571eb6-b1c2-4874-8749-b783176dc039");
+            FSharpList<FScheme.Value> listAllNumbers = numberRange.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(10, listAllNumbers.Length);
+            Assert.AreEqual(1, listAllNumbers[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(2, listAllNumbers[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(3, listAllNumbers[2].GetDoubleFromFSchemeValue());
 
-            Assert.AreEqual(1, watch1.GetValue(0).GetDoubleFromFSchemeValue());
-            Assert.AreEqual(0, watch2.GetValue(0).GetDoubleFromFSchemeValue());
+            // Elements from first FilterOut list
+            var filterOut = model.CurrentWorkspace.NodeFromWorkspace<FilterOut>("53ec97e2-d860-4fdc-8ea5-2288bf39bcfc");
+            FSharpList<FScheme.Value> listFilteredValue = filterOut.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(8, listFilteredValue.Length);
+            Assert.AreEqual(3, listFilteredValue[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(4, listFilteredValue[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(10, listFilteredValue[7].GetDoubleFromFSchemeValue());
 
-            FSharpList<FScheme.Value> list1 = watch3.GetValue(0).GetListFromFSchemeValue();
-            double list1ExpectedLength = 9;
-            double list1ActualLength = list1.Length;
-            Assert.AreEqual(list1ExpectedLength, list1ActualLength);
-            Assert.AreEqual(1, list1[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, list1[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, list1[2].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(0, list1[3].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(0, list1[4].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(0, list1[5].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(99999999999999, list1[6].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(99999999999999, list1[7].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(99999999999999, list1[8].GetDoubleFromFSchemeValue());
+            // Elements from second FilterOut list
+            var filterOut1 = model.CurrentWorkspace.NodeFromWorkspace<FilterOut>("0af3f566-1b05-4578-9fb0-297ca98d6d8c");
+            FSharpList<FScheme.Value> listFilteredValue1 = filterOut1.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(3, listFilteredValue1.Length);
+            Assert.AreEqual(1, listFilteredValue1[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(2, listFilteredValue1[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(3, listFilteredValue1[2].GetDoubleFromFSchemeValue());
 
-            FSharpList<FScheme.Value> list2 = watch4.GetValue(0).GetListFromFSchemeValue();
-            double list2ExpectedLength = 3;
-            double list2ActualLength = list2.Length;
-            Assert.AreEqual(list2ExpectedLength, list2ActualLength);
-
-            FSharpList<FScheme.Value> sublist1 = list2[0].GetListFromFSchemeValue();
-            double sublist1ExpectedLength = 3;
-            double sublist1Actuallength = sublist1.Length;
-            Assert.AreEqual(sublist1ExpectedLength, sublist1Actuallength);
-            Assert.AreEqual(1, sublist1[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, sublist1[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, sublist1[2].GetDoubleFromFSchemeValue());
-
-            FSharpList<FScheme.Value> sublist2 = list2[1].GetListFromFSchemeValue();
-            double sublist2ExpectedLength = 3;
-            double sublist2Actuallength = sublist2.Length;
-            Assert.AreEqual(sublist2ExpectedLength, sublist2Actuallength);
-            Assert.AreEqual(0, sublist2[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(0, sublist2[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(0, sublist2[2].GetDoubleFromFSchemeValue());
-
-            FSharpList<FScheme.Value> sublist3 = list2[2].GetListFromFSchemeValue();
-            double sublist3ExpectedLength = 3;
-            double sublist3Actuallength = sublist3.Length;
-            Assert.AreEqual(sublist3ExpectedLength, sublist3Actuallength);
-            Assert.AreEqual(99999999999999, sublist3[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(99999999999999, sublist3[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(99999999999999, sublist3[2].GetDoubleFromFSchemeValue());
         }
 
-        /// <summary>
-        /// This test uses nodes:
-        ///     String, List, Watch
-        ///     Concatenate List, Flatten Completely, Rest of List
-        /// "Flatten Completety" and "Rest of List" take output of "Concatenate String" as input.
-        /// </summary>
         [Test]
-        public void TestIntegrationConcatAndFlattenCompletelyList()
+        public void FilterOut_Complex()
         {
-            DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "TestIntegrationConcatAndFlattenCompletelyList.dyn");
-            model.Open(testFilePath);
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\FilterOut_Complex.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            Watch watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("7bf98862-a2bb-44fd-8ea4-5f59dd477325");
-            Watch watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("620f0f63-a9fc-4197-9082-6acbeeb9c07e");
+            // Element from the Number node
+            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("b6571eb6-b1c2-4874-8749-b783176dc039");
+            FSharpList<FScheme.Value> listAllNumbers = numberRange.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(10, listAllNumbers.Length);
+            Assert.AreEqual(1, listAllNumbers[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(2, listAllNumbers[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(3, listAllNumbers[2].GetDoubleFromFSchemeValue());
 
-            FSharpList<FScheme.Value> list1 = watch1.GetValue(0).GetListFromFSchemeValue();
-            double list1ExpectedLength = 3;
-            double list1ActualLength = list1.Length;
-            Assert.AreEqual(list1ExpectedLength, list1ActualLength);
-            Assert.AreEqual("often", list1[0].getStringFromFSchemeValue());
-            Assert.AreEqual("sometimes", list1[1].getStringFromFSchemeValue());
-            Assert.AreEqual("often", list1[2].getStringFromFSchemeValue());
+            // Elements from FilterOut list
+            var filterOut = model.CurrentWorkspace.NodeFromWorkspace<FilterOut>("53ec97e2-d860-4fdc-8ea5-2288bf39bcfc");
+            FSharpList<FScheme.Value> listFilteredValue = filterOut.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(8, listFilteredValue.Length);
+            Assert.AreEqual(3, listFilteredValue[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(4, listFilteredValue[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(10, listFilteredValue[7].GetDoubleFromFSchemeValue());
 
-            FSharpList<FScheme.Value> list2 = watch2.GetValue(0).GetListFromFSchemeValue();
-            double list2ExpectedLength = 5;
-            double list2ActualLength = list2.Length;
-            Assert.AreEqual(list2ExpectedLength, list2ActualLength);
-            Assert.AreEqual("sometimes", list2[0].getStringFromFSchemeValue());
-            Assert.AreEqual("often", list2[1].getStringFromFSchemeValue());
-            Assert.AreEqual("often", list2[2].getStringFromFSchemeValue());
-            Assert.AreEqual("sometimes", list2[3].getStringFromFSchemeValue());
-            Assert.AreEqual("often", list2[4].getStringFromFSchemeValue());
+            // Elements from Take from List
+            var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<TakeList>("6921b2ef-fc5c-44b4-992f-9421c267d9ef");
+            FSharpList<FScheme.Value> takenFromList = takeFromList.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(3, takenFromList.Length);
+            Assert.AreEqual(3, takenFromList[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(4, takenFromList[1].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(5, takenFromList[2].GetDoubleFromFSchemeValue());
+
+            // Elements from Drop from List 
+            var dropFromList = model.CurrentWorkspace.NodeFromWorkspace<DropList>("57a41c41-fa71-41dd-aa25-ca2156f2ba0b");
+            FSharpList<FScheme.Value> droppedFromList = dropFromList.GetValue(0).GetListFromFSchemeValue();
+            Assert.AreEqual(0, droppedFromList.Length); // As there where only three element in the input list so after droppping the list should be empty.
+
+        }
+
+        [Test]
+        public void FilterOut_NegativeTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\FilterOut_NegativeTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.Throws<AssertionException>(() =>
+            {
+                dynSettings.Controller.RunExpression(null);
+            });
+
         }
 
 
         #endregion
+
+        #region NumberRange test cases
+        
+        [Test]
+        public void NumberRange_SimpleTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_SimpleTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
+
+            FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
+
+            Assert.AreEqual(51, actual.Length);
+            Assert.AreEqual(0, actual[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(50, actual[50].GetDoubleFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void NumberRange_LargeNumber()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LargeNumber.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
+
+            FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
+
+            Assert.AreEqual(1000001, actual.Length);
+
+            Assert.AreEqual(500, actual[500].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(1000000, actual[1000000].GetDoubleFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void NumberRange_LacingShortest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LacingShortest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
+
+            FSharpList<FScheme.Value> actual = numberRange.GetValue(0).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild1 = actual[0].GetListFromFSchemeValue();
+
+            Assert.AreEqual(1, actual.Length);
+
+            Assert.AreEqual(10, actualChild1.Length);
+            Assert.AreEqual(1, actualChild1[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(10, actualChild1[9].GetDoubleFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void NumberRange_LacingLongest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LacingLongest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
+
+            FSharpList<FScheme.Value> actual = numberRange.GetValue(0).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild1 = actual[0].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild2 = actual[1].GetListFromFSchemeValue();
+
+            Assert.AreEqual(2, actual.Length);
+
+            Assert.AreEqual(10, actualChild1.Length);
+            Assert.AreEqual(10, actualChild1[9].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(5, actualChild2.Length);
+            Assert.AreEqual(10, actualChild2[4].GetDoubleFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void NumberRange_LacingCrossProduct()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LacingCrossProduct.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
+
+            FSharpList<FScheme.Value> actual = numberRange.GetValue(0).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild1 = actual[0].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild2 = actual[1].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild3 = actual[2].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild4 = actual[3].GetListFromFSchemeValue();
+
+            Assert.AreEqual(4, actual.Length);
+
+            Assert.AreEqual(10, actualChild1.Length);
+            Assert.AreEqual(10, actualChild1[9].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(5, actualChild2.Length);
+            Assert.AreEqual(9, actualChild2[4].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(9, actualChild3.Length);
+            Assert.AreEqual(10, actualChild3[8].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(5, actualChild4.Length);
+            Assert.AreEqual(10, actualChild4[4].GetDoubleFromFSchemeValue());
+
+        }
+        
+        #endregion
+
+        #region
+
+        [Test]
+        public void ListMinimum_NumberRange()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\ListMinimum_NumberRange.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var listMin = model.CurrentWorkspace.NodeFromWorkspace<ListMin>("aa8b8f1e-e8c4-4ced-bbb2-8ee43d7bb4f6");
+
+            Assert.AreEqual(-1, listMin.GetValue(0).GetDoubleFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void ListMinimum_Complex()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\ListMinimum_Complex.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var listMin = model.CurrentWorkspace.NodeFromWorkspace<ListMin>("aa8b8f1e-e8c4-4ced-bbb2-8ee43d7bb4f6");
+
+            Assert.AreEqual(5, listMin.GetValue(0).GetDoubleFromFSchemeValue());
+
+        }
+
+        #endregion
+
     }
 }
