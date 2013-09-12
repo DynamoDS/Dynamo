@@ -513,6 +513,7 @@ namespace Dynamo.Models
             {
                 DynamoModel dynamo = dynSettings.Controller.DynamoViewModel.Model;
                 NodeModel nodeModel = dynamo.CreateNode(typeName);
+                nodeModel.WorkSpace = this;
                 nodeModel.Deserialize(modelData);
                 Nodes.Add(nodeModel);
             }
