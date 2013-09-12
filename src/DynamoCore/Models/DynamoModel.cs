@@ -1691,6 +1691,11 @@ namespace Dynamo.Models
             CurrentWorkspace.FilePath = "";
             CurrentWorkspace.HasUnsavedChanges = false;
 
+            // Clear undo/redo stacks.
+            CurrentWorkspace.ClearUndoRecorder();
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+
             //clear the renderables
             dynSettings.Controller.RenderDescriptions.Clear();
             dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
