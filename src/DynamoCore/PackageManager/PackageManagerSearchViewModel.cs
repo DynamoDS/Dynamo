@@ -19,6 +19,14 @@ namespace Dynamo.PackageManager
 {
     public class PackageManagerSearchViewModel : NotificationObject
     {
+        public enum PackageSearchState
+        {
+            SYNCING,
+            SEARCHING,
+            NORESULTS,
+            RESULTS
+        };
+
         #region Properties & Fields
 
         /// <summary>
@@ -28,7 +36,6 @@ namespace Dynamo.PackageManager
         ///     This is the core UI for Dynamo, primarily used for logging.
         /// </value>
         public string _SearchText;
-
         public string SearchText
         {
             get { return _SearchText; }
@@ -36,8 +43,6 @@ namespace Dynamo.PackageManager
             {
                 _SearchText = value;
                 RaisePropertyChanged("SearchText");
-                //DynamoCommands.Search.Execute(null);
-                dynSettings.Controller.SearchViewModel.Search(null);
             }
         }
 
@@ -85,6 +90,20 @@ namespace Dynamo.PackageManager
         public bool HasNoResults
         {
             get { return this.SearchResults.Count == 0; }
+        }
+
+        /// <summary>
+        /// Gives the current state of search.
+        /// </summary>
+        public PackageSearchState _searchState;
+        public PackageSearchState SearchState
+        {
+            get { return _searchState; }
+            set
+            {
+                _searchState = value;
+                RaisePropertyChanged("SearchState");
+            }
         }
 
         /// <summary>
@@ -154,7 +173,6 @@ namespace Dynamo.PackageManager
         private void SearchResultsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
             this.RaisePropertyChanged("HasNoResults");
-
         } 
 
         public void ClearCompleted()
@@ -178,18 +196,20 @@ namespace Dynamo.PackageManager
         internal void SearchAndUpdateResults(string query)
         {
             this.SearchText = query;
+            this.SearchState = PackageSearchState.SEARCHING;
+            SearchResults.Clear();
+
             Task<List<PackageManagerSearchElement>>.Factory.StartNew(() => Search(query)
 
             ).ContinueWith((t) =>
-            {
+                {
                 lock (SearchResults)
                 {
-
-                    SearchResults.Clear();
                     foreach (var result in t.Result)
                     {
                         SearchResults.Add(result);
                     }
+                    this.SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
                 }
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
