@@ -274,6 +274,8 @@ namespace Dynamo
 
         public void RunExpression(bool showErrors = true)
         {
+            DynamoLogger.Instance.LogWarning("Running expression", WarningLevel.Mild);
+
             //If we're already running, do nothing.
             if (Running)
                 return;
