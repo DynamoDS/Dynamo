@@ -1233,6 +1233,18 @@ namespace DynamoRevitTests
             CurveByPoints mc = (CurveByPoints)fec.ToElements().ElementAt(0);
         }
 
+        [Test]
+        public void ModelText()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\ModelText.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
         /// <summary>
         /// Automated creation of regression test cases.
         /// </summary>
