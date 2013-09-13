@@ -826,6 +826,8 @@ namespace Dynamo.ViewModels
             tt.Y = absoluteY - (relative.Y * st.ScaleY);
 
             _model.Zoom = st.ScaleX;
+            _model.X = tt.X;
+            _model.Y = tt.Y;
         }
 
         private void SetZoom(object zoom)
