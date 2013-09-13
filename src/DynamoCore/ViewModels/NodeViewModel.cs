@@ -337,9 +337,9 @@ namespace Dynamo.ViewModels
                 case "State":
                     RaisePropertyChanged("State");
                     break;
-                //case "ArgumentLacing":
-                //    SetLacingTypeCommand.RaiseCanExecuteChanged();
-                //    break;
+                case "ArgumentLacing":
+                    RaisePropertyChanged("ArgumentLacing");
+                    break;
             }
         }
 
@@ -396,38 +396,27 @@ namespace Dynamo.ViewModels
 
         void SetLacingType(object param)
         {
-            string parameter = param.ToString();
+            // Record the state of this node before changes.
+            List<ModelBase> models = new List<ModelBase>();
+            models.Add(this.nodeLogic);
+            DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+            dynamo.CurrentWorkspace.RecordModelsForModification(models);
 
-            if (parameter == "First")
-            {
-                NodeLogic.ArgumentLacing = LacingStrategy.First;
-            }
-            else if (parameter == "Longest")
-            {
-                NodeLogic.ArgumentLacing = LacingStrategy.Longest;
-            }
-            else if (parameter == "Shortest")
-            {
-                NodeLogic.ArgumentLacing = LacingStrategy.Shortest;
-            }
-            else if (parameter == "CrossProduct")
-            {
-                NodeLogic.ArgumentLacing = LacingStrategy.CrossProduct;
-            }
-            else
-                NodeLogic.ArgumentLacing = LacingStrategy.Disabled;
+            LacingStrategy strategy = LacingStrategy.Disabled;
+            if (!System.Enum.TryParse(param.ToString(), out strategy))
+                strategy = LacingStrategy.Disabled;
 
-            RaisePropertyChanged("Lacing");
+            NodeLogic.ArgumentLacing = strategy;
+
+            RaisePropertyChanged("ArgumentLacing");
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         bool CanSetLacingType(object param)
         {
-            string parameter = param.ToString();
-
-            if (this.ArgumentLacing == LacingStrategy.Disabled)
-                return false;
-
-            return true;
+            // Only allow setting of lacing strategy when it is not disabled.
+            return (this.ArgumentLacing != LacingStrategy.Disabled);
         }
 
         private void ViewCustomNodeWorkspace(object parameter)
