@@ -379,6 +379,14 @@ namespace Dynamo.Models
                 undoRecorder.Clear();
         }
 
+        // See RecordModelsForModification below for more details.
+        internal void RecordModelForModification(ModelBase model)
+        {
+            List<ModelBase> models = new List<ModelBase>();
+            models.Add(model);
+            RecordModelsForModification(models);
+        }
+
         /// <summary>
         /// TODO(Ben): This method is exposed this way for external codes (e.g. 
         /// the DragCanvas) to record models before they are modified. This is 

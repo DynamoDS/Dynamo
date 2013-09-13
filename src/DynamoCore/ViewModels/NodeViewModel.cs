@@ -340,6 +340,12 @@ namespace Dynamo.ViewModels
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
                     break;
+                case "IsVisible":
+                    RaisePropertyChanged("IsVisible");
+                    break;
+                case "IsUpstreamVisible":
+                    RaisePropertyChanged("IsUpstreamVisible");
+                    break;
             }
         }
 
@@ -397,10 +403,8 @@ namespace Dynamo.ViewModels
         void SetLacingType(object param)
         {
             // Record the state of this node before changes.
-            List<ModelBase> models = new List<ModelBase>();
-            models.Add(this.nodeLogic);
             DynamoModel dynamo = dynSettings.Controller.DynamoModel;
-            dynamo.CurrentWorkspace.RecordModelsForModification(models);
+            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
 
             LacingStrategy strategy = LacingStrategy.Disabled;
             if (!System.Enum.TryParse(param.ToString(), out strategy))
@@ -500,14 +504,26 @@ namespace Dynamo.ViewModels
 
         private void ToggleIsVisible(object parameter)
         {
+            // Record the state of this node before changes.
+            DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
+
             this.nodeLogic.IsVisible = !this.nodeLogic.IsVisible;
-            RaisePropertyChanged("IsVisible");
+
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void ToggleIsUpstreamVisible(object parameter)
         {
+            // Record the state of this node before changes.
+            DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
+
             this.nodeLogic.IsUpstreamVisible = !this.nodeLogic.IsUpstreamVisible;
-            RaisePropertyChanged("IsUpstreamVisible");
+
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         private bool CanVisibilityBeToggled(object parameter) 
