@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Xml;
 using System.Globalization;
@@ -209,6 +210,7 @@ namespace Dynamo.Models
             get { return new Rect(_x, _y, _width, _height); }
         }
 
+        internal Version WorkspaceVersion { get; set; }
         #endregion
 
         public delegate void WorkspaceSavedEvent(WorkspaceModel model);
@@ -255,6 +257,7 @@ namespace Dynamo.Models
 
             WorkspaceSaved += OnWorkspaceSaved;
 
+            WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
         }
 
         public bool WatchChanges
@@ -408,8 +411,8 @@ namespace Dynamo.Models
                 //create the xml document
                 var xmlDoc = new XmlDocument();
                 xmlDoc.CreateXmlDeclaration("1.0", null, null);
-
                 var root = xmlDoc.CreateElement("Workspace"); //write the root element
+                root.SetAttribute("Version", workSpace.WorkspaceVersion.ToString());
                 root.SetAttribute("X", workSpace.X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", workSpace.Y.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("zoom", workSpace.Zoom.ToString(CultureInfo.InvariantCulture));
