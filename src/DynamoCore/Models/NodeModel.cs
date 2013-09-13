@@ -99,7 +99,7 @@ namespace Dynamo.Models
 
         private IdentifierNode identifier = null;
         protected AssociativeNode defaultAstExpression = null;
-
+ 
         /// <summary>
         /// Returns whether this node represents a built-in or custom function.
         /// </summary>
