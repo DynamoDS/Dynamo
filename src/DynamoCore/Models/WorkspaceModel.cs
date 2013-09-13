@@ -462,6 +462,11 @@ namespace Dynamo.Models
                     node.Cleanup();
                     node.WorkSpace.Nodes.Remove(node);
                 }
+                else if (model is ConnectorModel)
+                {
+                    ConnectorModel connector = model as ConnectorModel;
+                    this.Connectors.Remove(connector);
+                }
             }
 
             this.undoRecorder.EndActionGroup(); // Conclude the deletion.
@@ -478,7 +483,11 @@ namespace Dynamo.Models
             if (model is NoteModel)
                 this.Notes.Remove(model as NoteModel);
             else if (model is ConnectorModel)
-                this.Connectors.Remove(model as ConnectorModel);
+            {
+                ConnectorModel connector = model as ConnectorModel;
+                this.Connectors.Remove(connector);
+                connector.NotifyConnectedPortsOfDeletion();
+            }
             else if (model is NodeModel)
                 this.Nodes.Remove(model as NodeModel);
             else
