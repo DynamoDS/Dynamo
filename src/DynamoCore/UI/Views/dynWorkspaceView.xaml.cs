@@ -24,6 +24,8 @@ namespace Dynamo.Views
         private bool isWindowSelecting;
         private Point mouseDownPos;
         private Dynamo.Controls.DragCanvas WorkBench = null;
+        private Dynamo.UI.Controls.ZoomAndPanControl zoomAndPanControl = null;
+
         public WorkspaceViewModel ViewModel
         {
             get
@@ -47,6 +49,15 @@ namespace Dynamo.Views
 
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
         {
+            zoomAndPanControl = new Dynamo.UI.Controls.ZoomAndPanControl(DataContext as WorkspaceViewModel);
+            Canvas.SetRight(zoomAndPanControl, 10);
+            Canvas.SetTop(zoomAndPanControl, 10);
+            Canvas.SetZIndex(zoomAndPanControl, 8000);
+            zoomAndPanControl.Focusable = false;
+            outerCanvas.Children.Add(zoomAndPanControl);
+
+            ViewModel.ZoomBorder = zoomBorder;
+
             Debug.WriteLine("Workspace loaded.");
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
         }
