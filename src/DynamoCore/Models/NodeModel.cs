@@ -1628,6 +1628,8 @@ namespace Dynamo.Models
             // here for those data members we directly changed.
             RaisePropertyChanged("NickName");
             RaisePropertyChanged("ArgumentLacing");
+            RaisePropertyChanged("IsVisible");
+            RaisePropertyChanged("IsUpstreamVisible");
         }
 
         #endregion
