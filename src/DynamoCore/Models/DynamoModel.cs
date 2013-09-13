@@ -1067,7 +1067,9 @@ namespace Dynamo.Models
         /// <example>{"x":1234.0,"y":1234.0, "guid":1234-1234-...,"text":"the note's text","workspace":workspace </example>
         public void AddNote(object parameters)
         {
-            AddNoteInternal(parameters);
+            NoteModel noteModel = AddNoteInternal(parameters);
+            if (null != noteModel)
+                CurrentWorkspace.RecordCreatedModel(noteModel);
         }
 
         internal bool CanAddNote(object parameters)
@@ -1352,7 +1354,9 @@ namespace Dynamo.Models
         /// <param name="parameters">A dictionary containing data about the node.</param>
         public void CreateNode(object parameters)
         {
-            CreateNode_Internal(parameters);
+            NodeModel nodeModel = CreateNode_Internal(parameters);
+            if (null != nodeModel)
+                nodeModel.WorkSpace.RecordCreatedModel(nodeModel);
         }
 
         internal NodeModel CreateNode_Internal(object parameters)

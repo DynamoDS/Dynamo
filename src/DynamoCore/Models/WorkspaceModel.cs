@@ -382,9 +382,12 @@ namespace Dynamo.Models
         // See RecordModelsForModification below for more details.
         internal void RecordModelForModification(ModelBase model)
         {
-            List<ModelBase> models = new List<ModelBase>();
-            models.Add(model);
-            RecordModelsForModification(models);
+            if (null != model)
+            {
+                List<ModelBase> models = new List<ModelBase>();
+                models.Add(model);
+                RecordModelsForModification(models);
+            }
         }
 
         /// <summary>
@@ -413,14 +416,14 @@ namespace Dynamo.Models
             undoRecorder.EndActionGroup();
         }
 
-        internal void RecordNewConnector(ConnectorModel connector)
+        internal void RecordCreatedModel(ModelBase model)
         {
-            if (null == connector)
-                return;
-
-            this.undoRecorder.BeginActionGroup();
-            this.undoRecorder.RecordCreationForUndo(connector);
-            this.undoRecorder.EndActionGroup();
+            if (null != model)
+            {
+                this.undoRecorder.BeginActionGroup();
+                this.undoRecorder.RecordCreationForUndo(model);
+                this.undoRecorder.EndActionGroup();
+            }
         }
 
         internal void RecordCreatedModels(List<ModelBase> models)

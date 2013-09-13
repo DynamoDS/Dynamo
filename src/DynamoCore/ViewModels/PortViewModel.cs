@@ -227,7 +227,7 @@ namespace Dynamo.ViewModels
                 workspaceViewModel.ActiveConnector = null;
 
                 // Record the creation of connector in the undo recorder.
-                workspaceModel.RecordNewConnector(newConnectorModel);
+                workspaceModel.RecordCreatedModel(newConnectorModel);
             }
         }
 
