@@ -10,6 +10,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Controls;
 
 namespace Dynamo.ViewModels
 {
@@ -24,8 +25,12 @@ namespace Dynamo.ViewModels
     public partial class WorkspaceViewModel: ViewModelBase
     {
         #region Properties and Fields
-        
+        public static readonly double ZOOM_MAXIMUM = 4.0;
+        public static readonly double ZOOM_MINIMUM = 0.1;
+
         public WorkspaceModel _model;
+        public ZoomBorder ZoomBorder { set; get; }
+
         private bool _isConnecting = false;
         private bool _canFindNodesFromElements = false;
 
@@ -748,22 +753,79 @@ namespace Dynamo.ViewModels
 
         private void ZoomIn(object o)
         {
-            _model.Zoom += _zoomIncrement;
+            ZoomAtViewportCenter(_zoomIncrement);
         }
 
         private bool CanZoomIn(object o)
         {
-            return true;
+            return CanZoom(_zoomIncrement);
         }
 
         private void ZoomOut(object o)
         {
-            _model.Zoom -= _zoomIncrement;
+            ZoomAtViewportCenter(-_zoomIncrement);
         }
 
         private bool CanZoomOut(object o)
         {
+            return CanZoom(-_zoomIncrement);
+        }
+
+        private bool CanZoom(double zoom)
+        {
+            var st = ZoomBorder.GetChildScaleTransform();
+            var resultZoom = (st.ScaleX + zoom);
+            if (resultZoom < ZOOM_MINIMUM || resultZoom > ZOOM_MAXIMUM)
+                return false;
             return true;
+        }
+
+        // Zoom using buttons
+        private void ZoomAtViewportCenter(double zoom)
+        {
+            if (!CanZoom(zoom) && ZoomBorder != null)
+                return;
+
+            // Assuming translation origin and scaling origin is the same
+            var st = ZoomBorder.GetChildScaleTransform();
+            var tt = ZoomBorder.GetChildTranslateTransform();
+
+            // Get Viewpoint Center point
+            Point centerPoint = new Point();
+            centerPoint.X = (ZoomBorder.Parent as FrameworkElement).ActualWidth / 2;
+            centerPoint.Y = (ZoomBorder.Parent as FrameworkElement).ActualHeight / 2;
+
+            // Get relative point of ZoomBorder child in relates to viewpoint center point
+            Point relativePoint = new Point();
+            relativePoint.X = (centerPoint.X - tt.X) / st.ScaleX;
+            relativePoint.Y = (centerPoint.Y - tt.Y) / st.ScaleY;
+
+            Debug.Print("Center point = " + centerPoint);
+            Debug.Print("relative point = " + relativePoint);
+
+            ZoomAtViewportPoint(zoom, relativePoint);
+        }
+
+        // Zooming using mouse (ZoomBorder)
+        public void ZoomAtViewportPoint(double zoom, Point relative)
+        {
+            if (!CanZoom(zoom) && ZoomBorder != null)
+                return;
+
+            var st = ZoomBorder.GetChildScaleTransform();
+            var tt = ZoomBorder.GetChildTranslateTransform();
+
+            double absoluteX, absoluteY;
+            absoluteX = relative.X * st.ScaleX + tt.X;
+            absoluteY = relative.Y * st.ScaleY + tt.Y;
+
+            st.ScaleX += zoom;
+            st.ScaleY += zoom;
+
+            tt.X = absoluteX - (relative.X * st.ScaleX);
+            tt.Y = absoluteY - (relative.Y * st.ScaleY);
+
+            _model.Zoom = st.ScaleX;
         }
 
         private void SetZoom(object zoom)
