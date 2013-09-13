@@ -47,7 +47,7 @@ def main():
 			base = os.path.basename(journal)
 			if base == args['name']+'.txt':
 				# print os.path.basename(journal)
-				run_cmd(['C:\Program Files\Autodesk\Revit Architecture 2014\Revit.exe', os.path.abspath(journal)])
+				run_cmd(['Revit.exe', os.path.abspath(journal)])
 				found = True
 		if found == False:
 			print "Journal named {0} could not be found".format(args['name'])

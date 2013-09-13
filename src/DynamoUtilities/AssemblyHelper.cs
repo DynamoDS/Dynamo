@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -20,6 +21,12 @@ namespace Dynamo.Utilities
                 return null;
             Assembly assembly = Assembly.LoadFrom(assemblyPath);
             return assembly;
+        }
+
+        public static Version GetDynamoVersion()
+        {
+            var assembly = Assembly.GetCallingAssembly();
+            return assembly.GetName().Version;
         }
     }
 }
