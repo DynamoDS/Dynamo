@@ -6,6 +6,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib" 
         xmlns:models="clr-namespace:Dynamo.Models"
         xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:commands="clr-namespace:Dynamo.UI.Commands"
+        xmlns:dynamo="clr-namespace:Dynamo"
         x:Name="_this"
         Height="768" 
         Width="1024"
@@ -582,38 +583,61 @@
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black">
         </Grid>
 
-        <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-
-                   Grid.ColumnSpan="3">
-
-            <WrapPanel.Background>
+        <Grid Name="bottomBarGrid" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.Background>
                 <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
                     <GradientStop Color="#222" Offset="0.0" />
                     <GradientStop Color="#111" Offset="1.0" />
                 </LinearGradientBrush>
-            </WrapPanel.Background>
+            </Grid.Background>
 
-            <Button Name="RunButton" Width="100" Content="Run" 
+            <WrapPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="1">
+                
+                <Button Name="RunButton" Width="100" Content="Run" 
                     Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
                     Command="{Binding RunExpressionCommand}"
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
-            <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+                <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
                       Command="{Binding CancelRunCommand}" Margin="5"/>
-            
-            <CheckBox Margin="10"
+
+                <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"
                       Content="Run Automatically" FontSize="11" IsChecked="{Binding Path=DynamicRunEnabled, Mode=TwoWay}"
                       IsEnabled="{Binding Path=CanRunDynamically, Mode=OneWay}"
                       VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-            
-            <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
+
+                <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontSize="11" VerticalAlignment="Center" Foreground="Gray"
                       IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
                       Content="Debug" VerticalContentAlignment="Center"/>
-            
-        </WrapPanel>
+
+            </WrapPanel>
+            <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Source={x:Static dynamo:DynamoLogger.Instance}, Path=Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 
+                       VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" TextTrimming="WordEllipsis" Margin="10"
+                       Foreground="{Binding Source={x:Static dynamo:DynamoLogger.Instance}, Path=WarningLevel, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" >
+                    <TextBlock.Triggers>
+                            <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(TextBlock.Opacity)">
+                                            <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0" />
+                                            <LinearDoubleKeyFrame Value="1" KeyTime="0:0:0.35" />
+                                            <LinearDoubleKeyFrame Value="1" KeyTime="0:0:5" />
+                                            <LinearDoubleKeyFrame Value="0" KeyTime="0:0:5.35" /> 
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                    </TextBlock.Triggers>
+            </TextBlock>
+        </Grid>
+        
 
         <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"
