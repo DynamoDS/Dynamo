@@ -105,7 +105,7 @@ namespace Dynamo.ViewModels
         protected bool canRunDynamically = true;
         protected bool debug = false;
         protected bool dynamicRun = false;
-        
+
         private bool fullscreenWatchShowing = false;
         private bool canNavigateBackground = false;
 
@@ -469,6 +469,7 @@ namespace Dynamo.ViewModels
             {
                 case "LogText":
                     RaisePropertyChanged("LogText");
+                    RaisePropertyChanged("WarningText");
                     break;
             }
 
@@ -702,7 +703,6 @@ namespace Dynamo.ViewModels
         {
             return new Function(inputs, outputs, functionDefinition);
         }
-
 
         /// <summary>
         ///     Sets the load path
