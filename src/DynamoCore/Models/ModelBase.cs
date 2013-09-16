@@ -142,18 +142,21 @@ namespace Dynamo.Models
 
         #region Serialization/Deserialization Methods
 
-        public XmlNode Serialize(XmlDocument xmlDocument, SaveContext context)
+        public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
-            return this.SerializeCore(xmlDocument, context);
+            string typeName = this.GetType().ToString();
+            XmlElement element = xmlDocument.CreateElement(typeName);
+            this.SerializeCore(element, context);
+            return element;
         }
 
-        public void Deserialize(XmlNode xmlNode, SaveContext context)
+        public void Deserialize(XmlElement element, SaveContext context)
         {
-            this.DeserializeCore(xmlNode, context);
+            this.DeserializeCore(element, context);
         }
 
-        protected abstract XmlNode SerializeCore(XmlDocument xmlDocument, SaveContext context);
-        protected abstract void DeserializeCore(XmlNode xmlNode, SaveContext context);
+        protected abstract void SerializeCore(XmlElement element, SaveContext context);
+        protected abstract void DeserializeCore(XmlElement element, SaveContext context);
 
         #endregion
 

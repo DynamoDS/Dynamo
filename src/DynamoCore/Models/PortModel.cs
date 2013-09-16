@@ -227,21 +227,16 @@ namespace Dynamo.Models
 
         #region Serialization/Deserialization Methods
 
-        protected override XmlNode SerializeCore(XmlDocument xmlDocument, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            XmlElement portInfo = xmlDocument.CreateElement("PortInfo");
-            XmlElementHelper helper = new XmlElementHelper(portInfo);
-            helper.SetAttribute("index", this.Index);
-            helper.SetAttribute("default", this.UsingDefaultValue);
-            return portInfo;
+            // We are not deserializing the ports.
+            throw new NotImplementedException();
         }
 
-        protected override void DeserializeCore(XmlNode xmlNode, SaveContext context)
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
-            XmlElement element = xmlNode as XmlElement;
-            XmlElementHelper helper = new XmlElementHelper(element);
-            this.index = helper.ReadInteger("index");
-            this._usingDefaultValue = helper.ReadBoolean("default");
+            // We are not deserializing the ports.
+            throw new NotImplementedException();
         }
 
         #endregion

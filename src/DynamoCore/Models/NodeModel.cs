@@ -1577,14 +1577,12 @@ namespace Dynamo.Models
 
         #region Serialization/Deserialization Methods
 
-        protected override XmlNode SerializeCore(XmlDocument xmlDocument, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            string typeName = this.GetType().ToString();
-            XmlElement element = xmlDocument.CreateElement(typeName);
             XmlElementHelper helper = new XmlElementHelper(element);
 
             // Set the type attribute
-            helper.SetAttribute("type", typeName);
+            helper.SetAttribute("type", this.GetType().ToString());
             helper.SetAttribute("guid", this.GUID);
             helper.SetAttribute("nickname", this.NickName);
             helper.SetAttribute("x", this.X);
@@ -1592,15 +1590,11 @@ namespace Dynamo.Models
             helper.SetAttribute("isVisible", this.IsVisible);
             helper.SetAttribute("isUpstreamVisible", this.IsUpstreamVisible);
             helper.SetAttribute("lacing", this.ArgumentLacing.ToString());
-
-            return element; // Derived classes can choose to populate further.
         }
 
-        protected override void DeserializeCore(XmlNode xmlNode, SaveContext context)
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
-            XmlElement element = xmlNode as XmlElement;
             XmlElementHelper helper = new XmlElementHelper(element);
-
             this.GUID = helper.ReadGuid("guid", Guid.NewGuid());
 
             // Resolve node nick name.
