@@ -54,9 +54,6 @@ namespace Dynamo.Controls
         private DynamoViewModel _vm;
         private Stopwatch _timer;
 
-        // Reference to titlebar
-        private TitleBarButtons titleBarButtons;
-
         public bool ConsoleShowing
         {
             get { return LogScroller.Height > 0; }
@@ -95,12 +92,6 @@ namespace Dynamo.Controls
 
         private void dynBench_Activated(object sender, EventArgs e)
         {
-            if (titleBarButtons == null)
-            {
-                titleBarButtons = new TitleBarButtons(this);
-                titleBarButtonsGrid.Children.Add(titleBarButtons);
-            }
-
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
@@ -403,20 +394,6 @@ namespace Dynamo.Controls
         private void WindowClosed(object sender, EventArgs e)
         {
 
-        }
-
-        private void WindowChanged(object sender, EventArgs e)
-        {
-            if (this.WindowState == WindowState.Maximized)
-            {
-                this.mainGrid.Margin = new Thickness(8);
-                titleBarButtons.Max.Tag = "Restore";
-            }
-            else
-            {
-                this.mainGrid.Margin = new Thickness(0);
-                titleBarButtons.Max.Tag = "Max";
-            }           
         }
 
         private void OverlayCanvas_OnMouseMove(object sender, MouseEventArgs e)

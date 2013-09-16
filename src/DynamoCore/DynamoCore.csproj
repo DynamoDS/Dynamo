@@ -392,6 +392,10 @@ limitations under the License.
     </Page>
     <Page Include="UI\Prompts\CrashPrompt.xaml">
     </Page>
+    <Page Include="UI\Themes\MenuStyleDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Views\InstalledPackagesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -521,6 +525,9 @@ limitations under the License.
     <Resource Include="UI\Images\zoomout_disabled.png" />
     <Resource Include="UI\Images\zoomout_hover.png" />
     <Resource Include="UI\Images\zoomout_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\tick_selected.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
