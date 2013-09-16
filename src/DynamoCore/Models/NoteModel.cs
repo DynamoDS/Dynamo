@@ -24,24 +24,18 @@ namespace Dynamo.Models
 
         #region Serialization/Deserialization Methods
 
-        protected override XmlNode SerializeCore(XmlDocument xmlDocument, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            string typeName = this.GetType().ToString();
-            XmlElement noteElement = xmlDocument.CreateElement(typeName);
-            XmlElementHelper helper = new XmlElementHelper(noteElement);
-
+            XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("guid", this.GUID);
             helper.SetAttribute("text", this.Text);
             helper.SetAttribute("x", this.X);
             helper.SetAttribute("y", this.Y);
-            return noteElement;
         }
 
-        protected override void DeserializeCore(XmlNode xmlNode, SaveContext context)
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
-            XmlElement element = xmlNode as XmlElement;
             XmlElementHelper helper = new XmlElementHelper(element);
-
             this.GUID = helper.ReadGuid("guid", this.GUID);
             this.Text = helper.ReadString("text", "New Note");
             this.X = helper.ReadDouble("x", 0.0);
