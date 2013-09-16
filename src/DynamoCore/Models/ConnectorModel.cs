@@ -14,6 +14,8 @@
 
 using System;
 using System.Diagnostics;
+using System.Xml;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -96,6 +98,15 @@ namespace Dynamo.Models
             Debug.WriteLine(string.Format("{0} elapsed for constructing connector.", sw.Elapsed));
         }
 
+        public static ConnectorModel Make()
+        {
+            return new ConnectorModel();
+        }
+
+        private ConnectorModel()
+        {
+        }
+
         #endregion
         
         public bool Connect(PortModel p)
@@ -160,6 +171,46 @@ namespace Dynamo.Models
             }
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            helper.SetAttribute("guid", this.GUID);
+            helper.SetAttribute("start", this.Start.Owner.GUID);
+            helper.SetAttribute("start_index", this.Start.Index);
+            helper.SetAttribute("end", this.End.Owner.GUID);
+            helper.SetAttribute("end_index", this.End.Index);
+            helper.SetAttribute("portType", ((int) this.End.PortType));
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+
+            // Restore some information from the node attributes.
+            this.GUID = helper.ReadGuid("guid", this.GUID);
+            Guid startNodeId = helper.ReadGuid("start");
+            int startIndex = helper.ReadInteger("start_index");
+            Guid endNodeId = helper.ReadGuid("end");
+            int endIndex = helper.ReadInteger("end_index");
+            PortType portType = ((PortType)helper.ReadInteger("portType"));
+
+            // Get to the start and end nodes that this connector connects to.
+            WorkspaceModel workspace = dynSettings.Controller.DynamoModel.CurrentWorkspace;
+            NodeModel startNode = workspace.GetModelInternal(startNodeId) as NodeModel;
+            NodeModel endNode = workspace.GetModelInternal(endNodeId) as NodeModel;
+
+            pStart = startNode.OutPorts[startIndex];
+            PortModel endPort = null;
+            if (portType == PortType.INPUT)
+                endPort = endNode.InPorts[endIndex];
+
+            pStart.Connect(this);
+            this.Connect(endPort);
+        }
+
+        #endregion
     }
 
     public class InvalidPortException : ApplicationException
