@@ -502,7 +502,17 @@ namespace Dynamo.Models
         /// <param name="context">Why is this being called?</param>
         protected virtual void SaveNode(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement nodeElement, SaveContext context)
         {
+            var argLacing = xmlDoc.CreateElement("LacingStrategy");
+            argLacing.SetAttribute("lacingStrategy", argumentLacing.ToString());
+            nodeElement.AppendChild(argLacing);
 
+            var isVisibleEl = xmlDoc.CreateElement("IsVisible");
+            isVisibleEl.SetAttribute("isVisible", isVisible ? "true" : "false");
+            nodeElement.AppendChild(isVisibleEl);
+
+            var isUpstreamVisibleEl = xmlDoc.CreateElement("IsUpstreamVisible");
+            isUpstreamVisibleEl.SetAttribute("isUpstreamVisible", isUpstreamVisible ? "true" : "false");
+            nodeElement.AppendChild(isUpstreamVisibleEl);
         }
 
         public void Save(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl, SaveContext context)
