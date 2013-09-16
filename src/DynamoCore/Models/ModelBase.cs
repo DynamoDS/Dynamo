@@ -6,6 +6,8 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Models
 {
+    public enum SaveContext { File, Copy, Undo };
+
     public abstract class ModelBase : NotificationObject, ISelectable, ILocatable
     {
         private Guid _guid;
@@ -140,18 +142,18 @@ namespace Dynamo.Models
 
         #region Serialization/Deserialization Methods
 
-        public XmlNode Serialize(XmlDocument xmlDocument)
+        public XmlNode Serialize(XmlDocument xmlDocument, SaveContext context)
         {
-            return this.SerializeCore(xmlDocument);
+            return this.SerializeCore(xmlDocument, context);
         }
 
-        public void Deserialize(XmlNode xmlNode)
+        public void Deserialize(XmlNode xmlNode, SaveContext context)
         {
-            this.DeserializeCore(xmlNode);
+            this.DeserializeCore(xmlNode, context);
         }
 
-        protected abstract XmlNode SerializeCore(XmlDocument xmlDocument);
-        protected abstract void DeserializeCore(XmlNode xmlNode);
+        protected abstract XmlNode SerializeCore(XmlDocument xmlDocument, SaveContext context);
+        protected abstract void DeserializeCore(XmlNode xmlNode, SaveContext context);
 
         #endregion
 

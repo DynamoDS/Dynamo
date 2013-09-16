@@ -308,7 +308,7 @@ namespace Dynamo.Core
 
             // Serialize the affected model into xml representation
             // and store it under the current action group.
-            XmlNode childNode = model.Serialize(this.document);
+            XmlNode childNode = model.Serialize(this.document, SaveContext.Undo);
             SetNodeAction(childNode, action);
             group.AppendChild(childNode);
         }

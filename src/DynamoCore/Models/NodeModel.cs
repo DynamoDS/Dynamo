@@ -22,8 +22,6 @@ namespace Dynamo.Models
 {
     public enum ElementState { DEAD, ACTIVE, ERROR };
 
-    public enum SaveContext { File, Copy };
-
     public enum LacingStrategy
     {
         Disabled,
@@ -1579,7 +1577,7 @@ namespace Dynamo.Models
 
         #region Serialization/Deserialization Methods
 
-        protected override XmlNode SerializeCore(XmlDocument xmlDocument)
+        protected override XmlNode SerializeCore(XmlDocument xmlDocument, SaveContext context)
         {
             string typeName = this.GetType().ToString();
             XmlElement element = xmlDocument.CreateElement(typeName);
@@ -1598,7 +1596,7 @@ namespace Dynamo.Models
             return element; // Derived classes can choose to populate further.
         }
 
-        protected override void DeserializeCore(XmlNode xmlNode)
+        protected override void DeserializeCore(XmlNode xmlNode, SaveContext context)
         {
             XmlElement element = xmlNode as XmlElement;
             XmlElementHelper helper = new XmlElementHelper(element);

@@ -24,7 +24,7 @@ namespace Dynamo.Models
 
         #region Serialization/Deserialization Methods
 
-        protected override XmlNode SerializeCore(XmlDocument xmlDocument)
+        protected override XmlNode SerializeCore(XmlDocument xmlDocument, SaveContext context)
         {
             string typeName = this.GetType().ToString();
             XmlElement noteElement = xmlDocument.CreateElement(typeName);
@@ -37,7 +37,7 @@ namespace Dynamo.Models
             return noteElement;
         }
 
-        protected override void DeserializeCore(XmlNode xmlNode)
+        protected override void DeserializeCore(XmlNode xmlNode, SaveContext context)
         {
             XmlElement element = xmlNode as XmlElement;
             XmlElementHelper helper = new XmlElementHelper(element);
