@@ -114,6 +114,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand WriteToLogCmd { get; set; }
         public DelegateCommand PostUiActivationCommand { get; set; }
         public DelegateCommand AddNoteCommand { get; set; }
+        public DelegateCommand UndoCommand { get; set; }
+        public DelegateCommand RedoCommand { get; set; }
         public DelegateCommand LayoutAllCommand { get; set; }
         public DelegateCommand CopyCommand { get; set; }
         public DelegateCommand PasteCommand { get; set; }
@@ -415,6 +417,8 @@ namespace Dynamo.ViewModels
             RefactorCustomNodeCommand = new DelegateCommand(_model.RefactorCustomNode, _model.CanRefactorCustomNode);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
+            UndoCommand = new DelegateCommand(_model.Undo, _model.CanUndo);
+            RedoCommand = new DelegateCommand(_model.Redo, _model.CanRedo);
             CopyCommand = new DelegateCommand(_model.Copy, _model.CanCopy);
             PasteCommand = new DelegateCommand(_model.Paste, _model.CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);

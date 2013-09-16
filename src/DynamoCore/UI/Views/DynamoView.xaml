@@ -55,6 +55,12 @@
         <KeyBinding Key="C"
                                 Modifiers="Control"
                                 Command="{Binding Path=DataContext.CopyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="Z"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.UndoCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="Y"
+                                Modifiers="Control"
+                                Command="{Binding Path=DataContext.RedoCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="A"
                                 Modifiers="Control"
                                 Command="{Binding Path=DataContext.SelectAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
@@ -212,6 +218,9 @@
                 </MenuItem>
 
                 <MenuItem Header="_Edit" Name="editMenu" Focusable="False">
+                    <MenuItem Focusable="False" Header="_Undo" Command="{Binding UndoCommand}" Name="undo" InputGestureText="Ctrl+Z"/>
+                    <MenuItem Focusable="False" Header="_Redo" Command="{Binding RedoCommand}"  Name="redo" InputGestureText="Ctrl+Y"/>
+                    <Separator/>
                     <MenuItem Focusable="False" Header="_Copy" Command="{Binding CopyCommand}" Name="copy" InputGestureText="Ctrl+C"/>
                     <MenuItem Focusable="False" Header="_Paste" Command="{Binding PasteCommand}"  Name="paste" InputGestureText="Ctrl+V"/>
                     <Separator/>

@@ -198,7 +198,7 @@ namespace Dynamo.Views
 
         void vm_StopDragging(object sender, EventArgs e)
         {
-            WorkBench.isDragInProgress = false;
+            WorkBench.CancelDragOperation();
             WorkBench.ignoreClick = true;
         }
 
@@ -540,6 +540,7 @@ namespace Dynamo.Views
         private void WorkBench_OnLoaded(object sender, RoutedEventArgs e)
         {
             WorkBench = sender as Dynamo.Controls.DragCanvas;
+            WorkBench.owningWorkspace = this;
             //DrawGrid();
         }
     }
