@@ -148,8 +148,10 @@ namespace Dynamo.Controls
         private PackageManagerSearchViewModel _pkgSearchVM;
         void _vm_RequestShowPackageManagerSearch(object s, EventArgs e)
         {
+            var initVM = false;
             if (_pkgSearchVM == null)
             {
+                initVM = true;
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
             }
 
@@ -163,6 +165,7 @@ namespace Dynamo.Controls
             }
             
             _searchPkgsView.Focus();
+            if (!initVM) _pkgSearchVM.RefreshAndSearchAsync();
         }
 
         private InstalledPackagesView _installedPkgsView;

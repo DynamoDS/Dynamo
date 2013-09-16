@@ -47,7 +47,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBox Grid.Column="0" Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,10,5,10" Margin ="0"
-                       IsEnabled="True" KeyUp="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText, Mode=TwoWay}">
+                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText, Mode=TwoWay}">
                 </TextBox>
 
                 <TextBlock Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" 
@@ -55,7 +55,7 @@
                            IsHitTestVisible="False"
                            Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search...</TextBlock>
 
-                <Button Width="80" Grid.Column="1" Click="ButtonBase_OnClick" Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\search_24.png" >Search</Button>
+                <!--<Button Width="80" Grid.Column="1" Click="ButtonBase_OnClick" Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\search_24.png" >Search</Button>-->
 
             </Grid>
 
@@ -97,7 +97,7 @@
 
                                             <Border Width="275" BorderThickness ="0,0,1,0" BorderBrush="#222" >
                                                 <StackPanel>
-                                                    <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="AliceBlue" Margin="5,0,0,5"/>
+                                                    <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="AliceBlue" Margin="5,5,0,5"/>
                                                     <TextBlock FontSize="11" Margin="3" Foreground="#777" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="80"/>
                                                 </StackPanel>
                                             </Border>
