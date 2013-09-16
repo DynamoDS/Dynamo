@@ -108,7 +108,7 @@ namespace Dynamo.Nodes
             var userUp = (XYZ)((Value.Container)args[1]).Item;
             var direction = (XYZ)((Value.Container)args[2]).Item;
             var name = ((Value.String)args[3]).Item;
-            var extents = (Element)((Value.Container)args[4]).Item;
+            var extents = ((Value.Container)args[4]).Item;
             var isolate = Convert.ToBoolean(((Value.Number)args[5]).Item);
 
             XYZ side;
@@ -151,27 +151,94 @@ namespace Dynamo.Nodes
                 Elements.Add(view.Id);
             }
 
-
-            //var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document, view.Id);
             var fec = dynRevitUtils.SetupFilters(dynRevitSettings.Doc.Document);
 
             if (isolate)
             {
-                var all = fec.ToElements();
-                Debug.WriteLine(string.Format("There are {0} elements visible in the view.", all.Count()));
-                foreach (var el in all)
-                {
-                    Debug.WriteLine(el.Name);
-                }
+                view.CropBoxActive = true;
 
-                var toHide =
-                    fec.ToElements().Where(x => !x.IsHidden(view) && x.CanBeHidden(view) && x.Id != extents.Id).Select(x => x.Id).ToList();
-                if(toHide.Count > 0)
-                    view.HideElements(toHide);
+                var element = extents as Element;
+                if (element != null)
+                {
+                    var e = element;
+
+                    var all = fec.ToElements();
+                    var toHide =
+                        fec.ToElements().Where(x => !x.IsHidden(view) && x.CanBeHidden(view) && x.Id != e.Id).Select(x => x.Id).ToList();
+                    if (toHide.Count > 0)
+                        view.HideElements(toHide);
+
+                    //get the bounding box of the isolated element
+                    var elBounds = e.get_BoundingBox(null);
+                    //var pts = dynRevitUtils.GetPointsFromBoundingBox(elBounds);
+
+                    //http://adndevblog.typepad.com/aec/2012/05/set-crop-box-of-3d-view-that-exactly-fits-an-element.html
+                    var pts = new List<XYZ>();
+                    foreach (GeometryObject gObj in element.get_Geometry(dynRevitSettings.GeometryOptions))
+                    {
+                        if (gObj is Solid)
+                        {
+                            //get all the edges in it
+                            var solid = gObj as Solid;
+                            foreach (Edge gEdge in solid.Edges)
+                            {
+                                IList<XYZ> xyzArray = gEdge.Tessellate();
+                                pts.AddRange(xyzArray);
+                            }
+                        }
+                    }
+
+                    var bounding = view.CropBox;
+                    var transInverse = bounding.Transform.Inverse;
+                    var transPts = pts.Select(transInverse.OfPoint).ToList();
+
+                    //ingore the Z coordindates and find
+                    //the max X ,Y and Min X, Y in 3d view.
+                    double dMaxX = 0, dMaxY = 0, dMinX = 0, dMinY = 0;
+
+                    //geom.XYZ ptMaxX, ptMaxY, ptMinX,ptMInY; 
+                    //coorresponding point.
+                    bool bFirstPt = true;
+                    foreach (var pt1 in transPts)
+                    {
+                        if (true == bFirstPt)
+                        {
+                            dMaxX = pt1.X;
+                            dMaxY = pt1.Y;
+                            dMinX = pt1.X;
+                            dMinY = pt1.Y;
+                            bFirstPt = false;
+                        }
+                        else
+                        {
+                            if (dMaxX < pt1.X)
+                                dMaxX = pt1.X;
+                            if (dMaxY < pt1.Y)
+                                dMaxY = pt1.Y;
+                            if (dMinX > pt1.X)
+                                dMinX = pt1.X;
+                            if (dMinY > pt1.Y)
+                                dMinY = pt1.Y;
+                        }
+                    }
+
+                    bounding.Max = new XYZ(dMaxX, dMaxY, bounding.Max.Z);
+                    bounding.Min = new XYZ(dMinX, dMinY, bounding.Min.Z);
+                    view.CropBox = bounding;
+                }
+                else
+                {
+                    var xyz = extents as BoundingBoxXYZ;
+                    if (xyz != null)
+                    {
+                        view.CropBox = xyz;
+                    }
+                }
             }
             else
             {
                 view.UnhideElements(fec.ToElementIds());
+                view.CropBoxActive = false;
             }
 
             return Value.NewContainer(view);
