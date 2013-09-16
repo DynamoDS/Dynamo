@@ -519,6 +519,42 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
+        /// Retrieve all corner points from the given bounding box.
+        /// </summary>
+        /// <param name="bbox"></param>
+        /// <returns></returns>
+        public static List<XYZ> GetPointsFromBoundingBox(BoundingBoxXYZ bbox)
+        {
+            var pts = new List<XYZ>();
+
+            var x = bbox.Max.X - bbox.Min.X;
+            var y = bbox.Max.Y - bbox.Min.Y;
+            var z = bbox.Max.Z - bbox.Min.Z;
+
+            pts.Add(bbox.Min);
+            pts.Add(new XYZ(bbox.Min.X + x, bbox.Min.Y, bbox.Min.Z));
+            pts.Add(new XYZ(bbox.Min.X + x, bbox.Min.Y + y, bbox.Min.Z));
+            pts.Add(new XYZ(bbox.Min.X, bbox.Min.Y + y, bbox.Min.Z));
+
+            pts.Add(bbox.Max);
+            pts.Add(new XYZ(bbox.Min.X + x, bbox.Min.Y, bbox.Max.Z));
+            pts.Add(new XYZ(bbox.Min.X + x, bbox.Min.Y + y, bbox.Max.Z));
+            pts.Add(new XYZ(bbox.Min.X, bbox.Min.Y + y, bbox.Max.Z));
+
+            return pts;
+        }
+
+        /// <summary>
+        /// Return the center of a given bounding box.
+        /// </summary>
+        /// <param name="bbox"></param>
+        /// <returns></returns>
+        public static XYZ GetCenterPointFromBoundingBox(BoundingBoxXYZ bbox)
+        {
+            return (bbox.Max + bbox.Min)/2;
+        }
+
+        /// <summary>
         /// Utility method to create a filtered element collector which collects all elements in a view
         /// which Dynamo would like to view or on which Dynamo would like to operate.
         /// </summary>
