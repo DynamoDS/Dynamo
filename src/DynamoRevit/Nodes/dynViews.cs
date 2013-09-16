@@ -13,11 +13,11 @@
 //limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
-using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -29,13 +29,13 @@ using System.Windows.Data;
 using System.ComponentModel;
 
 using Value = Dynamo.FScheme.Value;
-using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Drafting View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
+
     [NodeDescription("Creates a drafting view.")]
     public class DraftingView: RevitTransactionNodeWithOneOutput
     {
@@ -85,16 +85,18 @@ namespace Dynamo.Nodes
 
     public abstract class ViewBase:RevitTransactionNodeWithOneOutput
     {
-        protected bool _isPerspective = false;
+        protected bool isPerspective = false;
 
         protected ViewBase()
         {
-            InPortData.Add(new PortData("eye", "The eye position point.", typeof(Value.Container)));
+            InPortData.Add(new PortData("origin", "The eye position point.", typeof(Value.Container)));
             InPortData.Add(new PortData("up", "The up direction of the view.", typeof(Value.Container)));
             InPortData.Add(new PortData("forward", "The view direction - the vector pointing from the eye towards the model.", typeof(Value.Container)));
             InPortData.Add(new PortData("name", "The name of the view.", typeof(Value.String)));
+            InPortData.Add(new PortData("extents", "Pass in a bounding box or an element to define the 3D crop of the view.", typeof(Value.String)));
+            InPortData.Add(new PortData("isolate", "If an element is supplied in 'extents', it will be isolated in the view.", typeof(Value.String)));
 
-            OutPortData.Add(new PortData("v", "The newly created 3D view.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("view", "The newly created 3D view.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -106,6 +108,8 @@ namespace Dynamo.Nodes
             var userUp = (XYZ)((Value.Container)args[1]).Item;
             var direction = (XYZ)((Value.Container)args[2]).Item;
             var name = ((Value.String)args[3]).Item;
+            var extents = (Element)((Value.Container)args[4]).Item;
+            var isolate = Convert.ToBoolean(((Value.Number)args[5]).Item);
 
             XYZ side;
             if (direction.IsAlmostEqualTo(userUp) || direction.IsAlmostEqualTo(userUp.Negate()))
@@ -124,7 +128,7 @@ namespace Dynamo.Nodes
                 if (dynUtils.TryGetElement(this.Elements[0], typeof(View3D), out e))
                 {
                     view = (View3D)e;
-                    if (!view.ViewDirection.IsAlmostEqualTo(direction))
+                    if (!view.ViewDirection.IsAlmostEqualTo(direction) || !view.Origin.IsAlmostEqualTo(eye))
                     {
                         view.Unlock();
                         view.SetOrientation(orient);
@@ -137,14 +141,37 @@ namespace Dynamo.Nodes
                 else
                 {
                     //create a new view
-                    view = ViewBase.Create3DView(orient, name, false);
+                    view = ViewBase.Create3DView(orient, name, isPerspective);
                     Elements[0] = view.Id;
                 }
             }
             else
             {
-                view = Create3DView(orient, name, false);
+                view = Create3DView(orient, name, isPerspective);
                 Elements.Add(view.Id);
+            }
+
+
+            //var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document, view.Id);
+            var fec = dynRevitUtils.SetupFilters(dynRevitSettings.Doc.Document);
+
+            if (isolate)
+            {
+                var all = fec.ToElements();
+                Debug.WriteLine(string.Format("There are {0} elements visible in the view.", all.Count()));
+                foreach (var el in all)
+                {
+                    Debug.WriteLine(el.Name);
+                }
+
+                var toHide =
+                    fec.ToElements().Where(x => !x.IsHidden(view) && x.CanBeHidden(view) && x.Id != extents.Id).Select(x => x.Id).ToList();
+                if(toHide.Count > 0)
+                    view.HideElements(toHide);
+            }
+            else
+            {
+                view.UnhideElements(fec.ToElementIds());
             }
 
             return Value.NewContainer(view);
@@ -162,8 +189,8 @@ namespace Dynamo.Nodes
 
             //create a new view
             View3D view = isPerspective ?
-                              View3D.CreateIsometric(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id) :
-                              View3D.CreatePerspective(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id);
+                              View3D.CreatePerspective(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id) :
+                              View3D.CreateIsometric(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id);
 
             view.SetOrientation(orient);
             view.SaveOrientationAndLock();
@@ -214,7 +241,7 @@ namespace Dynamo.Nodes
     {
         public IsometricView ()
         {
-            _isPerspective = false;
+            isPerspective = false;
         }
     }
 
@@ -225,7 +252,7 @@ namespace Dynamo.Nodes
     {
         public PerspectiveView()
         {
-            _isPerspective = true;
+            isPerspective = true;
         }
     }
 
