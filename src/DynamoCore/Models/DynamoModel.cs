@@ -1197,8 +1197,6 @@ namespace Dynamo.Models
                 node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
                 nodeData.Add("data", dynEl);
-
-                //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(CreateNodeCommand, nodeData));
                 createdModels.Add(CreateNode_Internal(nodeData));
             }
 
@@ -1243,7 +1241,6 @@ namespace Dynamo.Models
                 connectionData.Add("port_start", c.Start.Index);
                 connectionData.Add("port_end", c.End.Index);
 
-                //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(CreateConnectionCommand, connectionData));
                 createdModels.Add(CreateConnectionInternal(connectionData));
             }
 
@@ -1495,18 +1492,6 @@ namespace Dynamo.Models
         public void CreateConnection(object parameters)
         {
             CreateConnectionInternal(parameters);
-        }
-
-        internal bool CanCreateConnection(object parameters)
-        {
-            //make sure you have valid connection data
-            Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
-            if (connectionData != null && connectionData.Count == 4)
-            {
-                return true;
-            }
-
-            return false;
         }
 
         /// <summary>
