@@ -401,7 +401,7 @@ namespace Dynamo.Utilities
             {
                 var v1 = p1 - p0;
                 var v2 = p2 - p0;
-                var norm = v1.CrossProduct(v2).Normalize();
+                XYZ norm = null;
 
                 //keep old plane computations
                 if (p0.Z == p2.Z)
@@ -413,6 +413,11 @@ namespace Dynamo.Utilities
                     var p3 = new XYZ(p2.X, p2.Y, p0.Z);
                     var v3 = p3 - p0;
                     norm = v1.CrossProduct(v3);
+                    if (norm.IsZeroLength())
+                    {
+                        norm = v2.CrossProduct(XYZ.BasisY);
+                    }
+                    norm = norm.Normalize();
                 }
 
                 return new Plane(norm, p0);
