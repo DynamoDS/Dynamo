@@ -63,7 +63,7 @@ namespace Dynamo.Nodes
                     if (!position.IsAlmostEqualTo(currPos.Point))
                     {
                         dynRevitSettings.Doc.Document.Delete(Elements[0]);
-                        mt = CreateModelText(normal, position, up, text, mtt, depth);
+                        mt = CreateModelText(normal, position, -up, text, mtt, depth);
                         Elements.Add(mt.Id);
                     }
                     else
@@ -78,7 +78,7 @@ namespace Dynamo.Nodes
             }
             else
             {
-                mt = CreateModelText(normal, position, up, text, mtt, depth);
+                mt = CreateModelText(normal, position, -up, text, mtt, depth);
                 Elements.Add(mt.Id);
             }
 
