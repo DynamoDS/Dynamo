@@ -94,6 +94,7 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", port.PortName);
@@ -102,6 +103,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name == typeof(double).FullName)

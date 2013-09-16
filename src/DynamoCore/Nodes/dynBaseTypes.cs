@@ -291,6 +291,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
+            
             //Debug.WriteLine(pd.Object.GetType().ToString());
             foreach (var inport in InPortData)
             {
@@ -304,6 +306,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             int i = InPortData.Count;
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
@@ -749,11 +752,13 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
             nodeElement.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             var inputAttr = nodeElement.Attributes["inputs"];
             int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
             if (inputs == 1)
@@ -823,11 +828,13 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
             nodeElement.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             var inputAttr = nodeElement.Attributes["inputs"];
             int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
             if (inputs == 1)
@@ -3077,6 +3084,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
+
             //Debug.WriteLine(pd.Object.GetType().ToString());
             foreach (var inport in InPortData.Skip(1))
             {
@@ -3090,6 +3099,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name == "Input")
@@ -3225,6 +3235,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
+
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(typeof(T).FullName);
             outEl.SetAttribute("value", Value.ToString());
@@ -3233,6 +3245,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals(typeof(T).FullName))
@@ -3257,6 +3270,7 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
@@ -3356,6 +3370,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
+
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value);
@@ -3364,6 +3380,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             foreach (XmlNode subNode in nodeElement.ChildNodes.Cast<XmlNode>().Where(subNode => subNode.Name.Equals(typeof(double).FullName)))
             {
                 Value = subNode.Attributes[0].Value;
@@ -3909,6 +3926,7 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
@@ -3918,6 +3936,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals(typeof(double).FullName))
@@ -4005,6 +4024,7 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
             XmlElement outEl = xmlDoc.CreateElement(typeof(string).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
@@ -4012,6 +4032,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals(typeof(string).FullName))
@@ -4131,6 +4152,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
+
             //Debug.WriteLine(pd.Object.GetType().ToString());
             foreach (var inport in InPortData.Skip(2))
             {
@@ -4144,6 +4167,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name == "Input")
@@ -4438,11 +4462,13 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
             nodeElement.SetAttribute("index", SelectedIndex.ToString());
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             try
             {
                 SelectedIndex = Convert.ToInt32(nodeElement.Attributes["index"].Value);

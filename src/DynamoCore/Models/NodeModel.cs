@@ -536,7 +536,32 @@ namespace Dynamo.Models
         /// <param name="nodeElement">The XmlNode representing this Element.</param>
         protected virtual void LoadNode(System.Xml.XmlNode nodeElement)
         {
-
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                if (subNode.Name == "LacingStrategy")
+                {
+                    string lacingStrategy = subNode.Attributes["lacingStrategy"].Value;
+                    LacingStrategy lacing = LacingStrategy.Disabled;
+                    System.Enum.TryParse(lacingStrategy, out lacing);
+                    this.ArgumentLacing = lacing;
+                }
+                else if (subNode.Name == "IsVisible")
+                {
+                    XmlAttribute isVisibleAttr = subNode.Attributes["isVisible"];
+                    if (isVisibleAttr != null)
+                    {
+                        this.IsVisible = isVisibleAttr.Value == "true";
+                    }
+                }
+                else if (subNode.Name == "IsUpstreamVisible")
+                {
+                    XmlAttribute isUpstreamVisibleAttr = subNode.Attributes["isUpstreamVisible"];
+                    if (isUpstreamVisibleAttr != null)
+                    {
+                        this.IsUpstreamVisible = isUpstreamVisibleAttr.Value == "true";
+                    }
+                }
+            }
         }
 
         public void Load(System.Xml.XmlNode elNode)

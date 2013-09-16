@@ -124,6 +124,7 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
             XmlElement script = xmlDoc.CreateElement("Script");
             //script.InnerText = this.tb.Text;
             script.InnerText = this.script;
@@ -132,6 +133,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name == "Script")

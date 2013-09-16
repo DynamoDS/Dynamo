@@ -194,6 +194,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
+
             if (this.storedId != null)
             {
                 XmlElement outEl = xmlDoc.CreateElement("familyid");
@@ -209,6 +211,8 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
+
             var doc = dynRevitSettings.Doc.Document;
 
             int index = -1;
