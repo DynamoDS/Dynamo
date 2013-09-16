@@ -435,25 +435,6 @@ namespace Dynamo.ViewModels
             return nodeLogic.IsCustomFunction;
         }
 
-        private void SetLayout(object parameters)
-        {
-            var dict = parameters as Dictionary<string,
-            double >;
-            nodeLogic.X = dict["X"];
-            nodeLogic.Y = dict["Y"];
-            nodeLogic.Height = dict["Height"];
-            nodeLogic.Width = dict["Width"];
-        }
-
-        private bool CanSetLayout(object parameters)
-        {
-            var dict = parameters as Dictionary<string,
-            double>;
-            if (dict == null)
-                return false;
-            return true;
-        }
-
         void inports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             //The visual height of the node is bound to preferred height.
