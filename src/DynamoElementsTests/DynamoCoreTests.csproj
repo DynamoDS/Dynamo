@@ -72,6 +72,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsTests.cs" />
     <Compile Include="TestExtensions.cs" />
+    <Compile Include="UndoRedoRecorderTests.cs" />
     <Compile Include="UnitsOfMeasureTests.cs" />
     <Compile Include="UtilityTests.cs" />
     <Compile Include="XmlHelperTests.cs" />
