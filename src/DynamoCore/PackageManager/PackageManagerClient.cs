@@ -69,7 +69,7 @@ namespace Dynamo.PackageManager
 
         public PackageManagerClient()
         {
-            Client = new Client(null, "http://54.225.121.251"); // initialize authenticator later
+            Client = new Client(null, "http://107.20.146.184/"); // initialize authenticator later
             IsLoggedIn = false;
         }
 
@@ -102,6 +102,23 @@ namespace Dynamo.PackageManager
             catch
             {
                 return false;
+            }
+        }
+
+        public List<PackageManagerSearchElement> ListAll()
+        {
+            try
+            {
+                var nv = Greg.Requests.HeaderCollectionDownload.All();
+                var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
+                return
+                    pkgResponse.content
+                               .Select((header) => new PackageManagerSearchElement(header))
+                               .ToList();
+            }
+            catch
+            {
+                return new List<PackageManagerSearchElement>();
             }
         }
 
