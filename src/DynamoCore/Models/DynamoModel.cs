@@ -1922,7 +1922,7 @@ namespace Dynamo.Models
 
         #region Serialization/Deserialization Methods
 
-        protected override XmlNode SerializeCore(XmlDocument xmlDocument)
+        protected override XmlNode SerializeCore(XmlDocument xmlDocument, SaveContext context)
         {
             // I don't think anyone is serializing/deserializing DynamoModel 
             // directly. If that is not the case, please let me know and I'll 
@@ -1930,7 +1930,7 @@ namespace Dynamo.Models
             throw new NotImplementedException();
         }
 
-        protected override void DeserializeCore(XmlNode xmlNode)
+        protected override void DeserializeCore(XmlNode xmlNode, SaveContext context)
         {
             // I don't think anyone is serializing/deserializing DynamoModel 
             // directly. If that is not the case, please let me know and I'll 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Dynamo.Core;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -43,7 +44,7 @@ namespace Dynamo.Tests
 
         #region Serialization/Deserialization Methods
 
-        protected override XmlNode SerializeCore(XmlDocument xmlDocument)
+        protected override XmlNode SerializeCore(XmlDocument xmlDocument, SaveContext context)
         {
             string typeName = this.GetType().ToString();
             XmlElement element = xmlDocument.CreateElement(typeName);
@@ -54,7 +55,7 @@ namespace Dynamo.Tests
             return element;
         }
 
-        protected override void DeserializeCore(XmlNode xmlNode)
+        protected override void DeserializeCore(XmlNode xmlNode, SaveContext context)
         {
             XmlElement element = xmlNode as XmlElement;
             XmlElementHelper helper = new XmlElementHelper(element);
@@ -126,17 +127,17 @@ namespace Dynamo.Tests
             XmlElementHelper helper = new XmlElementHelper(modelData);
             int identifier = helper.ReadInteger(DummyModel.IdName);
             DummyModel model = models.First((x) => (x.Identifier == identifier));
-            model.Deserialize(modelData as XmlNode);
+            model.Deserialize(modelData as XmlNode, SaveContext.Undo);
         }
 
         public void CreateModel(XmlElement modelData)
         {
             DummyModel model = DummyModel.CreateBlankInstance();
-            model.Deserialize(modelData as XmlNode);
+            model.Deserialize(modelData as XmlNode, SaveContext.Undo);
             models.Add(model);
         }
 
-        public Models.ModelBase GetModelForElement(XmlElement modelData)
+        public ModelBase GetModelForElement(XmlElement modelData)
         {
             XmlElementHelper helper = new XmlElementHelper(modelData);
             int identifier = helper.ReadInteger(DummyModel.IdName);

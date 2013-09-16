@@ -512,7 +512,7 @@ namespace Dynamo.Models
         public void ReloadModel(XmlElement modelData)
         {
             ModelBase model = GetModelForElement(modelData);
-            model.Deserialize(modelData);
+            model.Deserialize(modelData, SaveContext.Undo);
         }
 
         public void CreateModel(XmlElement modelData)
@@ -538,19 +538,19 @@ namespace Dynamo.Models
                 DynamoModel dynamo = dynSettings.Controller.DynamoViewModel.Model;
                 NodeModel nodeModel = dynamo.CreateNode(typeName);
                 nodeModel.WorkSpace = this;
-                nodeModel.Deserialize(modelData);
+                nodeModel.Deserialize(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
             }
             else if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {
                 ConnectorModel connector = ConnectorModel.Make();
-                connector.Deserialize(modelData);
+                connector.Deserialize(modelData, SaveContext.Undo);
                 Connectors.Add(connector);
             }
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
                 NoteModel noteModel = new NoteModel(0.0, 0.0);
-                noteModel.Deserialize(modelData);
+                noteModel.Deserialize(modelData, SaveContext.Undo);
                 Notes.Add(noteModel);
             }
         }
