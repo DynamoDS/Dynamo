@@ -93,7 +93,7 @@ namespace Dynamo.PackageManager
             if (result == MessageBoxResult.OK)
             {
                 // get all of the headers
-                var headers = version.full_dependency_ids.Select((id) =>
+                var headers = version.full_dependency_ids.Select(dep=>dep._id).Select((id) =>
                     {
                         PackageHeader pkgHeader;
                         var res = dynSettings.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);

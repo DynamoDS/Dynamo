@@ -98,10 +98,6 @@
                                 Modifiers="Control+Shift"
                                 Command="{Binding Path=DataContext.ClearCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
-        <KeyBinding Key="L"
-                Modifiers="Control+Shift"
-                    Command="{Binding Path=DataContext.LayoutAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-        
         <KeyBinding Key="Left"
                     Modifiers="Alt"
                     CommandParameter="Left"
@@ -306,7 +302,6 @@
                 </MenuItem>
 
                 <MenuItem Header="Help" Focusable="False">
-                    <!--<MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>-->
                     <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
                         <MenuItem.Icon>
                             <Image Source="/DynamoCore;component/UI/Images/OpenSelectedItemHS.png" Width="16" Height="16" />

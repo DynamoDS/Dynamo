@@ -354,19 +354,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(numNodes, Controller.ClipBoard.Count);
         }
 
-
-        // LayoutAll
-
-        [Test]
-        public void CanLayoutAll()
-        {
-            var model = dynSettings.Controller.DynamoModel;
-
-            model.LayoutAll(null);
-
-            Assert.AreNotEqual(0, Controller.DynamoViewModel.Model.Nodes.Count());
-        }
-
         // SaveImage
 
         //[Test]

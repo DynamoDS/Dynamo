@@ -1792,114 +1792,93 @@ namespace Dynamo.Models
             return CurrentWorkspace != HomeSpace;
         }
 
-        /// <summary>
-        /// Layout all available nodes in columns by category.
-        /// </summary>
-        /// <param name="parameter"></param>
-        public void LayoutAll(object parameter)
+        #region Private Helper Methods
+
+        private ConnectorModel CreateConnectionInternal(object parameters)
         {
-            dynSettings.Controller.IsUILocked = true;
-
-            CleanWorkbench();
-
-            double x = 0;
-            double y = 0;
-            double maxWidth = 0;    //track max width of current column
-            double colGutter = 40;     //the space between columns
-            double rowGutter = 40;
-            int colCount = 0;
-
-            Hashtable typeHash = new Hashtable();
-
-            foreach (KeyValuePair<string, TypeLoadData> kvp in dynSettings.Controller.BuiltInTypesByNickname)
+            try
             {
-                Type t = kvp.Value.Type;
+                Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
 
-                object[] attribs = t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+                NodeModel start = (NodeModel)connectionData["start"];
+                NodeModel end = (NodeModel)connectionData["end"];
+                int startIndex = (int)connectionData["port_start"];
+                int endIndex = (int)connectionData["port_end"];
 
-                if (t.Namespace == "Dynamo.Nodes" &&
-                    !t.IsAbstract &&
-                    attribs.Length > 0 &&
-                    t.IsSubclassOf(typeof(NodeModel)))
-                {
-                    NodeCategoryAttribute elCatAttrib = attribs[0] as NodeCategoryAttribute;
+                var c = ConnectorModel.Make(start, end, startIndex, endIndex, 0);
 
-                    List<Type> catTypes = null;
+                if (c != null)
+                    CurrentWorkspace.Connectors.Add(c);
 
-                    if (typeHash.ContainsKey(elCatAttrib.ElementCategory))
-                    {
-                        catTypes = typeHash[elCatAttrib.ElementCategory] as List<Type>;
-                    }
-                    else
-                    {
-                        catTypes = new List<Type>();
-                        typeHash.Add(elCatAttrib.ElementCategory, catTypes);
-                    }
-
-                    catTypes.Add(t);
-                }
+                return c;
+            }
+            catch (Exception e)
+            {
+                DynamoLogger.Instance.Log(e.Message);
+                DynamoLogger.Instance.Log(e);
             }
 
-            foreach (DictionaryEntry de in typeHash)
+            return null;
+        }
+
+        private NoteModel AddNoteInternal(object parameters)
+        {
+            var inputs = parameters as Dictionary<string, object> ?? new Dictionary<string, object>();
+
+            // by default place note at center
+            var x = 0.0;
+            var y = 0.0;
+
+            if (inputs != null && inputs.ContainsKey("x"))
+                x = (double)inputs["x"];
+
+            if (inputs != null && inputs.ContainsKey("y"))
+
+                y = (double)inputs["y"];
+
+            var n = new NoteModel(x, y);
+
+            //if we have null parameters, the note is being added
+            //from the menu, center the view on the note
+
+            if (parameters == null)
             {
-                List<Type> catTypes = de.Value as List<Type>;
-
-                //add the name of the category here
-                //AddNote(de.Key.ToString(), x, y, ViewModel.CurrentWorkspace);
-                Dictionary<string, object> paramDict = new Dictionary<string, object>();
-                paramDict.Add("x", x);
-                paramDict.Add("y", y);
-                paramDict.Add("text", de.Key.ToString());
-                paramDict.Add("workspace", CurrentWorkspace);
-
-                if (CanAddNote(paramDict))
-                    AddNote(paramDict);
-
-                y += 60;
-
-                foreach (Type t in catTypes)
-                {
-                    object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
-
-                    NodeNameAttribute elNameAttrib = attribs[0] as NodeNameAttribute;
-                    NodeModel el = CreateInstanceAndAddNodeToWorkspace(
-                           t, elNameAttrib.Name, Guid.NewGuid(), x, y,
-                           CurrentWorkspace
-                        );
-
-                    if (el == null) continue;
-
-                    el.DisableReporting();
-
-                    maxWidth = Math.Max(el.Width, maxWidth);
-
-                    colCount++;
-
-                    y += el.Height + rowGutter;
-
-                    if (colCount > 20)
-                    {
-                        y = 60;
-                        colCount = 0;
-                        x += maxWidth + colGutter;
-                        maxWidth = 0;
-                    }
-                }
-
-                y = 0;
-                colCount = 0;
-                x += maxWidth + colGutter;
-                maxWidth = 0;
-
+                inputs.Add("transformFromOuterCanvasCoordinates", true);
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new ModelEventArgs(n, inputs));
             }
 
-            dynSettings.Controller.IsUILocked = false;
+            object id;
+            if (inputs.TryGetValue("guid", out id))
+                n.GUID = (Guid)id;
+
+            n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
+            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? CurrentWorkspace : (WorkspaceModel)inputs["workspace"];
+
+            ws.Notes.Add(n);
+            return n;
         }
 
-        internal bool CanLayoutAll(object parameter)
+        #endregion
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            return true;
+            // I don't think anyone is serializing/deserializing DynamoModel 
+            // directly. If that is not the case, please let me know and I'll 
+            // fix it.
+            throw new NotImplementedException();
         }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            // I don't think anyone is serializing/deserializing DynamoModel 
+            // directly. If that is not the case, please let me know and I'll 
+            // fix it.
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 
     public class PointEventArgs : EventArgs
