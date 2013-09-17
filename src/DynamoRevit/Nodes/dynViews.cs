@@ -88,9 +88,8 @@ namespace Dynamo.Nodes
 
         protected ViewBase()
         {
-            InPortData.Add(new PortData("origin", "The eye position point.", typeof(Value.Container)));
-            InPortData.Add(new PortData("up", "The up direction of the view.", typeof(Value.Container)));
-            InPortData.Add(new PortData("forward", "The view direction - the vector pointing from the eye towards the model.", typeof(Value.Container)));
+            InPortData.Add(new PortData("eye", "The eye position point.", typeof(Value.Container)));
+            InPortData.Add(new PortData("target", "The location where the view is pointing.", typeof(Value.Container)));
             InPortData.Add(new PortData("name", "The name of the view.", typeof(Value.String)));
             InPortData.Add(new PortData("extents", "Pass in a bounding box or an element to define the 3D crop of the view.", typeof(Value.String)));
             InPortData.Add(new PortData("isolate", "If an element is supplied in 'extents', it will be isolated in the view.", typeof(Value.String)));
@@ -104,25 +103,15 @@ namespace Dynamo.Nodes
         {
             View3D view = null;
             var eye = (XYZ)((Value.Container)args[0]).Item;
-            var userUp = (XYZ)((Value.Container)args[1]).Item;
-            var direction = (XYZ)((Value.Container)args[2]).Item;
-            var name = ((Value.String)args[3]).Item;
-            var extents = ((Value.Container)args[4]).Item;
-            var isolate = Convert.ToBoolean(((Value.Number)args[5]).Item);
+            var target = (XYZ)((Value.Container)args[1]).Item;
+            var name = ((Value.String)args[2]).Item;
+            var extents = ((Value.Container)args[3]).Item;
+            var isolate = Convert.ToBoolean(((Value.Number)args[4]).Item);
 
-            XYZ side;
-            if (direction.IsAlmostEqualTo(userUp) || direction.IsAlmostEqualTo(userUp.Negate()))
-                side = XYZ.BasisZ.CrossProduct(direction);
-            else
-                side = userUp.CrossProduct(direction);
-            XYZ up = side.CrossProduct(direction);
-
-            //need to reverse the up direction to get the 
-            //proper orientation - there might be a better way to handle this
-            ViewOrientation3D orient = null;
-            orient = isPerspective?
-                new ViewOrientation3D(eye, -up, -direction):
-                new ViewOrientation3D(eye, -up, direction);
+            var globalUp = XYZ.BasisZ;
+            var direction = target.Subtract(eye);
+            var up = direction.CrossProduct(globalUp).CrossProduct(direction);
+            var orient = new ViewOrientation3D(eye, up, direction);
 
             if (this.Elements.Any())
             {
@@ -155,7 +144,6 @@ namespace Dynamo.Nodes
 
             var fec = dynRevitUtils.SetupFilters(dynRevitSettings.Doc.Document);
 
-            //only isolate in isometric for now
             if (isolate)
             {
                 view.CropBoxActive = true;
@@ -174,84 +162,71 @@ namespace Dynamo.Nodes
 
                     dynRevitSettings.Doc.Document.Regenerate();
 
-                    //http://adndevblog.typepad.com/aec/2012/05/set-crop-box-of-3d-view-that-exactly-fits-an-element.html
-                    var pts = new List<XYZ>();
-                    foreach (GeometryObject gObj in element.get_Geometry(dynRevitSettings.GeometryOptions))
-                    {
-                        if (gObj is Solid)
-                        {
-                            //get all the edges in it
-                            var solid = gObj as Solid;
-                            foreach (Edge gEdge in solid.Edges)
-                            {
-                                IList<XYZ> xyzArray = gEdge.Tessellate();
-                                pts.AddRange(xyzArray);
-                            }
-                        }
-                    }
-
-                    var bounding = view.CropBox;
-                    var transInverse = bounding.Transform.Inverse;
-                    var transPts = pts.Select(transInverse.OfPoint).ToList();
-
-                    //ingore the Z coordindates and find
-                    //the max X ,Y and Min X, Y in 3d view.
-                    double dMaxX = 0, dMaxY = 0, dMinX = 0, dMinY = 0;
-
-                    //geom.XYZ ptMaxX, ptMaxY, ptMinX,ptMInY; 
-                    //coorresponding point.
-                    bool bFirstPt = true;
-                    foreach (var pt1 in transPts)
-                    {
-                        if (true == bFirstPt)
-                        {
-                            dMaxX = pt1.X;
-                            dMaxY = pt1.Y;
-                            dMinX = pt1.X;
-                            dMinY = pt1.Y;
-                            bFirstPt = false;
-                        }
-                        else
-                        {
-                            if (dMaxX < pt1.X)
-                                dMaxX = pt1.X;
-                            if (dMaxY < pt1.Y)
-                                dMaxY = pt1.Y;
-                            if (dMinX > pt1.X)
-                                dMinX = pt1.X;
-                            if (dMinY > pt1.Y)
-                                dMinY = pt1.Y;
-                        }
-                    }
-
                     Debug.WriteLine(string.Format("Eye:{0},Origin{1}, BBox_Origin{2}, Element{3}",
                         eye.ToString(), view.Origin.ToString(), view.CropBox.Transform.Origin.ToString(), (element.Location as LocationPoint).Point.ToString()));
 
                     //http://wikihelp.autodesk.com/Revit/fra/2013/Help/0000-API_Deve0/0039-Basic_In39/0067-Views67/0069-The_View69
                     if (isPerspective)
                     {
-                        //var rearClip = dynRevitSettings.Revit.Application.Create.NewPlane(view.ViewDirection,
-                        //                                                                    view.Origin +
-                        //                                                                    view.ViewDirection*10);
-                        //var frontClip = dynRevitSettings.Revit.Application.Create.NewPlane(view.ViewDirection,
-                        //                                                                    view.Origin + view.ViewDirection*.001);
-                        
-                        ////project max onto front plane
-                        //var maxWorld = view.CropBox.Transform.OfPoint(new XYZ(dMaxX, dMaxY, 0));
-                        //bounding.Max = dynRevitUtils.ProjectPointOnPlane(maxWorld, frontClip);
-
-                        ////project min onto rear plane
-                        //var minWorld = view.CropBox.Transform.OfPoint(new XYZ(dMinX, dMinY, 0));
-                        //bounding.Min = dynRevitUtils.ProjectPointOnPlane(minWorld, rearClip);
+                        var farClip = view.get_Parameter("Far Clip Active");
+                        farClip.Set(0);
                     }
                     else
                     {
+                        //http://adndevblog.typepad.com/aec/2012/05/set-crop-box-of-3d-view-that-exactly-fits-an-element.html
+                        var pts = new List<XYZ>();
+                        foreach (GeometryObject gObj in element.get_Geometry(dynRevitSettings.GeometryOptions))
+                        {
+                            if (gObj is Solid)
+                            {
+                                //get all the edges in it
+                                var solid = gObj as Solid;
+                                foreach (Edge gEdge in solid.Edges)
+                                {
+                                    IList<XYZ> xyzArray = gEdge.Tessellate();
+                                    pts.AddRange(xyzArray);
+                                }
+                            }
+                        }
+
+                        var bounding = view.CropBox;
+                        var transInverse = bounding.Transform.Inverse;
+                        var transPts = pts.Select(transInverse.OfPoint).ToList();
+
+                        //ingore the Z coordindates and find
+                        //the max X ,Y and Min X, Y in 3d view.
+                        double dMaxX = 0, dMaxY = 0, dMinX = 0, dMinY = 0;
+
+                        //geom.XYZ ptMaxX, ptMaxY, ptMinX,ptMInY; 
+                        //coorresponding point.
+                        bool bFirstPt = true;
+                        foreach (var pt1 in transPts)
+                        {
+                            if (true == bFirstPt)
+                            {
+                                dMaxX = pt1.X;
+                                dMaxY = pt1.Y;
+                                dMinX = pt1.X;
+                                dMinY = pt1.Y;
+                                bFirstPt = false;
+                            }
+                            else
+                            {
+                                if (dMaxX < pt1.X)
+                                    dMaxX = pt1.X;
+                                if (dMaxY < pt1.Y)
+                                    dMaxY = pt1.Y;
+                                if (dMinX > pt1.X)
+                                    dMinX = pt1.X;
+                                if (dMinY > pt1.Y)
+                                    dMinY = pt1.Y;
+                            }
+                        }
+
                         bounding.Max = new XYZ(dMaxX, dMaxY, bounding.Max.Z);
                         bounding.Min = new XYZ(dMinX, dMinY, bounding.Min.Z);
+                        view.CropBox = bounding;
                     }
-
-                    view.CropBox = bounding;
-
                 }
                 else
                 {
@@ -339,16 +314,16 @@ namespace Dynamo.Nodes
         }
     }
 
-    //[NodeName("Perspective View")]
-    //[NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
-    //[NodeDescription("Creates a perspective view.")]
-    //public class PerspectiveView : ViewBase
-    //{
-    //    public PerspectiveView()
-    //    {
-    //        isPerspective = true;
-    //    }
-    //}
+    [NodeName("Perspective View")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
+    [NodeDescription("Creates a perspective view.")]
+    public class PerspectiveView : ViewBase
+    {
+        public PerspectiveView()
+        {
+            isPerspective = true;
+        }
+    }
 
     [NodeName("Bounding Box XYZ")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
