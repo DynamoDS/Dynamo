@@ -29,7 +29,7 @@ namespace Dynamo
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            // Varification for X cordinate of Point node.
+            // Verification for X coordinate of Point node.
             Autodesk.LibG.Geometry geometry = null;
             var getGeometry = model.CurrentWorkspace.NodeFromWorkspace<Point3DNode>("18dce051-d02c-4e24-b852-8626af14b2ea");
             Assert.IsTrue(Utils.Convert(getGeometry.GetValue(0), ref geometry));
@@ -38,7 +38,7 @@ namespace Dynamo
             Assert.AreNotEqual(null, point);
             Assert.AreEqual(0, point.x());
 
-            // Varification for Y cordinate of Point node.
+            // Verification for Y coordinate of Point node.
             Autodesk.LibG.Geometry geometry1 = null;
             var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<Point3DNode>("c231bff3-36d7-4171-bd28-21d5730ab230");
             Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
@@ -73,7 +73,7 @@ namespace Dynamo
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            // Varification for X cordinate of CenterPoint node.
+            // Verification for X coordinate of CenterPoint node.
             Autodesk.LibG.Geometry geometry1 = null;
             var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<Point3DNode>("753356e5-4025-46b9-a688-8a2e20e482fc");
             Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
@@ -82,7 +82,7 @@ namespace Dynamo
             Assert.AreNotEqual(null, point1);
             Assert.AreEqual(0, point1.x());
 
-            // Varification for Circle node.
+            // Verification for Circle node.
             Autodesk.LibG.Geometry geometry = null;
             var getGeometry = model.CurrentWorkspace.NodeFromWorkspace<CircleNode>("3382f192-30e7-49bf-92f0-c24504d498b5");
             Assert.IsTrue(Utils.Convert(getGeometry.GetValue(0), ref geometry));
