@@ -47,7 +47,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBox Grid.Column="0" Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,10,5,10" Margin ="0"
-                       IsEnabled="True" KeyUp="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText, Mode=TwoWay}">
+                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText, Mode=TwoWay}">
                 </TextBox>
 
                 <TextBlock Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" 
@@ -55,7 +55,7 @@
                            IsHitTestVisible="False"
                            Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search...</TextBlock>
 
-                <Button Width="80" Grid.Column="1" Click="ButtonBase_OnClick" Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\search_24.png" >Search</Button>
+                <!--<Button Width="80" Grid.Column="1" Click="ButtonBase_OnClick" Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\search_24.png" >Search</Button>-->
 
             </Grid>
 
@@ -83,45 +83,73 @@
                             <Border BorderBrush="#222" BorderThickness="0,0,0,1">
                                 <Border Name="ItemBG" BorderBrush="#444" BorderThickness="0,1,0,0">
 
-                                    <Border.Background>
-                                        <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                                            <GradientStop Color="#333" Offset="0.0" />
-                                            <GradientStop Color="#333" Offset="1.0" />
-                                        </LinearGradientBrush>
-                                    </Border.Background>
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
+                                                        <Setter Property="Background" Value="#222"/>
+                                                    </DataTrigger>
 
-                                
-                                     <StackPanel Width ="445" Name="SearchEle">
+                                                    <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
+                                                        <Setter Property="Background" Value="#333"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                    
+                                        <StackPanel Width ="445" Name="SearchEle">
 
-                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                        <TextBlock Text="DEPRECATED" Padding="5" Foreground ="#555" ToolTip="The maintainers of this package have indicated that they will no longer be updating it.  Use at your own risk!" FontSize="10">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
 
-                                            <Border Width="265" BorderThickness ="0,0,1,0" BorderBrush="#222" >
+                                                        <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                            
+                                        <StackPanel Orientation="Horizontal" Margin="5">
+
+                                            <Border Width="275" BorderThickness ="0,0,1,0" BorderBrush="#222" >
                                                 <StackPanel>
-                                                    <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="AliceBlue" Margin="5,10,5,5"/>
+                                                    <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="AliceBlue" Margin="5,5,0,5"/>
                                                     <TextBlock FontSize="11" Margin="3" Foreground="#777" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="80"/>
                                                 </StackPanel>
                                             </Border>
                                     
                                              <Border>
-                                                <StackPanel Width="170" >
+                                                <StackPanel Width="170">
 
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
 
-                                                        <StackPanel Orientation="Horizontal" Margin="10,5,5,5" MinWidth="80">
-                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="Downloads: " Foreground="Gray" />
+                                                        <StackPanel Orientation="Horizontal" Margin="10,5,5,5" MinWidth="55">
+                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="Installs   " Foreground="Gray" />
                                                             <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Downloads}" Foreground="Gray"  />
                                                         </StackPanel>
 
-                                                        <StackPanel Orientation="Horizontal" Margin="5,5,5,5" >
-                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="Votes: " Foreground="Gray"  />
-                                                            <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Votes}" Foreground="Gray"  />
-                                                        </StackPanel>
+                                                        <Border Margin="5,5,5,5" MinWidth="40" MaxWidth="40">
+                                                            <TextBlock FontSize="10" HorizontalAlignment="Right" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Votes}" Foreground="Gray"  />
+                                                        </Border>
 
+                                                        <StackPanel Orientation="Horizontal" >
+                                                            <Button Name="UpvoteButton" ToolTip="Vote in support of this package" HorizontalAlignment="Right" Content="↑" Command="{Binding Path=UpvoteCommand}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                            <Button Name="DownvoteButton" ToolTip="Downvote to voice lack of support for this package" HorizontalAlignment="Right" Content="↓" Command="{Binding Path=DownvoteCommand}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                        </StackPanel>
+                                                        
                                                     </StackPanel>
                                                 
-                                                    <StackPanel Orientation="Horizontal" Margin="5,0,5,5">
-                                                        <Button Name="LatestButton" Width="90" ToolTip="Download latest version" HorizontalAlignment="Right" Content="⇓ Install" Command="{Binding Path=DownloadLatest}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                        <Button Name="ExpandButton" Width="60" ToolTip="See more package versions, maintainers, and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpanded}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                    <StackPanel Orientation="Vertical" Margin="5,0,5,5">
+                                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                                            <Button Name="LatestButton" Width="90" ToolTip="Download latest version" HorizontalAlignment="Right" Content="⇓ Install" Command="{Binding Path=DownloadLatest}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                            <Button Name="ExpandButton" Width="60" ToolTip="See more package versions, maintainers, and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpanded}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                        </StackPanel>
                                                     </StackPanel>
 
                                                 </StackPanel>

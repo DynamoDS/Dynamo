@@ -93,7 +93,7 @@ namespace Dynamo.PackageManager
             if (result == MessageBoxResult.OK)
             {
                 // get all of the headers
-                var headers = version.full_dependency_ids.Select((id) =>
+                var headers = version.full_dependency_ids.Select(dep=>dep._id).Select((id) =>
                     {
                         PackageHeader pkgHeader;
                         var res = dynSettings.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
@@ -168,6 +168,7 @@ namespace Dynamo.PackageManager
                 get { return _votes; } 
                 set { _votes = value; RaisePropertyChanged("Votes"); }
             }
+            public bool IsDeprecated { get { return this.Header.deprecated; } }
             public int Downloads { get { return this.Header.downloads; } }
             public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
             public int UsedBy { get { return this.Header.used_by.Count; } } 

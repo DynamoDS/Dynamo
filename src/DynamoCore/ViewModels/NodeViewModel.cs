@@ -337,9 +337,15 @@ namespace Dynamo.ViewModels
                 case "State":
                     RaisePropertyChanged("State");
                     break;
-                //case "ArgumentLacing":
-                //    SetLacingTypeCommand.RaiseCanExecuteChanged();
-                //    break;
+                case "ArgumentLacing":
+                    RaisePropertyChanged("ArgumentLacing");
+                    break;
+                case "IsVisible":
+                    RaisePropertyChanged("IsVisible");
+                    break;
+                case "IsUpstreamVisible":
+                    RaisePropertyChanged("IsUpstreamVisible");
+                    break;
             }
         }
 
@@ -396,38 +402,25 @@ namespace Dynamo.ViewModels
 
         void SetLacingType(object param)
         {
-            string parameter = param.ToString();
+            // Record the state of this node before changes.
+            DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
 
-            if (parameter == "First")
-            {
-                NodeLogic.ArgumentLacing = LacingStrategy.First;
-            }
-            else if (parameter == "Longest")
-            {
-                NodeLogic.ArgumentLacing = LacingStrategy.Longest;
-            }
-            else if (parameter == "Shortest")
-            {
-                NodeLogic.ArgumentLacing = LacingStrategy.Shortest;
-            }
-            else if (parameter == "CrossProduct")
-            {
-                NodeLogic.ArgumentLacing = LacingStrategy.CrossProduct;
-            }
-            else
-                NodeLogic.ArgumentLacing = LacingStrategy.Disabled;
+            LacingStrategy strategy = LacingStrategy.Disabled;
+            if (!System.Enum.TryParse(param.ToString(), out strategy))
+                strategy = LacingStrategy.Disabled;
 
-            RaisePropertyChanged("Lacing");
+            NodeLogic.ArgumentLacing = strategy;
+
+            RaisePropertyChanged("ArgumentLacing");
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         bool CanSetLacingType(object param)
         {
-            string parameter = param.ToString();
-
-            if (this.ArgumentLacing == LacingStrategy.Disabled)
-                return false;
-
-            return true;
+            // Only allow setting of lacing strategy when it is not disabled.
+            return (this.ArgumentLacing != LacingStrategy.Disabled);
         }
 
         private void ViewCustomNodeWorkspace(object parameter)
@@ -440,25 +433,6 @@ namespace Dynamo.ViewModels
         private bool CanViewCustomNodeWorkspace(object parameter)
         {
             return nodeLogic.IsCustomFunction;
-        }
-
-        private void SetLayout(object parameters)
-        {
-            var dict = parameters as Dictionary<string,
-            double >;
-            nodeLogic.X = dict["X"];
-            nodeLogic.Y = dict["Y"];
-            nodeLogic.Height = dict["Height"];
-            nodeLogic.Width = dict["Width"];
-        }
-
-        private bool CanSetLayout(object parameters)
-        {
-            var dict = parameters as Dictionary<string,
-            double>;
-            if (dict == null)
-                return false;
-            return true;
         }
 
         void inports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -511,14 +485,26 @@ namespace Dynamo.ViewModels
 
         private void ToggleIsVisible(object parameter)
         {
+            // Record the state of this node before changes.
+            DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
+
             this.nodeLogic.IsVisible = !this.nodeLogic.IsVisible;
-            RaisePropertyChanged("IsVisible");
+
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void ToggleIsUpstreamVisible(object parameter)
         {
+            // Record the state of this node before changes.
+            DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
+
             this.nodeLogic.IsUpstreamVisible = !this.nodeLogic.IsUpstreamVisible;
-            RaisePropertyChanged("IsUpstreamVisible");
+
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         private bool CanVisibilityBeToggled(object parameter) 
