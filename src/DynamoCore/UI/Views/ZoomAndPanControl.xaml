@@ -37,6 +37,35 @@
     </UserControl.Resources>
 
     <StackPanel>
+        <Button Command="{Binding Path=FitViewCommand}" Margin="0,0,0,8">
+            <Button.Resources>
+                <Image x:Key="Normal"
+                       Source="/DynamoCore;component/UI/Images/fitview_normal.png"/>
+                <Image x:Key="Hover"
+                       Source="/DynamoCore;component/UI/Images/fitview_hover.png"/>
+                <Image x:Key="Disabled"
+                       Source="/DynamoCore;component/UI/Images/fitview_disabled.png"/>
+            </Button.Resources>
+            <Button.Style>
+                <Style BasedOn="{StaticResource ZoomAndPanButtonStyle}" TargetType="{x:Type Button}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsMouseOver}" Value="false" />
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsEnabled}" Value="true" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Content" Value="{StaticResource Normal}" />
+                        </MultiDataTrigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Content" Value="{StaticResource Disabled}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Content" Value="{StaticResource Hover}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <RepeatButton Command="{Binding Path=ZoomInCommand}" IsEnabled="{Binding Path=ZoomInCommand.CanExecute}">
             <RepeatButton.Resources>
                 <Image x:Key="Normal"

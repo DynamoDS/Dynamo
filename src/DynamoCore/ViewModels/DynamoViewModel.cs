@@ -161,6 +161,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand PanCommand { get; set; }
         public DelegateCommand ZoomInCommand { get; set; }
         public DelegateCommand ZoomOutCommand { get; set; }
+        public DelegateCommand FitViewCommand { get; set; }
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -439,6 +440,7 @@ namespace Dynamo.ViewModels
             PanCommand = new DelegateCommand(Pan, CanPan);
             ZoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
             ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
+            FitViewCommand = new DelegateCommand(FitView, CanFitView);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -1161,6 +1163,16 @@ namespace Dynamo.ViewModels
         {
             return CurrentSpaceViewModel.ZoomOutCommand.CanExecute(parameter);
         }
+
+        public void FitView(object parameter)
+        {
+            CurrentSpaceViewModel.FitViewCommand.Execute(parameter);
+        }
+
+        internal bool CanFitView(object parameter)
+        {
+            return CurrentSpaceViewModel.FitViewCommand.CanExecute(parameter);
+        }
     }
 
     public class ZoomEventArgs : EventArgs
@@ -1168,12 +1180,17 @@ namespace Dynamo.ViewModels
         internal enum ZoomModes
         {
             ByPoint = 0x00000001,
-            ByFactor = 0x00000002
+            ByFactor = 0x00000002,
+            ByFitView = 0x00000004
         }
 
         internal Point Point { get; set; }
         internal double Zoom { get; set; }
         internal ZoomModes Modes { get; private set; }
+
+        internal Point Offset { get; set; }
+        internal double FocusWidth { get; set; }
+        internal double FocusHeight { get; set; }
 
         internal ZoomEventArgs(double zoom)
         {
@@ -1194,12 +1211,29 @@ namespace Dynamo.ViewModels
             this.Modes = ZoomModes.ByPoint | ZoomModes.ByFactor;
         }
 
-        bool hasPoint()
+        internal ZoomEventArgs(Point offset, double focusWidth, double focusHeight)
+        {
+            this.Offset = offset;
+            this.FocusWidth = focusWidth;
+            this.FocusHeight = focusHeight;
+            this.Modes = ZoomModes.ByFitView;
+        }
+
+        internal ZoomEventArgs(Point offset, double focusWidth, double focusHeight, double zoom)
+        {
+            this.Offset = offset;
+            this.FocusWidth = focusWidth;
+            this.FocusHeight = focusHeight;
+            this.Zoom = zoom;
+            this.Modes = ZoomModes.ByFitView | ZoomModes.ByFactor;
+        }
+
+        internal bool hasPoint()
         {
             return this.Modes.HasFlag(ZoomModes.ByPoint);
         }
 
-        bool hasZoom()
+        internal bool hasZoom()
         {
             return this.Modes.HasFlag(ZoomModes.ByFactor);
         }
