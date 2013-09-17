@@ -116,7 +116,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand AddNoteCommand { get; set; }
         public DelegateCommand UndoCommand { get; set; }
         public DelegateCommand RedoCommand { get; set; }
-        public DelegateCommand LayoutAllCommand { get; set; }
         public DelegateCommand CopyCommand { get; set; }
         public DelegateCommand PasteCommand { get; set; }
         public DelegateCommand AddToSelectionCommand { get; set; }
@@ -395,7 +394,6 @@ namespace Dynamo.ViewModels
             WriteToLogCmd = new DelegateCommand(_model.WriteToLog, _model.CanWriteToLog);
             PostUiActivationCommand = new DelegateCommand(_model.PostUIActivation, _model.CanDoPostUIActivation);
             AddNoteCommand = new DelegateCommand(_model.AddNote, _model.CanAddNote);
-            LayoutAllCommand = new DelegateCommand(_model.LayoutAll, _model.CanLayoutAll);
             AddToSelectionCommand = new DelegateCommand(_model.AddToSelection, _model.CanAddToSelection);
             ShowNewFunctionDialogCommand = new DelegateCommand(_model.ShowNewFunctionDialogAndMakeFunction, _model.CanShowNewFunctionDialogCommand);
             CreateNodeCommand = new DelegateCommand(_model.CreateNode, _model.CanCreateNode);
