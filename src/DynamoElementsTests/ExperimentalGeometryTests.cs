@@ -1,13 +1,9 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Dynamo.FSchemeInterop;
 using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Tests;
-using Autodesk.LibG;
-using Microsoft.FSharp.Collections;
-using String = System.String;
 
 namespace Dynamo
 {
