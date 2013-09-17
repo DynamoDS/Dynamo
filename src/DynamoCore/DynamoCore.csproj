@@ -379,7 +379,7 @@ limitations under the License.
     <Resource Include="UI\Images\search_24.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Themes\StyleDictionary.xaml">
+    <Page Include="UI\Themes\ToolbarStyleDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

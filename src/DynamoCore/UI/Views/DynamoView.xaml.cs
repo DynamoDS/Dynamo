@@ -126,7 +126,7 @@ namespace Dynamo.Controls
             // PLACEHOLDER FOR FUTURE SHORTCUTS
             //ShortcutBarItem undoButton = new ShortcutBarItem();
             //undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
-            //undoButton.ShortcutCommand = viewModel.; // Function implementation in progress
+            ////undoButton.ShortcutCommand = viewModel.; // Function implementation in progress
             //undoButton.ShortcutCommandParameter = null;
             //undoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/undo_normal.png";
             //undoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/undo_disabled.png";
@@ -134,7 +134,7 @@ namespace Dynamo.Controls
 
             //ShortcutBarItem redoButton = new ShortcutBarItem();
             //redoButton.ShortcutToolTip = "Redo [Ctrl + Y]";
-            //redoButton.ShortcutCommand = viewModel.; // Function implementation in progress
+            ////redoButton.ShortcutCommand = viewModel.; // Function implementation in progress
             //redoButton.ShortcutCommandParameter = null;
             //redoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
             //redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
@@ -142,7 +142,7 @@ namespace Dynamo.Controls
 
             //ShortcutBarItem runButton = new ShortcutBarItem();
             //runButton.ShortcutToolTip = "Run [Ctrl + R]";
-            //runButton.ShortcutCommand = viewModel.RunExpressionCommand; // Function implementation in progress
+            ////runButton.ShortcutCommand = viewModel.RunExpressionCommand; // Function implementation in progress
             //runButton.ShortcutCommandParameter = null;
             //runButton.ImgNormalSource = "/DynamoCore;component/UI/Images/run_normal.png";
             //runButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/run_disabled.png";

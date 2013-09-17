@@ -30,7 +30,7 @@
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/StyleDictionary.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/ToolbarStyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -122,7 +122,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="31"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Name="consoleRow" Height="{Binding ConsoleShowing, Converter={StaticResource BoolToConsoleHeightConverter}}"/>
@@ -136,12 +136,13 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <!--Menu-->
         <Border BorderBrush="#FF3F4040"
                 BorderThickness="0,0,0,1"
                 Grid.Row="0"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
-                Height="27"
+                Height="26"
                 Name="titleBar">
 
             <Grid Name="titleBarGrid">
@@ -282,22 +283,14 @@
             </Grid>
         </Border>
 
-        <!--Shortcuts-->
+        <!--Shortcuts Toolbar-->
         <Border Grid.Row="1" 
                 Grid.Column="0" 
                 Grid.ColumnSpan="3"
-                Height="30"
+                Height="32"
                 Panel.ZIndex="2000"
-                BorderBrush="#3f3f3f"
-                BorderThickness="0,2,0,0">
-            <Border.Background>
-                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                    <GradientStop Color="#FFF6F6F6" Offset="0.25"/>
-                    <GradientStop Color="#FFEAE8E8" Offset="0.25"/>
-                    <GradientStop Color="#FFDCD9D9" Offset="0.8"/>
-                    <GradientStop Color="White" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
+                BorderBrush="#FF3F4040"
+                BorderThickness="0,0,0,1">
 
             <Border Margin="11 0 0 0"
                     HorizontalAlignment="Left"
@@ -355,6 +348,7 @@
             </Border>
         </Border>
         
+        <!--Workspace-->
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
                 Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#999">
             
@@ -610,12 +604,12 @@
                     IsTabStop="False" FontFamily="Consolas" TextChanged="TextBoxBase_OnTextChanged" />
         </ScrollViewer>
 
+        <!--Sidebar-->
         <Grid Height="Auto" Width="Auto" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
               Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" Background="Black">
         </Grid>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-
                    Grid.ColumnSpan="3">
 
             <WrapPanel.Background>
