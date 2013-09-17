@@ -28,9 +28,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/ToolbarStyleDictionary.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />                                
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -153,6 +151,9 @@
                 </Grid.ColumnDefinitions>
 
                 <Menu IsMainMenu="True" Name="menu1">
+                    <Menu.Resources>
+                        <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
+                    </Menu.Resources>
 
                     <MenuItem Header="_File" Name="fileMenu" Focusable="False">
                         <MenuItem Header="_New" Name="newMenu" Focusable="False">
@@ -291,6 +292,10 @@
                 Panel.ZIndex="2000"
                 BorderBrush="#FF3F4040"
                 BorderThickness="0,0,0,1">
+            
+            <Border.Resources>
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/ToolbarStyleDictionary.xaml" />
+            </Border.Resources>
 
             <Border Margin="11 0 0 0"
                     HorizontalAlignment="Left"
