@@ -19,14 +19,9 @@ namespace Dynamo.PackageManager.UI
 
         }
 
-        private void SearchTextBox_TextChanged(object sender, KeyEventArgs e)
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            (this.DataContext as PackageManagerSearchViewModel).SearchText = this.SearchTextBox.Text;
-
-            if (e.Key == Key.Enter)
-            {
-                (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults();
-            }
+            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(this.SearchTextBox.Text);
         }
 
         private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)

@@ -75,10 +75,12 @@ namespace Dynamo.PackageManager
 
         public bool Upvote(string packageId)
         {
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
             try
             {
                 var nv = new Greg.Requests.Upvote(packageId);
-                var pkgResponse = Client.ExecuteAndDeserializeWithContent<Greg.Responses.Response>(nv);
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
                 return pkgResponse.success;
             }
             catch
@@ -89,15 +91,34 @@ namespace Dynamo.PackageManager
 
         public bool Downvote(string packageId)
         {
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
             try
             {
                 var nv = new Greg.Requests.Downvote(packageId);
-                var pkgResponse = Client.ExecuteAndDeserializeWithContent<Greg.Responses.Response>(nv);
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
                 return pkgResponse.success;
             }
             catch
             {
                 return false;
+            }
+        }
+
+        public List<PackageManagerSearchElement> ListAll()
+        {
+            try
+            {
+                var nv = Greg.Requests.HeaderCollectionDownload.ByEngine("dynamo");
+                var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
+                return
+                    pkgResponse.content
+                               .Select((header) => new PackageManagerSearchElement(header))
+                               .ToList();
+            }
+            catch
+            {
+                return new List<PackageManagerSearchElement>();
             }
         }
 
@@ -409,6 +430,38 @@ namespace Dynamo.PackageManager
         internal void GoToWebsite()
         {
             Process.Start(Client.BaseUrl);
+        }
+
+        internal PackageManagerResult Deprecate(string name)
+        {
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
+            try
+            {
+                var nv = new Greg.Requests.Deprecate(name, "dynamo");
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
+                return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
+            }
+            catch
+            {
+                return new PackageManagerResult("Failed to send.", false);
+            }
+        }
+
+        internal PackageManagerResult Undeprecate(string name)
+        {
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
+            try
+            {
+                var nv = new Greg.Requests.Undeprecate(name, "dynamo");
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
+                return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
+            }
+            catch
+            {
+                return new PackageManagerResult("Failed to send.", false);
+            }
         }
     }
 
