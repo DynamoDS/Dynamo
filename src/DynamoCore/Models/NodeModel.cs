@@ -496,6 +496,8 @@ namespace Dynamo.Models
         /// <summary>
         /// Override this to implement custom save data for your Element. If overridden, you should also override
         /// LoadNode() in order to read the data back when loaded.
+        /// This SaveNode saves the Lacing, Preview and UpstreamPreview necessary for all nodes. 
+        /// Must be executed by overriden methods by calling base.SaveNode() in every overriden method.
         /// </summary>
         /// <param name="xmlDoc">The XmlDocument representing the whole workspace containing this Element.</param>
         /// <param name="nodeElement">The XmlElement representing this Element.</param>
@@ -531,7 +533,9 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Override this to implement loading of custom data for your Element. If overridden, you should also override
-        /// SaveNode() in order to write the data when saved.
+        /// SaveNode() in order to write the data when saved. 
+        /// This LoadNode loads the Lacing, Preview and UpstreamPreview, necessary for all nodes. 
+        /// Must be executed by overriden methods by calling base.LoadNode() in every overriden method.
         /// </summary>
         /// <param name="nodeElement">The XmlNode representing this Element.</param>
         protected virtual void LoadNode(System.Xml.XmlNode nodeElement)
@@ -540,26 +544,18 @@ namespace Dynamo.Models
             {
                 if (subNode.Name == "LacingStrategy")
                 {
-                    string lacingStrategy = subNode.Attributes["lacingStrategy"].Value;
-                    LacingStrategy lacing = LacingStrategy.Disabled;
-                    System.Enum.TryParse(lacingStrategy, out lacing);
-                    this.ArgumentLacing = lacing;
+                    XmlElementHelper elHelper = new XmlElementHelper((XmlElement)subNode);
+                    this.ArgumentLacing=elHelper.ReadEnum("lacingStrategy",LacingStrategy.Disabled);
                 }
                 else if (subNode.Name == "IsVisible")
                 {
-                    XmlAttribute isVisibleAttr = subNode.Attributes["isVisible"];
-                    if (isVisibleAttr != null)
-                    {
-                        this.IsVisible = isVisibleAttr.Value == "true";
-                    }
+                    XmlElementHelper elHelper = new XmlElementHelper((XmlElement)subNode);
+                    this.isVisible = elHelper.ReadBoolean("isVisible");
                 }
                 else if (subNode.Name == "IsUpstreamVisible")
                 {
-                    XmlAttribute isUpstreamVisibleAttr = subNode.Attributes["isUpstreamVisible"];
-                    if (isUpstreamVisibleAttr != null)
-                    {
-                        this.IsUpstreamVisible = isUpstreamVisibleAttr.Value == "true";
-                    }
+                    XmlElementHelper elHelper = new XmlElementHelper((XmlElement)subNode);
+                    this.isUpstreamVisible = elHelper.ReadBoolean("isUpstreamVisible");
                 }
             }
         }
