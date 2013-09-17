@@ -151,7 +151,6 @@ namespace Dynamo.PackageManager
             PackageManagerClient.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
             this.SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = "";
-            RefreshAndSearchAsync();
         }
 
         public void Refresh()
