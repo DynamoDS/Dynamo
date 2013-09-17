@@ -185,14 +185,14 @@ namespace Dynamo.PackageManager
 
         public void RefreshAndSearchAsync()
         {
-
-            this.SearchState = PackageSearchState.SYNCING;
             SearchResults.Clear();
+            this.SearchState = PackageSearchState.SYNCING;
 
             Task<List<PackageManagerSearchElement>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
                 lock (SearchResults)
                 {
+                    SearchResults.Clear();
                     foreach (var result in t.Result)
                     {
                         SearchResults.Add(result);
