@@ -39,21 +39,21 @@ namespace Dynamo.Utilities
         {
             foreach (object result in results)
             {
-                if (typeof (Element).IsAssignableFrom(result.GetType()))
+                if (typeof(Element).IsAssignableFrom(result.GetType()))
                 {
-                    node.Elements.Add(((Element) result).Id);
+                    node.Elements.Add(((Element)result).Id);
                 }
-                else if (typeof (ElementId).IsAssignableFrom(result.GetType()))
+                else if (typeof(ElementId).IsAssignableFrom(result.GetType()))
                 {
-                    node.Elements.Add((ElementId) result);
+                    node.Elements.Add((ElementId)result);
                 }
-                else if (typeof (List<Element>).IsAssignableFrom(result.GetType()))
+                else if (typeof(List<Element>).IsAssignableFrom(result.GetType()))
                 {
-                    ((List<Element>) result).ForEach(x => node.Elements.Add(((Element) x).Id));
+                    ((List<Element>)result).ForEach(x => node.Elements.Add(((Element)x).Id));
                 }
-                else if (typeof (List<ElementId>).IsAssignableFrom(result.GetType()))
+                else if (typeof(List<ElementId>).IsAssignableFrom(result.GetType()))
                 {
-                    ((List<ElementId>) result).ForEach(x => node.Elements.Add((ElementId) x));
+                    ((List<ElementId>)result).ForEach(x => node.Elements.Add((ElementId)x));
                 }
             }
         }
@@ -65,13 +65,13 @@ namespace Dynamo.Utilities
 
             if (isConstructor)
             {
-                result = base_type.GetConstructor(types); 
+                result = base_type.GetConstructor(types);
             }
             else
             {
                 try
                 {
-                    
+
                     //http://stackoverflow.com/questions/11443707/getproperty-reflection-results-in-ambiguous-match-found-on-new-property
                     result = base_type.
                             GetMethods().
@@ -79,7 +79,7 @@ namespace Dynamo.Utilities
                                 Select(y => y.ParameterType).
                                 Except(types).Count() == 0).
                                 First();
-                    
+
                 }
                 catch (Exception e)
                 {
@@ -170,10 +170,10 @@ namespace Dynamo.Utilities
             //call the constructor for each set of parameters
             //if it's an instance method, then invoke the method for
             //each instance passed in.
-            results = mi.IsConstructor ? 
-                parameters.Select(x => ((ConstructorInfo) mi).Invoke(x.ToArray())).ToList() :
+            results = mi.IsConstructor ?
+                parameters.Select(x => ((ConstructorInfo)mi).Invoke(x.ToArray())).ToList() :
                 invocationTargetList.SelectMany(x => parameters.Select(y => mi.Invoke(x, y.ToArray())).ToList()).ToList();
-            
+
             StoreElements(node, results);
 
             return ConvertAllResults(results);
@@ -187,7 +187,7 @@ namespace Dynamo.Utilities
         /// <param name="pi">The property info object for which you will return the value.</param>
         /// <param name="return_type">The expected return type.</param>
         /// <returns></returns>
-        public static Value GetAPIPropertyValue( FSharpList<Value> args,
+        public static Value GetAPIPropertyValue(FSharpList<Value> args,
                                                  Type api_base_type, PropertyInfo pi, Type return_type)
         {
             //var arg0 = (Autodesk.Revit.DB.HermiteFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.HermiteFace));
@@ -205,19 +205,19 @@ namespace Dynamo.Utilities
                     //the values here are the items whose properties
                     //you want to query. nothing fancy, just get the
                     //property for each of the items.
-                    results.AddRange(((Value.List) arg).Item.
+                    results.AddRange(((Value.List)arg).Item.
                         Select(v => DynamoTypeConverter.ConvertInput(v, api_base_type)).
                         Select(invocationTarget => pi.GetValue(invocationTarget, null)));
                 }
                 else
                 {
                     var invocationTarget = DynamoTypeConverter.ConvertInput(args[0], api_base_type);
-                    results.Add(pi.GetValue(invocationTarget,null));
+                    results.Add(pi.GetValue(invocationTarget, null));
                 }
             }
 
             return ConvertAllResults(results);
-            
+
         }
 
         private static Value ConvertAllResults(List<object> results)
@@ -277,7 +277,7 @@ namespace Dynamo.Utilities
             var parameters = new List<List<object>>();
 
             //find the SMALLEST list in the inputs
-            int end = args.Where(arg => arg.IsList).Select(arg => ((Value.List) arg).Item.Count()).Concat(new[] {1000000}).Min();
+            int end = args.Where(arg => arg.IsList).Select(arg => ((Value.List)arg).Item.Count()).Concat(new[] { 1000000 }).Min();
 
             BuildParameterList(args, pi, end, parameters);
 
@@ -333,8 +333,8 @@ namespace Dynamo.Utilities
                         //or the last item if i exceeds the count of the list
                         if (arg.IsList)
                         {
-                            var lst = (Value.List) arg;
-                            var argItem = (j < lst.Item.Count() ? lst.Item[j]: lst.Item.Last());
+                            var lst = (Value.List)arg;
+                            var argItem = (j < lst.Item.Count() ? lst.Item[j] : lst.Item.Last());
 
                             currParams.Add(DynamoTypeConverter.ConvertInput(argItem, pi[i].ParameterType));
                         }
@@ -385,15 +385,58 @@ namespace Dynamo.Utilities
             }
         }
 
-        public static SketchPlane GetSketchPlaneFromCurve(Curve c)
+        public static Plane GetPlaneFromCurve(Curve c, bool planarOnly)
         {
             //cases to handle
             //straight line - normal will be inconclusive
-            
+
             //find the plane of the curve and generate a sketch plane
-            var p0 = c.Evaluate(0, true);
-            var p1 = c.Evaluate(0.5, true);
-            var p2 = c.Evaluate(1, true);
+            double period = c.IsBound ? 0.0 : (c.IsCyclic ? c.Period : 1.0);
+
+            var p0 = c.IsBound ? c.Evaluate(0.0, true) : c.Evaluate(0.0, false);
+            var p1 = c.IsBound ? c.Evaluate(0.5, true) : c.Evaluate(0.25 * period, false);
+            var p2 = c.IsBound ? c.Evaluate(1.0, true) : c.Evaluate(0.5 * period, false);
+
+            if (c is Line)
+            {
+                var v1 = p1 - p0;
+                var v2 = p2 - p0;
+                XYZ norm = null;
+
+                //keep old plane computations
+                if (p0.Z == p2.Z)
+                {
+                    norm = XYZ.BasisZ;
+                }
+                else
+                {
+                    var p3 = new XYZ(p2.X, p2.Y, p0.Z);
+                    var v3 = p3 - p0;
+                    norm = v1.CrossProduct(v3);
+                    if (norm.IsZeroLength())
+                    {
+                        norm = v2.CrossProduct(XYZ.BasisY);
+                    }
+                    norm = norm.Normalize();
+                }
+
+                return new Plane(norm, p0);
+
+            }
+
+            Autodesk.Revit.DB.CurveLoop cLoop = new Autodesk.Revit.DB.CurveLoop();
+            cLoop.Append(c.Clone());
+            if (cLoop.HasPlane())
+            {
+                return cLoop.GetPlane();
+            }
+            if (planarOnly)
+                return null;
+
+            IList<XYZ> points = c.Tessellate();
+            List<XYZ> xyzs = new List<XYZ>();
+            for (int iPoint = 0; iPoint < points.Count; iPoint++)
+                xyzs.Add(points[iPoint]);
 
             //var v1 = p1 - p0;
             //var v2 = p2 - p0;
@@ -422,10 +465,14 @@ namespace Dynamo.Utilities
 
             XYZ meanPt;
             List<XYZ> orderedEigenvectors;
-            BestFitLine.PrincipalComponentsAnalysis(new List<XYZ>(){p0,p1,p2}, out meanPt, out orderedEigenvectors);
+            BestFitLine.PrincipalComponentsAnalysis(xyzs, out meanPt, out orderedEigenvectors);
             var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
             var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
-
+            return plane;
+        }
+        public static SketchPlane GetSketchPlaneFromCurve(Curve c)
+        {
+            Plane plane = GetPlaneFromCurve(c, false);
             SketchPlane sp = null;
             sp = dynRevitSettings.Doc.Document.IsFamilyDocument ? 
                 dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) : 
@@ -434,7 +481,7 @@ namespace Dynamo.Utilities
             return sp;
         }
 
-        public static Curve FlattenCurveOnPlane(Curve c, out Plane plane)
+        public static Curve Flatten3dCurveOnPlane(Curve c, Plane plane)
         {
             XYZ meanPt = null;
             List<XYZ> orderedEigenvectors;
@@ -443,10 +490,7 @@ namespace Dynamo.Utilities
             if (c is Autodesk.Revit.DB.HermiteSpline)
             {
                 var hs = c as Autodesk.Revit.DB.HermiteSpline;
-                BestFitLine.PrincipalComponentsAnalysis(hs.ControlPoints.ToList(), out meanPt, out orderedEigenvectors);
-                normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
-                plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
-
+                plane = GetPlaneFromCurve(c, false);
                 var projPoints = new List<XYZ>();
                 foreach (var pt in hs.ControlPoints)
                 {
@@ -471,20 +515,8 @@ namespace Dynamo.Utilities
                     projPoints.Add(proj);
                 }
 
-                return dynRevitSettings.Revit.Application.Create.NewNurbSpline(projPoints,ns.Weights,ns.Knots,ns.Degree,ns.isClosed,ns.isRational);
+                return dynRevitSettings.Revit.Application.Create.NewNurbSpline(projPoints, ns.Weights, ns.Knots, ns.Degree, ns.isClosed, ns.isRational);
             }
-
-            if (c is CylindricalHelix)
-            {
-                throw new Exception("Cylindrical helices are not supported.");
-            }
-
-            var p0 = c.Evaluate(0, true);
-            var p1 = c.Evaluate(0.5, true);
-            var p2 = c.Evaluate(1, true);
-            BestFitLine.PrincipalComponentsAnalysis(new List<XYZ>(){p0,p1,p2}, out meanPt, out orderedEigenvectors);
-            normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
-            plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
 
             return c;
         }

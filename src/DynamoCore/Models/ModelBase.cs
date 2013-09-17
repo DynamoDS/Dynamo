@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Windows;
+using System.Xml;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Models
 {
+    public enum SaveContext { File, Copy, Undo };
+
     public abstract class ModelBase : NotificationObject, ISelectable, ILocatable
     {
         private Guid _guid;
@@ -136,6 +139,27 @@ namespace Dynamo.Models
         {
             IsSelected = false;
         }
+
+        #region Serialization/Deserialization Methods
+
+        public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
+        {
+            string typeName = this.GetType().ToString();
+            XmlElement element = xmlDocument.CreateElement(typeName);
+            this.SerializeCore(element, context);
+            return element;
+        }
+
+        public void Deserialize(XmlElement element, SaveContext context)
+        {
+            this.DeserializeCore(element, context);
+        }
+
+        protected abstract void SerializeCore(XmlElement element, SaveContext context);
+        protected abstract void DeserializeCore(XmlElement element, SaveContext context);
+
+        #endregion
+
     }
 
     public interface ILocatable

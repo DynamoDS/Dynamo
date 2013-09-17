@@ -7,19 +7,42 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {
-    public enum LogLevel{Console, File}
+    public enum LogLevel{Console, File, Warning}
+    public enum WarningLevel{Mild, Moderate, Severe}
 
     public class DynamoLogger:NotificationObject
     {
         private static DynamoLogger instance;
+        private string logPath;
+        private string warning;
+        private WarningLevel warningLevel;
 
         public TextWriter FileWriter { get; set; }
         public StringBuilder ConsoleWriter { get; set; }
 
-        private string _logPath;
+        public WarningLevel WarningLevel
+        {
+            get { return warningLevel; }
+            set
+            {
+                warningLevel = value;
+                RaisePropertyChanged("WarningLevel");
+            }
+        }
+
+        public string Warning
+        {
+            get { return warning; }
+            set
+            {
+                warning = value;
+                RaisePropertyChanged("Warning");
+            }
+        }
+
         public string LogPath 
         {
-            get { return _logPath; }
+            get { return logPath; }
         }
 
         public string LogText
@@ -50,7 +73,8 @@ namespace Dynamo
         /// </summary>
         private DynamoLogger()
         {
-            
+            WarningLevel = WarningLevel.Mild;
+            Warning = "";
         }
 
         /// <summary>
@@ -94,8 +118,21 @@ namespace Dynamo
                     break;
             }
 
-            RaisePropertyChanged("LogText");
-              
+            RaisePropertyChanged("LogText");   
+        }
+
+        public void LogWarning(string message, WarningLevel level)
+        {
+            Warning = message;
+            WarningLevel = level;
+
+            Log(message, LogLevel.Console);
+        }
+
+        public void ResetWarning()
+        {
+            Warning = "";
+            WarningLevel = WarningLevel.Mild;
         }
 
         /// <summary>
@@ -156,9 +193,9 @@ namespace Dynamo
                 Directory.CreateDirectory(log_dir);
             }
 
-            _logPath = Path.Combine(log_dir, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
+            logPath = Path.Combine(log_dir, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
 
-            FileWriter = new StreamWriter(_logPath);
+            FileWriter = new StreamWriter(logPath);
             FileWriter.WriteLine("Dynamo log started " + DateTime.Now.ToString());
 
             ConsoleWriter = new StringBuilder();

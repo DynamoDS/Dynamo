@@ -61,4 +61,5 @@
     <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter"/>
     <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter"/>
     <controls:TooltipLengthTruncater x:Key="TooltipLengthTruncater" />
+    <controls:WarningLevelToColorConverter x:Key="WarningLevelToColorConverter"/>
 </ResourceDictionary>
