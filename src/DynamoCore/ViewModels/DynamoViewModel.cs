@@ -105,7 +105,7 @@ namespace Dynamo.ViewModels
         protected bool canRunDynamically = true;
         protected bool debug = false;
         protected bool dynamicRun = false;
-        
+
         private bool fullscreenWatchShowing = false;
         private bool canNavigateBackground = false;
 
@@ -114,13 +114,14 @@ namespace Dynamo.ViewModels
         public DelegateCommand WriteToLogCmd { get; set; }
         public DelegateCommand PostUiActivationCommand { get; set; }
         public DelegateCommand AddNoteCommand { get; set; }
+        public DelegateCommand UndoCommand { get; set; }
+        public DelegateCommand RedoCommand { get; set; }
         public DelegateCommand LayoutAllCommand { get; set; }
         public DelegateCommand CopyCommand { get; set; }
         public DelegateCommand PasteCommand { get; set; }
         public DelegateCommand AddToSelectionCommand { get; set; }
         public DelegateCommand ShowNewFunctionDialogCommand { get; set; }
         public DelegateCommand CreateNodeCommand { get; set; }
-        public DelegateCommand CreateConnectionCommand { get; set; }
         public DelegateCommand ClearCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
@@ -398,7 +399,6 @@ namespace Dynamo.ViewModels
             AddToSelectionCommand = new DelegateCommand(_model.AddToSelection, _model.CanAddToSelection);
             ShowNewFunctionDialogCommand = new DelegateCommand(_model.ShowNewFunctionDialogAndMakeFunction, _model.CanShowNewFunctionDialogCommand);
             CreateNodeCommand = new DelegateCommand(_model.CreateNode, _model.CanCreateNode);
-            CreateConnectionCommand = new DelegateCommand(_model.CreateConnection, _model.CanCreateConnection);
             ClearCommand = new DelegateCommand(_model.Clear, _model.CanClear);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
@@ -417,6 +417,8 @@ namespace Dynamo.ViewModels
             RefactorCustomNodeCommand = new DelegateCommand(_model.RefactorCustomNode, _model.CanRefactorCustomNode);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
+            UndoCommand = new DelegateCommand(_model.Undo, _model.CanUndo);
+            RedoCommand = new DelegateCommand(_model.Redo, _model.CanRedo);
             CopyCommand = new DelegateCommand(_model.Copy, _model.CanCopy);
             PasteCommand = new DelegateCommand(_model.Paste, _model.CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
@@ -469,6 +471,7 @@ namespace Dynamo.ViewModels
             {
                 case "LogText":
                     RaisePropertyChanged("LogText");
+                    RaisePropertyChanged("WarningText");
                     break;
             }
 
@@ -702,7 +705,6 @@ namespace Dynamo.ViewModels
         {
             return new Function(inputs, outputs, functionDefinition);
         }
-
 
         /// <summary>
         ///     Sets the load path
