@@ -156,6 +156,15 @@ namespace Dynamo.Tests
             Assert.Inconclusive("Finish me");
         }
 
+
+        [Test]
+        public void ListAllReturnsAllPackages()
+        {
+            var elements = dynSettings.PackageManagerClient.ListAll();
+            Assert.AreNotEqual(0, elements.Count);
+            Console.WriteLine(elements.Count);
+        }
+
         [Test]
         public void SearchReturnsValidResults()
         {
