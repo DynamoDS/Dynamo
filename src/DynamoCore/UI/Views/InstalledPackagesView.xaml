@@ -55,8 +55,8 @@
 
                                     <DockPanel >
                                         
-                                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="5,5,5,10">
-                                            <TextBlock Text="{Binding Path=Name}" FontSize="12" MinWidth="200" Margin="0,0,10,0" Foreground="WhiteSmoke"></TextBlock>
+                                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="5,5,5,7">
+                                            <TextBlock Text="{Binding Path=Name}" FontSize="12" MinWidth="200" Margin="10,0,10,0" Foreground="WhiteSmoke"></TextBlock>
                                             <TextBlock Text="{Binding Path=VersionName}" FontSize="11" Foreground="#CCC"></TextBlock>
                                         </StackPanel>
 
