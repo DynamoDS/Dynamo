@@ -2,7 +2,6 @@
 using System.IO;
 using System.Reflection;
 using Dynamo.FSchemeInterop;
-using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 
@@ -43,6 +42,8 @@ namespace Dynamo.Tests
         {
             try
             {
+                AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
+
                 ExecutingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 string tempPath = Path.GetTempPath();
 
