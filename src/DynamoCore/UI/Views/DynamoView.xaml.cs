@@ -163,6 +163,7 @@ namespace Dynamo.Controls
             }
             
             _searchPkgsView.Focus();
+            _pkgSearchVM.RefreshAndSearchAsync();
         }
 
         private InstalledPackagesView _installedPkgsView;

@@ -72,6 +72,8 @@ namespace Dynamo.PackageManager
         public DelegateCommand PublishNewPackageVersionCommand { get; set; }
         public DelegateCommand UninstallCommand { get; set; }
         public DelegateCommand PublishNewPackageCommand { get; set; }
+        public DelegateCommand DeprecateCommand { get; set; }
+        public DelegateCommand UndeprecateCommand { get; set; }
 
         public ObservableCollection<Type> LoadedTypes { get; set; }
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; set; }
@@ -92,6 +94,8 @@ namespace Dynamo.PackageManager
             PublishNewPackageVersionCommand = new DelegateCommand(PublishNewPackageVersion, CanPublishNewPackageVersion);
             PublishNewPackageCommand = new DelegateCommand(PublishNewPackage, CanPublishNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
+            DeprecateCommand = new DelegateCommand(this.Deprecate, CanDeprecate);
+            UndeprecateCommand = new DelegateCommand(this.Undeprecate, CanUndeprecate);
 
             dynSettings.Controller.DynamoModel.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
             dynSettings.Controller.DynamoModel.NodeDeleted += (node) => UninstallCommand.RaiseCanExecuteChanged();
@@ -229,6 +233,26 @@ namespace Dynamo.PackageManager
         private bool CanUninstall()
         {
             return !InUse();
+        }
+
+        private void Deprecate()
+        {
+            dynSettings.PackageManagerClient.Deprecate(this.Name);
+        }
+
+        private bool CanDeprecate()
+        {
+            return true;
+        }
+
+        private void Undeprecate()
+        {
+            dynSettings.PackageManagerClient.Undeprecate(this.Name);
+        }
+
+        private bool CanUndeprecate()
+        {
+            return true;
         }
 
         private void RefreshCustomNodesFromDirectory()

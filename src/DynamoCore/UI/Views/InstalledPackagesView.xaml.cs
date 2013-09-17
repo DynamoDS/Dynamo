@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,11 +23,6 @@ namespace Dynamo.PackageManager.UI
     {
         public InstalledPackagesView()
         {
-
-            //this.Owner = dynSettings.Bench;
-            this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
             this.DataContext = dynSettings.PackageLoader;
             InitializeComponent();
         }
@@ -35,5 +31,20 @@ namespace Dynamo.PackageManager.UI
         {
             dynSettings.PackageManagerClient.GoToWebsite();
         }
+
+        private void MoreButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var button = (Button)sender;
+            button.ContextMenu.DataContext = button.DataContext;
+            button.ContextMenu.IsOpen = true;
+            
+            //if (e.LeftButton == MouseButtonState.Pressed)
+            //{
+
+
+
+            //}
+        }
+
     }
 }
