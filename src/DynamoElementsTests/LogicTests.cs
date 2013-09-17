@@ -19,6 +19,7 @@ namespace Dynamo.Tests
     {
         private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "comparison"); } }
 
+        #region Less Than
         [Test]
         public void testLessThan_NumberInput()
         {
@@ -69,6 +70,9 @@ namespace Dynamo.Tests
                 dynSettings.Controller.RunExpression(null);
             });
         }
+        #endregion
+
+        #region Equal
 
         [Test]
         public void testEqual_InvalidInput()
@@ -121,6 +125,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult2, actualResult2);
         }
 
+        #endregion
+
+        #region Greater Than
+
         [Test]
         public void testGreaterThan_InvalidInput()
         {
@@ -171,6 +179,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult1, actualResult1);
             Assert.AreEqual(expectedResult2, actualResult2);
         }
+
+        #endregion
+
+        #region Greater than or equal
 
         [Test]
         public void testGreaterThanOrEqual_InvalidInput()
@@ -231,6 +243,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult3, actualResult3);
         }
 
+        #endregion
+
+        #region Less than or equal
+
         [Test]
         public void testLessThanOrEqual_InvalidInput()
         {
@@ -289,12 +305,57 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult2, actualResult2);
             Assert.AreEqual(expectedResult3, actualResult3);
         }
+
+        #endregion
+
+        #region Integration
+
+        /// <summary>
+        /// Test case uses nodes:
+        ///     Number, Watch
+        ///     Less Than, Greater Than, Equal, Less Than or Equal, Greater Than or Equal
+        /// "Less Than", "Greater Than", "Less Than or Equal" output is the input for other comparison nodes
+        /// </summary>
+        [Test]
+        public void testIntegerationOfComparisonNodes()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(logicTestFolder, "testIntegerationComparisonNodes.dyn");
+
+            model.Open(testFilePath);
+            dynSettings.Controller.RunExpression(null);
+            Watch watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("e5864cf1-4117-47b8-9444-957fd732d049");
+            Watch watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("5e859fc8-6cb5-4a43-bf54-324a1e062114");
+            Watch watch3 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("ad39dce3-5dfd-40fa-ad46-a042230ec7fc");
+            Watch watch4 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1adbb7e2-28de-46be-8521-12a4d79af417");
+            Watch watch5 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("88aa9533-777b-42c8-8c2d-a2913432f5f4");
+
+            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
+            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
+            double actualResult3 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
+            double actualResult4 = watch4.GetValue(0).GetDoubleFromFSchemeValue();
+            double actualResult5 = watch5.GetValue(0).GetDoubleFromFSchemeValue();
+            double expectedResult1 = 1;
+            double expectedResult2 = 0;
+            double expectedResult3 = 0;
+            double expectedResult4 = 0;
+            double expectedResult5 = 1;
+            Assert.AreEqual(expectedResult1, actualResult1);
+            Assert.AreEqual(expectedResult2, actualResult2);
+            Assert.AreEqual(expectedResult3, actualResult3);
+            Assert.AreEqual(expectedResult4, actualResult4);
+            Assert.AreEqual(expectedResult5, actualResult5);
+        }
+
+        #endregion
     }
 
     [TestFixture]
     class ConditionalTest : DynamoUnitTest
     {
         private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
+
+        #region And
 
         [Test]
         public void testAnd_NumberInput()
@@ -338,6 +399,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult2, actualResult2);
         }
 
+        #endregion
+
+        #region If
+
         [Test]
         public void testIf_StringInput()
         {
@@ -375,6 +440,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult6, actualResult6);
         }
 
+        #endregion
+
+        #region Not
+
         [Test]
         public void testNot_NumberInput()
         {
@@ -393,6 +462,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult1, actualResult1);
             Assert.AreEqual(expectedResult2, actualResult2);
         }
+
+        #endregion
+
+        #region Or
 
         [Test]
         public void testOr_NumberInput()
@@ -417,6 +490,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult3, actualResult3);
         }
 
+        #endregion
+
+        #region Xor
+
         [Test]
         public void testXor_NumberInput()
         {
@@ -439,5 +516,81 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult2, actualResult2);
             Assert.AreEqual(expectedResult3, actualResult3);
         }
+
+        #endregion
+
+        #region Integration
+
+        /// <summary>
+        /// Test case uses nodes:
+        ///     Number, Watch
+        ///     And, Or
+        ///     Less Than, Greater Than
+        /// The output of "Less Than", "Greater Than" nodes become input for "And", "Or" nodes
+        /// </summary>
+        [Test]
+        public void testIntegrationOfConditionalNodes()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(logicTestFolder, "testIntegrationConditionalNodes.dyn");
+
+            model.Open(testFilePath);
+            dynSettings.Controller.RunExpression(null);
+            Watch watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("7bf98862-a2bb-44fd-8ea4-5f59dd477325");
+            Watch watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("e09f332e-80d1-40d8-adf9-10b8735175f5");
+            Watch watch3 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("ad4b7a25-726b-43d0-8000-173fe07ab532");
+            Watch watch4 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("5f6781b8-f005-444e-bcf6-5cbc91bb25e6");
+            Watch watch5 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("8b66fb02-cafd-4ff7-b27d-d5980193e1df");
+
+            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
+            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
+            double actualResult3 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
+            double actualResult4 = watch4.GetValue(0).GetDoubleFromFSchemeValue();
+            double actualResult5 = watch5.GetValue(0).GetDoubleFromFSchemeValue();
+            double expectedResult1 = 1;
+            double expectedResult2 = 1;
+            double expectedResult3 = 0;
+            double expectedResult4 = 1;
+            double expectedResult5 = 1;
+            Assert.AreEqual(expectedResult1, actualResult1);
+            Assert.AreEqual(expectedResult2, actualResult2);
+            Assert.AreEqual(expectedResult3, actualResult3);
+            Assert.AreEqual(expectedResult4, actualResult4);
+            Assert.AreEqual(expectedResult5, actualResult5);
+        }
+
+        /// <summary>
+        /// Test case uses nodes:
+        ///     Number, Watch
+        ///     And, Or, Xor, Not, If
+        /// </summary>
+        [Test]
+        public void testIntegrationOfConditionalAndComparisonNodes()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(logicTestFolder, "testIntegrationConditionalAndComparisonNodes.dyn");
+
+            model.Open(testFilePath);
+            dynSettings.Controller.RunExpression(null);
+            Watch watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("18f67ccd-d4ca-4fab-b1a6-0032e4da8158");
+            Watch watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("78126dec-af28-44fd-87a3-894d9721f22e");
+            Watch watch3 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f92ee2df-3c91-48c6-aff0-c9f22cc901a6");
+            Watch watch4 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("e5a34078-53d4-46e3-86da-691c8f65ad40");
+
+            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
+            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
+            double actualResult3 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
+            double actualResult4 = watch4.GetValue(0).GetDoubleFromFSchemeValue();
+            double expectedResult1 = 1;
+            double expectedResult2 = 0;
+            double expectedResult3 = 1;
+            double expectedResult4 = 0;
+            Assert.AreEqual(expectedResult1, actualResult1);
+            Assert.AreEqual(expectedResult2, actualResult2);
+            Assert.AreEqual(expectedResult3, actualResult3);
+            Assert.AreEqual(expectedResult4, actualResult4);
+        }
+
+        #endregion
     }
 }

@@ -1,0 +1,36 @@
+<Workspace X="-151" Y="-120" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Append type="Dynamo.Nodes.Append" guid="6ee0efe0-961b-4a28-8830-a9dfb4716d68" nickname="Concatenate Lists" x="382" y="349.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Rest type="Dynamo.Nodes.Rest" guid="0d3d09cc-c483-4148-a4b1-6d9cf6e03816" nickname="Rest of List" x="501" y="286.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FlattenList type="Dynamo.Nodes.FlattenList" guid="dd986fd1-a1c9-474d-b1c3-7f8c8a769f6b" nickname="Flatten Completely" x="528" y="396.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="2f456503-7c76-4415-8b13-d05117b818d7" nickname="List" x="275" y="243.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="86824ce8-b31b-458b-aac0-0bb1278720d5" nickname="String" x="126" y="240.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="sometimes" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="90c6e39e-3f60-4845-bca8-74f97275f5fc" nickname="String" x="123" y="317.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="often" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="3a911c93-4dbf-4c44-850c-0a3f1d5c865c" nickname="List" x="272" y="437.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="620f0f63-a9fc-4197-9082-6acbeeb9c07e" nickname="Watch" x="701" y="391.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="7bf98862-a2bb-44fd-8ea4-5f59dd477325" nickname="Watch" x="657" y="257.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6ee0efe0-961b-4a28-8830-a9dfb4716d68" start_index="0" end="dd986fd1-a1c9-474d-b1c3-7f8c8a769f6b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6ee0efe0-961b-4a28-8830-a9dfb4716d68" start_index="0" end="0d3d09cc-c483-4148-a4b1-6d9cf6e03816" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0d3d09cc-c483-4148-a4b1-6d9cf6e03816" start_index="0" end="7bf98862-a2bb-44fd-8ea4-5f59dd477325" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dd986fd1-a1c9-474d-b1c3-7f8c8a769f6b" start_index="0" end="620f0f63-a9fc-4197-9082-6acbeeb9c07e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2f456503-7c76-4415-8b13-d05117b818d7" start_index="0" end="6ee0efe0-961b-4a28-8830-a9dfb4716d68" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2f456503-7c76-4415-8b13-d05117b818d7" start_index="0" end="3a911c93-4dbf-4c44-850c-0a3f1d5c865c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="86824ce8-b31b-458b-aac0-0bb1278720d5" start_index="0" end="2f456503-7c76-4415-8b13-d05117b818d7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="90c6e39e-3f60-4845-bca8-74f97275f5fc" start_index="0" end="2f456503-7c76-4415-8b13-d05117b818d7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="90c6e39e-3f60-4845-bca8-74f97275f5fc" start_index="0" end="3a911c93-4dbf-4c44-850c-0a3f1d5c865c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3a911c93-4dbf-4c44-850c-0a3f1d5c865c" start_index="0" end="6ee0efe0-961b-4a28-8830-a9dfb4716d68" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
