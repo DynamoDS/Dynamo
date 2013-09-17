@@ -69,7 +69,7 @@ namespace Dynamo.PackageManager
 
         public PackageManagerClient()
         {
-            Client = new Client(null, "http://107.20.146.184/"); // initialize authenticator later
+            Client = new Client(null, "http://54.225.121.251"); // initialize authenticator later
             IsLoggedIn = false;
         }
 
@@ -430,6 +430,38 @@ namespace Dynamo.PackageManager
         internal void GoToWebsite()
         {
             Process.Start(Client.BaseUrl);
+        }
+
+        internal PackageManagerResult Deprecate(string name)
+        {
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
+            try
+            {
+                var nv = new Greg.Requests.Deprecate(name, "dynamo");
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
+                return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
+            }
+            catch
+            {
+                return new PackageManagerResult("Failed to send.", false);
+            }
+        }
+
+        internal PackageManagerResult Undeprecate(string name)
+        {
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
+            try
+            {
+                var nv = new Greg.Requests.Undeprecate(name, "dynamo");
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
+                return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
+            }
+            catch
+            {
+                return new PackageManagerResult("Failed to send.", false);
+            }
         }
     }
 
