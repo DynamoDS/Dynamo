@@ -35,7 +35,6 @@ namespace Dynamo.Nodes
 {
     [NodeName("Drafting View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
-
     [NodeDescription("Creates a drafting view.")]
     public class DraftingView: RevitTransactionNodeWithOneOutput
     {
@@ -120,7 +119,10 @@ namespace Dynamo.Nodes
 
             //need to reverse the up direction to get the 
             //proper orientation - there might be a better way to handle this
-            var orient = new ViewOrientation3D(eye, -up, direction);
+            ViewOrientation3D orient = null;
+            orient = isPerspective?
+                new ViewOrientation3D(eye, -up, -direction):
+                new ViewOrientation3D(eye, -up, direction);
 
             if (this.Elements.Any())
             {
@@ -153,6 +155,7 @@ namespace Dynamo.Nodes
 
             var fec = dynRevitUtils.SetupFilters(dynRevitSettings.Doc.Document);
 
+            //only isolate in isometric for now
             if (isolate)
             {
                 view.CropBoxActive = true;
@@ -165,12 +168,11 @@ namespace Dynamo.Nodes
                     var all = fec.ToElements();
                     var toHide =
                         fec.ToElements().Where(x => !x.IsHidden(view) && x.CanBeHidden(view) && x.Id != e.Id).Select(x => x.Id).ToList();
+                    
                     if (toHide.Count > 0)
                         view.HideElements(toHide);
 
-                    //get the bounding box of the isolated element
-                    var elBounds = e.get_BoundingBox(null);
-                    //var pts = dynRevitUtils.GetPointsFromBoundingBox(elBounds);
+                    dynRevitSettings.Doc.Document.Regenerate();
 
                     //http://adndevblog.typepad.com/aec/2012/05/set-crop-box-of-3d-view-that-exactly-fits-an-element.html
                     var pts = new List<XYZ>();
@@ -222,9 +224,34 @@ namespace Dynamo.Nodes
                         }
                     }
 
-                    bounding.Max = new XYZ(dMaxX, dMaxY, bounding.Max.Z);
-                    bounding.Min = new XYZ(dMinX, dMinY, bounding.Min.Z);
+                    Debug.WriteLine(string.Format("Eye:{0},Origin{1}, BBox_Origin{2}, Element{3}",
+                        eye.ToString(), view.Origin.ToString(), view.CropBox.Transform.Origin.ToString(), (element.Location as LocationPoint).Point.ToString()));
+
+                    //http://wikihelp.autodesk.com/Revit/fra/2013/Help/0000-API_Deve0/0039-Basic_In39/0067-Views67/0069-The_View69
+                    if (isPerspective)
+                    {
+                        //var rearClip = dynRevitSettings.Revit.Application.Create.NewPlane(view.ViewDirection,
+                        //                                                                    view.Origin +
+                        //                                                                    view.ViewDirection*10);
+                        //var frontClip = dynRevitSettings.Revit.Application.Create.NewPlane(view.ViewDirection,
+                        //                                                                    view.Origin + view.ViewDirection*.001);
+                        
+                        ////project max onto front plane
+                        //var maxWorld = view.CropBox.Transform.OfPoint(new XYZ(dMaxX, dMaxY, 0));
+                        //bounding.Max = dynRevitUtils.ProjectPointOnPlane(maxWorld, frontClip);
+
+                        ////project min onto rear plane
+                        //var minWorld = view.CropBox.Transform.OfPoint(new XYZ(dMinX, dMinY, 0));
+                        //bounding.Min = dynRevitUtils.ProjectPointOnPlane(minWorld, rearClip);
+                    }
+                    else
+                    {
+                        bounding.Max = new XYZ(dMaxX, dMaxY, bounding.Max.Z);
+                        bounding.Min = new XYZ(dMinX, dMinY, bounding.Min.Z);
+                    }
+
                     view.CropBox = bounding;
+
                 }
                 else
                 {
@@ -312,16 +339,16 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Perspective View")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
-    [NodeDescription("Creates a perspective view.")]
-    public class PerspectiveView : ViewBase
-    {
-        public PerspectiveView()
-        {
-            isPerspective = true;
-        }
-    }
+    //[NodeName("Perspective View")]
+    //[NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
+    //[NodeDescription("Creates a perspective view.")]
+    //public class PerspectiveView : ViewBase
+    //{
+    //    public PerspectiveView()
+    //    {
+    //        isPerspective = true;
+    //    }
+    //}
 
     [NodeName("Bounding Box XYZ")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
