@@ -1165,11 +1165,43 @@ namespace Dynamo.ViewModels
 
     public class ZoomEventArgs : EventArgs
     {
-        public double Zoom { get; set; }
+        internal enum ZoomModes
+        {
+            ByPoint = 0x00000001,
+            ByFactor = 0x00000002
+        }
 
-        public ZoomEventArgs(double zoom)
+        internal Point Point { get; set; }
+        internal double Zoom { get; set; }
+        internal ZoomModes Modes { get; private set; }
+
+        internal ZoomEventArgs(double zoom)
         {
             Zoom = zoom;
+            this.Modes = ZoomModes.ByFactor;
+        }
+
+        internal ZoomEventArgs(Point point)
+        {
+            this.Point = point;
+            this.Modes = ZoomModes.ByPoint;
+        }
+
+        internal ZoomEventArgs(double zoom, Point point)
+        {
+            this.Point = point;
+            this.Zoom = zoom;
+            this.Modes = ZoomModes.ByPoint | ZoomModes.ByFactor;
+        }
+
+        bool hasPoint()
+        {
+            return this.Modes.HasFlag(ZoomModes.ByPoint);
+        }
+
+        bool hasZoom()
+        {
+            return this.Modes.HasFlag(ZoomModes.ByFactor);
         }
     }
 
