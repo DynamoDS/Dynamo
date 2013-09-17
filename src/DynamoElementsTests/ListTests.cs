@@ -1711,7 +1711,7 @@ namespace Dynamo.Tests
         
         #endregion
 
-        #region
+        #region ListMinimum test cases
 
         [Test]
         public void ListMinimum_NumberRange()
@@ -1757,5 +1757,449 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region AddToList test cases
+
+        [Test]
+        public void AddToList_SimpleTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_SimpleTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.List>("31d0eb4e-8657-4eb1-a852-5e9b766eddd7");
+
+            FSharpList<FScheme.Value> actual = addToList.GetValue(0).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> childList = actual[2].GetListFromFSchemeValue();
+
+            Assert.AreEqual(6, actual.Length);
+            Assert.AreEqual("Design", actual[0].getStringFromFSchemeValue());
+            Assert.AreEqual(10, actual[5].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(4, childList.Length);
+            Assert.AreEqual(-10, childList[0].GetDoubleFromFSchemeValue());
+        }
+
+        [Test]
+        public void AddToList_EmptyList()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_EmptyList.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.List>("1976caa7-d45e-4a44-9faf-345d98337bbb");
+
+            FSharpList<FScheme.Value> actual = addToList.GetValue(0).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> childList = actual[0].GetListFromFSchemeValue();
+
+            Assert.AreEqual(1, actual.Length);
+
+            Assert.AreEqual(2, childList.Length);
+            Assert.IsEmpty(childList[0].getStringFromFSchemeValue());
+            Assert.AreEqual(0, childList[1].GetDoubleFromFSchemeValue());
+        }
+
+        [Test]
+        public void AddToList_Complex()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_Complex.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.List>("cfdfc020-05d0-4442-96df-8d97aad9c38c");
+
+            FSharpList<FScheme.Value> actual = addToList.GetValue(0).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> childList1 = actual[0].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> childList2 = actual[1].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> childList3 = actual[2].GetListFromFSchemeValue();
+
+            Assert.AreEqual(3, actual.Length);
+
+            Assert.AreEqual(1, childList1.Length);
+            Assert.AreEqual(3, childList1[0].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(1, childList2.Length);
+            Assert.AreEqual(6, childList2[0].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(1, childList3.Length);
+            Assert.AreEqual(9, childList3[0].GetDoubleFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void AddToList_GeometryToList()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_GeometryToList.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.List>("31d0eb4e-8657-4eb1-a852-5e9b766eddd7");
+
+            FSharpList<FScheme.Value> actual = addToList.GetValue(0).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> childList1 = actual[2].GetListFromFSchemeValue();
+
+            Assert.AreEqual(6, actual.Length);
+
+            Assert.AreEqual(4, childList1.Length);
+            Assert.AreEqual(-10, childList1[0].GetDoubleFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void AddToList_Negative()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_Negative.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.Throws<AssertionException>(() =>
+            {
+                dynSettings.Controller.RunExpression(null);
+            });
+
+        }
+
+        #endregion
+
+        #region SplitList test cases
+
+        [Test]
+        public void SplitList_SimpleTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_SimpleTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var splitList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DeCons>("8226a43b-fd5e-45f6-a5f7-32815c12084a");
+
+            Assert.AreEqual("Dynamo", splitList.GetValue(0).getStringFromFSchemeValue());
+
+            FSharpList<FScheme.Value> secondOutput = splitList.GetValue(1).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> childList = secondOutput[0].GetListFromFSchemeValue();
+
+            Assert.AreEqual(1, secondOutput.Length);
+
+            Assert.AreEqual(2, childList.Length);
+            Assert.AreEqual(0, childList[0].GetDoubleFromFSchemeValue());
+        }
+
+        [Test]
+        public void SplitList_FirstElementAsList()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_FirstElementAsList.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var splitList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DeCons>("8226a43b-fd5e-45f6-a5f7-32815c12084a");
+
+            FSharpList<FScheme.Value> firstOutput = splitList.GetValue(0).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> secondOutput = splitList.GetValue(1).GetListFromFSchemeValue();
+
+            Assert.AreEqual(2, firstOutput.Length);
+            Assert.AreEqual(0, firstOutput[0].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(1, secondOutput.Length);
+            Assert.AreEqual("Dynamo", secondOutput[0].getStringFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void SplitList_Complex()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_Complex.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var splitList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DeCons>("8226a43b-fd5e-45f6-a5f7-32815c12084a");
+
+            FSharpList<FScheme.Value> firstOutput = splitList.GetValue(0).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> secondOutput = splitList.GetValue(1).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> child = secondOutput[0].GetListFromFSchemeValue();
+
+            Assert.AreEqual(1, firstOutput.Length);
+            Assert.AreEqual(3, firstOutput[0].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(2, secondOutput.Length);
+
+            Assert.AreEqual(1, child.Length);
+            Assert.AreEqual(6, child[0].GetDoubleFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void SplitList_ComplexAnotherExample()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_ComplexAnotherExample.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(18, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var splitList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DeCons>("66e94123-deaf-4bc8-8c5f-b3bc0996a57e");
+
+            FSharpList<FScheme.Value> firstOutput = splitList.GetValue(0).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> secondOutput = splitList.GetValue(1).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> child = secondOutput[0].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> child1 = secondOutput[1].GetListFromFSchemeValue();
+
+            Assert.AreEqual(12, firstOutput.Length);
+            Assert.AreEqual("x", firstOutput[0].getStringFromFSchemeValue());
+            Assert.AreEqual("z", firstOutput[11].getStringFromFSchemeValue());
+
+            Assert.AreEqual(2, secondOutput.Length);
+
+            Assert.AreEqual(12, child.Length);
+            Assert.AreEqual(19.35, child[0].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(12, child1.Length);
+            Assert.AreEqual(32.85, child1[0].GetDoubleFromFSchemeValue());
+
+        }
+        #endregion
+
+        #region TakeFromList test cases
+        
+        [Test]
+        public void TakeFromList_SimpleTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_SimpleTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeList>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
+
+            FSharpList<FScheme.Value> firstOutput = takeFromList.GetValue(0).GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> child = firstOutput[0].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> child1 = firstOutput[4].GetListFromFSchemeValue();
+
+            Assert.AreEqual(5, firstOutput.Length);
+
+            Assert.AreEqual(1, child.Length);
+            Assert.AreEqual(3, child[0].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(1, child1.Length);
+            Assert.AreEqual(15, child1[0].GetDoubleFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void TakeFromList_WithStringList()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_WithStringList.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeList>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
+
+            FSharpList<FScheme.Value> firstOutput = takeFromList.GetValue(0).GetListFromFSchemeValue();
+
+            Assert.AreEqual(4, firstOutput.Length);
+
+            Assert.AreEqual("Test", firstOutput[0].getStringFromFSchemeValue());
+            Assert.AreEqual("Take", firstOutput[1].getStringFromFSchemeValue());
+            Assert.AreEqual("From", firstOutput[2].getStringFromFSchemeValue());
+            Assert.AreEqual("List", firstOutput[3].getStringFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void TakeFromList_NegativeIntValue()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_NegativeIntValue.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeList>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
+
+            FSharpList<FScheme.Value> firstOutput = takeFromList.GetValue(0).GetListFromFSchemeValue();
+
+            Assert.AreEqual(1, firstOutput.Length);
+
+            Assert.AreEqual("List", firstOutput[0].getStringFromFSchemeValue());
+
+        }
+
+        [Test]
+        public void TakeFromList_InputEmptyList()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_InputEmptyList.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            Assert.Throws<AssertionException>(() =>
+                {
+                    dynSettings.Controller.RunExpression(null);
+                });
+
+        }
+
+        [Test]
+        public void TakeFromList_AmtAsRangeExpn()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_AmtAsRangeExpn.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            Assert.Throws<AssertionException>(() =>
+                {
+                    dynSettings.Controller.RunExpression(null);
+                });
+        }
+
+        #endregion
+
+        #region DropFromList test cases
+        [Test]
+
+        public void DropFromList_SimpleTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropFromList_SimpleTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
+            
+            // run expression
+            dynSettings.Controller.RunExpression(null);
+
+            var dropFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DropList>("e2d27010-b8fc-4eb8-8703-63bab5ce6e85");
+            FSharpList<FScheme.Value> output = dropFromList.GetValue(0).GetListFromFSchemeValue();
+
+            var dropFromList1 = model.CurrentWorkspace.NodeFromWorkspace<DropList>("097e0b4b-4cbb-43b1-a21c-77a619ad1050");
+            FSharpList<FScheme.Value> secondOutput = dropFromList1.GetValue(0).GetListFromFSchemeValue();
+
+            Assert.AreEqual(6, output.Length);
+            Assert.AreEqual(0, output[0].GetDoubleFromFSchemeValue());
+
+            Assert.AreEqual(6, secondOutput.Length);
+            Assert.AreEqual(5, secondOutput[0].GetDoubleFromFSchemeValue());
+        }
+
+        [Test]
+        public void DropFromList_InputEmptyList()
+        {
+
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropFromList_InputEmptyList.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+
+            // run expression
+            Assert.Throws<AssertionException>(() =>
+                {
+                    dynSettings.Controller.RunExpression(null);
+                });
+        }
+
+        #endregion
     }
 }
