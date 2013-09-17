@@ -77,6 +77,7 @@ namespace Dynamo.Views
             ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
             ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
             ViewModel.RequestZoomToViewportPoint += new ZoomEventHandler(vm_ZoomAtViewportPoint);
+            ViewModel.RequestZoomToFitView += new ZoomEventHandler(vm_ZoomToFitView);
             ViewModel.StopDragging += new EventHandler(vm_StopDragging);
             ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
@@ -259,7 +260,7 @@ namespace Dynamo.Views
             ZoomAtViewportPoint(zoom, relativePoint);
         }
 
-        private void vm_ZoomAtViewportPoint(object sender, EventArgs e)
+        void vm_ZoomAtViewportPoint(object sender, EventArgs e)
         {
             double zoom = (e as ZoomEventArgs).Zoom;
             Point point = (e as ZoomEventArgs).Point;
@@ -284,7 +285,42 @@ namespace Dynamo.Views
             ViewModel._model.X = absoluteX - (relative.X * ViewModel._model.Zoom);
             ViewModel._model.Y = absoluteY - (relative.Y * ViewModel._model.Zoom);
         }
-        
+
+        void vm_ZoomToFitView(object sender, EventArgs e)
+        {
+            ZoomEventArgs zoomArgs = (e as ZoomEventArgs);
+
+            double viewportPadding = 30;
+            double fitWidth = outerCanvas.ActualWidth - 2 * viewportPadding;
+            double fitHeight = outerCanvas.ActualHeight - 2 * viewportPadding;
+
+            // Find the zoom required for fitview
+            double scaleRequired = 1; // 100% zoom
+            if (zoomArgs.hasZoom()) // FitView
+                scaleRequired = zoomArgs.Zoom;
+            else
+            {
+                double scaleX = fitWidth / zoomArgs.FocusWidth;
+                double scaleY = fitHeight / zoomArgs.FocusHeight;
+                scaleRequired = scaleX > scaleY ? scaleY : scaleX; // get least zoom required
+            }
+
+            // Limit Zoom
+            if (scaleRequired > WorkspaceModel.ZOOM_MAXIMUM)
+                scaleRequired = WorkspaceModel.ZOOM_MAXIMUM;
+            else if (scaleRequired < WorkspaceModel.ZOOM_MINIMUM)
+                scaleRequired = WorkspaceModel.ZOOM_MINIMUM;
+
+            // Center position
+            double centerOffsetX = viewportPadding + (fitWidth - (zoomArgs.FocusWidth * scaleRequired)) / 2;
+            double centerOffsetY = viewportPadding + (fitHeight - (zoomArgs.FocusHeight * scaleRequired)) / 2;
+
+            // Apply on model
+            ViewModel._model.Zoom = scaleRequired;
+            ViewModel._model.X = -(zoomArgs.Offset.X * scaleRequired) + centerOffsetX;
+            ViewModel._model.Y = -(zoomArgs.Offset.Y * scaleRequired) + centerOffsetY;
+        }
+
         private void dynWorkspaceView_KeyDown(object sender, KeyEventArgs e)
         {
             Button source = e.Source as Button;

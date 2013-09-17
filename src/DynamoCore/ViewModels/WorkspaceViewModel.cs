@@ -10,7 +10,6 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.Controls;
 
 namespace Dynamo.ViewModels
 {
@@ -25,8 +24,8 @@ namespace Dynamo.ViewModels
     public partial class WorkspaceViewModel: ViewModelBase
     {
         #region Properties and Fields
-        public WorkspaceModel _model;
 
+        public WorkspaceModel _model;
         private bool _isConnecting = false;
         private bool _canFindNodesFromElements = false;
 
@@ -35,6 +34,7 @@ namespace Dynamo.ViewModels
         public event ZoomEventHandler ZoomChanged;
         public event ZoomEventHandler RequestZoomToViewportCenter;
         public event ZoomEventHandler RequestZoomToViewportPoint;
+        public event ZoomEventHandler RequestZoomToFitView;
         public event NodeEventHandler RequestCenterViewOnElement;
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
@@ -98,6 +98,19 @@ namespace Dynamo.ViewModels
             if (RequestZoomToViewportPoint != null)
             {
                 RequestZoomToViewportPoint(this, e);
+            }
+        }
+
+        /// <summary>
+        /// For requesting registered workspace to zoom in or out to fitview
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnRequestZoomToFitView(object sender, ZoomEventArgs e)
+        {
+            if (RequestZoomToFitView != null)
+            {
+                RequestZoomToFitView(this, e);
             }
         }
 
@@ -813,6 +826,50 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanSetZoom(object zoom)
+        {
+            return true;
+        }
+
+        private bool _fitViewActualZoomToggle = true;
+        private void FitView(object o)
+        {
+            // Get the offset and focus width & height (zoom if 100%)
+            double minX, maxX, minY, maxY;
+
+            // Get the width and height of area to fit
+            if (DynamoSelection.Instance.Selection.Count > 0)
+            {   // has selection
+                minX = GetSelectionMinX();
+                maxX = GetSelectionMaxX();
+                minY = GetSelectionMinY();
+                maxY = GetSelectionMaxY();
+            }
+            else
+            {   // no selection, fitview all nodes
+                if (_nodes.Count() <= 0) return;
+
+                IEnumerable<ILocatable> nodes = _nodes.Select((x) => x.NodeModel).Where((x) => x is ILocatable).Cast<ILocatable>();
+                minX = nodes.Select((x) => x.X).Min();
+                maxX = nodes.Select((x) => x.X + x.Width).Max();
+                minY = nodes.Select((y) => y.Y).Min();
+                maxY = nodes.Select((y) => y.Y + y.Height).Max();
+            }
+
+            Point offset = new Point(minX, minY);
+            double focusWidth = maxX - minX;
+            double focusHeight = maxY - minY;
+            ZoomEventArgs zoomArgs;
+
+            _fitViewActualZoomToggle = !_fitViewActualZoomToggle;
+            if (_fitViewActualZoomToggle)
+                zoomArgs = new ZoomEventArgs(offset, focusWidth, focusHeight);
+            else
+                zoomArgs = new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
+
+            OnRequestZoomToFitView(this, zoomArgs);
+        }
+
+        private bool CanFitView(object o)
         {
             return true;
         }

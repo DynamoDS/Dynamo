@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using Dynamo.Models;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 
@@ -182,45 +183,45 @@ namespace Dynamo.Tests
         [Category("DynamoUI")]
         public void CanZoomIn()
         {
-            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
-            double zoom = vm.CurrentSpaceViewModel.Zoom;
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            double zoom = workspaceModel.Zoom;
 
             vm.ZoomInCommand.Execute(null);
 
-            Assert.Greater(workspaceVM.Zoom, zoom);
+            Assert.Greater(workspaceModel.Zoom, zoom);
         }
 
         [Test, RequiresSTA]
         [Category("DynamoUI")]
         public void CanZoomOut()
         {
-            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
-            double zoom = vm.CurrentSpaceViewModel.Zoom;
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            double zoom = workspaceModel.Zoom;
 
             vm.ZoomOutCommand.Execute(null);
 
-            Assert.Greater(zoom, workspaceVM.Zoom);
+            Assert.Greater(zoom, workspaceModel.Zoom);
         }
 
         [Test, RequiresSTA]
         [Category("DynamoUI")]
         public void CanSetZoom()
         {
-            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
             int testLoop = 10;
 
             for (int i = 0; i < testLoop; i++)
             {
                 // Get random number for the zoom
-                double upperBound = WorkspaceViewModel.ZOOM_MAXIMUM;
-                double lowerBound = WorkspaceViewModel.ZOOM_MINIMUM;
+                double upperBound = WorkspaceModel.ZOOM_MAXIMUM;
+                double lowerBound = WorkspaceModel.ZOOM_MINIMUM;
                 Random random = new Random();
                 double randomNumber = random.NextDouble() * (upperBound - lowerBound) + lowerBound;
 
-                workspaceVM.SetZoomCommand.Execute(randomNumber);
+                vm.CurrentSpaceViewModel.SetZoomCommand.Execute(randomNumber);
 
                 // Check Zoom is correct
-                Assert.AreEqual(randomNumber, workspaceVM.Zoom);
+                Assert.AreEqual(randomNumber, workspaceModel.Zoom);
             }
         }
 
@@ -228,49 +229,52 @@ namespace Dynamo.Tests
         [Category("DynamoUI")]
         public void CanSetZoomBorderTest()
         {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
             WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
 
-            workspaceVM.SetZoomCommand.Execute(WorkspaceViewModel.ZOOM_MINIMUM);
-            Assert.AreEqual(WorkspaceViewModel.ZOOM_MINIMUM, workspaceVM.Zoom);
+            workspaceVM.SetZoomCommand.Execute(WorkspaceModel.ZOOM_MINIMUM);
+            Assert.AreEqual(WorkspaceModel.ZOOM_MINIMUM, workspaceModel.Zoom);
 
-            workspaceVM.SetZoomCommand.Execute(WorkspaceViewModel.ZOOM_MAXIMUM);
-            Assert.AreEqual(WorkspaceViewModel.ZOOM_MAXIMUM, workspaceVM.Zoom);
+            workspaceVM.SetZoomCommand.Execute(WorkspaceModel.ZOOM_MAXIMUM);
+            Assert.AreEqual(WorkspaceModel.ZOOM_MAXIMUM, workspaceModel.Zoom);
 
-            workspaceVM.SetZoomCommand.Execute(WorkspaceViewModel.ZOOM_MAXIMUM + 0.1);
-            Assert.AreNotEqual(WorkspaceViewModel.ZOOM_MAXIMUM, workspaceVM.Zoom);
+            workspaceVM.SetZoomCommand.Execute(WorkspaceModel.ZOOM_MAXIMUM + 0.1);
+            Assert.AreNotEqual(WorkspaceModel.ZOOM_MAXIMUM, workspaceModel.Zoom);
 
-            workspaceVM.SetZoomCommand.Execute(WorkspaceViewModel.ZOOM_MINIMUM - 0.1);
-            Assert.AreNotEqual(WorkspaceViewModel.ZOOM_MINIMUM, workspaceVM.Zoom);
+            workspaceVM.SetZoomCommand.Execute(WorkspaceModel.ZOOM_MINIMUM - 0.1);
+            Assert.AreNotEqual(WorkspaceModel.ZOOM_MINIMUM, workspaceModel.Zoom);
         }
 
         [Test, RequiresSTA]
         [Category("DynamoUI")]
         public void CanZoomInLimit()
         {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
             WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
 
             // Zoom to max zoom value
-            workspaceVM.SetZoomCommand.Execute(WorkspaceViewModel.ZOOM_MAXIMUM);
+            workspaceVM.SetZoomCommand.Execute(WorkspaceModel.ZOOM_MAXIMUM);
 
             vm.ZoomInCommand.Execute(null);
 
             // Check it does not zoom in anymore
-            Assert.AreEqual(WorkspaceViewModel.ZOOM_MAXIMUM, workspaceVM.Zoom);
+            Assert.AreEqual(WorkspaceModel.ZOOM_MAXIMUM, workspaceModel.Zoom);
         }
 
         [Test, RequiresSTA]
         [Category("DynamoUI")]
         public void CanZoomOutLimit()
         {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
             WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
 
             // Zoom to max zoom value
-            workspaceVM.SetZoomCommand.Execute(WorkspaceViewModel.ZOOM_MINIMUM);
+            workspaceVM.SetZoomCommand.Execute(WorkspaceModel.ZOOM_MINIMUM);
 
             vm.ZoomOutCommand.Execute(null);
 
             // Check it does not zoom out anymore
-            Assert.AreEqual(WorkspaceViewModel.ZOOM_MINIMUM, workspaceVM.Zoom);
+            Assert.AreEqual(WorkspaceModel.ZOOM_MINIMUM, workspaceModel.Zoom);
         }
 
         #endregion
