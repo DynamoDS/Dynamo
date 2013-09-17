@@ -4,7 +4,7 @@ using Dynamo.Tests;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
-namespace Dynamo
+namespace Dynamo.Tests
 {
     [TestFixture]
     class FileReadingTests : DynamoUnitTest
