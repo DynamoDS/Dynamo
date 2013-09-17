@@ -237,6 +237,11 @@ namespace Dynamo.PackageManager
 
         private void Deprecate()
         {
+
+            var res = MessageBox.Show("Are you sure you want to deprecate " + this.Name + "?  This will indicate to users that y.\n\n You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (res == MessageBoxResult.No) return;
+
             dynSettings.PackageManagerClient.Deprecate(this.Name);
         }
 

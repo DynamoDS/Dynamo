@@ -29,6 +29,9 @@ namespace Dynamo.PackageManager
 
         #region Properties & Fields
 
+        // The results of the last synchronization with the package manager server
+        public List<PackageManagerSearchElement> LastSync { get; set; }
+
         /// <summary>
         ///     SearchText property
         /// </summary>
@@ -313,7 +316,8 @@ namespace Dynamo.PackageManager
             }
             else
             {
-                return LastSync;
+                // with null query, don't show deprecated packages
+                return LastSync.Where(x => !x.IsDeprecated).ToList();
             }
         }
 
@@ -385,7 +389,6 @@ namespace Dynamo.PackageManager
 
         }
 
-
-        public List<PackageManagerSearchElement> LastSync { get; set; }
+        
     }
 }
