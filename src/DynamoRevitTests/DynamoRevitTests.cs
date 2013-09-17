@@ -1245,6 +1245,18 @@ namespace DynamoRevitTests
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
+        [Test]
+        public void AxonometricView()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\AxonometricView.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
         /// <summary>
         /// Automated creation of regression test cases.
         /// </summary>
