@@ -346,7 +346,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult4, actualResult4);
             Assert.AreEqual(expectedResult5, actualResult5);
         }
-        
+
         #endregion
     }
 

@@ -934,26 +934,6 @@ namespace Dynamo.ViewModels
 
         }
 
-        public void Add(string category, string name, string description, List<string> tags, bool isSearchable)
-        {
-            var searchEle = new NodeSearchElement(name, description, tags);
-            searchEle.SetSearchable(isSearchable);
-
-            if (!string.IsNullOrEmpty(category))
-            {
-                SearchDictionary.Add(searchEle, category + "." + searchEle.Name);
-            }
-
-            TryAddCategoryAndItem(category, searchEle);
-
-            SearchDictionary.Add(searchEle, searchEle.Name);
-            if (tags.Count > 0)
-            {
-                SearchDictionary.Add(searchEle, tags);
-            }
-            SearchDictionary.Add(searchEle, description);
-        }
-
         public void RemoveNode(string nodeName)
         {
             // remove from search dictionary

@@ -43,5 +43,6 @@ namespace Dynamo.Nodes.Views
         {
            // Let the click pass through the connector
         }
+
     }
 }

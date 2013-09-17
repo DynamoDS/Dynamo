@@ -4,6 +4,7 @@ using System.Windows;
 using System.Linq;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using System.Collections.Generic;
 
 namespace Dynamo.ViewModels
 {
@@ -141,8 +142,12 @@ namespace Dynamo.ViewModels
 
         private void Connect(object parameter)
         {
+            DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+            WorkspaceModel workspaceModel = dynamoViewModel.CurrentSpace;
+            WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
+
             // if this is a 
-            if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting)
+            if (!workspaceViewModel.IsConnecting)
             {
                 //test if port already has a connection if so grab it
                 //and begin connecting to somewhere else
@@ -151,24 +156,32 @@ namespace Dynamo.ViewModels
                 {
                     //define the new active connector
                     var c = new ConnectorViewModel(_port.Connectors[0].Start);
-                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
-                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
+                    workspaceViewModel.ActiveConnector = c;
+                    workspaceViewModel.IsConnecting = true;
 
                     //disconnect the connector model from its start and end ports
                     //and remove it from the connectors collection. this will also
                     //remove the view model
-                    var successfulRemoval = dynSettings.Controller.DynamoViewModel.CurrentSpace.Connectors.Remove(_port.Connectors[0]);
-                    _port.Connectors[0].NotifyConnectedPortsOfDeletion();
-
+                    ConnectorModel connector = _port.Connectors[0];
+                    if (workspaceModel.Connectors.Contains(connector))
+                    {
+                        List<ModelBase> models = new List<ModelBase>();
+                        models.Add(connector);
+                        workspaceModel.RecordAndDeleteModels(models);
+                        connector.NotifyConnectedPortsOfDeletion();
+                    }
                 }
                 else
                 {
                     try
                     {
                         //Create a connector view model to begin drawing
-                        var c = new ConnectorViewModel(_port);
-                        dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
-                        dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
+                        if (_port.PortType != PortType.INPUT)
+                        {
+                            var c = new ConnectorViewModel(_port);
+                            workspaceViewModel.ActiveConnector = c;
+                            workspaceViewModel.IsConnecting = true;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -178,29 +191,27 @@ namespace Dynamo.ViewModels
             }
             else  // attempt to complete the connection
             {
+                if (_port.PortType != PortType.INPUT)
+                {
+                    return;
+                }
+
                 //remove connector if one already exists
-                if (_port.Connectors.Count > 0 && _port.PortType == PortType.INPUT)
+                if (_port.Connectors.Count > 0)
                 {
                     var connToRemove = _port.Connectors[0];
-                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Model.Connectors.Remove(
-                       connToRemove);
+                    workspaceModel.Connectors.Remove(connToRemove);
                     _port.Disconnect(connToRemove);
                     var startPort = connToRemove.Start;
                     startPort.Disconnect(connToRemove);
                 }
 
                 // create the new connector model
-                var start = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ActiveStartPort;
+                var start = workspaceViewModel.ActiveConnector.ActiveStartPort;
                 var end = _port;
 
-                ConnectorModel newConnectorModel;
-                if (_port.PortType == PortType.INPUT)
-                    newConnectorModel = ConnectorModel.Make(start.Owner, end.Owner, start.Index, end.Index, 0);
-                else
-                {
-                    newConnectorModel = ConnectorModel.Make(end.Owner, start.Owner, end.Index, start.Index, 0);
-                    //newConnectorModel.
-                }
+                var newConnectorModel = ConnectorModel.Make(start.Owner,
+                    end.Owner, start.Index, end.Index, 0);
 
                 // the connector is invalid
                 if (newConnectorModel == null)
@@ -209,11 +220,14 @@ namespace Dynamo.ViewModels
                 }
 
                 // Add to the current workspace
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Model.Connectors.Add(newConnectorModel);
+                workspaceModel.Connectors.Add(newConnectorModel);
 
                 // Cleanup
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = false;
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = null;
+                workspaceViewModel.IsConnecting = false;
+                workspaceViewModel.ActiveConnector = null;
+
+                // Record the creation of connector in the undo recorder.
+                workspaceModel.RecordCreatedModel(newConnectorModel);
             }
         }
 

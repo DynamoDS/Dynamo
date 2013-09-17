@@ -18,7 +18,6 @@ using Microsoft.Practices.Prism;
 using NUnit.Framework;
 using Enum = System.Enum;
 using String = System.String;
-using ProtoCore.DSASM;
 
 namespace Dynamo.Models
 {
@@ -1068,46 +1067,47 @@ namespace Dynamo.Models
         /// <example>{"x":1234.0,"y":1234.0, "guid":1234-1234-...,"text":"the note's text","workspace":workspace </example>
         public void AddNote(object parameters)
         {
-
-            var inputs = parameters as Dictionary<string, object> ?? new Dictionary<string, object>();
-
-            // by default place note at center
-            var x = 0.0;
-            var y = 0.0;
-
-            if (inputs != null && inputs.ContainsKey("x"))
-                x = (double)inputs["x"];
-
-            if (inputs != null && inputs.ContainsKey("y"))
-
-                y = (double)inputs["y"];
-
-            var n = new NoteModel(x, y);
-
-            //if we have null parameters, the note is being added
-            //from the menu, center the view on the note
-
-            if (parameters == null)
-            {
-                inputs.Add("transformFromOuterCanvasCoordinates", true);
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new ModelEventArgs(n, inputs));
-            }
-
-            object id;
-            if (inputs.TryGetValue("guid", out id))
-                n.GUID = (Guid)id;
-
-            n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
-            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? CurrentWorkspace : (WorkspaceModel)inputs["workspace"];
-
-            ws.Notes.Add(n);
-
+            NoteModel noteModel = AddNoteInternal(parameters);
+            if (null != noteModel)
+                CurrentWorkspace.RecordCreatedModel(noteModel);
         }
 
         internal bool CanAddNote(object parameters)
         {
             return true;
         }
+
+        #region Undo/Redo Supporting Methods
+
+        internal void Undo(object parameters)
+        {
+            if (null != _cspace)
+                _cspace.Undo();
+
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+        }
+
+        internal bool CanUndo(object parameters)
+        {
+            return ((null == _cspace) ? false : _cspace.CanUndo);
+        }
+
+        internal void Redo(object parameters)
+        {
+            if (null != _cspace)
+                _cspace.Redo();
+
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+        }
+
+        internal bool CanRedo(object parameters)
+        {
+            return ((null == _cspace) ? false : _cspace.CanRedo);
+        }
+
+        #endregion
 
         /// <summary>
         /// Copy selected ISelectable objects to the clipboard.
@@ -1164,6 +1164,10 @@ namespace Dynamo.Models
             //old nodes and the guids of their pasted versions
             var nodeLookup = new Dictionary<Guid, Guid>();
 
+            //make a list of all newly created models so that their
+            //creations can be recorded in the undo recorder.
+            var createdModels = new List<ModelBase>();
+
             //clear the selection so we can put the
             //paste contents in
             DynamoSelection.Instance.Selection.RemoveAll();
@@ -1193,9 +1197,7 @@ namespace Dynamo.Models
                 node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
                 nodeData.Add("data", dynEl);
-
-                //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(CreateNodeCommand, nodeData));
-                CreateNode(nodeData);
+                createdModels.Add(CreateNode_Internal(nodeData));
             }
 
             //process the command queue so we have 
@@ -1239,8 +1241,7 @@ namespace Dynamo.Models
                 connectionData.Add("port_start", c.Start.Index);
                 connectionData.Add("port_end", c.End.Index);
 
-                //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(CreateConnectionCommand, connectionData));
-                CreateConnection(connectionData);
+                createdModels.Add(CreateConnectionInternal(connectionData));
             }
 
             //process the queue again to create the connectors
@@ -1264,8 +1265,9 @@ namespace Dynamo.Models
                     { "guid", newGUID }
                 };
 
-                AddNote(noteData);
+                createdModels.Add(AddNoteInternal(noteData));
 
+                // TODO: Why can't we just add "noteData" instead of doing a look-up?
                 AddToSelection(CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == newGUID));
             }
 
@@ -1273,6 +1275,9 @@ namespace Dynamo.Models
             {
                 AddToSelection(CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == de.Value));
             }
+
+            // Record models that are created as part of the command.
+            CurrentWorkspace.RecordCreatedModels(createdModels);
         }
 
         internal bool CanPaste(object parameters)
@@ -1346,7 +1351,9 @@ namespace Dynamo.Models
         /// <param name="parameters">A dictionary containing data about the node.</param>
         public void CreateNode(object parameters)
         {
-            CreateNode_Internal(parameters);
+            NodeModel nodeModel = CreateNode_Internal(parameters);
+            if (null != nodeModel)
+                nodeModel.WorkSpace.RecordCreatedModel(nodeModel);
         }
 
         internal NodeModel CreateNode_Internal(object parameters)
@@ -1433,12 +1440,7 @@ namespace Dynamo.Models
         {
             NodeModel result;
 
-            if (dynSettings.Controller.BuiltInFunctions.ContainsKey(name))
-            {
-                var method = dynSettings.Controller.BuiltInFunctions[name];
-                result = new DSFunction(method as ProcedureNode);
-            }
-            else if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
+            if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
             {
                 TypeLoadData tld = dynSettings.Controller.BuiltInTypesByName[name];
 
@@ -1489,37 +1491,7 @@ namespace Dynamo.Models
         /// <param name="parameters">A dictionary containing data about the connection.</param>
         public void CreateConnection(object parameters)
         {
-            try
-            {
-                Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
-
-                NodeModel start = (NodeModel)connectionData["start"];
-                NodeModel end = (NodeModel)connectionData["end"];
-                int startIndex = (int)connectionData["port_start"];
-                int endIndex = (int)connectionData["port_end"];
-
-                var c = ConnectorModel.Make(start, end, startIndex, endIndex, 0);
-
-                if (c != null)
-                    CurrentWorkspace.Connectors.Add(c);
-            }
-            catch (Exception e)
-            {
-                DynamoLogger.Instance.Log(e.Message);
-                DynamoLogger.Instance.Log(e);
-            }
-        }
-
-        internal bool CanCreateConnection(object parameters)
-        {
-            //make sure you have valid connection data
-            Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
-            if (connectionData != null && connectionData.Count == 4)
-            {
-                return true;
-            }
-
-            return false;
+            CreateConnectionInternal(parameters);
         }
 
         /// <summary>
@@ -1605,75 +1577,9 @@ namespace Dynamo.Models
             return true;
         }
 
-        /// <summary>
-        /// Delete ISelectable objects.
-        /// </summary>
-        /// <param name="parameters">The objects to delete.</param>
-        public void Delete(object parameters)
-        {
-            //if you get an object in the parameters, just delete that object
-            if (parameters != null)
-            {
-                var note = parameters as NoteModel;
-                var node = parameters as NodeModel;
-
-                if (node != null)
-                {
-                    DeleteNodeAndItsConnectors(node);
-                }
-                else if (note != null)
-                {
-                    DeleteNote(note);
-                }
-            }
-            else
-            {
-                for (int i = DynamoSelection.Instance.Selection.Count - 1; i >= 0; i--)
-                {
-                    var note = DynamoSelection.Instance.Selection[i] as NoteModel;
-                    var node = DynamoSelection.Instance.Selection[i] as NodeModel;
-
-                    if (node != null)
-                    {
-                        DeleteNodeAndItsConnectors(node);
-                    }
-                    else if (note != null)
-                    {
-                        DeleteNote(note);
-                    }
-                }
-            }
-        }
-
         internal bool CanDelete(object parameters)
         {
             return DynamoSelection.Instance.Selection.Count > 0;
-        }
-
-        /// <summary>
-        /// Delete a note.
-        /// </summary>
-        /// <param name="note">The note to delete.</param>
-        public void DeleteNote(NoteModel note)
-        {
-            DynamoSelection.Instance.Selection.Remove(note);
-            CurrentWorkspace.Notes.Remove(note);
-        }
-
-        private void DeleteNodeAndItsConnectors(NodeModel node)
-        {
-            foreach (var conn in node.AllConnectors().ToList())
-            {
-                conn.NotifyConnectedPortsOfDeletion();
-                dynSettings.Controller.DynamoViewModel.Model.CurrentWorkspace.Connectors.Remove(conn);
-            }
-
-            node.DisableReporting();
-            node.Destroy();
-            node.Cleanup();
-            DynamoSelection.Instance.Selection.Remove(node);
-            node.WorkSpace.Nodes.Remove(node);
-            OnNodeDeleted(node);
         }
 
         /// <summary>
@@ -1766,6 +1672,11 @@ namespace Dynamo.Models
             CurrentWorkspace.FilePath = "";
             CurrentWorkspace.HasUnsavedChanges = false;
 
+            // Clear undo/redo stacks.
+            CurrentWorkspace.ClearUndoRecorder();
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+
             //clear the renderables
             dynSettings.Controller.RenderDescriptions.Clear();
             dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
@@ -1776,6 +1687,46 @@ namespace Dynamo.Models
         internal bool CanClear(object parameter)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Call this method to delete a given ModelBase, or all the models 
+        /// in the current selection set within the current active workspace.
+        /// </summary>
+        /// <param name="parameters">An instance of ModelBase to be deleted 
+        /// from the current workspace. If this parameter is null, then all 
+        /// the selected nodes will be deleted.</param>
+        public void Delete(object parameters)
+        {
+            if (null == this._cspace)
+                return;
+
+            List<ModelBase> modelsToDelete = new List<ModelBase>();
+
+            if (null != parameters) // Something is specified in parameters.
+            {
+                if (parameters is ModelBase)
+                    modelsToDelete.Add(parameters as ModelBase);
+            }
+            else
+            {
+                // When 'parameters' is 'null', then it means all selected models.
+                foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
+                {
+                    if (selectable is ModelBase)
+                        modelsToDelete.Add(selectable as ModelBase);
+                }
+            }
+
+            this._cspace.RecordAndDeleteModels(modelsToDelete);
+
+            var selection = DynamoSelection.Instance.Selection;
+            foreach (ModelBase model in modelsToDelete)
+            {
+                selection.Remove(model); // Remove from selection set.
+                if (model is NodeModel)
+                    OnNodeDeleted(model as NodeModel);
+            }
         }
 
         /// <summary>

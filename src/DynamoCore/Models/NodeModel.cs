@@ -22,8 +22,6 @@ namespace Dynamo.Models
 {
     public enum ElementState { DEAD, ACTIVE, ERROR };
 
-    public enum SaveContext { File, Copy };
-
     public enum LacingStrategy
     {
         Disabled,
@@ -66,7 +64,9 @@ namespace Dynamo.Models
                 DispatchedToUI(this, e);
         }
 
+        // TODO(Ben): Move this up to ModelBase (it makes sense for connector as well).
         public WorkspaceModel WorkSpace;
+
         public ObservableCollection<PortData> InPortData { get; private set; }
         public ObservableCollection<PortData> OutPortData { get; private set; }
         readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
@@ -96,7 +96,8 @@ namespace Dynamo.Models
         private bool isUpstreamVisible;
 
         private IdentifierNode identifier = null;
-
+        protected AssociativeNode defaultAstExpression = null;
+ 
         /// <summary>
         /// Returns whether this node represents a built-in or custom function.
         /// </summary>
@@ -420,7 +421,7 @@ namespace Dynamo.Models
             }
         }
 
-        public virtual AssociativeNode AstIdentifier
+        public AssociativeNode AstIdentifier
         {
             get
             {
@@ -432,6 +433,19 @@ namespace Dynamo.Models
                 return identifier;
             }
         }
+
+        /// <summary>
+        /// Some node is constant value like Pi or E, no need to create a
+        /// variable for this kind of node.
+        /// </summary>
+        protected virtual AssociativeNode DefaultAstExpression
+        {
+            get
+            {
+                return defaultAstExpression;
+            }
+        }
+
         #endregion
 
         protected NodeModel()
@@ -753,19 +767,18 @@ namespace Dynamo.Models
             return nodes[outPort];
         }
 
-        protected virtual AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputAstNodes)
+        protected virtual AssociativeNode CompileToAstNodeInternal(List<AssociativeNode> inputAstNodes)
         {
-            return builder.Build(this, inputAstNodes);
+            return null;
         }
 
         public AssociativeNode CompileToAstNode(AstBuilder builder)
         {
-            if (!RequiresRecalc)
+            if (!RequiresRecalc || builder.ContainsAstNodes(GUID))
             {
-                return this.AstIdentifier; 
+                return DefaultAstExpression == null ? this.AstIdentifier : DefaultAstExpression;
             }
 
-            builder.ClearAstNodes(GUID);
             bool isPartiallyApplied = false;
 
             // Recursively compile its inputs to ast nodes and add intermediate
@@ -790,13 +803,13 @@ namespace Dynamo.Models
             // But in the end there is always an assignment:
             //
             //     AstIdentifier = ...;
-            var rhs = BuildAstNode(builder, inputAstNodes);
+            var rhs = CompileToAstNodeInternal(inputAstNodes);
             if (rhs == null)
             {
                 // For any dyn node which doesn't override this function, we treat
                 // them as custom nodes, therefore their evaluation is based on f#
                 // evaluation engine. This is done through evalutor.
-                rhs = builder.BuildEvaluator(this, inputAstNodes);
+                rhs = AstBuilder.BuildEvaluator(builder, this, inputAstNodes);
             }
             builder.BuildEvaluation(this, rhs, isPartiallyApplied);
 
@@ -1559,6 +1572,58 @@ namespace Dynamo.Models
             ValidateConnections();
             IsSelected = false;
         }
+
+        #endregion
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+
+            // Set the type attribute
+            helper.SetAttribute("type", this.GetType().ToString());
+            helper.SetAttribute("guid", this.GUID);
+            helper.SetAttribute("nickname", this.NickName);
+            helper.SetAttribute("x", this.X);
+            helper.SetAttribute("y", this.Y);
+            helper.SetAttribute("isVisible", this.IsVisible);
+            helper.SetAttribute("isUpstreamVisible", this.IsUpstreamVisible);
+            helper.SetAttribute("lacing", this.ArgumentLacing.ToString());
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            this.GUID = helper.ReadGuid("guid", Guid.NewGuid());
+
+            // Resolve node nick name.
+            string nickName = helper.ReadString("nickname", string.Empty);
+            if (!string.IsNullOrEmpty(nickName))
+                this.nickName = nickName;
+            else
+            {
+                System.Type type = this.GetType();
+                var attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), true);
+                NodeNameAttribute attrib = attribs[0] as NodeNameAttribute;
+                if (null != attrib)
+                    this.nickName = attrib.Name;
+            }
+
+            this.X = helper.ReadDouble("x", 0.0);
+            this.Y = helper.ReadDouble("y", 0.0);
+            this.isVisible = helper.ReadBoolean("isVisible", true);
+            this.isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
+            this.argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
+
+            // TODO(Ben): We need to raise property change events 
+            // here for those data members we directly changed.
+            RaisePropertyChanged("NickName");
+            RaisePropertyChanged("ArgumentLacing");
+            RaisePropertyChanged("IsVisible");
+            RaisePropertyChanged("IsUpstreamVisible");
+        }
+
         #endregion
     }
 
