@@ -518,6 +518,13 @@ namespace Dynamo.Utilities
             return c;
         }
 
+        public static XYZ ProjectPointOnPlane(XYZ pt, Plane plane)
+        {
+            var proj = pt - (pt - plane.Origin).DotProduct(plane.Normal) * plane.Normal;
+
+            return proj;
+        }
+
         /// <summary>
         /// Retrieve all corner points from the given bounding box.
         /// </summary>
