@@ -83,16 +83,38 @@
                             <Border BorderBrush="#222" BorderThickness="0,0,0,1">
                                 <Border Name="ItemBG" BorderBrush="#444" BorderThickness="0,1,0,0">
 
-                                    <Border.Background>
-                                        <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                                            <GradientStop Color="#333" Offset="0.0" />
-                                            <GradientStop Color="#333" Offset="1.0" />
-                                        </LinearGradientBrush>
-                                    </Border.Background>
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
+                                                        <Setter Property="Background" Value="#222"/>
+                                                    </DataTrigger>
 
-                                
-                                     <StackPanel Width ="445" Name="SearchEle">
+                                                    <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
+                                                        <Setter Property="Background" Value="#333"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                    
+                                        <StackPanel Width ="445" Name="SearchEle">
 
+                                        <TextBlock Text="DEPRECATED" Padding="5" Foreground ="#555" ToolTip="The maintainers of this package have indicated that they will no longer be updating it.  Use at your own risk!" FontSize="10">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                            
                                         <StackPanel Orientation="Horizontal" Margin="5">
 
                                             <Border Width="275" BorderThickness ="0,0,1,0" BorderBrush="#222" >
