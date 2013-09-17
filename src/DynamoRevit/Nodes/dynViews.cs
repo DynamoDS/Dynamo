@@ -631,7 +631,68 @@ namespace Dynamo.Nodes
         }
       
     }
-    
+
+    [NodeName("View Sheet")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
+    [NodeDescription("Create a view sheet.")]
+    public class ViewSheet : RevitTransactionNodeWithOneOutput
+    {
+        public ViewSheet()
+        {
+            InPortData.Add(new PortData("name", "The name of the sheet.", typeof(Value.String)));
+            InPortData.Add(new PortData("number", "The number of the sheet.", typeof(Value.String)));
+            InPortData.Add(new PortData("title block", "The title block to use.", typeof(Value.Container)));
+            InPortData.Add(new PortData("view(s)", "The view(s) to add to the sheet.", typeof(Value.List)));
+
+            OutPortData.Add(new PortData("sheet", "The view sheet.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var name = ((Value.String)args[0]).Item;
+            var number = ((Value.String)args[1]).Item;
+            var tb = (FamilySymbol)((Value.Container)args[2]).Item;
+            var views = ((Value.List)args[3]).Item;
+
+            Autodesk.Revit.DB.ViewSheet sheet = null;
+ 
+            if (this.Elements.Any())
+            {
+                Element e;
+                if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.ViewSheet), out e))
+                {
+                    sheet = (Autodesk.Revit.DB.ViewSheet)e;
+
+                    if(sheet.Name != null && sheet.Name != name)
+                        sheet.Name = name;
+                    if(number != null && sheet.SheetNumber != number)
+                        sheet.SheetNumber = number;
+                }
+                else
+                {
+                    //create a new view sheet
+                    sheet = Autodesk.Revit.DB.ViewSheet.Create(dynRevitSettings.Doc.Document, tb.Id);
+                    sheet.Name = name;
+                    sheet.SheetNumber = number;
+                    Elements[0] = sheet.Id;
+                }
+            }
+            else
+            {
+                sheet = Autodesk.Revit.DB.ViewSheet.Create(dynRevitSettings.Doc.Document, tb.Id);
+                sheet.Name = name;
+                sheet.SheetNumber = number;
+                Elements.Add(sheet.Id);
+            }
+
+            //rearrange views on sheets
+
+            return Value.NewContainer(sheet);
+        }
+    }
+
     //[NodeName("Override Element Color in View")]
     //[NodeDescription("Override an element's surface color in the active view.")]
     //[NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
