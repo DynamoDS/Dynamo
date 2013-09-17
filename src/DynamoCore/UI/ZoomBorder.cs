@@ -124,8 +124,8 @@ namespace Dynamo.Controls
             {
                 double zoom = e.Delta > 0 ? .1 : -.1;
                 Point mousePosition = e.GetPosition(child);
-                var vm = DataContext as WorkspaceViewModel;
-                vm.ZoomAtViewportPoint(zoom, mousePosition);
+                WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
+                vm.OnRequestZoomToViewportPoint(this, new ZoomEventArgs(zoom, mousePosition));
             }
         }
 

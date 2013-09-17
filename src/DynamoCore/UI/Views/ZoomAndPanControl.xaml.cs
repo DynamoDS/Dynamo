@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using Dynamo.Controls;
 using Dynamo.ViewModels;
 
-namespace Dynamo.UI.Controls
+namespace Dynamo.Controls
 {
     /// <summary>
     /// Interaction logic for ZoomAndPanControl.xaml

@@ -24,7 +24,7 @@ namespace Dynamo.Views
         private bool isWindowSelecting;
         private Point mouseDownPos;
         private Dynamo.Controls.DragCanvas WorkBench = null;
-        private Dynamo.UI.Controls.ZoomAndPanControl zoomAndPanControl = null;
+        private ZoomAndPanControl zoomAndPanControl = null;
 
         public WorkspaceViewModel ViewModel
         {
@@ -49,14 +49,12 @@ namespace Dynamo.Views
 
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
         {
-            zoomAndPanControl = new Dynamo.UI.Controls.ZoomAndPanControl(DataContext as WorkspaceViewModel);
+            zoomAndPanControl = new ZoomAndPanControl(DataContext as WorkspaceViewModel);
             Canvas.SetRight(zoomAndPanControl, 10);
             Canvas.SetTop(zoomAndPanControl, 10);
             Canvas.SetZIndex(zoomAndPanControl, 8000);
             zoomAndPanControl.Focusable = false;
             outerCanvas.Children.Add(zoomAndPanControl);
-
-            ViewModel.ZoomBorder = zoomBorder;
 
             Debug.WriteLine("Workspace loaded.");
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
@@ -77,6 +75,8 @@ namespace Dynamo.Views
             ViewModel.Loaded();
             ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
             ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
+            ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
+            ViewModel.RequestZoomToViewportPoint += new ZoomEventHandler(vm_ZoomAtViewportPoint);
             ViewModel.StopDragging += new EventHandler(vm_StopDragging);
             ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
@@ -235,6 +235,56 @@ namespace Dynamo.Views
             zoomBorder.SetZoom((e as ZoomEventArgs).Zoom);
         }
 
+        void vm_ZoomAtViewportCenter(object sender, EventArgs e)
+        {
+            double zoom = (e as ZoomEventArgs).Zoom;
+
+            // Limit Zoom
+            double resultZoom = ViewModel._model.Zoom + zoom;
+            if (resultZoom < WorkspaceModel.ZOOM_MINIMUM)
+                resultZoom = WorkspaceModel.ZOOM_MINIMUM;
+            else if (resultZoom > WorkspaceModel.ZOOM_MAXIMUM)
+                resultZoom = WorkspaceModel.ZOOM_MAXIMUM;
+
+            // Get Viewpoint Center point
+            Point centerPoint = new Point();
+            centerPoint.X = outerCanvas.ActualWidth / 2;
+            centerPoint.Y = outerCanvas.ActualHeight / 2;
+
+            // Get relative point of ZoomBorder child in relates to viewpoint center point
+            Point relativePoint = new Point();
+            relativePoint.X = (centerPoint.X - ViewModel._model.X) / ViewModel._model.Zoom;
+            relativePoint.Y = (centerPoint.Y - ViewModel._model.Y) / ViewModel._model.Zoom;
+
+            ZoomAtViewportPoint(zoom, relativePoint);
+        }
+
+        private void vm_ZoomAtViewportPoint(object sender, EventArgs e)
+        {
+            double zoom = (e as ZoomEventArgs).Zoom;
+            Point point = (e as ZoomEventArgs).Point;
+
+            ZoomAtViewportPoint(zoom, point);
+        }
+
+        private void ZoomAtViewportPoint(double zoom, Point relative)
+        {
+            // Limit zoom
+            double resultZoom = ViewModel._model.Zoom + zoom;
+            if (resultZoom < WorkspaceModel.ZOOM_MINIMUM)
+                resultZoom = WorkspaceModel.ZOOM_MINIMUM;
+            else if (resultZoom > WorkspaceModel.ZOOM_MAXIMUM)
+                resultZoom = WorkspaceModel.ZOOM_MAXIMUM;
+
+            double absoluteX, absoluteY;
+            absoluteX = relative.X * ViewModel._model.Zoom + ViewModel._model.X;
+            absoluteY = relative.Y * ViewModel._model.Zoom + ViewModel._model.Y;
+
+            ViewModel._model.Zoom = resultZoom;
+            ViewModel._model.X = absoluteX - (relative.X * ViewModel._model.Zoom);
+            ViewModel._model.Y = absoluteY - (relative.Y * ViewModel._model.Zoom);
+        }
+        
         private void dynWorkspaceView_KeyDown(object sender, KeyEventArgs e)
         {
             Button source = e.Source as Button;
