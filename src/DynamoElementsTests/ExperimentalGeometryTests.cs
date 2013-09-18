@@ -5,12 +5,25 @@ using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Tests;
-using Autodesk.LibG;
-using Microsoft.FSharp.Collections;
-using String = System.String;
 
-namespace Dynamo
+namespace Dynamo.Tests
 {
+    [SetUpFixture]
+    internal class Setup
+    {
+        [SetUp]
+        public void Init()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
+        }
+
+        [TearDown]
+        public void Cleanup()
+        {
+
+        }
+    }
+
     [TestFixture]
     class ExperimentalGeometryTests : DynamoUnitTest
     {

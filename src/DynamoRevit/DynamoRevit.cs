@@ -498,9 +498,23 @@ namespace Dynamo.Applications
                             testResult.testsuite.result = "Failure";
                         }
 
-                        
+
                         cases.Add(testCase);
                     }
+                    else
+                    {
+                        //we have a journal file, but the specified test could not be found
+                        var currInvalid = Convert.ToInt16(testResult.invalid);
+                        testResult.invalid = currInvalid + 1;
+                        testResult.testsuite.result = "Error";
+                    }
+                }
+                else
+                {
+                    //we have a journal file, but no data
+                    var currInvalid = Convert.ToInt16(testResult.invalid);
+                    testResult.invalid = currInvalid + 1;
+                    testResult.testsuite.result = "Error";
                 }
 
                 testResult.testsuite.results.Items = cases.ToArray();

@@ -168,6 +168,7 @@ namespace Dynamo.PackageManager
                 get { return _votes; } 
                 set { _votes = value; RaisePropertyChanged("Votes"); }
             }
+            public bool IsDeprecated { get { return this.Header.deprecated; } }
             public int Downloads { get { return this.Header.downloads; } }
             public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
             public int UsedBy { get { return this.Header.used_by.Count; } } 

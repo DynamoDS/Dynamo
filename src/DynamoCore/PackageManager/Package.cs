@@ -237,6 +237,9 @@ namespace Dynamo.PackageManager
 
         private void Deprecate()
         {
+            var res = MessageBox.Show("Are you sure you want to deprecate " + this.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for.  \n\n You can always undeprecate the package.", "Deprecating Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (res == MessageBoxResult.No) return;
+
             dynSettings.PackageManagerClient.Deprecate(this.Name);
         }
 
@@ -247,6 +250,9 @@ namespace Dynamo.PackageManager
 
         private void Undeprecate()
         {
+            var res = MessageBox.Show("Are you sure you want to undeprecate " + this.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.  \n\n You can always re-deprecate the package.", "Removing Package Deprecation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (res == MessageBoxResult.No) return;
+
             dynSettings.PackageManagerClient.Undeprecate(this.Name);
         }
 

@@ -13,11 +13,11 @@
 //limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
-using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -29,7 +29,6 @@ using System.Windows.Data;
 using System.ComponentModel;
 
 using Value = Dynamo.FScheme.Value;
-using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
 
 namespace Dynamo.Nodes
@@ -85,16 +84,17 @@ namespace Dynamo.Nodes
 
     public abstract class ViewBase:RevitTransactionNodeWithOneOutput
     {
-        protected bool _isPerspective = false;
+        protected bool isPerspective = false;
 
         protected ViewBase()
         {
             InPortData.Add(new PortData("eye", "The eye position point.", typeof(Value.Container)));
-            InPortData.Add(new PortData("up", "The up direction of the view.", typeof(Value.Container)));
-            InPortData.Add(new PortData("forward", "The view direction - the vector pointing from the eye towards the model.", typeof(Value.Container)));
+            InPortData.Add(new PortData("target", "The location where the view is pointing.", typeof(Value.Container)));
             InPortData.Add(new PortData("name", "The name of the view.", typeof(Value.String)));
+            InPortData.Add(new PortData("extents", "Pass in a bounding box or an element to define the 3D crop of the view.", typeof(Value.String)));
+            InPortData.Add(new PortData("isolate", "If an element is supplied in 'extents', it will be isolated in the view.", typeof(Value.String)));
 
-            OutPortData.Add(new PortData("v", "The newly created 3D view.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("view", "The newly created 3D view.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -103,20 +103,15 @@ namespace Dynamo.Nodes
         {
             View3D view = null;
             var eye = (XYZ)((Value.Container)args[0]).Item;
-            var userUp = (XYZ)((Value.Container)args[1]).Item;
-            var direction = (XYZ)((Value.Container)args[2]).Item;
-            var name = ((Value.String)args[3]).Item;
+            var target = (XYZ)((Value.Container)args[1]).Item;
+            var name = ((Value.String)args[2]).Item;
+            var extents = ((Value.Container)args[3]).Item;
+            var isolate = Convert.ToBoolean(((Value.Number)args[4]).Item);
 
-            XYZ side;
-            if (direction.IsAlmostEqualTo(userUp) || direction.IsAlmostEqualTo(userUp.Negate()))
-                side = XYZ.BasisZ.CrossProduct(direction);
-            else
-                side = userUp.CrossProduct(direction);
-            XYZ up = side.CrossProduct(direction);
-
-            //need to reverse the up direction to get the 
-            //proper orientation - there might be a better way to handle this
-            var orient = new ViewOrientation3D(eye, -up, direction);
+            var globalUp = XYZ.BasisZ;
+            var direction = target.Subtract(eye);
+            var up = direction.CrossProduct(globalUp).CrossProduct(direction);
+            var orient = new ViewOrientation3D(eye, up, direction);
 
             if (this.Elements.Any())
             {
@@ -124,7 +119,7 @@ namespace Dynamo.Nodes
                 if (dynUtils.TryGetElement(this.Elements[0], typeof(View3D), out e))
                 {
                     view = (View3D)e;
-                    if (!view.ViewDirection.IsAlmostEqualTo(direction))
+                    if (!view.ViewDirection.IsAlmostEqualTo(direction) || !view.Origin.IsAlmostEqualTo(eye))
                     {
                         view.Unlock();
                         view.SetOrientation(orient);
@@ -137,14 +132,115 @@ namespace Dynamo.Nodes
                 else
                 {
                     //create a new view
-                    view = ViewBase.Create3DView(orient, name, false);
+                    view = ViewBase.Create3DView(orient, name, isPerspective);
                     Elements[0] = view.Id;
                 }
             }
             else
             {
-                view = Create3DView(orient, name, false);
+                view = Create3DView(orient, name, isPerspective);
                 Elements.Add(view.Id);
+            }
+
+            var fec = dynRevitUtils.SetupFilters(dynRevitSettings.Doc.Document);
+
+            if (isolate)
+            {
+                view.CropBoxActive = true;
+
+                var element = extents as Element;
+                if (element != null)
+                {
+                    var e = element;
+
+                    var all = fec.ToElements();
+                    var toHide =
+                        fec.ToElements().Where(x => !x.IsHidden(view) && x.CanBeHidden(view) && x.Id != e.Id).Select(x => x.Id).ToList();
+                    
+                    if (toHide.Count > 0)
+                        view.HideElements(toHide);
+
+                    dynRevitSettings.Doc.Document.Regenerate();
+
+                    Debug.WriteLine(string.Format("Eye:{0},Origin{1}, BBox_Origin{2}, Element{3}",
+                        eye.ToString(), view.Origin.ToString(), view.CropBox.Transform.Origin.ToString(), (element.Location as LocationPoint).Point.ToString()));
+
+                    //http://wikihelp.autodesk.com/Revit/fra/2013/Help/0000-API_Deve0/0039-Basic_In39/0067-Views67/0069-The_View69
+                    if (isPerspective)
+                    {
+                        var farClip = view.get_Parameter("Far Clip Active");
+                        farClip.Set(0);
+                    }
+                    else
+                    {
+                        //http://adndevblog.typepad.com/aec/2012/05/set-crop-box-of-3d-view-that-exactly-fits-an-element.html
+                        var pts = new List<XYZ>();
+                        foreach (GeometryObject gObj in element.get_Geometry(dynRevitSettings.GeometryOptions))
+                        {
+                            if (gObj is Solid)
+                            {
+                                //get all the edges in it
+                                var solid = gObj as Solid;
+                                foreach (Edge gEdge in solid.Edges)
+                                {
+                                    IList<XYZ> xyzArray = gEdge.Tessellate();
+                                    pts.AddRange(xyzArray);
+                                }
+                            }
+                        }
+
+                        var bounding = view.CropBox;
+                        var transInverse = bounding.Transform.Inverse;
+                        var transPts = pts.Select(transInverse.OfPoint).ToList();
+
+                        //ingore the Z coordindates and find
+                        //the max X ,Y and Min X, Y in 3d view.
+                        double dMaxX = 0, dMaxY = 0, dMinX = 0, dMinY = 0;
+
+                        //geom.XYZ ptMaxX, ptMaxY, ptMinX,ptMInY; 
+                        //coorresponding point.
+                        bool bFirstPt = true;
+                        foreach (var pt1 in transPts)
+                        {
+                            if (true == bFirstPt)
+                            {
+                                dMaxX = pt1.X;
+                                dMaxY = pt1.Y;
+                                dMinX = pt1.X;
+                                dMinY = pt1.Y;
+                                bFirstPt = false;
+                            }
+                            else
+                            {
+                                if (dMaxX < pt1.X)
+                                    dMaxX = pt1.X;
+                                if (dMaxY < pt1.Y)
+                                    dMaxY = pt1.Y;
+                                if (dMinX > pt1.X)
+                                    dMinX = pt1.X;
+                                if (dMinY > pt1.Y)
+                                    dMinY = pt1.Y;
+                            }
+                        }
+
+                        bounding.Max = new XYZ(dMaxX, dMaxY, bounding.Max.Z);
+                        bounding.Min = new XYZ(dMinX, dMinY, bounding.Min.Z);
+                        view.CropBox = bounding;
+                    }
+                }
+                else
+                {
+                    var xyz = extents as BoundingBoxXYZ;
+                    if (xyz != null)
+                    {
+                        view.CropBox = xyz;
+                    }
+                }
+            }
+            else
+            {
+                view.UnhideElements(fec.ToElementIds());
+                view.CropBoxActive = false;
             }
 
             return Value.NewContainer(view);
@@ -162,8 +258,8 @@ namespace Dynamo.Nodes
 
             //create a new view
             View3D view = isPerspective ?
-                              View3D.CreateIsometric(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id) :
-                              View3D.CreatePerspective(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id);
+                              View3D.CreatePerspective(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id) :
+                              View3D.CreateIsometric(dynRevitSettings.Doc.Document, viewFamilyTypes.First().Id);
 
             view.SetOrientation(orient);
             view.SaveOrientationAndLock();
@@ -214,7 +310,7 @@ namespace Dynamo.Nodes
     {
         public IsometricView ()
         {
-            _isPerspective = false;
+            isPerspective = false;
         }
     }
 
@@ -225,7 +321,7 @@ namespace Dynamo.Nodes
     {
         public PerspectiveView()
         {
-            _isPerspective = true;
+            isPerspective = true;
         }
     }
 
