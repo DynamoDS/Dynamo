@@ -756,17 +756,35 @@ namespace Dynamo.Nodes
                 var viewWidth = view.Outline.Max.U - view.Outline.Min.U;
                 var viewHeight = view.Outline.Max.V - view.Outline.Min.V;
 
-                //var viewWidth = view.CropBox.Max.X - view.CropBox.Min.X;
-                //var viewHeight = view.CropBox.Max.Y - view.CropBox.Min.Y;
-
                 UV placement = null;
                 if (packer.TryPack(viewWidth, viewHeight, out placement))
                 {
-                    //place the view on the sheet
-                    if (Viewport.CanAddViewToSheet(dynRevitSettings.Doc.Document, sheet.Id, view.Id))
+                    if (sheet.Views.Contains(view))
                     {
-                        var viewport = Viewport.Create(dynRevitSettings.Doc.Document, sheet.Id, view.Id,
-                                                       new XYZ(placement.U + viewWidth/2, placement.V + viewHeight/2, 0));
+                        //move the view
+                        //find the corresponding viewport
+                        var collector = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+                        collector.OfClass(typeof (Viewport));
+                        var found =
+                            collector.ToElements()
+                                     .Cast<Viewport>()
+                                     .Where(x => x.SheetId == sheet.Id && x.ViewId == view.Id);
+
+                        var enumerable = found as Viewport[] ?? found.ToArray();
+                        if (!enumerable.Any())
+                            continue;
+
+                        var viewport = enumerable.First();
+                        viewport.SetBoxCenter(new XYZ(placement.U + viewWidth / 2, placement.V + viewHeight / 2, 0));
+                    }
+                    else
+                    {
+                        //place the view on the sheet
+                        if (Viewport.CanAddViewToSheet(dynRevitSettings.Doc.Document, sheet.Id, view.Id))
+                        {
+                            var viewport = Viewport.Create(dynRevitSettings.Doc.Document, sheet.Id, view.Id,
+                                                           new XYZ(placement.U + viewWidth / 2, placement.V + viewHeight / 2, 0));
+                        }
                     }
                 }
                 else
