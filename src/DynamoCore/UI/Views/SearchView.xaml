@@ -252,20 +252,7 @@
 
                         <StackPanel Orientation="Horizontal">
 
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
-                            
-                                <TextBlock.ToolTip>
-                                    <StackPanel Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
-                                        <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Type}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" />
-                                        
-                                        <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-                                
-                                    </StackPanel>
-                                </TextBlock.ToolTip>
-                                
-                            </TextBlock>
+                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
 
                             <Border Background="#444" Margin="10 0 0 0" CornerRadius="2" >
 
@@ -285,7 +272,7 @@
                                     </Style>
                                 </Border.Style>
 
-                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="4" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0">
+                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="4" FontSize="9" Text="C">
                                 </TextBlock>
 
                             </Border>
@@ -298,20 +285,7 @@
 
                         <StackPanel Orientation="Horizontal">
                             
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
-                            
-                                <TextBlock.ToolTip>
-                                    <StackPanel Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
-                                        <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Type}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" />
-                                        
-                                        <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-                                
-                                    </StackPanel>
-                                </TextBlock.ToolTip>
-                                
-                            </TextBlock>
+                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
 
                             <Border Background="#444" Margin="10 0 0 0" CornerRadius="2" >
 
@@ -331,7 +305,7 @@
                                     </Style>
                                 </Border.Style>
 
-                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="4" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0">
+                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="4" FontSize="9" Text="C">
                                 </TextBlock>
                                 
                             </Border>
