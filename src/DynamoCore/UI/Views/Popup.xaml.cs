@@ -19,7 +19,7 @@ namespace Dynamo.UI.Views
     /// <summary>
     /// Interaction logic for PreviewPopup.xaml
     /// </summary>
-    public partial class PreviewPopup : UserControl
+    public partial class Popup : UserControl
     {
         public enum PopupStyle
         {
@@ -31,10 +31,11 @@ namespace Dynamo.UI.Views
 
         #region Public Methods
 
-        public PreviewPopup(PopupStyle style)
+        public Popup(PopupStyle style)
         {
             InitializeComponent();
             UpdateStyle(style);
+            SetupFadeSetting();
         }
 
         public void UpdatePopupWindow(Point connectingPoint, string text)
@@ -46,21 +47,12 @@ namespace Dynamo.UI.Views
 
         public void FadeOutPopupWindow()
         {
-            DoubleAnimation fadeOutAnimation = new DoubleAnimation();
-            fadeOutAnimation.Completed += fadeOutAnimation_Completed;
-            fadeOutAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(200));
-            fadeOutAnimation.From = 0.96;
-            fadeOutAnimation.To = 0;
             this.mainGrid.BeginAnimation(OpacityProperty, fadeOutAnimation);
         }
 
         public void FaceInPopupWindow()
         {
             this.popupWindow.IsOpen = true;
-            DoubleAnimation fadeInAnimation = new DoubleAnimation();
-            fadeInAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(200));
-            fadeInAnimation.From = 0;
-            fadeInAnimation.To = 0.96;
             this.mainGrid.BeginAnimation(OpacityProperty, fadeInAnimation);
         }
 
@@ -68,7 +60,9 @@ namespace Dynamo.UI.Views
 
         #region Class Properties
 
-        public PopupStyle Style { get; private set; }
+        private PopupStyle popupStyle;
+        private DoubleAnimation fadeOutAnimation = new DoubleAnimation();
+        DoubleAnimation fadeInAnimation = new DoubleAnimation();
 
         #endregion
 
@@ -112,8 +106,8 @@ namespace Dynamo.UI.Views
 
         private void UpdateStyle(PopupStyle style)
         {
-            this.Style = style;
-            switch (style)
+            this.popupStyle = style;
+            switch (this.popupStyle)
             {
                 case PopupStyle.LibraryItemPreview:
                     SetPopupStyle_LibraryItemPreview();
@@ -160,11 +154,37 @@ namespace Dynamo.UI.Views
             return textbox;
         }
 
+        private void SetupFadeSetting()
+        {
+            fadeOutAnimation.Completed += fadeOutAnimation_Completed;
+            fadeOutAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(200));
+            fadeOutAnimation.To = 0;
+
+            fadeInAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(200));
+            fadeInAnimation.To = 0.7;
+            fadeInAnimation.Completed += fadeInAnimation_Completed;
+        }
+
         private void fadeOutAnimation_Completed(object sender, EventArgs e)
         {
-            //this.popupWindow.IsOpen = false;
+        }
+
+        private void fadeInAnimation_Completed(object sender, EventArgs e)
+        {
+        }
+
+        private void PopupWindow_MouseEnter(object sender, MouseEventArgs e)
+        {
+            FaceInPopupWindow();
+        }
+
+        private void PopupWindow_Mouseleave(object sender, MouseEventArgs e)
+        {
+            FadeOutPopupWindow();
         }
 
         #endregion
+
+        
     }
 }

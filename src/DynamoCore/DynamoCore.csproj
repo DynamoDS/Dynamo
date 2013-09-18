@@ -179,6 +179,8 @@ limitations under the License.
       <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
     <Compile Include="UI\Views\PreviewPopup.xaml.cs">
       <DependentUpon>PreviewPopup.xaml</DependentUpon>
+    <Compile Include="UI\Views\Popup.xaml.cs">
+      <DependentUpon>Popup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
@@ -467,7 +469,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\PreviewPopup.xaml">
+    <Page Include="UI\Views\Popup.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
