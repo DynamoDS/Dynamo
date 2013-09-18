@@ -19,6 +19,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
+using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -27,7 +28,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Data;
 using System.ComponentModel;
-
+using Nuclex.Game.Packing;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
 
@@ -160,7 +161,7 @@ namespace Dynamo.Nodes
                     if (toHide.Count > 0)
                         view.HideElements(toHide);
 
-                    dynRevitSettings.Doc.Document.Regenerate();
+                    //dynRevitSettings.Doc.Document.Regenerate();
 
                     Debug.WriteLine(string.Format("Eye:{0},Origin{1}, BBox_Origin{2}, Element{3}",
                         eye.ToString(), view.Origin.ToString(), view.CropBox.Transform.Origin.ToString(), (element.Location as LocationPoint).Point.ToString()));
@@ -175,19 +176,8 @@ namespace Dynamo.Nodes
                     {
                         //http://adndevblog.typepad.com/aec/2012/05/set-crop-box-of-3d-view-that-exactly-fits-an-element.html
                         var pts = new List<XYZ>();
-                        foreach (GeometryObject gObj in element.get_Geometry(dynRevitSettings.GeometryOptions))
-                        {
-                            if (gObj is Solid)
-                            {
-                                //get all the edges in it
-                                var solid = gObj as Solid;
-                                foreach (Edge gEdge in solid.Edges)
-                                {
-                                    IList<XYZ> xyzArray = gEdge.Tessellate();
-                                    pts.AddRange(xyzArray);
-                                }
-                            }
-                        }
+
+                        ParseElementGeometry(element, pts);
 
                         var bounding = view.CropBox;
                         var transInverse = bounding.Transform.Inverse;
@@ -246,6 +236,56 @@ namespace Dynamo.Nodes
             return Value.NewContainer(view);
         }
 
+        private static void ParseElementGeometry(Element e, List<XYZ> pts)
+        {
+            foreach (GeometryObject gObj in e.get_Geometry(dynRevitSettings.GeometryOptions))
+            {
+                if (gObj is Solid)
+                {
+                    ParseSolid(gObj, pts);
+                }
+                else if (gObj is GeometryInstance)
+                {
+                    ParseInstanceGeometry(gObj, pts);
+                }
+            }
+        }
+
+        private static void ParseInstanceGeometry(GeometryObject obj, List<XYZ> pts)
+        {
+            var geomInst = obj as GeometryInstance;
+            foreach (GeometryObject gObj in geomInst.GetInstanceGeometry())
+            {
+                if (gObj is Solid)
+                {
+                    ParseSolid(gObj, pts);
+                }
+                else if (gObj is GeometryInstance)
+                {
+                    ParseInstanceGeometry(gObj, pts);
+                }
+            }
+        }
+
+        private static void ParseSolid(GeometryObject obj, List<XYZ> pts)
+        {
+            var solid = obj as Solid;
+            foreach (Edge gEdge in solid.Edges)
+            {
+                Curve c = gEdge.AsCurve();
+                if (c is Line)
+                {
+                    pts.Add(c.Evaluate(0, true));
+                    pts.Add(c.Evaluate(1,true));
+                }
+                else
+                {
+                    IList<XYZ> xyzArray = gEdge.Tessellate();
+                    pts.AddRange(xyzArray);
+                }
+            }
+        }
+
         public static View3D Create3DView(ViewOrientation3D orient, string name, bool isPerspective)
         {
             //http://adndevblog.typepad.com/aec/2012/05/viewplancreate-method.html
@@ -263,7 +303,16 @@ namespace Dynamo.Nodes
 
             view.SetOrientation(orient);
             view.SaveOrientationAndLock();
-            view.Name = CreateUniqueViewName(name);
+            try
+            {
+                //will fail if name is not unique
+                view.Name = name;
+            }
+            catch
+            {
+                view.Name = CreateUniqueViewName(name); 
+            }
+            
 
             return view;
         }
@@ -647,6 +696,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("sheet", "The view sheet.", typeof(Value.Container)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Shortest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -654,6 +705,10 @@ namespace Dynamo.Nodes
             var name = ((Value.String)args[0]).Item;
             var number = ((Value.String)args[1]).Item;
             var tb = (FamilySymbol)((Value.Container)args[2]).Item;
+
+            if (!args[3].IsList)
+                throw new Exception("The views input must be a list of views.");
+
             var views = ((Value.List)args[3]).Item;
 
             Autodesk.Revit.DB.ViewSheet sheet = null;
@@ -688,6 +743,37 @@ namespace Dynamo.Nodes
             }
 
             //rearrange views on sheets
+            //first clear the collection of views on the sheet
+            //sheet.Views.Clear();
+
+            var width = sheet.Outline.Max.U - sheet.Outline.Min.U;
+            var height = sheet.Outline.Max.V - sheet.Outline.Min.V;
+            var packer = new CygonRectanglePacker(width, height);
+            foreach (var val in views)
+            {
+                var view = (View)((Value.Container) val).Item;
+
+                var viewWidth = view.Outline.Max.U - view.Outline.Min.U;
+                var viewHeight = view.Outline.Max.V - view.Outline.Min.V;
+
+                //var viewWidth = view.CropBox.Max.X - view.CropBox.Min.X;
+                //var viewHeight = view.CropBox.Max.Y - view.CropBox.Min.Y;
+
+                UV placement = null;
+                if (packer.TryPack(viewWidth, viewHeight, out placement))
+                {
+                    //place the view on the sheet
+                    if (Viewport.CanAddViewToSheet(dynRevitSettings.Doc.Document, sheet.Id, view.Id))
+                    {
+                        var viewport = Viewport.Create(dynRevitSettings.Doc.Document, sheet.Id, view.Id,
+                                                       new XYZ(placement.U + viewWidth/2, placement.V + viewHeight/2, 0));
+                    }
+                }
+                else
+                {
+                    throw new Exception("View could not be packed on sheet.");
+                }
+            }
 
             return Value.NewContainer(sheet);
         }
