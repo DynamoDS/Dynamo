@@ -29,6 +29,9 @@ namespace Dynamo.PackageManager
 
         #region Properties & Fields
 
+        // The results of the last synchronization with the package manager server
+        public List<PackageManagerSearchElement> LastSync { get; set; }
+
         /// <summary>
         ///     SearchText property
         /// </summary>
@@ -182,14 +185,14 @@ namespace Dynamo.PackageManager
 
         public void RefreshAndSearchAsync()
         {
-
-            this.SearchState = PackageSearchState.SYNCING;
             SearchResults.Clear();
+            this.SearchState = PackageSearchState.SYNCING;
 
             Task<List<PackageManagerSearchElement>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
                 lock (SearchResults)
                 {
+                    SearchResults.Clear();
                     foreach (var result in t.Result)
                     {
                         SearchResults.Add(result);
@@ -313,7 +316,8 @@ namespace Dynamo.PackageManager
             }
             else
             {
-                return LastSync;
+                // with null query, don't show deprecated packages
+                return LastSync.Where(x => !x.IsDeprecated).ToList();
             }
         }
 
@@ -385,7 +389,6 @@ namespace Dynamo.PackageManager
 
         }
 
-
-        public List<PackageManagerSearchElement> LastSync { get; set; }
+        
     }
 }
