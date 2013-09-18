@@ -1269,6 +1269,37 @@ namespace DynamoRevitTests
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
+        [Test]
+        public void GetFamilyInstancesByType()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\GetFamilyInstancesByType.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+            var node =
+                (GetFamilyInstancesByType)dynSettings.Controller.DynamoModel.Nodes.First(x => x is GetFamilyInstancesByType);
+            Assert.IsTrue(node.OldValue.IsList);
+            
+            var list = ((Value.List) node.OldValue).Item;
+            Assert.AreEqual(100, list.Count());
+        }
+
+        [Test]
+        public void GetFamilyInstanceLocation()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\GetFamilyInstanceLocation.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
         /// <summary>
         /// Automated creation of regression test cases.
         /// </summary>
