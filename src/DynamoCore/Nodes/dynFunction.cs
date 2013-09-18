@@ -196,6 +196,8 @@ namespace Dynamo
 
             protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
             {
+                base.SaveNode(xmlDoc, nodeElement, context);
+
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("ID");
                 
@@ -231,6 +233,7 @@ namespace Dynamo
 
             protected override void LoadNode(XmlNode nodeElement)
             {
+                base.LoadNode(nodeElement);
                 foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name.Equals("Name"))
@@ -429,6 +432,8 @@ namespace Dynamo
 
             protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
             {
+                base.SaveNode(xmlDoc, nodeElement, context);
+
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("Symbol");
                 outEl.SetAttribute("value", Symbol);
@@ -437,6 +442,7 @@ namespace Dynamo
 
             protected override void LoadNode(XmlNode nodeElement)
             {
+                base.LoadNode(nodeElement);
                 foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name == "Symbol")
@@ -503,6 +509,8 @@ namespace Dynamo
 
             protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
             {
+                base.SaveNode(xmlDoc, nodeElement, context);
+
                 //Debug.WriteLine(pd.Object.GetType().ToString());
                 XmlElement outEl = xmlDoc.CreateElement("Symbol");
                 outEl.SetAttribute("value", InputSymbol);
@@ -511,6 +519,7 @@ namespace Dynamo
 
             protected override void LoadNode(XmlNode nodeElement)
             {
+                base.LoadNode(nodeElement);
                 foreach (XmlNode subNode in nodeElement.ChildNodes)
                 {
                     if (subNode.Name == "Symbol")

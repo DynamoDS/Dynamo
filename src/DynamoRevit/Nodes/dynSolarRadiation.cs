@@ -297,9 +297,12 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
+
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (this.PickedSunAndShadowSettings != null)
             {
+                base.SaveNode(xmlDoc, nodeElement, context);
                 XmlElement outEl = xmlDoc.CreateElement("instance");
                 outEl.SetAttribute("id", this.PickedSunAndShadowSettings.Id.ToString());
                 nodeElement.AppendChild(outEl);
@@ -308,6 +311,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals("instance"))

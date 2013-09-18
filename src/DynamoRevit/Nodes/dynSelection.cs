@@ -209,6 +209,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
+
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElement != null)
             {
@@ -220,6 +222,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals("instance"))
@@ -479,6 +482,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
+
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElements != null)
             {
@@ -493,6 +498,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals("instance"))
@@ -791,6 +797,7 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
             if(_reference != null)
                 nodeElement.SetAttribute(
                     "faceRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
@@ -798,6 +805,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             try
             {
                 _reference = Reference.ParseFromStableRepresentation(
@@ -880,6 +888,7 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
             if(_reference != null)
                 nodeElement.SetAttribute(
                     "edgeRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
@@ -887,6 +896,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             try
             {
                 _reference = Reference.ParseFromStableRepresentation(
@@ -946,6 +956,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals("instance"))
@@ -1410,6 +1421,7 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
             if(_reference != null)
                 nodeElement.SetAttribute(
                     "refXYZ", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
@@ -1419,6 +1431,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             try
             {
                 _reference = Reference.ParseFromStableRepresentation(

@@ -55,6 +55,7 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
             var formStringNode = xmlDoc.CreateElement("FormulaText");
             formStringNode.InnerText = FormulaString;
             nodeElement.AppendChild(formStringNode);
@@ -62,6 +63,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
             if (nodeElement.Attributes != null)
             {
                 var formulaAttr = nodeElement.Attributes["formula"];

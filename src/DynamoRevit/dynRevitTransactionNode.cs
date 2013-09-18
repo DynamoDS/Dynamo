@@ -74,6 +74,8 @@ namespace Dynamo.Revit
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
+
             //Don't copy over stored references
             if (context == SaveContext.Copy)
                 return;
@@ -102,6 +104,8 @@ namespace Dynamo.Revit
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
+
             var del = new DynElementUpdateDelegate(onDeleted);
 
             elements.Clear();

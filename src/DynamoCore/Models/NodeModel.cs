@@ -496,13 +496,25 @@ namespace Dynamo.Models
         /// <summary>
         /// Override this to implement custom save data for your Element. If overridden, you should also override
         /// LoadNode() in order to read the data back when loaded.
+        /// This SaveNode saves the Lacing, Preview and UpstreamPreview necessary for all nodes. 
+        /// Must be executed by overriden methods by calling base.SaveNode() in every overriden method.
         /// </summary>
         /// <param name="xmlDoc">The XmlDocument representing the whole workspace containing this Element.</param>
         /// <param name="nodeElement">The XmlElement representing this Element.</param>
         /// <param name="context">Why is this being called?</param>
         protected virtual void SaveNode(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement nodeElement, SaveContext context)
         {
+            var argLacing = xmlDoc.CreateElement("LacingStrategy");
+            argLacing.SetAttribute("lacingStrategy", argumentLacing.ToString());
+            nodeElement.AppendChild(argLacing);
 
+            var isVisibleEl = xmlDoc.CreateElement("IsVisible");
+            isVisibleEl.SetAttribute("isVisible", isVisible ? "true" : "false");
+            nodeElement.AppendChild(isVisibleEl);
+
+            var isUpstreamVisibleEl = xmlDoc.CreateElement("IsUpstreamVisible");
+            isUpstreamVisibleEl.SetAttribute("isUpstreamVisible", isUpstreamVisible ? "true" : "false");
+            nodeElement.AppendChild(isUpstreamVisibleEl);
         }
 
         public void Save(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl, SaveContext context)
@@ -521,12 +533,31 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Override this to implement loading of custom data for your Element. If overridden, you should also override
-        /// SaveNode() in order to write the data when saved.
+        /// SaveNode() in order to write the data when saved. 
+        /// This LoadNode loads the Lacing, Preview and UpstreamPreview, necessary for all nodes. 
+        /// Must be executed by overriden methods by calling base.LoadNode() in every overriden method.
         /// </summary>
         /// <param name="nodeElement">The XmlNode representing this Element.</param>
         protected virtual void LoadNode(System.Xml.XmlNode nodeElement)
         {
-
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                if (subNode.Name == "LacingStrategy")
+                {
+                    XmlElementHelper elHelper = new XmlElementHelper((XmlElement)subNode);
+                    this.ArgumentLacing=elHelper.ReadEnum("lacingStrategy",LacingStrategy.Disabled);
+                }
+                else if (subNode.Name == "IsVisible")
+                {
+                    XmlElementHelper elHelper = new XmlElementHelper((XmlElement)subNode);
+                    this.isVisible = elHelper.ReadBoolean("isVisible");
+                }
+                else if (subNode.Name == "IsUpstreamVisible")
+                {
+                    XmlElementHelper elHelper = new XmlElementHelper((XmlElement)subNode);
+                    this.isUpstreamVisible = elHelper.ReadBoolean("isUpstreamVisible");
+                }
+            }
         }
 
         public void Load(System.Xml.XmlNode elNode)
