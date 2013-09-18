@@ -54,7 +54,7 @@ namespace Dynamo.Search
                 }
             };
 
-            _previewPopup = new PreviewPopup();
+            _previewPopup = new PreviewPopup(PreviewPopup.PopupStyle.LibraryItemPreview);
             mainGrid.Children.Add(_previewPopup);
         }
 
@@ -156,25 +156,20 @@ namespace Dynamo.Search
         private void LibraryItem_OnMouseEnter(object sender, MouseEventArgs e)
         {
             TreeViewItem treeViewItem = sender as TreeViewItem;
-            Point relativePoint = treeViewItem.TranslatePoint(new Point(0, 0), mainGrid);
             NodeSearchElement nodeSearchElement = treeViewItem.Header as NodeSearchElement;
-
             if (nodeSearchElement == null)
                 return;
-            //positioning
-            _previewPopup.PopupWindow.IsOpen = true;
-            _previewPopup.PopupWindow.Placement = System.Windows.Controls.Primitives.PlacementMode.Right;
-            _previewPopup.PopupWindow.VerticalOffset = relativePoint.Y + (treeViewItem.ActualHeight / 2) - ((_previewPopup.PopupWindow.Child as StackPanel).ActualHeight / 2);
-            //content
-            string description = nodeSearchElement.Description;
-            string nameNode = nodeSearchElement.Name;
-            ((_previewPopup.PopupWindow.Child as StackPanel).Children[0] as TextBox).Text = nameNode;
-            ((_previewPopup.PopupWindow.Child as StackPanel).Children[1] as TextBox).Text = description;
+
+            Point relativePoint = treeViewItem.TranslatePoint(new Point(0, 0), mainGrid);
+            Point popupConnectingPoint = new Point(relativePoint.X + treeViewItem.ActualWidth, relativePoint.Y + (treeViewItem.ActualHeight / 2));
+            string popupContent = nodeSearchElement.Name + "\n" + nodeSearchElement.Description;
+            _previewPopup.UpdatePopupWindow(popupConnectingPoint, popupContent);
+            _previewPopup.FaceInPopupWindow();
         }
 
         private void LibraryItem_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            //_previewPopup.PopupWindow.IsOpen = false;
+            _previewPopup.FadeOutPopupWindow();
         }
     }
 }
