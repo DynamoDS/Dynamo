@@ -4277,7 +4277,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// A class used to store a name and associated item for a drop down menu
     /// </summary>
-    public class DynamoDropDownItem
+    public class DynamoDropDownItem:IComparable
     {
         public string Name { get; set; }
         public object Item { get; set; }
@@ -4292,6 +4292,16 @@ namespace Dynamo.Nodes
             Name = name;
             Item = item;
         }
+
+        public int CompareTo(object obj)
+        {
+            var a = obj as DynamoDropDownItem;
+            if (a == null)
+                return 1;
+
+            return this.Name.CompareTo(a);
+        }
+
     }
 
     /// <summary>
@@ -4355,6 +4365,10 @@ namespace Dynamo.Nodes
         void combo_DropDownOpened(object sender, EventArgs e)
         {
             PopulateItems();
+            var sortedItems = from item in Items
+                              orderby item.Name
+                              select item;
+            Items = sortedItems.ToObservableCollection();
         }
 
         /// <summary>
