@@ -48,7 +48,7 @@ namespace Dynamo.Nodes
             Items.Clear();
 
             //load all the currently loaded types into the combo list
-            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof (Family));
             foreach (Family f in fec.ToElements())
             {
