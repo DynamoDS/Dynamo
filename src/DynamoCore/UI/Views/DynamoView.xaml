@@ -17,7 +17,8 @@
         AllowsTransparency="False" 
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
-        Background="#FF353535">
+        Background="#FF353535" 
+        ResizeMode="CanResizeWithGrip">
 
     <Window.CommandBindings>
         
