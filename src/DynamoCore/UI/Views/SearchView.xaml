@@ -25,7 +25,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Grid Background="Black" >
+    <Grid Name="mainGrid" Background="Black" >
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -219,6 +219,8 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
+                    <EventSetter Event="MouseEnter" Handler="LibraryItem_OnMouseEnter"/>
+                    <EventSetter Event="MouseLeave" Handler="LibraryItem_OnMouseLeave"/>
                 </Style>
             </ScrollViewer.Resources>
 

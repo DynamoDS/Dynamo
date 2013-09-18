@@ -177,6 +177,8 @@ limitations under the License.
     <Compile Include="UI\dynTextBox.cs" />
     <Compile Include="UI\Views\ZoomAndPanControl.xaml.cs">
       <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
+    <Compile Include="UI\Views\PreviewPopup.xaml.cs">
+      <DependentUpon>PreviewPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
@@ -464,6 +466,10 @@ limitations under the License.
     <Page Include="UI\Views\dynWorkspaceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\PreviewPopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Views\SearchView.xaml">
       <SubType>Designer</SubType>

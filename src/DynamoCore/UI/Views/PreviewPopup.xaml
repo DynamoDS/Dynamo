@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="Dynamo.UI.Views.PreviewPopup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d">
+    <Popup x:Name="popup" AllowsTransparency="True" IsOpen="False">
+        <StackPanel Orientation="Vertical" Width="auto" Height="auto" Background="LightCoral" Opacity=".7">
+            <TextBox Name="nodeName" IsReadOnly="True" HorizontalAlignment="Left" VerticalAlignment="Center"
+                     BorderThickness="0" Background="Transparent"
+                     FontSize="12" FontWeight="Black"/>
+            <TextBox Name="nodeDescription" IsReadOnly="True" HorizontalAlignment="Left" VerticalAlignment="Center"
+                     BorderThickness="0" Background="Transparent"
+                     FontSize="10" FontWeight="SemiBold"/>
+        </StackPanel>
+    </Popup>
+</UserControl>

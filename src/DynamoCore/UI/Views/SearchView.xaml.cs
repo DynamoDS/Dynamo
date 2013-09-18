@@ -11,6 +11,8 @@ using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Media;
 using Dynamo.Utilities;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
+using Dynamo.UI.Views;
+using Dynamo.Search.SearchElements;
 
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
@@ -34,6 +36,7 @@ namespace Dynamo.Search
     public partial class SearchView : UserControl
     {
         private SearchViewModel _viewModel;
+        private PreviewPopup _previewPopup;
 
         public SearchView()
         {
@@ -50,6 +53,9 @@ namespace Dynamo.Search
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
             };
+
+            _previewPopup = new PreviewPopup();
+            mainGrid.Children.Add(_previewPopup);
         }
 
         void SearchView_Loaded(object sender, RoutedEventArgs e)
@@ -147,5 +153,28 @@ namespace Dynamo.Search
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
+        private void LibraryItem_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            TreeViewItem treeViewItem = sender as TreeViewItem;
+            Point relativePoint = treeViewItem.TranslatePoint(new Point(0, 0), mainGrid);
+            NodeSearchElement nodeSearchElement = treeViewItem.Header as NodeSearchElement;
+
+            if (nodeSearchElement == null)
+                return;
+            //positioning
+            _previewPopup.PopupWindow.IsOpen = true;
+            _previewPopup.PopupWindow.Placement = System.Windows.Controls.Primitives.PlacementMode.Right;
+            _previewPopup.PopupWindow.VerticalOffset = relativePoint.Y + (treeViewItem.ActualHeight / 2) - ((_previewPopup.PopupWindow.Child as StackPanel).ActualHeight / 2);
+            //content
+            string description = nodeSearchElement.Description;
+            string nameNode = nodeSearchElement.Name;
+            ((_previewPopup.PopupWindow.Child as StackPanel).Children[0] as TextBox).Text = nameNode;
+            ((_previewPopup.PopupWindow.Child as StackPanel).Children[1] as TextBox).Text = description;
+        }
+
+        private void LibraryItem_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            //_previewPopup.PopupWindow.IsOpen = false;
+        }
     }
-} ;
+}
