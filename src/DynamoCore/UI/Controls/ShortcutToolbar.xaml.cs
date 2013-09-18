@@ -29,9 +29,9 @@ namespace Dynamo.UI.Controls
             get { return shortcutBarItems; }
         }
 
-        public ShortcutToolbar(ObservableCollection<ShortcutBarItem> shortcutBarItems)
+        public ShortcutToolbar()
         {
-            this.shortcutBarItems = shortcutBarItems;            
+            shortcutBarItems = new ObservableCollection<ShortcutBarItem>();            
 
             InitializeComponent();
         }

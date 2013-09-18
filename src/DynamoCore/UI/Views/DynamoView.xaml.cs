@@ -89,7 +89,7 @@ namespace Dynamo.Controls
 
         void InitializeShortcutBar()
         {
-            ObservableCollection<ShortcutBarItem> shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
+            ShortcutToolbar shortcutBar = new ShortcutToolbar();
 
             DynamoViewModel viewModel = dynSettings.Controller.DynamoViewModel;
 
@@ -142,14 +142,12 @@ namespace Dynamo.Controls
             //runButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/run_disabled.png";
             //runButton.ImgHoverSource = "/DynamoCore;component/UI/Images/run_hover.png";
 
-            shortcutBarItems.Add(newScriptButton);
-            shortcutBarItems.Add(openScriptButton);
-            shortcutBarItems.Add(saveButton);
-            //shortcutBarItems.Add(undoButton);
-            //shortcutBarItems.Add(redoButton);
-            //shortcutBarItems.Add(runButton);
-
-            ShortcutToolbar shortcutBar = new ShortcutToolbar(shortcutBarItems);
+            shortcutBar.ShortcutBarItems.Add(newScriptButton);
+            shortcutBar.ShortcutBarItems.Add(openScriptButton);
+            shortcutBar.ShortcutBarItems.Add(saveButton);
+            //shortcutBar.ShortcutBarItems.Add(undoButton);
+            //shortcutBar.ShortcutBarItems.Add(redoButton);
+            //shortcutBar.ShortcutBarItems.Add(runButton);            
 
             shortcutBarGrid.Children.Add(shortcutBar);
         }
