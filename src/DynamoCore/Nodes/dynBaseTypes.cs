@@ -4338,6 +4338,22 @@ namespace Dynamo.Nodes
             }
         }
 
+        protected DropDrownBase()
+        {
+            Items.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Items_CollectionChanged);
+        }
+
+        void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            //sort the collection when changed
+            //rehook the collection changed event
+            var sortedItems = from item in Items
+                              orderby item.Name
+                              select item;
+            Items = sortedItems.ToObservableCollection();
+            Items.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Items_CollectionChanged);
+        }
+
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             nodeElement.SetAttribute("index", SelectedIndex.ToString());
@@ -4365,10 +4381,6 @@ namespace Dynamo.Nodes
         void combo_DropDownOpened(object sender, EventArgs e)
         {
             PopulateItems();
-            var sortedItems = from item in Items
-                              orderby item.Name
-                              select item;
-            Items = sortedItems.ToObservableCollection();
         }
 
         /// <summary>
