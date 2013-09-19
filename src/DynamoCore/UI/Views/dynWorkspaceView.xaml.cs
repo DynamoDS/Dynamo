@@ -132,7 +132,7 @@ namespace Dynamo.Views
 
         void selectionCanvas_Loaded(object sender, RoutedEventArgs e)
         {
-            Stopwatch sw = new Stopwatch();
+            var sw = new Stopwatch();
             sw.Start();
             DrawGrid();
             sw.Stop();
@@ -534,104 +534,100 @@ namespace Dynamo.Views
 
             selectionCanvas.UseLayoutRounding = true;
 
-            // draw vertical lines on grid
-            for (double i = 0.0; i < selectionCanvas.ActualWidth; i += gridSpacing)
-            {
-                var xLine = new Line();
-                xLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 180, 180, 180));
-                xLine.X1 = i;
-                xLine.Y1 = 0;
-                xLine.X2 = i;
-                xLine.Y2 = selectionCanvas.ActualHeight;
-                xLine.HorizontalAlignment = HorizontalAlignment.Left;
-                xLine.VerticalAlignment = VerticalAlignment.Center;
-                xLine.StrokeThickness = 1;
-                selectionCanvas.Children.Add(xLine);
-
-                Line xLine2 = null;
-                if (i == 0.0)
+            // vertical canvas edge line
+            var xLine = new Line
                 {
+                    Stroke = new SolidColorBrush(Color.FromArgb(255, 180, 180, 180)),
+                    X1 = 0,
+                    Y1 = 0,
+                    X2 = 0,
+                    Y2 = selectionCanvas.ActualHeight,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    StrokeThickness = 1
+                };
+            selectionCanvas.Children.Add(xLine);
 
-                    xLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
+            Line xLine2 = null;
 
-                    xLine2 = new Line();
-                    xLine2.Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180));
-                    xLine2.HorizontalAlignment = HorizontalAlignment.Left;
-                    xLine2.VerticalAlignment = VerticalAlignment.Center;
-                    xLine2.StrokeThickness = 6;
-                    xLine2.Y1 = xLine.Y1 + 6.5;
-                    xLine2.X1 = xLine.X1 + 3.5;
-                    xLine2.X2 = xLine.X2 + 3.5;
-                    xLine2.Y2 = selectionCanvas.ActualHeight;
-                    xLine2.IsHitTestVisible = false;
-                    selectionCanvas.Children.Add(xLine2);
-                    
-                }
+            xLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
+
+            // vertical canvas edge line thicker
+            xLine2 = new Line
+                {
+                    Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180)),
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    StrokeThickness = 6,
+                    Y1 = xLine.Y1 + 6.5,
+                    X1 = xLine.X1 + 3.5,
+                    X2 = xLine.X2 + 3.5,
+                    Y2 = selectionCanvas.ActualHeight,
+                    IsHitTestVisible = false
+                };
+            selectionCanvas.Children.Add(xLine2);
  
-                //Dynamo.Controls.DragCanvas.SetCanBeDragged(xLine, false);
-                xLine.IsHitTestVisible = false;
+            Dynamo.Controls.DragCanvas.SetCanBeDragged(xLine, false);
+            xLine.IsHitTestVisible = false;
 
-                Binding binding = new Binding() 
-                { 
-                    Path = new PropertyPath("FullscreenWatchVisible"), 
-                    Converter = new InverseBoolToVisibilityConverter(),
-                    Mode = BindingMode.OneWay,
-                };
-                xLine.SetBinding(UIElement.VisibilityProperty, binding);
-                if (xLine2 != null)
-                {
-                    xLine2.SetBinding(UIElement.VisibilityProperty, binding);
-                }
-            }
-
-            // draw horizontal lines on grid
-            for (double i = 0.0; i < selectionCanvas.ActualHeight; i += gridSpacing)
+            var bindingX = new Binding() 
+            { 
+                Path = new PropertyPath("FullscreenWatchVisible"), 
+                Converter = new InverseBoolToVisibilityConverter(),
+                Mode = BindingMode.OneWay,
+            };
+            xLine.SetBinding(UIElement.VisibilityProperty, bindingX);
+            if (xLine2 != null)
             {
-                var yLine = new Line();
-                yLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 180, 180, 180));
-                yLine.X1 = -0.5;
-                yLine.Y1 = i;
-                yLine.X2 = selectionCanvas.ActualWidth;
-                yLine.Y2 = i;
-                yLine.HorizontalAlignment = HorizontalAlignment.Left;
-                yLine.VerticalAlignment = VerticalAlignment.Center;
-                yLine.StrokeThickness = 1;
-                selectionCanvas.Children.Add(yLine);
-
-                Line yLine2 = null;
-                if (i == 0.0)
-                {
-                    yLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
-
-                    yLine2 = new Line();
-                    yLine2.Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180));
-                    yLine2.StrokeThickness = 6;
-                    yLine2.X1 = 0;
-                    yLine2.X2 = selectionCanvas.ActualWidth;
-                    yLine2.Y1 = yLine.Y1 + 3.5;
-                    yLine2.Y2 = yLine.Y2 + 3.5;
-                    yLine2.HorizontalAlignment = HorizontalAlignment.Left;
-                    yLine2.VerticalAlignment = VerticalAlignment.Center;
-                    yLine2.IsHitTestVisible = false;
-                    selectionCanvas.Children.Add(yLine2);
-                }
-                
-                //Dynamo.Controls.DragCanvas.SetCanBeDragged(yLine, false);
-                
-                yLine.IsHitTestVisible = false;
-
-                Binding binding = new Binding()
-                {
-                    Path = new PropertyPath("FullscreenWatchVisible"),
-                    Converter = new InverseBoolToVisibilityConverter(),
-                    Mode = BindingMode.OneWay,
-                };
-                yLine.SetBinding(UIElement.VisibilityProperty, binding);
-                if (yLine2 != null)
-                {
-                    yLine2.SetBinding(UIElement.VisibilityProperty, binding);
-                }
+                xLine2.SetBinding(UIElement.VisibilityProperty, bindingX);
             }
+
+            // horizontal canvas edge line
+            var yLine = new Line
+                {
+                    Stroke = new SolidColorBrush(Color.FromArgb(255, 180, 180, 180)),
+                    X1 = -0.5,
+                    Y1 = 0,
+                    X2 = selectionCanvas.ActualWidth,
+                    Y2 = 0,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    StrokeThickness = 1
+                };
+            selectionCanvas.Children.Add(yLine);
+
+            Line yLine2 = null;
+            yLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
+
+            // horizontal canvas edge line thicker
+            yLine2 = new Line
+                {
+                    Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180)),
+                    StrokeThickness = 6,
+                    X1 = 0,
+                    X2 = selectionCanvas.ActualWidth,
+                    Y1 = yLine.Y1 + 3.5,
+                    Y2 = yLine.Y2 + 3.5,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    IsHitTestVisible = false
+                };
+            selectionCanvas.Children.Add(yLine2);
+
+            yLine.IsHitTestVisible = false;
+
+            var bindingY = new Binding()
+            {
+                Path = new PropertyPath("FullscreenWatchVisible"),
+                Converter = new InverseBoolToVisibilityConverter(),
+                Mode = BindingMode.OneWay,
+            };
+            yLine.SetBinding(UIElement.VisibilityProperty, bindingY);
+            if (yLine2 != null)
+            {
+                yLine2.SetBinding(UIElement.VisibilityProperty, bindingY);
+            }
+            
         }
 
         private void WorkBench_OnLoaded(object sender, RoutedEventArgs e)
