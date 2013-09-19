@@ -6,7 +6,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
+using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
+using System.Windows.Resources;
+using System;
 
 namespace Dynamo.Controls
 {
@@ -15,6 +18,24 @@ namespace Dynamo.Controls
         private UIElement child = null;
         private Point origin;
         private Point start;
+
+        private bool _panMode;
+        public bool PanMode
+        {
+            get
+            {
+                return _panMode;
+            }
+
+            set
+            {
+                if (value)
+                    this.Cursor = CursorsLibrary.HandPan;
+                else
+                    this.Cursor = Cursors.Arrow;
+                _panMode = value;
+            }
+        }
 
         public TranslateTransform GetChildTranslateTransform()
         {
@@ -64,13 +85,14 @@ namespace Dynamo.Controls
                 this.MouseWheel += child_MouseWheel;
                 //this.MouseLeftButtonDown += child_MouseLeftButtonDown;
                 //this.MouseLeftButtonUp += child_MouseLeftButtonUp;
-                this.MouseUp += child_MouseUp;
-                this.MouseDown += child_MouseDown;
-
+                this.PreviewMouseUp += child_MouseUp;
+                this.PreviewMouseDown += child_MouseDown;
                 this.MouseMove += child_MouseMove;
                 //this.PreviewMouseRightButtonDown += new MouseButtonEventHandler(
                 //  child_PreviewMouseRightButtonDown);
             }
+
+            
         }
 
         public void Reset()
@@ -152,22 +174,30 @@ namespace Dynamo.Controls
 
         private void child_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (child != null && e.ChangedButton == MouseButton.Middle)
+            if (child != null &&
+                ( e.ChangedButton == MouseButton.Middle
+                || e.ChangedButton == MouseButton.Left && _panMode ))
             {
                 var tt = GetTranslateTransform(child);
                 start = e.GetPosition(this);
                 origin = new Point(tt.X, tt.Y);
-                this.Cursor = Cursors.Hand;
+                this.Cursor = CursorsLibrary.HandPanActive;
                 child.CaptureMouse();
             }
         }
 
         private void child_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (child != null && e.ChangedButton == MouseButton.Middle)
+            if (child != null && 
+                ( e.ChangedButton == MouseButton.Middle
+                || e.ChangedButton == MouseButton.Left && _panMode ))
             {
                 child.ReleaseMouseCapture();
-                this.Cursor = Cursors.Arrow;
+
+                if (!_panMode)
+                    this.Cursor = Cursors.Arrow;
+                else
+                    this.Cursor = CursorsLibrary.HandPan;
             }
         }
 
