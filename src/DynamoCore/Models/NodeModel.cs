@@ -1578,6 +1578,13 @@ namespace Dynamo.Models
             helper.SetAttribute("isVisible", this.IsVisible);
             helper.SetAttribute("isUpstreamVisible", this.IsUpstreamVisible);
             helper.SetAttribute("lacing", this.ArgumentLacing.ToString());
+
+            if (context == SaveContext.Undo)
+            {
+                // Fix: MAGN-159 (nodes are not editable after undo/redo).
+                helper.SetAttribute("interactionEnabled", this.interactionEnabled);
+                helper.SetAttribute("nodeState", this.state.ToString());
+            }
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -1604,12 +1611,23 @@ namespace Dynamo.Models
             this.isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             this.argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
 
-            // TODO(Ben): We need to raise property change events 
-            // here for those data members we directly changed.
-            RaisePropertyChanged("NickName");
-            RaisePropertyChanged("ArgumentLacing");
-            RaisePropertyChanged("IsVisible");
-            RaisePropertyChanged("IsUpstreamVisible");
+            if (context == SaveContext.Undo)
+            {
+                // Fix: MAGN-159 (nodes are not editable after undo/redo).
+                interactionEnabled = helper.ReadBoolean("interactionEnabled", true);
+                this.state = helper.ReadEnum("nodeState", ElementState.ACTIVE);
+
+                // We only notify property changes in an undo/redo operation. Normal
+                // operations like file loading or copy-paste have the models created
+                // in different ways and their views will always be up-to-date with 
+                // respect to their models.
+                RaisePropertyChanged("InteractionEnabled");
+                RaisePropertyChanged("State");
+                RaisePropertyChanged("NickName");
+                RaisePropertyChanged("ArgumentLacing");
+                RaisePropertyChanged("IsVisible");
+                RaisePropertyChanged("IsUpstreamVisible");
+            }
         }
 
         #endregion
