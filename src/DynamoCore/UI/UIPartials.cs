@@ -180,7 +180,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            var tb = new dynTextBox
+            var tb = new dynTextBox(Value ?? "0.0")
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,
@@ -201,8 +201,6 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
-
-            tb.Text = Value ?? "0.0";
         }
 
     }
@@ -595,7 +593,7 @@ namespace Dynamo.Nodes
         {
             var nodeUI = ui as dynNodeView;
 
-            var tb = new dynTextBox
+            var tb = new dynTextBox(FormulaString)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,
@@ -615,8 +613,6 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
-
-            tb.Text = FormulaString;
         }
     }
 
@@ -647,7 +643,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            _tb = new dynTextBox
+            _tb = new dynTextBox(Symbol)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -665,8 +661,6 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             _tb.SetBinding(TextBox.TextProperty, bindingSymbol);
-
-            _tb.Text = Symbol;
         }
     }
 
@@ -679,7 +673,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            _tb = new dynTextBox
+            _tb = new dynTextBox(InputSymbol)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -697,8 +691,6 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             _tb.SetBinding(TextBox.TextProperty, bindingSymbol);
-
-            _tb.Text = InputSymbol;
         }
 
     }
