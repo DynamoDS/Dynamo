@@ -322,6 +322,42 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            XmlElementHelper helper = new XmlElementHelper(element);
+            int i = 0;
+            string s;
+            foreach (var inport in InPortData)
+            {
+                s = "name" + i.ToString();
+                helper.SetAttribute(s,inport.NickName);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+            XmlElementHelper helper = new XmlElementHelper(element);
+            int i = InPortData.Count;
+            string s;
+            try
+            {
+                for (; i < 1000; i++)
+                {
+                    s = "name" + i.ToString();
+                    InPortData.Add(new PortData(helper.ReadString(s),"",typeof(object)));
+                }
+            }
+            catch (Exception e)
+            {/* Implies no more port data attributes*/}
+
+            RegisterAllPorts();
+        }
+        #endregion
+
         protected override void OnEvaluate()
         {
             base.OnEvaluate();
@@ -770,6 +806,43 @@ namespace Dynamo.Nodes
             }
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            XmlElementHelper helper = new XmlElementHelper(element);
+            helper.SetAttribute("combineInputs", (InPortData.Count - 1));
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+            XmlElementHelper helper = new XmlElementHelper(element);
+            int inputs;
+            if (element.Attributes["combineInputs"] == null)
+            {
+                inputs = 2;
+            }
+            else
+            {
+                inputs = helper.ReadInteger("combineInputs");
+            }
+
+            if (inputs == 1)
+                RemoveInput();
+            else
+            {
+                for (; inputs > 2; inputs--)
+                {
+                    InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
+                }
+
+                RegisterAllPorts();
+            }
+        }
+        #endregion
+
         public override Value Evaluate(FSharpList<Value> args)
         {
             return FScheme.Map(args);
@@ -843,6 +916,43 @@ namespace Dynamo.Nodes
                 RegisterAllPorts();
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            XmlElementHelper helper = new XmlElementHelper(element);
+            helper.SetAttribute("lacerBaseInputs", (InPortData.Count - 1));
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+            XmlElementHelper helper = new XmlElementHelper(element);
+            int inputs;
+            if (element.Attributes["lacerBaseInputs"] == null)
+            {
+                inputs = 2;
+            }
+            else
+            {
+                inputs = helper.ReadInteger("lacerBaseInputs");
+            }
+
+            if (inputs == 1)
+                RemoveInput();
+            else
+            {
+                for (; inputs > 2; inputs--)
+                {
+                    InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
+                }
+
+                RegisterAllPorts();
+            }
+        }
+        #endregion
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -3386,6 +3496,23 @@ namespace Dynamo.Nodes
             }
         }
 
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            XmlElementHelper helper = new XmlElementHelper(element);
+            helper.SetAttribute("value", Value);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+            XmlElementHelper helper = new XmlElementHelper(element);
+            this.Value = helper.ReadString("value");
+        }
+        #endregion
         public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
         {
             var idSet = new HashSet<string>(identifiers);
