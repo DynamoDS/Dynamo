@@ -61,7 +61,11 @@ namespace Dynamo.Nodes
         private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255, 255, 255));
         private static Brush highlighted = new SolidColorBrush(System.Windows.Media.Color.FromArgb(200, 255, 255, 255));
 
-        public dynTextBox()
+        public dynTextBox() : this(string.Empty)
+        {
+        }
+
+        public dynTextBox(string initialText)
         {
             //turn off the border
             Background = clear;
@@ -69,6 +73,9 @@ namespace Dynamo.Nodes
             GotFocus += OnGotFocus;
             LostFocus += OnLostFocus;
             LostKeyboardFocus += OnLostFocus;
+
+            base.Text = initialText;
+            this.Pending = false;
         }
 
         private void OnLostFocus(object sender, RoutedEventArgs routedEventArgs)
@@ -118,11 +125,6 @@ namespace Dynamo.Nodes
         new public string Text
         {
             get { return base.Text; }
-            set
-            {
-                base.Text = value;
-                Commit();
-            }
         }
 
 /*
