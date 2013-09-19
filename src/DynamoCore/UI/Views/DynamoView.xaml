@@ -255,12 +255,6 @@
                                           Focusable="False"
                                           Command="{Binding ToggleCanNavigateBackgroundCommand}"/>
                         </MenuItem>
-                        <MenuItem Focusable="False" Header="_Find Node By Id" IsCheckable="False" Name="FindNodeById">
-                            <WrapPanel HorizontalAlignment="Stretch">
-                                <TextBox Name="id_tb" Width="100"></TextBox>
-                                <Button Content="Find" Width="70" Name="id_butt" Click="Id_butt_OnClick"></Button>
-                            </WrapPanel>
-                        </MenuItem>
                         <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}" Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl + Alt + Up" Focusable="False"/>
                     </MenuItem>
 
