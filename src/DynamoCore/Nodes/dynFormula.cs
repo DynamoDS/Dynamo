@@ -94,7 +94,11 @@ namespace Dynamo.Nodes
             Expression e;
             try
             {
-                e = new Expression(FormulaString.ToLower(), EvaluateOptions.IgnoreCase);
+                e = new Expression(
+                    FormulaString.ToLower()
+                        .Replace(" and ", "+").Replace("&&", "+")
+                        .Replace(" or ", "+").Replace("||", "+"), 
+                    EvaluateOptions.IgnoreCase);
             }
             catch (Exception ex)
             {
