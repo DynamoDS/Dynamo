@@ -564,8 +564,6 @@ namespace DynamoRevitTests
             node.Value = node.Value + .1;
             dynSettings.Controller.RunExpression(true);
             Assert.AreEqual(5, fec.ToElements().Count);
-
-            Assert.AreEqual(id.IntegerValue, fec.ToElements().First().Id.IntegerValue);
         }
 
         [Test]
@@ -600,8 +598,6 @@ namespace DynamoRevitTests
             node.Value = node.Value + .1;
             dynSettings.Controller.RunExpression(true);
             Assert.AreEqual(5, fec.ToElements().Count);
-
-            Assert.AreEqual(id.IntegerValue, fec.ToElements().First().Id.IntegerValue);
         }
 
         [Test]
@@ -1192,6 +1188,112 @@ namespace DynamoRevitTests
             var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\MAGN_66.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+        
+        [Test]
+        public void CurvebyPointsArc()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\CurvebyPointsArc.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(CurveElement));
+
+            Assert.AreEqual(fec.ToElements().Count(), 1);
+
+            CurveByPoints mc = (CurveByPoints)fec.ToElements().ElementAt(0);
+        }
+        
+        [Test]
+        public void CurvebyPointsEllipse()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\CurvebyPointsEllipse.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            
+            
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(CurveElement));
+
+            Assert.AreEqual(fec.ToElements().Count(), 1);
+
+            CurveByPoints mc = (CurveByPoints)fec.ToElements().ElementAt(0);
+        }
+
+        [Test]
+        public void ModelText()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\ModelText.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
+        [Test]
+        public void AxonometricView()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\AxonometricView.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
+        [Test]
+        public void PerspectiveView()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\PerspectiveView.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
+        [Test]
+        public void GetFamilyInstancesByType()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\GetFamilyInstancesByType.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+            var node =
+                (GetFamilyInstancesByType)dynSettings.Controller.DynamoModel.Nodes.First(x => x is GetFamilyInstancesByType);
+            Assert.IsTrue(node.OldValue.IsList);
+            
+            var list = ((Value.List) node.OldValue).Item;
+            Assert.AreEqual(100, list.Count());
+        }
+
+        [Test]
+        public void GetFamilyInstanceLocation()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\GetFamilyInstanceLocation.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);

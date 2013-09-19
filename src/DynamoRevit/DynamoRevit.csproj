@@ -62,6 +62,7 @@
     <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -132,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters.cs" />
+    <Compile Include="CygonRectanglePacker.cs" />
     <Compile Include="DynamoController_Revit.cs" />
     <Compile Include="dynFunctionWithRevit.cs" />
     <Compile Include="dynRevitAPINode.cs" />
@@ -140,6 +142,7 @@
     <Compile Include="dynRevitUtils.cs" />
     <Compile Include="ElementsContainer.cs" />
     <Compile Include="DynamoRevit.cs" />
+    <Compile Include="Nodes\Annotation.cs" />
     <Compile Include="Nodes\dynAdaptiveComponents.cs" />
     <Compile Include="Nodes\dynAnalysis.cs" />
     <Compile Include="Nodes\dynCurves.cs" />
@@ -168,6 +171,7 @@
     <Compile Include="NUnitResultTypes.cs">
       <DependentUpon>NUnitResultTypes.xsd</DependentUpon>
     </Compile>
+    <Compile Include="OutOfSpaceException.cs" />
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\dynParticle.cs" />
     <Compile Include="ParticleSystem\dynParticleSpring.cs" />
@@ -179,6 +183,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RectanglePacker.cs" />
     <Compile Include="Resource_en_us.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -220,6 +225,10 @@
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
+      <Name>DynamoUtilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
       <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>

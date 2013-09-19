@@ -10,6 +10,7 @@ IF /I "%2"=="x86" set OPT_Platform=x86
 
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin *.dll -XF *Tests.dll
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin *.exe
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\dll %cwd%\temp\bin\dll
 robocopy %cwd%\..\..\ %cwd%\Extra README.md
 cd %cwd%\Extra
 del README.txt

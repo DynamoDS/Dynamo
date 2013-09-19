@@ -2,7 +2,6 @@
 using System.IO;
 using System.Reflection;
 using Dynamo.FSchemeInterop;
-using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 

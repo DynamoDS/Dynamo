@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI" xmlns:local="clr-namespace:Dynamo.PackageManager"
+        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI" xmlns:local="clr-namespace:Dynamo.PackageManager"        
         mc:Ignorable="d" 
-             Height="590" Width="700" Name="PublishInfoControl" Title="Publish a Dynamo Package" Visibility="Visible">
-
+             Height="590" Width="700" ResizeMode="CanResizeWithGrip" Name="PublishInfoControl" Title="Publish a Dynamo Package" Visibility="Visible">
+    
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -25,74 +25,88 @@
       </Grid.ColumnDefinitions>
       
       <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="*"></RowDefinition>
           <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Border Grid.Column="0" Grid.ColumnSpan="1" Name="BrowserContainer" >
+        <!--<Border FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="#333" BorderThickness="0,0,0,1" Background="#444">
+        </Border>
+        
+        <Grid FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
+            <StackPanel Margin="0,5,0,0" Name="titleBarButtonsGrid" FlowDirection="LeftToRight" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+            </StackPanel>
+        </Grid>-->
 
-            <Border.Background>
+        <Border Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1">
+
+        <ScrollViewer Name="BrowserContainer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
+
+            <ScrollViewer.Background>
                 <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
                     <GradientStop Color="#444" Offset="0.0" />
                     <GradientStop Color="#333" Offset="1.0" />
                 </LinearGradientBrush>
-            </Border.Background>
-
-            <StackPanel Name="FieldArrangement" Orientation="Vertical" Margin="10">
-                
-                <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="Publish a Package Online"/>
-
-                <Label Content="Name" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
-                    <Label.ToolTip>
-                        <TextBlock>A unique name for the package.  </TextBlock>
-                    </Label.ToolTip>
-                </Label>
-                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="TitleInput" Padding="5" IsEnabled ="{Binding Path=CanEditName}" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                <Label Content="Description" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
-                    <Label.ToolTip>
-                        <TextBlock>A description that helps people understand what the package might be used for.</TextBlock>
-                    </Label.ToolTip>
-                </Label>
-                <TextBox Style="{DynamicResource SDarkTextBox}" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                <Label Content="Version (major minor build)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
-                    <Label.ToolTip>
-                        <TextBlock>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</TextBlock>
-                    </Label.ToolTip>
-                </Label>
-                <StackPanel Orientation="Horizontal">
-                    <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionMajor" Width ="60" Margin="0,5,5,5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionMinor" Width ="60" Margin="5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionBuild" Width ="60" Margin="5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                </StackPanel>
-
-                <Label Content="Group (optional)" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="GroupLabel" VerticalAlignment="Top">
-                    <Label.ToolTip>
-                        <TextBlock>A group to help categorize this package.  Might be useful for a collection of packages related to a firm, school, etc.</TextBlock></Label.ToolTip>
-                </Label>
-                <StackPanel Orientation="Horizontal">
-                    <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="GroupInput" Width ="200" Padding="5" TextWrapping="Wrap" Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                </StackPanel>
-                
-                <Label Content="Keywords (optional)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
-                    <Label.ToolTip>
-                        <TextBlock>Keywords help find your package in the database.  Separate them by spaces.</TextBlock>
-                    </Label.ToolTip>
-                </Label>
-                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="KeywordsInput" Padding="5" Text="{Binding Path=Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                <TextBlock Foreground="DarkGray" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="LicenseLabel" TextWrapping="Wrap" VerticalAlignment="Top">
-                    Disclaimer:  The package manager is experimental.  Packages may be removed from the database unexpectedly. Plan accordingly. 
-                </TextBlock>
-
-                <Button Style="{DynamicResource ResourceKey=STextButton}" Width="130" Margin="0,15,0,0" HorizontalAlignment="Right" Command="{Binding Path=SubmitCommand}" >Publish Package!</Button>
-
-            </StackPanel>
+            </ScrollViewer.Background>
             
+                <Border Width="{Binding Path=ActualWidth,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}}" >
+                    <StackPanel Name="FieldArrangement" Orientation="Vertical" Margin="10">
+                
+                        <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="Publish a Package Online"/>
+
+                        <Label Content="Name" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
+                            <Label.ToolTip>
+                                <TextBlock>A unique name for the package.  </TextBlock>
+                            </Label.ToolTip>
+                        </Label>
+                        <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="TitleInput" Padding="5" IsEnabled ="{Binding Path=CanEditName}" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <Label Content="Description" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
+                            <Label.ToolTip>
+                                <TextBlock>A description that helps people understand what the package might be used for.</TextBlock>
+                            </Label.ToolTip>
+                        </Label>
+                        <TextBox Style="{DynamicResource SDarkTextBox}" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <Label Content="Version (major minor build)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
+                            <Label.ToolTip>
+                                <TextBlock>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</TextBlock>
+                            </Label.ToolTip>
+                        </Label>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionMajor" Width ="60" Margin="0,5,5,5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionMinor" Width ="60" Margin="5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionBuild" Width ="60" Margin="5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+
+                        <Label Content="Group (optional)" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="GroupLabel" VerticalAlignment="Top">
+                            <Label.ToolTip>
+                                <TextBlock>A group to help categorize this package.  Might be useful for a collection of packages related to a firm, school, etc.</TextBlock></Label.ToolTip>
+                        </Label>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="GroupInput" Width ="200" Padding="5" TextWrapping="Wrap" Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                
+                        <Label Content="Keywords (optional)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
+                            <Label.ToolTip>
+                                <TextBlock>Keywords help find your package in the database.  Separate them by spaces.</TextBlock>
+                            </Label.ToolTip>
+                        </Label>
+                        <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="KeywordsInput" Padding="5" Text="{Binding Path=Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock Foreground="DarkGray" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="LicenseLabel" TextWrapping="Wrap" VerticalAlignment="Top">
+                            Disclaimer:  The package manager is experimental.  Packages may be removed from the database unexpectedly. Plan accordingly. 
+                        </TextBlock>
+
+                        <Button Style="{DynamicResource ResourceKey=STextButton}" Width="130" Margin="0,15,0,0" HorizontalAlignment="Right" Command="{Binding Path=SubmitCommand}" >Publish Package!</Button>
+
+                    </StackPanel>
+                </Border>
+            </ScrollViewer>
+
         </Border>
 
-        <Grid Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="1">
+        <Grid Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="1">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
@@ -320,11 +334,11 @@
 
         </Grid>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" Background="LightCoral" Visibility="{Binding Path=ErrorString, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="1" Background="LightCoral" Visibility="{Binding Path=ErrorString, Converter={StaticResource EmptyStringToCollapsedConverter}}">
             <TextBlock Foreground="White" Margin="10" HorizontalAlignment="Left" Name="Error" TextWrapping="Wrap" VerticalAlignment="Top" Text="{Binding ErrorString}" />
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" Background="LightSkyBlue" Visibility="{Binding Path=ErrorString, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="1" Background="LightSkyBlue" Visibility="{Binding Path=ErrorString, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">
             <TextBlock Foreground="White" Margin="10"  HorizontalAlignment="Left" Name="UploadState" TextWrapping="Wrap" Text="{Binding UploadState}" />
         </StackPanel>
 

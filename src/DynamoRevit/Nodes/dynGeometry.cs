@@ -573,11 +573,11 @@ namespace Dynamo.Nodes
     {
         public XyzAverage()
         {
-            InPortData.Add(new PortData("XYZs", "The list of XYZs to average.", typeof(Value.Container)));
+            InPortData.Add(new PortData("XYZs", "The list of XYZs to average.", typeof(Value.List)));
             OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
 
             RegisterAllPorts();
-            ArgumentLacing = LacingStrategy.Disabled;
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)

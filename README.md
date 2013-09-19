@@ -27,7 +27,7 @@ The current version will run on top of Revit 2013, Revit 2014, and Project Vasar
 
 ###0.6.0###
 
-August 2013
+September 2013
 
 Fixes
 - Nodes properly save/load port state
@@ -71,6 +71,7 @@ New
 - Allow writing a range of data to excel
 - Face Face intersection node
 - Default value capability for ports
+- UI Refinement
 
 
 ###0.5.3###

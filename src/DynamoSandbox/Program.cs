@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Windows;
 using Dynamo;
 using Dynamo.Controls;
-using Dynamo.ViewModels;
 
 namespace DynamoSandbox
 {
