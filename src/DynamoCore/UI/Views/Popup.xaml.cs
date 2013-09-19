@@ -91,8 +91,8 @@ namespace Dynamo.UI.Views
             Point topLeftConner = new Point(7, 0);
             Point bottomLeftConner = new Point(7, this.contentContainer.DesiredSize.Height);
             Point bottomRightConner = new Point(this.contentContainer.DesiredSize.Width, this.contentContainer.DesiredSize.Height);
-            Point triagleTop = new Point(7, this.contentContainer.DesiredSize.Height / 2 - 3.5);
-            Point triagleBottom = new Point(7, this.contentContainer.DesiredSize.Height / 2 + 3.5);
+            Point triagleTop = new Point(7, this.contentContainer.DesiredSize.Height / 2 - 7);
+            Point triagleBottom = new Point(7, this.contentContainer.DesiredSize.Height / 2 + 7);
             Point triagleLeft = new Point(0, this.contentContainer.DesiredSize.Height / 2);
 
             backgroundPolygon.Points.Add(topRightConner);
@@ -143,6 +143,7 @@ namespace Dynamo.UI.Views
         private TextBox GetStyledTextBox(string text)
         {
             TextBox textbox = new TextBox();
+            textbox.TextWrapping = TextWrapping.Wrap;
             textbox.Text = text;
             textbox.IsReadOnly = true;
             textbox.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
@@ -161,7 +162,7 @@ namespace Dynamo.UI.Views
             fadeOutAnimation.To = 0;
 
             fadeInAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(200));
-            fadeInAnimation.To = 0.7;
+            fadeInAnimation.To = 0.9;
             fadeInAnimation.Completed += fadeInAnimation_Completed;
         }
 
