@@ -7,9 +7,9 @@
              Name="PopupWindowUserControl">
     <Popup x:Name="popupWindow" AllowsTransparency="True" IsOpen="False">
         <Grid x:Name="mainGrid" MouseEnter="PopupWindow_MouseEnter" MouseLeave="PopupWindow_Mouseleave">
-            <Polygon Name="backgroundPolygon">
+            <Polygon Name="backgroundPolygon" Margin="1 1 1 1">
             </Polygon>
-            <StackPanel Name="contentContainer" Orientation="Vertical" Background="Transparent" Margin="10 5 5 5" MaxWidth="400">
+            <StackPanel Name="contentContainer" Orientation="Vertical" Background="Transparent" Margin="10 5 5 5">
             </StackPanel>
         </Grid>
     </Popup>

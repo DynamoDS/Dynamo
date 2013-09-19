@@ -36,7 +36,7 @@ namespace Dynamo.Search
     public partial class SearchView : UserControl
     {
         private SearchViewModel _viewModel;
-        private Popup _previewPopup;
+        private Popup _previewPopup = new Popup(Popup.PopupStyle.NodeTooltip);
 
         public SearchView()
         {
@@ -54,7 +54,6 @@ namespace Dynamo.Search
                 }
             };
 
-            _previewPopup = new Popup(Popup.PopupStyle.LibraryItemPreview);
             mainGrid.Children.Add(_previewPopup);
         }
 
@@ -164,7 +163,7 @@ namespace Dynamo.Search
             Point popupConnectingPoint = new Point(relativePoint.X + treeViewItem.ActualWidth, relativePoint.Y + (treeViewItem.ActualHeight / 2));
             string popupContent = nodeSearchElement.Name + "\n" + nodeSearchElement.Description;
             _previewPopup.UpdatePopupWindow(popupConnectingPoint, popupContent);
-            _previewPopup.FaceInPopupWindow();
+            _previewPopup.FadeInPopupWindow();
         }
 
         private void LibraryItem_OnMouseLeave(object sender, MouseEventArgs e)
