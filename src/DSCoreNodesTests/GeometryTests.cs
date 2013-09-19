@@ -1,43 +1,12 @@
-﻿using System;
-using Autodesk.LibG;
+﻿using Autodesk.LibG;
 using DSCoreNodes;
 using NUnit.Framework;
-using Dynamo.Utilities;
 
 namespace DSCoreNodesTests
 {
-    [SetUpFixture]
-    internal class Setup
-    {
-        [SetUp]
-        public void Init()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
-        }
-
-        [TearDown]
-        public void Cleanup()
-        {
-
-        }     
-    }
-
     [TestFixture]
-    internal class GeometryTests
+    class GeometryTests
     {
-        
-        [TestFixtureSetUp]
-        public void Init()
-        {
-            LibG.start_asm_library();
-        }
-
-        [TestFixtureTearDown]
-        public void Cleanup()
-        {
-            LibG.end_asm_library();
-        }
-
         [Test]
         public void Domain2D()
         {
