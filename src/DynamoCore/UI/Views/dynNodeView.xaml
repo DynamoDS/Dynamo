@@ -200,7 +200,7 @@
                          Background="{x:Null}" FontStyle="Normal" Foreground="LightGray"
                     Visibility="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynWorkspaceView}}, Converter={StaticResource ZoomToVisibilityConverter}}"
             Grid.Row="0" Grid.Column="0"
-                  MouseDown="NickNameBlock_OnMouseDown">
+                  MouseDown="NickNameBlock_OnMouseDown" MouseEnter="NickNameBlock_OnMouseEnter" MouseLeave="NickNameBlock_OnMouseLeave">
         </TextBlock>
         
         <!-- CENTER CANVAS -->
