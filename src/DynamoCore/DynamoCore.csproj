@@ -72,21 +72,8 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\greg\Ionic.Zip.dll</HintPath>
-    </Reference>
-    <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Windows.Shell, Version=3.0.50506.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\Microsoft.Windows.Shell\Microsoft.Windows.Shell.dll</HintPath>
     </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>
@@ -94,10 +81,6 @@ limitations under the License.
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\extern\Newtonsoft.json\Newtonsoft.Json.dll</HintPath>
       <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.core, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(NunitPath)\nunit.core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -110,10 +93,6 @@ limitations under the License.
     <Reference Include="ProtoCore">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
-    </Reference>
-    <Reference Include="ProtoInterface">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
     </Reference>
     <Reference Include="ProtoImperative">
       <SpecificVersion>False</SpecificVersion>
@@ -137,7 +116,6 @@ limitations under the License.
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -150,8 +128,10 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="Nodes\dynDSFunction.cs" />
+    <Compile Include="Models\Migration.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
@@ -171,9 +151,6 @@ limitations under the License.
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\NoteModel.cs" />
     <Compile Include="Models\PortModel.cs" />
-    <Compile Include="UI\Controls\TitleBarButtons.xaml.cs">
-      <DependentUpon>TitleBarButtons.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\dynTextBox.cs" />
     <Compile Include="UI\Views\ZoomAndPanControl.xaml.cs">
       <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
@@ -346,6 +323,11 @@ limitations under the License.
       <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
       <Name>DSCoreNodes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
+      <Name>DynamoUtilities</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
       <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
       <Name>FSchemeInterop</Name>
@@ -385,14 +367,6 @@ limitations under the License.
     <Resource Include="UI\Images\search_24.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Controls\StyleDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Controls\TitleBarButtons.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UI\Prompts\CrashPrompt.xaml">
     </Page>
     <Page Include="UI\Themes\MenuStyleDictionary.xaml">

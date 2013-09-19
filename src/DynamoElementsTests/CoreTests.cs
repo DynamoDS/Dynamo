@@ -354,19 +354,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(numNodes, Controller.ClipBoard.Count);
         }
 
-
-        // LayoutAll
-
-        [Test]
-        public void CanLayoutAll()
-        {
-            var model = dynSettings.Controller.DynamoModel;
-
-            model.LayoutAll(null);
-
-            Assert.AreNotEqual(0, Controller.DynamoViewModel.Model.Nodes.Count());
-        }
-
         // SaveImage
 
         //[Test]
@@ -681,32 +668,5 @@ namespace Dynamo.Tests
             degrees = Convert.ToDouble(converter.Convert(3.14159, typeof(string), null, new System.Globalization.CultureInfo("en-US")));
             Assert.AreEqual(180.0, degrees, 0.01);
         }
-
-        //// CancelRunCommand
-
-        //[Test]
-        //public void CanCancelRun()
-        //{
-        //    // TODO: need an expensive operation to run
-        //    DynamoCommands.RunExpressionCmd.Execute();
-        //    DynamoCommands.CancelRunCmd.Execute(null);
-
-        //}
-
-        //// RunExpressionCommand
-
-        //[Test]
-        //public void CanRunExpression()
-        //{
-
-        //}
-
-        //// CreateConnectionCommand
-
-        //[Test]
-        //public void CanCreateConnection()
-        //{
-
-        //}
     }
 }

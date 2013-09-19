@@ -32,8 +32,30 @@ namespace Dynamo.Controls
         // Keeps track of where the mouse cursor was when a drag operation began.		
         private Point origCursorLocation;
 
-        // True if a drag operation is underway, else false.
-        public bool isDragInProgress;
+        private enum DragState
+        {
+            /// <summary>
+            /// This state indicates that there is no on-going drag operation.
+            /// </summary>
+            None,
+
+            /// <summary>
+            /// When a mouse is clicked within a node, the dragState is set to 
+            /// Setup, indicating that the DragCanvas is ready for any subsequent
+            /// mouse-move event to begin a drag operation. However, the mouse
+            /// may be released without getting moved, in which case only 
+            /// selection is done (i.e. dragState will be reset back to None).
+            /// </summary>
+            Setup,
+
+            /// <summary>
+            /// There is an on-going drag operation, and all the nodes that 
+            /// are getting dragged have already been recorded for undo.
+            /// </summary>
+            InProgress
+        }
+
+        private DragState dragState = DragState.None;
 
         //true if user is making a connection between elements
         //MVVM: move isConnecting onto the DynamoViewModel
@@ -46,6 +68,9 @@ namespace Dynamo.Controls
 
         //true if we're ignoring clicks
         public bool ignoreClick;
+
+        // The owning workspace for this DragCanvas
+        public Dynamo.Views.dynWorkspaceView owningWorkspace = null;
 
         #endregion // Data
 
@@ -334,7 +359,7 @@ namespace Dynamo.Controls
                         this.origCursorLocation = e.GetPosition(this);
                         Debug.WriteLine(string.Format("ResetCursorLocation point x:{0} y:{0}", this.origCursorLocation.X, this.origCursorLocation.Y));
 
-                        this.isDragInProgress = true;
+                        this.dragState = DragState.Setup;
 
                         e.Handled = true;
                         return;
@@ -352,8 +377,32 @@ namespace Dynamo.Controls
         {
             base.OnPreviewMouseMove(e);
 
-            if (DynamoSelection.Instance.Selection.Count == 0 || !this.isDragInProgress)
+            if (DynamoSelection.Instance.Selection.Count == 0 || (DragState.None == dragState))
                 return;
+
+            if (DragState.Setup == dragState)
+            {
+                dragState = DragState.InProgress; // The drag operation is now started.
+
+                if (null != this.owningWorkspace)
+                {
+                    // This is where we attempt to store all the models in undo recorder 
+                    // before they are modified (i.e. being dragged around the canvas).
+                    // Note that we only do this once when the first mouse-move occurs 
+                    // after a mouse-down, because mouse-down can potentially be used 
+                    // just to select a node (as opposed to moving the selected nodes), in 
+                    // which case we don't want any of the nodes to be recorded for undo.
+                    // 
+                    List<ModelBase> models = DynamoSelection.Instance.Selection.
+                        Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
+
+                    WorkspaceModel workspaceModel = owningWorkspace.ViewModel.Model;
+                    workspaceModel.RecordModelsForModification(models);
+                    DynamoController controller = Dynamo.Utilities.dynSettings.Controller;
+                    controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                    controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+                }
+            }
 
             // Get the position of the mouse cursor, relative to the Canvas.
             Point cursorLocation = e.GetPosition(this);
@@ -465,7 +514,7 @@ namespace Dynamo.Controls
         {
             base.OnMouseUp(e);
 
-            this.isDragInProgress = false;
+            this.dragState = DragState.None;
 
             // recalculate the offsets for all items in
             // the selection. 
@@ -695,6 +744,16 @@ namespace Dynamo.Controls
         #endregion // UpdateZOrder
 
         #endregion // Private Helpers
+
+        /// <summary>
+        /// The WorkspaceView (i.e. the owner of this DragCanvas object) calls
+        /// this method to mark the current drag operation as being "over". This 
+        /// happens when user activates another workspace.
+        /// </summary>
+        internal void CancelDragOperation()
+        {
+            this.dragState = DragState.None;
+        }
 
         /// <summary>
         /// Find the user control of type 'testType' by traversing the tree.

@@ -5,20 +5,8 @@ using NUnit.Framework;
 namespace DSCoreNodesTests
 {
     [TestFixture]
-    internal class GeometryTests
+    class GeometryTests
     {
-        [TestFixtureSetUp]
-        public void Init()
-        {
-            LibG.start_asm_library();
-        }
-
-        [TestFixtureTearDown]
-        public void Cleanup()
-        {
-            LibG.end_asm_library();
-        }
-
         [Test]
         public void Domain2D()
         {

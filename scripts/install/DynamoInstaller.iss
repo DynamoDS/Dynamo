@@ -3,18 +3,18 @@
 
 [Setup]
 AppName=Dynamo
-AppVerName=Dynamo 0.6
+AppVerName=Dynamo 0.7.0
 AppPublisher=Autodesk, Inc.
 AppID={{12A2BEA3-7641-4AEC-B344-9B49C8DDFF1A}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.com
 AppSupportURL=
 AppUpdatesURL=
-AppVersion=0.6
-VersionInfoVersion=0.6
+AppVersion=0.7.0
+VersionInfoVersion=0.7.0
 VersionInfoCompany=Autodesk 
-VersionInfoDescription=Dynamo 0.6
-VersionInfoTextVersion=Dynamo 0.6
+VersionInfoDescription=Dynamo 0.7.0
+VersionInfoTextVersion=Dynamo 0.7.0
 VersionInfoCopyright=
 DefaultDirName=C:\Autodesk\Dynamo\Core
 DefaultGroupName=
@@ -29,7 +29,7 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\Nodes_32_32.ico
-UninstallDisplayName=Dynamo 0.6
+UninstallDisplayName=Dynamo 0.7.0
 UsePreviousAppDir=no
 
 [Types]
@@ -40,6 +40,7 @@ Name: "custom"; Description: "Custom installation"; Flags: iscustom
 [Dirs]
 Name: "{app}\definitions"
 Name: "{app}\samples"
+Name: "{app}\dll"
 
 [Components]
 Name: "DynamoCore"; Description: "Dynamo Core Functionality"; Types: full compact custom; Flags: fixed
@@ -51,6 +52,7 @@ Name: "DynamoTrainingFiles"; Description: "Dynamo Training Files"; Types: full
 [Files]
 ;Core Files
 Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\dll\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\README.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore

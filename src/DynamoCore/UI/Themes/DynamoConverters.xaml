@@ -39,6 +39,7 @@
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
     <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter"/>
+    <controls:PackageSearchStateToStringConverter x:Key="PackageSearchStateToStringConverter"/>
     <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"/>
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter"/>
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
@@ -60,4 +61,5 @@
     <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter"/>
     <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter"/>
     <controls:TooltipLengthTruncater x:Key="TooltipLengthTruncater" />
+    <controls:WarningLevelToColorConverter x:Key="WarningLevelToColorConverter"/>
 </ResourceDictionary>

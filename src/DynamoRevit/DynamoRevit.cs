@@ -93,10 +93,6 @@ namespace Dynamo.Applications
                 pushButton1.LargeImage = bitmapSource;
                 pushButton1.Image = bitmapSource;
 #endif
-
-                // MDJ = element level events and dyanmic model update
-                // MDJ 6-8-12  trying to get new dynamo to watch for user created ref points and re-run definition when they are moved
-
                 IdlePromise.RegisterIdle(application);
 
                 Updater = new DynamoUpdater(application.ActiveAddInId, application.ControlledApplication);
@@ -123,7 +119,6 @@ namespace Dynamo.Applications
                 UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
 
                 env = new ExecutionEnvironment();
-                //EnsureApplicationResources();
 
                 return Result.Succeeded;
             }
@@ -162,6 +157,8 @@ namespace Dynamo.Applications
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
+            AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
+
             //When a user double-clicks the Dynamo icon, we need to make
             //sure that we don't create another instance of Dynamo.
             if (isRunning)
@@ -195,50 +192,49 @@ namespace Dynamo.Applications
                 dynRevitSettings.Revit = m_revit;
                 dynRevitSettings.Doc = m_doc;
                 dynRevitSettings.DefaultLevel = defaultLevel;
-
+                
                 IdlePromise.ExecuteOnIdle(delegate
-                    {
-                        //get window handle
-                        IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
+                {
+                    //get window handle
+                    IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-                        //show the window
+                    Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
+                    string context = r.Replace(m_revit.Application.VersionName, "");
 
-                        Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
-                        string context = r.Replace(m_revit.Application.VersionName, "");
+                    //they changed the application version name conventions for vasari
+                    //it no longer has a version year so we can't compare it to other versions
+                    //TODO:come up with a more stable way to test for Vasari beta 3
+                    if (context == "Vasari")
+                        context = "Vasari 2014";
 
-                        //they changed the application version name conventions for vasari
-                        //it no longer has a version year so we can't compare it to other versions
-                        //TODO:come up with a more stable way to test for Vasari beta 3
-                        if (context == "Vasari")
-                            context = "Vasari 2014";
-
-                        dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
+                    dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
                         
 
-                        dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
-                        dynamoController.UIDispatcher = dynamoView.Dispatcher;
+                    dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
+                    dynamoController.UIDispatcher = dynamoView.Dispatcher;
 
-                        //set window handle and show dynamo
-                        new WindowInteropHelper(dynamoView).Owner = mwHandle;
+                    //set window handle and show dynamo
+                    new WindowInteropHelper(dynamoView).Owner = mwHandle;
 
-                        handledCrash = false;
+                    handledCrash = false;
 
-                        dynamoView.WindowStartupLocation = WindowStartupLocation.Manual;
+                    dynamoView.WindowStartupLocation = WindowStartupLocation.Manual;
 
-                        Rectangle bounds = Screen.PrimaryScreen.Bounds;
-                        dynamoView.Left = dynamoViewX ?? bounds.X;
-                        dynamoView.Top = dynamoViewY ?? bounds.Y;
-                        dynamoView.Width = dynamoViewWidth ?? 1000.0;
-                        dynamoView.Height = dynamoViewHeight ?? 800.0;
+                    Rectangle bounds = Screen.PrimaryScreen.Bounds;
+                    dynamoView.Left = dynamoViewX ?? bounds.X;
+                    dynamoView.Top = dynamoViewY ?? bounds.Y;
+                    dynamoView.Width = dynamoViewWidth ?? 1000.0;
+                    dynamoView.Height = dynamoViewHeight ?? 800.0;
 
-                        dynamoView.Show();
+                    dynamoView.Show();
 
-                        dynamoView.Dispatcher.UnhandledException -= DispatcherOnUnhandledException; 
-                        dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException; 
-                        dynamoView.Closing += dynamoView_Closing;
-                        dynamoView.Closed += dynamoView_Closed;
+                    dynamoView.Dispatcher.UnhandledException -= DispatcherOnUnhandledException; 
+                    dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException; 
+                    dynamoView.Closing += dynamoView_Closing;
+                    dynamoView.Closed += dynamoView_Closed;
 
-                    });
+                    revit.Application.ViewActivated += new EventHandler<Autodesk.Revit.UI.Events.ViewActivatedEventArgs>(Application_ViewActivated);
+                });
             }
             catch (Exception ex)
             {
@@ -253,6 +249,42 @@ namespace Dynamo.Applications
             }
 
             return Result.Succeeded;
+        }
+
+        /// <summary>
+        /// Handler for the ViewActivated event.
+        /// Used to query whether Dynamo can be run on the active view.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Application_ViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e)
+        {
+            if (dynSettings.Controller != null)
+            {
+                if (e.CurrentActiveView is View3D)
+                {
+                    var view = e.CurrentActiveView as View3D;
+                    if (view.IsPerspective)
+                    {
+                        //warn user that Dynamo can't be run in perspective 
+                        //and disable the run
+                        DynamoLogger.Instance.LogWarning(
+                            "Dynamo is not available in a perspective view. Please switch to another view to Run.", WarningLevel.Moderate);
+                        dynSettings.Controller.DynamoViewModel.RunEnabled = false;
+                    }
+                    else
+                    {
+                        //for any other type of 
+                        DynamoLogger.Instance.ResetWarning();
+                        dynSettings.Controller.DynamoViewModel.RunEnabled = true;
+                    }
+                }
+                else
+                {
+                    DynamoLogger.Instance.LogWarning(string.Format("Active view is now {0}", e.CurrentActiveView.Name), WarningLevel.Mild);
+                    dynSettings.Controller.DynamoViewModel.RunEnabled = true;
+                }
+            }
         }
 
         /// <summary>
@@ -343,6 +375,8 @@ namespace Dynamo.Applications
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
+            AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
+
             DynamoLogger.Instance.StartLogging();
 
             // Get the StringStringMap class which can write support into.
@@ -464,9 +498,23 @@ namespace Dynamo.Applications
                             testResult.testsuite.result = "Failure";
                         }
 
-                        
+
                         cases.Add(testCase);
                     }
+                    else
+                    {
+                        //we have a journal file, but the specified test could not be found
+                        var currInvalid = Convert.ToInt16(testResult.invalid);
+                        testResult.invalid = currInvalid + 1;
+                        testResult.testsuite.result = "Error";
+                    }
+                }
+                else
+                {
+                    //we have a journal file, but no data
+                    var currInvalid = Convert.ToInt16(testResult.invalid);
+                    testResult.invalid = currInvalid + 1;
+                    testResult.testsuite.result = "Error";
                 }
 
                 testResult.testsuite.results.Items = cases.ToArray();
