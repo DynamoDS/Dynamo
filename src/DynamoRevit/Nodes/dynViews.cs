@@ -19,7 +19,6 @@ using System.Linq;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -368,6 +367,7 @@ namespace Dynamo.Nodes
     [NodeName("Perspective View")]
     [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
     [NodeDescription("Creates a perspective view.")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     public class PerspectiveView : ViewBase
     {
         public PerspectiveView()
