@@ -226,6 +226,8 @@ namespace Dynamo.Nodes
                         view.CropBox = xyz;
                     }
                 }
+
+                view.CropBoxVisible = false;
             }
             else
             {
