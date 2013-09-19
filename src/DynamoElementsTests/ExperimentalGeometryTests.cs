@@ -1,29 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Dynamo.FSchemeInterop;
 using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Nodes;
-using Dynamo.Tests;
 
 namespace Dynamo.Tests
 {
-    [SetUpFixture]
-    internal class Setup
-    {
-        [SetUp]
-        public void Init()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
-        }
-
-        [TearDown]
-        public void Cleanup()
-        {
-
-        }
-    }
-
     [TestFixture]
     class ExperimentalGeometryTests : DynamoUnitTest
     {
