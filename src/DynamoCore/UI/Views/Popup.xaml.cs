@@ -24,7 +24,7 @@ namespace Dynamo.UI.Views
         public enum PopupStyle
         {
             LibraryItemPreview,
-            NodeToolTip,
+            NodeTooltip,
             Error,
             None
         }
@@ -34,7 +34,7 @@ namespace Dynamo.UI.Views
         public Popup(PopupStyle style)
         {
             InitializeComponent();
-            UpdateStyle(style);
+            UpdateBackgroundStyle(style);
             SetupFadeSetting();
         }
 
@@ -50,7 +50,7 @@ namespace Dynamo.UI.Views
             this.mainGrid.BeginAnimation(OpacityProperty, fadeOutAnimation);
         }
 
-        public void FaceInPopupWindow()
+        public void FadeInPopupWindow()
         {
             this.popupWindow.IsOpen = true;
             this.mainGrid.BeginAnimation(OpacityProperty, fadeInAnimation);
@@ -77,70 +77,136 @@ namespace Dynamo.UI.Views
 
         private void UpdatePosition(Point connectingPoint)
         {
+            switch (this.popupStyle)
+            {
+                case PopupStyle.LibraryItemPreview:
+                    this.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    this.popupWindow.Placement = System.Windows.Controls.Primitives.PlacementMode.Right;
+                    this.popupWindow.VerticalOffset = connectingPoint.Y - (this.contentContainer.DesiredSize.Height / 2);
+                    break;
+                case PopupStyle.NodeTooltip:
+                    this.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    this.popupWindow.Placement = System.Windows.Controls.Primitives.PlacementMode.Right;
+                    this.popupWindow.VerticalOffset = connectingPoint.Y - (this.contentContainer.DesiredSize.Height / 2);
+                    break;
+                case PopupStyle.Error:
+                    break;
+                case PopupStyle.None:
+                    break;
+            }
+        }
+
+        private List<Point> GetFramePoints_LibraryItemPreview()
+        {
             this.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            this.popupWindow.Placement = System.Windows.Controls.Primitives.PlacementMode.Right;
-            this.popupWindow.VerticalOffset = connectingPoint.Y - (this.contentContainer.DesiredSize.Height / 2);
+            List<Point> points = new List<Point>();
+            points.Add(new Point(this.contentContainer.DesiredSize.Width, 0));
+            points.Add(new Point(7, 0));
+            points.Add(new Point(7, this.contentContainer.DesiredSize.Height / 2 - 7));
+            points.Add(new Point(0, this.contentContainer.DesiredSize.Height / 2));
+            points.Add(new Point(7, this.contentContainer.DesiredSize.Height / 2 + 7));
+            points.Add(new Point(7, this.contentContainer.DesiredSize.Height));
+            points.Add(new Point(this.contentContainer.DesiredSize.Width, this.contentContainer.DesiredSize.Height));
+            return points;
+        }
+
+        private List<Point> GetFramePoints_NodeTooltip()
+        {
+            this.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            List<Point> points = new List<Point>();
+            points.Add(new Point(this.contentContainer.DesiredSize.Width, 0));
+            points.Add(new Point(6, 0));
+            points.Add(new Point(6, this.contentContainer.DesiredSize.Height / 2 - 6));
+            points.Add(new Point(0, this.contentContainer.DesiredSize.Height / 2));
+            points.Add(new Point(6, this.contentContainer.DesiredSize.Height / 2 + 6));
+            points.Add(new Point(6, this.contentContainer.DesiredSize.Height));
+            points.Add(new Point(this.contentContainer.DesiredSize.Width, this.contentContainer.DesiredSize.Height));
+            return points;
+        }
+
+        private List<Point> GetFramePoints_Error()
+        {
+            List<Point> points = new List<Point>();
+            return points;
         }
 
         private void UpdateShape()
         {
             this.backgroundPolygon.Points.Clear();
-            this.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            List<Point> framePoints = new List<Point>();
 
-            Point topRightConner = new Point(this.contentContainer.DesiredSize.Width, 0);
-            Point topLeftConner = new Point(7, 0);
-            Point bottomLeftConner = new Point(7, this.contentContainer.DesiredSize.Height);
-            Point bottomRightConner = new Point(this.contentContainer.DesiredSize.Width, this.contentContainer.DesiredSize.Height);
-            Point triagleTop = new Point(7, this.contentContainer.DesiredSize.Height / 2 - 7);
-            Point triagleBottom = new Point(7, this.contentContainer.DesiredSize.Height / 2 + 7);
-            Point triagleLeft = new Point(0, this.contentContainer.DesiredSize.Height / 2);
+            switch (this.popupStyle)
+            {
+                case PopupStyle.LibraryItemPreview:
+                    framePoints = GetFramePoints_LibraryItemPreview();
+                    break;
+                case PopupStyle.NodeTooltip:
+                    framePoints = GetFramePoints_NodeTooltip();
+                    break;
+                case PopupStyle.Error:
+                    framePoints = GetFramePoints_Error();
+                    break;
+                case PopupStyle.None:
+                    break;
+            }
 
-            backgroundPolygon.Points.Add(topRightConner);
-            backgroundPolygon.Points.Add(topLeftConner);
-            backgroundPolygon.Points.Add(triagleTop);
-            backgroundPolygon.Points.Add(triagleLeft);
-            backgroundPolygon.Points.Add(triagleBottom);
-            backgroundPolygon.Points.Add(bottomLeftConner);
-            backgroundPolygon.Points.Add(bottomRightConner);
+            foreach(Point point in framePoints)
+                backgroundPolygon.Points.Add(point);
         }
 
-        private void UpdateStyle(PopupStyle style)
+        private void UpdateBackgroundStyle(PopupStyle style)
         {
             this.popupStyle = style;
             switch (this.popupStyle)
             {
                 case PopupStyle.LibraryItemPreview:
-                    SetPopupStyle_LibraryItemPreview();
+                    SetPopupBackgroundStyle_LibraryItemPreview();
                     break;
-                case PopupStyle.NodeToolTip:
-                    SetPopupShapeStyle_NodeTooltip();
+                case PopupStyle.NodeTooltip:
+                    SetPopupBackgroundStyle_NodeTooltip();
                     break;
                 case PopupStyle.Error:
-                    SetPopupShapeStyle_Error();
+                    SetPopupBackgroundStyle_Error();
                     break;
                 case PopupStyle.None:
                     throw new ArgumentException("PopupWindow didn't have a style (456B24E0F400)");
             }
         }
 
-        private void SetPopupStyle_LibraryItemPreview()
+        private void SetPopupBackgroundStyle_LibraryItemPreview()
         {
             this.backgroundPolygon.Fill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             this.backgroundPolygon.StrokeThickness = 1;
             this.backgroundPolygon.Stroke = new SolidColorBrush(Color.FromRgb(10, 93, 30));
+            this.contentContainer.MaxWidth = 400;
         }
 
-        private void SetPopupShapeStyle_NodeTooltip()
+        private void SetPopupBackgroundStyle_NodeTooltip()
         {
-
+            this.backgroundPolygon.Fill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+            this.backgroundPolygon.StrokeThickness = 1;
+            this.backgroundPolygon.Stroke = new SolidColorBrush(Color.FromRgb(165, 209, 226));
+            this.contentContainer.MaxWidth = 200;
         }
 
-        private void SetPopupShapeStyle_Error()
+        private void SetPopupBackgroundStyle_Error()
         {
 
         }
 
         private TextBox GetStyledTextBox(string text)
+        {
+            switch (this.popupStyle)
+            {
+                case PopupStyle.LibraryItemPreview:
+                    return GetTextBox_LibraryItemPreviewStyle(text);
+                case PopupStyle.NodeTooltip:
+                    return GetTextBox_NodeTooltipStyle(text);
+            }
+            return null;
+        }
+
+        private TextBox GetTextBox_LibraryItemPreviewStyle(string text)
         {
             TextBox textbox = new TextBox();
             textbox.TextWrapping = TextWrapping.Wrap;
@@ -155,6 +221,22 @@ namespace Dynamo.UI.Views
             return textbox;
         }
 
+        private TextBox GetTextBox_NodeTooltipStyle(string text)
+        {
+            TextBox textbox = new TextBox();
+            textbox.TextWrapping = TextWrapping.Wrap;
+            textbox.Text = text;
+            textbox.IsReadOnly = true;
+            textbox.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            textbox.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            textbox.BorderThickness = new Thickness(0);
+            textbox.Background = Brushes.Transparent;
+            textbox.FontSize = 12;
+            textbox.FontWeight = FontWeights.Light;
+            textbox.Foreground = new SolidColorBrush(Color.FromRgb(98, 140, 153));
+            return textbox;
+        }
+
         private void SetupFadeSetting()
         {
             fadeOutAnimation.Completed += fadeOutAnimation_Completed;
@@ -162,7 +244,7 @@ namespace Dynamo.UI.Views
             fadeOutAnimation.To = 0;
 
             fadeInAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(200));
-            fadeInAnimation.To = 0.9;
+            fadeInAnimation.To = 0.96;
             fadeInAnimation.Completed += fadeInAnimation_Completed;
         }
 
@@ -176,7 +258,7 @@ namespace Dynamo.UI.Views
 
         private void PopupWindow_MouseEnter(object sender, MouseEventArgs e)
         {
-            FaceInPopupWindow();
+            FadeInPopupWindow();
         }
 
         private void PopupWindow_Mouseleave(object sender, MouseEventArgs e)
@@ -186,6 +268,6 @@ namespace Dynamo.UI.Views
 
         #endregion
 
-        
+
     }
 }
