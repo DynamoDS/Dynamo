@@ -799,34 +799,42 @@ namespace Dynamo.Nodes
         }
     }
 
-    //[NodeName("Override Element Color in View")]
-    //[NodeDescription("Override an element's surface color in the active view.")]
-    //[NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
-    //public class dynOverrideColorInView : dynRevitTransactionNodeWithOneOutput
-    //{
-    //    private FillPattern _solidPattern;
+    [NodeName("Override Element Color in View")]
+    [NodeDescription("Override an element's surface color in the active view.")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
+    public class OverrideColorInView : RevitTransactionNodeWithOneOutput
+    {
+        private FillPatternElement solidFill;
 
-    //    public dynOverrideColorInView()
-    //    {
-    //        InPortData.Add(new PortData("color", "The color to use as an override.", typeof(Value.Container)));
-    //        InPortData.Add(new PortData("element", "The element(s) to receive the new color.", typeof(Value.Container)));
-    //        OutPortData.Add(new PortData("", "Success?", typeof(bool)));
+        public OverrideColorInView()
+        {
+            InPortData.Add(new PortData("color", "The color to use as an override.", typeof(Value.Container)));
+            InPortData.Add(new PortData("element", "The element(s) to receive the new color.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("", "Success?", typeof(Value.Number)));
 
-    //        RegisterAllPorts();
-            
-    //    }
+            RegisterAllPorts();
+        }
 
-    //    public override Value Evaluate(FSharpList<Value> args)
-    //    {
-    //        var color = (System.Drawing.Color)((Value.Container) args[0]).Item;
-    //        var elem = (Element) ((Value.Container) args[1]).Item;
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var color = (System.Drawing.Color)((Value.Container) args[0]).Item;
+            var elem = (Element) ((Value.Container) args[1]).Item;
 
-    //        var view = dynRevitSettings.Doc.ActiveView;
-    //        var ogs = new OverrideGraphicSettings();
+            var view = dynRevitSettings.Doc.ActiveView;
+            var ogs = new OverrideGraphicSettings();
 
-    //        ogs.SetProjectionFillColor(new Autodesk.Revit.DB.Color(color.R, color.G, color.B));
+            if (solidFill == null)
+            {
+                var patternCollector = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+                patternCollector.OfClass(typeof(FillPatternElement));
+                solidFill = patternCollector.ToElements().Cast<FillPatternElement>().First(x => x.GetFillPattern().Name == "Solid fill");
+            }
+           
+            ogs.SetProjectionFillColor(new Autodesk.Revit.DB.Color(color.R, color.G, color.B));
+            ogs.SetProjectionFillPatternId(solidFill.Id);
+            view.SetElementOverrides(elem.Id, ogs);
 
-    //        view.SetElementOverrides(elem.Id, ogs);
-    //    }
-    //}
+            return Value.NewNumber(1);
+        }
+    }
 }
