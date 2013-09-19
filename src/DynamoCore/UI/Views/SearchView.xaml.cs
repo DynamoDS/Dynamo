@@ -36,7 +36,7 @@ namespace Dynamo.Search
     public partial class SearchView : UserControl
     {
         private SearchViewModel _viewModel;
-        private Popup _previewPopup = new Popup(Popup.PopupStyle.NodeTooltip);
+        private Popup _previewPopup = new Popup(Popup.PopupStyle.LibraryItemPreview);
 
         public SearchView()
         {
