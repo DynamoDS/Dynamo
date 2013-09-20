@@ -327,32 +327,37 @@ namespace Dynamo.Nodes
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context);
-            XmlElementHelper helper = new XmlElementHelper(element);
-            int i = 0;
-            string s;
+            XmlDocument xmlDoc = element.OwnerDocument;
             foreach (var inport in InPortData)
             {
-                s = "name" + i.ToString();
-                helper.SetAttribute(s,inport.NickName);
+                XmlElement input = xmlDoc.CreateElement("Input");
+                input.SetAttribute("name", inport.NickName);
+                element.AppendChild(input);
             }
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context);
-            XmlElementHelper helper = new XmlElementHelper(element);
-            int i = InPortData.Count;
-            string s;
-            try
+            int currentLength = InPortData.Count;
+            int prevLength = 0;
+            foreach (XmlNode subNode in element.ChildNodes)
             {
-                for (; i < 1000; i++)
+                if (subNode.Name == "Input")
                 {
-                    s = "name" + i.ToString();
-                    InPortData.Add(new PortData(helper.ReadString(s),"",typeof(object)));
+                    prevLength++;
+                    if (prevLength > currentLength)
+                    {
+                        string nickName = subNode.Attributes["name"].Value;
+                        InPortData.Add(new PortData(nickName, "", typeof(object)));
+                    }
                 }
+                
             }
-            catch (Exception e)
-            {/* Implies no more port data attributes*/}
+            if (prevLength < currentLength)
+            {
+                InPortData.RemoveRange(prevLength, currentLength - prevLength);
+            }
 
             RegisterAllPorts();
         }
@@ -806,43 +811,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context);
-            XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("combineInputs", (InPortData.Count - 1));
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context);
-            XmlElementHelper helper = new XmlElementHelper(element);
-            int inputs;
-            if (element.Attributes["combineInputs"] == null)
-            {
-                inputs = 2;
-            }
-            else
-            {
-                inputs = helper.ReadInteger("combineInputs");
-            }
-
-            if (inputs == 1)
-                RemoveInput();
-            else
-            {
-                for (; inputs > 2; inputs--)
-                {
-                    InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
-                }
-
-                RegisterAllPorts();
-            }
-        }
-        #endregion
-
         public override Value Evaluate(FSharpList<Value> args)
         {
             return FScheme.Map(args);
@@ -916,43 +884,6 @@ namespace Dynamo.Nodes
                 RegisterAllPorts();
             }
         }
-
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context);
-            XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("lacerBaseInputs", (InPortData.Count - 1));
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context);
-            XmlElementHelper helper = new XmlElementHelper(element);
-            int inputs;
-            if (element.Attributes["lacerBaseInputs"] == null)
-            {
-                inputs = 2;
-            }
-            else
-            {
-                inputs = helper.ReadInteger("lacerBaseInputs");
-            }
-
-            if (inputs == 1)
-                RemoveInput();
-            else
-            {
-                for (; inputs > 2; inputs--)
-                {
-                    InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
-                }
-
-                RegisterAllPorts();
-            }
-        }
-        #endregion
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -1813,6 +1744,8 @@ namespace Dynamo.Nodes
             base.LoadNode(nodeElement);
             processTextForNewInputs();
         }
+
+
 
         private void processTextForNewInputs()
         {
@@ -3357,6 +3290,29 @@ namespace Dynamo.Nodes
                 }
             }
         }
+
+        #region Serialization/Deserialization Methods
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            XmlDocument xmlDoc = element.OwnerDocument;
+            XmlElement outEl = xmlDoc.CreateElement(typeof(T).FullName);
+            outEl.SetAttribute("value", Value.ToString());
+            element.AppendChild(outEl);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+            foreach (XmlNode subNode in element.ChildNodes)
+            {
+                if (subNode.Name.Equals(typeof(T).FullName))
+                {
+                    Value = DeserializeValue(subNode.Attributes[0].Value);
+                }
+            }
+        }
+        #endregion
 
         public override string PrintExpression()
         {
