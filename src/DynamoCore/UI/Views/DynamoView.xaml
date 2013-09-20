@@ -17,7 +17,9 @@
         AllowsTransparency="False" 
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
-        Background="#FF353535">
+        Background="#FF353535"
+        FontFamily="Open Sans"
+        SnapsToDevicePixels="True">
 
     <Window.CommandBindings>
         
@@ -134,6 +136,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <!--Titlebar-->
         <Border BorderBrush="#FF3F4040"
                 BorderThickness="0,0,0,1"
                 Grid.Row="0"
@@ -280,15 +283,16 @@
             </Grid>
         </Border>
 
+        <!--Workspace-->
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
-                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#999">
-            
+                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#232323">
+
             <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs" 
-                        SelectedIndex="{Binding CurrentWorkspaceIndex}" Background="#222" Padding ="0" SelectionChanged="WorkspaceTabs_SelectionChanged">
-                
+                        SelectedIndex="{Binding CurrentWorkspaceIndex}" Background="Transparent" Padding ="0" SelectionChanged="WorkspaceTabs_SelectionChanged">
+
                 <TabControl.Resources>
 
-                    <Style  TargetType="{x:Type TabControl}">
+                    <Style TargetType="{x:Type TabControl}">
                         <Setter Property="OverridesDefaultStyle" Value="True" />
                         <Setter Property="SnapsToDevicePixels" Value="True" />
                         <Setter Property="Template">
@@ -300,16 +304,19 @@
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
                                         <TabPanel x:Name="HeaderPanel"
-                                            Grid.Row="0" 
-                                            Margin="0,4,0,0"
-                                            Panel.ZIndex="1"
-                                            IsItemsHost="True"
-                                            KeyboardNavigation.TabIndex="1"
-                                            Background="Transparent" />
+                                                  Grid.Row="0"
+                                                  Margin="0,0,0,0"
+                                                  Panel.ZIndex="1"
+                                                  IsItemsHost="True"
+                                                  KeyboardNavigation.TabIndex="1"
+                                                  Background="Transparent"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"
+                                                  ClipToBounds="True"/>
                                         <Border x:Name="Border"
-                                          Grid.Row="1" 
-                                          BorderBrush="{Binding Path=ViewingHomespace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"
-                                          BorderThickness="0,4,0,0">
+                                                Grid.Row="1"
+                                                BorderBrush="{Binding Path=ViewingHomespace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"
+                                                BorderThickness="0,4,0,0">
                                             <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
                                         </Border>
                                     </Grid>
@@ -317,33 +324,38 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                    
+
                     <Style TargetType="{x:Type TabItem}">
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type TabItem}">
-                                    <Grid>
-                                        <Border 
-                                          Name="Border"
-                                          BorderBrush="#999" 
-                                          CornerRadius="4,4,0,0"
-                                          BorderThickness="0,1,3,0" >
+                                    <Grid Margin="0,-1,0,0"
+                                          Width="200">
+                                        <Border Name="Border"
+                                                BorderBrush="#FF3F4040"
+                                                CornerRadius="0,0,0,0"
+                                                HorizontalAlignment="Stretch">
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                        <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
                                                             <Setter Property="Background" Value="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"/>
-                                                        </DataTrigger>
+                                                            <Setter Property="BorderThickness" Value="1,0,1,1"/>
+                                                        </DataTrigger>-->
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
                                                             <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedFalse}"/>
+                                                            <Setter Property="BorderThickness" Value="0,1,1,0"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                            <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedTrue}"/>
+                                                            <Setter Property="BorderThickness" Value="1,0,1,1"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
                                             <ContentPresenter x:Name="ContentSite"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Center"
-                                                ContentSource="Header" />
+                                                              VerticalAlignment="Center"
+                                                              ContentSource="Header"/>
                                         </Border>
                                     </Grid>
                                 </ControlTemplate>
@@ -351,59 +363,38 @@
                         </Setter>
                     </Style>
 
-                    <Style TargetType="{x:Type Button}" x:Key="CloseButtonStyle">
-                        <Style.Resources>
-                            <sys:Double x:Key="CloseButtonWidth">6</sys:Double>
-                            <sys:Double x:Key="CloseCircleWidth">12</sys:Double>
-                            <sys:Double x:Key="CloseButtonOffset">3</sys:Double>
-                        </Style.Resources>
+                    <Style TargetType="{x:Type Button}" x:Key="CloseButtonStyle">                        
+                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+                        <Setter Property="SnapsToDevicePixels" Value="true"/>
                         <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="Margin" Value="0,0,0,0" />
                         <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="Foreground" Value="DarkGray" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Padding" Value="0"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="Button">
-                                    
-                                    <Canvas Background="Transparent" x:Name="CloseButton" Margin="0" Width="{StaticResource CloseCircleWidth}" Height="{StaticResource CloseCircleWidth}">
-                                        
-                                        <Ellipse Width="{StaticResource CloseCircleWidth}" Fill="{TemplateBinding Background}" Height="{StaticResource CloseCircleWidth}" />
-                                        <Canvas Canvas.Left="{StaticResource CloseButtonOffset}" Canvas.Top="{StaticResource CloseButtonOffset}" Background="Transparent" Width="{StaticResource CloseButtonWidth}" Height="{StaticResource CloseButtonWidth}">
-                                            
-                                            <Line X1="0" Y1="0" X2="{StaticResource CloseButtonWidth}" Y2="{StaticResource CloseButtonWidth}" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
-                                            <Line X1="0" Y1="{StaticResource CloseButtonWidth}" X2="{StaticResource CloseButtonWidth}" Y2="0" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
-                                        
-                                        </Canvas>
-
-                                        <Canvas.Style>
-                                            <Style TargetType="Canvas">
-                                                <Style.Triggers>
-
-                                                    <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspace}">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Canvas.Style>
-                                        
-                                    </Canvas>
-                                    
+                                    <Border x:Name="Border"
+                                            Background="Transparent"
+                                            BorderThickness="0 0 0 0"
+                                            BorderBrush="#3b3b3b">
+                                        <ContentPresenter Margin="1 1 0 0"/>
+                                    </Border>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="DarkGray" />
-                                <Setter Property="Foreground" Value="White" />
-                            </Trigger>
+                        <Style.Triggers>                            
+                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspace}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>                                  
                         </Style.Triggers>
                     </Style>
-                    
+
                 </TabControl.Resources>
-                
+
                 <TabControl.ItemTemplate>
-                    
+
                     <DataTemplate>
 
                         <!--<Button>
@@ -418,44 +409,63 @@
                                 <MouseBinding Gesture="MiddleClick" Command="{Binding HideCommand}" />
                             </Button.InputBindings>-->
 
-                            <StackPanel Orientation="Horizontal" Margin="10,5,10,5" >
+                        <DockPanel Margin="8,0,5,0"
+                                   Height="20"
+                                   HorizontalAlignment="Stretch">
 
-                                 <TextBlock Name="WorkspaceName" Margin="0,2,0,0" >
+                            <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" DockPanel.Dock="Right">
+                                <Image Width="16"
+                                       Height="16">
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="False">
+                                                    <Setter Property="Source" Value="/DynamoCore;component/UI/Images/closetab_normal.png" />
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Source" Value="/DynamoCore;component/UI/Images/closetab_hover.png" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </Button>
+                            
+                            <TextBlock Name="WorkspaceName" Margin="0,2,0,0" DockPanel.Dock="Left">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
-                                            
+
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
                                                 <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderTextBrush}"></Setter>
                                             </DataTrigger>
-                                            
+
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
                                                 <Setter Property="Foreground" Value="#999"></Setter>
                                             </DataTrigger>
-                                            
+
                                             <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspace}">
                                                 <Setter Property="Text" Value="Home"/>
-                                                <Setter Property="FontWeight" Value="Bold"/>
                                             </DataTrigger>
-                                            
+
                                             <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:FuncWorkspace}">
                                                 <Setter Property="Text" Value="{Binding Name}"/>
                                             </DataTrigger>
-                                            
+
                                         </Style.Triggers>
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
 
-                                 <TextBlock Name="Spacer" Text=" -" Margin="0,2,0,0">
+                            <TextBlock Name="Spacer" Text=" - " Margin="0,2,0,0" DockPanel.Dock="Left">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
-                                            
+
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
                                                 <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderTextBrush}"></Setter>
                                             </DataTrigger>
-                                            
+
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
                                                 <Setter Property="Foreground" Value="#999"></Setter>
                                             </DataTrigger>
@@ -466,18 +476,18 @@
 
                             </TextBlock>
 
-                                 <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
+                            <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="0,2,0,0" DockPanel.Dock="Left">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
                                                 <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderTextBrush}"></Setter>
                                             </DataTrigger>
-                                            
+
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
                                                 <Setter Property="Foreground" Value="#999"></Setter>
                                             </DataTrigger>
-                                            
+
                                             <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="True">
                                                 <Setter Property="FontStyle" Value="Italic"/>
                                             </DataTrigger>
@@ -487,28 +497,28 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </TextBlock.Style>                                
-                                
-                            </TextBlock> 
-                            
-                                 <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
+                                </TextBlock.Style>
 
-                            </StackPanel>
+                            </TextBlock>
+
+                            
+
+                        </DockPanel>
 
                         <!--</Button>-->
-                        
+
                     </DataTemplate>
-                    
+
                 </TabControl.ItemTemplate>
-                
+
                 <TabControl.ContentTemplate>
                     <DataTemplate>
                         <views:dynWorkspaceView></views:dynWorkspaceView>
                     </DataTemplate>
-                 </TabControl.ContentTemplate>
-                
+                </TabControl.ContentTemplate>
+
             </TabControl>
-       
+
         </Border>
 
         <ScrollViewer Name="LogScroller" 
