@@ -322,7 +322,7 @@ namespace Dynamo.Nodes
 
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
             //add a text box to the input grid of the control
-            var tb = new dynTextBox();
+            var tb = new DynamoTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             nodeUI.inputGrid.Children.Add(tb);

@@ -78,7 +78,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            var tb = new dynTextBox
+            var tb = new DynamoTextBox
             {
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
@@ -101,9 +101,6 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
-
-            if (Value != "")
-                tb.Commit();
         }
 
     }
@@ -180,7 +177,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            var tb = new dynTextBox(Value ?? "0.0")
+            var tb = new DynamoTextBox(Value ?? "0.0")
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,
@@ -213,7 +210,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            var tb = new dynTextBox();
+            var tb = new DynamoTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             nodeUI.inputGrid.Children.Add(tb);
@@ -257,17 +254,17 @@ namespace Dynamo.Nodes
                 dynSettings.ReturnFocusToSearch();
             };
 
-            var mintb = new dynTextBox();
+            var mintb = new DynamoTextBox();
             mintb.Width = double.NaN;
 
             mintb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             // input value textbox
-            var valtb = new dynTextBox();
+            var valtb = new DynamoTextBox();
             valtb.Width = double.NaN;
             valtb.Margin = new Thickness(0, 0, 10, 0);
 
-            var maxtb = new dynTextBox();
+            var maxtb = new DynamoTextBox();
             maxtb.Width = double.NaN;
 
             maxtb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
@@ -300,7 +297,7 @@ namespace Dynamo.Nodes
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay()
             };
-            valtb.SetBinding(dynTextBox.TextProperty, inputBinding);
+            valtb.SetBinding(DynamoTextBox.TextProperty, inputBinding);
 
             // slider value 
             var sliderBinding = new System.Windows.Data.Binding("Value")
@@ -318,7 +315,7 @@ namespace Dynamo.Nodes
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            maxtb.SetBinding(dynTextBox.TextProperty, bindingMax);
+            maxtb.SetBinding(DynamoTextBox.TextProperty, bindingMax);
 
             // max slider value
             var bindingMaxSlider = new System.Windows.Data.Binding("Max")
@@ -338,7 +335,7 @@ namespace Dynamo.Nodes
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            mintb.SetBinding(dynTextBox.TextProperty, bindingMin);
+            mintb.SetBinding(DynamoTextBox.TextProperty, bindingMin);
 
             // min slider value
             var bindingMinSlider = new System.Windows.Data.Binding("Min")
@@ -422,7 +419,7 @@ namespace Dynamo.Nodes
             base.SetupCustomUIElements(nodeUI);
 
             //add a text box to the input grid of the control
-            var tb = new dynStringTextBox
+            var tb = new StringTextBox
             {
                 AcceptsReturn = true,
                 AcceptsTab = true,
@@ -593,7 +590,7 @@ namespace Dynamo.Nodes
         {
             var nodeUI = ui as dynNodeView;
 
-            var tb = new dynTextBox(FormulaString)
+            var tb = new DynamoTextBox(FormulaString)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,
@@ -637,61 +634,57 @@ namespace Dynamo.Nodes
 
     public partial class Output
     {
-        dynTextBox _tb;
-
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            _tb = new dynTextBox(Symbol)
+            DynamoTextBox tb = new DynamoTextBox(Symbol)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
-            nodeUI.inputGrid.Children.Add(_tb);
-            Grid.SetColumn(_tb, 0);
-            Grid.SetRow(_tb, 0);
+            nodeUI.inputGrid.Children.Add(tb);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
 
-            _tb.DataContext = this;
+            tb.DataContext = this;
             var bindingSymbol = new Binding("Symbol")
             {
                 Mode = BindingMode.TwoWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            _tb.SetBinding(TextBox.TextProperty, bindingSymbol);
+            tb.SetBinding(TextBox.TextProperty, bindingSymbol);
         }
     }
 
     public partial class Symbol
     {
-        dynTextBox _tb;
-
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            _tb = new dynTextBox(InputSymbol)
+            DynamoTextBox tb = new DynamoTextBox(InputSymbol)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
-            nodeUI.inputGrid.Children.Add(_tb);
-            Grid.SetColumn(_tb, 0);
-            Grid.SetRow(_tb, 0);
+            nodeUI.inputGrid.Children.Add(tb);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
 
-            _tb.DataContext = this;
+            tb.DataContext = this;
             var bindingSymbol = new Binding("InputSymbol")
             {
                 Mode = BindingMode.TwoWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            _tb.SetBinding(TextBox.TextProperty, bindingSymbol);
+            tb.SetBinding(TextBox.TextProperty, bindingSymbol);
         }
 
     }
@@ -746,25 +739,6 @@ namespace Dynamo.Nodes
                 Value = openDialog.SelectedPath;
             }
         }
-    }
-
-    public class dynStringTextBox : dynTextBox
-    {
-
-        public dynStringTextBox()
-        {
-            Commit();
-            Pending = false;
-        }
-
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
-        {
-            //if (e.Key == Key.Return || e.Key == Key.Enter)
-            //{
-            //    dynSettings.ReturnFocusToSearch();
-            //}
-        }
-
     }
 
     public abstract partial class String : BasicInteractive<string>
