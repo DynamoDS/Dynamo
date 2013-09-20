@@ -54,7 +54,7 @@ namespace Dynamo.Nodes
         public StructuralFraming()
         {
             InPortData.Add(new PortData("type", "The framing type.", typeof(Value.Container)));
-            InPortData.Add(new PortData("curves", "The curve(s) to be used as center lines for your framing elements.", typeof(Value.List)));
+            InPortData.Add(new PortData("curves", "The curve(s) to be used as center lines for your framing elements.  Must be a list", typeof(Value.List)));
             InPortData.Add(new PortData("up", "The \"up\" vector for the beam.", typeof(Value.List)));
             OutPortData.Add(new PortData("framing", "The structural framing instance(s) created by this operation.", typeof(Value.List)));
 
