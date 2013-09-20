@@ -24,7 +24,7 @@ namespace Dynamo.ViewModels
     public partial class WorkspaceViewModel: ViewModelBase
     {
         #region Properties and Fields
-        
+
         public WorkspaceModel _model;
         private bool _isConnecting = false;
         private bool _canFindNodesFromElements = false;
@@ -32,6 +32,9 @@ namespace Dynamo.ViewModels
         public event EventHandler StopDragging;
         public event PointEventHandler CurrentOffsetChanged;
         public event ZoomEventHandler ZoomChanged;
+        public event ZoomEventHandler RequestZoomToViewportCenter;
+        public event ZoomEventHandler RequestZoomToViewportPoint;
+        public event ZoomEventHandler RequestZoomToFitView;
         public event NodeEventHandler RequestCenterViewOnElement;
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
@@ -69,6 +72,45 @@ namespace Dynamo.ViewModels
             {
                 Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
                 ZoomChanged(this, e);
+            }
+        }
+
+        /// <summary>
+        /// For requesting registered workspace to zoom in center
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnRequestZoomToViewportCenter(object sender, ZoomEventArgs e)
+        {
+            if (RequestZoomToViewportCenter != null)
+            {
+                RequestZoomToViewportCenter(this, e);
+            }
+        }
+
+        /// <summary>
+        /// For requesting registered workspace to zoom in out from a point
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnRequestZoomToViewportPoint(object sender, ZoomEventArgs e)
+        {
+            if (RequestZoomToViewportPoint != null)
+            {
+                RequestZoomToViewportPoint(this, e);
+            }
+        }
+
+        /// <summary>
+        /// For requesting registered workspace to zoom in or out to fitview
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnRequestZoomToFitView(object sender, ZoomEventArgs e)
+        {
+            if (RequestZoomToFitView != null)
+            {
+                RequestZoomToFitView(this, e);
             }
         }
 
@@ -408,12 +450,16 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Name");
                     break;
                 case "X":
+                    OnCurrentOffsetChanged(this, new PointEventArgs(new Point(_model.X, _model.Y)));
                     break;
                 case "Y":
+                    OnCurrentOffsetChanged(this, new PointEventArgs(new Point(_model.X, _model.Y)));
                     break;
                 case "Zoom":
                     OnZoomChanged(this, new ZoomEventArgs(_model.Zoom));
                     RaisePropertyChanged("Zoom");
+                    ZoomInCommand.RaiseCanExecuteChanged();
+                    ZoomOutCommand.RaiseCanExecuteChanged();
                     break;
                 case "IsCurrentSpace":
                     RaisePropertyChanged("IsCurrentSpace");
@@ -748,21 +794,29 @@ namespace Dynamo.ViewModels
 
         private void ZoomIn(object o)
         {
-            _model.Zoom += _zoomIncrement;
+            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(_zoomIncrement));
         }
 
         private bool CanZoomIn(object o)
         {
-            return true;
+            return CanZoom(_zoomIncrement);
         }
 
         private void ZoomOut(object o)
         {
-            _model.Zoom -= _zoomIncrement;
+            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(-_zoomIncrement));
         }
 
         private bool CanZoomOut(object o)
         {
+            return CanZoom(-_zoomIncrement);
+        }
+
+        private bool CanZoom(double zoom)
+        {
+            if ((zoom < 0 && _model.Zoom <= WorkspaceModel.ZOOM_MINIMUM)
+                || (zoom > 0 && _model.Zoom >= WorkspaceModel.ZOOM_MAXIMUM))
+                return false;
             return true;
         }
 
@@ -772,6 +826,50 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanSetZoom(object zoom)
+        {
+            return true;
+        }
+
+        private bool _fitViewActualZoomToggle = true;
+        private void FitView(object o)
+        {
+            // Get the offset and focus width & height (zoom if 100%)
+            double minX, maxX, minY, maxY;
+
+            // Get the width and height of area to fit
+            if (DynamoSelection.Instance.Selection.Count > 0)
+            {   // has selection
+                minX = GetSelectionMinX();
+                maxX = GetSelectionMaxX();
+                minY = GetSelectionMinY();
+                maxY = GetSelectionMaxY();
+            }
+            else
+            {   // no selection, fitview all nodes
+                if (_nodes.Count() <= 0) return;
+
+                IEnumerable<ILocatable> nodes = _nodes.Select((x) => x.NodeModel).Where((x) => x is ILocatable).Cast<ILocatable>();
+                minX = nodes.Select((x) => x.X).Min();
+                maxX = nodes.Select((x) => x.X + x.Width).Max();
+                minY = nodes.Select((y) => y.Y).Min();
+                maxY = nodes.Select((y) => y.Y + y.Height).Max();
+            }
+
+            Point offset = new Point(minX, minY);
+            double focusWidth = maxX - minX;
+            double focusHeight = maxY - minY;
+            ZoomEventArgs zoomArgs;
+
+            _fitViewActualZoomToggle = !_fitViewActualZoomToggle;
+            if (_fitViewActualZoomToggle)
+                zoomArgs = new ZoomEventArgs(offset, focusWidth, focusHeight);
+            else
+                zoomArgs = new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
+
+            OnRequestZoomToFitView(this, zoomArgs);
+        }
+
+        private bool CanFitView(object o)
         {
             return true;
         }

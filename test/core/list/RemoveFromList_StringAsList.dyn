@@ -1,0 +1,16 @@
+<Workspace Version="0.7.0.35153" X="-461.060491916065" Y="-332.602443117599" zoom="2.3" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.RemoveFromList type="Dynamo.Nodes.RemoveFromList" guid="3f574862-f576-4374-a604-c6e998c1822c" nickname="Remove From List" x="531.223861283644" y="264.931625258799" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="4a42e240-49d6-4e4d-a23f-5fa83258daf0" nickname="Number" x="396.766563146998" y="216.146687370601" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="9b7891bc-6e40-4c14-bc59-5ac314b6927a" nickname="String" x="382.20021387655" y="319.409757877217" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="Dynamo" />
+    </Dynamo.Nodes.StringInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="4a42e240-49d6-4e4d-a23f-5fa83258daf0" start_index="0" end="3f574862-f576-4374-a604-c6e998c1822c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9b7891bc-6e40-4c14-bc59-5ac314b6927a" start_index="0" end="3f574862-f576-4374-a604-c6e998c1822c" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

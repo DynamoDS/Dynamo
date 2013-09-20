@@ -176,12 +176,9 @@ namespace Dynamo.ViewModels
                     try
                     {
                         //Create a connector view model to begin drawing
-                        if (_port.PortType != PortType.INPUT)
-                        {
-                            var c = new ConnectorViewModel(_port);
-                            workspaceViewModel.ActiveConnector = c;
-                            workspaceViewModel.IsConnecting = true;
-                        }
+                        var c = new ConnectorViewModel(_port);
+                        dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
+                        dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
                     }
                     catch (Exception ex)
                     {
@@ -191,13 +188,8 @@ namespace Dynamo.ViewModels
             }
             else  // attempt to complete the connection
             {
-                if (_port.PortType != PortType.INPUT)
-                {
-                    return;
-                }
-
                 //remove connector if one already exists
-                if (_port.Connectors.Count > 0)
+                if (_port.Connectors.Count > 0 && _port.PortType == PortType.INPUT)
                 {
                     var connToRemove = _port.Connectors[0];
                     workspaceModel.Connectors.Remove(connToRemove);
@@ -210,8 +202,13 @@ namespace Dynamo.ViewModels
                 var start = workspaceViewModel.ActiveConnector.ActiveStartPort;
                 var end = _port;
 
-                var newConnectorModel = ConnectorModel.Make(start.Owner,
-                    end.Owner, start.Index, end.Index, 0);
+                ConnectorModel newConnectorModel;
+                if (_port.PortType == PortType.INPUT)
+                    newConnectorModel = ConnectorModel.Make(start.Owner, end.Owner, start.Index, end.Index, 0);
+                else
+                {
+                    newConnectorModel = ConnectorModel.Make(end.Owner, start.Owner, end.Index, start.Index, 0);
+                }
 
                 // the connector is invalid
                 if (newConnectorModel == null)

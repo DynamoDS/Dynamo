@@ -5,7 +5,7 @@
         xmlns:utilities="clr-namespace:Dynamo.Utilities"
         xmlns:sys="clr-namespace:System;assembly=mscorlib" 
         xmlns:models="clr-namespace:Dynamo.Models"
-        xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:commands="clr-namespace:Dynamo.UI.Commands"
+        xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:commands="clr-namespace:Dynamo.UI.Commands"        
         xmlns:dynamo="clr-namespace:Dynamo"
         x:Name="_this"
         Height="768" 
@@ -18,7 +18,8 @@
         ResizeMode="CanResize"
         AllowsTransparency="False" 
         KeyDown="DynamoView_KeyDown"
-        KeyUp="DynamoView_KeyUp">
+        KeyUp="DynamoView_KeyUp"
+        Background="#FF353535">
 
     <Window.CommandBindings>
         
@@ -30,6 +31,7 @@
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -105,19 +107,19 @@
                                 Command="{Binding Path=DataContext.ClearCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
         <KeyBinding Key="Left"
-                    Modifiers="Alt"
+                    Modifiers="Ctrl+Alt"
                     CommandParameter="Left"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Right"
-                    Modifiers="Alt"
+                    Modifiers="Ctrl+Alt"
                     CommandParameter="Right"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Up"
-                    Modifiers="Alt"
+                    Modifiers="Ctrl+Alt"
                     CommandParameter="Up"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Down"
-                    Modifiers="Alt"
+                    Modifiers="Ctrl+Alt"
                     CommandParameter="Down"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="OemPlus"
@@ -126,78 +128,171 @@
         <KeyBinding Key="OemMinus"
                     Modifiers="Ctrl"
                     Command="{Binding Path=DataContext.ZoomOutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-
+        <KeyBinding Key="D0"
+                    Modifiers="Ctrl"
+                    Command="{Binding Path=DataContext.FitViewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
     </Window.InputBindings>
     
     <Grid Name="mainGrid" FocusManager.IsFocusScope="True">
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Name="consoleRow" Height="{Binding ConsoleShowing, Converter={StaticResource BoolToConsoleHeightConverter}}"/>
             <RowDefinition Height="48"/>
-
         </Grid.RowDefinitions>
-        
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MaxWidth="600"/>
+            <ColumnDefinition Width="Auto" MinWidth="5" MaxWidth="600"/>
+            <!--MinWidth fix for GridSplitter dragging in frameless window-->
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Name="titleBarGrid" 
-              Grid.Row="0"
-              Grid.Column="0"
-              Grid.ColumnSpan="3">
+        <Border BorderBrush="#FF3F4040"
+                BorderThickness="0,0,0,1"
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Height="27"
+                Name="titleBar">
 
-            <Grid.Background>
-                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                    <GradientStop Color="#F0F0F0" Offset="0.0" />
-                    <GradientStop Color="#EEE" Offset="1.0" />
-                </LinearGradientBrush>
-            </Grid.Background>
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+            <Grid Name="titleBarGrid">
 
-            <Menu IsMainMenu="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" Name="menu1" Foreground="#333" Padding="6,0,0,0" Background="Transparent" BorderThickness="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                <MenuItem Header="_File" Name="fileMenu" Focusable="False">
+                <Menu IsMainMenu="True" Name="menu1">
 
-                    <MenuItem Header="_New" Name="newMenu" Focusable="False">
-                        <MenuItem Header="_Home Workspace..." Command="{Binding NewHomeWorkspaceCommand}"  Name="newHomeWorkspace" InputGestureText="Ctrl+N" Focusable="False">
+                    <MenuItem Header="_File" Name="fileMenu" Focusable="False">
+                        <MenuItem Header="_New" Name="newMenu" Focusable="False">
+                            <MenuItem Header="_Home Workspace..." Command="{Binding NewHomeWorkspaceCommand}"  Name="newHomeWorkspace" InputGestureText="Ctrl + N" Focusable="False">
+                            </MenuItem>
+                            <MenuItem Header="_Custom Node..." Command="{Binding ShowNewFunctionDialogCommand}"  Name="newFuncButton" InputGestureText="Ctrl + Shift + N" Focusable="False">
+                            </MenuItem>
+                        </MenuItem>
+                        <MenuItem Header="_Open..." Command="{Binding ShowOpenDialogAndOpenResultCommand}" Name="openButton" InputGestureText="Ctrl + O" Focusable="False">
+                            <MenuItem.Icon>
+                                <Image Source="/DynamoCore;component/UI/Images/openHS.png" Width="14" Height="14" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="_Save" Command="{Binding ShowSaveDialogIfNeededAndSaveResultCommand}" Name="saveThisButton" InputGestureText="Ctrl + S" Focusable="False">
+                            <MenuItem.Icon>
+                                <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="14" Height="14" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Focusable="False" Header="_Save As..." Command="{Binding ShowSaveDialogAndSaveResultCommand}" Name="saveButton" InputGestureText="Ctrl + Shift + S" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
+                            <MenuItem.Icon>
+                                <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="14" Height="14" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Focusable="False" Header="_Export Workspace As Image..." Command="{Binding ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage"/>
+                        <Separator />
+                        <MenuItem Focusable="False" Header="_Clear" Command="{Binding ClearCommand}" Name="clearButton" InputGestureText="Ctrl + Shift + C" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
+                            <MenuItem.Icon>
+                                <Image Source="/DynamoCore;component/UI/Images/DocumentHS.png" Width="14" Height="14" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt + F4" Focusable="False"/>
+                    </MenuItem>
+
+                    <MenuItem Header="_Edit" Name="editMenu" Focusable="False">
+                        <MenuItem Focusable="False" Header="_Copy" Command="{Binding CopyCommand}" Name="copy" InputGestureText="Ctrl + C"/>
+                        <MenuItem Focusable="False" Header="_Paste" Command="{Binding PasteCommand}"  Name="paste" InputGestureText="Ctrl + V"/>
+                        <Separator/>
+                        <MenuItem Focusable="False" Header="_Create Note" Command="{Binding AddNoteCommand}"  Name="noteMenuItem" InputGestureText="Ctrl + W" />
+                        <MenuItem Focusable="False" Header="_Create Node From Selection" Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"  Name="nodeFromSelection" InputGestureText="Ctrl + D"/>
+                        <MenuItem Focusable="False" Header="_Select All" Command="{Binding SelectAllCommand}"  Name="selectAll" InputGestureText="Ctrl + A"/>
+                        <MenuItem Focusable="False" Header="_Delete Selected" Command="{Binding DeleteCommand}"  Name="deleteSelected" InputGestureText="Delete"/>
+                        <!--<MenuItem Focusable="False" Header="_Select Neighbors" Command="{Binding Path=ExpandSelectionCommand}"  Name="expandSelect" InputGestureText="Tab"/>-->
+                        <MenuItem  Header="_Align Selection"  Name="Align">
+                            <MenuItem  Header="_X Average"  Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalCenter" Focusable="False"/>
+                            <MenuItem  Header="_Left" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalLeft" Focusable="False"/>
+                            <MenuItem  Header="_Right" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalRight" Focusable="False"/>
+                            <MenuItem  Header="_Y Average" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalCenter" Focusable="False"/>
+                            <MenuItem  Header="_Top" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalTop" Focusable="False"/>
+                            <MenuItem  Header="_Bottom" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalBottom" Focusable="False"/>
+                            <MenuItem  Header="_Y Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalDistribute" Focusable="False"/>
+                            <MenuItem  Header="_X Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalDistribute" Focusable="False"/>
+                        </MenuItem>
+                    </MenuItem>
+
+                    <MenuItem Header="_View" Name="viewMenu" Focusable="False">
+                        <MenuItem Header="_Zoom" Name="zoomMenu">
+                            <MenuItem  Header="Zoom In (Mouse wheel down)"  Command="{Binding ZoomInCommand}" InputGestureText="Ctrl + ="/>
+                            <MenuItem  Header="Zoom Out (Mouse wheel up)" Command="{Binding ZoomOutCommand}" InputGestureText="Ctrl + -"/>
                         </MenuItem>
 
-                        <MenuItem Header="_Custom Node..." Command="{Binding ShowNewFunctionDialogCommand}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N" Focusable="False">
+                        <MenuItem Header="_Pan" Name="panMenu">
+                            <MenuItem  Header="Pan Left (Mouse wheel drag left)"  Command="{Binding PanCommand}" CommandParameter="Left" InputGestureText="Ctrl + Shift + Left"/>
+                            <MenuItem  Header="Pan Right (Mouse wheel drag right)" Command="{Binding PanCommand}"     CommandParameter="Right" InputGestureText="Ctrl + Shift + Right"/>
+                            <MenuItem  Header="Pan Up (Mouse wheel drag up)"  Command="{Binding PanCommand}" CommandParameter="Up" InputGestureText="Ctrl + Shift + Up"/>
+                            <MenuItem  Header="Pan Down (Mouse wheel drag down)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Ctrl + Shift + Down"/>
+                        </MenuItem>    
+
+                        <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                              Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
+
+                        <MenuItem Header="_Connectors" Name="connectorMenu">
+                            <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
+                                <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" Command="{Binding SetConnectorTypeCommand}" CommandParameter="BEZIER" Header="Curves"/>
+                                <MenuItem Name="settings_plines" IsCheckable="True" IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" Command="{Binding SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
+                            </MenuItem>
+                            <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem" IsChecked="{Binding Path=IsShowingConnectors}" Command="{Binding ShowHideConnectorsCommand}">
+                            </MenuItem>
                         </MenuItem>
+                        <MenuItem Header="_Background 3D Preview" Name="background3dMenu" Focusable="False">
+                            <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}" IsChecked="{Binding Path=FullscreenWatchShowing}" Command="{Binding ToggleFullscreenWatchShowingCommand}"  Focusable="False"/>
+                            <MenuItem Header="Navigate Background 3D Preview"
+                                          IsEnabled="{Binding Path=FullscreenWatchShowing}"
+                                          IsChecked="{Binding Path=CanNavigateBackground}"
+                                          InputGestureText="Ctrl + G"
+                                          Focusable="False"
+                                          Command="{Binding ToggleCanNavigateBackgroundCommand}"/>
+                        </MenuItem>
+                        <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}" Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl + Alt + Up" Focusable="False"/>
                     </MenuItem>
 
-                    <MenuItem Header="_Open..." Command="{Binding ShowOpenDialogAndOpenResultCommand}" Name="openButton" InputGestureText="Ctrl+O" Focusable="False">
-
-                        <MenuItem.Icon>
-                            <Image Source="/DynamoCore;component/UI/Images/openHS.png" Width="16" Height="16" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator />
-
-                    <MenuItem Header="_Save" Command="{Binding ShowSaveDialogIfNeededAndSaveResultCommand}" 
-                          Name="saveThisButton" InputGestureText="Ctrl+S" Focusable="False">
-
-                        <MenuItem.Icon>
-                            <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="16" Height="16" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Focusable="False" Header="_Save As..." Command="{Binding ShowSaveDialogAndSaveResultCommand}" 
-                          Name="saveButton" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
-
-                        <MenuItem.Icon>
-                            <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="16" Height="16" />
-                        </MenuItem.Icon>
+                    <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
+                        <MenuItem.ItemTemplate>
+                            <DataTemplate>
+                                <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path=DataContext.GoToWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                            </DataTemplate>
+                        </MenuItem.ItemTemplate>
                     </MenuItem>
 
+                    <MenuItem Header="_Packages" Name="PackageManagerMenu" Focusable="False" IsEnabled="True">
+                        <MenuItem Focusable="False" Header="_Search for a Package..." Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
+                        <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMInstalled" />
+                        <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />
+                        <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />
+                    </MenuItem>
+
+                    <MenuItem Header="Help" Focusable="False">
+                        <!--<MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>-->
+                        <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
+                            <MenuItem.Icon>
+                                <Image Source="/DynamoCore;component/UI/Images/OpenSelectedItemHS.png" Width="14" Height="14" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_Report A Bug" Command="{Binding ReportABugCommand}"  Name="bugCommand" Focusable="False"/>
+                        <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}"  Name="sourceCode" Focusable="False"/>
+                        <MenuItem Header="_Go To Project Wiki" Command="{Binding GoToWikiCommand}"  Name="wiki" Focusable="False"/>
+                    </MenuItem>
+
+                </Menu>
+
+                <!--Titlebar buttons-->
+                <Grid Name="titleBarButtonsGrid" Grid.Column="1">
+                </Grid>
+
+            </Grid>
+        </Border> <!--
                     <MenuItem Focusable="False" Header="_Export Workspace As Image..." Command="{Binding ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage"/>
 
 
@@ -210,123 +305,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt+F4" Focusable="False"/>
-                </MenuItem>
-
-                <MenuItem Header="_Edit" Name="editMenu" Focusable="False">
-                    <MenuItem Focusable="False" Header="_Undo" Command="{Binding UndoCommand}" Name="undo" InputGestureText="Ctrl+Z"/>
-                    <MenuItem Focusable="False" Header="_Redo" Command="{Binding RedoCommand}"  Name="redo" InputGestureText="Ctrl+Y"/>
-                    <Separator/>
-                    <MenuItem Focusable="False" Header="_Copy" Command="{Binding CopyCommand}" Name="copy" InputGestureText="Ctrl+C"/>
-                    <MenuItem Focusable="False" Header="_Paste" Command="{Binding PasteCommand}"  Name="paste" InputGestureText="Ctrl+V"/>
-                    <Separator/>
-                    <MenuItem Focusable="False" Header="_Create Note" Command="{Binding AddNoteCommand}"  Name="noteMenuItem" InputGestureText="Ctrl+W" />
-                    <MenuItem Focusable="False" Header="_Create Node From Selection" Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
-                    <MenuItem Focusable="False" Header="_Select All" Command="{Binding SelectAllCommand}"  Name="selectAll" InputGestureText="Ctrl+A"/>
-                    <MenuItem Focusable="False" Header="_Delete Selected" Command="{Binding DeleteCommand}"  Name="deleteSelected" InputGestureText="Delete"/>
-                    <!--<MenuItem Focusable="False" Header="_Select Neighbors" Command="{Binding Path=ExpandSelectionCommand}"  Name="expandSelect" InputGestureText="Tab"/>-->
-                    <MenuItem  Header="_Align Selection"  Name="Align">
-                        <MenuItem  Header="_X Average"  Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalCenter" Focusable="False"/>
-                        <MenuItem  Header="_Left" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalLeft" Focusable="False"/>
-                        <MenuItem  Header="_Right" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalRight" Focusable="False"/>
-                        <MenuItem  Header="_Y Average" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalCenter" Focusable="False"/>
-                        <MenuItem  Header="_Top" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalTop" Focusable="False"/>
-                        <MenuItem  Header="_Bottom" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalBottom" Focusable="False"/>
-                        <MenuItem  Header="_Y Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalDistribute" Focusable="False"/>
-                        <MenuItem  Header="_X Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalDistribute" Focusable="False"/>
-                    </MenuItem>
-                </MenuItem>
-
-                <MenuItem Header="_View" Name="viewMenu" Focusable="False">
-
-                    <MenuItem Header="_Zoom" Name="zoomMenu" Focusable="False">
-                        <MenuItem  Header="Zoom In (Mouse wheel down)"  Command="{Binding ZoomInCommand}" InputGestureText="Ctrl++" Focusable="False"/>
-                        <MenuItem  Header="Zoom Out (Mouse wheel up)" Command="{Binding ZoomOutCommand}" InputGestureText="Ctrl+-" Focusable="False"/>
-                    </MenuItem>
-
-                    <MenuItem Header="_Pan" Name="panMenu" Focusable="False">
-                        <MenuItem  Header="Pan Left (Mouse wheel drag right)"  Command="{Binding PanCommand}" CommandParameter="Left" InputGestureText="Alt+Left" Focusable="False"/>
-                        <MenuItem  Header="Pan Right (Mouse wheel drag left)" Command="{Binding PanCommand}" CommandParameter="Right" InputGestureText="Alt+Right" Focusable="False"/>
-                        <MenuItem  Header="Pan Up (Mouse wheel drag down)"  Command="{Binding PanCommand}" CommandParameter="Up" InputGestureText="Alt+Up" Focusable="False"/>
-                        <MenuItem  Header="Pan Down (Mouse wheel drag up)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Alt+Down" Focusable="False"/>
-                    </MenuItem>
-                    <Separator/>
-                    <MenuItem Header="_Connectors" Name="connectorMenu">
-                    
-                        <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
-                            <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" 
-                                  IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
-                                  Command="{Binding SetConnectorTypeCommand}" CommandParameter="BEZIER" Header="Curves"/>
-
-                            <MenuItem Name="settings_plines" IsCheckable="True" 
-
-                                  IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
-                                  Command="{Binding SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
-                        </MenuItem>
-
-                        <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem"
-                              IsChecked="{Binding Path=IsShowingConnectors}" 
-                              Command="{Binding ShowHideConnectorsCommand}">
-                        </MenuItem>
-
-                    </MenuItem>
-
-                    <MenuItem Header="_Background 3D Preview" Name="background3dMenu" Focusable="False">
-                        <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
-                          IsChecked="{Binding Path=FullscreenWatchShowing}"
-                          Command="{Binding ToggleFullscreenWatchShowingCommand}"  Focusable="False"/>
-
-                        <MenuItem Header="Navigate Background 3D Preview"
-                          IsEnabled="{Binding Path=FullscreenWatchShowing}"
-                          IsChecked="{Binding Path=CanNavigateBackground}"
-                          InputGestureText="Ctrl+G"
-                          Focusable="False"
-                          Command="{Binding ToggleCanNavigateBackgroundCommand}" />
-                    </MenuItem>
-
-                    <MenuItem Focusable="False" Header="_Find Node By Id" IsCheckable="False" Name="FindNodeById">
-                        <WrapPanel HorizontalAlignment="Stretch">
-                            <TextBox Name="id_tb" Width="100"></TextBox>
-                            <Button Content="Find" Width="70" Name="id_butt" Click="Id_butt_OnClick"></Button>
-                        </WrapPanel>
-                    </MenuItem>
-
-                    <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                          Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Alt+Up" Focusable="False"/>
-                </MenuItem>
-
-                <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
-                    <MenuItem.ItemTemplate>
-                        <DataTemplate>
-                            <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path=DataContext.GoToWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-                        </DataTemplate>
-                    </MenuItem.ItemTemplate>
-                </MenuItem>
-
-                <MenuItem Focusable="False" Header="_Packages" Name="PackageManagerMenu" IsEnabled="True">
-                    <MenuItem Focusable="False" Header="_Search for a Package..." Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
-                    <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMInstalled" />
-                    <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />
-                    <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />
-                </MenuItem>
-
-                <MenuItem Header="Help" Focusable="False">
-                    <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
-                        <MenuItem.Icon>
-                            <Image Source="/DynamoCore;component/UI/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="_Report A Bug" Command="{Binding ReportABugCommand}"  Name="bugCommand" Focusable="False"/>
-                    <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}"  Name="sourceCode" Focusable="False"/>
-                    <MenuItem Header="_Go To Project Wiki" Command="{Binding GoToWikiCommand}"  Name="wiki" Focusable="False"/>
-                </MenuItem>
-            </Menu>
-
-            <!--Titlebar buttons-->
-            <Grid Name="titleBarButtonsGrid" Grid.Column="1">
-            </Grid>
-            
-        </Grid>
+                    <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt+F4" Focusable="False"/> -->
 
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
                 Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#999">

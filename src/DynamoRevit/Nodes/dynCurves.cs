@@ -1125,7 +1125,7 @@ namespace Dynamo.Nodes
             double thickness = ((Value.Number)args[1]).Item;
             XYZ normal = (XYZ)((Value.Container)args[2]).Item;
 
-            Autodesk.Revit.DB.CurveLoop result = Autodesk.Revit.DB.CurveLoop.CreateViaThicken(curve, thickness, normal);
+            Autodesk.Revit.DB.CurveLoop result = Autodesk.Revit.DB.CurveLoop.CreateViaThicken(curve.Clone(), thickness, normal);
             if (result == null)
                 throw new Exception("Could not thicken curve");
 
@@ -1192,7 +1192,7 @@ namespace Dynamo.Nodes
             double thickness = ((Value.Number)args[1]).Item;
             XYZ normal = (XYZ)((Value.Container)args[2]).Item;
 
-            Autodesk.Revit.DB.CurveLoop thickenLoop = Autodesk.Revit.DB.CurveLoop.CreateViaThicken(curve, thickness, normal);
+            Autodesk.Revit.DB.CurveLoop thickenLoop = Autodesk.Revit.DB.CurveLoop.CreateViaThicken(curve.Clone(), thickness, normal);
 
             if (thickenLoop == null)
                 throw new Exception("Could not offset curve");

@@ -19,6 +19,9 @@ namespace Dynamo.Models
 {
     public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient
     {
+        public static readonly double ZOOM_MAXIMUM = 4.0;
+        public static readonly double ZOOM_MINIMUM = 0.1;
+
         #region Properties
 
         private string _filePath;
