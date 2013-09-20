@@ -4,7 +4,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Nodes
 {
@@ -77,16 +79,10 @@ namespace Dynamo.Nodes
             this.Pending = false;
         }
 
-        protected void UpdateDataSource()
+        public void BindToProperty(System.Windows.Data.Binding binding)
         {
-            var expr = GetBindingExpression(TextProperty);
-            if (expr != null)
-                expr.UpdateSource();
-
-            if (OnChangeCommitted != null)
-                OnChangeCommitted();
-
-            Pending = false;
+            this.SetBinding(TextBox.TextProperty, binding);
+            UpdateDataSource(false);
         }
 
         #endregion
@@ -130,6 +126,11 @@ namespace Dynamo.Nodes
             SelectAll();
         }
 
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+        }
+
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
             Pending = true;
@@ -145,7 +146,53 @@ namespace Dynamo.Nodes
 
         protected override void OnLostFocus(RoutedEventArgs e)
         {
-            UpdateDataSource();
+            UpdateDataSource(true);
+        }
+
+        #endregion
+
+        #region Private Class Helper Methods
+
+        private void UpdateDataSource(bool recordForUndo)
+        {
+            if (this.Pending)
+            {
+                var expr = GetBindingExpression(TextProperty);
+                if (expr != null)
+                {
+                    if (false != recordForUndo)
+                        PreUpdateModel(expr.DataItem);
+
+                    expr.UpdateSource();
+                }
+
+                if (OnChangeCommitted != null)
+                    OnChangeCommitted();
+
+                Pending = false;
+            }
+        }
+
+        private void PreUpdateModel(object dataItem)
+        {
+            // Attempt get to the data-bound model (if there's any).
+            NodeModel nodeModel = dataItem as NodeModel;
+            if (null == nodeModel)
+            {
+                NodeViewModel nodeViewModel = dataItem as NodeViewModel;
+                if (null != nodeViewModel)
+                    nodeModel = nodeViewModel.NodeModel;
+            }
+
+            // If we do get a node/note, record it for undo.
+            if (null != nodeModel)
+            {
+                DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+                dynamo.CurrentWorkspace.RecordModelForModification(nodeModel);
+
+                dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+            }
         }
 
         #endregion

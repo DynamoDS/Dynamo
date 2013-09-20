@@ -93,14 +93,13 @@ namespace Dynamo.Nodes
             Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
-            var bindingVal = new System.Windows.Data.Binding("Value")
+            tb.BindToProperty(new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 //Converter = new StringDisplay(),
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tb.SetBinding(TextBox.TextProperty, bindingVal);
+            });
         }
 
     }
@@ -189,15 +188,14 @@ namespace Dynamo.Nodes
             Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
-            var bindingVal = new System.Windows.Data.Binding("Value")
+            tb.BindToProperty(new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleInputDisplay(),
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tb.SetBinding(TextBox.TextProperty, bindingVal);
+            });
         }
 
     }
@@ -219,17 +217,14 @@ namespace Dynamo.Nodes
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             tb.DataContext = this;
-            var bindingVal = new System.Windows.Data.Binding("Value")
+            tb.BindToProperty(new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new RadianToDegreesConverter(),
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tb.SetBinding(TextBox.TextProperty, bindingVal);
-
-            //tb.Text = "0.0";
+            });
         }
 
     }
@@ -292,12 +287,11 @@ namespace Dynamo.Nodes
             valtb.DataContext = this;
 
             // value input
-            var inputBinding = new System.Windows.Data.Binding("Value")
+            valtb.BindToProperty(new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay()
-            };
-            valtb.SetBinding(DynamoTextBox.TextProperty, inputBinding);
+            });
 
             // slider value 
             var sliderBinding = new System.Windows.Data.Binding("Value")
@@ -308,14 +302,13 @@ namespace Dynamo.Nodes
             tb_slider.SetBinding(Slider.ValueProperty, sliderBinding);
 
             // max value
-            var bindingMax = new System.Windows.Data.Binding("Max")
+            maxtb.BindToProperty(new System.Windows.Data.Binding("Max")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay(),
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            maxtb.SetBinding(DynamoTextBox.TextProperty, bindingMax);
+            });
 
             // max slider value
             var bindingMaxSlider = new System.Windows.Data.Binding("Max")
@@ -328,14 +321,13 @@ namespace Dynamo.Nodes
 
 
             // min value
-            var bindingMin = new System.Windows.Data.Binding("Min")
+            mintb.BindToProperty(new System.Windows.Data.Binding("Min")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay(),
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            mintb.SetBinding(DynamoTextBox.TextProperty, bindingMin);
+            });
 
             // min slider value
             var bindingMinSlider = new System.Windows.Data.Binding("Min")
@@ -602,14 +594,13 @@ namespace Dynamo.Nodes
             Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
-            var bindingVal = new Binding("FormulaString")
+            tb.BindToProperty(new Binding("FormulaString")
             {
                 Mode = BindingMode.TwoWay,
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tb.SetBinding(TextBox.TextProperty, bindingVal);
+            });
         }
     }
 
@@ -651,12 +642,11 @@ namespace Dynamo.Nodes
             Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
-            var bindingSymbol = new Binding("Symbol")
+            tb.BindToProperty(new Binding("Symbol")
             {
                 Mode = BindingMode.TwoWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tb.SetBinding(TextBox.TextProperty, bindingSymbol);
+            });
         }
     }
 
@@ -679,12 +669,11 @@ namespace Dynamo.Nodes
             Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
-            var bindingSymbol = new Binding("InputSymbol")
+            tb.BindToProperty(new Binding("InputSymbol")
             {
                 Mode = BindingMode.TwoWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tb.SetBinding(TextBox.TextProperty, bindingSymbol);
+            });
         }
 
     }
