@@ -13,20 +13,16 @@ namespace Dynamo.Nodes
     {
         public ClickSelectTextBox()
         {
-            AddHandler(
-                PreviewMouseLeftButtonDownEvent,
+            AddHandler(PreviewMouseLeftButtonDownEvent,
                 new MouseButtonEventHandler(SelectivelyIgnoreMouseButton), true);
-            AddHandler(
-                GotKeyboardFocusEvent,
+            AddHandler(GotKeyboardFocusEvent,
                 new RoutedEventHandler(SelectAllText), true);
-            AddHandler(
-                MouseDoubleClickEvent,
+            AddHandler(MouseDoubleClickEvent,
                 new RoutedEventHandler(SelectAllText), true);
         }
 
         private static void SelectivelyIgnoreMouseButton(
-            object sender,
-            MouseButtonEventArgs e)
+            object sender, MouseButtonEventArgs e)
         {
             // Find the TextBox
             DependencyObject parent = e.OriginalSource as UIElement;
@@ -54,18 +50,21 @@ namespace Dynamo.Nodes
         }
     }
 
-    public class dynTextBox : ClickSelectTextBox
+    public class DynamoTextBox : ClickSelectTextBox
     {
         public event Action OnChangeCommitted;
 
         private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255, 255, 255));
         private static Brush highlighted = new SolidColorBrush(System.Windows.Media.Color.FromArgb(200, 255, 255, 255));
 
-        public dynTextBox() : this(string.Empty)
+        #region Class Operational Methods
+
+        public DynamoTextBox()
+            : this(string.Empty)
         {
         }
 
-        public dynTextBox(string initialText)
+        public DynamoTextBox(string initialText)
         {
             //turn off the border
             Background = clear;
@@ -78,6 +77,48 @@ namespace Dynamo.Nodes
             this.Pending = false;
         }
 
+        protected void UpdateDataSource()
+        {
+            var expr = GetBindingExpression(TextProperty);
+            if (expr != null)
+                expr.UpdateSource();
+
+            if (OnChangeCommitted != null)
+                OnChangeCommitted();
+
+            Pending = false;
+        }
+
+        #endregion
+
+        #region Class Properties
+
+        private bool pending;
+
+        public bool Pending
+        {
+            get { return pending; }
+            set
+            {
+                FontStyle = value ? FontStyles.Italic : FontStyles.Normal;
+                pending = value;
+            }
+        }
+
+        /// <summary>
+        /// This property hides the base "TextBox.Text" property to remove the 
+        /// ability to directly set its value (by-passing the undo recording 
+        /// completely). For this reason, there is no setter for this property.
+        /// </summary>
+        new public string Text
+        {
+            get { return base.Text; }
+        }
+
+        #endregion
+
+        #region Class Event Handlers
+
         private void OnLostFocus(object sender, RoutedEventArgs routedEventArgs)
         {
             Background = clear;
@@ -88,51 +129,6 @@ namespace Dynamo.Nodes
             Background = highlighted;
             SelectAll();
         }
-
-        private bool pending;
-        public bool Pending
-        {
-            get { return pending; }
-            set
-            {
-                if (value)
-                {
-                    FontStyle = FontStyles.Italic;
-                }
-                else
-                {
-                    FontStyle = FontStyles.Normal;
-                }
-                pending = value;
-            }
-        }
-
-        public void Commit()
-        {
-            var expr = GetBindingExpression(TextProperty);
-            if (expr != null)
-                expr.UpdateSource();
-
-            if (OnChangeCommitted != null)
-            {
-                OnChangeCommitted();
-            }
-            Pending = false;
-
-            //dynSettings.Bench.mainGrid.Focus();
-        }
-
-        new public string Text
-        {
-            get { return base.Text; }
-        }
-
-/*
-        private bool shouldCommit()
-        {
-            return !dynSettings.Controller.DynamoViewModel.DynamicRunEnabled;
-        }
-*/
 
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
@@ -149,7 +145,23 @@ namespace Dynamo.Nodes
 
         protected override void OnLostFocus(RoutedEventArgs e)
         {
-            Commit();
+            UpdateDataSource();
         }
+
+        #endregion
+    }
+
+    public class StringTextBox : DynamoTextBox
+    {
+        #region Class Event Handlers
+
+        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        {
+            // This method is overridden so that the base implementation will 
+            // not be called (the base class commits changes once <Enter> key
+            // is pressed, not something that a multi-line string edit box needs.
+        }
+
+        #endregion
     }
 }
