@@ -991,14 +991,26 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double degrees = System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
-            return degrees;
+            //source -> target
+            //Convert radians to degrees
+            double dbl;
+            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            {
+                return System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
+            }
+            return value ?? "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double radians = System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
-            return radians;
+            //target -> source
+            //Convert degrees to radians
+            double dbl;
+            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            {
+                return System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
+            }
+            return value ?? "";
         }
     }
 
