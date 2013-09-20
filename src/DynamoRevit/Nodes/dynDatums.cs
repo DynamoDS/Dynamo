@@ -34,7 +34,9 @@ namespace Dynamo.Nodes
     {
         public Level()
         {
-            InPortData.Add(new PortData("el", "The elevation of the level.", typeof(Value.Number)));
+            InPortData.Add(new PortData("elevation", "The elevation of the level.", typeof(Value.Number)));
+            InPortData.Add(new PortData("name", "The name of the level.", typeof(Value.String)));
+
             OutPortData.Add(new PortData("level", "The level.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -43,7 +45,8 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             //Level elements take in one double for the z elevation (height)f
-            double h = (double)((Value.Number)args[0]).Item;
+            var h = (double)((Value.Number)args[0]).Item;
+            var name = ((Value.String) args[1]).Item;
 
             Autodesk.Revit.DB.Level lev;
 
@@ -54,6 +57,7 @@ namespace Dynamo.Nodes
                 {
                     lev = e as Autodesk.Revit.DB.Level;
                     lev.Elevation = h;
+                    lev.Name = name;
 
                 }
                 else
@@ -61,6 +65,7 @@ namespace Dynamo.Nodes
                     lev = this.UIDocument.Document.IsFamilyDocument
                         ? this.UIDocument.Document.FamilyCreate.NewLevel(h)
                         : this.UIDocument.Document.Create.NewLevel(h);
+                    lev.Name = name;
                     this.Elements[0] = lev.Id;
                 }
             }
@@ -69,6 +74,7 @@ namespace Dynamo.Nodes
                 lev = this.UIDocument.Document.IsFamilyDocument
                     ? this.UIDocument.Document.FamilyCreate.NewLevel(h)
                     : this.UIDocument.Document.Create.NewLevel(h);
+                lev.Name = name;
                 this.Elements.Add(lev.Id);
             }
 
