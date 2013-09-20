@@ -160,7 +160,7 @@ namespace Dynamo.Nodes
                     if (toHide.Count > 0)
                         view.HideElements(toHide);
 
-                    //dynRevitSettings.Doc.Document.Regenerate();
+                    dynRevitSettings.Doc.Document.Regenerate();
 
                     Debug.WriteLine(string.Format("Eye:{0},Origin{1}, BBox_Origin{2}, Element{3}",
                         eye.ToString(), view.Origin.ToString(), view.CropBox.Transform.Origin.ToString(), (element.Location as LocationPoint).Point.ToString()));
