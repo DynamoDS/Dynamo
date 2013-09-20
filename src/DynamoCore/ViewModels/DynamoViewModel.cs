@@ -162,6 +162,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand ZoomInCommand { get; set; }
         public DelegateCommand ZoomOutCommand { get; set; }
         public DelegateCommand FitViewCommand { get; set; }
+        public DelegateCommand TogglePanCommand { get; set; }
+        public DelegateCommand EscapeCommand { get; set; }
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -441,6 +443,8 @@ namespace Dynamo.ViewModels
             ZoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
             ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
             FitViewCommand = new DelegateCommand(FitView, CanFitView);
+            TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
+            EscapeCommand = new DelegateCommand(Escape, CanEscape);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -1172,6 +1176,26 @@ namespace Dynamo.ViewModels
         internal bool CanFitView(object parameter)
         {
             return CurrentSpaceViewModel.FitViewCommand.CanExecute(parameter);
+        }
+
+        public void TogglePan(object parameter)
+        {
+            CurrentSpaceViewModel.TogglePanCommand.Execute(parameter);
+        }
+
+        internal bool CanTogglePan(object parameter)
+        {
+            return CurrentSpaceViewModel.TogglePanCommand.CanExecute(parameter);
+        }
+
+        public void Escape(object parameter)
+        {
+            CurrentSpaceViewModel.OnRequestStopPan(this, null); // Escape Pan Mode
+        }
+
+        internal bool CanEscape(object parameter)
+        {
+            return true;
         }
     }
 
