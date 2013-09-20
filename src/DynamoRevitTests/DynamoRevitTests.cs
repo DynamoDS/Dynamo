@@ -1339,6 +1339,23 @@ namespace DynamoRevitTests
             Assert.AreEqual(levelColl.ToElements().Count(), 11);
         }
 
+        [Test]
+        public void RayBounce()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\RayBounce.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+            //ensure that the bounce curve count is the same
+            var curveColl = new FilteredElementCollector(dynRevitSettings.Doc.Document, dynRevitSettings.Doc.ActiveView.Id);
+            curveColl.OfClass(typeof(CurveElement));
+            Assert.AreEqual(curveColl.ToElements().Count(), 36);
+        }
+
         /// <summary>
         /// Automated creation of regression test cases.
         /// </summary>
