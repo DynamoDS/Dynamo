@@ -178,6 +178,7 @@ limitations under the License.
     <Compile Include="UI\Views\ZoomAndPanControl.xaml.cs">
       <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\CursorLibrary.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\WatchViewModel.cs" />
@@ -535,6 +536,16 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\tick_selected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\pan_disabled.png" />
+    <Resource Include="UI\Images\pan_hover.png" />
+    <Resource Include="UI\Images\pan_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\hand_drag.cur" />
+    <Resource Include="UI\Images\hand_pan.cur" />
+    <Resource Include="UI\Images\hand_pan_active.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
