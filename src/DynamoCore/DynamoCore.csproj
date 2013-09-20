@@ -106,6 +106,10 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\ProtoScript.dll</HintPath>
     </Reference>
+    <Reference Include="GraphToDSCompiler">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\GraphToDSCompiler.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -126,6 +130,7 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
+    <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
@@ -147,6 +152,9 @@ limitations under the License.
     <Compile Include="Models\NoteModel.cs" />
     <Compile Include="Models\PortModel.cs" />
     <Compile Include="UI\dynTextBox.cs" />
+    <Compile Include="UI\Views\ZoomAndPanControl.xaml.cs">
+      <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\WatchViewModel.cs" />
@@ -361,6 +369,10 @@ limitations under the License.
   <ItemGroup>
     <Page Include="UI\Prompts\CrashPrompt.xaml">
     </Page>
+    <Page Include="UI\Themes\MenuStyleDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Views\InstalledPackagesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -384,6 +396,10 @@ limitations under the License.
     <Page Include="UI\Prompts\NodeHelpPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\ZoomAndPanControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Resource Include="UI\Themes\DynamoColorsAndBrushes.xaml">
       <SubType>Designer</SubType>
@@ -491,10 +507,12 @@ limitations under the License.
     <Resource Include="UI\Images\zoomout_hover.png" />
     <Resource Include="UI\Images\zoomout_normal.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\tick_selected.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

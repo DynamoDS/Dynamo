@@ -24,6 +24,8 @@ namespace Dynamo.Views
         private bool isWindowSelecting;
         private Point mouseDownPos;
         private Dynamo.Controls.DragCanvas WorkBench = null;
+        private ZoomAndPanControl zoomAndPanControl = null;
+
         public WorkspaceViewModel ViewModel
         {
             get
@@ -47,6 +49,13 @@ namespace Dynamo.Views
 
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
         {
+            zoomAndPanControl = new ZoomAndPanControl(DataContext as WorkspaceViewModel);
+            Canvas.SetRight(zoomAndPanControl, 10);
+            Canvas.SetTop(zoomAndPanControl, 10);
+            Canvas.SetZIndex(zoomAndPanControl, 8000);
+            zoomAndPanControl.Focusable = false;
+            outerCanvas.Children.Add(zoomAndPanControl);
+
             Debug.WriteLine("Workspace loaded.");
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
         }
@@ -66,6 +75,9 @@ namespace Dynamo.Views
             ViewModel.Loaded();
             ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
             ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
+            ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
+            ViewModel.RequestZoomToViewportPoint += new ZoomEventHandler(vm_ZoomAtViewportPoint);
+            ViewModel.RequestZoomToFitView += new ZoomEventHandler(vm_ZoomToFitView);
             ViewModel.StopDragging += new EventHandler(vm_StopDragging);
             ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
@@ -120,7 +132,7 @@ namespace Dynamo.Views
 
         void selectionCanvas_Loaded(object sender, RoutedEventArgs e)
         {
-            Stopwatch sw = new Stopwatch();
+            var sw = new Stopwatch();
             sw.Start();
             DrawGrid();
             sw.Stop();
@@ -222,6 +234,91 @@ namespace Dynamo.Views
         void vm_ZoomChanged(object sender, EventArgs e)
         {
             zoomBorder.SetZoom((e as ZoomEventArgs).Zoom);
+        }
+
+        void vm_ZoomAtViewportCenter(object sender, EventArgs e)
+        {
+            double zoom = (e as ZoomEventArgs).Zoom;
+
+            // Limit Zoom
+            double resultZoom = ViewModel._model.Zoom + zoom;
+            if (resultZoom < WorkspaceModel.ZOOM_MINIMUM)
+                resultZoom = WorkspaceModel.ZOOM_MINIMUM;
+            else if (resultZoom > WorkspaceModel.ZOOM_MAXIMUM)
+                resultZoom = WorkspaceModel.ZOOM_MAXIMUM;
+
+            // Get Viewpoint Center point
+            Point centerPoint = new Point();
+            centerPoint.X = outerCanvas.ActualWidth / 2;
+            centerPoint.Y = outerCanvas.ActualHeight / 2;
+
+            // Get relative point of ZoomBorder child in relates to viewpoint center point
+            Point relativePoint = new Point();
+            relativePoint.X = (centerPoint.X - ViewModel._model.X) / ViewModel._model.Zoom;
+            relativePoint.Y = (centerPoint.Y - ViewModel._model.Y) / ViewModel._model.Zoom;
+
+            ZoomAtViewportPoint(zoom, relativePoint);
+        }
+
+        void vm_ZoomAtViewportPoint(object sender, EventArgs e)
+        {
+            double zoom = (e as ZoomEventArgs).Zoom;
+            Point point = (e as ZoomEventArgs).Point;
+
+            ZoomAtViewportPoint(zoom, point);
+        }
+
+        private void ZoomAtViewportPoint(double zoom, Point relative)
+        {
+            // Limit zoom
+            double resultZoom = ViewModel._model.Zoom + zoom;
+            if (resultZoom < WorkspaceModel.ZOOM_MINIMUM)
+                resultZoom = WorkspaceModel.ZOOM_MINIMUM;
+            else if (resultZoom > WorkspaceModel.ZOOM_MAXIMUM)
+                resultZoom = WorkspaceModel.ZOOM_MAXIMUM;
+
+            double absoluteX, absoluteY;
+            absoluteX = relative.X * ViewModel._model.Zoom + ViewModel._model.X;
+            absoluteY = relative.Y * ViewModel._model.Zoom + ViewModel._model.Y;
+
+            ViewModel._model.Zoom = resultZoom;
+            ViewModel._model.X = absoluteX - (relative.X * ViewModel._model.Zoom);
+            ViewModel._model.Y = absoluteY - (relative.Y * ViewModel._model.Zoom);
+        }
+
+        void vm_ZoomToFitView(object sender, EventArgs e)
+        {
+            ZoomEventArgs zoomArgs = (e as ZoomEventArgs);
+
+            double viewportPadding = 30;
+            double fitWidth = outerCanvas.ActualWidth - 2 * viewportPadding;
+            double fitHeight = outerCanvas.ActualHeight - 2 * viewportPadding;
+
+            // Find the zoom required for fitview
+            double scaleRequired = 1; // 100% zoom
+            if (zoomArgs.hasZoom()) // FitView
+                scaleRequired = zoomArgs.Zoom;
+            else
+            {
+                double scaleX = fitWidth / zoomArgs.FocusWidth;
+                double scaleY = fitHeight / zoomArgs.FocusHeight;
+                scaleRequired = scaleX > scaleY ? scaleY : scaleX; // get least zoom required
+            }
+
+            // Limit Zoom
+            if (scaleRequired > WorkspaceModel.ZOOM_MAXIMUM)
+                scaleRequired = WorkspaceModel.ZOOM_MAXIMUM;
+            else if (scaleRequired < WorkspaceModel.ZOOM_MINIMUM)
+                scaleRequired = WorkspaceModel.ZOOM_MINIMUM;
+
+            // Center position
+            double centerOffsetX = viewportPadding + (fitWidth - (zoomArgs.FocusWidth * scaleRequired)) / 2;
+            double centerOffsetY = viewportPadding + (fitHeight - (zoomArgs.FocusHeight * scaleRequired)) / 2;
+
+            // Apply on model
+            ViewModel._model.Zoom = scaleRequired;
+            ViewModel._model.X = -(zoomArgs.Offset.X * scaleRequired) + centerOffsetX;
+            ViewModel._model.Y = -(zoomArgs.Offset.Y * scaleRequired) + centerOffsetY;
         }
 
         private void dynWorkspaceView_KeyDown(object sender, KeyEventArgs e)
@@ -437,104 +534,100 @@ namespace Dynamo.Views
 
             selectionCanvas.UseLayoutRounding = true;
 
-            // draw vertical lines on grid
-            for (double i = 0.0; i < selectionCanvas.ActualWidth; i += gridSpacing)
-            {
-                var xLine = new Line();
-                xLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 180, 180, 180));
-                xLine.X1 = i;
-                xLine.Y1 = 0;
-                xLine.X2 = i;
-                xLine.Y2 = selectionCanvas.ActualHeight;
-                xLine.HorizontalAlignment = HorizontalAlignment.Left;
-                xLine.VerticalAlignment = VerticalAlignment.Center;
-                xLine.StrokeThickness = 1;
-                selectionCanvas.Children.Add(xLine);
-
-                Line xLine2 = null;
-                if (i == 0.0)
+            // vertical canvas edge line
+            var xLine = new Line
                 {
+                    Stroke = new SolidColorBrush(Color.FromArgb(255, 180, 180, 180)),
+                    X1 = 0,
+                    Y1 = 0,
+                    X2 = 0,
+                    Y2 = selectionCanvas.ActualHeight,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    StrokeThickness = 1
+                };
+            selectionCanvas.Children.Add(xLine);
 
-                    xLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
+            Line xLine2 = null;
 
-                    xLine2 = new Line();
-                    xLine2.Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180));
-                    xLine2.HorizontalAlignment = HorizontalAlignment.Left;
-                    xLine2.VerticalAlignment = VerticalAlignment.Center;
-                    xLine2.StrokeThickness = 6;
-                    xLine2.Y1 = xLine.Y1 + 6.5;
-                    xLine2.X1 = xLine.X1 + 3.5;
-                    xLine2.X2 = xLine.X2 + 3.5;
-                    xLine2.Y2 = selectionCanvas.ActualHeight;
-                    xLine2.IsHitTestVisible = false;
-                    selectionCanvas.Children.Add(xLine2);
-                    
-                }
+            xLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
+
+            // vertical canvas edge line thicker
+            xLine2 = new Line
+                {
+                    Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180)),
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    StrokeThickness = 6,
+                    Y1 = xLine.Y1 + 6.5,
+                    X1 = xLine.X1 + 3.5,
+                    X2 = xLine.X2 + 3.5,
+                    Y2 = selectionCanvas.ActualHeight,
+                    IsHitTestVisible = false
+                };
+            selectionCanvas.Children.Add(xLine2);
  
-                //Dynamo.Controls.DragCanvas.SetCanBeDragged(xLine, false);
-                xLine.IsHitTestVisible = false;
+            Dynamo.Controls.DragCanvas.SetCanBeDragged(xLine, false);
+            xLine.IsHitTestVisible = false;
 
-                Binding binding = new Binding() 
-                { 
-                    Path = new PropertyPath("FullscreenWatchVisible"), 
-                    Converter = new InverseBoolToVisibilityConverter(),
-                    Mode = BindingMode.OneWay,
-                };
-                xLine.SetBinding(UIElement.VisibilityProperty, binding);
-                if (xLine2 != null)
-                {
-                    xLine2.SetBinding(UIElement.VisibilityProperty, binding);
-                }
-            }
-
-            // draw horizontal lines on grid
-            for (double i = 0.0; i < selectionCanvas.ActualHeight; i += gridSpacing)
+            var bindingX = new Binding() 
+            { 
+                Path = new PropertyPath("FullscreenWatchVisible"), 
+                Converter = new InverseBoolToVisibilityConverter(),
+                Mode = BindingMode.OneWay,
+            };
+            xLine.SetBinding(UIElement.VisibilityProperty, bindingX);
+            if (xLine2 != null)
             {
-                var yLine = new Line();
-                yLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 180, 180, 180));
-                yLine.X1 = -0.5;
-                yLine.Y1 = i;
-                yLine.X2 = selectionCanvas.ActualWidth;
-                yLine.Y2 = i;
-                yLine.HorizontalAlignment = HorizontalAlignment.Left;
-                yLine.VerticalAlignment = VerticalAlignment.Center;
-                yLine.StrokeThickness = 1;
-                selectionCanvas.Children.Add(yLine);
-
-                Line yLine2 = null;
-                if (i == 0.0)
-                {
-                    yLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
-
-                    yLine2 = new Line();
-                    yLine2.Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180));
-                    yLine2.StrokeThickness = 6;
-                    yLine2.X1 = 0;
-                    yLine2.X2 = selectionCanvas.ActualWidth;
-                    yLine2.Y1 = yLine.Y1 + 3.5;
-                    yLine2.Y2 = yLine.Y2 + 3.5;
-                    yLine2.HorizontalAlignment = HorizontalAlignment.Left;
-                    yLine2.VerticalAlignment = VerticalAlignment.Center;
-                    yLine2.IsHitTestVisible = false;
-                    selectionCanvas.Children.Add(yLine2);
-                }
-                
-                //Dynamo.Controls.DragCanvas.SetCanBeDragged(yLine, false);
-                
-                yLine.IsHitTestVisible = false;
-
-                Binding binding = new Binding()
-                {
-                    Path = new PropertyPath("FullscreenWatchVisible"),
-                    Converter = new InverseBoolToVisibilityConverter(),
-                    Mode = BindingMode.OneWay,
-                };
-                yLine.SetBinding(UIElement.VisibilityProperty, binding);
-                if (yLine2 != null)
-                {
-                    yLine2.SetBinding(UIElement.VisibilityProperty, binding);
-                }
+                xLine2.SetBinding(UIElement.VisibilityProperty, bindingX);
             }
+
+            // horizontal canvas edge line
+            var yLine = new Line
+                {
+                    Stroke = new SolidColorBrush(Color.FromArgb(255, 180, 180, 180)),
+                    X1 = -0.5,
+                    Y1 = 0,
+                    X2 = selectionCanvas.ActualWidth,
+                    Y2 = 0,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    StrokeThickness = 1
+                };
+            selectionCanvas.Children.Add(yLine);
+
+            Line yLine2 = null;
+            yLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
+
+            // horizontal canvas edge line thicker
+            yLine2 = new Line
+                {
+                    Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180)),
+                    StrokeThickness = 6,
+                    X1 = 0,
+                    X2 = selectionCanvas.ActualWidth,
+                    Y1 = yLine.Y1 + 3.5,
+                    Y2 = yLine.Y2 + 3.5,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    IsHitTestVisible = false
+                };
+            selectionCanvas.Children.Add(yLine2);
+
+            yLine.IsHitTestVisible = false;
+
+            var bindingY = new Binding()
+            {
+                Path = new PropertyPath("FullscreenWatchVisible"),
+                Converter = new InverseBoolToVisibilityConverter(),
+                Mode = BindingMode.OneWay,
+            };
+            yLine.SetBinding(UIElement.VisibilityProperty, bindingY);
+            if (yLine2 != null)
+            {
+                yLine2.SetBinding(UIElement.VisibilityProperty, bindingY);
+            }
+            
         }
 
         private void WorkBench_OnLoaded(object sender, RoutedEventArgs e)

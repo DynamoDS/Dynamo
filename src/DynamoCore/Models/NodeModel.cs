@@ -96,7 +96,7 @@ namespace Dynamo.Models
         private bool isUpstreamVisible;
 
         private IdentifierNode identifier = null;
-        protected AssociativeNode defaultAstExpression = null;
+       // protected AssociativeNode defaultAstExpression = null;
  
         /// <summary>
         /// Returns whether this node represents a built-in or custom function.
@@ -421,7 +421,7 @@ namespace Dynamo.Models
             }
         }
 
-        public AssociativeNode AstIdentifier
+        public virtual AssociativeNode AstIdentifier
         {
             get
             {
@@ -433,19 +433,6 @@ namespace Dynamo.Models
                 return identifier;
             }
         }
-
-        /// <summary>
-        /// Some node is constant value like Pi or E, no need to create a
-        /// variable for this kind of node.
-        /// </summary>
-        protected virtual AssociativeNode DefaultAstExpression
-        {
-            get
-            {
-                return defaultAstExpression;
-            }
-        }
-
         #endregion
 
         protected NodeModel()
@@ -767,18 +754,19 @@ namespace Dynamo.Models
             return nodes[outPort];
         }
 
-        protected virtual AssociativeNode CompileToAstNodeInternal(List<AssociativeNode> inputAstNodes)
+        protected virtual AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputAstNodes)
         {
-            return null;
+            return builder.Build(this, inputAstNodes);
         }
 
         public AssociativeNode CompileToAstNode(AstBuilder builder)
         {
-            if (!RequiresRecalc || builder.ContainsAstNodes(GUID))
+            if (!RequiresRecalc)
             {
-                return DefaultAstExpression == null ? this.AstIdentifier : DefaultAstExpression;
+                return this.AstIdentifier; 
             }
 
+            builder.ClearAstNodes(GUID);
             bool isPartiallyApplied = false;
 
             // Recursively compile its inputs to ast nodes and add intermediate
@@ -803,13 +791,13 @@ namespace Dynamo.Models
             // But in the end there is always an assignment:
             //
             //     AstIdentifier = ...;
-            var rhs = CompileToAstNodeInternal(inputAstNodes);
+            var rhs = BuildAstNode(builder, inputAstNodes);
             if (rhs == null)
             {
                 // For any dyn node which doesn't override this function, we treat
                 // them as custom nodes, therefore their evaluation is based on f#
                 // evaluation engine. This is done through evalutor.
-                rhs = AstBuilder.BuildEvaluator(builder, this, inputAstNodes);
+                rhs = builder.BuildEvaluator(this, inputAstNodes);
             }
             builder.BuildEvaluation(this, rhs, isPartiallyApplied);
 
@@ -1590,6 +1578,13 @@ namespace Dynamo.Models
             helper.SetAttribute("isVisible", this.IsVisible);
             helper.SetAttribute("isUpstreamVisible", this.IsUpstreamVisible);
             helper.SetAttribute("lacing", this.ArgumentLacing.ToString());
+
+            if (context == SaveContext.Undo)
+            {
+                // Fix: MAGN-159 (nodes are not editable after undo/redo).
+                helper.SetAttribute("interactionEnabled", this.interactionEnabled);
+                helper.SetAttribute("nodeState", this.state.ToString());
+            }
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -1616,12 +1611,23 @@ namespace Dynamo.Models
             this.isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             this.argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
 
-            // TODO(Ben): We need to raise property change events 
-            // here for those data members we directly changed.
-            RaisePropertyChanged("NickName");
-            RaisePropertyChanged("ArgumentLacing");
-            RaisePropertyChanged("IsVisible");
-            RaisePropertyChanged("IsUpstreamVisible");
+            if (context == SaveContext.Undo)
+            {
+                // Fix: MAGN-159 (nodes are not editable after undo/redo).
+                interactionEnabled = helper.ReadBoolean("interactionEnabled", true);
+                this.state = helper.ReadEnum("nodeState", ElementState.ACTIVE);
+
+                // We only notify property changes in an undo/redo operation. Normal
+                // operations like file loading or copy-paste have the models created
+                // in different ways and their views will always be up-to-date with 
+                // respect to their models.
+                RaisePropertyChanged("InteractionEnabled");
+                RaisePropertyChanged("State");
+                RaisePropertyChanged("NickName");
+                RaisePropertyChanged("ArgumentLacing");
+                RaisePropertyChanged("IsVisible");
+                RaisePropertyChanged("IsUpstreamVisible");
+            }
         }
 
         #endregion

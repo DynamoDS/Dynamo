@@ -627,7 +627,8 @@ namespace Dynamo.Nodes
 
         void ui_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            //Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(_def.FunctionId);
+            //Don't attempt to go to the workspace if the definition is
+            //null. If the function is missing  
             Controller.DynamoViewModel.GoToWorkspace(_def.FunctionId);
             e.Handled = true;
         }

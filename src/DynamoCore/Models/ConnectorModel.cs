@@ -78,7 +78,6 @@ namespace Dynamo.Models
             }
             
             return null;
-
         }
 
         private ConnectorModel(NodeModel start, NodeModel end, int startIndex, int endIndex, int portType )
