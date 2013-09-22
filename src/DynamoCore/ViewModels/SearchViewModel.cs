@@ -1041,5 +1041,25 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+
+        public void ShowLibItemPopup(object parameter)
+        {
+            dynSettings.Controller.DynamoViewModel.ShowPopup(parameter);
+        }
+
+        internal bool CanShowLibItemPopup(object parameter)
+        {
+            return true;
+        }
+
+        public void HideLibItemPopup(object parameter)
+        {
+            dynSettings.Controller.DynamoViewModel.HidePopup(parameter);
+        }
+
+        internal bool CanHideLibItemPopup(object parameter)
+        {
+            return true;
+        }
     }
 }

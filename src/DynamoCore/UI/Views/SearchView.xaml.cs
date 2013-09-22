@@ -13,6 +13,7 @@ using Dynamo.Utilities;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using Dynamo.UI.Views;
 using Dynamo.Search.SearchElements;
+using System.Collections.Generic;
 
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
@@ -36,7 +37,6 @@ namespace Dynamo.Search
     public partial class SearchView : UserControl
     {
         private SearchViewModel _viewModel;
-        private Popup _previewPopup = new Popup(Popup.PopupStyle.LibraryItemPreview);
 
         public SearchView()
         {
@@ -53,9 +53,7 @@ namespace Dynamo.Search
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
             };
-
-            mainGrid.Children.Add(_previewPopup);
-        }
+         }
 
         void SearchView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -160,10 +158,10 @@ namespace Dynamo.Search
                 return;
 
             Point relativePoint = treeViewItem.TranslatePoint(new Point(0, 0), mainGrid);
-            Point popupConnectingPoint = new Point(relativePoint.X + treeViewItem.ActualWidth, relativePoint.Y + (treeViewItem.ActualHeight / 2));
+            double popupVerticalOffset = relativePoint.Y + (treeViewItem.ActualHeight / 2);
             string popupContent = nodeSearchElement.Name + "\n" + nodeSearchElement.Description;
-            _previewPopup.UpdatePopupWindow(popupConnectingPoint, popupContent);
-            _previewPopup.FadeInPopupWindow();
+            KeyValuePair<double, string> positionContentPair = new KeyValuePair<double,string>(popupVerticalOffset, popupContent);
+            DynamoCommands.ShowLibItemPopupCommand.Execute(positionContentPair);
         }
 
         private void LibraryItem_OnMouseLeave(object sender, MouseEventArgs e)
@@ -172,7 +170,7 @@ namespace Dynamo.Search
             NodeSearchElement nodeSearchElement = treeViewItem.Header as NodeSearchElement;
             if (nodeSearchElement == null)
                 return;
-            _previewPopup.FadeOutPopupWindow();
+            DynamoCommands.HideLibItemPopupCommand.Execute(null);
         }
     }
 }

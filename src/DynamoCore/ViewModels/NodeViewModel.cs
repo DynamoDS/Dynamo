@@ -46,8 +46,6 @@ namespace Dynamo.ViewModels
         
         private bool isFullyConnected = false;
 
-        private Popup tooltip = new Popup(Popup.PopupStyle.NodeTooltip);
-        
         #endregion
 
         #region public members
