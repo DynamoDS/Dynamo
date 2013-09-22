@@ -36,6 +36,7 @@ using Dynamo.ViewModels;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using String = System.String;
 using Dynamo.UI.Controls;
+using Dynamo.UI.Views;
 
 namespace Dynamo.Controls
 {
@@ -82,6 +83,10 @@ namespace Dynamo.Controls
             InitializeComponent();
 
             this.Loaded += dynBench_Activated;
+
+            //setup popup for library items tooltip
+            PopupView popup = new PopupView(dynSettings.Controller.PopupViewmodel);
+            (border.Child as Grid).Children.Add(popup);
         }
 
 

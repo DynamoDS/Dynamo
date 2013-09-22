@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="Dynamo.UI.Views.PopupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             Name="PopupWindowUserControl">
+    <Grid x:Name="mainGrid" MaxWidth="{Binding Path=MaxWidth}" Background="LightCoral">
+        <Polygon Name="backgroundPolygon">
+        </Polygon>
+        <StackPanel Name="contentContainer" Orientation="Vertical" Background="Transparent" Margin="10 5 5 5">
+            <TextBox IsReadOnly="True" Text="TESTING TESTING TESTING " Background="Transparent" BorderThickness="0">
+            </TextBox>
+            <TextBox IsReadOnly="True" Text="TESTING TESTING TESTING TESTING " Background="Transparent" BorderThickness="0">
+            </TextBox>
+        </StackPanel>
+    </Grid>
+</UserControl>

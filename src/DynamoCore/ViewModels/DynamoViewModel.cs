@@ -163,6 +163,9 @@ namespace Dynamo.ViewModels
         public DelegateCommand ZoomOutCommand { get; set; }
         public DelegateCommand FitViewCommand { get; set; }
 
+        public DelegateCommand ShowPopupCommand { get; set; }
+        public DelegateCommand HidePopupCommand { get; set; }
+
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
         /// </summary>
@@ -441,6 +444,9 @@ namespace Dynamo.ViewModels
             ZoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
             ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
             FitViewCommand = new DelegateCommand(FitView, CanFitView);
+
+            ShowPopupCommand = new DelegateCommand(ShowPopup, CanShowPopup);
+            HidePopupCommand = new DelegateCommand(HidePopup, CanHidePopup);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -1172,6 +1178,27 @@ namespace Dynamo.ViewModels
         internal bool CanFitView(object parameter)
         {
             return CurrentSpaceViewModel.FitViewCommand.CanExecute(parameter);
+        }
+
+        public void ShowPopup(object parameter)
+        {
+            controller.PopupViewmodel.UpdatePopupCommand.Execute(parameter);
+            controller.PopupViewmodel.FadeInCommand.Execute(null);
+        }
+
+        internal bool CanShowPopup(object parameter)
+        {
+            return true;
+        }
+
+        public void HidePopup(object parameter)
+        {
+            controller.PopupViewmodel.FadeOutCommand.Execute(null);
+        }
+
+        internal bool CanHidePopup(object parameter)
+        {
+            return true;
         }
     }
 
