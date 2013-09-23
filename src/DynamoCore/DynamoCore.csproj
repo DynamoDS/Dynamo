@@ -172,8 +172,6 @@ limitations under the License.
     <Compile Include="Models\NoteModel.cs" />
     <Compile Include="Models\PortModel.cs" />
     <Compile Include="UI\Commands\PopupCommand.cs" />
-    <Compile Include="UI\Controls\TitleBarButtons.xaml.cs">
-      <DependentUpon>TitleBarButtons.xaml</DependentUpon>
     <Compile Include="UI\Controls\ShortcutToolbar.xaml.cs">
       <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
     </Compile>
