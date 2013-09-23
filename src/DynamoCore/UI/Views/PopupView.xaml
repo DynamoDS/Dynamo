@@ -5,14 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d"
              Name="PopupWindowUserControl">
-    <Grid x:Name="mainGrid" MaxWidth="{Binding Path=MaxWidth}" Background="LightCoral">
-        <Polygon Name="backgroundPolygon">
+    <Grid x:Name="mainGrid" MaxWidth="{Binding Path=MaxWidth}" Background="Transparent" Opacity="{Binding Path=Opacity}" Margin="{Binding Path=Margin}">
+        <Polygon Name="backgroundPolygon" Fill="{Binding Path=FrameFill}" Stroke="{Binding Path=FrameStrokeColor}" StrokeThickness="{Binding Path=FrameStrokeThickness}">
         </Polygon>
-        <StackPanel Name="contentContainer" Orientation="Vertical" Background="Transparent" Margin="10 5 5 5">
-            <TextBox IsReadOnly="True" Text="TESTING TESTING TESTING " Background="Transparent" BorderThickness="0">
-            </TextBox>
-            <TextBox IsReadOnly="True" Text="TESTING TESTING TESTING TESTING " Background="Transparent" BorderThickness="0">
-            </TextBox>
+        <StackPanel Name="contentContainer" Orientation="Vertical" Background="Transparent">
+            <TextBox IsReadOnly="True" Background="Transparent" BorderThickness="0"
+                     Margin="{Binding Path=ContentMargin}" Text="{Binding Path=ItemDescription}"
+                     Foreground="{Binding Path=TextForeground}" FontSize="{Binding Path=TextFontSize}" FontWeight="{Binding Path=TextFontWeight}"
+                     TextChanged="OnTextChange"/>
         </StackPanel>
     </Grid>
 </UserControl>
