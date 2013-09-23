@@ -52,7 +52,7 @@
                 BorderThickness="1"
                 VerticalAlignment="Stretch"
                 Padding="8,0,8,0"
-                Margin="7,0,7,0">
+                Margin="6,0,7,0">
             <Grid>
                 <ContentPresenter Name="Content" 
                                   Margin="0"
