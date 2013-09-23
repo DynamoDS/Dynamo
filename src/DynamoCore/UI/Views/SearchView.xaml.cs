@@ -11,6 +11,9 @@ using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Media;
 using Dynamo.Utilities;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
+using Dynamo.UI.Views;
+using Dynamo.Search.SearchElements;
+using System.Collections.Generic;
 
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
@@ -50,7 +53,7 @@ namespace Dynamo.Search
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
             };
-        }
+         }
 
         void SearchView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -147,5 +150,27 @@ namespace Dynamo.Search
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
+        private void LibraryItem_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            TreeViewItem treeViewItem = sender as TreeViewItem;
+            NodeSearchElement nodeSearchElement = treeViewItem.Header as NodeSearchElement;
+            if (nodeSearchElement == null)
+                return;
+
+            Point relativePoint = treeViewItem.TranslatePoint(new Point(0, 0), mainGrid);
+            double popupVerticalOffset = relativePoint.Y + (treeViewItem.ActualHeight / 2);
+            string popupContent = nodeSearchElement.Name + "\n" + nodeSearchElement.Description;
+            KeyValuePair<double, string> positionContentPair = new KeyValuePair<double,string>(popupVerticalOffset, popupContent);
+            DynamoCommands.ShowLibItemPopupCommand.Execute(positionContentPair);
+        }
+
+        private void LibraryItem_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            TreeViewItem treeViewItem = sender as TreeViewItem;
+            NodeSearchElement nodeSearchElement = treeViewItem.Header as NodeSearchElement;
+            if (nodeSearchElement == null)
+                return;
+            DynamoCommands.HideLibItemPopupCommand.Execute(null);
+        }
     }
-} ;
+}

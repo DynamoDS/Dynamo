@@ -38,6 +38,7 @@ using String = System.String;
 using System.Collections.ObjectModel;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Controls;
+using Dynamo.UI.Views;
 
 namespace Dynamo.Controls
 {
@@ -85,6 +86,11 @@ namespace Dynamo.Controls
             InitializeShortcutBar();
 
             this.Loaded += dynBench_Activated;
+
+            //setup popup for library items tooltip
+            PopupView popup = new PopupView(dynSettings.Controller.PopupViewmodel);
+            dynSettings.Controller.PopupViewmodel.UpdateView(PopupViewModel.Style.LibraryItemPreview, popup);
+            popupGrid.Children.Add(popup);
         }
 
         void InitializeShortcutBar()

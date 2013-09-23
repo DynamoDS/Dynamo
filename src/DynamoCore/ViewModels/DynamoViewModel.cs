@@ -1197,6 +1197,27 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+
+        public void ShowPopup(object parameter)
+        {
+            controller.PopupViewmodel.UpdatePopupCommand.Execute(parameter);
+            controller.PopupViewmodel.FadeInCommand.Execute(null);
+        }
+
+        internal bool CanShowPopup(object parameter)
+        {
+            return true;
+        }
+
+        public void HidePopup(object parameter)
+        {
+            controller.PopupViewmodel.FadeOutCommand.Execute(null);
+        }
+
+        internal bool CanHidePopup(object parameter)
+        {
+            return true;
+        }
     }
 
     public class ZoomEventArgs : EventArgs

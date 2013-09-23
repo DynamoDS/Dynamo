@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="Dynamo.UI.Views.PopupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             mc:Ignorable="d"
+             Name="PopupWindowUserControl">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <controls:OpacityToVisibilityConverter x:Key="OpacityToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid x:Name="mainGrid" MaxWidth="{Binding Path=MaxWidth}" Background="Transparent" Opacity="{Binding Path=Opacity}" 
+          Margin="{Binding Path=Margin}" Visibility="{Binding Path=Opacity, Converter={StaticResource OpacityToVisibilityConverter}}"
+          MouseEnter="Popup_MouseEnter" MouseLeave="Popup_MouseLeave">
+        <Polygon Name="backgroundPolygon" Fill="{Binding Path=FrameFill}" Stroke="{Binding Path=FrameStrokeColor}" 
+                 StrokeThickness="{Binding Path=FrameStrokeThickness}" Points="{Binding Path=FramePoints}">
+        </Polygon>
+        <StackPanel Name="contentContainer" MaxWidth="{Binding Path=MaxWidth}" Orientation="Vertical" Background="Transparent">
+        </StackPanel>
+    </Grid>
+</UserControl>

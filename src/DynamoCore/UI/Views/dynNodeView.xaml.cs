@@ -255,5 +255,15 @@ namespace Dynamo.Controls
             }
         }
 
+        private void NickNameBlock_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            ViewModel.ShowTooltipCommand.Execute(null);
+        }
+
+        private void NickNameBlock_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            ViewModel.HideTooltipCommand.Execute(null);
+        }
+
     }
 }

@@ -21,6 +21,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.UI.Views;
 
 namespace Dynamo.ViewModels
 {
@@ -44,7 +45,7 @@ namespace Dynamo.ViewModels
         public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; }}
         
         private bool isFullyConnected = false;
-        
+
         #endregion
 
         #region public members
@@ -597,6 +598,24 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void ShowTooltip(object paramerter)
+        {
+        }
+
+        private bool CanShowTooltip(object parameter)
+        {
+            return true;
+        }
+
+        private void HideTooltip(object parameter)
+        {
+
+        }
+
+        private bool CanHideTooltip(object parameter)
+        {
+            return true;
+        }
     }
 
     public class NodeHelpEventArgs : EventArgs
