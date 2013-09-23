@@ -124,6 +124,35 @@
                 </Style>
             </RepeatButton.Style>
         </RepeatButton>
+        <Button Command="{Binding Path=TogglePanCommand}" Margin="0,8,0,0">
+            <Button.Resources>
+                <Image x:Key="Normal"
+                       Source="/DynamoCore;component/UI/Images/pan_normal.png"/>
+                <Image x:Key="Hover"
+                       Source="/DynamoCore;component/UI/Images/pan_hover.png"/>
+                <Image x:Key="Disabled"
+                       Source="/DynamoCore;component/UI/Images/pan_disabled.png"/>
+            </Button.Resources>
+            <Button.Style>
+                <Style BasedOn="{StaticResource ZoomAndPanButtonStyle}" TargetType="{x:Type Button}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsMouseOver}" Value="false" />
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsEnabled}" Value="true" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Content" Value="{StaticResource Normal}" />
+                        </MultiDataTrigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Content" Value="{StaticResource Disabled}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Content" Value="{StaticResource Hover}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </StackPanel>
 
 </UserControl>
