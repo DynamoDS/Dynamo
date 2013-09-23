@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Dynamo.UI.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Timers;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace Dynamo.ViewModels
 {
@@ -33,6 +37,12 @@ namespace Dynamo.ViewModels
             set { _popupStyle = value; RaisePropertyChanged("PopupStyle"); }
         }
 
+        private PointCollection _framePoints;
+        public PointCollection FramePoints
+        {
+            get { return _framePoints; }
+            set { _framePoints = value; RaisePropertyChanged("FramePoints"); }
+        }
         private SolidColorBrush _frameFill;
         public SolidColorBrush FrameFill
         {
@@ -57,7 +67,7 @@ namespace Dynamo.ViewModels
             get { return _frameStrokeColor; }
             set { _frameStrokeColor = value; RaisePropertyChanged("FrameStrokeColor"); }
         }
-        
+
         private Thickness _margin;
         public Thickness Margin
         {
@@ -83,12 +93,17 @@ namespace Dynamo.ViewModels
             get { return _isInUse; }
             private set { _isInUse = value; }
         }
-        
         private double _opacity = 0;
         public double Opacity
         {
             get { return _opacity; }
             set { _opacity = value; RaisePropertyChanged("Opacity"); }
+        }
+        private Visibility _popupVisibility;
+        public Visibility PopupVisibility
+        {
+            get { return _popupVisibility; }
+            set { _popupVisibility = value; RaisePropertyChanged("PopupVisibility"); }
         }
 
         private double _textFontSize;
@@ -116,13 +131,30 @@ namespace Dynamo.ViewModels
             set { _itemDescription = value; RaisePropertyChanged("ItemDescription"); }
         }
 
+        private PopupView _view;
+
+        private Timer fadeInTimer;
+        private Timer fadeOutTimer;
+
         #endregion
 
         #region Public Methods
 
-        public PopupViewModel(Style style)
+        public PopupViewModel()
+        {
+            fadeInTimer = new Timer(20);
+            fadeInTimer.Elapsed += fadeInTimer_Elapsed;
+            fadeInTimer.Enabled = true;
+
+            fadeOutTimer = new Timer(20);
+            fadeOutTimer.Elapsed += fadeOutTimer_Elapsed;
+            fadeOutTimer.Enabled = true;
+        }
+
+        public void UpdateView(Style style, PopupView view)
         {
             UpdateStyle(style);
+            _view = view;
         }
 
         #endregion
@@ -132,8 +164,9 @@ namespace Dynamo.ViewModels
         private void UpdatePopup(object parameter)
         {
             KeyValuePair<double, string> positionContentPair = (KeyValuePair<double, string>)parameter;
-            UpdatePosition(0, positionContentPair.Key);
             UpdateContent(positionContentPair.Value);
+            UpdateShape();
+            UpdatePosition(0, positionContentPair.Key);
         }
 
         private bool CanUpdatePopup(object parameter)
@@ -143,7 +176,8 @@ namespace Dynamo.ViewModels
 
         private void FadeIn(object parameter)
         {
-            Opacity = 0.96;
+            fadeOutTimer.Stop();
+            fadeInTimer.Start();
         }
 
         private bool CanFadeIn(object parameter)
@@ -153,7 +187,8 @@ namespace Dynamo.ViewModels
 
         private void FadeOut(object parameter)
         {
-            Opacity = 0;
+            fadeInTimer.Stop();
+            fadeOutTimer.Start();
         }
 
         private bool CanFadeOut(object parameter)
@@ -168,11 +203,18 @@ namespace Dynamo.ViewModels
         private void UpdateContent(string text)
         {
             ItemDescription = text;
+
+            _view.contentContainer.Children.Clear();
+            _view.contentContainer.Children.Add(GetStyledTextBox(ItemDescription));
         }
 
         private void UpdatePosition(double horizontalOffset, double verticalOffset)
         {
-            Thickness updatedMargin = new Thickness(horizontalOffset, verticalOffset, 0, 0);
+            double top = verticalOffset - (_view.contentContainer.DesiredSize.Height / 2);
+            double bottom = 0;
+            double left = horizontalOffset;
+            double right = 0;
+            Thickness updatedMargin = new Thickness(left, top, right, bottom);
             Margin = updatedMargin;
         }
 
@@ -192,6 +234,24 @@ namespace Dynamo.ViewModels
                     break;
                 case Style.None:
                     throw new ArgumentException("PopupWindow didn't have a style (456B24E0F400)");
+            }
+        }
+
+        private void UpdateShape()
+        {
+            switch (PopupStyle)
+            {
+                case Style.LibraryItemPreview:
+                    FramePoints = GetFramePoints_LibraryItemPreview();
+                    break;
+                case Style.NodeTooltip:
+                    FramePoints = GetFramePoints_NodeTooltip();
+                    break;
+                case Style.Error:
+                    FramePoints = GetFramePoints_Error();
+                    break;
+                case Style.None:
+                    break;
             }
         }
 
@@ -225,6 +285,72 @@ namespace Dynamo.ViewModels
         private void SetStyle_Error()
         {
 
+        }
+
+        private TextBox GetStyledTextBox(string text)
+        {
+            TextBox textBox = new TextBox();
+            textBox.Text = text;
+            textBox.IsReadOnly = true;
+            textBox.BorderThickness = new Thickness(0);
+            textBox.Background = Brushes.Transparent;
+            textBox.FontSize = 13;
+            textBox.Foreground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
+            textBox.TextWrapping = TextWrapping.Wrap;
+            textBox.Margin = new Thickness(12, 5, 5, 5);
+            return textBox;
+        }
+
+        private PointCollection GetFramePoints_LibraryItemPreview()
+        {
+            _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            PointCollection pointCollection = new PointCollection();
+            pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
+            pointCollection.Add(new Point(7, 0));
+            pointCollection.Add(new Point(7, _view.contentContainer.DesiredSize.Height / 2 - 7));
+            pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height / 2));
+            pointCollection.Add(new Point(7, _view.contentContainer.DesiredSize.Height / 2 + 7));
+            pointCollection.Add(new Point(7, _view.contentContainer.DesiredSize.Height));
+            pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height));
+
+            return pointCollection;
+        }
+
+        private PointCollection GetFramePoints_NodeTooltip()
+        {
+            _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            PointCollection pointCollection = new PointCollection();
+            pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
+            pointCollection.Add(new Point(6, 0));
+            pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 - 6));
+            pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height / 2));
+            pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 + 6));
+            pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height));
+            pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height));
+            return pointCollection;
+        }
+
+        private PointCollection GetFramePoints_Error()
+        {
+            PointCollection pointCollection = new PointCollection();
+
+            return pointCollection;
+        }
+
+        private void fadeInTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (Opacity < 0.9)
+                Opacity += 0.9 / 10;
+            else
+                fadeInTimer.Stop();
+        }
+
+        private void fadeOutTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (Opacity > 0)
+                Opacity -= 0.9 / 10;
+            else
+                fadeOutTimer.Stop();
         }
 
         #endregion

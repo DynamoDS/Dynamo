@@ -86,6 +86,7 @@ namespace Dynamo.Controls
 
             //setup popup for library items tooltip
             PopupView popup = new PopupView(dynSettings.Controller.PopupViewmodel);
+            dynSettings.Controller.PopupViewmodel.UpdateView(PopupViewModel.Style.LibraryItemPreview, popup);
             popupGrid.Children.Add(popup);
         }
 
