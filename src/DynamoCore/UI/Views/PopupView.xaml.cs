@@ -30,87 +30,26 @@ namespace Dynamo.UI.Views
             DataContext = _viewModel = viewmodel;
         }
 
-        public void UpdatePopupWindow()
-        {
-            _viewModel.UpdatePopupCommand.Execute(null);
-        }
-
-        public void FadeInPopupWindow()
+        private void FadeInPopupWindow()
         {
             _viewModel.FadeInCommand.Execute(null);
         }
 
-        public void FadeOutPopupWindow()
+        private void FadeOutPopupWindow()
         {
             _viewModel.FadeOutCommand.Execute(null);
         }
 
-        private List<Point> GetFramePoints_LibraryItemPreview()
+        private void Popup_MouseEnter(object sender, MouseEventArgs e)
         {
-            this.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            List<Point> points = new List<Point>();
-            points.Add(new Point(this.contentContainer.DesiredSize.Width, 0));
-            points.Add(new Point(7, 0));
-            points.Add(new Point(7, this.contentContainer.DesiredSize.Height / 2 - 7));
-            points.Add(new Point(0, this.contentContainer.DesiredSize.Height / 2));
-            points.Add(new Point(7, this.contentContainer.DesiredSize.Height / 2 + 7));
-            points.Add(new Point(7, this.contentContainer.DesiredSize.Height));
-            points.Add(new Point(this.contentContainer.DesiredSize.Width, this.contentContainer.DesiredSize.Height));
-            return points;
+            if (mainGrid.Opacity != 0)
+                FadeInPopupWindow();
         }
 
-        private List<Point> GetFramePoints_NodeTooltip()
+        private void Popup_MouseLeave(object sender, MouseEventArgs e)
         {
-            this.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            List<Point> points = new List<Point>();
-            points.Add(new Point(this.contentContainer.DesiredSize.Width, 0));
-            points.Add(new Point(6, 0));
-            points.Add(new Point(6, this.contentContainer.DesiredSize.Height / 2 - 6));
-            points.Add(new Point(0, this.contentContainer.DesiredSize.Height / 2));
-            points.Add(new Point(6, this.contentContainer.DesiredSize.Height / 2 + 6));
-            points.Add(new Point(6, this.contentContainer.DesiredSize.Height));
-            points.Add(new Point(this.contentContainer.DesiredSize.Width, this.contentContainer.DesiredSize.Height));
-            return points;
-        }
-
-        private List<Point> GetFramePoints_Error()
-        {
-            List<Point> points = new List<Point>();
-            return points;
-        }
-
-        private void UpdateShape()
-        {
-            if (backgroundPolygon.Points != null && backgroundPolygon.Points.Count > 0)
-                backgroundPolygon.Points.Clear();
-            List<Point> framePoints = new List<Point>();
-
-            switch (_viewModel.PopupStyle)
-            {
-                case PopupViewModel.Style.LibraryItemPreview:
-                    framePoints = GetFramePoints_LibraryItemPreview();
-                    break;
-                case PopupViewModel.Style.NodeTooltip:
-                    framePoints = GetFramePoints_NodeTooltip();
-                    break;
-                case PopupViewModel.Style.Error:
-                    framePoints = GetFramePoints_Error();
-                    break;
-                case PopupViewModel.Style.None:
-                    break;
-            }
-
-            foreach (Point point in framePoints)
-                backgroundPolygon.Points.Add(point);
-        }
-
-        private void OnTextChange(object sender, TextChangedEventArgs e)
-        {
-            UpdateShape();
-
-            Thickness margin = _viewModel.Margin;
-            margin.Top -= mainGrid.ActualHeight / 2;
-            _viewModel.Margin = margin;
+            if (mainGrid.Opacity != 0)
+                FadeOutPopupWindow();
         }
     }
 }

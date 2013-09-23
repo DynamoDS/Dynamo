@@ -255,7 +255,7 @@ namespace Dynamo
             NodeRemovedFromRendering += new EventHandler(Controller_NodeRemovedFromRendering);
 
 
-            this.PopupViewmodel = new PopupViewModel(PopupViewModel.Style.LibraryItemPreview);
+            this.PopupViewmodel = new PopupViewModel();
         }
 
         #endregion
