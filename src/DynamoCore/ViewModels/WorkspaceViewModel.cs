@@ -450,10 +450,8 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Name");
                     break;
                 case "X":
-                    OnCurrentOffsetChanged(this, new PointEventArgs(new Point(_model.X, _model.Y)));
                     break;
                 case "Y":
-                    OnCurrentOffsetChanged(this, new PointEventArgs(new Point(_model.X, _model.Y)));
                     break;
                 case "Zoom":
                     OnZoomChanged(this, new ZoomEventArgs(_model.Zoom));

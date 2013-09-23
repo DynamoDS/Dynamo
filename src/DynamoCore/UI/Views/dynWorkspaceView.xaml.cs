@@ -280,10 +280,16 @@ namespace Dynamo.Views
             double absoluteX, absoluteY;
             absoluteX = relative.X * ViewModel._model.Zoom + ViewModel._model.X;
             absoluteY = relative.Y * ViewModel._model.Zoom + ViewModel._model.Y;
+            Point resultOffset = new Point();
+            resultOffset.X = absoluteX - (relative.X * resultZoom);
+            resultOffset.Y = absoluteY - (relative.Y * resultZoom);
 
             ViewModel._model.Zoom = resultZoom;
-            ViewModel._model.X = absoluteX - (relative.X * ViewModel._model.Zoom);
-            ViewModel._model.Y = absoluteY - (relative.Y * ViewModel._model.Zoom);
+            ViewModel._model.X = resultOffset.X;
+            ViewModel._model.Y = resultOffset.Y;
+
+            vm_CurrentOffsetChanged(this, new PointEventArgs(resultOffset));
+            vm_ZoomChanged(this, new ZoomEventArgs(resultZoom));
         }
 
         void vm_ZoomToFitView(object sender, EventArgs e)
@@ -315,10 +321,17 @@ namespace Dynamo.Views
             double centerOffsetX = viewportPadding + (fitWidth - (zoomArgs.FocusWidth * scaleRequired)) / 2;
             double centerOffsetY = viewportPadding + (fitHeight - (zoomArgs.FocusHeight * scaleRequired)) / 2;
 
+            Point resultOffset = new Point();
+            resultOffset.X = -(zoomArgs.Offset.X * scaleRequired) + centerOffsetX;
+            resultOffset.Y = -(zoomArgs.Offset.Y * scaleRequired) + centerOffsetY;
+
             // Apply on model
             ViewModel._model.Zoom = scaleRequired;
-            ViewModel._model.X = -(zoomArgs.Offset.X * scaleRequired) + centerOffsetX;
-            ViewModel._model.Y = -(zoomArgs.Offset.Y * scaleRequired) + centerOffsetY;
+            ViewModel._model.X = resultOffset.X;
+            ViewModel._model.Y = resultOffset.Y;
+
+            vm_CurrentOffsetChanged(this, new PointEventArgs(resultOffset));
+            vm_ZoomChanged(this, new ZoomEventArgs(scaleRequired));
         }
 
         private void dynWorkspaceView_KeyDown(object sender, KeyEventArgs e)
