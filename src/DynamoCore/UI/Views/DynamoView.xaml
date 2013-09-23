@@ -202,6 +202,9 @@
                     </MenuItem>
 
                     <MenuItem Header="_Edit" Name="editMenu" Focusable="False">
+                        <MenuItem Focusable="False" Header="_Undo" Command="{Binding UndoCommand}" Name="undo" InputGestureText="Ctrl+Z"/>
+                        <MenuItem Focusable="False" Header="_Redo" Command="{Binding RedoCommand}"  Name="redo" InputGestureText="Ctrl+Y"/>
+                        <Separator/>
                         <MenuItem Focusable="False" Header="_Copy" Command="{Binding CopyCommand}" Name="copy" InputGestureText="Ctrl + C"/>
                         <MenuItem Focusable="False" Header="_Paste" Command="{Binding PasteCommand}"  Name="paste" InputGestureText="Ctrl + V"/>
                         <Separator/>
