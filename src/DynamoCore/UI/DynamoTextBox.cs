@@ -126,11 +126,6 @@ namespace Dynamo.Nodes
             SelectAll();
         }
 
-        protected override void OnInitialized(EventArgs e)
-        {
-            base.OnInitialized(e);
-        }
-
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
             Pending = true;

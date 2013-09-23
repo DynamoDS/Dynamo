@@ -426,14 +426,13 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
-            var bindingVal = new System.Windows.Data.Binding("Value")
+            tb.BindToProperty(new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new StringDisplay(),
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tb.SetBinding(TextBox.TextProperty, bindingVal);
+            });
         }
 
     }
