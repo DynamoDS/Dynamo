@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows.Data;
 using System.Xml;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
@@ -1709,7 +1710,7 @@ namespace Dynamo.Nodes
 
             try
             {
-                _parsed = DoubleInput.ParseValue(Value, new[] { ',' }, parameters);
+                _parsed = DoubleInput.ParseValue(Value, new[] { ',' }, parameters, new ConversionDelegate(TokenConvert));
 
                 if (InPortData.Count > 2)
                     InPortData.RemoveRange(2, InPortData.Count - 2);
@@ -1725,6 +1726,11 @@ namespace Dynamo.Nodes
             {
                 Error(e.Message);
             }
+        }
+
+        private double TokenConvert(double value)
+        {
+            return value;
         }
 
         internal static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|\[(?<id>\w(?:[^}\\]|(?:\\}))*)\]");
@@ -3302,6 +3308,8 @@ namespace Dynamo.Nodes
 
     #endregion
 
+    public delegate double ConversionDelegate(double value);
+
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("Creates a number.")]
@@ -3312,10 +3320,18 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", "", typeof(Value.Number)));
 
             RegisterAllPorts();
+
+            _convertToken = Convert;
+        }
+
+        public virtual double Convert(double value)
+        {
+            return value;
         }
 
         private List<IDoubleSequence> _parsed;
         private string _value;
+        protected ConversionDelegate _convertToken;
 
         public string Value
         {
@@ -3331,7 +3347,7 @@ namespace Dynamo.Nodes
 
                 try
                 {
-                    _parsed = ParseValue(value, new[] { '\n' }, idList);
+                    _parsed = ParseValue(value, new[] { '\n' }, idList, _convertToken);
 
                     InPortData.Clear();
 
@@ -3370,7 +3386,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers)
+        public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
         {
             var idSet = new HashSet<string>(identifiers);
             return text.Replace(" ", "").Split(seps, StringSplitOptions.RemoveEmptyEntries).Select(
@@ -3399,10 +3415,10 @@ namespace Dynamo.Nodes
                             {
                                 if (rangeIdentifiers[2].StartsWith("#") || rangeIdentifiers[2].StartsWith("~"))
                                     throw new Exception("Cannot use range or approx. identifier on increment field when one has already been used to specify a count.");
-                                return new Sequence(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken);
+                                return new Sequence(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken, convertToken);
                             }
 
-                            return new Sequence(startToken, new DoubleToken(1), endToken) as IDoubleSequence;
+                            return new Sequence(startToken, new DoubleToken(1), endToken, convertToken) as IDoubleSequence;
                         }
                         else
                         {
@@ -3415,7 +3431,7 @@ namespace Dynamo.Nodes
                                     var count = rangeIdentifiers[2].Substring(1);
                                     IDoubleInputToken countToken = ParseToken(count, idSet, identifiers);
 
-                                    return new CountRange(startToken, countToken, endToken);
+                                    return new CountRange(startToken, countToken, endToken, convertToken);
                                 }
 
                                 if (rangeIdentifiers[2].StartsWith("~"))
@@ -3423,17 +3439,17 @@ namespace Dynamo.Nodes
                                     var approx = rangeIdentifiers[2].Substring(1);
                                     IDoubleInputToken approxToken = ParseToken(approx, idSet, identifiers);
 
-                                    return new ApproxRange(startToken, approxToken, endToken);
+                                    return new ApproxRange(startToken, approxToken, endToken, convertToken);
                                 }
 
-                                return new Range(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken);
+                                return new Range(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken, convertToken);
                             }
-                            return new Range(startToken, new DoubleToken(1), endToken) as IDoubleSequence;
+                            return new Range(startToken, new DoubleToken(1), endToken, convertToken) as IDoubleSequence;
                         }
 
                     }
 
-                    return new OneNumber(startToken) as IDoubleSequence;
+                    return new OneNumber(startToken, convertToken) as IDoubleSequence;
                 }).ToList();
         }
 
@@ -3496,15 +3512,16 @@ namespace Dynamo.Nodes
         private class OneNumber : IDoubleSequence
         {
             private readonly IDoubleInputToken _token;
-
             private readonly double? _result;
-
-            public OneNumber(IDoubleInputToken t)
+            private readonly ConversionDelegate _convert;
+ 
+            public OneNumber(IDoubleInputToken t, ConversionDelegate convertToken)
             {
                 _token = t;
+                _convert = convertToken;
 
                 if (_token is DoubleToken)
-                    _result = GetValue(null).First();
+                    _result = _convert(GetValue(null).First());
             }
 
             public Value GetFSchemeValue(Dictionary<string, double> idLookup)
@@ -3535,14 +3552,16 @@ namespace Dynamo.Nodes
             private readonly IDoubleInputToken _start;
             private readonly IDoubleInputToken _step;
             private readonly IDoubleInputToken _count;
+            private readonly ConversionDelegate _convert;
 
             private readonly IEnumerable<double> _result;
 
-            public Sequence(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken count)
+            public Sequence(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken count, ConversionDelegate convertToken)
             {
                 _start = start;
                 _step = step;
                 _count = count;
+                _convert = convertToken;
 
                 if (_start is DoubleToken && _step is DoubleToken && _count is DoubleToken)
                 {
@@ -3606,14 +3625,16 @@ namespace Dynamo.Nodes
             private readonly IDoubleInputToken _start;
             private readonly IDoubleInputToken _step;
             private readonly IDoubleInputToken _end;
+            private readonly ConversionDelegate _convert;
 
             private readonly IEnumerable<double> _result;
 
-            public Range(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end)
+            public Range(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end, ConversionDelegate convertToken)
             {
                 _start = start;
                 _step = step;
                 _end = end;
+                _convert = convertToken;
 
                 if (_start is DoubleToken && _step is DoubleToken && _end is DoubleToken)
                 {
@@ -3632,13 +3653,13 @@ namespace Dynamo.Nodes
             {
                 if (_result == null)
                 {
-                    var step = _step.GetValue(idLookup);
+                    var step = _convert(_step.GetValue(idLookup));
 
                     if (step == 0)
                         throw new Exception("Can't have 0 step.");
 
-                    var start = _start.GetValue(idLookup);
-                    var end = _end.GetValue(idLookup);
+                    var start = _convert(_start.GetValue(idLookup));
+                    var end = _convert(_end.GetValue(idLookup));
 
                     return Process(start, step, end);
                 }
@@ -3680,8 +3701,8 @@ namespace Dynamo.Nodes
 
         private class CountRange : Range
         {
-            public CountRange(IDoubleInputToken startToken, IDoubleInputToken countToken, IDoubleInputToken endToken)
-                : base(startToken, countToken, endToken)
+            public CountRange(IDoubleInputToken startToken, IDoubleInputToken countToken, IDoubleInputToken endToken, ConversionDelegate convertToken)
+                : base(startToken, countToken, endToken, convertToken)
             { }
 
             protected override IEnumerable<double> Process(double start, double count, double end)
@@ -3706,8 +3727,8 @@ namespace Dynamo.Nodes
 
         private class ApproxRange : Range
         {
-            public ApproxRange(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end) 
-                : base(start, step, end)
+            public ApproxRange(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end, ConversionDelegate convertToken) 
+                : base(start, step, end, convertToken)
             { }
 
             protected override IEnumerable<double> Process(double start, double approx, double end)
@@ -3793,41 +3814,12 @@ namespace Dynamo.Nodes
     [NodeName("Angle(deg.)")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
     [NodeDescription("An angle in degrees.")]
-    public partial class AngleInput : Double
+    public class AngleInput : DoubleInput
     {
-        public AngleInput()
+        public override double Convert(double value)
         {
-            RegisterAllPorts();
+            return value * Math.PI / 180.0;
         }
-
-        public override double Value
-        {
-            get
-            {
-                return base.Value;
-            }
-            set
-            {
-                if (base.Value == value)
-                    return;
-
-                base.Value = value;
-                //RaisePropertyChanged("Value");
-            }
-        }
-
-        protected override double DeserializeValue(string val)
-        {
-            try
-            {
-                return Convert.ToDouble(val);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
     }
 
     [NodeName("Number Slider")]
