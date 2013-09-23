@@ -20,7 +20,7 @@ using System.IO.Ports;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
-
+using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Value = Dynamo.FScheme.Value;
@@ -110,6 +110,30 @@ namespace Dynamo.Nodes
                 }
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("value", port.PortName);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                port.PortName = helper.ReadString("value");
+            }
+        }
+
+        #endregion
 
         public override Value Evaluate(FSharpList<Value> args)
         {

@@ -447,6 +447,34 @@ namespace Dynamo
 
                 ArgumentLacing = LacingStrategy.Disabled;
             }
+
+            #region Serialization/Deserialization methods
+
+            protected override void SerializeCore(XmlElement element, SaveContext context)
+            {
+                base.SerializeCore(element, context); //Base implementation must be called
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    helper.SetAttribute("value", Symbol);
+                }
+            }
+
+            protected override void DeserializeCore(XmlElement element, SaveContext context)
+            {
+                base.SerializeCore(element, context); //Base implementation must be called
+
+                //Should I incoprporate try block here?
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    Symbol = helper.ReadString("index");
+                }
+
+                ArgumentLacing = LacingStrategy.Disabled;
+            }
+
+            #endregion
         }
 
         [NodeName("Input")]
@@ -521,6 +549,33 @@ namespace Dynamo
 
                 ArgumentLacing = LacingStrategy.Disabled;
             }
+
+            #region Serialization/Deserialization methods
+
+            protected override void SerializeCore(XmlElement element, SaveContext context)
+            {
+                base.SerializeCore(element, context); //Base implementation must be called
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    helper.SetAttribute("value" , InputSymbol);
+                }
+            }
+
+            protected override void DeserializeCore(XmlElement element, SaveContext context)
+            {
+                base.SerializeCore(element, context); //Base implementation must be called
+
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    InputSymbol = helper.ReadString("value");
+                }
+
+                ArgumentLacing = LacingStrategy.Disabled;
+            }
+
+            #endregion
         }
 
         #region Disabled Anonymous Function Node

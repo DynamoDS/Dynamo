@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 
@@ -37,6 +38,32 @@ namespace Dynamo.Nodes
             }
             catch { }
         }
+
+        #region Serialization/Deserialization methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("index", SelectedIndex);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            
+            //Should I incoprporate try block here?
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                SelectedIndex = helper.ReadInteger("index");
+            }
+        }
+
+        #endregion
     }
 
     [IsInteractive(true)]

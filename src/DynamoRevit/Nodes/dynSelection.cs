@@ -239,6 +239,45 @@ namespace Dynamo.Nodes
                 }
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlDocument xmlDoc = element.OwnerDocument;
+                XmlElement outEl = xmlDoc.CreateElement("instance");
+                outEl.SetAttribute("id", SelectedElement.UniqueId);
+                element.AppendChild(outEl);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElement subNode = element.SelectSingleNode("instance") as XmlElement;
+                if (subNode == null)
+                    return;
+                Element saved = null;
+                var id = subNode.Attributes[0].Value;
+                try
+                {
+                    saved = dynRevitSettings.Doc.Document.GetElement(id); // FamilyInstance;
+                }
+                catch
+                {
+                    DynamoLogger.Instance.Log(
+                        "Unable to find element with ID: " + id);
+                }
+                SelectedElement = saved;
+            }
+        }
+
+        #endregion
     }
 
     public abstract class ElementSelectionBase : SelectionBase
@@ -514,6 +553,54 @@ namespace Dynamo.Nodes
                 }
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlDocument xmlDoc = element.OwnerDocument;
+                if (SelectedElements != null)
+                {
+                    foreach (Element selectedElement in SelectedElements)
+                    {
+                        XmlElement outEl = xmlDoc.CreateElement("instance");
+                        outEl.SetAttribute("id", selectedElement.UniqueId);
+                        element.AppendChild(outEl);
+                    }
+                }
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlNodeList instanceNodes = element.SelectNodes("instance");
+                foreach (XmlNode subNode in instanceNodes)
+                {
+                    Element saved = null;
+                    var id = subNode.Attributes[0].Value;
+                    try
+                    {
+                        saved = dynRevitSettings.Doc.Document.GetElement(id);
+                    }
+                    catch
+                    {
+                        DynamoLogger.Instance.Log(
+                            "Unable to find element with ID: " + id);
+                    }
+                    if (SelectedElements == null)
+                        SelectedElements = new List<Element>();
+                    SelectedElements.Add(saved);
+                }
+            }
+        }
+
+        #endregion
     }
 
     [NodeName("Select Family Instance")]

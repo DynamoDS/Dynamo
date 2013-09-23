@@ -140,6 +140,33 @@ namespace Dynamo.Nodes
             }
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlDocument xmlDoc = element.OwnerDocument;
+                XmlElement script = xmlDoc.CreateElement("Script");
+                script.InnerText = this.script;
+                element.AppendChild(script);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElement scriptElement = element.SelectSingleNode("Script") as XmlElement;
+                if(scriptElement != null)
+                    script = scriptElement.InnerText;
+            }
+        }
+
+        #endregion
+
         private List<Binding> makeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs

@@ -329,5 +329,41 @@ namespace Dynamo.Nodes
             }
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("id", this.PickedSunAndShadowSettings.Id);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                int elementId = helper.ReadInteger("id");
+                try
+                {
+                    this.PickedSunAndShadowSettings = dynRevitSettings.Doc.Document.GetElement(
+                       new ElementId(elementId)) as SunAndShadowSettings;
+                    if (this.PickedSunAndShadowSettings != null)
+                    {
+                        sunAndShadowSettingsID = PickedSunAndShadowSettings.Id;
+                        this.tb.Text = this.PickedSunAndShadowSettings.Name;
+                        this.sunPathButt.Content = "Use SunPath from Current View";
+                    }
+                }
+                catch { }
+            }
+        }
+
+        #endregion
+
     }
 }
