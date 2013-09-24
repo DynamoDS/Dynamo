@@ -392,9 +392,15 @@ namespace Dynamo.ViewModels
             CurvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
             CurvePoint2 = new Point(p2.X - offset, p2.Y);
 
+            //if connector is dragged from an input port
+            if (ActiveStartPort != null && ActiveStartPort.PortType == PortType.INPUT)
+            {
+                CurvePoint1 = new Point(CurvePoint0.X - offset, CurvePoint1.Y);;
+                CurvePoint2 = new Point(p2.X + offset, p2.Y);
+            }
+
             DotTop = CurvePoint3.Y - EndDotSize / 2;
             DotLeft = CurvePoint3.X - EndDotSize / 2;
-
         }
 
         private bool CanRedraw(object parameter)
