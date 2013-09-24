@@ -322,7 +322,7 @@ namespace Dynamo.Nodes
 
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
             //add a text box to the input grid of the control
-            var tb = new dynTextBox();
+            var tb = new DynamoTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             nodeUI.inputGrid.Children.Add(tb);
@@ -331,7 +331,7 @@ namespace Dynamo.Nodes
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             
             tb.DataContext = this;
-            var bindingVal = new System.Windows.Data.Binding("Value")
+            tb.BindToProperty(new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new RevitProjectUnitsConverter(),
@@ -339,8 +339,7 @@ namespace Dynamo.Nodes
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, bindingVal);
+            });
             
             tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
         }
