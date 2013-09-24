@@ -49,7 +49,7 @@ namespace Dynamo.Nodes
                     foreach (var id in run)
                     {
                         Element e;
-                        if (dynUtils.TryGetElement(id, typeof(object), out e))
+                        if (dynUtils.TryGetElement(id, out e))
                         {
                             var elementStore = xmlDoc.CreateElement("Element");
                             elementStore.InnerText = e.UniqueId;
