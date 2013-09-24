@@ -25,7 +25,7 @@ namespace Dynamo.Utilities
             try
             {
                 e = dynRevitSettings.Doc.Document.GetElement(id) as T;
-                return e == null;
+                return e != null && e.Id != null;
             }
             catch
             {
