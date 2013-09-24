@@ -380,7 +380,7 @@ namespace Dynamo.Nodes
                             object[] argsM = new object[1];
                             argsM[0] = mySolid;
                             Element e;
-                            if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.GenericForm), out e) && e is GenericForm)
+                            if (dynUtils.TryGetElement(this.Elements[0], out e) && e is GenericForm)
                             {
                                 ffe = e as GenericForm;
                                 object[] argsMInst = new object[1];
