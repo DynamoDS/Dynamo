@@ -1,4 +1,8 @@
-﻿using Dynamo.UI.Commands;
+﻿using Dynamo.Core.Automation;
+using Dynamo.Nodes;
+using Dynamo.UI.Commands;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.ViewModels
 {
@@ -169,5 +173,57 @@ namespace Dynamo.ViewModels
                 return _findNodesFromSelectionCommand;
             }
         }
+    }
+}
+
+namespace Dynamo.Models
+{
+    partial class WorkspaceModel
+    {
+        #region The Actual Command Handlers
+
+        internal void CreateNodeImpl(CreateNodeCommand command)
+        {
+#if false
+            NodeModel node = CreateNode(command.NodeName);
+            if (node == null)
+            {
+                dynSettings.Controller.DynamoModel.WriteToLog("Failed to create the node");
+                return;
+            }
+
+            if (this is HomeWorkspace)
+            {
+                if (node is Symbol || node is Output)
+                {
+                    dynSettings.Controller.DynamoModel.WriteToLog(
+                        "Cannot place dynSymbol or dynOutput in HomeWorkspace");
+                    return;
+                }
+            }
+
+            this.Nodes.Add(node);
+            node.WorkSpace = this;
+
+            // TODO(Ben): Handle the case where we get an XmlNode
+            // 
+            // if (data.ContainsKey("data"))
+            //     node.Load(data["data"] as XmlNode);
+
+            node.GUID = command.NodeId;
+
+            WorkspaceViewModel viewModel = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel;
+            viewModel.OnRequestNodeCentered(this, new ModelEventArgs(node, data));
+
+            node.EnableInteraction();
+
+            if (CurrentWorkspace == HomeSpace)
+                node.SaveResult = true;
+
+            OnNodeAdded(node);
+#endif
+        }
+
+        #endregion
     }
 }

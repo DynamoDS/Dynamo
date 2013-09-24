@@ -3,49 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Dynamo.Models;
 using Dynamo.Utilities;
 
-namespace Dynamo.Core
+namespace Dynamo.Core.Automation
 {
-    partial class WorkspaceModel
-    {
-        private List<RecordableCommand> recordedCommands = null;
-
-        internal void ExecuteCommand(RecordableCommand command)
-        {
-            // In the playback mode 'this.recordedCommands' will be 
-            // 'null' so that the incoming command will not be recorded.
-            if (null != recordedCommands)
-                recordedCommands.Add(command);
-
-            command.Execute(this); // Internally calls 'CreateNodeInternal'.
-        }
-
-        internal void CreateNodeInternal(CreateNodeCommand command)
-        {
-            System.Guid nodeId = command.NodeId;
-            string nodeType = command.NodeType;
-
-            // Existing codes that create the actual node...
-        }
-    }
-
-    public class DynamoViewModel
-    {
-        // This can be either a DelegateCommand execution 
-        // method, or an event handler of a UI component.
-        internal void OnCreateNodeButtonClicked()
-        {
-            WorkspaceModel workspace = DynamoViewModel.CurrentSpace;
-
-            System.Guid nodeId = Guid.NewGuid();
-            string nodeType = "Dynamo.Nodes.Conditional";
-            workspace.ExecuteCommand(new CreateNodeCommand(nodeId, nodeType));
-        }
-
-        private static WorkspaceModel CurrentSpace { get; set; }
-    }
-
     /// <summary>
     /// This is the base class of all recordable commands. It provides the 
     /// contract between a UI event handler (e.g. delegate command method or 
@@ -145,10 +107,14 @@ namespace Dynamo.Core
     {
         #region Public Class Methods and Properties
 
-        internal CreateNodeCommand(Guid nodeId, string nodeType)
+        internal CreateNodeCommand(Guid nodeId, string nodeName,
+            double x, double y, bool transformCoordinates)
         {
             this.NodeId = nodeId;
-            this.NodeType = nodeType;
+            this.NodeName = nodeName;
+            this.X = x;
+            this.Y = y;
+            this.TransformCoordinates = transformCoordinates;
         }
 
         /// <summary>
@@ -164,12 +130,18 @@ namespace Dynamo.Core
         {
             XmlElementHelper helper = new XmlElementHelper(element);
             System.Guid nodeId = helper.ReadGuid("NodeId");
-            string nodeType = helper.ReadString("NodeType");
-            return new CreateNodeCommand(nodeId, nodeType);
+            string nodeName = helper.ReadString("NodeName");
+            double x = helper.ReadDouble("X");
+            double y = helper.ReadDouble("Y");
+            bool transform = helper.ReadBoolean("TransformCoordinates");
+            return new CreateNodeCommand(nodeId, nodeName, x, y, transform);
         }
 
         internal Guid NodeId { get; private set; }
-        internal string NodeType { get; private set; }
+        internal string NodeName { get; private set; }
+        internal double X { get; private set; }
+        internal double Y { get; private set; }
+        internal bool TransformCoordinates { get; private set; }
 
         #endregion
 
@@ -177,14 +149,17 @@ namespace Dynamo.Core
 
         protected override void ExecuteCore(WorkspaceModel workspace)
         {
-            workspace.CreateNodeInternal(this);
+            workspace.CreateNodeImpl(this);
         }
 
         protected override void SerializeCore(XmlElement element)
         {
             XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("NodeId", this.NodeId);
-            helper.SetAttribute("NodeType", this.NodeType);
+            helper.SetAttribute("NodeName", this.NodeName);
+            helper.SetAttribute("X", this.X);
+            helper.SetAttribute("Y", this.Y);
+            helper.SetAttribute("TransformCoordinates", TransformCoordinates);
         }
 
         #endregion
