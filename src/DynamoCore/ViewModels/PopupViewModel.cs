@@ -136,6 +136,7 @@ namespace Dynamo.ViewModels
         private Timer fadeInTimer;
         private Timer fadeOutTimer;
 
+        private ConnectingDirection _connectingDirection;
         #endregion
 
         #region Public Methods
@@ -151,9 +152,8 @@ namespace Dynamo.ViewModels
             fadeOutTimer.Enabled = true;
         }
 
-        public void UpdateView(Style style, PopupView view)
+        public void UpdateView(PopupView view)
         {
-            UpdateStyle(style);
             _view = view;
         }
 
@@ -164,10 +164,10 @@ namespace Dynamo.ViewModels
         private void UpdatePopup(object parameter)
         {
             PopupDataPacket data = (PopupDataPacket)parameter;
-            UpdateStyle(data.Style);
+            UpdateStyle(data.Style, data.ConnectingDirection);
             UpdateContent(data.Text);
             UpdateShape();
-            UpdatePosition(data.PointToScreen, data.ConnectingDirection);
+            UpdatePosition(data.PointToScreen);
         }
 
         private bool CanUpdatePopup(object parameter)
@@ -219,7 +219,7 @@ namespace Dynamo.ViewModels
             _view.contentContainer.Children.Add(GetStyledTextBox(ItemDescription));
         }
 
-        private void UpdatePosition(Point pointToScreen, ConnectingDirection connectingDirection)
+        private void UpdatePosition(Point pointToScreen)
         {
             Point pointFromScreen = _view.PointFromScreen(pointToScreen);
             _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -230,21 +230,22 @@ namespace Dynamo.ViewModels
                     Margin = GetMargin_LibraryItemPreview(pointFromScreen);
                     break;
                 case Style.NodeTooltip:
-                    Margin = GetMargin_SetStyle_NodeTooltip(pointFromScreen, connectingDirection);
+                    Margin = GetMargin_SetStyle_NodeTooltip(pointFromScreen, _connectingDirection);
                     break;
             }
         }
 
-        private void UpdateStyle(PopupViewModel.Style style)
+        private void UpdateStyle(PopupViewModel.Style style, ConnectingDirection connectingDirection)
         {
             PopupStyle = style;
+            this._connectingDirection = connectingDirection;
             switch (style)
             {
                 case Style.LibraryItemPreview:
                     SetStyle_LibraryItemPreview();
                     break;
                 case Style.NodeTooltip:
-                    SetStyle_NodeTooltip();
+                    SetStyle_NodeTooltip(connectingDirection);
                     break;
                 case Style.Error:
                     SetStyle_Error();
@@ -315,7 +316,7 @@ namespace Dynamo.ViewModels
             ContentMargin = new Thickness(12, 5, 5, 5);
         }
 
-        private void SetStyle_NodeTooltip()
+        private void SetStyle_NodeTooltip(ConnectingDirection connectingDirection)
         {
             FrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             FrameStrokeThickness = 1;
@@ -326,6 +327,19 @@ namespace Dynamo.ViewModels
             TextFontSize = 12;
             TextFontWeight = FontWeights.Light;
             TextForeground = new SolidColorBrush(Color.FromRgb(98, 140, 153));
+
+            switch (connectingDirection)
+            {
+                case ConnectingDirection.Left:
+                    ContentMargin = new Thickness(11, 5, 5, 5);
+                    break;
+                case ConnectingDirection.Right:
+                    ContentMargin = new Thickness(5, 5, 11, 5);
+                    break;
+                case ConnectingDirection.Down:
+                    ContentMargin = new Thickness(5, 5, 5, 11);
+                    break;
+            }
         }
 
         private void SetStyle_Error()
