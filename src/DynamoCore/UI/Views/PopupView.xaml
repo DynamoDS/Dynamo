@@ -11,7 +11,8 @@
             <controls:OpacityToVisibilityConverter x:Key="OpacityToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid x:Name="mainGrid" MaxWidth="{Binding Path=MaxWidth}" Background="Transparent" Opacity="{Binding Path=Opacity}" 
+    
+    <Grid x:Name="mainGrid" Background="Transparent" Opacity="{Binding Path=Opacity}" HorizontalAlignment="Left" VerticalAlignment="Top"
           Margin="{Binding Path=Margin}" Visibility="{Binding Path=Opacity, Converter={StaticResource OpacityToVisibilityConverter}}"
           MouseEnter="Popup_MouseEnter" MouseLeave="Popup_MouseLeave">
         <Polygon Name="backgroundPolygon" Fill="{Binding Path=FrameFill}" Stroke="{Binding Path=FrameStrokeColor}" 
