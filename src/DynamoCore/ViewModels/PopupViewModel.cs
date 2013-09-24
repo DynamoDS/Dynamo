@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
@@ -20,12 +21,16 @@ namespace Dynamo.ViewModels
             Error,
             None
         }
-        public enum ConnectingDirection
+        public enum Direction
         {
             Left,
-            Up,
+            Top,
             Right,
-            Down
+            Bottom,
+            TopLeft,
+            TopRight,
+            BottomLeft,
+            BottomRight
         }
 
         #region Properties
@@ -124,6 +129,12 @@ namespace Dynamo.ViewModels
             get { return _textFontWeight; }
             set { _textFontWeight = value; RaisePropertyChanged("TextFontWeight"); }
         }
+        private TextWrapping _contentWrapping;
+        public TextWrapping ContentWrapping
+        {
+            get { return _contentWrapping; }
+            set { _contentWrapping = value; RaisePropertyChanged("TextWrapping"); }
+        }
         private string _itemDescription;
         public string ItemDescription
         {
@@ -133,23 +144,24 @@ namespace Dynamo.ViewModels
 
         private PopupView _view;
 
-        private Timer fadeInTimer;
-        private Timer fadeOutTimer;
+        private Timer _fadeInTimer;
+        private Timer _fadeOutTimer;
 
-        private ConnectingDirection _connectingDirection;
+        private Direction _connectingDirection;
+        private Direction _limitedDirection;
         #endregion
 
         #region Public Methods
 
         public PopupViewModel()
         {
-            fadeInTimer = new Timer(20);
-            fadeInTimer.Elapsed += fadeInTimer_Elapsed;
-            fadeInTimer.Enabled = true;
+            _fadeInTimer = new Timer(20);
+            _fadeInTimer.Elapsed += fadeInTimer_Elapsed;
+            _fadeInTimer.Enabled = true;
 
-            fadeOutTimer = new Timer(20);
-            fadeOutTimer.Elapsed += fadeOutTimer_Elapsed;
-            fadeOutTimer.Enabled = true;
+            _fadeOutTimer = new Timer(20);
+            _fadeOutTimer.Elapsed += fadeOutTimer_Elapsed;
+            _fadeOutTimer.Enabled = true;
         }
 
         public void UpdateView(PopupView view)
@@ -164,10 +176,13 @@ namespace Dynamo.ViewModels
         private void UpdatePopup(object parameter)
         {
             PopupDataPacket data = (PopupDataPacket)parameter;
+            Point topLeft = _view.PointFromScreen(data.PointToScreen_TopLeft);
+            Point botRight = _view.PointFromScreen(data.PointToScreen_BotRight);
+
             UpdateStyle(data.Style, data.ConnectingDirection);
             UpdateContent(data.Text);
-            UpdateShape();
-            UpdatePosition(data.PointToScreen);
+            UpdateShape(topLeft, botRight);
+            UpdatePosition(topLeft, botRight);
         }
 
         private bool CanUpdatePopup(object parameter)
@@ -177,8 +192,8 @@ namespace Dynamo.ViewModels
 
         private void FadeIn(object parameter)
         {
-            fadeOutTimer.Stop();
-            fadeInTimer.Start();
+            _fadeOutTimer.Stop();
+            _fadeInTimer.Start();
         }
 
         private bool CanFadeIn(object parameter)
@@ -188,8 +203,8 @@ namespace Dynamo.ViewModels
 
         private void FadeOut(object parameter)
         {
-            fadeInTimer.Stop();
-            fadeOutTimer.Start();
+            _fadeInTimer.Stop();
+            _fadeOutTimer.Start();
         }
 
         private bool CanFadeOut(object parameter)
@@ -219,23 +234,22 @@ namespace Dynamo.ViewModels
             _view.contentContainer.Children.Add(GetStyledTextBox(ItemDescription));
         }
 
-        private void UpdatePosition(Point pointToScreen)
+        private void UpdatePosition(Point topLeft, Point botRight)
         {
-            Point pointFromScreen = _view.PointFromScreen(pointToScreen);
             _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
             switch (PopupStyle)
             {
                 case Style.LibraryItemPreview:
-                    Margin = GetMargin_LibraryItemPreview(pointFromScreen);
+                    Margin = GetMargin_LibraryItemPreview(topLeft, botRight);
                     break;
                 case Style.NodeTooltip:
-                    Margin = GetMargin_SetStyle_NodeTooltip(pointFromScreen, _connectingDirection);
+                    Margin = GetMargin_SetStyle_NodeTooltip(topLeft, botRight, _connectingDirection);
                     break;
             }
         }
 
-        private void UpdateStyle(PopupViewModel.Style style, ConnectingDirection connectingDirection)
+        private void UpdateStyle(PopupViewModel.Style style, Direction connectingDirection)
         {
             PopupStyle = style;
             this._connectingDirection = connectingDirection;
@@ -255,7 +269,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void UpdateShape()
+        private void UpdateShape(Point topLeft, Point botRight)
         {
             _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             switch (PopupStyle)
@@ -264,7 +278,7 @@ namespace Dynamo.ViewModels
                     FramePoints = GetFramePoints_LibraryItemPreview();
                     break;
                 case Style.NodeTooltip:
-                    FramePoints = GetFramePoints_NodeTooltip();
+                    FramePoints = GetFramePoints_NodeTooltip(topLeft, botRight);
                     break;
                 case Style.Error:
                     FramePoints = GetFramePoints_Error();
@@ -274,29 +288,29 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private Thickness GetMargin_LibraryItemPreview(Point connectingPoint)
+        private Thickness GetMargin_LibraryItemPreview(Point topLeft, Point botRight)
         {
             Thickness margin = new Thickness();
-            margin.Top = connectingPoint.Y - (_view.contentContainer.DesiredSize.Height / 2);
+            margin.Top = (topLeft.Y + botRight.Y) / 2 - (_view.contentContainer.DesiredSize.Height / 2);
             return margin;
         }
 
-        private Thickness GetMargin_SetStyle_NodeTooltip(Point connectingPoint, ConnectingDirection direction)
+        private Thickness GetMargin_SetStyle_NodeTooltip(Point topLeft, Point botRight, Direction direction)
         {
             Thickness margin = new Thickness();
             switch (direction)
             {
-                case ConnectingDirection.Down:
-                    margin.Top = connectingPoint.Y - _view.contentContainer.DesiredSize.Height;
-                    margin.Left = connectingPoint.X - (_view.contentContainer.DesiredSize.Width / 2);
+                case Direction.Bottom:
+                    margin.Top = topLeft.Y - _view.contentContainer.DesiredSize.Height;
+                    margin.Left = (topLeft.X + botRight.X) / 2 - (_view.contentContainer.DesiredSize.Width / 2);
                     break;
-                case ConnectingDirection.Left:
-                    margin.Top = connectingPoint.Y - (_view.contentContainer.DesiredSize.Height / 2);
-                    margin.Left = connectingPoint.X;
+                case Direction.Left:
+                    margin.Top = (topLeft.Y + botRight.Y) / 2 - (_view.contentContainer.DesiredSize.Height / 2);
+                    margin.Left = botRight.X;
                     break;
-                case ConnectingDirection.Right:
-                    margin.Top = connectingPoint.Y - (_view.contentContainer.DesiredSize.Height / 2);
-                    margin.Left = connectingPoint.X - _view.contentContainer.DesiredSize.Width;
+                case Direction.Right:
+                    margin.Top = (topLeft.Y + botRight.Y) / 2 - (_view.contentContainer.DesiredSize.Height / 2);
+                    margin.Left = topLeft.X - _view.contentContainer.DesiredSize.Width;
                     break;
             }
             return margin;
@@ -313,10 +327,11 @@ namespace Dynamo.ViewModels
             TextFontSize = 13;
             TextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
             TextFontWeight = FontWeights.Normal;
+            ContentWrapping = TextWrapping.Wrap;
             ContentMargin = new Thickness(12, 5, 5, 5);
         }
 
-        private void SetStyle_NodeTooltip(ConnectingDirection connectingDirection)
+        private void SetStyle_NodeTooltip(Direction connectingDirection)
         {
             FrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             FrameStrokeThickness = 1;
@@ -327,16 +342,17 @@ namespace Dynamo.ViewModels
             TextFontSize = 12;
             TextFontWeight = FontWeights.Light;
             TextForeground = new SolidColorBrush(Color.FromRgb(98, 140, 153));
+            ContentWrapping = TextWrapping.NoWrap;
 
             switch (connectingDirection)
             {
-                case ConnectingDirection.Left:
+                case Direction.Left:
                     ContentMargin = new Thickness(11, 5, 5, 5);
                     break;
-                case ConnectingDirection.Right:
+                case Direction.Right:
                     ContentMargin = new Thickness(5, 5, 11, 5);
                     break;
-                case ConnectingDirection.Down:
+                case Direction.Bottom:
                     ContentMargin = new Thickness(5, 5, 5, 11);
                     break;
             }
@@ -350,7 +366,7 @@ namespace Dynamo.ViewModels
         private TextBox GetStyledTextBox(string text)
         {
             TextBox textBox = new TextBox();
-            textBox.TextWrapping = TextWrapping.Wrap;
+            textBox.TextWrapping = ContentWrapping;
             textBox.Text = text;
             textBox.IsReadOnly = true;
             textBox.BorderThickness = new Thickness(0);
@@ -376,14 +392,122 @@ namespace Dynamo.ViewModels
             return pointCollection;
         }
 
-        private PointCollection GetFramePoints_NodeTooltip()
+        private PointCollection GetFramePoints_NodeTooltip(Point topLeft, Point botRight)
+        {
+            switch (_connectingDirection)
+            {
+                case Direction.Bottom:
+                    return GetFramePoints_NodeTooltipConnectBottom(topLeft, botRight);
+                case Direction.Left:
+                    return GetFramePoints_NodeTooltipConnectLeft(topLeft, botRight);
+                case Direction.Right:
+                    return GetFramePoints_NodeTooltipConnectRight(topLeft, botRight);
+            }
+            return new PointCollection();
+        }
+
+        private PointCollection GetFramePoints_NodeTooltipConnectBottom(Point topLeft, Point botRight)
         {
             _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             PointCollection pointCollection = new PointCollection();
-            pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
-            pointCollection.Add(new Point(0, 0));
-            pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height));
-            pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height));
+            Grid container = VisualTreeHelper.GetParent(_view) as Grid;
+            container = VisualTreeHelper.GetParent(container) as Grid;
+
+            if (topLeft.Y - _view.contentContainer.DesiredSize.Height >= 40)
+            {
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
+                pointCollection.Add(new Point(0, 0));
+                pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height - 6));
+                pointCollection.Add(new Point((_view.contentContainer.DesiredSize.Width / 2) - 3, _view.contentContainer.DesiredSize.Height - 6));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width / 2, _view.contentContainer.DesiredSize.Height));
+                pointCollection.Add(new Point((_view.contentContainer.DesiredSize.Width / 2) + 3, _view.contentContainer.DesiredSize.Height - 6));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height - 6));
+            }
+            else if (botRight.X + _view.contentContainer.DesiredSize.Width <= container.ActualWidth)
+            {
+                _limitedDirection = Direction.Top;
+                Margin = new Thickness(11, 5, 5, 5);
+                UpdateContent(ItemDescription);
+
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
+                pointCollection.Add(new Point(0, 0));
+                pointCollection.Add(new Point(6, 6));
+                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height));
+            }
+            else
+            {
+                _limitedDirection = Direction.TopRight;
+                Margin = new Thickness(5, 5, 11, 5);
+                UpdateContent(ItemDescription);
+
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
+                pointCollection.Add(new Point(0, 0));
+                pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, 6));
+
+            }
+            return pointCollection;
+        }
+
+        private PointCollection GetFramePoints_NodeTooltipConnectLeft(Point topLeft, Point botRight)
+        {
+            _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            PointCollection pointCollection = new PointCollection();
+            Grid container = VisualTreeHelper.GetParent(_view) as Grid;
+            container = VisualTreeHelper.GetParent(container) as Grid;
+
+            if (botRight.X + _view.contentContainer.DesiredSize.Width <= container.ActualWidth)
+            {
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, 0));
+                pointCollection.Add(new Point(0, 0));
+                pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height / 2 + 3));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height / 2));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height / 2 - 3));
+            }
+            else
+            {
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
+                pointCollection.Add(new Point(6, 0));
+                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 - 3));
+                pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height / 2));
+                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 + 3));
+                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height));
+            }
+            return pointCollection;
+        }
+
+        private PointCollection GetFramePoints_NodeTooltipConnectRight(Point topLeft, Point botRight)
+        {
+            _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            PointCollection pointCollection = new PointCollection();
+            Grid container = VisualTreeHelper.GetParent(_view) as Grid;
+            container = VisualTreeHelper.GetParent(container) as Grid;
+
+            if (topLeft.X - _view.contentContainer.DesiredSize.Width < 0)
+            {
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
+                pointCollection.Add(new Point(6, 0));
+                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 - 3));
+                pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height / 2));
+                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 + 3));
+                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height));
+            }
+            else
+            {
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, 0));
+                pointCollection.Add(new Point(0, 0));
+                pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height / 2 + 3));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height / 2));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height / 2 - 3));
+            }
             return pointCollection;
         }
 
@@ -396,18 +520,18 @@ namespace Dynamo.ViewModels
 
         private void fadeInTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (Opacity < 0.9)
-                Opacity += 0.9 / 10;
+            if (Opacity <= 0.85)
+                Opacity += 0.85 / 10;
             else
-                fadeInTimer.Stop();
+                _fadeInTimer.Stop();
         }
 
         private void fadeOutTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (Opacity > 0)
-                Opacity -= 0.9 / 10;
+            if (Opacity >= 0)
+                Opacity -= 0.85 / 10;
             else
-                fadeOutTimer.Stop();
+                _fadeOutTimer.Stop();
         }
 
         #endregion
@@ -416,14 +540,16 @@ namespace Dynamo.ViewModels
     public struct PopupDataPacket
     {
         public PopupViewModel.Style Style;
-        public Point PointToScreen;
+        public Point PointToScreen_TopLeft;
+        public Point PointToScreen_BotRight;
         public string Text;
-        public PopupViewModel.ConnectingDirection ConnectingDirection;
+        public PopupViewModel.Direction ConnectingDirection;
 
-        public PopupDataPacket(PopupViewModel.Style style, Point pointToScreen, string text, PopupViewModel.ConnectingDirection connectingDirection)
+        public PopupDataPacket(PopupViewModel.Style style, Point pointToScreen_TopLeft, Point pointToScreen_BotRight, string text, PopupViewModel.Direction connectingDirection)
         {
             Style = style;
-            PointToScreen = pointToScreen;
+            PointToScreen_TopLeft = pointToScreen_TopLeft;
+            PointToScreen_BotRight = pointToScreen_BotRight;
             Text = text;
             ConnectingDirection = connectingDirection;
         }

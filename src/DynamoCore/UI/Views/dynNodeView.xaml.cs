@@ -259,10 +259,11 @@ namespace Dynamo.Controls
 
         private void NickNameBlock_OnMouseEnter(object sender, MouseEventArgs e)
         {
+            TextBlock textBlock = sender as TextBlock;
             string tooltipContent = ViewModel.NickName + '\n' + ViewModel.Description;
-            Point pointToScreen = this.PointToScreen(new Point(0,0));
-            pointToScreen.X += this.ActualWidth / 2;
-            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen, tooltipContent, PopupViewModel.ConnectingDirection.Down));
+            Point pointToScreen_TopLeft = textBlock.PointToScreen(new Point(0,0));
+            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + textBlock.ActualWidth, pointToScreen_TopLeft.Y + textBlock.ActualHeight);
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, tooltipContent, PopupViewModel.Direction.Bottom));
         }
 
         private void NickNameBlock_OnMouseLeave(object sender, MouseEventArgs e)
@@ -274,9 +275,9 @@ namespace Dynamo.Controls
         {
             ContentPresenter inputPort = sender as ContentPresenter;
             string content = (inputPort.Content as PortViewModel).ToolTipContent;
-            Point pointToScreen = inputPort.PointToScreen(new Point(0, 0));
-            pointToScreen.Y += inputPort.ActualHeight / 2;
-            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen, content, PopupViewModel.ConnectingDirection.Right));
+            Point pointToScreen_TopLeft = inputPort.PointToScreen(new Point(0, 0));
+            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + inputPort.ActualWidth, pointToScreen_TopLeft.Y + inputPort.ActualHeight);
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, content, PopupViewModel.Direction.Right));
         }
 
         private void InputPort_OnMouseLeave(object sender, MouseEventArgs e)
@@ -293,10 +294,9 @@ namespace Dynamo.Controls
         {
             ContentPresenter outputPort = sender as ContentPresenter;
             string content = (outputPort.Content as PortViewModel).ToolTipContent;
-            Point pointToScreen = outputPort.PointToScreen(new Point(0, 0));
-            pointToScreen.Y += outputPort.ActualHeight / 2;
-            pointToScreen.X += outputPort.ActualWidth;
-            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen, content, PopupViewModel.ConnectingDirection.Left));
+            Point pointToScreen_TopLeft = outputPort.PointToScreen(new Point(0, 0));
+            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + outputPort.ActualWidth, pointToScreen_TopLeft.Y + outputPort.ActualHeight);
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, content, PopupViewModel.Direction.Left));
         }
 
         private void OutputPort_OnMouseLeave(object sender, MouseEventArgs e)
