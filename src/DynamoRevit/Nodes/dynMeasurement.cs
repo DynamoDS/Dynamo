@@ -394,7 +394,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
+                helper.SetAttribute("lengthValue", Value);
             }
         }
 
@@ -404,7 +404,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                Value = DeserializeValue(helper.ReadString("value"));
+                Value = helper.ReadDouble("lengthValue");
             }
         }
 

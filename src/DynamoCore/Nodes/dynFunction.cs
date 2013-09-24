@@ -456,22 +456,18 @@ namespace Dynamo
                 if (context == SaveContext.Undo)
                 {
                     XmlElementHelper helper = new XmlElementHelper(element);
-                    helper.SetAttribute("value", Symbol);
+                    helper.SetAttribute("outputValue", Symbol);
                 }
             }
 
             protected override void DeserializeCore(XmlElement element, SaveContext context)
             {
                 base.SerializeCore(element, context); //Base implementation must be called
-
-                //Should I incoprporate try block here?
                 if (context == SaveContext.Undo)
                 {
                     XmlElementHelper helper = new XmlElementHelper(element);
-                    Symbol = helper.ReadString("index");
+                    Symbol = helper.ReadString("outputValue");
                 }
-
-                ArgumentLacing = LacingStrategy.Disabled;
             }
 
             #endregion
@@ -558,21 +554,18 @@ namespace Dynamo
                 if (context == SaveContext.Undo)
                 {
                     XmlElementHelper helper = new XmlElementHelper(element);
-                    helper.SetAttribute("value" , InputSymbol);
+                    helper.SetAttribute("symbolValue" , InputSymbol);
                 }
             }
 
             protected override void DeserializeCore(XmlElement element, SaveContext context)
             {
                 base.SerializeCore(element, context); //Base implementation must be called
-
                 if (context == SaveContext.Undo)
                 {
                     XmlElementHelper helper = new XmlElementHelper(element);
-                    InputSymbol = helper.ReadString("value");
+                    InputSymbol = helper.ReadString("symbolValue");
                 }
-
-                ArgumentLacing = LacingStrategy.Disabled;
             }
 
             #endregion

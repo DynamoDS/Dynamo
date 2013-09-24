@@ -2043,7 +2043,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("index", SelectedIndex);
+                helper.SetAttribute("boolOpIndex", SelectedIndex);
             }
         }
 
@@ -2054,7 +2054,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                SelectedIndex = helper.ReadInteger("index");
+                SelectedIndex = helper.ReadInteger("boolOpIndex");
             }
         }
 

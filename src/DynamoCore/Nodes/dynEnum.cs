@@ -47,19 +47,17 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("index", SelectedIndex);
+                helper.SetAttribute("enumIndex", SelectedIndex);
             }
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context); //Base implementation must be called
-            
-            //Should I incoprporate try block here?
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                SelectedIndex = helper.ReadInteger("index");
+                SelectedIndex = helper.ReadInteger("enumIndex");
             }
         }
 

@@ -87,7 +87,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("formula", FormulaString);
+                helper.SetAttribute("formulaString", FormulaString);
             }
         }
 
@@ -98,7 +98,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                FormulaString = helper.ReadString("formula");
+                FormulaString = helper.ReadString("formulaString");
             }
         }
 

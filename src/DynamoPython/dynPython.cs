@@ -160,8 +160,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElement scriptElement = element.SelectSingleNode("Script") as XmlElement;
-                if(scriptElement != null)
-                    script = scriptElement.InnerText;
+                script = scriptElement.InnerText;
             }
         }
 

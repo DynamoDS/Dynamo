@@ -119,7 +119,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("value", port.PortName);
+                helper.SetAttribute("arduinoValue", port.PortName);
             }
         }
 
@@ -129,7 +129,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                port.PortName = helper.ReadString("value");
+                port.PortName = helper.ReadString("arduinoValue");
             }
         }
 
