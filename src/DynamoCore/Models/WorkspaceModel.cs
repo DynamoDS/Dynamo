@@ -17,7 +17,7 @@ using Dynamo.Core;
 
 namespace Dynamo.Models
 {
-    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient
+    public abstract partial class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient
     {
         public static readonly double ZOOM_MAXIMUM = 4.0;
         public static readonly double ZOOM_MINIMUM = 0.1;

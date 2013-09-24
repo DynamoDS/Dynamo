@@ -151,6 +151,7 @@ limitations under the License.
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\NoteModel.cs" />
     <Compile Include="Models\PortModel.cs" />
+    <Compile Include="UI\Commands\RecordableCommands.cs" />
     <Compile Include="UI\DynamoTextBox.cs" />
     <Compile Include="UI\Views\ZoomAndPanControl.xaml.cs">
       <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
