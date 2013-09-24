@@ -160,8 +160,8 @@ namespace Dynamo
 
                 if (i < InPortData.Count)
                 {
-                    for (var k = i; k < InPortData.Count; k++)
-                        InPorts[k].KillAllConnectors();
+                    //for (var k = i; k < InPortData.Count; k++)
+                    //    InPorts[k].KillAllConnectors();
 
                     //MVVM: confirm that extension methods on observable collection do what we expect
                     InPortData.RemoveRange(i, InPortData.Count - i);
@@ -187,8 +187,8 @@ namespace Dynamo
 
                 if (i < OutPortData.Count)
                 {
-                    for (var k = i; k < OutPortData.Count; k++)
-                        OutPorts[k].KillAllConnectors();
+                    //for (var k = i; k < OutPortData.Count; k++)
+                    //    OutPorts[k].KillAllConnectors();
 
                     OutPortData.RemoveRange(i, OutPortData.Count - i);
                 }
