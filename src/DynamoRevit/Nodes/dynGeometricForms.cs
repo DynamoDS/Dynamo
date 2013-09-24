@@ -204,12 +204,10 @@ namespace Dynamo.Nodes
             //If we already have a form stored...
             if (this.Elements.Any())
             {
+                Form oldF;
                 //is this same element?
-                Element e = null;
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(Form), out e) && e != null &&
-                    e is Form)
+                if (dynUtils.TryGetElement(this.Elements[0], out oldF))
                 {
-                    Form oldF = (Form)e;
                     if (oldF.IsSolid == isSolid  &&
                         _preferSurfaceForOneLoop == isSurface 
                         && matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
@@ -228,13 +226,11 @@ namespace Dynamo.Nodes
             }
             else if (this._formId != ElementId.InvalidElementId)
             {
-                Element e = null;
-                if (dynUtils.TryGetElement(this._formId, typeof(Form), out e) && e != null &&
-                    e is Form)
+                Form oldF;
+                if (dynUtils.TryGetElement(this._formId, out oldF))
                 {
-                    Form oldF = (Form)e;
-                    if (oldF.IsSolid == isSolid  &&
-                        _preferSurfaceForOneLoop == isSurface 
+                    if (oldF.IsSolid == isSolid 
+                        && _preferSurfaceForOneLoop == isSurface 
                         && matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
                     {
                         return Value.NewContainer(oldF);

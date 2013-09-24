@@ -118,11 +118,8 @@ namespace Dynamo.Nodes
                 FamilyInstance instance = null;
                 if (this.Elements.Count > count)
                 {
-                    Element e;
-                    if (dynUtils.TryGetElement(this.Elements[count], typeof (FamilyInstance), out e))
+                    if (dynUtils.TryGetElement(this.Elements[count], out instance))
                     {
-                        instance = e as FamilyInstance;
-
                         if (instance.Symbol != symbol)
                             instance.Symbol = symbol;
 

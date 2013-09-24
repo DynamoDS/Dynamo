@@ -647,12 +647,10 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Count > count)
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[count],typeof(FamilyInstance), out e))
+                if (dynUtils.TryGetElement(this.Elements[count], out fi))
                 {
-                    fi = this.UIDocument.Document.GetElement(this.Elements[count]) as FamilyInstance;
                     fi.Symbol = fs;
-                    LocationPoint lp = fi.Location as LocationPoint;
+                    var lp = fi.Location as LocationPoint;
                     lp.Point = pos;
                 }
                 else
@@ -671,12 +669,10 @@ namespace Dynamo.Nodes
             else
             {
                 fi = this.UIDocument.Document.IsFamilyDocument
-                   ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
-                      pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
-                   )
-                   : this.UIDocument.Document.Create.NewFamilyInstance(
-                      pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
-                   );
+                    ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
+                        pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural)
+                    : this.UIDocument.Document.Create.NewFamilyInstance(
+                        pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
 
                 this.Elements.Add(fi.Id);
             }
@@ -686,7 +682,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FamilySymbol fs = (FamilySymbol)((Value.Container)args[1]).Item;
+            var fs = (FamilySymbol)((Value.Container)args[1]).Item;
             var input = args[0];
 
             if (input.IsList)
@@ -759,26 +755,19 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Count > count)
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[count],typeof(FamilyInstance), out e))
+                if (dynUtils.TryGetElement(this.Elements[count], out fi))
                 {
-                    fi = this.UIDocument.Document.GetElement(this.Elements[count]) as FamilyInstance;
                     fi.Symbol = fs;
-                    LocationPoint lp = fi.Location as LocationPoint;
+                    var lp = fi.Location as LocationPoint;
                     lp.Point = pos;
-                    //fi.Level = level;
-
                 }
                 else
                 {
                     fi = this.UIDocument.Document.IsFamilyDocument
-                       ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
-                       pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
-
-                       )
-                       : this.UIDocument.Document.Create.NewFamilyInstance(
-                          pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
-                       );
+                        ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
+                            pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural)
+                        : this.UIDocument.Document.Create.NewFamilyInstance(
+                            pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
 
                     this.Elements[count] = fi.Id;
                 }
@@ -786,12 +775,10 @@ namespace Dynamo.Nodes
             else
             {
                 fi = this.UIDocument.Document.IsFamilyDocument
-                   ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
-                      pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
-                   )
-                   : this.UIDocument.Document.Create.NewFamilyInstance(
-                      pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
-                   );
+                    ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
+                        pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural)
+                    : this.UIDocument.Document.Create.NewFamilyInstance(
+                        pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
 
                 this.Elements.Add(fi.Id);
             }
@@ -801,9 +788,9 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FamilySymbol fs = (FamilySymbol)((Value.Container)args[1]).Item;
+            var fs = (FamilySymbol) ((Value.Container) args[1]).Item;
             var input = args[0];
-            Autodesk.Revit.DB.Level level = (Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
+            var level = (Autodesk.Revit.DB.Level) ((Value.Container) args[2]).Item;
 
             if (input.IsList)
             {
