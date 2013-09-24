@@ -48,15 +48,12 @@ namespace Dynamo.Nodes
                 throw new Exception(string.Format("A model text type named {0} could not be found in the document.", textTypeName));
             }
 
-            Autodesk.Revit.DB.ModelText mt = null;
+            Autodesk.Revit.DB.ModelText mt;
 
             if (Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(Elements[0], typeof (Autodesk.Revit.DB.ModelText), out e))
+                if (dynUtils.TryGetElement(Elements[0], out mt))
                 {
-                    mt = (Autodesk.Revit.DB.ModelText) e;
-
                     //if the position or normal are different
                     //we have to recreate
                     var currPos = mt.Location as LocationPoint;
