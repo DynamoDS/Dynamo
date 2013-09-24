@@ -24,6 +24,7 @@ using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using System.Windows.Media;
 
 namespace Dynamo.Controls
 {
@@ -244,6 +245,7 @@ namespace Dynamo.Controls
 
         private void NickNameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
+            ViewModel.CollapseTooltipCommand.Execute(null);
             if (e.ClickCount > 1)
             {
                 if (this.ViewModel != null && this.ViewModel.RenameCommand.CanExecute(null))
@@ -257,12 +259,54 @@ namespace Dynamo.Controls
 
         private void NickNameBlock_OnMouseEnter(object sender, MouseEventArgs e)
         {
-            ViewModel.ShowTooltipCommand.Execute(null);
+            string tooltipContent = ViewModel.NickName + '\n' + ViewModel.Description;
+            Point pointToScreen = this.PointToScreen(new Point(0,0));
+            pointToScreen.X += this.ActualWidth / 2;
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen, tooltipContent, PopupViewModel.ConnectingDirection.Down));
         }
 
         private void NickNameBlock_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            ViewModel.HideTooltipCommand.Execute(null);
+            ViewModel.FadeOutTooltipCommand.Execute(null);
+        }
+
+        private void InputPort_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            ContentPresenter inputPort = sender as ContentPresenter;
+            string content = (inputPort.Content as PortViewModel).ToolTipContent;
+            Point pointToScreen = inputPort.PointToScreen(new Point(0, 0));
+            pointToScreen.Y += inputPort.ActualHeight / 2;
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen, content, PopupViewModel.ConnectingDirection.Right));
+        }
+
+        private void InputPort_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            ViewModel.FadeOutTooltipCommand.Execute(null);
+        }
+
+        private void InputPort_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.CollapseTooltipCommand.Execute(null);
+        }
+
+        private void OutputPort_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            ContentPresenter outputPort = sender as ContentPresenter;
+            string content = (outputPort.Content as PortViewModel).ToolTipContent;
+            Point pointToScreen = outputPort.PointToScreen(new Point(0, 0));
+            pointToScreen.Y += outputPort.ActualHeight / 2;
+            pointToScreen.X += outputPort.ActualWidth;
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen, content, PopupViewModel.ConnectingDirection.Left));
+        }
+
+        private void OutputPort_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            ViewModel.FadeOutTooltipCommand.Execute(null);
+        }
+
+        private void OutputPort_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.CollapseTooltipCommand.Execute(null);
         }
 
     }

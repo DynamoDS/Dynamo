@@ -598,8 +598,9 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void ShowTooltip(object paramerter)
+        private void ShowTooltip(object parameter)
         {
+            dynSettings.Controller.DynamoViewModel.ShowPopup(parameter);
         }
 
         private bool CanShowTooltip(object parameter)
@@ -607,15 +608,26 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void HideTooltip(object parameter)
+        private void FadeOutTooltip(object parameter)
         {
-
+            dynSettings.Controller.DynamoViewModel.HidePopup(parameter);
         }
 
-        private bool CanHideTooltip(object parameter)
+        private bool CanFadeOutTooltip(object parameter)
         {
             return true;
         }
+
+        private void CollapseTooltip(object parameter)
+        {
+            dynSettings.Controller.PopupViewmodel.InstantCollapseCommand.Execute(null);
+        }
+
+        private bool CanCollapseTooltip(object parameter)
+        {
+            return true;
+        }
+
     }
 
     public class NodeHelpEventArgs : EventArgs

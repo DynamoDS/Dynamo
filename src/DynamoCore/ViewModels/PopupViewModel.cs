@@ -23,9 +23,9 @@ namespace Dynamo.ViewModels
         public enum ConnectingDirection
         {
             Left,
-            Top,
+            Up,
             Right,
-            Bottom
+            Down
         }
 
         #region Properties
@@ -163,10 +163,11 @@ namespace Dynamo.ViewModels
 
         private void UpdatePopup(object parameter)
         {
-            KeyValuePair<double, string> positionContentPair = (KeyValuePair<double, string>)parameter;
-            UpdateContent(positionContentPair.Value);
+            PopupDataPacket data = (PopupDataPacket)parameter;
+            UpdateStyle(data.Style);
+            UpdateContent(data.Text);
             UpdateShape();
-            UpdatePosition(0, positionContentPair.Key);
+            UpdatePosition(data.PointToScreen, data.ConnectingDirection);
         }
 
         private bool CanUpdatePopup(object parameter)
@@ -196,6 +197,16 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void InstantCollapse(object parameter)
+        {
+            Opacity = 0;
+        }
+
+        private bool CanInstantCollapse(object parameter)
+        {
+            return true;
+        }
+
         #endregion
 
         #region Private Helper Method
@@ -208,14 +219,20 @@ namespace Dynamo.ViewModels
             _view.contentContainer.Children.Add(GetStyledTextBox(ItemDescription));
         }
 
-        private void UpdatePosition(double horizontalOffset, double verticalOffset)
+        private void UpdatePosition(Point pointToScreen, ConnectingDirection connectingDirection)
         {
-            double top = verticalOffset - (_view.contentContainer.DesiredSize.Height / 2);
-            double bottom = 0;
-            double left = horizontalOffset;
-            double right = 0;
-            Thickness updatedMargin = new Thickness(left, top, right, bottom);
-            Margin = updatedMargin;
+            Point pointFromScreen = _view.PointFromScreen(pointToScreen);
+            _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+            switch (PopupStyle)
+            {
+                case Style.LibraryItemPreview:
+                    Margin = GetMargin_LibraryItemPreview(pointFromScreen);
+                    break;
+                case Style.NodeTooltip:
+                    Margin = GetMargin_SetStyle_NodeTooltip(pointFromScreen, connectingDirection);
+                    break;
+            }
         }
 
         private void UpdateStyle(PopupViewModel.Style style)
@@ -239,6 +256,7 @@ namespace Dynamo.ViewModels
 
         private void UpdateShape()
         {
+            _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             switch (PopupStyle)
             {
                 case Style.LibraryItemPreview:
@@ -253,6 +271,34 @@ namespace Dynamo.ViewModels
                 case Style.None:
                     break;
             }
+        }
+
+        private Thickness GetMargin_LibraryItemPreview(Point connectingPoint)
+        {
+            Thickness margin = new Thickness();
+            margin.Top = connectingPoint.Y - (_view.contentContainer.DesiredSize.Height / 2);
+            return margin;
+        }
+
+        private Thickness GetMargin_SetStyle_NodeTooltip(Point connectingPoint, ConnectingDirection direction)
+        {
+            Thickness margin = new Thickness();
+            switch (direction)
+            {
+                case ConnectingDirection.Down:
+                    margin.Top = connectingPoint.Y - _view.contentContainer.DesiredSize.Height;
+                    margin.Left = connectingPoint.X - (_view.contentContainer.DesiredSize.Width / 2);
+                    break;
+                case ConnectingDirection.Left:
+                    margin.Top = connectingPoint.Y - (_view.contentContainer.DesiredSize.Height / 2);
+                    margin.Left = connectingPoint.X;
+                    break;
+                case ConnectingDirection.Right:
+                    margin.Top = connectingPoint.Y - (_view.contentContainer.DesiredSize.Height / 2);
+                    margin.Left = connectingPoint.X - _view.contentContainer.DesiredSize.Width;
+                    break;
+            }
+            return margin;
         }
 
         private void SetStyle_LibraryItemPreview()
@@ -290,20 +336,20 @@ namespace Dynamo.ViewModels
         private TextBox GetStyledTextBox(string text)
         {
             TextBox textBox = new TextBox();
+            textBox.TextWrapping = TextWrapping.Wrap;
             textBox.Text = text;
             textBox.IsReadOnly = true;
             textBox.BorderThickness = new Thickness(0);
             textBox.Background = Brushes.Transparent;
-            textBox.FontSize = 13;
-            textBox.Foreground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
-            textBox.TextWrapping = TextWrapping.Wrap;
-            textBox.Margin = new Thickness(12, 5, 5, 5);
+            textBox.Foreground = TextForeground;
+            textBox.FontWeight = TextFontWeight;
+            textBox.FontSize = TextFontSize;
+            textBox.Margin = ContentMargin;
             return textBox;
         }
 
         private PointCollection GetFramePoints_LibraryItemPreview()
         {
-            _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             PointCollection pointCollection = new PointCollection();
             pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
             pointCollection.Add(new Point(7, 0));
@@ -321,11 +367,8 @@ namespace Dynamo.ViewModels
             _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             PointCollection pointCollection = new PointCollection();
             pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
-            pointCollection.Add(new Point(6, 0));
-            pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 - 6));
-            pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height / 2));
-            pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 + 6));
-            pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height));
+            pointCollection.Add(new Point(0, 0));
+            pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height));
             pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height));
             return pointCollection;
         }
@@ -358,17 +401,17 @@ namespace Dynamo.ViewModels
 
     public struct PopupDataPacket
     {
-        public object TargetObject;
-        public double HorizontalOffset;
-        public double VerticalOffset;
+        public PopupViewModel.Style Style;
+        public Point PointToScreen;
         public string Text;
+        public PopupViewModel.ConnectingDirection ConnectingDirection;
 
-        public PopupDataPacket(object targetObject, double horizontalOffset, double verticalOffset, string text)
+        public PopupDataPacket(PopupViewModel.Style style, Point pointToScreen, string text, PopupViewModel.ConnectingDirection connectingDirection)
         {
-            TargetObject = targetObject;
-            HorizontalOffset = horizontalOffset;
-            VerticalOffset = verticalOffset;
+            Style = style;
+            PointToScreen = pointToScreen;
             Text = text;
+            ConnectingDirection = connectingDirection;
         }
     }
 }
