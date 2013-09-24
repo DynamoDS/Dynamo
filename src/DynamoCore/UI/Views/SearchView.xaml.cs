@@ -157,11 +157,11 @@ namespace Dynamo.Search
             if (nodeSearchElement == null)
                 return;
 
-            Point relativePoint = treeViewItem.TranslatePoint(new Point(0, 0), mainGrid);
-            double popupVerticalOffset = relativePoint.Y + (treeViewItem.ActualHeight / 2);
+            Point pointToScreen = treeViewItem.PointToScreen(new Point(0, 0));
+            pointToScreen.Y += treeViewItem.ActualHeight / 2;
             string popupContent = nodeSearchElement.Name + "\n" + nodeSearchElement.Description;
-            KeyValuePair<double, string> positionContentPair = new KeyValuePair<double,string>(popupVerticalOffset, popupContent);
-            DynamoCommands.ShowLibItemPopupCommand.Execute(positionContentPair);
+            PopupDataPacket data = new PopupDataPacket(PopupViewModel.Style.LibraryItemPreview, pointToScreen, popupContent, PopupViewModel.ConnectingDirection.Left);
+            DynamoCommands.ShowLibItemPopupCommand.Execute(data);
         }
 
         private void LibraryItem_OnMouseLeave(object sender, MouseEventArgs e)

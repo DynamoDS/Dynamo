@@ -7,6 +7,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _updatePopupCommand;
         private DelegateCommand _fadeInCommand;
         private DelegateCommand _fadeOutCommand;
+        private DelegateCommand _instanctCollapseCommand;
 
         public DelegateCommand UpdatePopupCommand
         {
@@ -27,7 +28,7 @@ namespace Dynamo.ViewModels
                 return _fadeInCommand;
             }
         }
-        
+
         public DelegateCommand FadeOutCommand
         {
             get
@@ -35,6 +36,16 @@ namespace Dynamo.ViewModels
                 if (_fadeOutCommand == null)
                     _fadeOutCommand = new DelegateCommand(FadeOut, CanFadeOut);
                 return _fadeOutCommand;
+            }
+        }
+
+        public DelegateCommand InstantCollapseCommand
+        {
+            get
+            {
+                if (_instanctCollapseCommand == null)
+                    _instanctCollapseCommand = new DelegateCommand(InstantCollapse, CanInstantCollapse);
+                return _instanctCollapseCommand;
             }
         }
     }
