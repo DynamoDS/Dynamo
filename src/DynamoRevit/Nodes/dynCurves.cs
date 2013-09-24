@@ -66,10 +66,8 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.ModelCurve), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], out mc))
                 {
-                    mc = e as Autodesk.Revit.DB.ModelCurve;
                     mc.SketchPlane = sp;
 
                     if (!mc.GeometryCurve.IsBound && c.IsBound)
@@ -136,10 +134,8 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(Autodesk.Revit.DB.ModelCurve), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], out mc))
                 {
-                    mc = e as Autodesk.Revit.DB.ModelCurve;
                     mc.SketchPlane = sp;
 
                     if (!mc.GeometryCurve.IsBound && c.IsBound)
@@ -209,10 +205,8 @@ namespace Dynamo.Nodes
             //Standard logic for updating an old result, if it exists.
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(Autodesk.Revit.DB.CurveByPoints), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], out c))
                 {
-                    c = e as Autodesk.Revit.DB.CurveByPoints;
                     c.SetPoints(refPtArr);
                 }
                 else
@@ -263,13 +257,10 @@ namespace Dynamo.Nodes
             //If we've made any elements previously...
             if (this.Elements.Any())
             {
-                Element e;
                 //...try to get the first one...
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.CurveByPoints), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], out c))
                 {
                     //..and if we do, update it's position.
-                    c = e as Autodesk.Revit.DB.CurveByPoints;
-
                     ReferencePointArray existingPts = c.GetPoints();
 
                     //update the points on the curve to match
@@ -470,12 +461,9 @@ namespace Dynamo.Nodes
                     pts, Enumerable.Repeat(1.0, pts.Count).ToList());
 
             ModelNurbSpline c;
-            Element e;
 
-            if (Elements.Any() && dynUtils.TryGetElement(Elements[0],typeof(Autodesk.Revit.DB.ModelCurve), out e))
+            if (Elements.Any() && dynUtils.TryGetElement(Elements[0], out c))
             {
-                c = e as ModelNurbSpline;
-
                 c.GeometryCurve = ns;
             }
             else

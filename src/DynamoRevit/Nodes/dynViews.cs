@@ -136,10 +136,8 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(View3D), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], out view))
                 {
-                    view = (View3D)e;
                     if (!view.ViewDirection.IsAlmostEqualTo(direction))
                     {
                         view.Unlock();
