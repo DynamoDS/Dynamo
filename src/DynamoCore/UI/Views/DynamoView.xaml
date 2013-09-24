@@ -418,9 +418,10 @@
                             </Trigger>
                         </Style.Triggers>
                     </Style>
-                    
-                </TabControl.Resources>
+
                 
+                </TabControl.Resources>
+                <!--<StackPanel HorizontalAlignment="Left" Grid.Row="1" Grid.Column="2" Background="Blue" Width="32" Height="48"></StackPanel>-->
                 <TabControl.ItemTemplate>
                     
                     <DataTemplate>
@@ -439,7 +440,7 @@
 
                             <StackPanel Orientation="Horizontal" Margin="10,5,10,5" >
 
-                                 <TextBlock Name="WorkspaceName" Margin="0,2,0,0" >
+                                <TextBlock Name="WorkspaceName" Margin="0,2,0,0" >
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -466,7 +467,7 @@
                                 </TextBlock.Style>
                             </TextBlock>
 
-                                 <TextBlock Name="Spacer" Text=" -" Margin="0,2,0,0">
+                                <TextBlock Name="Spacer" Text=" -" Margin="0,2,0,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -485,7 +486,7 @@
 
                             </TextBlock>
 
-                                 <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
+                            <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -510,10 +511,10 @@
                                 
                             </TextBlock> 
                             
-                                 <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
-
-                            </StackPanel>
-
+                            <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" />
+                                
+                        </StackPanel>
+                        
                         <!--</Button>-->
                         
                     </DataTemplate>
@@ -524,10 +525,10 @@
                     <DataTemplate>
                         <views:dynWorkspaceView></views:dynWorkspaceView>
                     </DataTemplate>
-                 </TabControl.ContentTemplate>
+                </TabControl.ContentTemplate>
                 
             </TabControl>
-       
+            
         </Border>
 
         <ScrollViewer Name="LogScroller" 
@@ -541,6 +542,7 @@
                     Grid.Row="3"
                     Grid.Column="0" 
                     Grid.ColumnSpan="3">
+            
             <ScrollViewer.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Clear" Command="{Binding ClearLogCommand}"/>
@@ -556,6 +558,7 @@
 
         <Grid Height="Auto" Width="Auto" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black">
+            
         </Grid>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
@@ -589,6 +592,7 @@
                       IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
                       Content="Debug" VerticalContentAlignment="Center"/>
             
+            
         </WrapPanel>
 
         <Canvas HorizontalAlignment="Stretch"
@@ -605,6 +609,7 @@
               Visibility="Visible" 
                 Cursor="{Binding IsUILocked, Converter={StaticResource BoolToCanvasCursorConverter}}"
               ForceCursor="{Binding IsUILocked}">
+            
         </Canvas>
 
         <GridSplitter ResizeDirection="Rows" 

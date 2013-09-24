@@ -147,5 +147,14 @@ namespace Dynamo.Search
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
+
+        private void OnLibraryClick(object sender, RoutedEventArgs e)
+        {
+            //this.Width = 5;
+            if (this.Visibility == Visibility.Collapsed)
+                this.Visibility = Visibility.Visible;
+            else
+                this.Visibility = Visibility.Collapsed;
+        }
     }
 } ;

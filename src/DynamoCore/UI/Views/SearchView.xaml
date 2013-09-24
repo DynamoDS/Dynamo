@@ -29,11 +29,16 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
+        <!--<TextBlock FontSize="13" FontWeight="SemiBold" Grid.Row="0" Foreground="#AAAAAA" Background="#222222" Padding="15,12,5,8" >Library</TextBlock>-->
+        <Button Grid.Row="0" Height="40" Margin="0,0,5,0" Background="Transparent" HorizontalAlignment="Left" Click="OnLibraryClick">
+            <TextBlock FontSize="13" FontWeight="SemiBold" Grid.Row="0" Foreground="#AAAAAA" Background="#222222" Padding="15,12,5,8" >Library</TextBlock>
+        </Button>
         
-        <Grid>
-            
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -46,11 +51,10 @@
             </TextBox>
             
             <TextBlock FontSize ="12" IsHitTestVisible="False" Padding="15,12,5,8" Margin ="0" Foreground="#666" Grid.Column="1" Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search Node Library...</TextBlock>
-            
         </Grid>
         
         <ScrollViewer Visibility="{Binding BrowserVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
-                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" MouseWheel="TreeViewScrollViewer_PreviewMouseWheel">
+                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2" MouseWheel="TreeViewScrollViewer_PreviewMouseWheel">
 
             <ScrollViewer.Resources>
 
@@ -129,6 +133,7 @@
                                             <Grid>
 
                                                 <Grid.RowDefinitions>
+                                                    
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
@@ -372,11 +377,14 @@
             </TreeView>
 
         </ScrollViewer>
-
+        <TextBlock Visibility="Visible" Grid.Row="2">
+                Library
+                <TextBlock.RenderTransform>
+                    <RotateTransform CenterX="0" CenterY="0" Angle="-90" />
+                </TextBlock.RenderTransform>
+        </TextBlock>
     </Grid>
 
-
+    
 
 </UserControl>
-  
-  
