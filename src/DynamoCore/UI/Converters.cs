@@ -971,7 +971,7 @@ namespace Dynamo.Controls
             {
                 return(dbl.ToString("0.000", CultureInfo.CurrentCulture));
             }
-            return value ?? "";
+            return value ?? "0.000";
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
