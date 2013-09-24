@@ -99,6 +99,20 @@ namespace Dynamo.Tests
             models.Remove(model);
         }
 
+        internal void RemoveModels(int []identifiers)
+        {
+            undoRecorder.BeginActionGroup();
+
+            foreach (int identifier in identifiers)
+            {
+                DummyModel model = GetModel(identifier);
+                undoRecorder.RecordDeletionForUndo(model);
+                models.Remove(model);
+            }
+
+            undoRecorder.EndActionGroup();
+        }
+
         internal DummyModel GetModel(int identifier)
         {
             return models.Find((x)=>(x.Identifier == identifier));
@@ -297,6 +311,81 @@ namespace Dynamo.Tests
 
             // Make sure the model has been deleted.
             Assert.AreEqual(null, workspace.GetModel(1));
+        }
+
+        [Test]
+        public void TestDeletionsUndoRedo()
+        {
+            // Ensure the recorder is in its default states.
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            // Add models into workspace, make sure they exist.
+            workspace.AddModel(new DummyModel(1, 10));
+            workspace.AddModel(new DummyModel(2, 20));
+            Assert.AreNotEqual(null, workspace.GetModel(1));
+            Assert.AreNotEqual(null, workspace.GetModel(2));
+
+            // Make sure we can now undo.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            // Delete the inserted models and make sure they're gone.
+            workspace.RemoveModels(new int[] { 1, 2 });
+            Assert.AreEqual(null, workspace.GetModel(1));
+            Assert.AreEqual(null, workspace.GetModel(2));
+
+            // Make sure we can now undo.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            recorder.Undo(); // Undo the deletion (undo's still possible).
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            // Make sure the deletion has been undone.
+            Assert.AreNotEqual(null, workspace.GetModel(1));
+            Assert.AreNotEqual(null, workspace.GetModel(2));
+
+            recorder.Undo(); // Undo the creation.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            // Make sure the creation of '2' has been undone.
+            Assert.AreNotEqual(null, workspace.GetModel(1));
+            Assert.AreEqual(null, workspace.GetModel(2));
+
+            recorder.Undo(); // Undo the creation.
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            // Make sure the creation of '1' has been undone.
+            Assert.AreEqual(null, workspace.GetModel(1));
+            Assert.AreEqual(null, workspace.GetModel(2));
+
+            recorder.Redo(); // Redo the creation of '1'.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            // Make sure the creation of '1' has been redone.
+            Assert.AreNotEqual(null, workspace.GetModel(1));
+            Assert.AreEqual(null, workspace.GetModel(2));
+
+            recorder.Redo(); // Redo the creation of '2'.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            // Make sure the creation of '2' has been redone.
+            Assert.AreNotEqual(null, workspace.GetModel(1));
+            Assert.AreNotEqual(null, workspace.GetModel(2));
+
+            recorder.Redo(); // Redo the deletion.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            // Make sure the model has been deleted.
+            Assert.AreEqual(null, workspace.GetModel(1));
+            Assert.AreEqual(null, workspace.GetModel(2));
         }
 
         [Test]

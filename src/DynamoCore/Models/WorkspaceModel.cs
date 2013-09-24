@@ -445,15 +445,20 @@ namespace Dynamo.Models
             if (null == models || (models.Count <= 0))
                 return; // There's nothing for deletion.
 
+            // Gather a list of connectors first before the nodes they connect
+            // to are deleted. We will have to delete the connectors first 
+            // before 
+
             this.undoRecorder.BeginActionGroup(); // Start a new action group.
 
             foreach (ModelBase model in models)
             {
-                // Take a snapshot of the model before it goes away.
-                this.undoRecorder.RecordDeletionForUndo(model);
-
                 if (model is NoteModel)
+                {
+                    // Take a snapshot of the note before it goes away.
+                    this.undoRecorder.RecordDeletionForUndo(model);
                     this.Notes.Remove(model as NoteModel);
+                }
                 else if (model is NodeModel)
                 {
                     // Just to make sure we don't end up deleting nodes from 
@@ -470,6 +475,9 @@ namespace Dynamo.Models
                         this.Connectors.Remove(conn);
                         this.undoRecorder.RecordDeletionForUndo(conn);
                     }
+
+                    // Take a snapshot of the node before it goes away.
+                    this.undoRecorder.RecordDeletionForUndo(model);
 
                     node.DisableReporting();
                     node.Destroy();
