@@ -357,14 +357,6 @@ namespace Dynamo.Nodes
         {
             ElementId deleteId = ElementId.InvalidElementId;
 
-            //If we already have a form stored...
-            if (this.Elements.Any())
-            {
-                //And register the form for deletion. Since we've already deleted it here manually, we can 
-                //pass "true" as the second argument.
-                deleteId = this.Elements[0];
-                this.DeleteElement(this.Elements[0], false);
-            }
 
             //Surface argument
             Solid mySolid = (Solid)((Value.Container)args[0]).Item;
@@ -376,30 +368,71 @@ namespace Dynamo.Nodes
             Type FreeFormType = revitAPIAssembly.GetType("Autodesk.Revit.DB.FreeFormElement", true);
             bool methodCalled = false;
 
+            bool usedUpdateMethod = false;
+
             if (FreeFormType != null)
             {
-                MethodInfo[] freeFormMethods = FreeFormType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-                System.String nameOfMethodCreate = "Create";
-                foreach (MethodInfo m in freeFormMethods)
+                if (this.Elements.Any())
                 {
-                    if (m.Name == nameOfMethodCreate)
+                    MethodInfo[] freeFormInstanceMethods = FreeFormType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                    System.String nameOfMethodUpdate = "UpdateToSolidGeometry";
+
+                    foreach (MethodInfo mInst in freeFormInstanceMethods)
                     {
-                        object[] argsM = new object[2];
-                        argsM[0] = this.UIDocument.Document;
-                        argsM[1] = mySolid;
-
-                        methodCalled = true;
-
-                        ffe = (GenericForm)m.Invoke(null, argsM);
-                        break;
+                        if (mInst.Name == nameOfMethodUpdate)
+                        {
+                            object[] argsM = new object[1];
+                            argsM[0] = mySolid;
+                            Element e;
+                            if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.GenericForm), out e) && e is GenericForm)
+                            {
+                                ffe = e as GenericForm;
+                                object[] argsMInst = new object[1];
+                                argsMInst[0] = mySolid;
+                                usedUpdateMethod = true;
+                                mInst.Invoke(e, argsMInst);
+                                break;
+                            }
+                        }
                     }
                 }
+                
+                if (!usedUpdateMethod)
+                {
+                    MethodInfo[] freeFormMethods = FreeFormType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+                    System.String nameOfMethodCreate = "Create";
+                    foreach (MethodInfo m in freeFormMethods)
+                    {
+                        if (m.Name == nameOfMethodCreate)
+                        {
+                           object[] argsM = new object[2];
+                           argsM[0] = this.UIDocument.Document;
+                           argsM[1] = mySolid;
+
+                           methodCalled = true;
+
+                           ffe = (GenericForm)m.Invoke(null, argsM);
+                           break;
+                        }
+                   }
+                }
             }
+
+            //If we already have a form stored...
+            if (!usedUpdateMethod && this.Elements.Any())
+            {
+                //And register the form for deletion. Since we've already deleted it here manually, we can 
+                //pass "true" as the second argument.
+                deleteId = this.Elements[0];
+                this.DeleteElement(this.Elements[0], false);
+            }
+
             if (ffe != null)
             {
-                this.Elements.Add(ffe.Id);
+                if (!usedUpdateMethod)
+                   this.Elements.Add(ffe.Id);
                 freeFormSolids[ffe.Id] = mySolid;
-                if (deleteId != ElementId.InvalidElementId)
+                if (deleteId != ElementId.InvalidElementId && !usedUpdateMethod)
                 {
                     if (previouslyDeletedFreeForms == null)
                         previouslyDeletedFreeForms = new Dictionary<ElementId, ElementId>();
