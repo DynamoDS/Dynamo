@@ -442,17 +442,6 @@ namespace Dynamo.Controls
             view_model.WatchEscapeIsDown = false;
         }
 
-        private void Id_butt_OnClick(object sender, RoutedEventArgs e)
-        {
-            //get the value of the id field 
-            //and trigger the command
-            string id = id_tb.Text;
-            int workspace_index = _vm.CurrentWorkspaceIndex;
-            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
-            if (view_model.FindByIdCommand.CanExecute(id))
-                view_model.FindByIdCommand.Execute(id);
-        }
-
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_vm != null)

@@ -13,6 +13,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _setZoomCommand;
         private DelegateCommand _zoomInCommand;
         private DelegateCommand _zoomOutCommand;
+        private DelegateCommand _fitViewCommand;
         private DelegateCommand _findByIdCommand;
         private DelegateCommand _alignSelectedCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
@@ -124,6 +125,16 @@ namespace Dynamo.ViewModels
                 return _zoomOutCommand;
             }
 
+        }
+
+        public DelegateCommand FitViewCommand
+        {
+            get
+            {
+                if (_fitViewCommand == null)
+                    _fitViewCommand = new DelegateCommand(FitView, CanFitView);
+                return _fitViewCommand;
+            }
         }
 
         public DelegateCommand FindByIdCommand
