@@ -370,7 +370,7 @@ limitations under the License.
   <ItemGroup>
     <Page Include="UI\Prompts\CrashPrompt.xaml">
     </Page>
-    <Page Include="UI\Themes\MenuStyleDictionary.xaml">
+    <Page Include="UI\Themes\MainMenuStyleDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

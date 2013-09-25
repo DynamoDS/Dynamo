@@ -467,28 +467,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Replace the home workspace with a new 
-        /// workspace. Only valid if the home workspace is already
-        /// defined (usually by calling AddHomeWorkspace).
-        /// </summary>
-        public void NewHomeWorkspace()
-        {
-            if (this.Workspaces.Count > 0 && this.HomeSpace != null)
-            {
-                //var homeIndex = this._workSpaces.IndexOf(this.HomeSpace);
-                //var newHomespace = new HomeWorkspace();
-                //this.Workspaces[0] = newHomespace;
-                //this.HomeSpace = newHomespace;
-                //this.CurrentWorkspace = newHomespace;
-
-                this.AddHomeWorkspace();
-                _cspace = this.HomeSpace;
-                this.CurrentWorkspace = this.HomeSpace;
-                this.Workspaces.RemoveAt(1);
-            }
-        }
-
-        /// <summary>
         /// Add a workspace to the dynamo model.
         /// </summary>
         /// <param name="workspace"></param>
@@ -1411,30 +1389,6 @@ namespace Dynamo.Models
             OnNodeAdded(node);
 
             return node;
-        }
-
-        internal bool CanCreateNode(object parameters)
-        {
-            var data = parameters as Dictionary<string, object>;
-
-            if (data == null)
-                return false;
-
-            Guid guid;
-            var name = data["name"].ToString();
-
-            if (dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(name)
-                    || dynSettings.Controller.BuiltInTypesByName.ContainsKey(name)
-                    || (Guid.TryParse(name, out guid) && dynSettings.Controller.CustomNodeManager.Contains(guid)))
-            {
-                return true;
-            }
-
-            string message = string.Format("Can not create instance of node {0}.", data["name"]);
-            dynSettings.Controller.DynamoModel.WriteToLog(message);
-            DynamoLogger.Instance.Log(message);
-
-            return false;
         }
 
         internal static NodeModel CreateNodeInstance(string name)
