@@ -340,16 +340,17 @@
                                         </Grid.RowDefinitions>
                                         <Border BorderBrush="#FF3F4040"
                                                 BorderThickness="1,0,0,1">
-                                            <TabPanel x:Name="HeaderPanel"
+                                            <StackPanel x:Name="HeaderPanel"
                                                       Grid.Row="0"
-                                                      Margin="0,0,0,0"
+                                                      Margin="0,-1,0,0"
                                                       IsItemsHost="True"
                                                       KeyboardNavigation.TabIndex="1"
                                                       Background="Transparent"
                                                       HorizontalAlignment="Left"
                                                       VerticalAlignment="Center"
-                                                      ClipToBounds="True"
-                                                      MaxHeight="20"/>
+                                                      ClipToBounds="False"
+                                                      MaxHeight="20"
+                                                        Orientation="Horizontal"/>
                                         </Border>                                        
                                         <Border x:Name="Border"
                                                 Grid.Row="1"
@@ -367,12 +368,10 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type TabItem}">
-                                    <Grid Margin="0,-1,0,0"
-                                          Width="200">
+                                    <Grid Margin="0,0,0,0">
                                         <Border Name="Border"
                                                 BorderBrush="#FF3F4040"
-                                                CornerRadius="0,0,0,0"
-                                                HorizontalAlignment="Stretch">
+                                                CornerRadius="0,0,0,0">
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
@@ -393,7 +392,8 @@
                                             </Border.Style>
                                             <ContentPresenter x:Name="ContentSite"
                                                               VerticalAlignment="Center"
-                                                              ContentSource="Header"/>
+                                                              ContentSource="Header"
+                                                              HorizontalAlignment="Left"/>
                                         </Border>
                                     </Grid>
                                 </ControlTemplate>
@@ -449,6 +449,8 @@
 
                         <DockPanel Margin="8,0,5,0"
                                    Height="20"
+                                   Width="200"
+                                   MaxWidth="200"
                                    HorizontalAlignment="Stretch">
 
                             <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" DockPanel.Dock="Right">
@@ -475,11 +477,13 @@
                                         <Style.Triggers>
 
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderTextBrush}"></Setter>
+                                                <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}"></Setter>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
-                                                <Setter Property="Foreground" Value="#999"></Setter>
+                                                <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}"></Setter>
+                                                <Setter Property="FontWeight" Value="Normal"/>
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspace}">
@@ -495,43 +499,26 @@
                                 </TextBlock.Style>
                             </TextBlock>
 
-                            <TextBlock Name="Spacer" Text=" - " Margin="0,2,0,0" DockPanel.Dock="Left">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Style.Triggers>
-
-                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderTextBrush}"></Setter>
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
-                                                <Setter Property="Foreground" Value="#999"></Setter>
-                                            </DataTrigger>
-
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-
-                            </TextBlock>
-
-                            <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="0,2,0,0" DockPanel.Dock="Left">
+                            <TextBlock Name="WorkspaceFileName" Margin="0,2,0,0" DockPanel.Dock="Left">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderTextBrush}"></Setter>
+                                                <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}"></Setter>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
-                                                <Setter Property="Foreground" Value="#999"></Setter>
+                                                <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}"></Setter>
+                                                <Setter Property="FontWeight" Value="Normal"/>
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="True">
-                                                <Setter Property="FontStyle" Value="Italic"/>
+                                                <Setter Property="Text" Value="*"/>
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="False">
-                                                <Setter Property="FontStyle" Value="Normal"/>
+                                                <Setter Property="Text" Value=""/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
