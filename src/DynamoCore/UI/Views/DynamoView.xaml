@@ -19,7 +19,8 @@
         AllowsTransparency="False" 
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
-        Background="#FF353535">
+        Background="#FF353535"
+        FontFamily="Open Sans">
 
     <Window.CommandBindings>
         
@@ -31,7 +32,7 @@
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MainMenuStyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -165,7 +166,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Menu IsMainMenu="True" Name="menu1">
+                <Menu IsMainMenu="True" Name="menu1" Style="{StaticResource MainMenu}">
 
                     <MenuItem Header="_File" Name="fileMenu" Focusable="False">
                         <MenuItem Header="_New" Name="newMenu" Focusable="False">
