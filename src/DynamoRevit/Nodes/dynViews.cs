@@ -55,12 +55,7 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(ViewDrafting), out e))
-                {
-                    vd = (ViewDrafting)e;
-                }
-                else
+                if (!dynUtils.TryGetElement(this.Elements[0], out vd))
                 {
                     vd = dynRevitSettings.Doc.Document.Create.NewViewDrafting();
                     this.Elements[0] = vd.Id;
@@ -115,10 +110,8 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(View3D), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], out view))
                 {
-                    view = (View3D)e;
                     if (!view.ViewDirection.IsAlmostEqualTo(direction) || !view.Origin.IsAlmostEqualTo(eye))
                     {
                         view.Unlock();
@@ -717,11 +710,8 @@ namespace Dynamo.Nodes
  
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.ViewSheet), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], out sheet))
                 {
-                    sheet = (Autodesk.Revit.DB.ViewSheet)e;
-
                     if(sheet.Name != null && sheet.Name != name)
                         sheet.Name = name;
                     if(number != null && sheet.SheetNumber != number)
