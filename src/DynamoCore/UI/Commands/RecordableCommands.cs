@@ -105,7 +105,7 @@ namespace Dynamo.Core.Automation
 
     internal class CreateNodeCommand : RecordableCommand
     {
-        #region Public Class Methods and Properties
+        #region Public Class Methods
 
         internal CreateNodeCommand(Guid nodeId, string nodeName,
             double x, double y, bool transformCoordinates)
@@ -136,6 +136,10 @@ namespace Dynamo.Core.Automation
             bool transform = helper.ReadBoolean("TransformCoordinates");
             return new CreateNodeCommand(nodeId, nodeName, x, y, transform);
         }
+
+        #endregion
+
+        #region Public Command Properties
 
         internal Guid NodeId { get; private set; }
         internal string NodeName { get; private set; }

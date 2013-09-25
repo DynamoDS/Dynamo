@@ -155,7 +155,7 @@ namespace Dynamo.Search.SearchElements
         public NodeSearchElement(FunctionDefinition funcDef)
         {
             //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
-            this.Node = dynSettings.Controller.DynamoModel.CreateNode(funcDef.FunctionId.ToString());
+            this.Node = DynamoModel.CreateNodeInstance(funcDef.FunctionId.ToString());
             this._name = funcDef.Workspace.Name;
             this.Weight = 1.1;
             this.Keywords = "";

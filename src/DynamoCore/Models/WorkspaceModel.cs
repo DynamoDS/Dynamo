@@ -538,8 +538,7 @@ namespace Dynamo.Models
 
             if (typeName.StartsWith("Dynamo.Nodes"))
             {
-                DynamoModel dynamo = dynSettings.Controller.DynamoViewModel.Model;
-                NodeModel nodeModel = dynamo.CreateNode(typeName);
+                NodeModel nodeModel = DynamoModel.CreateNodeInstance(typeName);
                 nodeModel.WorkSpace = this;
                 nodeModel.Deserialize(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
