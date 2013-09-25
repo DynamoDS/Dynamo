@@ -199,13 +199,13 @@ namespace Dynamo.Search.SearchElements
 
             System.Guid guid = System.Guid.NewGuid();
             dynSettings.Controller.DynamoModel.CurrentWorkspace.ExecuteCommand(
-                new CreateNodeCommand(guid, name, 0, 0, true));
+                new CreateNodeCommand(guid, name, 0, 0, true, true));
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
-                dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(placedNode, null));
+                dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(placedNode));
             }
         }
 

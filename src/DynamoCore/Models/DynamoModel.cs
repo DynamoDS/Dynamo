@@ -1173,7 +1173,7 @@ namespace Dynamo.Models
                 node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
                 CreateNodeCommand command = new CreateNodeCommand(
-                    newGuid, nodeName, node.X, node.Y + 100, false);
+                    newGuid, nodeName, node.X, node.Y + 100, false, false);
 
                 createdModels.Add(CreateNodeInternal(command, dynEl));
             }
@@ -1327,7 +1327,7 @@ namespace Dynamo.Models
         public NodeModel CreateNodeInternal(double x, double y, string nodeName)
         {
             CreateNodeCommand command = new CreateNodeCommand(
-                System.Guid.NewGuid(), nodeName, x, y, false);
+                System.Guid.NewGuid(), nodeName, x, y, false, false);
 
             return CreateNodeInternal(command, null);
         }
@@ -1376,13 +1376,21 @@ namespace Dynamo.Models
 
             DynamoViewModel viewModel = dynSettings.Controller.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = viewModel.CurrentSpaceViewModel;
-            Dictionary<string, object> data = new Dictionary<String, object>()
-            {
-                { "x", command.X },
-                { "y", command.Y }
-            };
 
-            workspaceViewModel.OnRequestNodeCentered(this, new ModelEventArgs(node, data));
+            ModelEventArgs args = null;
+            if (!command.DefaultPosition)
+            {
+                args = new ModelEventArgs(node, command.X, command.Y,
+                    command.TransformCoordinates);
+            }
+            else
+            {
+                // The position of the new node has not been specified.
+                args = new ModelEventArgs(node, command.TransformCoordinates);
+            }
+
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
 
             node.EnableInteraction();
 
@@ -1756,8 +1764,9 @@ namespace Dynamo.Models
 
             if (parameters == null)
             {
-                inputs.Add("transformFromOuterCanvasCoordinates", true);
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new ModelEventArgs(n, inputs));
+                ModelEventArgs args = new ModelEventArgs(n, x, y, true);
+                DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+                vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
             }
 
             object id;
@@ -1806,12 +1815,31 @@ namespace Dynamo.Models
 
     public class ModelEventArgs : EventArgs
     {
-        public ModelBase Model { get; set; }
-        public Dictionary<string, object> Data { get; set; }
-        public ModelEventArgs(ModelBase n, Dictionary<string, object> d)
+        public ModelBase Model { get; private set; }
+        public double X { get; private set; }
+        public double Y { get; private set; }
+        public bool PositionSpecified { get; private set; }
+        public bool TransformCoordinates { get; private set; }
+
+        public ModelEventArgs(ModelBase model)
+            : this(model, false)
         {
-            Model = n;
-            Data = d;
+        }
+
+        public ModelEventArgs(ModelBase model, bool transformCoordinates)
+        {
+            Model = model;
+            PositionSpecified = false;
+            TransformCoordinates = transformCoordinates;
+        }
+
+        public ModelEventArgs(ModelBase model, double x, double y, bool transformCoordinates)
+        {
+            Model = model;
+            X = x;
+            Y = y;
+            PositionSpecified = true;
+            TransformCoordinates = transformCoordinates;
         }
     }
 

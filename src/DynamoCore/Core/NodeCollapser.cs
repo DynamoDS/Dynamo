@@ -471,7 +471,7 @@ namespace Dynamo.Utilities
 
 
             CreateNodeCommand command = new CreateNodeCommand(Guid.NewGuid(),
-                newNodeDefinition.FunctionId.ToString(), avgX, avgY, false);
+                newNodeDefinition.FunctionId.ToString(), avgX, avgY, false, false);
 
             var collapsedNode = dynSettings.Controller.DynamoModel.CreateNodeInternal(command, null);
 
