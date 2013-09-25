@@ -12,6 +12,14 @@ namespace DynamoMSOfficeTests
     [TestFixture]
     public class ExcelTests : DynamoUnitTest
     {
+        [SetUp]
+        public override void Init()
+        {
+            base.Init();
+            // hide the excel window for tests
+            ExcelInterop.ShowOnStartup = false;
+        }
+
         [TearDown]
         public override void Cleanup()
         {

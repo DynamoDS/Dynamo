@@ -17,7 +17,7 @@ namespace Dynamo.Tests
         protected string TempFolder { get; private set; }
 
         [SetUp]
-        public void Init()
+        public virtual void Init()
         {
             StartDynamo();
         }
