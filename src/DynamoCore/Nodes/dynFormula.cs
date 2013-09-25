@@ -93,7 +93,7 @@ namespace Dynamo.Nodes
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
-            base.SerializeCore(element, context); //Base implementation must be called
+            base.DeserializeCore(element, context); //Base implementation must be called
 
             if (context == SaveContext.Undo)
             {

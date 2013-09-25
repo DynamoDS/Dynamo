@@ -337,7 +337,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("id", this.PickedSunAndShadowSettings.Id);
+                helper.SetAttribute("id", this.PickedSunAndShadowSettings.Id.ToString());
             }
         }
 
@@ -347,7 +347,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                int elementId = helper.ReadInteger("id");
+                int elementId = Convert.ToInt32(helper.ReadString("id"));
                 try
                 {
                     this.PickedSunAndShadowSettings = dynRevitSettings.Doc.Document.GetElement(

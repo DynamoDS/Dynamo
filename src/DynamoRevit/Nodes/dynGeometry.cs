@@ -2043,7 +2043,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("boolOpIndex", SelectedIndex);
+                helper.SetAttribute("boolOpIndex", this.combo.SelectedIndex);
             }
         }
 
@@ -2054,7 +2054,8 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                SelectedIndex = helper.ReadInteger("boolOpIndex");
+                if(combo!=null)
+                    this.combo.SelectedIndex = helper.ReadInteger("boolOpIndex");
             }
         }
 

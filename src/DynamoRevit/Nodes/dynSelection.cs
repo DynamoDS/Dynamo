@@ -287,10 +287,9 @@ namespace Dynamo.Nodes
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
                 string id = helper.ReadString("selectionBaseId");
-                Element saved;
+                Element saved = null;
                 try
                 {
-                    saved = null;
                     saved = dynRevitSettings.Doc.Document.GetElement(id); // FamilyInstance;
                 }
                 catch
@@ -610,11 +609,10 @@ namespace Dynamo.Nodes
                 XmlNodeList instanceNodes = element.SelectNodes("instance");
                 foreach (XmlNode subNode in instanceNodes)
                 {
-                    Element saved;
+                    Element saved = null;
                     var id = subNode.Attributes[0].Value;
                     try
                     {
-                        saved = null;
                         saved = dynRevitSettings.Doc.Document.GetElement(id);
                     }
                     catch

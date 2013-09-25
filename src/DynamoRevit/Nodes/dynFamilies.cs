@@ -276,13 +276,14 @@ namespace Dynamo.Nodes
             {
                 var doc = dynRevitSettings.Doc.Document;
                 XmlElementHelper helper = new XmlElementHelper(element);
+                int id = 0;
                 try
                 {
-                    int id = helper.ReadInteger("familyValue");
+                    id = helper.ReadInteger("familyValue");
                 }
                 catch { return; }
                 this.storedId = new ElementId(id);
-                element = doc.GetElement(this.storedId);
+                this.element = doc.GetElement(this.storedId);
             }
         }
 
