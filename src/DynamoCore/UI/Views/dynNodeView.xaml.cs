@@ -262,7 +262,9 @@ namespace Dynamo.Controls
             TextBlock textBlock = sender as TextBlock;
             string tooltipContent = ViewModel.NickName + '\n' + ViewModel.Description;
             Point pointToScreen_TopLeft = textBlock.PointToScreen(new Point(0,0));
-            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + textBlock.ActualWidth, pointToScreen_TopLeft.Y + textBlock.ActualHeight);
+            double actualWidth = textBlock.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+            double actualHeight = textBlock.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + actualWidth, pointToScreen_TopLeft.Y + actualHeight);
             ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, tooltipContent, PopupViewModel.Direction.Bottom));
         }
 
@@ -276,7 +278,9 @@ namespace Dynamo.Controls
             ContentPresenter inputPort = sender as ContentPresenter;
             string content = (inputPort.Content as PortViewModel).ToolTipContent;
             Point pointToScreen_TopLeft = inputPort.PointToScreen(new Point(0, 0));
-            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + inputPort.ActualWidth, pointToScreen_TopLeft.Y + inputPort.ActualHeight);
+            double actualWidth = inputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+            double actualHeight = inputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + actualWidth, pointToScreen_TopLeft.Y + actualHeight);
             ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, content, PopupViewModel.Direction.Right));
         }
 
@@ -295,7 +299,9 @@ namespace Dynamo.Controls
             ContentPresenter outputPort = sender as ContentPresenter;
             string content = (outputPort.Content as PortViewModel).ToolTipContent;
             Point pointToScreen_TopLeft = outputPort.PointToScreen(new Point(0, 0));
-            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + outputPort.ActualWidth, pointToScreen_TopLeft.Y + outputPort.ActualHeight);
+            double actualWidth = outputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+            double actualHeight = outputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + actualWidth, pointToScreen_TopLeft.Y + actualHeight);
             ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, content, PopupViewModel.Direction.Left));
         }
 
