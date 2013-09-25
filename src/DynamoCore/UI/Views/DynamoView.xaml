@@ -19,7 +19,8 @@
         KeyUp="DynamoView_KeyUp"
         Background="#FF353535"
         FontFamily="Open Sans"
-        SnapsToDevicePixels="True">
+        SnapsToDevicePixels="True"
+        ResizeMode="CanResizeWithGrip">
 
     <Window.CommandBindings>
         
@@ -30,8 +31,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />                                
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -105,23 +105,39 @@
                     Command="{Binding Path=DataContext.LayoutAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         
         <KeyBinding Key="Left"
+                    Modifiers="Ctrl+Alt"
                     CommandParameter="Left"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Right"
+                    Modifiers="Ctrl+Alt"
                     CommandParameter="Right"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Up"
+                    Modifiers="Ctrl+Alt"
                     CommandParameter="Up"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Down"
+                    Modifiers="Ctrl+Alt"
                     CommandParameter="Down"
                     Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-        
+        <KeyBinding Key="OemPlus"
+                    Modifiers="Ctrl"
+                    Command="{Binding Path=DataContext.ZoomInCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="OemMinus"
+                    Modifiers="Ctrl"
+                    Command="{Binding Path=DataContext.ZoomOutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="D0"
+                    Modifiers="Ctrl"
+                    Command="{Binding Path=DataContext.FitViewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="Escape"
+                    Command="{Binding Path=DataContext.EscapeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+
     </Window.InputBindings>
 
     <Grid Name="mainGrid" FocusManager.IsFocusScope="True">
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -142,7 +158,7 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
-                Height="27"
+                Height="26"
                 Name="titleBar">
 
             <Grid Name="titleBarGrid">
@@ -152,7 +168,11 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
+                <!--Menu-->
                 <Menu IsMainMenu="True" Name="menu1">
+                    <Menu.Resources>
+                        <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
+                    </Menu.Resources>
 
                     <MenuItem Header="_File" Name="fileMenu" Focusable="False">
                         <MenuItem Header="_New" Name="newMenu" Focusable="False">
@@ -210,17 +230,21 @@
                     </MenuItem>
 
                     <MenuItem Header="_View" Name="viewMenu" Focusable="False">
-                        <MenuItem Header="_Zoom" Name="zoomMenu" Focusable="False">
-                            <MenuItem  Header="Zoom In (Mouse wheel down)"  Command="{Binding ZoomInCommand}" InputGestureText="Ctrl + +" Focusable="False"/>
-                            <MenuItem  Header="Zoom Out (Mouse wheel up)" Command="{Binding ZoomOutCommand}" InputGestureText="Ctrl + -" Focusable="False"/>
+                        <MenuItem Header="_Zoom" Name="zoomMenu">
+                            <MenuItem  Header="Zoom In (Mouse wheel down)"  Command="{Binding ZoomInCommand}" InputGestureText="Ctrl + ="/>
+                            <MenuItem  Header="Zoom Out (Mouse wheel up)" Command="{Binding ZoomOutCommand}" InputGestureText="Ctrl + -"/>
                         </MenuItem>
-                        <MenuItem Header="_Pan" Name="panMenu" Focusable="False">
-                            <MenuItem  Header="Pan Left (Mouse wheel drag right)"  Command="{Binding PanCommand}" CommandParameter="Left" InputGestureText="Alt + Left" Focusable="False"/>
-                            <MenuItem  Header="Pan Right (Mouse wheel drag left)" Command="{Binding PanCommand}" CommandParameter="Right" InputGestureText="Alt + Right" Focusable="False"/>
-                            <MenuItem  Header="Pan Up (Mouse wheel drag down)"  Command="{Binding PanCommand}" CommandParameter="Up" InputGestureText="Alt + Up" Focusable="False"/>
-                            <MenuItem  Header="Pan Down (Mouse wheel drag up)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Alt + Down" Focusable="False"/>
-                        </MenuItem>
-                        <Separator/>
+
+                        <MenuItem Header="_Pan" Name="panMenu">
+                            <MenuItem  Header="Pan Left (Mouse wheel drag left)"  Command="{Binding PanCommand}" CommandParameter="Left" InputGestureText="Ctrl + Shift + Left"/>
+                            <MenuItem  Header="Pan Right (Mouse wheel drag right)" Command="{Binding PanCommand}"     CommandParameter="Right" InputGestureText="Ctrl + Shift + Right"/>
+                            <MenuItem  Header="Pan Up (Mouse wheel drag up)"  Command="{Binding PanCommand}" CommandParameter="Up" InputGestureText="Ctrl + Shift + Up"/>
+                            <MenuItem  Header="Pan Down (Mouse wheel drag down)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Ctrl + Shift + Down"/>
+                        </MenuItem>    
+
+                        <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                              Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
+
                         <MenuItem Header="_Connectors" Name="connectorMenu">
                             <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
                                 <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" Command="{Binding SetConnectorTypeCommand}" CommandParameter="BEZIER" Header="Curves"/>
@@ -282,11 +306,22 @@
 
             </Grid>
         </Border>
+        
+        <!--Shortcuts Toolbar-->
+        <Border Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Height="32"
+                BorderBrush="#FF3F4040"
+                BorderThickness="0,0,0,1">
+            <Grid Name="shortcutBarGrid">
+            </Grid>
+        </Border>
 
         <!--Workspace-->
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
-                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#232323">
-
+                Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#232323">
+            
             <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs" 
                         SelectedIndex="{Binding CurrentWorkspaceIndex}" Background="Transparent" Padding ="0" SelectionChanged="WorkspaceTabs_SelectionChanged">
 
@@ -303,20 +338,23 @@
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
-                                        <TabPanel x:Name="HeaderPanel"
-                                                  Grid.Row="0"
-                                                  Margin="0,0,0,0"
-                                                  Panel.ZIndex="1"
-                                                  IsItemsHost="True"
-                                                  KeyboardNavigation.TabIndex="1"
-                                                  Background="Transparent"
-                                                  HorizontalAlignment="Left"
-                                                  VerticalAlignment="Center"
-                                                  ClipToBounds="True"/>
+                                        <Border BorderBrush="#FF3F4040"
+                                                BorderThickness="1,0,0,1">
+                                            <TabPanel x:Name="HeaderPanel"
+                                                      Grid.Row="0"
+                                                      Margin="0,0,0,0"
+                                                      IsItemsHost="True"
+                                                      KeyboardNavigation.TabIndex="1"
+                                                      Background="Transparent"
+                                                      HorizontalAlignment="Left"
+                                                      VerticalAlignment="Center"
+                                                      ClipToBounds="True"
+                                                      MaxHeight="20"/>
+                                        </Border>                                        
                                         <Border x:Name="Border"
                                                 Grid.Row="1"
                                                 BorderBrush="{Binding Path=ViewingHomespace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"
-                                                BorderThickness="0,4,0,0">
+                                                BorderThickness="0,1,0,0">
                                             <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
                                         </Border>
                                     </Grid>
@@ -348,7 +386,7 @@
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
                                                             <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedTrue}"/>
-                                                            <Setter Property="BorderThickness" Value="1,0,1,1"/>
+                                                            <Setter Property="BorderThickness" Value="0,0,1,0"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -415,7 +453,7 @@
 
                             <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" DockPanel.Dock="Right">
                                 <Image Width="16"
-                                       Height="16">
+                                       Height="15">
                                     <Image.Style>
                                         <Style TargetType="{x:Type Image}">
                                             <Style.Triggers>
@@ -529,7 +567,7 @@
                     Background="Black" 
                     Opacity="1" 
                     Visibility="Visible"
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Grid.Column="0" 
                     Grid.ColumnSpan="3">
             <ScrollViewer.ContextMenu>
@@ -545,12 +583,12 @@
                     IsTabStop="False" FontFamily="Consolas" TextChanged="TextBoxBase_OnTextChanged" />
         </ScrollViewer>
 
+        <!--Sidebar-->
         <Grid Height="Auto" Width="Auto" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
-              Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black">
+              Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" Background="Black">
         </Grid>
 
-        <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-
+        <WrapPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                    Grid.ColumnSpan="3">
 
             <WrapPanel.Background>
@@ -584,7 +622,7 @@
 
         <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"
-              Grid.Row="1"
+              Grid.Row="2"
               Grid.Column="0"
               Grid.RowSpan="3"
               Grid.ColumnSpan="3"
@@ -601,7 +639,7 @@
         <GridSplitter ResizeDirection="Rows" 
                         Grid.Column="2" 
                         Grid.ColumnSpan="1"
-                        Grid.Row="2" 
+                        Grid.Row="3" 
                         Grid.RowSpan="1"
                         Width="Auto" 
                         Height="2" 
@@ -611,7 +649,7 @@
 
         <GridSplitter ResizeDirection="Auto" 
                           Grid.Column="1" 
-                          Grid.Row="1" 
+                          Grid.Row="2" 
                           Grid.RowSpan="2"
                           Height="Auto"
                           Width="2"

@@ -172,10 +172,14 @@ limitations under the License.
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\NoteModel.cs" />
     <Compile Include="Models\PortModel.cs" />
-    <Compile Include="UI\Controls\TitleBarButtons.xaml.cs">
-      <DependentUpon>TitleBarButtons.xaml</DependentUpon>
+    <Compile Include="UI\Controls\ShortcutToolbar.xaml.cs">
+      <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\dynTextBox.cs" />
+    <Compile Include="UI\Views\ZoomAndPanControl.xaml.cs">
+      <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\CursorLibrary.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\WatchViewModel.cs" />
@@ -383,11 +387,11 @@ limitations under the License.
     <Resource Include="UI\Images\search_24.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Controls\StyleDictionary.xaml">
+    <Page Include="UI\Controls\ShortcutToolbar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Controls\TitleBarButtons.xaml">
+    <Page Include="UI\Themes\ToolbarStyleDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -420,6 +424,10 @@ limitations under the License.
     <Page Include="UI\Prompts\NodeHelpPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\ZoomAndPanControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Resource Include="UI\Themes\DynamoColorsAndBrushes.xaml">
       <SubType>Designer</SubType>
@@ -529,6 +537,17 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\tick_selected.png" />
+    <Resource Include="UI\Images\click_background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\pan_disabled.png" />
+    <Resource Include="UI\Images\pan_hover.png" />
+    <Resource Include="UI\Images\pan_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\hand_drag.cur" />
+    <Resource Include="UI\Images\hand_pan.cur" />
+    <Resource Include="UI\Images\hand_pan_active.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
