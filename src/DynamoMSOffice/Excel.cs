@@ -159,7 +159,7 @@ namespace Dynamo.Nodes
         {
             var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)((FScheme.Value.Container)args[0]).Item;
 
-            Microsoft.Office.Interop.Excel.Range range = worksheet.UsedRange;
+            Range range = worksheet.UsedRange;
             
             int rows = range.Rows.Count;
             int cols = range.Columns.Count;
@@ -172,18 +172,26 @@ namespace Dynamo.Nodes
 
                 for (int c = 1; c <= cols; c++)
                 {
-                    // try parsing the cells as doubles
-                    // if that doesn't work, send out their string rep.
-                    double val;
-                    row.Add(double.TryParse(range.Cells[r, c].Value2.ToString(), out val)
-                                ? FScheme.Value.NewNumber(val)
-                                : FScheme.Value.NewString(range.Cells[r, c].Value2.ToString()));
+                    row.Add(TryParseCell(range.Cells[r, c]));
                 }
 
                 rowData.Add(FScheme.Value.NewList(Utils.SequenceToFSharpList(row)));
             }
 
             return FScheme.Value.NewList(Utils.SequenceToFSharpList(rowData));
+        }
+
+        public static FScheme.Value TryParseCell(Range element)
+        {
+            if (element == null || element.Value2 == null)
+            {
+                return null;
+            }
+                
+            double val;
+            return double.TryParse(element.Value2.ToString(), out val)
+                ? FScheme.Value.NewNumber(val)
+                : FScheme.Value.NewString(element.Value2);
         }
 
     }
