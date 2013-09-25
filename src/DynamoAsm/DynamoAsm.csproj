@@ -72,7 +72,6 @@
     <Compile Include="DynamoAsm.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VisualizationManagerASM.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">

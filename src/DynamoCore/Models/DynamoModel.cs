@@ -546,9 +546,6 @@ namespace Dynamo.Models
             if (NodeAdded != null && node != null)
             {
                 NodeAdded(node);
-
-                if (node is IDrawable)
-                    dynSettings.Controller.VisualizationManager.RegisterForVisualization(node);
             }
         }
 
@@ -763,6 +760,8 @@ namespace Dynamo.Models
                     el.Load(elNode);
 
                     CurrentWorkspace.Nodes.Add(el);
+
+                    OnNodeAdded(el);
 
                     el.X = x;
                     el.Y = y;
@@ -1555,9 +1554,6 @@ namespace Dynamo.Models
             if (NodeDeleted != null)
             {
                 NodeDeleted(node);
-
-                if (node is IDrawable)
-                    dynSettings.Controller.VisualizationManager.UnregisterFromVisualization(node);
             }
         }
 

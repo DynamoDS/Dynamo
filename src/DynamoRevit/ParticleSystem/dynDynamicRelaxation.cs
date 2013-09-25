@@ -42,15 +42,6 @@ namespace Dynamo.Nodes
         }
 
         #region IDrawableInterface
-        public void RegisterForVisualization()
-        {
-            dynSettings.Controller.VisualizationManager.RegisterForVisualization(this);
-        }
-
-        public void UnregisterFromVisualization()
-        {
-            dynSettings.Controller.VisualizationManager.UnregisterFromVisualization(this);
-        }
 
         public List<object> VisualizationGeometry
         {

@@ -120,12 +120,15 @@ namespace Dynamo.Controls
 
             MainContextMenu.Items.Add(mi);
 
-            dynSettings.Controller.RequestsRedraw += new System.EventHandler(Controller_RequestsRedraw);
-            dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(Controller_RunCompleted);
+            //dynSettings.Controller.RequestsRedraw += new System.EventHandler(Controller_RequestsRedraw);
+            //dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(Controller_RunCompleted);
+
+            dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += new EventHandler(VisualizationManager_VisualizationUpdateComplete);
+
             _vm = DataContext as Watch3DFullscreenViewModel;
         }
 
-        void Controller_RunCompleted(object controller, bool success)
+        void VisualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
         {
             if (!_vm.ParentWorkspace.IsCurrentSpace)
                 return;
@@ -134,44 +137,39 @@ namespace Dynamo.Controls
                 return;
 
             Dispatcher.Invoke(new Action(RenderDrawables));
-            //RenderDrawables();
         }
 
-        void Controller_RequestsRedraw(object sender, System.EventArgs e)
-        {
-            Dispatcher.Invoke(new Action(RenderDrawables));
-            //RenderDrawables();
-        }
+        //void Controller_RunCompleted(object controller, bool success)
+        //{
+        //    if (!_vm.ParentWorkspace.IsCurrentSpace)
+        //        return;
+
+        //    if (!dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing)
+        //        return;
+
+        //    Dispatcher.Invoke(new Action(RenderDrawables));
+        //}
+
+        //void Controller_RequestsRedraw(object sender, System.EventArgs e)
+        //{
+        //    Dispatcher.Invoke(new Action(RenderDrawables));
+        //}
 
         private void RenderDrawables()
         {
-            //var points = new List<Point3D>();
-            //var lines = new List<Point3D>();
-            //var meshes = new List<Mesh3D>();
-            //var xAxes = new List<Point3D>();
-            //var yAxes = new List<Point3D>();
-            //var zAxes = new List<Point3D>();
-
-            //foreach (KeyValuePair<Guid, RenderDescription> kvp in dynSettings.Controller.RenderDescriptions)
-            //{
-            //    var rd = kvp.Value as RenderDescription;
-
-            //    if (rd == null)
-            //        continue;
-
-            //    points.AddRange(rd.points.ConvertAll(x=>(Point3D)x));
-            //    lines.AddRange(rd.lines.ConvertAll(x => (Point3D)x));
-            //    meshes.AddRange(rd.meshes.ConvertAll(x=>(Mesh3D)x));
-            //    xAxes.AddRange(rd.xAxisPoints.ConvertAll(x => (Point3D)x));
-            //    yAxes.AddRange(rd.yAxisPoints.ConvertAll(x => (Point3D)x));
-            //    zAxes.AddRange(rd.zAxisPoints.ConvertAll(x => (Point3D)x));
-            //}
-
             var vizManager = dynSettings.Controller.VisualizationManager;
+
+            HelixPoints.Clear();
+            HelixLines.Clear();
+            HelixMesh = null;
+            HelixXAxes.Clear();
+            HelixYAxes.Clear();
+            HelixZAxes.Clear();
 
             HelixPoints = vizManager.Visualizations.Values.SelectMany(x => x.Description.Points).ToList();
             HelixLines = vizManager.Visualizations.Values.SelectMany(x => x.Description.Lines).ToList();
-            HelixMesh = MergeMeshes(vizManager.Visualizations.Values.SelectMany(x => x.Description.Meshes).ToList());
+            var meshes = vizManager.Visualizations.Values.SelectMany(x => x.Description.Meshes).ToList();
+            HelixMesh = MergeMeshes(meshes);
             HelixXAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.XAxisPoints).ToList();
             HelixYAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.YAxisPoints).ToList();
             HelixZAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.ZAxisPoints).ToList();

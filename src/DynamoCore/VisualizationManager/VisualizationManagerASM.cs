@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Media3D;
 using Autodesk.LibG;
@@ -109,6 +108,8 @@ namespace Dynamo
                     rd.Meshes.Add(new Mesh3D(vertices, indices_back));
                 }
             }
+
+            base.UpdateVisualizations();
         }
     }
 }
