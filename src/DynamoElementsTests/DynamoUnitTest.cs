@@ -23,7 +23,7 @@ namespace Dynamo.Tests
         }
 
         [TearDown]
-        public void Cleanup()
+        public virtual void Cleanup()
         {
             try
             {
