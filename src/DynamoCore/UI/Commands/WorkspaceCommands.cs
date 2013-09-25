@@ -225,5 +225,14 @@ namespace Dynamo.Models
         }
 
         #endregion
+
+        #region Private Class Helper Methods
+
+        private NodeModel CreateNodeInstance(string nodeName)
+        {
+            return null;
+        }
+
+        #endregion
     }
 }

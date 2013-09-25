@@ -1365,7 +1365,7 @@ namespace Dynamo.Models
                 return null;
             }
 
-            NodeModel node = CreateNode(data["name"].ToString());
+            NodeModel node = CreateNodeInstance(data["name"].ToString());
             if (node == null)
             {
                 dynSettings.Controller.DynamoModel.WriteToLog("Failed to create the node");
@@ -1437,7 +1437,7 @@ namespace Dynamo.Models
             return false;
         }
 
-        internal NodeModel CreateNode(string name)
+        internal static NodeModel CreateNodeInstance(string name)
         {
             NodeModel result;
 
