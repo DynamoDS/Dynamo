@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Media3D;
-using Dynamo.Nodes;
+using System.Linq;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
@@ -145,12 +145,12 @@ namespace Dynamo.Controls
 
         private void RenderDrawables()
         {
-            var points = new List<Point3D>();
-            var lines = new List<Point3D>();
-            var meshes = new List<Mesh3D>();
-            var xAxes = new List<Point3D>();
-            var yAxes = new List<Point3D>();
-            var zAxes = new List<Point3D>();
+            //var points = new List<Point3D>();
+            //var lines = new List<Point3D>();
+            //var meshes = new List<Mesh3D>();
+            //var xAxes = new List<Point3D>();
+            //var yAxes = new List<Point3D>();
+            //var zAxes = new List<Point3D>();
 
             //foreach (KeyValuePair<Guid, RenderDescription> kvp in dynSettings.Controller.RenderDescriptions)
             //{
@@ -168,19 +168,13 @@ namespace Dynamo.Controls
             //}
 
             var vizManager = dynSettings.Controller.VisualizationManager;
-            points.AddRange(vizManager.Points.ConvertAll(x => (Point3D)x));
-            lines.AddRange(vizManager.Lines.ConvertAll(x => (Point3D)x));
-            meshes.AddRange(vizManager.Meshes.ConvertAll(x => (Mesh3D)x));
-            xAxes.AddRange(vizManager.XAxisPoints.ConvertAll(x => (Point3D)x));
-            yAxes.AddRange(vizManager.YAxisPoints.ConvertAll(x => (Point3D)x));
-            zAxes.AddRange(vizManager.ZAxisPoints.ConvertAll(x => (Point3D)x));
 
-            HelixPoints = points;
-            HelixLines = lines;
-            HelixMesh = MergeMeshes(meshes);
-            HelixXAxes = xAxes;
-            HelixYAxes = yAxes;
-            HelixZAxes = zAxes;
+            HelixPoints = vizManager.Visualizations.Values.SelectMany(x => x.Description.Points).ToList();
+            HelixLines = vizManager.Visualizations.Values.SelectMany(x => x.Description.Lines).ToList();
+            HelixMesh = MergeMeshes(vizManager.Visualizations.Values.SelectMany(x => x.Description.Meshes).ToList());
+            HelixXAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.XAxisPoints).ToList();
+            HelixYAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.YAxisPoints).ToList();
+            HelixZAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.ZAxisPoints).ToList();
         }
 
         Mesh3D MergeMeshes(List<Mesh3D> meshes)

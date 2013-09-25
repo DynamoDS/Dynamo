@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 using Dynamo.Nodes;
@@ -13,36 +14,46 @@ namespace Dynamo
 {
     class VisualizationManagerRevit : VisualizationManager
     {
-        public override void Draw()
+        public override void UpdateVisualizations()
         {
-            foreach (KeyValuePair<string, List<object>>geoms in Visualizations)
+            //only update those nodes which have been flagged for update
+            //they are flagged when their eval_internal is hit
+
+            var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
+
+            foreach (var n in toUpdate)
             {
-                foreach (var obj in geoms.Value)
+                var rd = n.Description;
+
+                //clear the render description
+                rd.Clear();
+
+                foreach (var obj in n.Geometry)
                 {
                     if (obj is Element)
                     {
-                        DrawElement(obj);
+                        DrawElement(obj, rd);
                     }
                     if (obj is Transform)
                     {
-                        DrawTransform(obj);
+                        DrawTransform(obj, rd);
                     }
                     else if (obj is XYZ)
                     {
-                        DrawXyz(obj);
+                        DrawXyz(obj, rd);
                     }
                     else if (obj is ParticleSystem)
                     {
-                        DrawParticleSystem(obj);
+                        DrawParticleSystem(obj, rd);
                     }
                     else if (obj is TriangleFace)
                     {
-                        DrawTriangleFace(obj);
+                        DrawTriangleFace(obj, rd);
                     }
                     else if (obj is GeometryObject)
                     {
                         //Draw Revit geometry
-                        DrawGeometryObject(obj);
+                        DrawGeometryObject(obj, rd);
 
                         //If GeometryKeeper is available,
                         //send geometry.
@@ -51,33 +62,33 @@ namespace Dynamo
                 }
             }
             
-            base.Draw();
+            base.UpdateVisualizations();
         }
 
-        private void DrawElement(object obj)
+        private void DrawElement(object obj, RenderDescription rd)
         {
             if (obj == null)
                 return;
 
             if (obj is CurveElement)
             {
-                DrawCurveElement(obj);
+                DrawCurveElement(obj, rd);
             }
             else if (obj is ReferencePoint)
             {
-                DrawReferencePoint(obj);
+                DrawReferencePoint(obj, rd);
             }
             else if (obj is Form)
             {
-                DrawForm(obj);
+                DrawForm(obj, rd);
             }
             else if (obj is GeometryElement)
             {
-                DrawGeometryElement(obj);
+                DrawGeometryElement(obj, rd);
             }
             else if (obj is GeometryObject)
             {
-                DrawGeometryObject(obj);
+                DrawGeometryObject(obj, rd);
             }
             else
             {
@@ -89,13 +100,13 @@ namespace Dynamo
 
                     if (geom != null)
                     {
-                        DrawGeometryObject(geom);
+                        DrawGeometryObject(geom, rd);
                     }
                 }
             }
         }
 
-        private void DrawFace(object obj)
+        private void DrawFace(object obj, RenderDescription rd)
         {
             var face = obj as Face;
 
@@ -106,21 +117,21 @@ namespace Dynamo
 
             foreach (Mesh3D mesh in meshes)
             {
-                Meshes.Add(mesh);
+                rd.Meshes.Add(mesh);
             }
         }
 
-        private void DrawForm(object obj)
+        private void DrawForm(object obj, RenderDescription rd)
         {
             var form = obj as Form;
 
             if (form == null)
                 return;
 
-            DrawGeometryElement(form.get_Geometry(new Options()));
+            DrawGeometryElement(form.get_Geometry(new Options()), rd);
         }
 
-        private void DrawGeometryElement(object obj)
+        private void DrawGeometryElement(object obj, RenderDescription rd)
         {
             try
             {
@@ -128,7 +139,7 @@ namespace Dynamo
 
                 foreach (GeometryObject go in gelem)
                 {
-                    DrawGeometryObject(go);
+                    DrawGeometryObject(go, rd);
                 }
             }
             catch (Exception ex)
@@ -139,60 +150,60 @@ namespace Dynamo
 
         }
 
-        private void DrawGeometryObject(object obj)
+        private void DrawGeometryObject(object obj, RenderDescription rd)
         {
             if (obj == null)
                 return;
 
             if (obj is XYZ)
             {
-                DrawXyz(obj);
+                DrawXyz(obj, rd);
             }
             if (obj is Curve)
             {
-                DrawCurve(obj);
+                DrawCurve(obj, rd);
             }
             else if (obj is Solid)
             {
-                DrawSolid(obj);
+                DrawSolid(obj, rd);
             }
             else if (obj is Face)
             {
-                DrawFace(obj);
+                DrawFace(obj, rd);
             }
             else
             {
-                DrawUndrawable(obj);
+                DrawUndrawable(obj, rd);
             }
         }
 
-        private void DrawUndrawable(object obj)
+        private void DrawUndrawable(object obj, RenderDescription rd)
         {
             //TODO: write a message, throw an exception, draw a question mark
         }
 
-        private void DrawReferencePoint(object obj)
+        private void DrawReferencePoint(object obj, RenderDescription rd)
         {
             var point = obj as ReferencePoint;
 
             if (point == null)
                 return;
 
-            Points.Add(new Point3D(point.GetCoordinateSystem().Origin.X,
+            rd.Points.Add(new Point3D(point.GetCoordinateSystem().Origin.X,
                 point.GetCoordinateSystem().Origin.Y,
                 point.GetCoordinateSystem().Origin.Z));
         }
 
-        private void DrawXyz(object obj)
+        private void DrawXyz(object obj, RenderDescription rd)
         {
             var point = obj as XYZ;
             if (point == null)
                 return;
 
-            Points.Add(new Point3D(point.X, point.Y, point.Z));
+            rd.Points.Add(new Point3D(point.X, point.Y, point.Z));
         }
 
-        private void DrawCurve(object obj)
+        private void DrawCurve(object obj, RenderDescription rd)
         {
             var curve = obj as Curve;
 
@@ -205,26 +216,26 @@ namespace Dynamo
             {
                 XYZ xyz = points[i];
 
-                Lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+                rd.Lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
 
                 if (i == 0 || i == (points.Count - 1))
                     continue;
 
-                Lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+                rd.Lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
             }
         }
 
-        private void DrawCurveElement(object obj)
+        private void DrawCurveElement(object obj, RenderDescription rd)
         {
             var elem = obj as CurveElement;
 
             if (elem == null)
                 return;
 
-            DrawCurve(elem.GeometryCurve);
+            DrawCurve(elem.GeometryCurve, rd);
         }
 
-        private void DrawSolid(object obj)
+        private void DrawSolid(object obj, RenderDescription rd)
         {
             var solid = obj as Solid;
 
@@ -233,16 +244,16 @@ namespace Dynamo
 
             foreach (Face f in solid.Faces)
             {
-                DrawFace(f);
+                DrawFace(f, rd);
             }
 
             foreach (Edge edge in solid.Edges)
             {
-                DrawCurve(edge.AsCurve());
+                DrawCurve(edge.AsCurve(), rd);
             }
         }
 
-        private void DrawTransform(object obj)
+        private void DrawTransform(object obj, RenderDescription rd)
         {
             var t = obj as Transform;
             if (t == null)
@@ -256,17 +267,17 @@ namespace Dynamo
             var yEnd = new Point3D(y1.X, y1.Y, y1.Z);
             var zEnd = new Point3D(z1.X, z1.Y, z1.Z);
 
-            XAxisPoints.Add(origin);
-            XAxisPoints.Add(xEnd);
+            rd.XAxisPoints.Add(origin);
+            rd.XAxisPoints.Add(xEnd);
 
-            YAxisPoints.Add(origin);
-            YAxisPoints.Add(yEnd);
+            rd.YAxisPoints.Add(origin);
+            rd.YAxisPoints.Add(yEnd);
 
-            ZAxisPoints.Add(origin);
-            ZAxisPoints.Add(zEnd);
+            rd.ZAxisPoints.Add(origin);
+            rd.ZAxisPoints.Add(zEnd);
         }
 
-        private void DrawTriangleFace(object obj)
+        private void DrawTriangleFace(object obj, RenderDescription rd)
         {
             var face = obj as TriangleFace;
             if (face == null)
@@ -277,9 +288,10 @@ namespace Dynamo
             mesh.Vertices.Add(face.Vertices[0].ToPoint3D());
             mesh.Vertices.Add(face.Vertices[2].ToPoint3D());
             mesh.AddFace(new int[3] { mesh.Vertices.Count - 1, mesh.Vertices.Count - 2, mesh.Vertices.Count - 3 });
+            rd.Meshes.Add(mesh);
         }
 
-        private void DrawParticleSystem(object obj)
+        private void DrawParticleSystem(object obj, RenderDescription rd)
         {
             var ps = obj as ParticleSystem;
             if (ps == null)
@@ -289,14 +301,14 @@ namespace Dynamo
             {
                 Particle p = ps.getParticle(i);
                 XYZ pos = p.getPosition();
-                if (i < Points.Count)
+                if (i < rd.Points.Count)
                 {
-                    Points[i] = new Point3D(pos.X, pos.Y, pos.Z);
+                    rd.Points[i] = new Point3D(pos.X, pos.Y, pos.Z);
                 }
                 else
                 {
                     var pt = new Point3D(pos.X, pos.Y, pos.Z);
-                    Points.Add(pt);
+                    rd.Points.Add(pt);
                 }
             }
 
@@ -306,18 +318,18 @@ namespace Dynamo
                 XYZ pos1 = spring.getOneEnd().getPosition();
                 XYZ pos2 = spring.getTheOtherEnd().getPosition();
 
-                if (i * 2 + 1 < Lines.Count)
+                if (i * 2 + 1 < rd.Lines.Count)
                 {
-                    Lines[i * 2] = new Point3D(pos1.X, pos1.Y, pos1.Z);
-                    Lines[i * 2 + 1] = new Point3D(pos2.X, pos2.Y, pos2.Z);
+                    rd.Lines[i * 2] = new Point3D(pos1.X, pos1.Y, pos1.Z);
+                    rd.Lines[i * 2 + 1] = new Point3D(pos2.X, pos2.Y, pos2.Z);
                 }
                 else
                 {
                     var pt1 = new Point3D(pos1.X, pos1.Y, pos1.Z);
                     var pt2 = new Point3D(pos2.X, pos2.Y, pos2.Z);
 
-                    Lines.Add(pt1);
-                    Lines.Add(pt2);
+                    rd.Lines.Add(pt1);
+                    rd.Lines.Add(pt2);
                 }
             }
         }

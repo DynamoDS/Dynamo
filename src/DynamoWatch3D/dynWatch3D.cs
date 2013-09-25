@@ -23,7 +23,6 @@ using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using HelixToolkit.Wpf;
 using System.Windows.Media.Media3D;
-using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
@@ -31,7 +30,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
-    public partial class Watch3D : NodeWithOneOutput
+    public partial class Watch3D : NodeWithOneOutput, IObserver<Point3D>, IObserver<Mesh3D>
     {
         private PointsVisual3D _points;
         private LinesVisual3D _lines;
@@ -54,40 +53,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-        }
-
-        private void GetUpstreamIDrawable(List<IDrawable> drawables, Dictionary<int, Tuple<int, NodeModel>> inputs)
-        {
-            foreach (KeyValuePair<int, Tuple<int, NodeModel>> pair in inputs)
-            {
-                if (pair.Value == null)
-                    continue;
-
-                NodeModel node = pair.Value.Item2;
-                IDrawable drawable = node as IDrawable;
-
-                if (node.IsVisible && drawable != null)
-                    drawables.Add(drawable);
-
-                if (node.IsUpstreamVisible)
-                    GetUpstreamIDrawable(drawables, node.Inputs);
-                else
-                    continue; // don't bother checking if function
-
-                //if the node is function then get all the 
-                //drawables inside that node. only do this if the
-                //node's workspace is the home space to avoid infinite
-                //recursion in the case of custom nodes in custom nodes
-                if (node is Function && node.WorkSpace == dynSettings.Controller.DynamoModel.HomeSpace)
-                {
-                    Function func = (Function)node;
-                    IEnumerable<NodeModel> topElements = func.Definition.Workspace.GetTopMostNodes();
-                    foreach (NodeModel innerNode in topElements)
-                    {
-                        GetUpstreamIDrawable(drawables, innerNode.Inputs);
-                    }
-                }
-            }
         }
 
         MeshVisual3D MakeMeshVisual3D(Mesh3D mesh)
@@ -188,29 +153,28 @@ namespace Dynamo.Nodes
             Meshes = new List<Mesh3D>();
 
             // a list of all the upstream IDrawable nodes
-            List<IDrawable> drawables = new List<IDrawable>();
 
-            GetUpstreamIDrawable(drawables, Inputs);
+            //GetUpstreamIDrawable(drawables, Inputs);
 
-            foreach (IDrawable d in drawables)
-            {
-                d.Draw();
+            //foreach (IDrawable d in drawables)
+            //{
+            //    d.Draw();
 
-                foreach (Point3D p in d.RenderDescription.points)
-                {
-                    Points.Add(p);
-                }
+            //    foreach (Point3D p in d.RenderDescription.points)
+            //    {
+            //        Points.Add(p);
+            //    }
 
-                foreach (Point3D p in d.RenderDescription.lines)
-                {
-                    Lines.Add(p);
-                }
+            //    foreach (Point3D p in d.RenderDescription.lines)
+            //    {
+            //        Lines.Add(p);
+            //    }
 
-                foreach (Mesh3D mesh in d.RenderDescription.meshes)
-                {
-                    Meshes.Add(mesh);
-                }
-            }
+            //    foreach (Mesh3D mesh in d.RenderDescription.meshes)
+            //    {
+            //        Meshes.Add(mesh);
+            //    }
+            //}
 
             _lines.Points = Lines;
             _points.Points = Points;
@@ -238,5 +202,29 @@ namespace Dynamo.Nodes
         {
             _watchView.watch_view.ZoomExtents();
         }
+
+        #region IObserver interface
+
+        public void OnCompleted()
+        {
+            
+        }
+
+        public void OnError(Exception e)
+        {
+            
+        }
+
+        public void OnNext(Point3D p)
+        {
+
+        }
+
+        public void OnNext(Mesh3D m)
+        {
+
+        }
+
+        #endregion
     }
 }

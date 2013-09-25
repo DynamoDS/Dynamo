@@ -261,12 +261,12 @@ namespace Dynamo
                 if(drawable is XYZ)
                 {
                     //RevitTransactionNode.DrawXYZ(drawable);
-                    VisualizationManager.Visualizations[id].Add(drawable);
+                    VisualizationManager.Visualizations[id].Geometry.Add(drawable);
                 }
                 else if (drawable is GeometryObject)
                 {
                     //RevitTransactionNode.DrawGeometryObject(drawable);
-                    VisualizationManager.Visualizations[id].Add(drawable);
+                    VisualizationManager.Visualizations[id].Geometry.Add(drawable);
                 }
             }
         }
@@ -517,7 +517,6 @@ namespace Dynamo
             else
                 cleanup();
 
-            VisualizationManager.Draw();
         }
 
         public override void ShutDown()

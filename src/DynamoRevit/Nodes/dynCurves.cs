@@ -1461,8 +1461,7 @@ namespace Dynamo.Nodes
                 
             result = FSharpList<Value>.Cons(Value.NewContainer(startPoint), result);
 
-            //pts.Add(startPoint);
-            dynRevitSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Add(startPoint);
+            VisualizationGeometry.Add(startPoint);
            
             t = 1.0;
             XYZ endPoint = !XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
@@ -1591,8 +1590,8 @@ namespace Dynamo.Nodes
             if (xi > 1.0 + System.Double.Epsilon)
             {
                 result = FSharpList<Value>.Cons(Value.NewContainer(endPoint), result);
-                //pts.Add(endPoint);
-                dynRevitSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Add(endPoint);
+
+                VisualizationGeometry.Add(endPoint);
             }
             return Value.NewList(
                ListModule.Reverse(result)
