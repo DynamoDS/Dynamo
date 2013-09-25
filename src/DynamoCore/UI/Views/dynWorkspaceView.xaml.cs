@@ -151,38 +151,32 @@ namespace Dynamo.Views
 
         void vm_RequestNodeCentered(object sender, EventArgs e)
         {
-            double x = 0;
-            double y = 0;
-            ModelBase node = (e as ModelEventArgs).Model;
-            Dictionary<string, object> data = (e as ModelEventArgs).Data;
+            ModelEventArgs args = e as ModelEventArgs;
+            ModelBase node = args.Model;
 
-            x = outerCanvas.ActualWidth / 2.0;
-            y = outerCanvas.ActualHeight / 2.0;
+            double x = outerCanvas.ActualWidth / 2.0;
+            double y = outerCanvas.ActualHeight / 2.0;
 
             // apply small perturbation
             // so node isn't right on top of last placed node
             if (currentNodeCascadeOffset > 96.0)
-            {
                 currentNodeCascadeOffset = 0.0;
-            }
 
             x += currentNodeCascadeOffset;
             y += currentNodeCascadeOffset;
 
             currentNodeCascadeOffset += 24.0;
-            
-            var transformFromOuterCanvas = data.ContainsKey("transformFromOuterCanvasCoordinates");
 
-            if (data.ContainsKey("x"))
-                x = (double)data["x"];
-
-            if (data.ContainsKey("y"))
-                y = (double)data["y"];
+            if (args.PositionSpecified)
+            {
+                x = args.X;
+                y = args.Y;
+            }
 
             Point dropPt = new Point(x, y);
 
             // Transform dropPt from outerCanvas space into zoomCanvas space
-            if (transformFromOuterCanvas)
+            if (args.TransformCoordinates)
             {
                 if (WorkBench != null)
                 {

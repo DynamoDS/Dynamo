@@ -108,24 +108,16 @@ namespace Dynamo.Core.Automation
         #region Public Class Methods
 
         internal CreateNodeCommand(Guid nodeId, string nodeName,
-            double x, double y, bool transformCoordinates)
+            double x, double y, bool defaultPosition, bool transformCoordinates)
         {
             this.NodeId = nodeId;
             this.NodeName = nodeName;
             this.X = x;
             this.Y = y;
+            this.DefaultPosition = defaultPosition;
             this.TransformCoordinates = transformCoordinates;
         }
 
-        /// <summary>
-        /// Call this static method to reconstruct a RecordableCommand object 
-        /// given an XmlElement previously saved with SerializeCore method.
-        /// </summary>
-        /// <param name="element">The XmlElement from which the RecordableCommand
-        /// can be reconstructed.</param>
-        /// <returns>Returns the reconstructed RecordableCommand object. If a 
-        /// RecordableCommand cannot be reconstructed, this method throws a 
-        /// FormatException.</returns>
         internal static CreateNodeCommand DeserializeCore(XmlElement element)
         {
             XmlElementHelper helper = new XmlElementHelper(element);
@@ -133,8 +125,10 @@ namespace Dynamo.Core.Automation
             string nodeName = helper.ReadString("NodeName");
             double x = helper.ReadDouble("X");
             double y = helper.ReadDouble("Y");
-            bool transform = helper.ReadBoolean("TransformCoordinates");
-            return new CreateNodeCommand(nodeId, nodeName, x, y, transform);
+
+            return new CreateNodeCommand(nodeId, nodeName, x, y, 
+                helper.ReadBoolean("DefaultPosition"),
+                helper.ReadBoolean("TransformCoordinates"));
         }
 
         #endregion
@@ -145,6 +139,7 @@ namespace Dynamo.Core.Automation
         internal string NodeName { get; private set; }
         internal double X { get; private set; }
         internal double Y { get; private set; }
+        internal bool DefaultPosition { get; private set; }
         internal bool TransformCoordinates { get; private set; }
 
         #endregion
@@ -163,6 +158,7 @@ namespace Dynamo.Core.Automation
             helper.SetAttribute("NodeName", this.NodeName);
             helper.SetAttribute("X", this.X);
             helper.SetAttribute("Y", this.Y);
+            helper.SetAttribute("DefaultPosition", this.DefaultPosition);
             helper.SetAttribute("TransformCoordinates", TransformCoordinates);
         }
 

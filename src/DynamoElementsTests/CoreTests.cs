@@ -387,7 +387,7 @@ namespace Dynamo.Tests
             // select all of them one by one
             for (int i = 0; i < numNodes; i++)
             {
-                dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(null, null));
+                dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(null));
             }
         }
 
