@@ -259,7 +259,9 @@ namespace Dynamo
 
         public virtual void ShutDown()
         {
+            dynSettings.Controller.DynamoModel.OnCleanup(null);
             dynSettings.Controller = null;
+            
             Selection.DynamoSelection.Instance.ClearSelection();
         }
 
