@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.Office.Interop.Excel;
@@ -22,9 +23,15 @@ namespace Dynamo.Nodes
         {
             get
             {
-                _excelApp = RegisterAndGetApp();
+                _excelApp = _excelApp ?? RegisterAndGetApp();
                 return _excelApp;
             }
+        }
+
+        public static bool _showOnStartup = true;
+        public static bool ShowOnStartup { 
+            get { return _showOnStartup; } 
+            set { _showOnStartup = value; } 
         }
 
         public static Application RegisterAndGetApp()
@@ -46,7 +53,7 @@ namespace Dynamo.Nodes
 
             dynSettings.Controller.DynamoModel.CleaningUp += DynamoModelOnCleaningUp;
 
-            excel.Visible = true;
+            excel.Visible = ShowOnStartup;
 
             return excel;
         }
