@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.ViewModels;
@@ -468,12 +469,11 @@ namespace Dynamo.Utilities
             //dynSettings.Controller.CustomNodeManager.SetNodeInfo(customNodeInfo);
             //dynSettings.Controller.SearchViewModel.Add(args.Name, args.Category, args.Description, newNodeDefinition.FunctionId);
 
-            var collapsedNode = dynSettings.Controller.DynamoModel.CreateNode_Internal(new Dictionary<string, object>()
-                {
-                    {"name", newNodeDefinition.FunctionId.ToString() },
-                    {"x", avgX },
-                    {"y", avgY }
-                });
+
+            CreateNodeCommand command = new CreateNodeCommand(Guid.NewGuid(),
+                newNodeDefinition.FunctionId.ToString(), avgX, avgY, false);
+
+            var collapsedNode = dynSettings.Controller.DynamoModel.CreateNodeInternal(command, null);
 
             // place the node as intended, not centered
             collapsedNode.X = avgX;

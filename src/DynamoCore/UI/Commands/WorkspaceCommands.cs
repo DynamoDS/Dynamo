@@ -1,4 +1,5 @@
-﻿using Dynamo.Core.Automation;
+﻿using System.Collections.Generic;
+using Dynamo.Core.Automation;
 using Dynamo.Nodes;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
@@ -169,48 +170,28 @@ namespace Dynamo.Models
 {
     partial class WorkspaceModel
     {
+        #region Workspace Command Entry Point
+
+        private List<RecordableCommand> recordedCommands = null;
+
+        internal void ExecuteCommand(RecordableCommand command)
+        {
+            // In the playback mode 'this.recordedCommands' will be 
+            // 'null' so that the incoming command will not be recorded.
+            if (null != recordedCommands)
+                recordedCommands.Add(command);
+
+            command.Execute(this); // Internally calls 'CreateNodeInternal'.
+        }
+
+        #endregion
+
         #region The Actual Command Handlers
 
         internal void CreateNodeImpl(CreateNodeCommand command)
         {
-#if false
-            NodeModel node = CreateNode(command.NodeName);
-            if (node == null)
-            {
-                dynSettings.Controller.DynamoModel.WriteToLog("Failed to create the node");
-                return;
-            }
-
-            if (this is HomeWorkspace)
-            {
-                if (node is Symbol || node is Output)
-                {
-                    dynSettings.Controller.DynamoModel.WriteToLog(
-                        "Cannot place dynSymbol or dynOutput in HomeWorkspace");
-                    return;
-                }
-            }
-
-            this.Nodes.Add(node);
-            node.WorkSpace = this;
-
-            // TODO(Ben): Handle the case where we get an XmlNode
-            // 
-            // if (data.ContainsKey("data"))
-            //     node.Load(data["data"] as XmlNode);
-
-            node.GUID = command.NodeId;
-
-            WorkspaceViewModel viewModel = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel;
-            viewModel.OnRequestNodeCentered(this, new ModelEventArgs(node, data));
-
-            node.EnableInteraction();
-
-            if (CurrentWorkspace == HomeSpace)
-                node.SaveResult = true;
-
-            OnNodeAdded(node);
-#endif
+            DynamoModel dynamoModel = dynSettings.Controller.DynamoModel;
+            dynamoModel.CreateNodeInternal(command, null);
         }
 
         #endregion
