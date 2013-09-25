@@ -52,11 +52,6 @@ namespace Dynamo
                 RaisePropertyChanged("IsUILocked");
             }
         }
-        private Dictionary<Guid, RenderDescription> _renderDescriptions = new Dictionary<Guid, RenderDescription>();
-        public Dictionary<Guid, RenderDescription> RenderDescriptions
-        {
-            get { return _renderDescriptions; }
-        }
 
         private readonly SortedDictionary<string, TypeLoadData> builtinTypesByNickname =
             new SortedDictionary<string, TypeLoadData>();
@@ -73,7 +68,8 @@ namespace Dynamo
         public DynamoViewModel DynamoViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
-        
+        public VisualizationManager VisualizationManager { get; protected set; }
+
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
         /// with the assumption that the entire test will be wrapped in an
@@ -250,9 +246,10 @@ namespace Dynamo
                 DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
             }
 
-            NodeSubmittedForRendering += new EventHandler(Controller_NodeSubmittedForRendering);
-            NodeRemovedFromRendering += new EventHandler(Controller_NodeRemovedFromRendering);
+            VisualizationManager = new VisualizationManager();
 
+            //NodeSubmittedForRendering += new EventHandler(Controller_NodeSubmittedForRendering);
+            //NodeRemovedFromRendering += new EventHandler(Controller_NodeRemovedFromRendering);
         }
 
         #endregion
@@ -492,38 +489,39 @@ namespace Dynamo
 
         protected virtual void OnEvaluationCompleted()
         {
+            dynSettings.Controller.VisualizationManager.Draw();
         }
 
-        /// <summary>
-        /// Callback for node being unregistered from rendering
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Controller_NodeRemovedFromRendering(object sender, EventArgs e)
-        {
-            var node = sender as NodeModel;
-            if (_renderDescriptions.ContainsKey(node.GUID))
-                _renderDescriptions.Remove(node.GUID);
-        }
+        ///// <summary>
+        ///// Callback for node being unregistered from rendering
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //void Controller_NodeRemovedFromRendering(object sender, EventArgs e)
+        //{
+        //    var node = sender as NodeModel;
+        //    if (_renderDescriptions.ContainsKey(node.GUID))
+        //        _renderDescriptions.Remove(node.GUID);
+        //}
 
-        /// <summary>
-        /// Callback for the node being registered for rendering.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Controller_NodeSubmittedForRendering(object sender, EventArgs e)
-        {
-            var node = sender as NodeModel;
-            if (!_renderDescriptions.ContainsKey(node.GUID))
-            {
-                //don't allow an empty render description
-                IDrawable d = node as IDrawable;
-                if (d.RenderDescription == null)
-                    d.RenderDescription = new RenderDescription();
-                _renderDescriptions.Add(node.GUID, d.RenderDescription);
-            }
+        ///// <summary>
+        ///// Callback for the node being registered for rendering.
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //void Controller_NodeSubmittedForRendering(object sender, EventArgs e)
+        //{
+        //    var node = sender as NodeModel;
+        //    if (!_renderDescriptions.ContainsKey(node.GUID))
+        //    {
+        //        //don't allow an empty render description
+        //        IDrawable d = node as IDrawable;
+        //        if (d.RenderDescription == null)
+        //            d.RenderDescription = new RenderDescription();
+        //        _renderDescriptions.Add(node.GUID, d.RenderDescription);
+        //    }
 
-        }
+        //}
 
     #endregion
 
@@ -534,8 +532,9 @@ namespace Dynamo
 
         public void RequestClearDrawables()
         {
-            var drawables = DynamoModel.Nodes.Where(x => x is IDrawable);
-            drawables.ToList().ForEach(x=>((IDrawable)x).RenderDescription.ClearAll());
+            //var drawables = DynamoModel.Nodes.Where(x => x is IDrawable);
+            //drawables.ToList().ForEach(x => ((IDrawable)x).RenderDescription.ClearAll());
+            VisualizationManager.Clear();
         }
 
         /// <summary>

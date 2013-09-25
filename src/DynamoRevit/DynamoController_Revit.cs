@@ -54,6 +54,8 @@ namespace Dynamo
             //allow the showing of elements in context
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
+
+            VisualizationManager = new VisualizationManagerRevit();
         }
 
         /// <summary>
@@ -238,18 +240,18 @@ namespace Dynamo
             }
         }
 
-        void DrawPython(Value val, RenderDescription rd)
+        void DrawPython(Value val, string id)
         {
-            DrawContainers(val, rd);
+            DrawContainers(val, id);
         }
 
-        private void DrawContainers(Value val, RenderDescription rd)
+        private void DrawContainers(Value val, string id)
         {
             if (val.IsList)
             {
                 foreach (Value v in ((Value.List)val).Item)
                 {
-                    DrawContainers(v, rd);
+                    DrawContainers(v, id);
                 }
             }
             if (val.IsContainer)
@@ -258,11 +260,13 @@ namespace Dynamo
 
                 if(drawable is XYZ)
                 {
-                    RevitTransactionNode.DrawXYZ(rd, drawable);
+                    //RevitTransactionNode.DrawXYZ(drawable);
+                    VisualizationManager.Visualizations[id].Add(drawable);
                 }
                 else if (drawable is GeometryObject)
                 {
-                    RevitTransactionNode.DrawGeometryObject(rd, drawable);
+                    //RevitTransactionNode.DrawGeometryObject(drawable);
+                    VisualizationManager.Visualizations[id].Add(drawable);
                 }
             }
         }
@@ -512,6 +516,8 @@ namespace Dynamo
             }
             else
                 cleanup();
+
+            VisualizationManager.Draw();
         }
 
         public override void ShutDown()

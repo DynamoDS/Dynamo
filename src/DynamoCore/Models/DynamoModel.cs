@@ -652,8 +652,9 @@ namespace Dynamo.Models
             CleanWorkbench();
 
             //clear the renderables
-            dynSettings.Controller.RenderDescriptions.Clear();
-            dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
+            //dynSettings.Controller.RenderDescriptions.Clear();
+            //dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
+            dynSettings.Controller.VisualizationManager.Clear();
 
             Stopwatch sw = new Stopwatch();
 
@@ -1684,7 +1685,7 @@ namespace Dynamo.Models
             dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
 
             //clear the renderables
-            dynSettings.Controller.RenderDescriptions.Clear();
+            //dynSettings.Controller.RenderDescriptions.Clear();
             dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
 
             dynSettings.Controller.IsUILocked = false;
