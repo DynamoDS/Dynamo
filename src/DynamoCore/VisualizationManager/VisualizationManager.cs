@@ -140,9 +140,9 @@ namespace Dynamo
             v.Geometry.Clear();
         }
 
-        public List<IDrawable> GetUpstreamIDrawable(Dictionary<int, Tuple<int, NodeModel>> inputs)
+        public static List<string> GetUpstreamIDrawableIds(Dictionary<int, Tuple<int, NodeModel>> inputs)
         {
-            var drawables = new List<IDrawable>();
+            var drawables = new List<string>();
 
             foreach (KeyValuePair<int, Tuple<int, NodeModel>> pair in inputs)
             {
@@ -153,10 +153,10 @@ namespace Dynamo
                 var drawable = node as IDrawable;
 
                 if (node.IsVisible && drawable != null)
-                    drawables.Add(drawable);
+                    drawables.Add(node.GUID.ToString());
 
                 if (node.IsUpstreamVisible)
-                    drawables.AddRange(GetUpstreamIDrawable(node.Inputs));
+                    drawables.AddRange(GetUpstreamIDrawableIds(node.Inputs));
                 else
                     continue; // don't bother checking if function
 
@@ -170,7 +170,7 @@ namespace Dynamo
                     IEnumerable<NodeModel> topElements = func.Definition.Workspace.GetTopMostNodes();
                     foreach (NodeModel innerNode in topElements)
                     {
-                        drawables.AddRange(GetUpstreamIDrawable(innerNode.Inputs));
+                        drawables.AddRange(GetUpstreamIDrawableIds(innerNode.Inputs));
                     }
                 }
             }

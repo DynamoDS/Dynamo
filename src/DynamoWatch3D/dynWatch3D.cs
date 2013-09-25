@@ -17,8 +17,12 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Linq;
+using System.Diagnostics;
+
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using HelixToolkit.Wpf;
@@ -35,6 +39,7 @@ namespace Dynamo.Nodes
         private PointsVisual3D _points;
         private LinesVisual3D _lines;
         private List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
+        RenderDescription _renderDescription = new RenderDescription();
 
         public Point3DCollection Points { get; set; }
         public Point3DCollection Lines { get; set; }
@@ -53,6 +58,36 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
+
+            dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += new EventHandler(VisualizationManager_VisualizationUpdateComplete);
+        }
+
+        void VisualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
+        {
+            var watch = new Stopwatch();
+            watch.Start();
+
+            //when the visualization update is complete, rebind geometry
+            //in this watch to collections of geometry composed from upstream
+            //geometry
+            _renderDescription.Clear();
+
+            var drawables = VisualizationManager.GetUpstreamIDrawableIds(Inputs);
+            var ids = from viz in dynSettings.Controller.VisualizationManager.Visualizations
+                      where drawables.Contains(viz.Key)
+                      select viz;
+
+            //aggregate all the render descriptions into one for this node.
+            var keyValuePairs = ids as KeyValuePair<string, Visualization>[] ?? ids.ToArray();
+            _renderDescription.Points.AddRange(keyValuePairs.SelectMany(x => x.Value.Description.Points));
+            _renderDescription.Lines.AddRange(keyValuePairs.SelectMany(x => x.Value.Description.Lines));
+            _renderDescription.Meshes.AddRange(keyValuePairs.SelectMany(x => x.Value.Description.Meshes));
+            _renderDescription.XAxisPoints.AddRange(keyValuePairs.SelectMany(x => x.Value.Description.XAxisPoints));
+            _renderDescription.YAxisPoints.AddRange(keyValuePairs.SelectMany(x => x.Value.Description.YAxisPoints));
+            _renderDescription.ZAxisPoints.AddRange(keyValuePairs.SelectMany(x => x.Value.Description.ZAxisPoints));
+
+            watch.Stop();
+            Debug.WriteLine(string.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
         }
 
         MeshVisual3D MakeMeshVisual3D(Mesh3D mesh)
@@ -152,29 +187,20 @@ namespace Dynamo.Nodes
             Lines = new Point3DCollection();
             Meshes = new List<Mesh3D>();
 
-            // a list of all the upstream IDrawable nodes
+            foreach (Point3D p in _renderDescription.Points)
+            {
+                Points.Add(p);
+            }
 
-            //GetUpstreamIDrawable(drawables, Inputs);
+            foreach (Point3D p in _renderDescription.Lines)
+            {
+                Lines.Add(p);
+            }
 
-            //foreach (IDrawable d in drawables)
-            //{
-            //    d.Draw();
-
-            //    foreach (Point3D p in d.RenderDescription.points)
-            //    {
-            //        Points.Add(p);
-            //    }
-
-            //    foreach (Point3D p in d.RenderDescription.lines)
-            //    {
-            //        Lines.Add(p);
-            //    }
-
-            //    foreach (Mesh3D mesh in d.RenderDescription.meshes)
-            //    {
-            //        Meshes.Add(mesh);
-            //    }
-            //}
+            foreach (Mesh3D mesh in _renderDescription.Meshes)
+            {
+                Meshes.Add(mesh);
+            }
 
             _lines.Points = Lines;
             _points.Points = Points;
