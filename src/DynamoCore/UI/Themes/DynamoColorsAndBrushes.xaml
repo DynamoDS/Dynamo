@@ -8,7 +8,8 @@
     
     <Color x:Key="WorkspaceBackgroundHome">#DCDCDC</Color>
     <Color x:Key="WorkspaceBackgroundCustom">#FFFFDC</Color>
-    <SolidColorBrush Color="#757575" x:Key="WorkspaceTabHeaderTextBrush"></SolidColorBrush>
+    <SolidColorBrush Color="#BBBBBB" x:Key="WorkspaceTabHeaderActiveTextBrush"></SolidColorBrush>
+    <SolidColorBrush Color="#777777" x:Key="WorkspaceTabHeaderInactiveTextBrush"></SolidColorBrush>
     <SolidColorBrush Color="{StaticResource WorkspaceBackgroundHome}" x:Key="WorkspaceBackgroundHomeBrush"></SolidColorBrush>
     <SolidColorBrush Color="{StaticResource WorkspaceBackgroundCustom}" x:Key="WorkspaceBackgroundCustomBrush"></SolidColorBrush>
 
