@@ -23,7 +23,7 @@
     </Style>
 
     <!--  Style for ShortCut Button -->
-    <ImageBrush x:Key="ClickBox" ImageSource="/DynamoCore;component/UI/Images/clickbox.png"/>
+    <ImageBrush x:Key="ClickBox" ImageSource="/DynamoCore;component/UI/Images/click_background.png"/>
     <Style x:Key="ShortCutButton" TargetType="Button">
         <Setter Property="SnapsToDevicePixels" Value="true"/>
         <Setter Property="OverridesDefaultStyle" Value="true"/>
