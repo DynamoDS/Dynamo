@@ -1350,7 +1350,7 @@ namespace Dynamo.Models
             while (port.Connectors.Any())
             {
                 var connector = port.Connectors[0];
-                dynSettings.Controller.DynamoModel.CurrentWorkspace.Connectors.Remove(connector);
+                WorkSpace.Connectors.Remove(connector);
                 connector.NotifyConnectedPortsOfDeletion();
             }
         }
@@ -1380,7 +1380,10 @@ namespace Dynamo.Models
             if (inPorts.Count > count)
             {
                 foreach (var inport in inPorts.Skip(count))
+                {
                     DestroyConnectors(inport);
+                    portDataDict.Remove(inport);
+                }
 
                 for (int i = inPorts.Count - 1; i >= count; i--)
                     inPorts.RemoveAt(i);

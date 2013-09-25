@@ -411,6 +411,8 @@ namespace Dynamo
         }
 
         private Autodesk.Revit.DB.Transaction _trans;
+        public Autodesk.Revit.DB.Transaction Transaction { get { return _trans; } }
+
         public void InitTransaction()
         {
             if (_trans == null || _trans.GetStatus() != TransactionStatus.Started)
@@ -423,8 +425,6 @@ namespace Dynamo
                 _trans.SetFailureHandlingOptions(failOpt);
             }
         }
-
-        public Autodesk.Revit.DB.Transaction Transaction { get { return _trans; } }
 
         public void EndTransaction()
         {
