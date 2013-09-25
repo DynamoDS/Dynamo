@@ -126,7 +126,7 @@ namespace Dynamo
         /// </summary>
         public virtual void UpdateVisualizations()
         {
-            OnVisualizationUpdateComplete(this, EventArgs.Empty);
+            //override in child classes
         }
 
         /// <summary>

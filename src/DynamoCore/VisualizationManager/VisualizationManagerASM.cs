@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Media3D;
 using Autodesk.LibG;
@@ -109,7 +110,7 @@ namespace Dynamo
                 }
             }
 
-            base.UpdateVisualizations();
+            OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
     }
 }
