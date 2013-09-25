@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media.Media3D;
 using Autodesk.LibG;
 using HelixToolkit.Wpf;
@@ -7,14 +9,19 @@ namespace Dynamo
 {
     class VisualizationManagerASM : VisualizationManager
     {
-        public override void Draw()
+        public override void UpdateVisualizations()
         {
-            if (DynamoAsm.HasShutdown)
-                return;
+            //only update those nodes which have been flagged for update
+            //they are flagged when their eval_internal is hit
 
-            foreach (KeyValuePair<string, List<object>> geoms in Visualizations)
+            var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
+
+            foreach (var n in toUpdate)
             {
-                foreach (var geom in geoms.Value)
+                var rd = n.Description;
+                rd.Clear();
+
+                foreach (var geom in n.Geometry)
                 {
                     var g = geom as GraphicItem;
                     if (g == null)
@@ -24,7 +31,7 @@ namespace Dynamo
 
                     for (int i = 0; i < point_vertices.Count; i += 3)
                     {
-                        Points.Add(new Point3D(point_vertices[i],
+                        rd.Points.Add(new Point3D(point_vertices[i],
                                                point_vertices[i + 1], point_vertices[i + 2]));
                     }
 
@@ -42,14 +49,14 @@ namespace Dynamo
                                 line_strip_vertices[counter + 1],
                                 line_strip_vertices[counter + 2]);
 
-                            Lines.Add(p);
+                            rd.Lines.Add(p);
 
                             counter += 3;
 
                             if (i == 0 || i == num_verts - 1)
                                 continue;
 
-                            Lines.Add(p);
+                            rd.Lines.Add(p);
                         }
                     }
 
@@ -98,8 +105,8 @@ namespace Dynamo
                         indices_back.Add(a);
                     }
 
-                    Meshes.Add(new Mesh3D(vertices, indices_front));
-                    Meshes.Add(new Mesh3D(vertices, indices_back));
+                    rd.Meshes.Add(new Mesh3D(vertices, indices_front));
+                    rd.Meshes.Add(new Mesh3D(vertices, indices_back));
                 }
             }
         }

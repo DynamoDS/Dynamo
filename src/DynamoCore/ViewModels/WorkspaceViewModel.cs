@@ -420,8 +420,8 @@ namespace Dynamo.ViewModels
                             _nodes.Add(new NodeViewModel(node));
                             
                             //submit the node for rendering
-                            if(node is IDrawable)
-                                dynSettings.Controller.OnNodeSubmittedForRendering(node, EventArgs.Empty);
+                            //if(node is IDrawable)
+                            //    dynSettings.Controller.OnNodeSubmittedForRendering(node, EventArgs.Empty);
                         }
                     }
                     break;
@@ -435,8 +435,8 @@ namespace Dynamo.ViewModels
                         _nodes.Remove(_nodes.First(x => x.NodeLogic == item));
 
                         //remove the node from rendering
-                        if (node is IDrawable)
-                            dynSettings.Controller.OnNodeRemovedFromRendering(node, EventArgs.Empty);
+                        //if (node is IDrawable)
+                        //    dynSettings.Controller.OnNodeRemovedFromRendering(node, EventArgs.Empty);
                     }
                     break;
             }

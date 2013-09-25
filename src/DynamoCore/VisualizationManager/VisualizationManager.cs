@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
+using System.Windows.Media.Media3D;
+using System.Linq;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using HelixToolkit.Wpf;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -13,53 +17,61 @@ namespace Dynamo
     /// </summary>
     public class VisualizationManager : NotificationObject
     {
-        #region private class members
+        #region private members
 
-        private static VisualizationManager instance;
-        private Dictionary<string, List<object>> visualizations = new Dictionary<string, List<object>>();
+        private Dictionary<string, Visualization> visualizations 
+            = new Dictionary<string, Visualization>();
 
         #endregion
 
         #region public properties
 
         /// <summary>
-        /// A collection of objects to be stored for visualization. This property is overriden in
+        /// A collection of objects to be stored for visualization.
+        /// The first item in the tuple is is the list of geometry.
+        /// The second item in the tuple is the most recent render geometry.
+        /// The third item in the tuple is a flag marking the node as requiring visualization update
         /// </summary>
-        public Dictionary<string, List<object>> Visualizations
+        public Dictionary<string, Visualization> Visualizations
         {
             get { return visualizations; }
-            internal set { visualizations = value; }
+            set { visualizations = value; }
         }
-
-        public List<object> Points { get; internal set; }
-        public List<object> Lines { get; internal set; }
-        public List<object> Meshes { get; internal set; }
-        public List<object> XAxisPoints { get; internal set; }
-        public List<object> YAxisPoints { get; internal set; }
-        public List<object> ZAxisPoints { get; internal set; }
 
         #endregion
 
         public VisualizationManager()
         {
-            Points = new List<object>();
-            Lines = new List<object>();
-            Meshes = new List<object>();
-            XAxisPoints = new List<object>();
-            YAxisPoints = new List<object>();
-            ZAxisPoints = new List<object>();
+            //provide a handler for the run completed event on the controller
+            dynSettings.Controller.RunCompleted += Controller_RunCompleted;
+        }
+
+        void Controller_RunCompleted(object controller, bool success)
+        {
+            UpdateVisualizations();
         }
 
         /// <summary>
         /// Register a node for visualization. Internally adds a list to the 
         /// visualizations dictionary keyed by the provided id.
         /// </summary>
-        /// <param name="guid">The unique identifier of the node to be registered for visualization</param>
-        public virtual void RegisterForVisualization(string id)
+        /// <param name="id">The node to register for visualization</param>
+        public virtual void RegisterForVisualization(NodeModel node)
         {
-            if (!Visualizations.ContainsKey(id))
+            //add a key in the dictionary
+            if (!Visualizations.ContainsKey(node.GUID.ToString()))
             {
-                Visualizations.Add(id, new List<object>());
+                var viz = new Visualization();
+                Visualizations.Add(node.GUID.ToString(), new Visualization());
+
+                if (node is IObserver<Point3D> && node is IObserver<Mesh3D>)
+                {
+                    //subscribe to updates on the render description
+                    viz.Description.Points.Subscribe(node as IObserver<Point3D>);
+                    viz.Description.Lines.Subscribe(node as IObserver<Point3D>);
+                    viz.Description.Meshes.Subscribe(node as IObserver<Mesh3D>);
+                }
+                
             }
         }
 
@@ -67,27 +79,21 @@ namespace Dynamo
         /// Unregister a node from visualization. Internally removes geometry from the visualizations dictionary
         /// and ensures that geometry representations are unbound from views and deleted.
         /// </summary>
-        /// <param name="guid">The unique identifier of the node to be un-registered from visualization</param>
-        public virtual void UnregisterFromVisualization(string id)
+        /// <param name="id">The node to unregister from visualization</param>
+        public virtual void UnregisterFromVisualization(NodeModel node)
         {
-            if (Visualizations.ContainsKey(id))
+            if (Visualizations.ContainsKey(node.GUID.ToString()))
             {
-                Visualizations[id].Clear();
-                Visualizations.Remove(id);
+                Visualizations.Remove(node.GUID.ToString());
             }
         }
 
         /// <summary>
         /// Clear the contents of all lists containing render geometry.
         /// </summary>
-        public void Clear()
+        public void ClearVisualizations()
         {
-            Points.Clear();
-            Lines.Clear();
-            Meshes.Clear();
-            XAxisPoints.Clear();
-            YAxisPoints.Clear();
-            ZAxisPoints.Clear();
+            Visualizations.Values.ToList().ForEach(x=>x.Description.Clear());
         }
 
         /// <summary>
@@ -95,13 +101,15 @@ namespace Dynamo
         /// and node preview imagery. Drawing will be overidden in child classes to draw geometry 
         /// according to the host's geometry types.
         /// </summary>
-        public virtual void Draw()
+        public virtual void UpdateVisualizations()
         {
             //override in child classes
         }
 
-        private void GetUpstreamIDrawable(List<IDrawable> drawables, Dictionary<int, Tuple<int, NodeModel>> inputs)
+        public List<IDrawable> GetUpstreamIDrawable(Dictionary<int, Tuple<int, NodeModel>> inputs)
         {
+            var drawables = new List<IDrawable>();
+
             foreach (KeyValuePair<int, Tuple<int, NodeModel>> pair in inputs)
             {
                 if (pair.Value == null)
@@ -114,7 +122,7 @@ namespace Dynamo
                     drawables.Add(drawable);
 
                 if (node.IsUpstreamVisible)
-                    GetUpstreamIDrawable(drawables, node.Inputs);
+                    drawables.AddRange(GetUpstreamIDrawable(node.Inputs));
                 else
                     continue; // don't bother checking if function
 
@@ -128,10 +136,12 @@ namespace Dynamo
                     IEnumerable<NodeModel> topElements = func.Definition.Workspace.GetTopMostNodes();
                     foreach (NodeModel innerNode in topElements)
                     {
-                        GetUpstreamIDrawable(drawables, innerNode.Inputs);
+                        drawables.AddRange(GetUpstreamIDrawable(innerNode.Inputs));
                     }
                 }
             }
+
+            return drawables;
         }
         
     }

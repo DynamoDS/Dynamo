@@ -161,19 +161,19 @@ namespace Dynamo
                 RequestsRedraw(sender, e);
         }
 
-        public event EventHandler NodeSubmittedForRendering;
-        public virtual void OnNodeSubmittedForRendering(object sender, EventArgs e)
-        {
-            if (NodeSubmittedForRendering != null)
-                NodeSubmittedForRendering(sender, e);
-        }
+        //public event EventHandler NodeSubmittedForRendering;
+        //public virtual void OnNodeSubmittedForRendering(object sender, EventArgs e)
+        //{
+        //    if (NodeSubmittedForRendering != null)
+        //        NodeSubmittedForRendering(sender, e);
+        //}
 
-        public event EventHandler NodeRemovedFromRendering;
-        public virtual void OnNodeRemovedFromRendering(object sender, EventArgs e)
-        {
-            if (NodeRemovedFromRendering != null)
-                NodeRemovedFromRendering(sender, e);
-        }
+        //public event EventHandler NodeRemovedFromRendering;
+        //public virtual void OnNodeRemovedFromRendering(object sender, EventArgs e)
+        //{
+        //    if (NodeRemovedFromRendering != null)
+        //        NodeRemovedFromRendering(sender, e);
+        //}
 
         public event DispatchedToUIThreadHandler DispatchedToUI;
         public void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
@@ -489,7 +489,7 @@ namespace Dynamo
 
         protected virtual void OnEvaluationCompleted()
         {
-            dynSettings.Controller.VisualizationManager.Draw();
+            dynSettings.Controller.VisualizationManager.UpdateVisualizations();
         }
 
         ///// <summary>
@@ -534,7 +534,7 @@ namespace Dynamo
         {
             //var drawables = DynamoModel.Nodes.Where(x => x is IDrawable);
             //drawables.ToList().ForEach(x => ((IDrawable)x).RenderDescription.ClearAll());
-            VisualizationManager.Clear();
+            VisualizationManager.ClearVisualizations();
         }
 
         /// <summary>

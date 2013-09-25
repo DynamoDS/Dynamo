@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Windows.Media.Media3D;
-
-using Autodesk.Revit;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
-using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
-using Dynamo.Connectors;
 using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
@@ -52,30 +46,12 @@ namespace Dynamo.Nodes
             double t = ir.Parameter;
             double d = ir.Distance;
 
-            dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Add(pt);
+            VisualizationGeometry.Add(pt);
 
             outPuts[_xyzPort] = Value.NewContainer(pt);
             outPuts[_tPort] = Value.NewNumber(t);
             outPuts[_dPort] = Value.NewNumber(d);
         }
-
-        //protected List<XYZ> pts = new List<XYZ>();
-
-        //new public void Draw()
-        //{
-        //    if (this.RenderDescription == null)
-        //        this.RenderDescription = new RenderDescription();
-        //    else
-        //        this.RenderDescription.ClearAll();
-
-        //    foreach (XYZ pt in pts)
-        //        this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
-        //}
-
-        //public void ClearReferences()
-        //{
-        //    pts.Clear();
-        //}
     }
 
     [NodeName("Project Point On Face/Plane")]
@@ -159,8 +135,7 @@ namespace Dynamo.Nodes
                 catch { }
             }
 
-            //pts.Add(pt);
-            dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Add(pt);
+            VisualizationGeometry.Add(pt);
 
             outPuts[_xyzPort] = Value.NewContainer(pt);
             outPuts[_uvPort] = Value.NewContainer(uv);
@@ -168,23 +143,5 @@ namespace Dynamo.Nodes
             outPuts[_edgePort] = Value.NewContainer(e);
             outPuts[_edgeTPort] = Value.NewNumber(et);
         }
-
-        //protected List<XYZ> pts = new List<XYZ>();
-
-        //new public void Draw()
-        //{
-        //    if (this.RenderDescription == null)
-        //        this.RenderDescription = new RenderDescription();
-        //    else
-        //        this.RenderDescription.ClearAll();
-
-        //    foreach (XYZ pt in pts)
-        //        this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
-        //}
-
-        //public void ClearReferences()
-        //{
-        //    pts.Clear();
-        //}
     }
 }

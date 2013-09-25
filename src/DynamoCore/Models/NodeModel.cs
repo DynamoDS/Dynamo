@@ -980,12 +980,10 @@ namespace Dynamo.Models
         
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
-            //if this element maintains a collection of references
-            //then clear the collection
-            //if (this is IClearable)
-            //    (this as IClearable).ClearReferences();
-
-            dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Clear();
+            if (this is IDrawable)
+            {
+                dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].RequiresUpdate = true;
+            }
 
             var argSets = new List<FSharpList<FScheme.Value>>();
 

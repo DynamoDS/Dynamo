@@ -508,33 +508,33 @@ namespace Dynamo.Models
         /// <param name="x"> The x coordinate where the dynNodeView will be placed </param>
         /// <param name="y"> The x coordinate where the dynNodeView will be placed</param>
         /// <returns> The newly instantiate dynNode</returns>
-        public NodeModel CreateInstanceAndAddNodeToWorkspace(Type elementType, string nickName, Guid guid,
-            double x, double y, WorkspaceModel ws, bool isVisible = true, bool isUpstreamVisible = true)    //Visibility vis = Visibility.Visible)
-        {
-            try
-            {
-                NodeModel node = CreateNodeInstance(elementType, nickName, guid);
+        //public NodeModel CreateInstanceAndAddNodeToWorkspace(Type elementType, string nickName, Guid guid,
+        //    double x, double y, WorkspaceModel ws, bool isVisible = true, bool isUpstreamVisible = true)    //Visibility vis = Visibility.Visible)
+        //{
+        //    try
+        //    {
+        //        NodeModel node = CreateNodeInstance(elementType, nickName, guid);
 
-                ws.Nodes.Add(node);
-                node.WorkSpace = ws;
+        //        ws.Nodes.Add(node);
+        //        node.WorkSpace = ws;
 
-                node.X = x;
-                node.Y = y;
+        //        node.X = x;
+        //        node.Y = y;
 
-                node.IsVisible = isVisible;
-                node.IsUpstreamVisible = isUpstreamVisible;
+        //        node.IsVisible = isVisible;
+        //        node.IsUpstreamVisible = isUpstreamVisible;
 
-                OnNodeAdded(node);
+        //        OnNodeAdded(node);
 
-                return node;
-            }
-            catch (Exception e)
-            {
-                DynamoLogger.Instance.Log("Could not create an instance of the selected type: " + elementType);
-                DynamoLogger.Instance.Log(e);
-                return null;
-            }
-        }
+        //        return node;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DynamoLogger.Instance.Log("Could not create an instance of the selected type: " + elementType);
+        //        DynamoLogger.Instance.Log(e);
+        //        return null;
+        //    }
+        //}
 
         /// <summary>
         /// Called when a node is added to a workspace
@@ -546,6 +546,9 @@ namespace Dynamo.Models
             if (NodeAdded != null && node != null)
             {
                 NodeAdded(node);
+
+                if (node is IDrawable)
+                    dynSettings.Controller.VisualizationManager.RegisterForVisualization(node);
             }
         }
 
@@ -632,9 +635,9 @@ namespace Dynamo.Models
             //clear the renderables
             //dynSettings.Controller.RenderDescriptions.Clear();
             //dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
-            dynSettings.Controller.VisualizationManager.Clear();
+            dynSettings.Controller.VisualizationManager.ClearVisualizations();
 
-            Stopwatch sw = new Stopwatch();
+            var sw = new Stopwatch();
 
             try
             {
@@ -1552,6 +1555,9 @@ namespace Dynamo.Models
             if (NodeDeleted != null)
             {
                 NodeDeleted(node);
+
+                if (node is IDrawable)
+                    dynSettings.Controller.VisualizationManager.UnregisterFromVisualization(node);
             }
         }
 

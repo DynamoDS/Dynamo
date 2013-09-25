@@ -199,8 +199,7 @@ namespace Dynamo.Nodes
 
                     xsect_xyzs = FSharpList<Value>.Cons(Value.NewContainer(ir.XYZPoint), xsect_xyzs);
 
-                    //pts.Add(ir.XYZPoint);
-                    dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Add(ir.XYZPoint);
+                    VisualizationGeometry.Add(ir.XYZPoint);
 
                     //xsect_results = FSharpList<Value>.Cons(Value.NewList(xsect), xsect_results);
                 }
@@ -213,28 +212,6 @@ namespace Dynamo.Nodes
             outPuts[_xyzPort] = Value.NewList(xsect_xyzs);
             outPuts[_resultPort] = Value.NewString(result.ToString());
         }
-
-       // #region IDrawable Interface
-       // protected List<XYZ> pts = new List<XYZ>();
- 
-       //new public void Draw()
-       // {
-       //     if (this.RenderDescription == null)
-       //         this.RenderDescription = new RenderDescription();
-       //     else
-       //         this.RenderDescription.ClearAll();
-
-       //     foreach (XYZ pt in pts)
-       //         this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
-       // }
-       // #endregion
-
-       // #region IClearable Interface
-       // public void ClearReferences()
-       // {
-       //     pts.Clear();
-       // }
-       // #endregion
     }
 
     [NodeName("Curve Curve Intersection")]
@@ -294,8 +271,7 @@ namespace Dynamo.Nodes
                     u = FSharpList<Value>.Cons(Value.NewNumber(ir.UVPoint.U), u);
                     v = FSharpList<Value>.Cons(Value.NewNumber(ir.UVPoint.V), v);
                     
-                    //pts.Add(ir.XYZPoint);
-                    dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Add(ir.XYZPoint);
+                    VisualizationGeometry.Add(ir.XYZPoint);
                 }
                 
             }
@@ -305,28 +281,6 @@ namespace Dynamo.Nodes
             outPuts[_xyzPort] = Value.NewList(xyz);
             outPuts[_resultPort] = Value.NewString(result.ToString());
         }
-
-        //#region IDrawable Interface
-        //protected List<XYZ> pts = new List<XYZ>();
-
-        //new public void Draw()
-        //{
-        //    if (this.RenderDescription == null)
-        //        this.RenderDescription = new RenderDescription();
-        //    else
-        //        this.RenderDescription.ClearAll();
-
-        //    foreach (XYZ pt in pts)
-        //        this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
-        //}
-        //#endregion
-
-        //#region IClearable Interface
-        //public void ClearReferences()
-        //{
-        //    pts.Clear();
-        //}
-        //#endregion
     }
 
     [NodeName("Face Face Intersection")]
@@ -381,11 +335,9 @@ namespace Dynamo.Nodes
                         var result = mi.Invoke(face1, methodArgs);
                         if (methodArgs[1] != null)
                         {
-                            //curves.Add((Curve)methodArgs[1]);
-                            dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Add((Curve)methodArgs[1]);
+                            VisualizationGeometry.Add((Curve)methodArgs[1]);
                         }
-                            
-                        
+                                                 
                         set = true;
 
                         outPuts[_resultPort] = Value.NewString(result.ToString());
@@ -397,37 +349,6 @@ namespace Dynamo.Nodes
             if (!set)
                 throw new Exception("No suitable method found to perform intersection");
         }
-
-        #region IDrawable Interface
-        //protected List<Curve> curves = new List<Curve>();
-
-        //new public void Draw()
-        //{
-        //    if (this.RenderDescription == null)
-        //        this.RenderDescription = new RenderDescription();
-        //    else
-        //        this.RenderDescription.ClearAll();
-
-        //    foreach (Curve crv in curves)
-        //    {
-        //        //convert the tessellated curve to a render description
-        //        IList<XYZ> curvePts = crv.Tessellate();
-        //        for (int i = 1; i < curvePts.Count; i++)
-        //        {
-        //            var a = curvePts[i - 1];
-        //            var b = curvePts[i];
-
-        //            RenderDescription.lines.Add(new Point3D(a.X, a.Y, a.Z));
-        //            RenderDescription.lines.Add(new Point3D(b.X, b.Y, b.Z));
-        //        }
-        //    }
-        //}
-
-        //public void ClearReferences()
-        //{
-        //    curves.Clear();
-        //}
-        #endregion
     }
 
     //[NodeName("Face Level Intersection")]
