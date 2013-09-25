@@ -13,6 +13,7 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Nodes;
 using Microsoft.FSharp.Collections;
 using Binding = System.Windows.Data.Binding;
 using Color = System.Windows.Media.Color;
@@ -237,7 +238,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a slider control to the input grid of the control
-            var tb_slider = new Slider();
+            var tb_slider = new DynamoSlider(this);
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
