@@ -160,8 +160,8 @@ namespace Dynamo
 
                 if (i < InPortData.Count)
                 {
-                    for (var k = i; k < InPortData.Count; k++)
-                        InPorts[k].KillAllConnectors();
+                    //for (var k = i; k < InPortData.Count; k++)
+                    //    InPorts[k].KillAllConnectors();
 
                     //MVVM: confirm that extension methods on observable collection do what we expect
                     InPortData.RemoveRange(i, InPortData.Count - i);
@@ -187,8 +187,8 @@ namespace Dynamo
 
                 if (i < OutPortData.Count)
                 {
-                    for (var k = i; k < OutPortData.Count; k++)
-                        OutPorts[k].KillAllConnectors();
+                    //for (var k = i; k < OutPortData.Count; k++)
+                    //    OutPorts[k].KillAllConnectors();
 
                     OutPortData.RemoveRange(i, OutPortData.Count - i);
                 }
@@ -388,67 +388,6 @@ namespace Dynamo
             }
         }
 
-        [NodeName("Output")]
-        [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
-        [NodeDescription("A function output")]
-        [IsInteractive(false)]
-        public partial class Output : NodeModel
-        {
-            public Output()
-            {
-                InPortData.Add(new PortData("", "", typeof(object)));
-
-                RegisterAllPorts();
-
-                ArgumentLacing = LacingStrategy.Disabled;
-            }
-
-            public override bool RequiresRecalc
-            {
-                get
-                {
-                    return false;
-                }
-                set { }
-            }
-
-            private string _symbol = "";
-            public string Symbol
-            {
-                get
-                {
-                    return _symbol;
-                }
-                set
-                {
-                    _symbol = value;
-                    ReportModification();
-                    RaisePropertyChanged("Symbol");
-                }
-            }
-
-            protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-            {
-                //Debug.WriteLine(pd.Object.GetType().ToString());
-                XmlElement outEl = xmlDoc.CreateElement("Symbol");
-                outEl.SetAttribute("value", Symbol);
-                nodeElement.AppendChild(outEl);
-            }
-
-            protected override void LoadNode(XmlNode nodeElement)
-            {
-                foreach (XmlNode subNode in nodeElement.ChildNodes)
-                {
-                    if (subNode.Name == "Symbol")
-                    {
-                        Symbol = subNode.Attributes[0].Value;
-                    }
-                }
-
-                ArgumentLacing = LacingStrategy.Disabled;
-            }
-        }
-
         [NodeName("Input")]
         [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
         [NodeDescription("A function parameter")]
@@ -516,6 +455,67 @@ namespace Dynamo
                     if (subNode.Name == "Symbol")
                     {
                         InputSymbol = subNode.Attributes[0].Value;
+                    }
+                }
+
+                ArgumentLacing = LacingStrategy.Disabled;
+            }
+        }
+
+        [NodeName("Output")]
+        [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+        [NodeDescription("A function output")]
+        [IsInteractive(false)]
+        public partial class Output : NodeModel
+        {
+            public Output()
+            {
+                InPortData.Add(new PortData("", "", typeof(object)));
+
+                RegisterAllPorts();
+
+                ArgumentLacing = LacingStrategy.Disabled;
+            }
+
+            public override bool RequiresRecalc
+            {
+                get
+                {
+                    return false;
+                }
+                set { }
+            }
+
+            private string _symbol = "";
+            public string Symbol
+            {
+                get
+                {
+                    return _symbol;
+                }
+                set
+                {
+                    _symbol = value;
+                    ReportModification();
+                    RaisePropertyChanged("Symbol");
+                }
+            }
+
+            protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+            {
+                //Debug.WriteLine(pd.Object.GetType().ToString());
+                XmlElement outEl = xmlDoc.CreateElement("Symbol");
+                outEl.SetAttribute("value", Symbol);
+                nodeElement.AppendChild(outEl);
+            }
+
+            protected override void LoadNode(XmlNode nodeElement)
+            {
+                foreach (XmlNode subNode in nodeElement.ChildNodes)
+                {
+                    if (subNode.Name == "Symbol")
+                    {
+                        Symbol = subNode.Attributes[0].Value;
                     }
                 }
 

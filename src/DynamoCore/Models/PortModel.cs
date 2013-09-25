@@ -219,12 +219,6 @@ namespace Dynamo.Models
             Owner.ValidateConnections();
         }
 
-        internal void KillAllConnectors()
-        {
-            foreach (var c in connectors.ToList())
-                c.NotifyConnectedPortsOfDeletion();
-        }
-
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
