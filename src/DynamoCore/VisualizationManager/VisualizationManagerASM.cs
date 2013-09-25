@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media.Media3D;
 using Autodesk.LibG;
@@ -15,6 +16,8 @@ namespace Dynamo
             //they are flagged when their eval_internal is hit
 
             var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
+
+            Debug.WriteLine(string.Format("{0} visualizations to update", toUpdate.Count()));
 
             foreach (var n in toUpdate)
             {
@@ -110,6 +113,7 @@ namespace Dynamo
                 }
             }
 
+            
             OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
     }
