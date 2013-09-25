@@ -206,4 +206,26 @@ namespace Dynamo.Nodes
 
         #endregion
     }
+
+    public class DynamoSlider : Slider
+    {
+        NodeModel nodeModel;
+        public DynamoSlider(NodeModel model)
+        {
+            nodeModel = model;
+        }
+        #region Event Handlers
+        protected override void OnThumbDragStarted(System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            base.OnThumbDragStarted(e);
+            nodeModel.WorkSpace.RecordModelForModification(nodeModel);
+        }
+        protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnPreviewMouseLeftButtonDown(e);
+            if (e.OriginalSource is System.Windows.Shapes.Rectangle)
+                nodeModel.WorkSpace.RecordModelForModification(nodeModel);
+        }
+        #endregion
+    }
 }
