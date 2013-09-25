@@ -48,8 +48,7 @@
     <Reference Include="HelixToolkit.Wpf.Input">
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.Input.dll</HintPath>
     </Reference>
-    <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="LibGNet">
       <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -73,6 +72,7 @@
     <Compile Include="DynamoAsm.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VisualizationManagerASM.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">

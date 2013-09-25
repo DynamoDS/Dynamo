@@ -50,7 +50,6 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("", "Incoming geometry objects.", typeof(object)));
             OutPortData.Add(new PortData("", "Watch contents, passed through", typeof(object)));
-            //OutPortData.Add(new PortData("meshes", "Helix3d Meshes", typeof(object)));
 
             RegisterAllPorts();
 

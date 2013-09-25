@@ -20,13 +20,11 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
-
-using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using DynamoPython;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
@@ -51,8 +49,6 @@ namespace Dynamo.Nodes
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
         private string script;
-
-        public RenderDescription RenderDescription{get;set;}
 
         public Python()
         {
@@ -195,7 +191,6 @@ namespace Dynamo.Nodes
             this.dirty = true;
         }
 
-
         #region Autocomplete
 
         CompletionWindow completionWindow;
@@ -262,14 +257,29 @@ namespace Dynamo.Nodes
 
         public void Draw()
         {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new RenderDescription();
-            else
-                this.RenderDescription.ClearAll();
-
             if(lastEvalValue != null)
-                PythonEngine.Drawing(lastEvalValue, this.RenderDescription);
+                PythonEngine.Drawing(lastEvalValue, this.GUID.ToString());
         }
+
+        #region IDrawableInterface
+        public void RegisterForVisualization()
+        {
+            dynSettings.Controller.VisualizationManager.RegisterForVisualization(this.GUID.ToString());
+        }
+
+        public void UnregisterFromVisualization()
+        {
+            dynSettings.Controller.VisualizationManager.UnregisterFromVisualization(this.GUID.ToString());
+        }
+
+        public List<object> VisualizationGeometry
+        {
+            get
+            {
+                return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()];
+            }
+        }
+        #endregion
     }
 
     [NodeName("Python Script From String")]

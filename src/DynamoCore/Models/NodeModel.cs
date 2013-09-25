@@ -980,10 +980,12 @@ namespace Dynamo.Models
         
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
-            //if this element maintains a collcection of references
+            //if this element maintains a collection of references
             //then clear the collection
-            if (this is IClearable)
-                (this as IClearable).ClearReferences();
+            //if (this is IClearable)
+            //    (this as IClearable).ClearReferences();
+
+            dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Clear();
 
             var argSets = new List<FSharpList<FScheme.Value>>();
 
@@ -1078,10 +1080,10 @@ namespace Dynamo.Models
                 OnEvaluate();
             }
 
-            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
-            {
-                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
-            }
+            //if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
+            //{
+            //    dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
+            //}
         }
 
         protected virtual bool AcceptsListOfLists(Value value)

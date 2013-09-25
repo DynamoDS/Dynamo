@@ -152,20 +152,28 @@ namespace Dynamo.Controls
             var yAxes = new List<Point3D>();
             var zAxes = new List<Point3D>();
 
-            foreach (KeyValuePair<Guid, RenderDescription> kvp in dynSettings.Controller.RenderDescriptions)
-            {
-                var rd = kvp.Value as RenderDescription;
+            //foreach (KeyValuePair<Guid, RenderDescription> kvp in dynSettings.Controller.RenderDescriptions)
+            //{
+            //    var rd = kvp.Value as RenderDescription;
 
-                if (rd == null)
-                    continue;
+            //    if (rd == null)
+            //        continue;
 
-                points.AddRange(rd.points.ConvertAll(x=>(Point3D)x));
-                lines.AddRange(rd.lines.ConvertAll(x => (Point3D)x));
-                meshes.AddRange(rd.meshes.ConvertAll(x=>(Mesh3D)x));
-                xAxes.AddRange(rd.xAxisPoints.ConvertAll(x => (Point3D)x));
-                yAxes.AddRange(rd.yAxisPoints.ConvertAll(x => (Point3D)x));
-                zAxes.AddRange(rd.zAxisPoints.ConvertAll(x => (Point3D)x));
-            }
+            //    points.AddRange(rd.points.ConvertAll(x=>(Point3D)x));
+            //    lines.AddRange(rd.lines.ConvertAll(x => (Point3D)x));
+            //    meshes.AddRange(rd.meshes.ConvertAll(x=>(Mesh3D)x));
+            //    xAxes.AddRange(rd.xAxisPoints.ConvertAll(x => (Point3D)x));
+            //    yAxes.AddRange(rd.yAxisPoints.ConvertAll(x => (Point3D)x));
+            //    zAxes.AddRange(rd.zAxisPoints.ConvertAll(x => (Point3D)x));
+            //}
+
+            var vizManager = dynSettings.Controller.VisualizationManager;
+            points.AddRange(vizManager.Points.ConvertAll(x => (Point3D)x));
+            lines.AddRange(vizManager.Lines.ConvertAll(x => (Point3D)x));
+            meshes.AddRange(vizManager.Meshes.ConvertAll(x => (Mesh3D)x));
+            xAxes.AddRange(vizManager.XAxisPoints.ConvertAll(x => (Point3D)x));
+            yAxes.AddRange(vizManager.YAxisPoints.ConvertAll(x => (Point3D)x));
+            zAxes.AddRange(vizManager.ZAxisPoints.ConvertAll(x => (Point3D)x));
 
             HelixPoints = points;
             HelixLines = lines;

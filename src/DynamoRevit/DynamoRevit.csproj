@@ -191,6 +191,7 @@
     </Compile>
     <Compile Include="Views\Partials.cs" />
     <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
+    <Compile Include="VisualizationManager\VisualizationManagerRevit.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NUnitResultTypes.xsd">

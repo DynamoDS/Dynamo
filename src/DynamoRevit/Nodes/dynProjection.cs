@@ -19,7 +19,7 @@ namespace Dynamo.Nodes
     [NodeName("Project Point On Curve")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Project a point onto a curve.")]
-    public class ProjectPointOnCurve : RevitTransactionNode, IDrawable, IClearable
+    public class ProjectPointOnCurve : RevitTransactionNode //, IDrawable, IClearable
     {
         private readonly PortData _xyzPort = new PortData(
             "xyz", "The nearest point on the curve.", typeof(Value.Container));
@@ -52,36 +52,36 @@ namespace Dynamo.Nodes
             double t = ir.Parameter;
             double d = ir.Distance;
 
-            pts.Add(pt);
+            dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Add(pt);
 
             outPuts[_xyzPort] = Value.NewContainer(pt);
             outPuts[_tPort] = Value.NewNumber(t);
             outPuts[_dPort] = Value.NewNumber(d);
         }
 
-        protected List<XYZ> pts = new List<XYZ>();
+        //protected List<XYZ> pts = new List<XYZ>();
 
-        new public void Draw()
-        {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new RenderDescription();
-            else
-                this.RenderDescription.ClearAll();
+        //new public void Draw()
+        //{
+        //    if (this.RenderDescription == null)
+        //        this.RenderDescription = new RenderDescription();
+        //    else
+        //        this.RenderDescription.ClearAll();
 
-            foreach (XYZ pt in pts)
-                this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
-        }
+        //    foreach (XYZ pt in pts)
+        //        this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
+        //}
 
-        public void ClearReferences()
-        {
-            pts.Clear();
-        }
+        //public void ClearReferences()
+        //{
+        //    pts.Clear();
+        //}
     }
 
     [NodeName("Project Point On Face/Plane")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Project a point onto a face or plane.")]
-    public class ProjectPointOnFace : RevitTransactionNode, IDrawable, IClearable
+    public class ProjectPointOnFace : RevitTransactionNode //, IDrawable, IClearable
     {
         private readonly PortData _xyzPort = new PortData(
             "xyz", "The nearest point to the projected point on the face.", typeof(Value.Container));
@@ -159,7 +159,8 @@ namespace Dynamo.Nodes
                 catch { }
             }
 
-            pts.Add(pt);
+            //pts.Add(pt);
+            dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Add(pt);
 
             outPuts[_xyzPort] = Value.NewContainer(pt);
             outPuts[_uvPort] = Value.NewContainer(uv);
@@ -168,22 +169,22 @@ namespace Dynamo.Nodes
             outPuts[_edgeTPort] = Value.NewNumber(et);
         }
 
-        protected List<XYZ> pts = new List<XYZ>();
+        //protected List<XYZ> pts = new List<XYZ>();
 
-        new public void Draw()
-        {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new RenderDescription();
-            else
-                this.RenderDescription.ClearAll();
+        //new public void Draw()
+        //{
+        //    if (this.RenderDescription == null)
+        //        this.RenderDescription = new RenderDescription();
+        //    else
+        //        this.RenderDescription.ClearAll();
 
-            foreach (XYZ pt in pts)
-                this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
-        }
+        //    foreach (XYZ pt in pts)
+        //        this.RenderDescription.points.Add(new Point3D(pt.X, pt.Y, pt.Z));
+        //}
 
-        public void ClearReferences()
-        {
-            pts.Clear();
-        }
+        //public void ClearReferences()
+        //{
+        //    pts.Clear();
+        //}
     }
 }

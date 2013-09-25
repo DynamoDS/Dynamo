@@ -360,7 +360,7 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate curve or edge")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Evaluates curve or edge at parameter.")]
-    public class XyzOnCurveOrEdge : XyzBase
+    public class XyzOnCurveOrEdge : GeometryBase
     {
         public XyzOnCurveOrEdge()
         {
@@ -428,7 +428,7 @@ namespace Dynamo.Nodes
                 :  
                 (thisEdge == null ? null : thisEdge.Evaluate(parameter));
 
-            pts.Add(result);
+            VisualizationGeometry.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -437,7 +437,7 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate tangent transform of curve or edge")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
-    public class TangentTransformOnCurveOrEdge : TransformBase
+    public class TangentTransformOnCurveOrEdge : GeometryBase
     {
         public TangentTransformOnCurveOrEdge()
         {
@@ -476,7 +476,7 @@ namespace Dynamo.Nodes
                 : 
                 (thisEdge == null ? null : thisEdge.ComputeDerivatives(parameter));
 
-            transforms.Add(result);
+            VisualizationGeometry.Add(result);
 
             return Value.NewContainer(result);
         }

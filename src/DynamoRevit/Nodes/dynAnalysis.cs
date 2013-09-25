@@ -234,7 +234,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Visualize analytical results at speficied UV values on a face.")]
     [AlsoKnownAs("dynAnalysisResults", "AnalysisResults")]
-    class SpatialFieldFace : RevitTransactionNodeWithOneOutput, IClearable
+    class SpatialFieldFace : RevitTransactionNodeWithOneOutput  //, IClearable
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results by Face";
 
@@ -334,7 +334,7 @@ namespace Dynamo.Nodes
     [NodeName("Spatial Field Points")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Visualize analytical results at speficied XYZ locations.")]
-    class SpatialFieldPoints : RevitTransactionNodeWithOneOutput, IClearable
+    class SpatialFieldPoints : RevitTransactionNodeWithOneOutput //, IClearable
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results at Points";
 
@@ -420,7 +420,7 @@ namespace Dynamo.Nodes
     [NodeName("Spatial Field Vectors")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Visualize analytical vectors speficied XYZ locations.")]
-    class SpatialFieldVectors : RevitTransactionNodeWithOneOutput, IClearable
+    class SpatialFieldVectors : RevitTransactionNodeWithOneOutput //, IClearable
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results Vectors";
 
@@ -602,7 +602,7 @@ namespace Dynamo.Nodes
     [NodeName("Spatial Field Curve")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Visualize analytical data along a curve.")]
-    class SpatialFieldCurve : RevitTransactionNodeWithOneOutput, IClearable
+    class SpatialFieldCurve : RevitTransactionNodeWithOneOutput //, IClearable
     {
         const string DYNAMO_TEMP_CURVES_SCHEMA = "Dynamo Analysis Results by Curve";
 
