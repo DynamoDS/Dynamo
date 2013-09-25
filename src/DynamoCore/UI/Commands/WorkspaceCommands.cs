@@ -181,7 +181,7 @@ namespace Dynamo.Models
             if (null != recordedCommands)
                 recordedCommands.Add(command);
 
-            command.Execute(this); // Internally calls 'CreateNodeInternal'.
+            command.Execute(this);
         }
 
         #endregion

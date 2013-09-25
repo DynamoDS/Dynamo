@@ -116,6 +116,12 @@ namespace Dynamo
             set { context = value; }
         }
 
+        private string commandFilePath = null;
+        public string CommandFilePath
+        {
+            get { return commandFilePath; }
+        }
+
         private bool _isShowingConnectors = true;
         public bool IsShowingConnectors
         {
@@ -198,19 +204,32 @@ namespace Dynamo
 
         #region Constructor and Initialization
 
-        public static DynamoController MakeSandbox()
+        public static DynamoController MakeSandbox(string commandFilePath = null)
         {
-            return new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), "None");
+            ExecutionEnvironment env = new ExecutionEnvironment();
+
+            // If a command file path is not specified or if it is invalid, then fallback.
+            if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
+                return new DynamoController(env, typeof(DynamoViewModel), "None");
+
+            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath);
+        }
+
+        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context) : 
+            this(env, viewModelType, context, null)
+        {
         }
 
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context)
+        public DynamoController(ExecutionEnvironment env,
+            Type viewModelType, string context, string commandFilePath)
         {
             dynSettings.Controller = this;
 
             this.Context = context;
+            this.commandFilePath = commandFilePath;
 
             //Start heartbeat reporting
             Services.InstrumentationLogger.Start();
