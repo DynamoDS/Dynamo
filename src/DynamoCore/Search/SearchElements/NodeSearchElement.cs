@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -196,16 +197,9 @@ namespace Dynamo.Search.SearchElements
                 name = Name;
             }
 
-            // create node
-            var guid = Guid.NewGuid();
-            var nodeParams = new Dictionary<string, object>()
-                {
-                    {"name", name},
-                    {"transformFromOuterCanvasCoordinates", true},
-                    {"guid", guid}
-                };
-
-            dynSettings.Controller.DynamoModel.CreateNode(nodeParams);
+            System.Guid guid = System.Guid.NewGuid();
+            dynSettings.Controller.DynamoModel.CurrentWorkspace.ExecuteCommand(
+                new CreateNodeCommand(guid, name, 0, 0, true));
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
