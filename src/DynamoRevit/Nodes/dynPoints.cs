@@ -49,10 +49,8 @@ namespace Dynamo.Nodes
 
             if (Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(Elements[0], typeof(ReferencePoint), out e))
+                if (dynUtils.TryGetElement(Elements[0], out pt))
                 {
-                    pt = (ReferencePoint)e;
                     pt.Position = xyz;
                 }
                 else
@@ -104,10 +102,8 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(ReferencePoint), out e))
+                if (dynUtils.TryGetElement(Elements[0], out p))
                 {
-                    p = e as ReferencePoint;
                     p.SetPointElementReference(edgePoint);
                 }
                 else
@@ -160,10 +156,8 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(ReferencePoint), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], out pt))
                 {
-                    pt = (ReferencePoint)e;
                     pt.Position = facePoint;
                 }
                 else
@@ -216,11 +210,9 @@ namespace Dynamo.Nodes
 
             if (Elements.Any())
             {
-                Element el;
-                if (dynUtils.TryGetElement(Elements[0], typeof (ReferencePoint), out el))
+                if (dynUtils.TryGetElement(Elements[0], out p))
                 {
                     //move the point to the new offset
-                    p = (ReferencePoint) el;
                     p.Position = newLocation;
                     Elements[0] = p.Id;
                 }
@@ -326,7 +318,7 @@ namespace Dynamo.Nodes
             foreach (ElementId el in this.Elements)
             {
                 Element e;
-                if (dynUtils.TryGetElement(el,typeof(object), out e))
+                if (dynUtils.TryGetElement(el, out e))
                 {
                     this.UIDocument.Document.Delete(el);
                 }
@@ -520,10 +512,8 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(ReferencePoint), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], out p))
                 {
-                    p = e as ReferencePoint;
                     p.SetPointElementReference(edgePoint);
                 }
                 else
