@@ -151,10 +151,30 @@ namespace Dynamo.Search
         private void OnLibraryClick(object sender, RoutedEventArgs e)
         {
             //this.Width = 5;
-            if (this.Visibility == Visibility.Collapsed)
-                this.Visibility = Visibility.Visible;
-            else
-                this.Visibility = Visibility.Collapsed;
+            //if (this.Visibility == Visibility.Collapsed)
+            //    this.Visibility = Visibility.Visible;
+            //else
+            //{
+            //    dynSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
+            //    this.Visibility = Visibility.Collapsed;
+            //}
+            dynSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
+        }
+
+        private void Button_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Grid g = (Grid)sender;
+            Label lb = (Label)(g.Children[0]);
+            var bc = new BrushConverter();
+            lb.Foreground = (Brush)bc.ConvertFromString("#cccccc");
+        }
+
+        private void buttonGrid_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Grid g = (Grid)sender;
+            Label lb = (Label)(g.Children[0]);
+            var bc = new BrushConverter();
+            lb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
         }
     }
 } ;

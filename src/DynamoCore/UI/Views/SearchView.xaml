@@ -34,9 +34,51 @@
         </Grid.RowDefinitions>
 
         <!--<TextBlock FontSize="13" FontWeight="SemiBold" Grid.Row="0" Foreground="#AAAAAA" Background="#222222" Padding="15,12,5,8" >Library</TextBlock>-->
-        <Button Grid.Row="0" Height="40" Margin="0,0,5,0" Background="Transparent" HorizontalAlignment="Left" Click="OnLibraryClick">
-            <TextBlock FontSize="13" FontWeight="SemiBold" Grid.Row="0" Foreground="#AAAAAA" Background="#222222" Padding="15,12,5,8" >Library</TextBlock>
-        </Button>
+
+        <Button Click="OnLibraryClick" Template="{DynamicResource BackgroundButton}">
+            <Button.Resources>
+                <ControlTemplate x:Key="BackgroundButton" TargetType="Button">
+                    <Border Name="border" BorderThickness="1" BorderBrush="Black" Background="#222222">
+                        <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    </Border>
+                </ControlTemplate>
+            </Button.Resources>
+            <Button.Content>
+                <Grid Name="buttonGrid" Mouse.MouseEnter="Button_MouseEnter" Mouse.MouseLeave="buttonGrid_MouseLeave">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="32"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" FontSize="13" FontWeight="SemiBold" Foreground="#AAAAAA" Background="#222222" HorizontalAlignment="Left">
+                        Library
+                    </Label>
+                    <Image Grid.Column="1" Source="/DynamoCore;component/UI/Images/collapsestate_normal.png">
+                        <Image.RenderTransform>
+                            <RotateTransform CenterX="16" CenterY="16" Angle="-90"/>
+                        </Image.RenderTransform>
+                    </Image>
+                </Grid>
+            </Button.Content>
+                
+                
+            <!--<Button.Template>
+                <ControlTemplate>
+                    <Border Background="#444444"
+                        BorderThickness="1"
+                        CornerRadius="0">
+                    <ContentPresenter HorizontalAlignment="Center"
+                                            VerticalAlignment="Top"
+                                            RecognizesAccessKey="True">
+                    </ContentPresenter>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>-->
+            </Button>
+        
+        
         
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -377,12 +419,12 @@
             </TreeView>
 
         </ScrollViewer>
-        <TextBlock Visibility="Visible" Grid.Row="2">
+        <!--<TextBlock Visibility="Visible" Grid.Row="2">
                 Library
                 <TextBlock.RenderTransform>
                     <RotateTransform CenterX="0" CenterY="0" Angle="-90" />
                 </TextBlock.RenderTransform>
-        </TextBlock>
+        </TextBlock>-->
     </Grid>
 
     
