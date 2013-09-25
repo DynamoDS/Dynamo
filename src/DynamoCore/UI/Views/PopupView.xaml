@@ -18,7 +18,7 @@
         <Polygon Name="backgroundPolygon" Fill="{Binding Path=FrameFill}" Stroke="{Binding Path=FrameStrokeColor}" 
                  StrokeThickness="{Binding Path=FrameStrokeThickness}" Points="{Binding Path=FramePoints}">
         </Polygon>
-        <StackPanel Name="contentContainer" MaxWidth="{Binding Path=MaxWidth}" Orientation="Vertical" Background="Transparent">
+        <StackPanel Name="contentContainer" MaxWidth="{Binding Path=MaxWidth}" Orientation="Vertical" Background="Transparent" Margin="{Binding Path=ContentMargin}">
         </StackPanel>
     </Grid>
 </UserControl>

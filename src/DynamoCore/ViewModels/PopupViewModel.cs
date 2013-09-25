@@ -243,9 +243,11 @@ namespace Dynamo.ViewModels
             {
                 case Style.LibraryItemPreview:
                     Margin = GetMargin_LibraryItemPreview(topLeft, botRight);
+                    MakeFitInView();
                     break;
                 case Style.NodeTooltip:
-                    Margin = GetMargin_SetStyle_NodeTooltip(topLeft, botRight, _connectingDirection);
+                    Margin = GetMargin_SetStyle_NodeTooltip(topLeft, botRight);
+                    MakeFitInView();
                     break;
             }
         }
@@ -263,7 +265,6 @@ namespace Dynamo.ViewModels
                     SetStyle_NodeTooltip(connectingDirection);
                     break;
                 case Style.Error:
-                    SetStyle_Error();
                     break;
                 case Style.None:
                     throw new ArgumentException("PopupWindow didn't have a style (456B24E0F400)");
@@ -296,10 +297,10 @@ namespace Dynamo.ViewModels
             return margin;
         }
 
-        private Thickness GetMargin_SetStyle_NodeTooltip(Point topLeft, Point botRight, Direction direction)
+        private Thickness GetMargin_SetStyle_NodeTooltip(Point topLeft, Point botRight)
         {
             Thickness margin = new Thickness();
-            switch (direction)
+            switch (_connectingDirection)
             {
                 case Direction.Bottom:
                     if (_limitedDirection == Direction.TopRight)
@@ -319,12 +320,28 @@ namespace Dynamo.ViewModels
                     }
                     break;
                 case Direction.Left:
-                    margin.Top = (topLeft.Y + botRight.Y) / 2 - (_view.contentContainer.DesiredSize.Height / 2);
-                    margin.Left = botRight.X;
+                    if (_limitedDirection == Direction.Right)
+                    {
+                        margin.Top = (topLeft.Y + botRight.Y) / 2 - (_view.contentContainer.DesiredSize.Height / 2);
+                        margin.Left = topLeft.X - _view.contentContainer.DesiredSize.Width;
+                    }
+                    else
+                    {
+                        margin.Top = (topLeft.Y + botRight.Y) / 2 - (_view.contentContainer.DesiredSize.Height / 2);
+                        margin.Left = botRight.X;
+                    }
                     break;
                 case Direction.Right:
-                    margin.Top = (topLeft.Y + botRight.Y) / 2 - (_view.contentContainer.DesiredSize.Height / 2);
-                    margin.Left = topLeft.X - _view.contentContainer.DesiredSize.Width;
+                    if (_limitedDirection == Direction.Left)
+                    {
+                        margin.Top = (topLeft.Y + botRight.Y) / 2 - (_view.contentContainer.DesiredSize.Height / 2);
+                        margin.Left = botRight.X;
+                    }
+                    else
+                    {
+                        margin.Top = (topLeft.Y + botRight.Y) / 2 - (_view.contentContainer.DesiredSize.Height / 2);
+                        margin.Left = topLeft.X - _view.contentContainer.DesiredSize.Width;
+                    }
                     break;
             }
             return margin;
@@ -356,7 +373,7 @@ namespace Dynamo.ViewModels
             TextFontSize = 12;
             TextFontWeight = FontWeights.Light;
             TextForeground = new SolidColorBrush(Color.FromRgb(98, 140, 153));
-            ContentWrapping = TextWrapping.NoWrap;
+            ContentWrapping = TextWrapping.Wrap;
 
             switch (connectingDirection)
             {
@@ -372,11 +389,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void SetStyle_Error()
-        {
-
-        }
-
         private TextBox GetStyledTextBox(string text)
         {
             TextBox textBox = new TextBox();
@@ -388,7 +400,6 @@ namespace Dynamo.ViewModels
             textBox.Foreground = TextForeground;
             textBox.FontWeight = TextFontWeight;
             textBox.FontSize = TextFontSize;
-            textBox.Margin = ContentMargin;
             return textBox;
         }
 
@@ -442,7 +453,7 @@ namespace Dynamo.ViewModels
             {
                 _limitedDirection = Direction.Top;
                 ContentMargin = new Thickness(11, 5, 5, 5);
-                UpdateContent(ItemDescription);
+                _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
                 pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
                 pointCollection.Add(new Point(0, 0));
@@ -454,7 +465,7 @@ namespace Dynamo.ViewModels
             {
                 _limitedDirection = Direction.TopRight;
                 ContentMargin = new Thickness(5, 5, 11, 5);
-                UpdateContent(ItemDescription);
+                _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
                 pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
                 pointCollection.Add(new Point(0, 0));
@@ -475,8 +486,8 @@ namespace Dynamo.ViewModels
 
             if (botRight.X + _view.contentContainer.DesiredSize.Width > container.ActualWidth)
             {
-                UpdateStyle(Style.NodeTooltip, Direction.Right);
-                UpdateContent(ItemDescription);
+                _limitedDirection = Direction.Right;
+                ContentMargin = new Thickness(5, 5, 11, 5);
                 pointCollection = GetFramePoints_NodeTooltipConnectRight(topLeft, botRight);
             }
             else
@@ -496,13 +507,11 @@ namespace Dynamo.ViewModels
         {
             _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             PointCollection pointCollection = new PointCollection();
-            Grid container = VisualTreeHelper.GetParent(_view) as Grid;
-            container = VisualTreeHelper.GetParent(container) as Grid;
 
             if (topLeft.X - _view.contentContainer.DesiredSize.Width < 0)
             {
-                UpdateStyle(Style.NodeTooltip, Direction.Left);
-                UpdateContent(ItemDescription);
+                _limitedDirection = Direction.Left;
+                ContentMargin = new Thickness(11, 5, 5, 5);
                 pointCollection = GetFramePoints_NodeTooltipConnectLeft(topLeft, botRight);
             }
             else
@@ -523,6 +532,42 @@ namespace Dynamo.ViewModels
             PointCollection pointCollection = new PointCollection();
 
             return pointCollection;
+        }
+
+        private void MakeFitInView()
+        {
+            _view.contentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            Grid container = VisualTreeHelper.GetParent(_view) as Grid;
+            container = VisualTreeHelper.GetParent(container) as Grid;
+            //top
+            if (Margin.Top < 30)
+            {
+                Thickness newMargin = Margin;
+                newMargin.Top = 40;
+                Margin = newMargin;
+            }
+            //left
+            if (Margin.Left < 0)
+            {
+                Thickness newMargin = Margin;
+                newMargin.Left = 0;
+                this.Margin = newMargin;
+            }
+            //botton
+            if (Margin.Top + _view.contentContainer.DesiredSize.Height > container.ActualHeight)
+            {
+                Thickness newMargin = Margin;
+                newMargin.Top = container.ActualHeight - _view.contentContainer.DesiredSize.Height;
+                Margin = newMargin;
+            }
+            //right
+            if (Margin.Left + _view.contentContainer.DesiredSize.Width > container.ActualWidth)
+            {
+                Thickness newMargin = Margin;
+                newMargin.Left = container.ActualWidth - _view.contentContainer.DesiredSize.Width;
+                Margin = newMargin;
+            }
+
         }
 
         private void fadeInTimer_Elapsed(object sender, ElapsedEventArgs e)
