@@ -246,10 +246,8 @@ namespace Dynamo
                 DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
             }
 
-            VisualizationManager = new VisualizationManager();
+            VisualizationManager = new VisualizationManagerASM();
 
-            //NodeSubmittedForRendering += new EventHandler(Controller_NodeSubmittedForRendering);
-            //NodeRemovedFromRendering += new EventHandler(Controller_NodeRemovedFromRendering);
         }
 
         #endregion

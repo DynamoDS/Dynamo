@@ -982,7 +982,7 @@ namespace Dynamo.Models
         {
             if (this is IDrawable)
             {
-                dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].RequiresUpdate = true;
+                dynSettings.Controller.VisualizationManager.MarkForUpdate(this);
             }
 
             var argSets = new List<FSharpList<FScheme.Value>>();

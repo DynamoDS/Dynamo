@@ -30,7 +30,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
-    public partial class Watch3D : NodeWithOneOutput, IObserver<Point3D>, IObserver<Mesh3D>
+    public partial class Watch3D : NodeWithOneOutput
     {
         private PointsVisual3D _points;
         private LinesVisual3D _lines;
@@ -202,29 +202,5 @@ namespace Dynamo.Nodes
         {
             _watchView.watch_view.ZoomExtents();
         }
-
-        #region IObserver interface
-
-        public void OnCompleted()
-        {
-            
-        }
-
-        public void OnError(Exception e)
-        {
-            
-        }
-
-        public void OnNext(Point3D p)
-        {
-
-        }
-
-        public void OnNext(Mesh3D m)
-        {
-
-        }
-
-        #endregion
     }
 }

@@ -40,14 +40,46 @@ namespace Dynamo
 
         #endregion
 
-        public VisualizationManager()
+        #region events
+
+        public event EventHandler VisualizationUpdateComplete;
+        public virtual void OnVisualizationUpdateComplete(object sender, EventArgs e)
         {
-            //provide a handler for the run completed event on the controller
-            dynSettings.Controller.RunCompleted += Controller_RunCompleted;
+            if (VisualizationUpdateComplete != null)
+                VisualizationUpdateComplete(sender, e);
         }
 
-        void Controller_RunCompleted(object controller, bool success)
+        #endregion
+
+        public VisualizationManager()
         {
+            dynSettings.Controller.DynamoModel.NodeAdded += new NodeHandler(DynamoModel_NodeAdded);
+            dynSettings.Controller.DynamoModel.NodeDeleted += new NodeHandler(DynamoModel_NodeDeleted);
+        }
+
+        /// <summary>
+        /// Handler for the model's NodeDeleted event. Unregisters a node from visualization.
+        /// Triggers an update to the visualizations after un-registering a node
+        /// </summary>
+        /// <param name="node"></param>
+        void DynamoModel_NodeDeleted(NodeModel node)
+        {
+            if (node is IDrawable)
+                UnregisterFromVisualization(node);
+
+            UpdateVisualizations();
+        }
+
+        /// <summary>
+        /// Handler for the model's NodeAdded event. Registers a node for visualization.
+        /// Triggers an update to the visualizations after registering a node.
+        /// </summary>
+        /// <param name="node"></param>
+        void DynamoModel_NodeAdded(NodeModel node)
+        {
+            if (node is IDrawable)
+                RegisterForVisualization(node);
+
             UpdateVisualizations();
         }
 
@@ -63,15 +95,6 @@ namespace Dynamo
             {
                 var viz = new Visualization();
                 Visualizations.Add(node.GUID.ToString(), new Visualization());
-
-                if (node is IObserver<Point3D> && node is IObserver<Mesh3D>)
-                {
-                    //subscribe to updates on the render description
-                    viz.Description.Points.Subscribe(node as IObserver<Point3D>);
-                    viz.Description.Lines.Subscribe(node as IObserver<Point3D>);
-                    viz.Description.Meshes.Subscribe(node as IObserver<Mesh3D>);
-                }
-                
             }
         }
 
@@ -103,7 +126,18 @@ namespace Dynamo
         /// </summary>
         public virtual void UpdateVisualizations()
         {
-            //override in child classes
+            OnVisualizationUpdateComplete(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Marks a visualization as requiring an update and clears its geometry collection.
+        /// </summary>
+        /// <param name="node">The node whose visualization will be updated.</param>
+        public void MarkForUpdate(NodeModel node)
+        {
+            var v = Visualizations[node.GUID.ToString()];
+            v.RequiresUpdate = true;
+            v.Geometry.Clear();
         }
 
         public List<IDrawable> GetUpstreamIDrawable(Dictionary<int, Tuple<int, NodeModel>> inputs)
