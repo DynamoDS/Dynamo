@@ -171,6 +171,7 @@ namespace Dynamo.Utilities
             {
                 ele.SaveResult = false;
                 currentWorkspace.Nodes.Remove(ele);
+                ele.WorkSpace = newNodeWorkspace;
             }
             foreach (var ele in connectors)
             {
