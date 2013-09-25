@@ -23,6 +23,7 @@ namespace Dynamo.ViewModels
         }
         public enum Direction
         {
+            None,
             Left,
             Top,
             Right,
@@ -301,8 +302,21 @@ namespace Dynamo.ViewModels
             switch (direction)
             {
                 case Direction.Bottom:
-                    margin.Top = topLeft.Y - _view.contentContainer.DesiredSize.Height;
-                    margin.Left = (topLeft.X + botRight.X) / 2 - (_view.contentContainer.DesiredSize.Width / 2);
+                    if (_limitedDirection == Direction.TopRight)
+                    {
+                        margin.Top = botRight.Y - (botRight.Y - topLeft.Y) / 2;
+                        margin.Left = topLeft.X - _view.contentContainer.DesiredSize.Width;
+                    }
+                    else if (_limitedDirection == Direction.Top)
+                    {
+                        margin.Top = botRight.Y - (botRight.Y - topLeft.Y) / 2;
+                        margin.Left = botRight.X;
+                    }
+                    else
+                    {
+                        margin.Top = topLeft.Y - _view.contentContainer.DesiredSize.Height;
+                        margin.Left = (topLeft.X + botRight.X) / 2 - (_view.contentContainer.DesiredSize.Width / 2);
+                    }
                     break;
                 case Direction.Left:
                     margin.Top = (topLeft.Y + botRight.Y) / 2 - (_view.contentContainer.DesiredSize.Height / 2);
@@ -415,18 +429,19 @@ namespace Dynamo.ViewModels
 
             if (topLeft.Y - _view.contentContainer.DesiredSize.Height >= 40)
             {
+                _limitedDirection = Direction.None;
                 pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
                 pointCollection.Add(new Point(0, 0));
                 pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height - 6));
-                pointCollection.Add(new Point((_view.contentContainer.DesiredSize.Width / 2) - 3, _view.contentContainer.DesiredSize.Height - 6));
+                pointCollection.Add(new Point((_view.contentContainer.DesiredSize.Width / 2) - 6, _view.contentContainer.DesiredSize.Height - 6));
                 pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width / 2, _view.contentContainer.DesiredSize.Height));
-                pointCollection.Add(new Point((_view.contentContainer.DesiredSize.Width / 2) + 3, _view.contentContainer.DesiredSize.Height - 6));
+                pointCollection.Add(new Point((_view.contentContainer.DesiredSize.Width / 2) + 6, _view.contentContainer.DesiredSize.Height - 6));
                 pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height - 6));
             }
             else if (botRight.X + _view.contentContainer.DesiredSize.Width <= container.ActualWidth)
             {
                 _limitedDirection = Direction.Top;
-                Margin = new Thickness(11, 5, 5, 5);
+                ContentMargin = new Thickness(11, 5, 5, 5);
                 UpdateContent(ItemDescription);
 
                 pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
@@ -438,7 +453,7 @@ namespace Dynamo.ViewModels
             else
             {
                 _limitedDirection = Direction.TopRight;
-                Margin = new Thickness(5, 5, 11, 5);
+                ContentMargin = new Thickness(5, 5, 11, 5);
                 UpdateContent(ItemDescription);
 
                 pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
@@ -458,23 +473,19 @@ namespace Dynamo.ViewModels
             Grid container = VisualTreeHelper.GetParent(_view) as Grid;
             container = VisualTreeHelper.GetParent(container) as Grid;
 
-            if (botRight.X + _view.contentContainer.DesiredSize.Width <= container.ActualWidth)
+            if (botRight.X + _view.contentContainer.DesiredSize.Width > container.ActualWidth)
             {
-                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, 0));
-                pointCollection.Add(new Point(0, 0));
-                pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height));
-                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height));
-                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height / 2 + 3));
-                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height / 2));
-                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height / 2 - 3));
+                UpdateStyle(Style.NodeTooltip, Direction.Right);
+                UpdateContent(ItemDescription);
+                pointCollection = GetFramePoints_NodeTooltipConnectRight(topLeft, botRight);
             }
             else
             {
                 pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
                 pointCollection.Add(new Point(6, 0));
-                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 - 3));
+                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 - 6));
                 pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height / 2));
-                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 + 3));
+                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 + 6));
                 pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height));
                 pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height));
             }
@@ -490,13 +501,9 @@ namespace Dynamo.ViewModels
 
             if (topLeft.X - _view.contentContainer.DesiredSize.Width < 0)
             {
-                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, 0));
-                pointCollection.Add(new Point(6, 0));
-                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 - 3));
-                pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height / 2));
-                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height / 2 + 3));
-                pointCollection.Add(new Point(6, _view.contentContainer.DesiredSize.Height));
-                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height));
+                UpdateStyle(Style.NodeTooltip, Direction.Left);
+                UpdateContent(ItemDescription);
+                pointCollection = GetFramePoints_NodeTooltipConnectLeft(topLeft, botRight);
             }
             else
             {
@@ -504,9 +511,9 @@ namespace Dynamo.ViewModels
                 pointCollection.Add(new Point(0, 0));
                 pointCollection.Add(new Point(0, _view.contentContainer.DesiredSize.Height));
                 pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height));
-                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height / 2 + 3));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height / 2 + 6));
                 pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width, _view.contentContainer.DesiredSize.Height / 2));
-                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height / 2 - 3));
+                pointCollection.Add(new Point(_view.contentContainer.DesiredSize.Width - 6, _view.contentContainer.DesiredSize.Height / 2 - 6));
             }
             return pointCollection;
         }
