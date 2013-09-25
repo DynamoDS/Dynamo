@@ -43,7 +43,7 @@ namespace Dynamo.Revit
             foreach (var id in AllElements)
             {
                 Element el;
-                if (dynUtils.TryGetElement(id, typeof (Element), out el))
+                if (dynUtils.TryGetElement(id, out el))
                 {
                     existingElements.Add(el);
                 }
