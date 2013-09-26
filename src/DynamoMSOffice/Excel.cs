@@ -202,6 +202,11 @@ namespace Dynamo.Nodes
             var name = ((FScheme.Value.String)args[1]).Item;
             var sheet = workbook.Worksheets.Cast<Microsoft.Office.Interop.Excel.Worksheet>().FirstOrDefault(ws => ws.Name == name);
 
+            if (sheet == null)
+            {
+                throw new Exception("Could not find a worksheet in the workbook with that name.");
+            }
+
             return FScheme.Value.NewContainer(sheet);
         }
 

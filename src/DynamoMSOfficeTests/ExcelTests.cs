@@ -89,7 +89,7 @@ namespace DynamoMSOfficeTests
 
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            dynSettings.Controller.RunExpression(null);
+            Controller.RunExpression(null);
 
             Assert.IsTrue(watch.OldValue.IsList);
             var list = watch.OldValue.GetListFromFSchemeValue();
@@ -114,14 +114,14 @@ namespace DynamoMSOfficeTests
 
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            dynSettings.Controller.RunExpression(null);
+            Controller.RunExpression(null);
 
             Assert.IsTrue(watch.OldValue.IsContainer);
 
         }
 
         [Test]
-        public void ReturnNullOnGetWorksheetByNameWithInvalidInput()
+        public void ThrowExceptionOnGetWorksheetByNameWithInvalidInput()
         {
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetByName_InvalidInput.dyn");
@@ -134,12 +134,16 @@ namespace DynamoMSOfficeTests
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var getWorksheet = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<GetExcelWorksheetByName>();
+            var readFile = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<ReadExcelFile>();
 
-            dynSettings.Controller.RunExpression(null);
+            Assert.Throws<AssertionException>(() =>
+            {
+                dynSettings.Controller.RunExpression(null);
+            });
 
-            Assert.IsTrue(watch.OldValue.IsContainer);
-            Assert.IsNull(((FScheme.Value.Container)watch.OldValue).Item);
+            Assert.IsTrue(readFile.OldValue.IsContainer);
+            Assert.IsNull(getWorksheet.OldValue);
         }
 
         [Test]
@@ -158,7 +162,7 @@ namespace DynamoMSOfficeTests
 
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            dynSettings.Controller.RunExpression(null);
+            Controller.RunExpression(null);
 
             Assert.IsTrue(watch.OldValue.IsList);
             var list = watch.OldValue.GetListFromFSchemeValue();
@@ -194,7 +198,7 @@ namespace DynamoMSOfficeTests
 
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            dynSettings.Controller.RunExpression(null);
+            Controller.RunExpression(null);
 
             Assert.IsTrue(watch.OldValue.IsList);
             var list = watch.OldValue.GetListFromFSchemeValue();
@@ -233,7 +237,7 @@ namespace DynamoMSOfficeTests
 
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            dynSettings.Controller.RunExpression(null);
+            Controller.RunExpression(null);
 
             Assert.IsTrue(watch.OldValue.IsList);
             var list = watch.OldValue.GetListFromFSchemeValue();
@@ -275,7 +279,7 @@ namespace DynamoMSOfficeTests
 
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            dynSettings.Controller.RunExpression(null);
+            Controller.RunExpression(null);
 
             Assert.IsTrue(watch.OldValue.IsList);
             var list = watch.OldValue.GetListFromFSchemeValue();
