@@ -7,7 +7,7 @@
       <System.String value="Hammersmith_Copy" />
     </Dynamo.Nodes.StringInput>
     <Dynamo.Nodes.StringFilename type="Dynamo.Nodes.StringFilename" guid="e0c45ba0-150e-45cb-a92c-93d352fc731e" nickname="File Path" x="42.8405509811745" y="24.9510295145114" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="C:\Users\boyerp\Dropbox\Github\Autodesk\Dynamo\test\core\excel\Hammersmith_Copy.csv" />
+      <System.String value="..\..\..\test\core\excel\Hammersmith_Copy.csv" />
     </Dynamo.Nodes.StringFilename>
   </Elements>
   <Connectors>

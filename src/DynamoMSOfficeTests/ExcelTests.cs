@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Dynamo;
@@ -50,7 +51,7 @@ namespace DynamoMSOfficeTests
         #region Reading
 
         [Test]
-        public void CanGetLargeWorkbook()
+        public void CanGetLargeWorkbookWithinThresholdTime()
         {
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\HammersmithExcelFile_Open.dyn");
@@ -63,11 +64,11 @@ namespace DynamoMSOfficeTests
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-            //var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-
-            dynSettings.Controller.RunExpression(null);
-
-            //Assert.IsTrue(watch.OldValue.IsContainer);
+            var timer = new Stopwatch();
+            timer.Start();
+            Controller.RunExpression(null);
+            timer.Stop();
+            Assert.Less(timer.Elapsed.Milliseconds, 750); // open in less than 750ms
 
         }
 
