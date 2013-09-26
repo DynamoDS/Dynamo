@@ -23,7 +23,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
-
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
 
@@ -647,7 +647,7 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Count > count)
             {
-                if (dynUtils.TryGetElement(this.Elements[count], out fi))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[count], out fi))
                 {
                     fi.Symbol = fs;
                     var lp = fi.Location as LocationPoint;
@@ -755,7 +755,7 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Count > count)
             {
-                if (dynUtils.TryGetElement(this.Elements[count], out fi))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[count], out fi))
                 {
                     fi.Symbol = fs;
                     var lp = fi.Location as LocationPoint;

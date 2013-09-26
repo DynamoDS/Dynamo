@@ -21,6 +21,7 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
 
@@ -49,7 +50,7 @@ namespace Dynamo.Nodes
 
             if (Elements.Any())
             {
-                if (dynUtils.TryGetElement(Elements[0], out pt))
+                if (dynRevitSettings.Doc.Document.TryGetElement(Elements[0], out pt))
                 {
                     pt.Position = xyz;
                 }
@@ -102,7 +103,7 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                if (dynUtils.TryGetElement(Elements[0], out p))
+                if (dynRevitSettings.Doc.Document.TryGetElement(Elements[0], out p))
                 {
                     p.SetPointElementReference(edgePoint);
                 }
@@ -156,7 +157,7 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                if (dynUtils.TryGetElement(this.Elements[0], out pt))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out pt))
                 {
                     pt.Position = facePoint;
                 }
@@ -210,7 +211,7 @@ namespace Dynamo.Nodes
 
             if (Elements.Any())
             {
-                if (dynUtils.TryGetElement(Elements[0], out p))
+                if (dynRevitSettings.Doc.Document.TryGetElement(Elements[0], out p))
                 {
                     //move the point to the new offset
                     p.Position = newLocation;
@@ -318,7 +319,7 @@ namespace Dynamo.Nodes
             foreach (ElementId el in this.Elements)
             {
                 Element e;
-                if (dynUtils.TryGetElement(el, out e))
+                if (dynRevitSettings.Doc.Document.TryGetElement(el, out e))
                 {
                     this.UIDocument.Document.Delete(el);
                 }
@@ -512,7 +513,7 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                if (dynUtils.TryGetElement(this.Elements[0], out p))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out p))
                 {
                     p.SetPointElementReference(edgePoint);
                 }

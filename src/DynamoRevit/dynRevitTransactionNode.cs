@@ -11,6 +11,7 @@ using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Connectors;
 using Dynamo.Controls;
@@ -89,7 +90,7 @@ namespace Dynamo.Revit
                 foreach (var id in run)
                 {
                     Element e;
-                    if (dynUtils.TryGetElement(id, out e))
+                    if (dynRevitSettings.Doc.Document.TryGetElement(id, out e))
                     {
                         var elementStore = xmlDoc.CreateElement("Element");
                         elementStore.InnerText = e.UniqueId;

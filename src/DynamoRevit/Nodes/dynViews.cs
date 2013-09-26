@@ -27,7 +27,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Data;
 using System.ComponentModel;
-
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
@@ -136,7 +136,7 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                if (dynUtils.TryGetElement(this.Elements[0], out view))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out view))
                 {
                     if (!view.ViewDirection.IsAlmostEqualTo(direction))
                     {

@@ -20,7 +20,7 @@ using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
@@ -95,7 +95,7 @@ namespace Dynamo.Nodes
                           if (this.Elements.Count > count)
                           {
                               //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count], out divPath))
+                              if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[count], out divPath))
                               {
                                   //...if we find a divided path and if we're successful matching it to the doc, update it's properties...
                                   if (divPath != null)
@@ -183,7 +183,7 @@ namespace Dynamo.Nodes
                 if (this.Elements.Any())
                 {
                     //...try to get the first one...
-                    if (dynUtils.TryGetElement(this.Elements[0], out divPath))
+                    if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out divPath))
                     {
                         //..and if we do, update it's data.
                         divPath.FixedNumberOfPoints = (int)xi;
@@ -254,7 +254,7 @@ namespace Dynamo.Nodes
             if (this.Elements.Any())
             {
                 //...try to get the first one...
-                if (!dynUtils.TryGetElement(this.Elements[0], out divSurf))
+                if (!dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out divSurf))
                 {
                     //...otherwise, just make a new one and replace it in the list.
                     divSurf = this.UIDocument.Document.FamilyCreate.NewDividedSurface(face.Reference);
