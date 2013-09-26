@@ -49,27 +49,27 @@ namespace DynamoMSOfficeTests
 
         #region Reading
 
-        //[Test]
-        //public void CanGetLargeWorkbook()
-        //{
+        [Test]
+        public void CanGetLargeWorkbook()
+        {
 
-        //    string openPath = Path.Combine(GetTestDirectory(), @"core\excel\Hammersmith.dyn");
-        //    Controller.DynamoModel.Open(openPath);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\HammersmithExcelFile_Open.dyn");
+            Controller.DynamoModel.Open(openPath);
 
-        //    Assert.AreEqual(36, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-        //    var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
 
-        //    // remap the filename as Excel requires an absolute path
-        //    filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-        //    //var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            //var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-        //    dynSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
-        //    //Assert.IsTrue(watch.OldValue.IsContainer);
+            //Assert.IsTrue(watch.OldValue.IsContainer);
 
-        //}
+        }
 
 
         [Test]
