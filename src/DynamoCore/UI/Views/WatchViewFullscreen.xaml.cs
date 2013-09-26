@@ -164,41 +164,22 @@ namespace Dynamo.Controls
             HelixMesh = null;
             HelixXAxes.Clear();
             HelixYAxes.Clear();
+
             HelixZAxes.Clear();
 
-            HelixPoints = vizManager.Visualizations.Values.SelectMany(x => x.Description.Points).ToList();
-            HelixLines = vizManager.Visualizations.Values.SelectMany(x => x.Description.Lines).ToList();
+            var pts = vizManager.Visualizations.Values.SelectMany(x => x.Description.Points).ToList();
+            var lines = vizManager.Visualizations.Values.SelectMany(x => x.Description.Lines).ToList();
+            var xs = vizManager.Visualizations.Values.SelectMany(x => x.Description.XAxisPoints).ToList();
+            var ys = vizManager.Visualizations.Values.SelectMany(x => x.Description.YAxisPoints).ToList();
+            var zs = vizManager.Visualizations.Values.SelectMany(x => x.Description.ZAxisPoints).ToList();
+
+            HelixPoints.AddRange(pts);
+            HelixLines.AddRange(lines);
             var meshes = vizManager.Visualizations.Values.SelectMany(x => x.Description.Meshes).ToList();
-            HelixMesh = MergeMeshes(meshes);
-            HelixXAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.XAxisPoints).ToList();
-            HelixYAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.YAxisPoints).ToList();
-            HelixZAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.ZAxisPoints).ToList();
-        }
-
-        Mesh3D MergeMeshes(List<Mesh3D> meshes)
-        {
-            if (meshes.Count == 0)
-                return null;
-
-            var positions = new List<Point3D>();
-            var triangleIndices = new List<int>();
-
-            int offset = 0;
-            foreach (Mesh3D m in meshes)
-            {
-                positions.AddRange(m.Vertices);
-
-                foreach (int[] face in m.Faces)
-                {
-                    triangleIndices.Add(face[0] + offset);
-                    triangleIndices.Add(face[1] + offset);
-                    triangleIndices.Add(face[2] + offset);
-                }
-
-                offset = positions.Count;
-            }
-
-            return new Mesh3D(positions, triangleIndices);
+            HelixMesh = VisualizationManager.MergeMeshes(meshes);
+            HelixXAxes.AddRange(xs);
+            HelixYAxes.AddRange(ys);
+            HelixZAxes.AddRange(zs);
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)
