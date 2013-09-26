@@ -434,7 +434,7 @@ namespace Dynamo.Nodes
         public TangentTransformOnCurveOrEdge()
         {
             InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range except for closed curve", typeof(Value.Number)));
-            InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
+            InPortData.Add(new PortData("curve or edge", "The geometry curve or edge to evaluate.", typeof(Value.Container)));
             OutPortData.Add(new PortData("tangent transform", "tangent transform at parameter.", typeof(Value.Container)));
 
             RegisterAllPorts();
