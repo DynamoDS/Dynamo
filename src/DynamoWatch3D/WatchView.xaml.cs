@@ -105,6 +105,10 @@ namespace Dynamo.Controls
         {
             InitializeComponent();
 
+            //set the data context for the watch control
+            //to bind to properties on this class
+            watch_view.DataContext = this;
+
             MouseRightButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseRightButtonUp);
             PreviewMouseRightButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
@@ -113,10 +117,6 @@ namespace Dynamo.Controls
 
         void WatchView_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            //set the data context for the watch control
-            //to bind to properties on this class
-            watch_view.DataContext = this;
-            
             dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += new EventHandler(VisualizationManager_VisualizationUpdateComplete);
         }
 
@@ -127,6 +127,8 @@ namespace Dynamo.Controls
 
         private void RenderDrawables()
         {
+            Debug.WriteLine(string.Format("Rendering Watch3D on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
+
             //when the visualization update is complete, rebind geometry
             //in this watch to collections of geometry composed from upstream
             //geometry
@@ -134,20 +136,19 @@ namespace Dynamo.Controls
             var rd = dynSettings.Controller.VisualizationManager.RenderUpstream(this.DataContext as NodeModel);
 
             //aggregate all the render descriptions into one for this node.
-            HelixPoints.Clear();
-            HelixLines.Clear();
+            HelixPoints = null;
+            HelixLines = null;
             HelixMesh = null;
-            HelixXAxes.Clear();
-            HelixYAxes.Clear();
-            HelixZAxes.Clear();
+            HelixXAxes = null;
+            HelixYAxes = null;
+            HelixZAxes = null;
 
-            HelixPoints.AddRange(rd.Points);
-            HelixLines.AddRange(rd.Lines);
-            var meshes = rd.Meshes.ToList();
-            HelixMesh = VisualizationManager.MergeMeshes(meshes);
-            HelixXAxes.AddRange(rd.XAxisPoints);
-            HelixYAxes.AddRange(rd.YAxisPoints);
-            HelixZAxes.AddRange(rd.ZAxisPoints);
+            HelixPoints = rd.Points;
+            HelixLines = rd.Lines;
+            HelixMesh = VisualizationManager.MergeMeshes(rd.Meshes);
+            HelixXAxes = rd.XAxisPoints;
+            HelixYAxes = rd.YAxisPoints;
+            HelixZAxes = rd.ZAxisPoints;
 
         }
 

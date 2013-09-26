@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Media3D;
@@ -157,29 +158,23 @@ namespace Dynamo.Controls
 
         private void RenderDrawables()
         {
+            Debug.WriteLine(string.Format("Rendering full screen Watch3D on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
+            
             var vizManager = dynSettings.Controller.VisualizationManager;
 
-            HelixPoints.Clear();
-            HelixLines.Clear();
+            HelixPoints = null;
+            HelixLines = null;
             HelixMesh = null;
-            HelixXAxes.Clear();
-            HelixYAxes.Clear();
+            HelixXAxes = null;
+            HelixYAxes = null;
+            HelixZAxes = null;
 
-            HelixZAxes.Clear();
-
-            var pts = vizManager.Visualizations.Values.SelectMany(x => x.Description.Points).ToList();
-            var lines = vizManager.Visualizations.Values.SelectMany(x => x.Description.Lines).ToList();
-            var xs = vizManager.Visualizations.Values.SelectMany(x => x.Description.XAxisPoints).ToList();
-            var ys = vizManager.Visualizations.Values.SelectMany(x => x.Description.YAxisPoints).ToList();
-            var zs = vizManager.Visualizations.Values.SelectMany(x => x.Description.ZAxisPoints).ToList();
-
-            HelixPoints.AddRange(pts);
-            HelixLines.AddRange(lines);
-            var meshes = vizManager.Visualizations.Values.SelectMany(x => x.Description.Meshes).ToList();
-            HelixMesh = VisualizationManager.MergeMeshes(meshes);
-            HelixXAxes.AddRange(xs);
-            HelixYAxes.AddRange(ys);
-            HelixZAxes.AddRange(zs);
+            HelixPoints = vizManager.Visualizations.Values.SelectMany(x => x.Description.Points).ToList();
+            HelixLines = vizManager.Visualizations.Values.SelectMany(x => x.Description.Lines).ToList();
+            HelixXAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.XAxisPoints).ToList();
+            HelixYAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.YAxisPoints).ToList();
+            HelixZAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.ZAxisPoints).ToList();
+            HelixMesh = VisualizationManager.MergeMeshes(vizManager.Visualizations.Values.SelectMany(x => x.Description.Meshes).ToList());
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)

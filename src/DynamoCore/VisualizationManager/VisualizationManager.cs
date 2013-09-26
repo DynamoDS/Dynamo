@@ -66,8 +66,6 @@ namespace Dynamo
         {
             if (node is IDrawable)
                 UnregisterFromVisualization(node);
-
-            UpdateVisualizations();
         }
 
         /// <summary>
@@ -79,8 +77,6 @@ namespace Dynamo
         {
             if (node is IDrawable)
                 RegisterForVisualization(node);
-
-            UpdateVisualizations();
         }
 
         /// <summary>
@@ -160,12 +156,12 @@ namespace Dynamo
 
             var keyValuePairs = ids as KeyValuePair<string, Visualization>[] ?? ids.ToArray();
 
-            var pts = keyValuePairs.SelectMany(x => x.Value.Description.Points);
-            var lines = keyValuePairs.SelectMany(x => x.Value.Description.Lines);
+            var pts = keyValuePairs.SelectMany(x => x.Value.Description.Points).ToList();
+            var lines = keyValuePairs.SelectMany(x => x.Value.Description.Lines).ToList();
             var meshes = keyValuePairs.SelectMany(x => x.Value.Description.Meshes).ToList();
-            var xs = keyValuePairs.SelectMany(x => x.Value.Description.XAxisPoints);
-            var ys = keyValuePairs.SelectMany(x => x.Value.Description.YAxisPoints);
-            var zs = keyValuePairs.SelectMany(x => x.Value.Description.ZAxisPoints);
+            var xs = keyValuePairs.SelectMany(x => x.Value.Description.XAxisPoints).ToList();
+            var ys = keyValuePairs.SelectMany(x => x.Value.Description.YAxisPoints).ToList();
+            var zs = keyValuePairs.SelectMany(x => x.Value.Description.ZAxisPoints).ToList();
             rd.Points.AddRange(pts);
             rd.Lines.AddRange(lines);
             rd.Meshes.AddRange(meshes);
