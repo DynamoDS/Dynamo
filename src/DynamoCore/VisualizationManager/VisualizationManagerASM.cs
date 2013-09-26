@@ -8,7 +8,7 @@ using HelixToolkit.Wpf;
 
 namespace Dynamo
 {
-    class VisualizationManagerASM : VisualizationManager
+    public class VisualizationManagerASM : VisualizationManager
     {
         public override void UpdateVisualizations()
         {
@@ -113,7 +113,6 @@ namespace Dynamo
                     rd.Meshes.Add(new Mesh3D(vertices, indices_back));
                 }
             }
-
             
             OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }

@@ -61,8 +61,8 @@ namespace Dynamo
                     }
                 }
             }
-            
-            base.UpdateVisualizations();
+
+            OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
         private void DrawElement(object obj, RenderDescription rd)

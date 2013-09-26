@@ -30,6 +30,11 @@ namespace Dynamo
         public PredicateTraverser CheckManualTransaction { get; private set; }
         public PredicateTraverser CheckRequiresTransaction { get; private set; }
 
+        public override VisualizationManager VisualizationManager
+        {
+            get { return visualizationManager ?? (visualizationManager = new VisualizationManagerRevit()); }
+        }
+
         public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context)
             : base(env, viewModelType, context)
         {
@@ -54,8 +59,6 @@ namespace Dynamo
             //allow the showing of elements in context
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
-
-            VisualizationManager = new VisualizationManagerRevit();
         }
 
         /// <summary>
