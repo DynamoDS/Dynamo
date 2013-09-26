@@ -21,7 +21,7 @@ namespace Dynamo.ViewModels
     public delegate void WorkspaceSaveEventHandler(object sender, WorkspaceSaveEventArgs e);
     public delegate void RequestPackagePublishDialogHandler(PublishPackageViewModel publishViewModel);
 
-    public class DynamoViewModel:ViewModelBase
+    public partial class DynamoViewModel : ViewModelBase
     {
         #region events
 
@@ -101,6 +101,7 @@ namespace Dynamo.ViewModels
         private DynamoModel _model;        
         private Point transformOrigin;
         private DynamoController controller;
+        private string commandFilePath;
         private bool runEnabled = true;
         protected bool canRunDynamically = true;
         protected bool debug = false;
@@ -200,6 +201,11 @@ namespace Dynamo.ViewModels
                 controller = value;
                 RaisePropertyChanged("ViewModel");
             }
+        }
+
+        public string CommandFilePath
+        {
+            get { return commandFilePath; }
         }
 
         public bool RunEnabled
@@ -370,7 +376,7 @@ namespace Dynamo.ViewModels
         
         #endregion
 
-        public DynamoViewModel(DynamoController controller)
+        public DynamoViewModel(DynamoController controller, string commandFilePath)
         {
             ConnectorType = ConnectorType.BEZIER;
             
@@ -388,6 +394,7 @@ namespace Dynamo.ViewModels
             _model.CurrentWorkspace = _model.HomeSpace;
 
             Controller = controller;
+            this.commandFilePath = commandFilePath;
 
             OpenCommand = new DelegateCommand(_model.Open, _model.CanOpen);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(_model.ShowOpenDialogAndOpenResult, _model.CanShowOpenDialogAndOpenResultCommand);

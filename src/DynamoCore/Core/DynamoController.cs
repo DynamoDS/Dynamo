@@ -116,12 +116,6 @@ namespace Dynamo
             set { context = value; }
         }
 
-        private string commandFilePath = null;
-        public string CommandFilePath
-        {
-            get { return commandFilePath; }
-        }
-
         private bool _isShowingConnectors = true;
         public bool IsShowingConnectors
         {
@@ -229,14 +223,14 @@ namespace Dynamo
             dynSettings.Controller = this;
 
             this.Context = context;
-            this.commandFilePath = commandFilePath;
 
             //Start heartbeat reporting
             Services.InstrumentationLogger.Start();
 
             //create the view model to which the main window will bind
             //the DynamoModel is created therein
-            this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(viewModelType,new object[]{this});
+            this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
+                viewModelType, new object[] { this, commandFilePath });
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
