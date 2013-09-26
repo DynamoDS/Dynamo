@@ -104,8 +104,10 @@ namespace Dynamo.Tests
 
             //delete a conector coming into the lines node
             var lineNode = model.Nodes.First(x => x is LineNode);
-            var connector = model.CurrentWorkspace.Connectors.First(x => x.End.Owner == lineNode);
-            model.Delete(connector);
+            //var connector = model.CurrentWorkspace.Connectors.First(x => x.End.Owner == lineNode);
+            //model.Delete(connector);
+            var port = lineNode.InPorts.First();
+            port.Disconnect(port.Connectors.First());
 
             //ensure that the visualization no longer contains
             //the renderables for the line node
