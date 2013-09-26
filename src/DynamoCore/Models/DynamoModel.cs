@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Enum = System.Enum;
 using String = System.String;
 using ProtoCore.DSASM;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Models
 {
@@ -1380,7 +1381,25 @@ namespace Dynamo.Models
                 node.GUID = Guid.NewGuid();
             }
 
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new ModelEventArgs(node, data));
+            bool transCoords = false;
+            if (data.ContainsKey("transformFromOuterCanvasCoordinates"))
+                transCoords = true;
+
+            ModelEventArgs args = null;
+            if (data.ContainsKey("x") && data.ContainsKey("y"))
+            {
+                double x = ((double)data["x"]);
+                double y = ((double)data["y"]);
+                args = new ModelEventArgs(node, x, y, transCoords);
+            }
+            else
+            {
+                // The position of the new node has not been specified.
+                args = new ModelEventArgs(node, transCoords);
+            }
+
+            DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+            vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
 
             node.EnableInteraction();
 
@@ -1757,8 +1776,9 @@ namespace Dynamo.Models
 
             if (parameters == null)
             {
-                inputs.Add("transformFromOuterCanvasCoordinates", true);
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestNodeCentered(this, new ModelEventArgs(n, inputs));
+                ModelEventArgs args = new ModelEventArgs(n, x, y, true);
+                DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
+                vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
             }
 
             object id;
@@ -1807,12 +1827,31 @@ namespace Dynamo.Models
 
     public class ModelEventArgs : EventArgs
     {
-        public ModelBase Model { get; set; }
-        public Dictionary<string, object> Data { get; set; }
-        public ModelEventArgs(ModelBase n, Dictionary<string, object> d)
+        public ModelBase Model { get; private set; }
+        public double X { get; private set; }
+        public double Y { get; private set; }
+        public bool PositionSpecified { get; private set; }
+        public bool TransformCoordinates { get; private set; }
+
+        public ModelEventArgs(ModelBase model)
+            : this(model, false)
         {
-            Model = n;
-            Data = d;
+        }
+
+        public ModelEventArgs(ModelBase model, bool transformCoordinates)
+        {
+            Model = model;
+            PositionSpecified = false;
+            TransformCoordinates = transformCoordinates;
+        }
+
+        public ModelEventArgs(ModelBase model, double x, double y, bool transformCoordinates)
+        {
+            Model = model;
+            X = x;
+            Y = y;
+            PositionSpecified = true;
+            TransformCoordinates = transformCoordinates;
         }
     }
 
