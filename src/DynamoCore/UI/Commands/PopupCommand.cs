@@ -8,6 +8,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _fadeInCommand;
         private DelegateCommand _fadeOutCommand;
         private DelegateCommand _instanctCollapseCommand;
+        private DelegateCommand _setAlwaysVisibleCommand;
 
         public DelegateCommand UpdatePopupCommand
         {
@@ -46,6 +47,18 @@ namespace Dynamo.ViewModels
                 if (_instanctCollapseCommand == null)
                     _instanctCollapseCommand = new DelegateCommand(InstantCollapse, CanInstantCollapse);
                 return _instanctCollapseCommand;
+            }
+        }
+
+        public DelegateCommand SetAlwaysVisibleCommand
+        {
+            get
+            {
+                if (_setAlwaysVisibleCommand == null)
+                {
+                    _setAlwaysVisibleCommand = new DelegateCommand(SetAlwaysVisible, CanSetAlwaysVisible);
+                }
+                return _setAlwaysVisibleCommand;
             }
         }
     }

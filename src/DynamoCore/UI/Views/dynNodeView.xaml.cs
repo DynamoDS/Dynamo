@@ -25,6 +25,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using System.Windows.Media;
+using Dynamo.UI.Views;
 
 namespace Dynamo.Controls
 {
@@ -54,9 +55,8 @@ namespace Dynamo.Controls
             this.Loaded += new RoutedEventHandler(dynNodeView_Loaded);
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
             this.LayoutUpdated += OnLayoutUpdated;
-            
+
             Canvas.SetZIndex(this, 1);
-            
         }
 
         #endregion
@@ -90,6 +90,7 @@ namespace Dynamo.Controls
             ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
 
             ViewModel.NodeLogic.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(NodeLogic_PropertyChanged);
+            InitializeErrorBubble();
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -161,7 +162,7 @@ namespace Dynamo.Controls
             ViewModel.SetupCustomUIElementsCommand.Execute(this);
         }
 
-        private Dictionary<UIElement, bool> enabledDict 
+        private Dictionary<UIElement, bool> enabledDict
             = new Dictionary<UIElement, bool>();
 
         internal void DisableInteraction()
@@ -194,6 +195,15 @@ namespace Dynamo.Controls
         public void CallUpdateLayout(FrameworkElement el)
         {
             el.UpdateLayout();
+        }
+
+        private void InitializeErrorBubble()
+        {
+            PopupViewModel errorBubbleViewModel = new PopupViewModel();
+            PopupView errorBubble = new PopupView(errorBubbleViewModel);
+            this.errorGrid.Children.Add(errorBubble);
+            errorBubbleViewModel.UpdateView(errorBubble);
+            ViewModel.UpdateErrorBubbleViewModelCommand.Execute(errorBubbleViewModel);
         }
 
         private void topControl_Loaded(object sender, RoutedEventArgs e)
@@ -251,7 +261,7 @@ namespace Dynamo.Controls
                 if (this.ViewModel != null && this.ViewModel.RenameCommand.CanExecute(null))
                 {
                     this.ViewModel.RenameCommand.Execute(null);
-                }   
+                }
 
                 e.Handled = true;
             }
@@ -261,7 +271,7 @@ namespace Dynamo.Controls
         {
             TextBlock textBlock = sender as TextBlock;
             string tooltipContent = ViewModel.NickName + '\n' + ViewModel.Description;
-            Point pointToScreen_TopLeft = textBlock.PointToScreen(new Point(0,0));
+            Point pointToScreen_TopLeft = textBlock.PointToScreen(new Point(0, 0));
             double actualWidth = textBlock.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = textBlock.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + actualWidth, pointToScreen_TopLeft.Y + actualHeight);

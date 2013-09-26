@@ -22,13 +22,14 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.UI.Views;
+using System.Windows;
 
 namespace Dynamo.ViewModels
 {
     /// <summary>
     /// Interaction logic for dynControl.xaml
     /// </summary>
-    
+
     public partial class NodeViewModel : ViewModelBase
     {
         #region delegates
@@ -40,12 +41,12 @@ namespace Dynamo.ViewModels
 
         ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
         ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
-        
-        NodeModel nodeLogic;
-        public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; }}
-        
-        private bool isFullyConnected = false;
 
+        NodeModel nodeLogic;
+        public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
+
+        private bool isFullyConnected = false;
+        private PopupViewModel errorBubbleViewModel;
         #endregion
 
         #region public members
@@ -59,7 +60,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("IsFullyConnected");
             }
         }
-        
+
         public LacingStrategy ArgumentLacing
         {
             get { return nodeLogic.ArgumentLacing; }
@@ -79,7 +80,7 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.ToolTipText; }
         }
-        
+
         public ObservableCollection<PortViewModel> InPorts
         {
             get { return inPorts; }
@@ -113,7 +114,8 @@ namespace Dynamo.ViewModels
 
         public string OldValue
         {
-            get { 
+            get
+            {
                 if (this.nodeLogic.WorkSpace is FuncWorkspace)
                 {
                     return "Not available in custom nodes";
@@ -131,7 +133,7 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.Description; }
         }
-        
+
         //public double DropShadowOpacity
         //{
         //    get
@@ -253,7 +255,7 @@ namespace Dynamo.ViewModels
             //and remove port model views
             logic.InPorts.CollectionChanged += inports_collectionChanged;
             logic.OutPorts.CollectionChanged += outports_collectionChanged;
-            
+
             logic.PropertyChanged += logic_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
 
@@ -304,7 +306,7 @@ namespace Dynamo.ViewModels
                 case "CurrentWorkspace":
                     RaisePropertyChanged("NodeVisibility");
                     break;
-                    
+
             }
         }
 
@@ -338,9 +340,29 @@ namespace Dynamo.ViewModels
                 case "State":
                     RaisePropertyChanged("State");
                     break;
+                case "ToolTipText":
+                    UpdateErrorBubble();
+                    break;
                 //case "ArgumentLacing":
                 //    SetLacingTypeCommand.RaiseCanExecuteChanged();
                 //    break;
+            }
+        }
+
+        private void UpdateErrorBubble()
+        {
+            if (errorBubbleViewModel == null)
+                return;
+            errorBubbleViewModel.SetAlwaysVisibleCommand.Execute(false);
+            errorBubbleViewModel.InstantCollapseCommand.Execute(null);
+            if (!string.IsNullOrEmpty(NodeModel.ToolTipText))
+            {
+                Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+                Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+                PopupDataPacket data = new PopupDataPacket(PopupViewModel.Style.Error, topLeft, botRight, NodeModel.ToolTipText, PopupViewModel.Direction.Bottom); 
+                errorBubbleViewModel.UpdatePopupCommand.Execute(data);
+                errorBubbleViewModel.SetAlwaysVisibleCommand.Execute(true);
+                errorBubbleViewModel.FadeInCommand.Execute(null);
             }
         }
 
@@ -434,7 +456,7 @@ namespace Dynamo.ViewModels
         private void ViewCustomNodeWorkspace(object parameter)
         {
             var f = (nodeLogic as Function);
-            if(f!= null)
+            if (f != null)
                 dynSettings.Controller.DynamoViewModel.ViewCustomNodeWorkspace(f.Definition);
         }
 
@@ -446,7 +468,7 @@ namespace Dynamo.ViewModels
         private void SetLayout(object parameters)
         {
             var dict = parameters as Dictionary<string,
-            double >;
+            double>;
             nodeLogic.X = dict["X"];
             nodeLogic.Y = dict["Y"];
             nodeLogic.Height = dict["Height"];
@@ -472,7 +494,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    InPorts.Add(new PortViewModel(item as PortModel,nodeLogic));
+                    InPorts.Add(new PortViewModel(item as PortModel, nodeLogic));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -522,7 +544,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsUpstreamVisible");
         }
 
-        private bool CanVisibilityBeToggled(object parameter) 
+        private bool CanVisibilityBeToggled(object parameter)
         {
             return true;
         }
@@ -559,7 +581,7 @@ namespace Dynamo.ViewModels
 
         private bool CanSetState(object parameter)
         {
-            if(parameter is ElementState)
+            if (parameter is ElementState)
                 return true;
             return false;
         }
@@ -628,6 +650,15 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void UpdateErrorBubbleViewModel(object parameter)
+        {
+            this.errorBubbleViewModel = parameter as PopupViewModel;
+        }
+
+        private bool CanUpdateErrorBubbleViewModel(object parameter)
+        {
+            return true;
+        }
     }
 
     public class NodeHelpEventArgs : EventArgs
