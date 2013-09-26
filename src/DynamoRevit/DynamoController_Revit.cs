@@ -107,8 +107,8 @@ namespace Dynamo
             if (foundNodes.Any())
             {
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(
-                    this, 
-                    new ModelEventArgs(foundNodes.First(), null));
+                    this, new ModelEventArgs(foundNodes.First()));
+
                 DynamoSelection.Instance.ClearSelection();
                 foundNodes.ForEach(DynamoSelection.Instance.Selection.Add);
             }
