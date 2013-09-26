@@ -1,0 +1,20 @@
+<Workspace Version="0.7.0.32432" X="51.893890771486" Y="138.795307181852" zoom="0.9" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.GetDataFromExcelWorksheet type="Dynamo.Nodes.GetDataFromExcelWorksheet" guid="5bcfe617-a02d-4631-829c-d7df8062e3c1" nickname="Get Data From Excel Worksheet" x="841.300753083929" y="24.9510295145114" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ReadExcelFile type="Dynamo.Nodes.ReadExcelFile" guid="2cd131e6-b48c-47ff-8bcb-223230cd9f91" nickname="Open Excel Workbook" x="392.413329396505" y="24.9510295145114" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetExcelWorksheetByName type="Dynamo.Nodes.GetExcelWorksheetByName" guid="c4b7041d-4939-4ba8-b430-10f53d7e6c8c" nickname="Get Excel Worksheet By Name" x="602.214439148298" y="24.9510295145114" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="507041c4-9740-4981-b2df-d725bf9162d3" nickname="String" x="353.254732188591" y="137.67815863539" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="Hammersmith_Copy" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringFilename type="Dynamo.Nodes.StringFilename" guid="e0c45ba0-150e-45cb-a92c-93d352fc731e" nickname="File Path" x="42.8405509811745" y="24.9510295145114" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="C:\Users\boyerp\Dropbox\Github\Autodesk\Dynamo\test\core\excel\Hammersmith_Copy.csv" />
+    </Dynamo.Nodes.StringFilename>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="2cd131e6-b48c-47ff-8bcb-223230cd9f91" start_index="0" end="c4b7041d-4939-4ba8-b430-10f53d7e6c8c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c4b7041d-4939-4ba8-b430-10f53d7e6c8c" start_index="0" end="5bcfe617-a02d-4631-829c-d7df8062e3c1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="507041c4-9740-4981-b2df-d725bf9162d3" start_index="0" end="c4b7041d-4939-4ba8-b430-10f53d7e6c8c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e0c45ba0-150e-45cb-a92c-93d352fc731e" start_index="0" end="2cd131e6-b48c-47ff-8bcb-223230cd9f91" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

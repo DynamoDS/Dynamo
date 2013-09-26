@@ -224,20 +224,28 @@ namespace Dynamo.Nodes
         {
             var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)((FScheme.Value.Container)args[0]).Item;
 
-            Range range = worksheet.UsedRange;
-            
-            int rows = range.Rows.Count;
-            int cols = range.Columns.Count;
-
+            var vals = worksheet.UsedRange.get_Value();
             var rowData = new List<FScheme.Value>();
 
+            // rowData can potentially return a single value rather than an array
+            if (!(vals is object[,]))
+            {
+                var row = new List<FScheme.Value>() { TryParseCell(vals) };
+                rowData.Add(FScheme.Value.NewList(Utils.SequenceToFSharpList(row)));
+                return FScheme.Value.NewList(Utils.SequenceToFSharpList(rowData));
+            }
+
+            int rows = vals.GetLength(0);
+            int cols = vals.GetLength(1);
+
+            // transform into 2d FScheme.Value array
             for (int r = 1; r <= rows; r++)
             {
                 var row = new List<FScheme.Value>();
 
                 for (int c = 1; c <= cols; c++)
                 {
-                    row.Add(TryParseCell(range.Cells[r, c]));
+                    row.Add(TryParseCell(vals[r, c]));
                 }
 
                 rowData.Add(FScheme.Value.NewList(Utils.SequenceToFSharpList(row)));
@@ -246,17 +254,17 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewList(Utils.SequenceToFSharpList(rowData));
         }
 
-        public static FScheme.Value TryParseCell(Range element)
+        public static FScheme.Value TryParseCell(object element)
         {
-            if (element == null || element.Value2 == null)
+            if (element == null )
             {
                 return FScheme.Value.NewContainer(null);
             }
                 
             double val;
-            return double.TryParse(element.Value2.ToString(), out val)
+            return double.TryParse(element.ToString(), out val)
                 ? FScheme.Value.NewNumber(val)
-                : FScheme.Value.NewString(element.Value2);
+                : FScheme.Value.NewString(element.ToString());
         }
 
     }
