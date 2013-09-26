@@ -8,6 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
+using System.Xml;
+using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -121,6 +123,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand PasteCommand { get; set; }
         public DelegateCommand AddToSelectionCommand { get; set; }
         public DelegateCommand ShowNewFunctionDialogCommand { get; set; }
+        public DelegateCommand SaveRecordedCommand { get; set; }
         public DelegateCommand ClearCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
@@ -394,7 +397,18 @@ namespace Dynamo.ViewModels
             _model.CurrentWorkspace = _model.HomeSpace;
 
             Controller = controller;
+
+            // Validate if the supplied commandFilePath is valid and the file exists.
+            if (string.IsNullOrEmpty(commandFilePath) || (!File.Exists(commandFilePath)))
+                commandFilePath = null;
+
+            // If there is no command file being specified, then that means it 
+            // is not in automation mode. The command recording will be enabled
+            // in a regular user scenario.
+            // 
             this.commandFilePath = commandFilePath;
+            if (string.IsNullOrEmpty(commandFilePath))
+                this.recordedCommands = new List<Core.Automation.RecordableCommand>();
 
             OpenCommand = new DelegateCommand(_model.Open, _model.CanOpen);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(_model.ShowOpenDialogAndOpenResult, _model.CanShowOpenDialogAndOpenResultCommand);
@@ -403,6 +417,7 @@ namespace Dynamo.ViewModels
             AddNoteCommand = new DelegateCommand(_model.AddNote, _model.CanAddNote);
             AddToSelectionCommand = new DelegateCommand(_model.AddToSelection, _model.CanAddToSelection);
             ShowNewFunctionDialogCommand = new DelegateCommand(_model.ShowNewFunctionDialogAndMakeFunction, _model.CanShowNewFunctionDialogCommand);
+            SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
             ClearCommand = new DelegateCommand(_model.Clear, _model.CanClear);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
@@ -883,6 +898,31 @@ namespace Dynamo.ViewModels
         {
             return this.CurrentSpaceViewModel.AlignSelectedCommand.CanExecute(param);
         }
+
+        #region Automation Related Methods
+
+        private void SaveRecordedCommands(object parameters)
+        {
+            XmlDocument document = new XmlDocument();
+            XmlElement commandRoot = document.CreateElement("Commands");
+            document.AppendChild(commandRoot);
+
+            foreach (RecordableCommand command in recordedCommands)
+                commandRoot.AppendChild(command.Serialize(document));
+
+            string format = "Commands-{0:yyyyMMdd-hhmmss}.xml";
+            string xmlFileName = string.Format(format, DateTime.Now);
+            string xmlFilePath = Path.Combine(Path.GetTempPath(), xmlFileName);
+
+            document.Save(xmlFilePath);
+        }
+
+        private bool CanSaveRecordedCommands(object parameters)
+        {
+            return (null != recordedCommands && (recordedCommands.Count > 0));
+        }
+
+        #endregion
 
         /// <summary>
         /// Resets the offset and the zoom for a view
