@@ -15,7 +15,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
 using PopupViewModel = Dynamo.ViewModels.PopupViewModel;
 
-namespace Dynamo.UI.Views
+namespace Dynamo.Controls
 {
     /// <summary>
     /// Interaction logic for PreviewPopup.xaml

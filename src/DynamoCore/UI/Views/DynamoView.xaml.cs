@@ -38,7 +38,6 @@ using String = System.String;
 using System.Collections.ObjectModel;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Controls;
-using Dynamo.UI.Views;
 
 namespace Dynamo.Controls
 {

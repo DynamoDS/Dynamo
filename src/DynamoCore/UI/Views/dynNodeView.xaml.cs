@@ -25,7 +25,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using System.Windows.Media;
-using Dynamo.UI.Views;
 
 namespace Dynamo.Controls
 {

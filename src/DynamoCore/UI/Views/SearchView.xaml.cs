@@ -11,7 +11,6 @@ using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Media;
 using Dynamo.Utilities;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
-using Dynamo.UI.Views;
 using Dynamo.Search.SearchElements;
 using System.Collections.Generic;
 

@@ -21,7 +21,6 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.UI.Views;
 using System.Windows;
 
 namespace Dynamo.ViewModels
